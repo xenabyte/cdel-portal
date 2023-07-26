@@ -36,6 +36,11 @@ return [
     */
 
     'guards' => [
+        'user' => [
+            'driver' => 'session',
+            'provider' => 'users',
+        ],
+
         'guardian' => [
             'driver' => 'session',
             'provider' => 'guardians',
@@ -147,6 +152,12 @@ return [
     */
 
     'passwords' => [
+        'users' => [
+            'provider' => 'users',
+            'table' => 'user_password_resets',
+            'expire' => 60,
+        ],
+
         'guardians' => [
             'provider' => 'guardians',
             'table' => 'guardian_password_resets',
