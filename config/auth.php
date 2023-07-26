@@ -36,6 +36,36 @@ return [
     */
 
     'guards' => [
+        'guardian' => [
+            'driver' => 'session',
+            'provider' => 'guardians',
+        ],
+
+        'partner' => [
+            'driver' => 'session',
+            'provider' => 'partners',
+        ],
+
+        'bursary' => [
+            'driver' => 'session',
+            'provider' => 'bursaries',
+        ],
+
+        'staff' => [
+            'driver' => 'session',
+            'provider' => 'staff',
+        ],
+
+        'student' => [
+            'driver' => 'session',
+            'provider' => 'students',
+        ],
+
+        'admin' => [
+            'driver' => 'session',
+            'provider' => 'admins',
+        ],
+
         'web' => [
             'driver' => 'session',
             'provider' => 'users',
@@ -60,6 +90,36 @@ return [
     */
 
     'providers' => [
+        'guardians' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Guardian::class,
+        ],
+
+        'partners' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Partner::class,
+        ],
+
+        'bursaries' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Bursary::class,
+        ],
+
+        'staff' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Staff::class,
+        ],
+
+        'students' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Student::class,
+        ],
+
+        'admins' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Admin::class,
+        ],
+
         'users' => [
             'driver' => 'eloquent',
             'model' => App\Models\User::class,
@@ -87,6 +147,42 @@ return [
     */
 
     'passwords' => [
+        'guardians' => [
+            'provider' => 'guardians',
+            'table' => 'guardian_password_resets',
+            'expire' => 60,
+        ],
+
+        'partners' => [
+            'provider' => 'partners',
+            'table' => 'partner_password_resets',
+            'expire' => 60,
+        ],
+
+        'bursaries' => [
+            'provider' => 'bursaries',
+            'table' => 'bursary_password_resets',
+            'expire' => 60,
+        ],
+
+        'staff' => [
+            'provider' => 'staff',
+            'table' => 'staff_password_resets',
+            'expire' => 60,
+        ],
+
+        'students' => [
+            'provider' => 'students',
+            'table' => 'student_password_resets',
+            'expire' => 60,
+        ],
+
+        'admins' => [
+            'provider' => 'admins',
+            'table' => 'admin_password_resets',
+            'expire' => 60,
+        ],
+
         'users' => [
             'provider' => 'users',
             'table' => 'password_resets',
