@@ -15,6 +15,15 @@ class CreateCoursesTable extends Migration
     {
         Schema::create('courses', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('programme_id')->nullable();
+            $table->string('code')->nullable();
+            $table->string('name')->nullable();
+            $table->integer('semester')->nullable();
+            $table->integer('credit_unit')->nullable();
+            $table->unsignedBigInteger('level_id')->nullable();
+            $table->unsignedBigInteger('staff_id')->nullable();
+            $table->string('status')->default('Active');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

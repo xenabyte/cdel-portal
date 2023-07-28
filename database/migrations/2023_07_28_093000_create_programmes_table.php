@@ -15,6 +15,13 @@ class CreateProgrammesTable extends Migration
     {
         Schema::create('programmes', function (Blueprint $table) {
             $table->id();
+            $table->string('name')->nullable();
+            $table->unsignedBigInteger('category_id')->nullable();
+            $table->string('award')->nullable();
+            $table->string('duration')->nullable();
+            $table->string('max_duration')->nullable();
+            $table->unsignedBigInteger('department_id')->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

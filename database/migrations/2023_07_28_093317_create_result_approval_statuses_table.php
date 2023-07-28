@@ -15,6 +15,8 @@ class CreateResultApprovalStatusesTable extends Migration
     {
         Schema::create('result_approval_statuses', function (Blueprint $table) {
             $table->id();
+            $table->string('status')->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

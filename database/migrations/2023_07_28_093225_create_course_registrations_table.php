@@ -15,6 +15,18 @@ class CreateCourseRegistrationsTable extends Migration
     {
         Schema::create('course_registrations', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('student_id');
+            $table->unsignedBigInteger('course_id');
+            $table->integer('ca_score')->nullable();
+            $table->integer('exam_score')->nullable();
+            $table->integer('total')->nullable();
+            $table->string('grade')->nullable();
+            $table->integer('points')->nullable();
+            $table->string('academic_session')->nullable();
+            $table->string('level')->nullable();
+            $table->unsignedBigInteger('result_approval_id')->nullable();
+            $table->string('status')->default('Pending');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

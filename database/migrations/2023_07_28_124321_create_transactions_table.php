@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateCourseRegistrationSettingsTable extends Migration
+class CreateTransactionsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,16 @@ class CreateCourseRegistrationSettingsTable extends Migration
      */
     public function up()
     {
-        Schema::create('course_registration_settings', function (Blueprint $table) {
+        Schema::create('transactions', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('student_id');
+            $table->unsignedBigInteger('payment_id');
+            $table->integer('amount_payed');
+            $table->string('reference');
+            $table->string('payment_method');
             $table->string('status');
-            $table->string('academic_session');
+            $table->string('session');
             $table->softDeletes();
             $table->timestamps();
         });
@@ -29,6 +35,6 @@ class CreateCourseRegistrationSettingsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('course_registration_settings');
+        Schema::dropIfExists('transactions');
     }
 }

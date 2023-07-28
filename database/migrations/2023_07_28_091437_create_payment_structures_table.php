@@ -15,7 +15,11 @@ class CreatePaymentStructuresTable extends Migration
     {
         Schema::create('payment_structures', function (Blueprint $table) {
             $table->id();
+            $table->string('payment_id')->nullable();
+            $table->string('amount')->nullable();
+            $table->string('title')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

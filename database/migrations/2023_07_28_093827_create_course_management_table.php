@@ -15,6 +15,10 @@ class CreateCourseManagementTable extends Migration
     {
         Schema::create('course_management', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('student_id')->nullable();
+            $table->unsignedBigInteger('transaction_id')->nullable();
+            $table->string('status')->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

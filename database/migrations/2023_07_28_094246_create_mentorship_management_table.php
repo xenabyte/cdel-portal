@@ -15,6 +15,9 @@ class CreateMentorshipManagementTable extends Migration
     {
         Schema::create('mentorship_management', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('staff_id')->nullable();
+            $table->unsignedBigInteger('student_id')->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

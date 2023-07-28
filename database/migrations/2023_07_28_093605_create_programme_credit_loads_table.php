@@ -15,6 +15,10 @@ class CreateProgrammeCreditLoadsTable extends Migration
     {
         Schema::create('programme_credit_loads', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('programme_id')->nullable();
+            $table->integer('max_credit')->nullable();
+            $table->integer('min_credit')->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

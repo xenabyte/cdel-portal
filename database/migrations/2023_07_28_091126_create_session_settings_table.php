@@ -15,6 +15,9 @@ class CreateSessionSettingsTable extends Migration
     {
         Schema::create('session_settings', function (Blueprint $table) {
             $table->id();
+            $table->string('academic_session')->nullable();
+            $table->string('admission_session')->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

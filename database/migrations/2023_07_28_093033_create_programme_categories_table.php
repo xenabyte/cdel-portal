@@ -15,6 +15,8 @@ class CreateProgrammeCategoriesTable extends Migration
     {
         Schema::create('programme_categories', function (Blueprint $table) {
             $table->id();
+            $table->string('category')->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

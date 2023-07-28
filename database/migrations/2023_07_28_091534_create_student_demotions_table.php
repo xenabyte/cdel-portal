@@ -15,6 +15,15 @@ class CreateStudentDemotionsTable extends Migration
     {
         Schema::create('student_demotions', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('student_id')->nullable();
+            $table->unsignedBigInteger('old_level_id')->nullable();
+            $table->unsignedBigInteger('new_level_id')->nullable();
+            $table->unsignedBigInteger('old_programme_id')->nullable();
+            $table->unsignedBigInteger('new_programme_id')->nullable();
+            $table->string('reason')->nullable();
+            $table->string('academic_session')->nullable();
+            $table->boolean('is_approved')->default(false);
+            $table->softDeletes();
             $table->timestamps();
         });
     }

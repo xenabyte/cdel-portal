@@ -13,8 +13,15 @@ class CreateStudentNotificationsTable extends Migration
      */
     public function up()
     {
-        Schema::create('student_notifications', function (Blueprint $table) {
+        Schema::create('notifications', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('student_id')->nullable();
+            $table->unsignedBigInteger('staff_id')->nullable();
+            $table->unsignedBigInteger('user_id')->nullable();
+            $table->string('description')->nullable();
+            $table->string('status')->nullable();
+            $table->string('owner_type')->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }
@@ -26,6 +33,6 @@ class CreateStudentNotificationsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('student_notifications');
+        Schema::dropIfExists('notifications');
     }
 }

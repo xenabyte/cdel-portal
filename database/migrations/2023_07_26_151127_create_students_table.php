@@ -14,9 +14,22 @@ class CreateStudentsTable extends Migration
     {
         Schema::create('students', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('name');
+            $table->string('matric_number')->unique();
             $table->string('email')->unique();
             $table->string('password');
+            $table->unsignedBigInteger('programme_id')->nullable();
+            $table->string('academic_session')->nullable();
+            $table->string('image')->nullable();
+            $table->unsignedBigInteger('level_id')->nullable();
+            $table->integer('credit_load')->default(0);
+            $table->boolean('is_passed_out')->default(false);
+            $table->boolean('is_rusticated')->default(false);
+            $table->integer('amount_balance')->default(0);
+            $table->year('entry_year')->nullable();
+            $table->year('max_graduating_year')->nullable();
+            $table->unsignedBigInteger('user_id')->nullable();
+            $table->unsignedBigInteger('partner_id')->nullable();
+            $table->softDeletes(); // Adds the 'deleted_at' column for soft deletes
             $table->rememberToken();
             $table->timestamps();
         });

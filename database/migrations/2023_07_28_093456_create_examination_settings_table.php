@@ -15,6 +15,10 @@ class CreateExaminationSettingsTable extends Migration
     {
         Schema::create('examination_settings', function (Blueprint $table) {
             $table->id();
+            $table->string('exam_docket_status')->nullable();
+            $table->string('academic_session')->nullable();
+            $table->string('result_processing_status')->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

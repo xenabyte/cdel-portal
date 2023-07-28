@@ -15,6 +15,9 @@ class CreateStaffRolesTable extends Migration
     {
         Schema::create('staff_roles', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('role_id')->nullable();
+            $table->unsignedBigInteger('staff_id')->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

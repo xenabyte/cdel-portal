@@ -14,9 +14,33 @@ class CreateUsersTable extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('name');
+            $table->string('slug')->unique();
+            $table->string('application_number')->unique();
+            $table->string('passcode')->nullable();
+            $table->string('lastname')->nullable();
+            $table->string('othernames')->nullable();
             $table->string('email')->unique();
-            $table->string('password');
+            $table->string('phone_number')->unique();
+            $table->string('image')->nullable();
+            $table->unsignedBigInteger('programme_id')->nullable();
+            $table->date('dob')->nullable();
+            $table->string('nationality')->nullable();
+            $table->string('religion')->nullable();
+            $table->string('marital_status')->nullable();
+            $table->string('state')->nullable();
+            $table->string('lga')->nullable();
+            $table->string('gender')->nullable();
+            $table->string('address')->nullable();
+            $table->string('sitting_no')->nullable();
+            $table->string('olevel_1')->nullable();
+            $table->string('olevel_2')->nullable();
+            $table->text('schools_attended')->nullable();
+            $table->string('status')->nullable();
+            $table->string('academic_session')->nullable();
+            $table->unsignedBigInteger('guardian_id')->nullable();
+            $table->unsignedBigInteger('next_of_kin_id')->nullable();
+            $table->unsignedBigInteger('partner_id')->nullable();
+            $table->softDeletes();
             $table->rememberToken();
             $table->timestamps();
         });

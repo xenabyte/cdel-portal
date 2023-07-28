@@ -15,6 +15,10 @@ class CreateLevelAdvisersTable extends Migration
     {
         Schema::create('level_advisers', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('programme_id')->nullable();
+            $table->unsignedBigInteger('level_id')->nullable();
+            $table->unsignedBigInteger('staff_id')->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

@@ -15,6 +15,8 @@ class CreateAcademicLevelsTable extends Migration
     {
         Schema::create('academic_levels', function (Blueprint $table) {
             $table->id();
+            $table->string('level')->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

@@ -15,6 +15,9 @@ class CreateMatricNumberSettingsTable extends Migration
     {
         Schema::create('matric_number_settings', function (Blueprint $table) {
             $table->id();
+            $table->string('programme_id')->nullable();
+            $table->string('last_number')->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }
