@@ -8,4 +8,10 @@ use Illuminate\Database\Eloquent\Model;
 class ProgrammeCreditLoad extends Model
 {
     use HasFactory;
+
+    protected $fillable = [
+        'programme_id',
+        'max_credit',
+        'min_credit',
+    ];
 }

@@ -5,13 +5,16 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class ExaminationSetting extends Model
+class Notification extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'exam_docket_status',
-        'academic_session',
-        'result_processing_status',
+        'student_id',
+        'staff_id',
+        'user_id',
+        'description',
+        'status',
+        'owner_type'
     ];
 }

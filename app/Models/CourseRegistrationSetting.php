@@ -8,4 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class CourseRegistrationSetting extends Model
 {
     use HasFactory;
+
+    protected $fillable = [
+        'status',
+        'academic_session'
+    ];
 }

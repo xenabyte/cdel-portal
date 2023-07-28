@@ -8,4 +8,13 @@ use Illuminate\Database\Eloquent\Model;
 class Programme extends Model
 {
     use HasFactory;
+
+    protected $fillable = [
+        'name',
+        'category_id',
+        'award',
+        'duration',
+        'max_duration',
+        'department_id',
+    ];
 }

@@ -8,4 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class MatricNumberSetting extends Model
 {
     use HasFactory;
+
+    protected $fillable = [
+        'programme_id',
+        'last_number',
+    ];
 }

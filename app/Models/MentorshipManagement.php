@@ -8,4 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class MentorshipManagement extends Model
 {
     use HasFactory;
+
+    protected $fillable = [
+        'staff_id',
+        'student_id'
+    ];
 }
