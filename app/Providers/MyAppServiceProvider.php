@@ -4,8 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 
-use App\Models\GlobalSetting as setting;
-use App\Models\Social;
+use App\Models\SessionSetting;
 
 use Log;
 
@@ -34,6 +33,11 @@ class MyAppServiceProvider extends ServiceProvider
     }
 
     public function pageGlobalData(){
-      return true;
+        $sessionSetting = SessionSetting::first();
+
+        $data = new \stdClass();
+        $data->sessionSetting = $sessionSetting;
+
+        return $data;
     }
 }

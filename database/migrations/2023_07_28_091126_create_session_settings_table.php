@@ -17,6 +17,8 @@ class CreateSessionSettingsTable extends Migration
             $table->id();
             $table->string('academic_session')->nullable();
             $table->string('admission_session')->nullable();
+            $table->string('application_session')->nullable();
+            $table->string('status')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

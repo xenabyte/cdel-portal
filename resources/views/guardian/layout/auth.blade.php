@@ -31,7 +31,6 @@
 
     <!-- auth-page wrapper -->
     <div class="auth-page-wrapper auth-bg-cover py-5 d-flex justify-content-center align-items-center min-vh-100">
-        <div class="bg-overlay"></div>
         <!-- auth-page content -->
         <div class="auth-page-content overflow-hidden pt-lg-5">
             <div class="container">
@@ -49,7 +48,7 @@
                                                 </a>
                                             </div>
                                             <div class="mt-auto">
-                                                <div class="mb-3">
+                                                {{-- <div class="mb-3">
                                                     <i class="ri-double-quotes-l display-4 text-success"></i>
                                                 </div>
 
@@ -71,7 +70,7 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <!-- end carousel -->
+                                                <!-- end carousel --> --}}
                                             </div>
                                         </div>
                                     </div>

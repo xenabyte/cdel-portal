@@ -13,5 +13,6 @@ class SessionSetting extends Model
     protected $fillable = [
         'academic_session',
         'admission_session',
+        'application_session',
     ];
 }

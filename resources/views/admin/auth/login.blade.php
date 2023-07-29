@@ -13,7 +13,7 @@
                 <div class="p-2 mt-4">
                     <form method="POST" action="{{ url('/admin/login') }}">
                         @csrf
-                        <div class="form-group{{ $errors->has('email') ? ' has-error' : '' }}"class="form-group{{ $errors->has('email') ? ' has-error' : '' }} mb-3">
+                        <div class="form-group{{ $errors->has('email') ? ' has-error' : '' }} mb-3">
                             <label for="email" class="form-label">Email</label>
                             <input type="text" name="email" class="form-control" id="email" placeholder="Enter email" value="{{ old('email') }}" autofocus>
 
