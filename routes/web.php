@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Middleware\GlobalDataMiddleware;
 
 /*
 |--------------------------------------------------------------------------
@@ -21,7 +22,7 @@ Auth::routes(['register' => false, 'login' => false]);
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
-Route::group(['prefix' => 'admin'], function () {
+Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'admin'], function () {
   Route::get('/', [App\Http\Controllers\Admin\Auth\LoginController::class, 'showLoginForm'])->name('login');
   Route::get('/login', [App\Http\Controllers\Admin\Auth\LoginController::class, 'showLoginForm'])->name('login');
   Route::post('/login', [App\Http\Controllers\Admin\Auth\LoginController::class, 'login']);
@@ -54,7 +55,7 @@ Route::group(['prefix' => 'student'], function () {
   Route::get('/password/reset/{token}', [App\Http\Controllers\Student\Auth\ResetPasswordController::class, 'showResetForm']);
 });
 
-Route::group(['prefix' => 'staff'], function () {
+Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'staff'], function () {
   Route::get('/', [App\Http\Controllers\Staff\Auth\LoginController::class, 'showLoginForm'])->name('login');
   Route::get('/login', [App\Http\Controllers\Staff\Auth\LoginController::class, 'showLoginForm'])->name('login');
   Route::post('/login', [App\Http\Controllers\Staff\Auth\LoginController::class, 'login']);
@@ -69,7 +70,7 @@ Route::group(['prefix' => 'staff'], function () {
   Route::get('/password/reset/{token}', [App\Http\Controllers\Staff\Auth\ResetPasswordController::class, 'showResetForm']);
 });
 
-Route::group(['prefix' => 'bursary'], function () {
+Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'bursary'], function () {
   Route::get('/', [App\Http\Controllers\Bursary\Auth\LoginController::class, 'showLoginForm'])->name('login');
   Route::get('/login', [App\Http\Controllers\Bursary\Auth\LoginController::class, 'showLoginForm'])->name('login');
   Route::post('/login', [App\Http\Controllers\Bursary\Auth\LoginController::class, 'login']);
@@ -84,7 +85,7 @@ Route::group(['prefix' => 'bursary'], function () {
   Route::get('/password/reset/{token}', [App\Http\Controllers\Bursary\Auth\ResetPasswordController::class, 'showResetForm']);
 });
 
-Route::group(['prefix' => 'partner'], function () {
+Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'partner'], function () {
   Route::get('/', [App\Http\Controllers\Partner\Auth\LoginController::class, 'showLoginForm'])->name('login');
   Route::get('/login', [App\Http\Controllers\Partner\Auth\LoginController::class, 'showLoginForm'])->name('login');
   Route::post('/login', [App\Http\Controllers\Partner\Auth\LoginController::class, 'login']);
@@ -99,7 +100,7 @@ Route::group(['prefix' => 'partner'], function () {
   Route::get('/password/reset/{token}', [App\Http\Controllers\Partner\Auth\ResetPasswordController::class, 'showResetForm']);
 });
 
-Route::group(['prefix' => 'guardian'], function () {
+Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'guardian'], function () {
   Route::get('/', [App\Http\Controllers\Guardian\Auth\LoginController::class, 'showLoginForm'])->name('login');
   Route::get('/login', [App\Http\Controllers\Guardian\Auth\LoginController::class, 'showLoginForm'])->name('login');
   Route::post('/login', [App\Http\Controllers\Guardian\Auth\LoginController::class, 'login']);
@@ -114,7 +115,7 @@ Route::group(['prefix' => 'guardian'], function () {
   Route::get('/password/reset/{token}', [App\Http\Controllers\Guardian\Auth\ResetPasswordController::class, 'showResetForm']);
 });
 
-Route::group(['prefix' => 'applicant'], function () {
+Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'applicant'], function () {
   Route::get('/', [App\Http\Controllers\User\Auth\LoginController::class, 'showLoginForm'])->name('login');
   Route::get('/login', [App\Http\Controllers\User\Auth\LoginController::class, 'showLoginForm'])->name('login');
   Route::post('/login', [App\Http\Controllers\User\Auth\LoginController::class, 'login']);
