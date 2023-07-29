@@ -21,6 +21,9 @@ class CreateProgrammesTable extends Migration
             $table->string('duration')->nullable();
             $table->string('max_duration')->nullable();
             $table->unsignedBigInteger('department_id')->nullable();
+            $table->integer('code_number')->nullable();
+            $table->string('code')->nullable();
+            $table->string('web_id')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

@@ -18,6 +18,7 @@ class Course extends Model
         'credit_unit',
         'level_id',
         'staff_id',
-        'status'
+        'status',
+        'web_id',
     ];
 }

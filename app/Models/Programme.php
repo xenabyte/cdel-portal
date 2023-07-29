@@ -17,5 +17,29 @@ class Programme extends Model
         'duration',
         'max_duration',
         'department_id',
+        'web_id',
     ];
+
+    /**
+     * Get all of the courses for the Programme
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function courses()
+    {
+        return $this->hasMany(Course::class, 'programme_id');
+    }
+
+    public function firstSemesterCourses(){
+        return $this->hasMany(Course::class, 'programme_id')->where('course_semester', 1);
+    }
+
+    public function secondSemesterCourses(){
+        return $this->hasMany(Course::class, 'programme_id')->where('course_semester', 2);
+    }
+
+    public function department()
+    {
+        return $this->belongsTo(Department::class, 'department_id');
+    }
 }

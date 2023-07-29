@@ -14,5 +14,16 @@ class Faculty extends Model
         'name',
         'dean_id',
         'sub_dean_id',
+        'web_id',
     ];
+
+     /**
+     * Get all of the departments for the Faculty
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function departments()
+    {
+        return $this->hasMany(Department::class, 'faculty_id');
+    }
 }

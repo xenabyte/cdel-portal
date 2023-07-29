@@ -18,6 +18,7 @@ class CreateFacultiesTable extends Migration
             $table->string('name')->nullable();
             $table->unsignedBigInteger('dean_id')->nullable();
             $table->unsignedBigInteger('sub_dean_id')->nullable();
+            $table->string('web_id')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

@@ -23,6 +23,7 @@ class CreateCoursesTable extends Migration
             $table->unsignedBigInteger('level_id')->nullable();
             $table->unsignedBigInteger('staff_id')->nullable();
             $table->string('status')->default('Active');
+            $table->string('web_id')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

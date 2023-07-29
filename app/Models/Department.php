@@ -14,5 +14,26 @@ class Department extends Model
         'name',
         'faculty_id',
         'hod_id',
+        'web_id',
     ];
+
+     /**
+     * Get all of the programmes for the Department
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function programmes()
+    {
+        return $this->hasMany(Programme::class, 'department_id');
+    }
+
+    /**
+     * Get the facl that owns the Department
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function faculty()
+    {
+        return $this->belongsTo(Faculty::class, 'faculty_id');
+    }
 }

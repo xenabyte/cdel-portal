@@ -17,6 +17,7 @@ class CreateBursariesTable extends Migration
             $table->string('name');
             $table->string('email')->unique();
             $table->string('password');
+            $table->softDeletes();
             $table->rememberToken();
             $table->timestamps();
         });
