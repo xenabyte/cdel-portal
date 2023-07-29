@@ -19,12 +19,10 @@
                             <label for="email" class="form-label">Email</label>
                             <input type="text" name="email" class="form-control" id="email" placeholder="Enter email" value="{{ old('email') }}" autofocus>
 
-                            
                             @if ($errors->has('email'))
-                            <div class="mt-4 mb-3">
-                                <span class="help-block alert alert-danger">
-                                    <strong>{{ $errors->first('email') }}</strong>
-                                </span>
+                            <br>
+                            <div class="alert alert-danger" role="alert">
+                                <strong>{{ $errors->first('email') }}</strong>
                             </div>
                             @endif
                         </div>
@@ -39,12 +37,11 @@
                                 <input type="password" class="form-control pe-5 password-input" name="password" placeholder="Enter password" id="password-input">
                                 <button class="btn btn-link position-absolute end-0 top-0 text-decoration-none text-muted shadow-none password-addon" type="button" id="password-addon"><i class="ri-eye-fill align-middle"></i></button>
                             </div>
-                            
+
                             @if ($errors->has('password'))
-                            <div class="mt-4 mb-3">
-                                <span class="help-block alert alert-danger">
-                                    <strong>{{ $errors->first('password') }}</strong>
-                                </span>
+                            <br>
+                            <div class="alert alert-danger" role="alert">
+                                <strong>{{ $errors->first('password') }}</strong>
                             </div>
                             @endif
                         </div>
@@ -56,12 +53,11 @@
                                 <input type="password" class="form-control pe-5 password-input" name="password_confirmation" placeholder="Enter password" id="password-input">
                                 <button class="btn btn-link position-absolute end-0 top-0 text-decoration-none text-muted shadow-none password-addon" type="button" id="password-addon"><i class="ri-eye-fill align-middle"></i></button>
                             </div>
-                            
+
                             @if ($errors->has('password_confirmation'))
-                            <div class="mt-4 mb-3">
-                                <span class="help-block alert alert-danger">
-                                    <strong>{{ $errors->first('password_confirmation') }}</strong>
-                                </span>
+                            <br>
+                            <div class="alert alert-danger" role="alert">
+                                <strong>{{ $errors->first('password_confirmation') }}</strong>
                             </div>
                             @endif
                         </div>

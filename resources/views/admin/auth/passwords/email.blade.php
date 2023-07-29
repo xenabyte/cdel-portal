@@ -27,10 +27,9 @@
                             <input type="text" name="email" class="form-control" id="email" placeholder="Enter email" value="{{ old('email') }}" autofocus>
 
                             @if ($errors->has('email'))
-                            <div class="mt-4 mb-3">
-                                <span class="help-block alert alert-danger">
-                                    <strong>{{ $errors->first('email') }}</strong>
-                                </span>
+                            <br>
+                            <div class="alert alert-danger" role="alert">
+                                <strong>{{ $errors->first('email') }}</strong>
                             </div>
                             @endif
                         </div>

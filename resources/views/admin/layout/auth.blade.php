@@ -27,7 +27,8 @@
 </head>
 
 <body>
-
+    @include('sweetalert::alert')
+    
     <div class="auth-page-wrapper pt-5">
         <!-- auth page bg -->
         <div class="auth-one-bg-position auth-one-bg" id="auth-particles">
