@@ -109,8 +109,8 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'partner'
   Route::post('/login', [App\Http\Controllers\Partner\Auth\LoginController::class, 'login']);
   Route::post('/logout', [App\Http\Controllers\Partner\Auth\LoginController::class, 'logout'])->name('logout');
 
-  // Route::get('/register', [App\Http\Controllers\Partner\Auth\RegisterController::class, 'showRegistrationForm'])->name('register');
-  // Route::post('/register', [App\Http\Controllers\Partner\Auth\RegisterController::class, 'register']);
+  Route::get('/register', [App\Http\Controllers\Partner\Auth\RegisterController::class, 'showRegistrationForm'])->name('register');
+  Route::post('/register', [App\Http\Controllers\Partner\Auth\RegisterController::class, 'register']);
 
   Route::post('/password/email', [App\Http\Controllers\Partner\Auth\ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.request');
   Route::post('/password/reset', [App\Http\Controllers\Partner\Auth\ResetPasswordController::class, 'reset'])->name('password.email');
