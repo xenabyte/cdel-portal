@@ -48,7 +48,7 @@
                                                 </a>
                                             </div>
                                             <div class="mt-auto">
-                                                {{-- <div class="mb-3">
+                                                <!-- <div class="mb-3">
                                                     <i class="ri-double-quotes-l display-4 text-success"></i>
                                                 </div>
 
@@ -69,8 +69,8 @@
                                                             <p class="fs-15 fst-italic">" Great! Clean code, clean design, easy for customization. Thanks very much! "</p>
                                                         </div>
                                                     </div>
-                                                </div>
-                                                <!-- end carousel --> --}}
+                                                </div> -->
+                                                <!-- end carousel --> 
                                             </div>
                                         </div>
                                     </div>
