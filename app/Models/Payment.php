@@ -17,4 +17,24 @@ class Payment extends Model
         'type',
         'programme_id',
     ];
+
+    /**
+     * Get all of the structures for the Payment
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function structures()
+    {
+        return $this->hasMany(PaymentStructure::class, 'payment_id', 'id');
+    }
+
+    /**
+     * Get the programme that owns the Payment
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function programme()
+    {
+        return $this->belongsTo(Programme::class, 'programme_id');
+    }
 }

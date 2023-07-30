@@ -1,0 +1,367 @@
+<?php
+
+namespace App\Http\Controllers\Admin;
+
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Hash;
+use App\Http\Requests;
+use Illuminate\Support\Facades\Validator;
+
+use App\Models\Payment;
+use App\Models\PaymentStructure as Structure;
+use App\Models\Programme;
+use App\Models\Transaction;
+use App\Models\User as Applicant;
+use App\Models\Student;
+
+use SweetAlert;
+use Mail;
+use Alert;
+use Log;
+use Carbon\Carbon;
+
+class PaymentController extends Controller
+{
+    /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct(){
+        $this->middleware(['auth:admin']);
+    }
+
+    public function payments() {
+
+        $payments = Payment::with(['structures', 'programme'])->get();
+        $programmes = Programme::get();
+
+        return view('admin.payments', [
+            'payments' => $payments,
+            'programmes' => $programmes
+        ]);
+    }
+
+    public function addPayment(Request $request){
+        $validator = Validator::make($request->all(), [
+            'description' => 'required',
+            'title' => 'required',
+            'type' => 'required',
+        ]);
+
+        if($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+
+        $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $request->title)));
+
+        $addPayment = ([            
+            'description' => $request->description,
+            'title' => $request->title,
+            'programme_id' => $request->programme_id,
+            'type' => $request->type,
+            'slug' => $slug
+        ]);
+
+        if(Payment::create($addPayment)){
+            alert()->success('Payment added successfully', '')->persistent('Close');
+            return redirect()->back();
+        }
+
+        alert()->error('Oops!', 'Something went wrong')->persistent('Close');
+        return redirect()->back();
+    }
+
+    public function updatePayment(Request $request){
+        $validator = Validator::make($request->all(), [
+            'payment_id' => 'required|min:1',
+        ]);
+
+        if($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+
+        if(!$payment = Payment::find($request->payment_id)){
+            alert()->error('Oops', 'Invalid Payment')->persistent('Close');
+            return redirect()->back();
+        }
+
+        
+        if(!empty($request->title) &&  $request->title != $payment->title){
+            $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $request->title)));
+            $payment->slug = $slug;
+            $payment->title = $request->title;
+        }
+
+        if(!empty($request->description) &&  $request->description != $payment->description){
+            $payment->description = $request->description;
+        }
+
+        if(!empty($request->type) &&  $request->type != $payment->type){
+            $payment->type = $request->type;
+        }
+
+        if(!empty($request->programme_id) &&  $request->programme_id != $payment->programme_id){
+            $payment->programme_id = $request->programme_id;
+        }
+
+        if($payment->save()){
+            alert()->success('Changes Saved', 'Payment changes saved successfully')->persistent('Close');
+            return redirect()->back();
+        }
+    }
+
+    public function deletePayment(Request $request){
+        $validator = Validator::make($request->all(), [
+            'payment_id' => 'required|min:1',
+        ]);
+
+
+        if($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+
+        if(!$payment = Payment::find($request->payment_id)){
+            alert()->error('Oops', 'Invalid Payment Requirement')->persistent('Close');
+            return redirect()->back();
+        }
+
+        if($payment->delete()){ 
+            alert()->success('Record Deleted', '')->persistent('Close');
+            return redirect()->back();
+        }
+
+        alert()->error('Oops!', 'Something went wrong')->persistent('Close');
+        return redirect()->back();
+    }
+
+    public function payment($slug) {
+
+        $payment = Payment::with(['structures'])->where('slug', $slug)->first();
+
+        return view('admin.payment', [
+            'payment' => $payment
+        ]);
+    }
+
+    public function paymentById($id) {
+
+        $payment = Payment::with(['structures'])->where('id', $id)->first();
+        return $payment;
+    }
+
+    
+    public function addStructure(Request $request){
+        $validator = Validator::make($request->all(), [
+            'amount' => 'required',
+            'title' => 'required',
+        ]);
+
+        if($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+
+        $addStructure = ([            
+            'payment_id' => $request->payment_id,
+            'title' => $request->title,
+            'amount' => $request->amount * 100
+        ]);
+
+        if(Structure::create($addStructure)){
+            alert()->success('Structure added successfully', '')->persistent('Close');
+            return redirect()->back();
+        }
+
+        alert()->error('Oops!', 'Something went wrong')->persistent('Close');
+        return redirect()->back();
+    }
+
+    public function updateStructure(Request $request){
+        $validator = Validator::make($request->all(), [
+            'structure_id' => 'required|min:1',
+        ]);
+
+        if($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+
+        if(!$structure = Structure::find($request->structure_id)){
+            alert()->error('Oops', 'Invalid Structure')->persistent('Close');
+            return redirect()->back();
+        }
+
+        
+        if(!empty($request->title) &&  $request->title != $structure->title){
+            $structure->title = $request->title;
+        }
+
+        if(!empty($request->payment_id) &&  $request->payment_id != $structure->payment_id){
+            $structure->payment_id = $request->payment_id;
+        }
+
+        if(!empty($request->amount) &&  $request->amount != $structure->amount){
+            $structure->amount = $request->amount * 100;
+        }
+
+        if($structure->save()){
+            alert()->success('Changes Saved', 'Structure changes saved successfully')->persistent('Close');
+            return redirect()->back();
+        }
+    }
+
+    public function deleteStructure(Request $request){
+        $validator = Validator::make($request->all(), [
+            'structure_id' => 'required|min:1',
+        ]);
+
+
+        if($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+
+        if(!$structure = Structure::find($request->structure_id)){
+            alert()->error('Oops', 'Invalid Structure Requirement')->persistent('Close');
+            return redirect()->back();
+        }
+
+        if($structure->delete()){ 
+            alert()->success('Record Deleted', '')->persistent('Close');
+            return redirect()->back();
+        }
+
+        alert()->error('Oops!', 'Something went wrong')->persistent('Close');
+        return redirect()->back();
+    }
+
+
+    /**
+     * Show payment page.
+     *
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function transactions()
+    {
+        $payments = Transaction::get();
+
+        return view('admin.transactions', [
+            'payments' => $payments
+        ]);
+    }
+
+    public function getStudent(Request $request){
+        $validator = Validator::make($request->all(), [
+            'reg_number' => 'required',
+        ]);
+
+        if($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+
+        $studentIdCode = $request->reg_number;
+        return $this->getSingleStudent($studentIdCode);
+    }
+
+    public function getSingleStudent($studentIdCode){
+
+        $applicant = Applicant::with('programme', 'olevels', 'guardian', 'student')->where('user_id', $studentIdCode)->first();
+        if(!$applicant){
+            alert()->info('Record not found', '')->persistent('Close');
+            return redirect()->back();
+        }
+        $transactions = Transaction::where('user_id', $applicant->id)->get();
+        $applicant->transactions = $transactions;
+        $programmePayments = $applicant->programme->payments;
+        $programmeTuitionPayment = $programmePayments->where('type', 'School Fee')->first();
+
+        $tuitionPaymentId = $programmeTuitionPayment->id;
+        $tuitionAmount = $programmeTuitionPayment->structures->sum('amount');
+        $paidTuition = Transaction::where('user_id', $applicant->id)->where('payment_id', $tuitionPaymentId)->first();
+        $passTuitionPayment = false;
+        $fullTuitionPayment = false;
+        if($paidTuition && $paidTuition->amount_payed > $tuitionAmount * 0.4){
+            $passTuitionPayment = true;
+        }
+
+        if($paidTuition && $paidTuition->amount_payed >= $tuitionAmount){
+            $fullTuitionPayment = true;
+        }
+
+        return view('admin.chargeStudent', [
+            'applicant' => $applicant,
+            'programmePayments' => $programmePayments->where('type', '!=', 'School Fee'),
+            'programmePaymentTypes' => $programmePayments,
+            'programmeTuitionPayment' => $programmeTuitionPayment,
+            'passTuition' => $passTuitionPayment,
+            'fullTuitionPayment' => $fullTuitionPayment,
+        ]);
+
+    }
+
+    public function chargeStudent(Request $request){
+        $applicant = Applicant::with('programme', 'olevels', 'guardian', 'student')->where('id', $request->user_id)->first();
+        $payment = Payment::find($request->payment_id);
+
+        if($payment->type == 'Application Fee'){
+            $validator = Validator::make($request->all(), [
+                'amountApplication' => 'required',
+            ],[
+                'amountApplication.required' => 'The amount field is required.',
+            ]);
+        }elseif($payment->type == 'School Fee'){
+            $validator = Validator::make($request->all(), [
+                'amountTuition' => 'required',
+            ],[
+                'amountTuition.required' => 'The amount field is required.',
+            ]);
+        }else{
+            $validator = Validator::make($request->all(), [
+                'amountGeneral' => 'required',
+            ],[
+                'amountGeneral.required' => 'The amount field is required.',
+            ]);
+        }
+
+        if($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return $this->getSingleStudent($applicant->user_id);
+        }
+
+        if($payment->type == 'Application Fee'){
+            $amount = $request->amountApplication;
+        }elseif($payment->type == 'School Fee'){
+            $amount = $request->amountTuition;
+        }else{
+            $amount = $request->amountGeneral * 100;
+        }
+
+
+        $transactions = Transaction::where('user_id', $applicant->id)->get();
+        $programme = $applicant->programme;
+
+        $reference = $this->generateRandomString(10);
+        
+        //Create new transaction
+        $transaction = Transaction::create([
+            'user_id' => $request->user_id,
+            'payment_id' => $request->payment_id,
+            'amount_payed' => $amount,
+            'payment_method' => $request->paymentGateway,
+            'reference' => $reference,
+            'session' => $programme->sessionSetting->year,
+            'status' => $request->paymentStatus == 1 ? 1 : null
+        ]);
+
+        return $this->getSingleStudent($applicant->user_id);
+    }
+}

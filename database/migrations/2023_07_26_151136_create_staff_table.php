@@ -31,6 +31,7 @@ class CreateStaffTable extends Migration
             $table->string('gender')->nullable();
             $table->text('address')->nullable();
             $table->string('referral_code')->nullable();
+            $table->string('signature')->nullable();
             $table->softDeletes();
             $table->rememberToken();
             $table->timestamps();

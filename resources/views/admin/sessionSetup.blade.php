@@ -139,7 +139,7 @@
                             <div class="row g-3">
 
                                 <div class="col-lg-4">
-                                    <h4 class="card-title mb-0 flex-grow-1">Active Academic Session: {{ !empty($pageGlobalData->sessionSetting)?$pageGlobalData->sessionSetting->academic_session:null }}</h4>
+                                    <h4 class="card-title mb-0 flex-grow-1">Active Academic Session: {{ !empty($pageGlobalData->sessionSetting)?$pageGlobalData->sessionSetting->academic_session:'Not Set' }}</h4>
                                     <br>
                                     <div class="form-floating">
                                         <select class="form-select" id="academic_session" name="academic_session" aria-label="academic session">
@@ -151,7 +151,7 @@
                                 </div>
 
                                 <div class="col-lg-4">
-                                    <h4 class="card-title mb-0 flex-grow-1">Active Admission Session: {{ !empty($pageGlobalData->sessionSetting)?$pageGlobalData->sessionSetting->admission_session:null }}</h4>
+                                    <h4 class="card-title mb-0 flex-grow-1">Active Admission Session: {{ !empty($pageGlobalData->sessionSetting)?$pageGlobalData->sessionSetting->admission_session:'Not Set' }}</h4>
                                     <br>
                                     <div class="form-floating">
                                         <select class="form-select" id="admission_session" name="admission_session" aria-label="admission session">
@@ -163,7 +163,7 @@
                                 </div>
 
                                 <div class="col-lg-4">
-                                    <h4 class="card-title mb-0 flex-grow-1">Active Application Session: {{ !empty($pageGlobalData->sessionSetting)?$pageGlobalData->sessionSetting->application_session:null }}</h4>
+                                    <h4 class="card-title mb-0 flex-grow-1">Active Application Session: {{ !empty($pageGlobalData->sessionSetting)?$pageGlobalData->sessionSetting->application_session:'Not Set' }}</h4>
                                     <br>
                                     <div class="form-floating">
                                         <select class="form-select" id="application_session" name="application_session" aria-label="application session">

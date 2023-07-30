@@ -296,6 +296,9 @@
                             <div class="collapse menu-dropdown" id="appSetting">
                                 <ul class="nav nav-sm flex-column">
                                     <li class="nav-item">
+                                        <a href="{{url('/admin/setting')}}" class="nav-link" data-key="t-calendar">App Settings </a>
+                                    </li>
+                                    <li class="nav-item">
                                         <a href="{{url('/admin/sessionSetup')}}" class="nav-link" data-key="t-calendar">All Session Setup </a>
                                     </li>
                                     <li class="nav-item">
@@ -307,6 +310,28 @@
                                 </ul>
                             </div>
                         </li>
+
+
+                        <li class="menu-title"><i class="ri-more-fill"></i> <span data-key="t-bursary">Bursary</span></li>
+
+                        <li class="nav-item">
+                            <a class="nav-link menu-link" href="#bursary" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="bursary">
+                                <i class="las la-money-check"></i> <span data-key="t-bursary">Bursary</span>
+                            </a>
+                            <div class="collapse menu-dropdown" id="bursary">
+                                <ul class="nav nav-sm flex-column">
+                                    <li class="nav-item">
+                                        <a href="{{ url('/admin/payments') }}" class="nav-link"> Payments </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="{{('/admin/transactions')}}" class="nav-link"> Transactions </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="{{('/admin/chargeStudent')}}" class="nav-link">Charge 'a' Student </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li> <!-- end Bursary Menu -->
 
                         <li class="nav-item">
                             <a class="nav-link menu-link" href="#sidebarLayouts" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarLayouts">
