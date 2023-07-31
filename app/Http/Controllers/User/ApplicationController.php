@@ -20,6 +20,7 @@ use App\Models\NextOfKin;
 use App\Models\Payment;
 
 use App\Mail\ApplicationMail;
+use App\Mail\BankDetailsMail;
 
 use SweetAlert;
 use Mail;
@@ -209,22 +210,20 @@ class ApplicationController extends Controller
         }
 
         if(strtolower($paymentGateway) == 'banktransfer'){
-            $bankName = env('BANK_NAME');
-            $bankAccountNo = env('BANK_ACCOUNT_NUMBER');
-            $bankAccountName = env('BANK_ACCOUNT_NAME');
-
-            $userData = Applicant::with('programme')->where('id', $applicant->id);
-            $userData->bank_name = $bankName;
-            $userData->bank_account_name = $bankAccountName;
-            $userData->bank_account_no = $bankAccountNo;
+            
+            $userData = new \stdClass();
+            $userData->lastname = $applicant->lastname;
+            $userData->othernames = $applicant->othernames;
+            $userData->application_id = $applicant->application_number;
+            $userData->amount = $this->getPaystackAmount($amount);
             
             //create email to sennd bank details
+            Mail::to($request->email)->send(new BankDetailsMail($userData));
 
             $message = 'Kindly proceed to your email to complete application';
-            alert()->info('Oops!', $message)->persistent('Close');
+            alert()->info('Nice Work!', $message)->persistent('Close');
             return redirect()->back();
         }
-    
     }
 
     public function programmeById($id) {

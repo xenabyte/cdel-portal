@@ -219,15 +219,6 @@
             }else{
                 submitButton.disabled = false;
             }
-
-            if(selectedPaymentMethod == 'BankTransfer'){
-                document.getElementById('submit-button').style.display = 'none';
-                document.getElementById('transferInfo').style.display = 'block';
-                
-            }else{
-                document.getElementById('submit-button').style.display = 'block';
-                document.getElementById('transferInfo').style.display = 'none';
-            }
         }else{
             submitButton.disabled = true;
         }

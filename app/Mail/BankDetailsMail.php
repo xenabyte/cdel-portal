@@ -11,19 +11,16 @@ class BankDetailsMail extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public $bankData;
-    public $name;
+    public $userData;
 
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct($bankData, $name)
+    public function __construct($userData)
     {
-        //
-        $this->bankData = $bankData;
-        $this->name = $name;
+        $this->userData = $userData;
     }
 
     /**

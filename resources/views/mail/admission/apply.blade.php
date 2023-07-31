@@ -13,7 +13,7 @@
         <h1 style="font-size: 20px; line-height: 24px; font-family: 'Helvetica', Arial, sans-serif; font-weight: 600; text-decoration: none; color: #000000; text-align: start;">Application Details</h1>
         <p style="font-size: 15px; line-height: 24px; font-family: 'Helvetica', Arial, sans-serif; font-weight: 400; text-decoration: none; color: #919293; text-align: start;">
           Full Name: {{ $applicationData->lastname .' '. $applicationData->othernames }}<br/>
-          Application ID: {{ $applicationData->user_id }}
+          Application ID: {{ $applicationData->application_number }}
         </p>              
 
         <h1 style="font-size: 20px; line-height: 24px; font-family: 'Helvetica', Arial, sans-serif; font-weight: 600; text-decoration: none; color: #000000;">{{ $applicationData->passcode }}</h1>
