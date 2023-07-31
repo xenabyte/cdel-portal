@@ -41,6 +41,7 @@ class CreateUsersTable extends Migration
             $table->unsignedBigInteger('guardian_id')->nullable();
             $table->unsignedBigInteger('next_of_kin_id')->nullable();
             $table->unsignedBigInteger('partner_id')->nullable();
+            $table->string('jamb_reg_no')->nullable();
             $table->softDeletes();
             $table->rememberToken();
             $table->timestamps();

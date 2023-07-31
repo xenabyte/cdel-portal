@@ -78,9 +78,9 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'admin'],
   Route::get('chargeStudent', [App\Http\Controllers\Admin\AdminController::class, 'chargeStudent'])->name('chargeStudent');
 
 
-  Route::get('applicants', [App\Http\Controllers\Admission\AdmissionController::class, 'applicants'])->name('applicants');
-  Route::get('applicant/{slug}', [App\Http\Controllers\Admission\AdmissionController::class, 'applicant'])->name('applicant');
-  Route::post('applicantWithSession', [App\Http\Controllers\Admission\AdmissionController::class, 'applicantWithSession'])->name('applicantWithSession');
+  Route::get('applicants', [App\Http\Controllers\Admin\AdmissionController::class, 'applicants'])->name('applicants');
+  Route::get('applicant/{slug}', [App\Http\Controllers\Admin\AdmissionController::class, 'applicant'])->name('applicant');
+  Route::post('applicantWithSession', [App\Http\Controllers\Admin\AdmissionController::class, 'applicantWithSession'])->name('applicantWithSession');
 
 
 });
@@ -143,6 +143,9 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'partner'
   Route::post('/password/reset', [App\Http\Controllers\Partner\Auth\ResetPasswordController::class, 'reset'])->name('password.email');
   Route::get('/password/reset', [App\Http\Controllers\Partner\Auth\ForgotPasswordController::class, 'showLinkRequestForm'])->name('password.reset');
   Route::get('/password/reset/{token}', [App\Http\Controllers\Partner\Auth\ResetPasswordController::class, 'showResetForm']);
+
+  Route::get('/home', [App\Http\Controllers\Partner\PartnerController::class, 'index'])->name('home');
+
 });
 
 Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'guardian'], function () {
@@ -175,6 +178,19 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'applican
   Route::get('/password/reset/{token}', [App\Http\Controllers\User\Auth\ResetPasswordController::class, 'showResetForm']);
 
   Route::get('/home', [App\Http\Controllers\User\ApplicationController::class, 'index']);
+  Route::post('/saveBioData', [App\Http\Controllers\User\ApplicationController::class, 'saveBioData'])->middleware(['auth:user']);
+  Route::post('/guardianBioData', [App\Http\Controllers\User\ApplicationController::class, 'guardianBioData'])->middleware(['auth:user']);
+  Route::post('/saveProgramme', [App\Http\Controllers\User\ApplicationController::class, 'saveProgramme'])->middleware(['auth:user']);
+  Route::post('/saveSitting', [App\Http\Controllers\User\ApplicationController::class, 'saveSitting'])->middleware(['auth:user']);
+  Route::post('/addOlevel', [App\Http\Controllers\User\ApplicationController::class, 'addOlevel'])->middleware(['auth:user']);
+  Route::post('/addUtme', [App\Http\Controllers\User\ApplicationController::class, 'addUtme'])->middleware(['auth:user']);
+  Route::post('/deleteUtme', [App\Http\Controllers\User\ApplicationController::class, 'deleteUtme'])->middleware(['auth:user']);
+  Route::post('/deleteOlevel', [App\Http\Controllers\User\ApplicationController::class, 'deleteOlevel'])->middleware(['auth:user']);
+  Route::post('/submitApplication', [App\Http\Controllers\User\ApplicationController::class, 'submitApplication'])->middleware(['auth:user']);
+
+  Route::post('/uploadOlevel', [App\Http\Controllers\User\ApplicationController::class, 'uploadOlevel'])->middleware(['auth:user']);
+  Route::post('/uploadUtme', [App\Http\Controllers\User\ApplicationController::class, 'uploadUtme'])->middleware(['auth:user']);
+
   Route::get('programmeById/{id}', [App\Http\Controllers\User\ApplicationController::class, 'programmeById'])->name('programmeById');
 
 });

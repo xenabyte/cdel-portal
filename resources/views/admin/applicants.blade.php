@@ -49,7 +49,7 @@
                         @foreach($applicants->where('status', '!=', 'Admitted') as $applicant)
                         <tr>
                             <th scope="row">{{ $loop->iteration }}</th>
-                            <td>{{ $applicant->firstname .' '. $applicant->lastname }}</td>
+                            <td>{{ $applicant->lastname .' '. $applicant->othernames }}</td>
                             <td>{{ $applicant->programme->name }}</td>
                             <td>{{ $applicant->email }} </td>
                             <td>{{ $applicant->passcode }} </td>

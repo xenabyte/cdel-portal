@@ -46,6 +46,7 @@ class User extends Authenticatable
         'next_of_kin_id',
         'partner_id',
         'password',
+        'jamb_reg_no'
     ];
 
     /**
@@ -130,7 +131,7 @@ class User extends Authenticatable
      */
     public function nok()
     {
-        return $this->hasOne(NextOfKin::class);
+        return $this->belongsTo(NextOfKin::class, 'next_of_kin_id');
     }
 
     /**
@@ -141,5 +142,15 @@ class User extends Authenticatable
     public function student()
     {
         return $this->hasOne(Student::class);
+    }
+
+    /**
+     * Get all of the utmes for the User
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function utmes()
+    {
+        return $this->hasMany(Utme::class);
     }
 }
