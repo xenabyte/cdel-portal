@@ -18,6 +18,7 @@ use App\Models\Olevel;
 use App\Models\Guardian;
 use App\Models\NextOfKin;
 use App\Models\Payment;
+use App\Models\Utme;
 
 use App\Mail\ApplicationMail;
 use App\Mail\BankDetailsMail;
@@ -69,6 +70,7 @@ class ApplicationController extends Controller
         }
 
         $percent = 1;
+        $total = 4;
         if(!empty($applicant->lastname)){
             $percent = $percent + 1;
         }
@@ -78,20 +80,33 @@ class ApplicationController extends Controller
         if(!empty($applicant->guardian)){
             $percent = $percent + 1;
         }
-        if(count($applicant->olevels) > 4 && $applicant->sitting_no != 0){
-            $percent = $percent + 1;
-        }
-        if(!empty($applicant->olevel_1)){
-            $percent = $percent + 1;
-        }
-        if(count($applicant->utmes) > 3){
-            $percent = $percent + 1;
-        }
-        if(!empty($applicant->utme)){
-            $percent = $percent + 1;
+        if(!empty($applicant->application_type) && $applicant->application_type == 'UTME'){
+            if(count($applicant->olevels) > 4 && $applicant->sitting_no != 0){
+                $percent = $percent + 1;
+            }
+            if(!empty($applicant->olevel_1)){
+                $percent = $percent + 1;
+            }
+            if(count($applicant->utmes) > 3){
+                $percent = $percent + 1;
+            }
+            if(!empty($applicant->utme)){
+                $percent = $percent + 1;
+            }
+            $total = $total + 4;
+        }elseif(!empty($applicant->application_type) && $applicant->application_type == 'DE'){
+            if(!empty($applicant->de_result)){
+                $percent = $percent + 1;
+            }
+            $total = $total + 1;
         }
 
-        $percent = round(($percent/8)*100);
+        if(!empty($applicant->nok)){
+            $percent = $percent + 1;
+            $total = $total + 1;
+        }
+
+        $percent = round(($percent/$total)*100);
 
         return view('user.application', [
             'applicant' => $applicant,
@@ -185,7 +200,81 @@ class ApplicationController extends Controller
         return redirect()->back();
     }
 
+    public function saveUtme(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'jamb_reg_no' => 'required',
+        ]);
+
+        if($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+
+        $user = Auth::guard('user')->user();
+
+        if(!empty($request->jamb_reg_no) && $request->jamb_reg_no != $user->jamb_reg_no){
+            $user->jamb_reg_no = $request->jamb_reg_no;
+        }
+
+        if($user->save()){
+            alert()->success('Changes Saved', 'Jamb registration number saved successfully')->persistent('Close');
+            return redirect()->back();
+        }
+
+        alert()->error('Oops!', 'Something went wrong')->persistent('Close');
+        return redirect()->back();
+    }
+
+    public function saveProgramme(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'application_type' => 'required',
+        ]);
+
+        if($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+
+        $user = Auth::guard('user')->user();
+
+        if(!empty($request->application_type) && $request->application_type != $user->application_type){
+            $user->application_type = $request->application_type;
+        }
+
+        if($user->save()){
+            alert()->success('Changes Saved', 'Type saved successfully')->persistent('Close');
+            return redirect()->back();
+        }
+
+        alert()->error('Oops!', 'Something went wrong')->persistent('Close');
+        return redirect()->back();
+    }
+
     public function guardianBioData(Request $request){
+
+        $validator = Validator::make($request->all(), [
+            'name' => 'required',
+            'phone_number' => 'required',
+            'email' => 'required',
+            'address' => 'required',
+        ]);
+
+        if($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+        $user = Auth::guard('user')->user();
+
+
+        if($guardian = Guardian::where('email', $request->email)->first() && empty($user->guardian_id)){
+            $user->guardian_id = $guardian->id;
+            $user->save();
+
+            alert()->success('Changes Saved', 'Guardian changes saved successfully')->persistent('Close');
+            return redirect()->back();
+        }
 
         $guardian = new Guardian;
         if(!empty($request->guardian_id) && !$guardian = Guardian::find($request->guardian_id)){
@@ -193,7 +282,11 @@ class ApplicationController extends Controller
             return redirect()->back();
         }
 
-        $request->user_id;
+        $accessCode = $this->generateAccessCode();
+        if(empty($guardian->password)){
+            $guardian->password = Hash::make($accessCode);
+            $guardian->passcode = $accessCode;
+        }
 
         if(!empty($request->name) &&  $request->name != $guardian->name){
             $guardian->name = $request->name;
@@ -211,7 +304,10 @@ class ApplicationController extends Controller
             $guardian->address = $request->address;
         }
 
-        if($guardian->save()){
+        if($gua = $guardian->save()){
+            $user->guardian_id = $gua->id;
+            $user->save();
+
             alert()->success('Changes Saved', 'Guardian changes saved successfully')->persistent('Close');
             return redirect()->back();
         }
@@ -342,8 +438,20 @@ class ApplicationController extends Controller
 
     public function programmeById($id) {
 
-        $programme = Programme::with('generalPayments', 'generalPayments.structures')->where('id', $id)->first();
+        $programme = Programme::where('id', $id)->first();
         return $programme;
+    }
+
+    public function facultyById($id) {
+
+        $faculty = Faculty::where('id', $id)->first();
+        return $faculty;
+    }
+
+    public function departmentById($id) {
+
+        $department = Department::where('id', $id)->first();
+        return $department;
     }
     
     public function uploadUtme(Request $request)
@@ -376,7 +484,50 @@ class ApplicationController extends Controller
 
     }
 
+    public function saveDe(Request $request)
+    {
+        $user = Auth::guard('user')->user();
+        
+        $validator = Validator::make($request->all(), [
+            'de_result' => 'required',
+            'de_school_attended' => 'required',
+        ]);
+        
+        if(!empty($request->de_result)){
+            if(!empty($user->de_result)){
+                unlink($user->de_result);
+            }
+
+            $slug = $user->slug;
+            $imageUrl = 'uploads/de/'.$slug.'.'.$request->file('de_result')->getClientOriginalExtension();
+            $image = $request->file('de_result')->move('uploads/de', $imageUrl);
+
+            $user->de_result = $imageUrl;
+        } 
+
+        if(!empty($request->de_school_attended) && $request->de_school_attended != $user->de_school_attended){
+            $user->de_school_attended = $request->de_school_attended;
+        }
+
+        if($user->save()){
+            alert()->success('Good Job', 'DE Result Uploaded')->persistent('Close');
+            return redirect()->back();
+        }
+
+        alert()->error('Oops!', 'Something went wrong')->persistent('Close');
+        return redirect()->back();
+
+    }
+
     public function nokBioData(Request $request){
+
+        if($nok = NextOfKin::where('email', $request->email)->first() && empty($user->next_of_kin_id)){
+            $user->next_of_kin_id = $nok->id;
+            $user->save();
+
+            alert()->success('Changes Saved', 'Next of kin changes saved successfully')->persistent('Close');
+            return redirect()->back();
+        }
 
         $nextOfKin = new NextOfKin;
         if(!empty($request->nextOfKin_id) && !$nextOfKin = NextOfKin::find($request->nextOfKin_id)){
@@ -404,7 +555,10 @@ class ApplicationController extends Controller
             $nextOfKin->address = $request->address;
         }
 
-        if($nextOfKin->save()){
+        if($nok = $nextOfKin->save()){
+            $user->next_of_kin_id = $nok->id;
+            $user->save();
+            
             alert()->success('Changes Saved', 'Next of Kin changes saved successfully')->persistent('Close');
             return redirect()->back();
         }

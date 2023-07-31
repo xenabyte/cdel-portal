@@ -55,7 +55,7 @@
                     <div class="d-flex">
                         <!-- LOGO -->
                         <div class="navbar-brand-box horizontal-logo">
-                            <a href="index.html" class="logo logo-dark">
+                            <a href="{{ env('WEBSITE_URL') }}" class="logo logo-dark">
                                 <span class="logo-sm">
                                     <img src="{{asset('assets/images/logo-sm.png')}}" alt="" height="22">
                                 </span>
@@ -64,7 +64,7 @@
                                 </span>
                             </a>
 
-                            <a href="index.html" class="logo logo-light">
+                            <a href="{{ env('WEBSITE_URL') }}" class="logo logo-light">
                                 <span class="logo-sm">
                                     <img src="{{asset('assets/images/logo-sm.png')}}" alt="" height="22">
                                 </span>
@@ -137,7 +137,7 @@
                     </span>
                 </a>
                 <!-- Light Logo-->
-                <a href="index.html" class="logo logo-light">
+                <a href="{{ env('WEBSITE_URL') }}" class="logo logo-light">
                     <span class="logo-sm">
                         <img src="{{asset('assets/images/logo-sm.png')}}" alt="" height="22">
                     </span>
@@ -166,7 +166,7 @@
 
                         <li class="menu-title"><i class="ri-more-fill"></i> <span data-key="t-pages"></span></li>
                         <li class="nav-item">
-                            <a class="nav-link menu-link" href="{{ url('user/logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                            <a class="nav-link menu-link" href="{{ url('partner/logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                                 <i class="mdi mdi-power"></i> <span data-key="t-logout">Logout</span>
                             </a>
                         </li> <!-- end Logout Menu -->

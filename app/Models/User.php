@@ -12,6 +12,8 @@ class User extends Authenticatable
 {
     use Notifiable, SoftDeletes;
 
+    const SUBMITTED = 'submitted';
+
     /**
      * The attributes that are mass assignable.
      *
@@ -46,7 +48,11 @@ class User extends Authenticatable
         'next_of_kin_id',
         'partner_id',
         'password',
-        'jamb_reg_no'
+        'jamb_reg_no',
+        'utme',
+        'application_type',
+        'de_result',
+        'de_school_attended'
     ];
 
     /**

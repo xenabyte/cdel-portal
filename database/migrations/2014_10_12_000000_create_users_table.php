@@ -42,6 +42,10 @@ class CreateUsersTable extends Migration
             $table->unsignedBigInteger('next_of_kin_id')->nullable();
             $table->unsignedBigInteger('partner_id')->nullable();
             $table->string('jamb_reg_no')->nullable();
+            $table->string('utme')->nullable();
+            $table->string('de_result')->nullable();
+            $table->string('application_type')->nullable();
+            $table->string('de_school_attended')->nullable();
             $table->softDeletes();
             $table->rememberToken();
             $table->timestamps();

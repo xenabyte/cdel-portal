@@ -23,7 +23,7 @@
                     <div class="hstack text-white-50 gap-1">
                         <div class="me-2"><i class="ri-building-4-fill me-1 text-white-75 fs-16 align-middle"></i>@if(!empty($applicant->programme)){{ $applicant->programme->name }}@endif</div>
                         <div>
-                            <i class="ri-building-line me-1 text-white-75 fs-16 align-middle"></i> {{ $applicant->schools_attended }}
+                            <i class="ri-building-line me-1 text-white-75 fs-16 align-middle"></i> {{ $applicant->jamb_reg_no }}
                         </div>
                     </div>
                 </div>
@@ -63,7 +63,7 @@
 
                         <li class="nav-item">
                             <a class="nav-link fs-14" data-bs-toggle="tab" href="#programme" role="tab">
-                                <i class="ri-list-unordered d-inline-block d-md-none"></i> <span class="d-none d-md-inline-block">Progamme</span>
+                                <i class="ri-airplay-fill d-inline-block d-md-none"></i> <span class="d-none d-md-inline-block">Programme</span>
                             </a>
                         </li>
 
@@ -73,11 +73,19 @@
                             </a>
                         </li>
 
+                        @if(!empty($applicant->application_type) && $applicant->application_type == 'UTME')
                         <li class="nav-item">
                             <a class="nav-link fs-14" data-bs-toggle="tab" href="#jamb" role="tab">
                                 <i class="ri-folder-4-line d-inline-block d-md-none"></i> <span class="d-none d-md-inline-block">Jamb Result</span>
                             </a>
                         </li>
+                        @elseif(!empty($applicant->application_type) && $applicant->application_type == 'DE')
+                        <li class="nav-item">
+                            <a class="nav-link fs-14" data-bs-toggle="tab" href="#deresult" role="tab">
+                                <i class="ri-folder-4-line d-inline-block d-md-none"></i> <span class="d-none d-md-inline-block">Direct Result</span>
+                            </a>
+                        </li>
+                        @endif
 
                         <li class="nav-item">
                             <a class="nav-link fs-14" data-bs-toggle="tab" href="#guardian" role="tab">
@@ -99,7 +107,7 @@
                 <div class="tab-content pt-4 text-muted">
                     <div class="tab-pane active" id="overview-tab" role="tabpanel">
                         <div class="row">
-                            <div class="col-xxl-3">
+                            <div class="col-xxl-4">
                                 @if($percent != 100 && empty($applicant->status))
                                 <div class="card">
                                     <div class="card-body">
@@ -135,12 +143,12 @@
                                         </div>
                                     </div>
                                 </div>
-                                @else
+                                @elseif(strtolower($applicant->status) == 'submitted')
                                 <div class="card">
                                     <div class="card-body">
                                         <div class="d-flex align-items-center mb-5">
                                             <div class="flex-grow-1">
-                                                <h5 class="card-title mb-0">Application Completed, Pending Admission</h5>
+                                                <h5 class="card-title mb-0">Application form completed submitted, Pending Admission</h5>
                                             </div>
                                             <div class="flex-shrink-0">
                                             </div>
@@ -178,7 +186,7 @@
                                                     </div>
                                                 </div>
                                                 <div class="alert-content">
-                                                    <p class="mb-0">You will not be able to update the innformation after clicking "Submit Application"</p>
+                                                    <p class="mb-0">You will not be able to update the information after clicking "Submit Application"</p>
                                                 </div>
                                             </div>
                                             <div class="col-md-12">
@@ -226,152 +234,11 @@
                                         </div>
                                     </div><!-- end card body -->
                                 </div><!-- end card -->
-
-                                <div class="card">
-                                    <div class="card-body">
-                                        <h5 class="card-title mb-4">Skills</h5>
-                                        <div class="d-flex flex-wrap gap-2 fs-15">
-                                            <a href="javascript:void(0);" class="badge badge-soft-primary">Photoshop</a>
-                                            <a href="javascript:void(0);" class="badge badge-soft-primary">illustrator</a>
-                                            <a href="javascript:void(0);" class="badge badge-soft-primary">HTML</a>
-                                            <a href="javascript:void(0);" class="badge badge-soft-primary">CSS</a>
-                                            <a href="javascript:void(0);" class="badge badge-soft-primary">Javascript</a>
-                                            <a href="javascript:void(0);" class="badge badge-soft-primary">Php</a>
-                                            <a href="javascript:void(0);" class="badge badge-soft-primary">Python</a>
-                                        </div>
-                                    </div><!-- end card body -->
-                                </div><!-- end card -->
-
-                                <div class="card">
-                                    <div class="card-body">
-                                        <div class="d-flex align-items-center mb-4">
-                                            <div class="flex-grow-1">
-                                                <h5 class="card-title mb-0">Suggestions</h5>
-                                            </div>
-                                            <div class="flex-shrink-0">
-                                                <div class="dropdown">
-                                                    <a href="#" role="button" id="dropdownMenuLink2" data-bs-toggle="dropdown" aria-expanded="false">
-                                                        <i class="ri-more-2-fill fs-14"></i>
-                                                    </a>
-
-                                                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuLink2">
-                                                        <li><a class="dropdown-item" href="#">View</a></li>
-                                                        <li><a class="dropdown-item" href="#">Edit</a></li>
-                                                        <li><a class="dropdown-item" href="#">Delete</a></li>
-                                                    </ul>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <div class="d-flex align-items-center py-3">
-                                                <div class="avatar-xs flex-shrink-0 me-3">
-                                                    <img src="assets/images/users/avatar-3.jpg" alt="" class="img-fluid rounded-circle" />
-                                                </div>
-                                                <div class="flex-grow-1">
-                                                    <div>
-                                                        <h5 class="fs-14 mb-1">Esther James</h5>
-                                                        <p class="fs-13 text-muted mb-0">Frontend Developer</p>
-                                                    </div>
-                                                </div>
-                                                <div class="flex-shrink-0 ms-2">
-                                                    <button type="button" class="btn btn-sm btn-outline-success"><i class="ri-user-add-line align-middle"></i></button>
-                                                </div>
-                                            </div>
-                                            <div class="d-flex align-items-center py-3">
-                                                <div class="avatar-xs flex-shrink-0 me-3">
-                                                    <img src="assets/images/users/avatar-4.jpg" alt="" class="img-fluid rounded-circle" />
-                                                </div>
-                                                <div class="flex-grow-1">
-                                                    <div>
-                                                        <h5 class="fs-14 mb-1">Jacqueline Steve</h5>
-                                                        <p class="fs-13 text-muted mb-0">UI/UX Designer</p>
-                                                    </div>
-                                                </div>
-                                                <div class="flex-shrink-0 ms-2">
-                                                    <button type="button" class="btn btn-sm btn-outline-success"><i class="ri-user-add-line align-middle"></i></button>
-                                                </div>
-                                            </div>
-                                            <div class="d-flex align-items-center py-3">
-                                                <div class="avatar-xs flex-shrink-0 me-3">
-                                                    <img src="assets/images/users/avatar-5.jpg" alt="" class="img-fluid rounded-circle" />
-                                                </div>
-                                                <div class="flex-grow-1">
-                                                    <div>
-                                                        <h5 class="fs-14 mb-1">George Whalen</h5>
-                                                        <p class="fs-13 text-muted mb-0">Backend Developer</p>
-                                                    </div>
-                                                </div>
-                                                <div class="flex-shrink-0 ms-2">
-                                                    <button type="button" class="btn btn-sm btn-outline-success"><i class="ri-user-add-line align-middle"></i></button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div><!-- end card body -->
-                                </div>
-                                <!--end card-->
-
-                                <div class="card">
-                                    <div class="card-body">
-                                        <div class="d-flex align-items-center mb-4">
-                                            <div class="flex-grow-1">
-                                                <h5 class="card-title mb-0">Popular Posts</h5>
-                                            </div>
-                                            <div class="flex-shrink-0">
-                                                <div class="dropdown">
-                                                    <a href="#" role="button" id="dropdownMenuLink1" data-bs-toggle="dropdown" aria-expanded="false">
-                                                        <i class="ri-more-2-fill fs-14"></i>
-                                                    </a>
-
-                                                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuLink1">
-                                                        <li><a class="dropdown-item" href="#">View</a></li>
-                                                        <li><a class="dropdown-item" href="#">Edit</a></li>
-                                                        <li><a class="dropdown-item" href="#">Delete</a></li>
-                                                    </ul>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="d-flex mb-4">
-                                            <div class="flex-shrink-0">
-                                                <img src="assets/images/small/img-4.jpg" alt="" height="50" class="rounded" />
-                                            </div>
-                                            <div class="flex-grow-1 ms-3 overflow-hidden">
-                                                <a href="javascript:void(0);">
-                                                    <h6 class="text-truncate fs-14">Design your apps in your own way</h6>
-                                                </a>
-                                                <p class="text-muted mb-0">15 Dec 2021</p>
-                                            </div>
-                                        </div>
-                                        <div class="d-flex mb-4">
-                                            <div class="flex-shrink-0">
-                                                <img src="assets/images/small/img-5.jpg" alt="" height="50" class="rounded" />
-                                            </div>
-                                            <div class="flex-grow-1 ms-3 overflow-hidden">
-                                                <a href="javascript:void(0);">
-                                                    <h6 class="text-truncate fs-14">Smartest Applications for Business</h6>
-                                                </a>
-                                                <p class="text-muted mb-0">28 Nov 2021</p>
-                                            </div>
-                                        </div>
-                                        <div class="d-flex">
-                                            <div class="flex-shrink-0">
-                                                <img src="assets/images/small/img-6.jpg" alt="" height="50" class="rounded" />
-                                            </div>
-                                            <div class="flex-grow-1 ms-3 overflow-hidden">
-                                                <a href="javascript:void(0);">
-                                                    <h6 class="text-truncate fs-14">How to get creative in your work</h6>
-                                                </a>
-                                                <p class="text-muted mb-0">21 Nov 2021</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!--end card-body-->
-                                </div>
-                                <!--end card-->
                             </div>
 
 
                             <!--end col-->
-                            <div class="col-xxl-9">
+                            <div class="col-xxl-8">
                                 <div class="card">
                                     <div class="card-body">
                                         <h5 class="card-title mb-3">Bio-Data</h5>
@@ -382,7 +249,7 @@
                                                     <div class="profile-user position-relative d-inline-block mx-auto mb-2">
                                                         <img src="{{asset(empty($applicant->image)?'assets/images/users/user-dummy-img.jpg':$applicant->image)}}" class="rounded-circle avatar-lg img-thumbnail user-profile-image" alt="user-profile-image">
                                                         <div class="avatar-xs p-0 rounded-circle profile-photo-edit">
-                                                            <input id="profile-img-file-input" type="file" class="profile-img-file-input" accept="image/png, image/jpeg" name="image">
+                                                            <input id="profile-img-file-input" type="file" class="profile-img-file-input" accept="image/png, image/jpeg" name="image" required>
                                                             <label for="profile-img-file-input" class="profile-photo-edit avatar-xs">
                                                                 <span class="avatar-title rounded-circle bg-light text-body">
                                                                     <i class="ri-camera-fill"></i>
@@ -427,7 +294,7 @@
                                                 <div class="col-lg-6">
                                                     <div class="mb-3">
                                                         <label for="dob" class="form-label">Date of Birth</label>
-                                                        <input type="date" class="form-control"  id="dob" name="dob" value="{{ $applicant->dob }}" />
+                                                        <input type="date" class="form-control"  id="dob" name="dob" value="{{ $applicant->dob }}" required />
                                                     </div>
                                                 </div>
                                                 <!--end col-->
@@ -435,7 +302,7 @@
                                                 <div class="col-lg-6">
                                                     <div class="mb-3">
                                                         <label for="religion" class="form-label">Religion</label>
-                                                        <select class="form-control" name="religion" id="religion">
+                                                        <select class="form-control" name="religion" id="religion" required>
                                                             <option value="" @if($applicant->religion == '') selected  @endif >Select Religion</option>
                                                             <option @if($applicant->religion == 'Christianity') selected  @endif value="Christianity">Christianity</option>
                                                             <option @if($applicant->religion == 'Islamic') selected  @endif value="Islamic">Islamic</option>
@@ -448,7 +315,7 @@
                                                 <div class="col-lg-4">
                                                     <div class="mb-3">
                                                         <label for="gender" class="form-label">Gender</label>
-                                                        <select class="form-control" name="gender" id="gender">
+                                                        <select class="form-control" name="gender" id="gender" required>
                                                             <option @if($applicant->gender == '') selected  @endif value="" selected>Select Gender</option>
                                                             <option @if($applicant->gender == 'Male') selected  @endif value="Male">Male</option>
                                                             <option @if($applicant->gender == 'Female') selected  @endif value="Female">Female</option>
@@ -460,7 +327,7 @@
                                                 <div class="col-lg-4">
                                                     <div class="mb-3">
                                                         <label for="marital_status" class="form-label">Marital Status</label>
-                                                        <select class="form-control" name="marital_status" id="marital_status">
+                                                        <select class="form-control" name="marital_status" id="marital_status" required>
                                                             <option @if($applicant->marital_status == '') selected  @endif value="" selected>Select Marital Status</option>
                                                             <option @if($applicant->marital_status == 'Single') selected  @endif value="Single">Single</option>
                                                             <option @if($applicant->marital_status == 'Married') selected  @endif value="Married">Married</option>
@@ -472,7 +339,7 @@
                                                 <div class="col-lg-4">
                                                     <div class="mb-3">
                                                         <label for="nationality" class="form-label">Nationality - {{ $applicant->nationality }}</label>
-                                                        <select class="form-control" name="nationality" id="nationality">
+                                                        <select class="form-control" name="nationality" id="nationality" required>
                                                             <option value="Nigeria">Nigeria</option>
                                                             <option value="Afghanistan">Afghanistan</option>
                                                             <option value="Åland Islands">Åland Islands</option>
@@ -724,8 +591,8 @@
     
                                                 <div class="col-lg-6">
                                                     <div class="mb-3">
-                                                        <label for="state_of_origin" class="form-label">State of Origin - {{ $applicant->state_of_origin }}</label>
-                                                        <select onchange="toggleLGA(this);" name="state" id="state" class="form-control">
+                                                        <label for="state_of_origin" class="form-label">State of Origin - {{ $applicant->state }}</label>
+                                                        <select onchange="toggleLGA(this);" name="state" id="state" class="form-control" required>
                                                             <option value="" selected="selected">- Select -</option>
                                                             <option value="Abia">Abia</option>
                                                             <option value="Adamawa">Adamawa</option>
@@ -771,7 +638,7 @@
                                                 <div class="col-lg-6">
                                                     <div class="mb-3">
                                                         <label for="lga" class="form-label">Local Government Area - {{ $applicant->lga }}</label>
-                                                        <select name="lga" id="lga" class="form-control select-lga"></select>
+                                                        <select name="lga" id="lga" class="form-control select-lga" required></select>
                                                     </div>
                                                 </div>
     
@@ -802,28 +669,55 @@
                         <!--end row-->
                     </div>
 
-                    <div class="tab-pane fade" id="programme" role="tabpanel">
+                    <div class="tab-pane" id="programme" role="tabpanel">
                         <div class="card">
                             <div class="card-body">
-                                <h5 class="card-title mb-3">Programme</h5>
-                                <div class="d-flex align-items-center mb-3">
-                                    <div class="flex-shrink-0 avatar-sm">
-                                        <div class="avatar-title bg-light text-primary rounded-3 fs-18 shadow">
-                                            <i class="ri-award-fill"></i>
+                                <div class="mb-4 pb-2">
+                                    <div class="d-flex align-items-center mb-3">
+                                        <div class="flex-shrink-0 avatar-sm">
+                                            <div class="avatar-title bg-light text-primary rounded-3 fs-18 shadow">
+                                                <i class="ri-award-fill"></i>
+                                            </div>
+                                        </div>
+                                        <div class="flex-grow-1 ms-3">
+                                            <h6></h6>
+                                            <p class="text-muted mb-0"><strong>Programme:</strong> @if(!empty($applicant->programme)){{ $applicant->programme->name }}@endif</p>
+                                        </div>
+                                        <div>
+                                            
                                         </div>
                                     </div>
-                                    <div class="flex-grow-1 ms-3">
-                                        <h6></h6>
-                                        <p class="text-muted mb-0"><strong>Programme:</strong> @if(!empty($applicant->programme)){{ $applicant->programme->name }}@endif</p>
-                                    </div>
-                                    <div>
-                                        
-                                    </div>
+            
+                                    <hr>
+                                    @if(empty($applicant->application_type))
+                                    <form action="{{ url('applicant/saveProgramme') }}" method="POST" enctype="multipart/form-data">
+                                        @csrf
+            
+                                        <div class="col-md-12">
+                                            <label for="application_type">Application Type</label>
+                                            <select class="form-select" name="application_type" id="application_type">
+                                                <option selected>Choose...</option>
+                                                <option value="UTME"> UTME</option>
+                                                <option value="DE"> Direct Entry</option>
+                                            </select>
+                                        </div><!--end col-->
+                                        <hr>
+                                        <div class="row g-2">
+                                            @if(empty($applicant->status))
+                                            <div class="col-lg-12">
+                                                <div class="text-end">
+                                                    <button type="submit" class="btn btn-success">Save</button>
+                                                </div>
+                                            </div>
+                                            @endif
+                                            <!--end col-->
+                                        </div>
+                                        <!--end row-->
+                                    </form>
+                                    @endif
                                 </div>
                             </div>
-                            <!--end card-body-->
                         </div>
-                        <!--end card-->
                     </div>
 
                     <!--end tab-pane-->
@@ -838,9 +732,8 @@
                                         <div class="row gx-3 gy-2 align-items-center">
                                             <div class="col-sm-3">
                                                 <label for="subject">Number of sittings</label>
-                                                <select class="form-select" name="sitting_no" id="subject">
+                                                <select class="form-select" name="sitting_no" id="subject" required>
                                                     <option selected>Choose...</option>
-                                                    <option value="0">Awaiting Result</option>
                                                     <option value="1">1</option>
                                                     <option value="2">2</option>
                                                 </select>
@@ -865,7 +758,7 @@
                                             <div class="row gx-3 gy-2 align-items-center">
                                                 <div class="col-sm-3">
                                                     <label for="subject">Subject</label>
-                                                    <select class="form-select" name="subject" id="subject">
+                                                    <select class="form-select" name="subject" id="subject" required>
                                                         <option selected>Choose...</option>
                                                         <option value="Agricultural Science">Agricultural Science</option>
                                                         <option value="Animal Husbandry">Animal Husbandry</option>
@@ -918,7 +811,7 @@
                                                 </div><!--end col-->
                                                 <div class="col-sm-2">
                                                     <label for="grade">Grade</label>
-                                                    <select class="form-select" name="grade" id="grade">
+                                                    <select class="form-select" name="grade" id="grade" required>
                                                         <option selected>Choose...</option>
                                                         <option value="A1">A1</option>
                                                         <option value="B2">B2</option>
@@ -934,12 +827,12 @@
 
                                                 <div class="col-sm-2">
                                                     <label for="year">Year</label>
-                                                    <input type="number" min="2010" max="2099" step="1" name="year" class="form-control" id="year">
+                                                    <input type="number" min="2010" max="2099" step="1" name="year" class="form-control" id="year" required>
                                                 </div><!--end col-->
 
                                                 <div class="col-sm-3">
                                                     <label for="reg_no">Registration Number</label>
-                                                    <input type="text" name="reg_no" class="form-control" id="reg_no">
+                                                    <input type="text" name="reg_no" class="form-control" id="reg_no" required>
                                                 </div><!--end col-->
 
                                                 <div class="col-auto">
@@ -1063,134 +956,224 @@
                                 <div class="mb-4 pb-2">
                                     <h5 class="card-title mb-3">UTME Results:</h5>
                                     <hr>
-                                    @if(!empty($applicant->utme))
-                                    <div class="row mb-2">
-                                        <div class="col-sm-6 col-xl-12">
-                                            <!-- Simple card -->
-                                            <i class="bx bxs-file-jpg text-danger" style="font-size: 50px"></i><span style="font-size: 20px">UTME Result Printout</span>
-                                            <div class="text-end">
-                                                <a href="{{ asset($applicant->utme) }}"  target="blank" class="btn btn-success">View</a>
-                                            </div>
-                                        </div><!-- end col -->
-                                    </div>
-                                    @endif
-                                    <hr>
-                                    @if(empty($applicant->status))
-                                    <form action="{{ url('applicant/addUtme') }}" method="POST" enctype="multipart/form-data">
-                                        @csrf
-                                        <div class="row gx-3 gy-2 align-items-center">
-                                            <div class="col-sm-5">
-                                                <label for="subject">Subject</label>
-                                                <select class="form-select" name="subject" id="subject">
-                                                    <option value="Use of English">Use of English</option>
-                                                    <option value="Agricultural Science">Agricultural Science</option>
-                                                    <option value="Animal Husbandry">Animal Husbandry</option>
-                                                    <option value="Automobile Parts Merchandising">Automobile Parts Merchandising</option>
-                                                    <option value="Biology">Biology</option>
-                                                    <option value="Book Keeping">Book Keeping</option>
-                                                    <option value="Catering Craft Practice">Catering Craft Practice</option>
-                                                    <option value="Chemistry">Chemistry</option>
-                                                    <option value="Christian Studies">Christian Studies</option>
-                                                    <option value="Civic Education">Civic Education</option>
-                                                    <option value="Clothing & Textile">Clothing & Textile</option>
-                                                    <option value="Commerce">Commerce</option>
-                                                    <option value="Computer & IT">Computer & IT</option>
-                                                    <option value="Cosmetology">Cosmetology</option>
-                                                    <option value="Dyeing & Bleaching">Dyeing & Bleaching</option>
-                                                    <option value="Economics">Economics</option>
-                                                    <option value="English Language">English Language</option>
-                                                    <option value="Financial Accounting">Financial Accounting</option>
-                                                </select>
-                                            </div><!--end col-->
-                                            
-                                            <div class="col-sm-5">
-                                                <label for="year">Score</label>
-                                                <input type="number" min="0" max="400" step="1" name="score" class="form-control" id="year">
-                                            </div><!--end col-->
-
-                                            <div class="col-auto">
-                                                <br>
-                                                <button type="submit" class="btn btn-primary">Save</button>
-                                            </div><!--end col-->
-                                        </div>
-                                    </form>
-                                    @endif
-                                    <hr>
-                                    <table class="table table-borderedless table-nowrap">
-                                        <thead>
-                                            <tr>
-                                                <th scope="col">Id</th>
-                                                <th scope="col">Subject</th>
-                                                <th scope="col">Score</th>
-                                                <th scope="col"></th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @foreach($applicant->utmes as $utme)
-                                            <tr>
-                                                <th scope="row">{{ $loop->iteration }}</th>
-                                                <td>{{ $utme->subject }}</td>
-                                                <td>{{ $utme->score }}</td>
-                                                <td>
-                                                    <div class="hstack gap-3 fs-15">
-                                                        <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#deleteScore{{$utme->id}}" class="link-danger"><i class="ri-delete-bin-5-line"></i></a>
-        
-                                                        <div id="deleteScore{{$utme->id}}" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
-                                                            <div class="modal-dialog modal-dialog-centered">
-                                                                <div class="modal-content">
-                                                                    <div class="modal-body text-center p-5">
-                                                                        <div class="text-end">
-                                                                            <button type="button" class="btn-close text-end" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                                        </div>
-                                                                        <div class="mt-2">
-                                                                            <lord-icon src="https://cdn.lordicon.com/wwneckwc.json" trigger="hover" style="width:150px;height:150px">
-                                                                            </lord-icon>
-                                                                            <h4 class="mb-3 mt-4">Are you sure you want to delete <br>{{ $utme->subject }}?</h4>
-                                                                            <form action="{{ url('/applicant/deleteUtme') }}" method="POST">
-                                                                                @csrf
-                                                                                <input name="utme_id" type="hidden" value="{{$utme->id}}">
-        
-                                                                                <hr>
-                                                                                <button type="submit" class="btn btn-danger w-100">Yes, Delete</button>
-                                                                            </form>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="modal-footer bg-light p-3 justify-content-center">
-        
-                                                                    </div>
-                                                                </div><!-- /.modal-content -->
-                                                            </div><!-- /.modal-dialog -->
-                                                        </div><!-- /.modal -->
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                            @endforeach
-                                        </tbody>
-                                    </table>
-                                    <hr>
-                                    <h5 class="card-title mb-3">Upload UTME Results Printout:</h5>
-                                    @if($applicant->utmes->count() > 3 && empty($applicant->status))
-                                        <form action="{{ url('applicant/uploadUtme') }}" method="POST" enctype="multipart/form-data">
+                                    @if(empty($applicant->jamb_reg_no))
+                                        <form action="{{ url('applicant/saveUtme') }}" method="POST" enctype="multipart/form-data">
                                             @csrf
-                                            <div class="row ">
-    
-                                                <div class="col-md-12 mt-3">
-                                                    <label for="utme">Upload UTME</label>
-                                                    <input type="file" name="utme" class="form-control" id="utme">
+                                            <div class="col-lg-12">
+                                                <div class="mb-3">
+                                                    <label for="jamb_reg" class="form-label">Jamb Registration Number</label>
+                                                    <input type="text" class="form-control" id="jamb_reg" name="jamb_reg_no" value="{{ $applicant->jamb_reg_no }}" required>
+                                                </div>
+                                            </div>
+
+                                            <hr>
+                                            <div class="row g-2">
+                                                @if(empty($applicant->status))
+                                                <div class="col-lg-12">
+                                                    <div class="text-end">
+                                                        <button type="submit" class="btn btn-success">Save</button>
+                                                    </div>
+                                                </div>
+                                                @endif
+                                                <!--end col-->
+                                            </div>
+                                            <!--end row-->
+                                        </form>
+                                    @else
+                                        @if(!empty($applicant->utme))
+                                        <div class="row mb-2">
+                                            <div class="col-sm-6 col-xl-12">
+                                                <!-- Simple card -->
+                                                <i class="bx bxs-file-jpg text-danger" style="font-size: 50px"></i><span style="font-size: 20px">UTME Result Printout</span>
+                                                <div class="text-end">
+                                                    <a href="{{ asset($applicant->utme) }}"  target="blank" class="btn btn-success">View</a>
+                                                </div>
+                                            </div><!-- end col -->
+                                        </div>
+                                        @endif
+                                        <hr>
+                                        @if(empty($applicant->status))
+                                        <form action="{{ url('applicant/addUtme') }}" method="POST" enctype="multipart/form-data">
+                                            @csrf
+                                            <div class="row gx-3 gy-2 align-items-center">
+                                                <div class="col-sm-5">
+                                                    <label for="subject">Subject</label>
+                                                    <select class="form-select" name="subject" id="subject">
+                                                        <option value="Use of English">Use of English</option>
+                                                        <option value="Agricultural Science">Agricultural Science</option>
+                                                        <option value="Animal Husbandry">Animal Husbandry</option>
+                                                        <option value="Automobile Parts Merchandising">Automobile Parts Merchandising</option>
+                                                        <option value="Biology">Biology</option>
+                                                        <option value="Book Keeping">Book Keeping</option>
+                                                        <option value="Catering Craft Practice">Catering Craft Practice</option>
+                                                        <option value="Chemistry">Chemistry</option>
+                                                        <option value="Christian Studies">Christian Studies</option>
+                                                        <option value="Civic Education">Civic Education</option>
+                                                        <option value="Clothing & Textile">Clothing & Textile</option>
+                                                        <option value="Commerce">Commerce</option>
+                                                        <option value="Computer & IT">Computer & IT</option>
+                                                        <option value="Cosmetology">Cosmetology</option>
+                                                        <option value="Dyeing & Bleaching">Dyeing & Bleaching</option>
+                                                        <option value="Economics">Economics</option>
+                                                        <option value="Financial Accounting">Financial Accounting</option>
+                                                        <option value="Fisheries">Fisheries</option>
+                                                        <option value="Food & Nutrition">Food & Nutrition</option>
+                                                        <option value="Further Mathematics">Further Mathematics</option>
+                                                        <option value="Garment Making">Garment Making</option>
+                                                        <option value="General Mathematics">General Mathematics</option>
+                                                        <option value="Geography">Geography</option>
+                                                        <option value="Government">Government</option>
+                                                        <option value="Hausa">Hausa</option>
+                                                        <option value="Health Education">Health Education</option>
+                                                        <option value="History">History</option>
+                                                        <option value="Home Management">Home Management</option>
+                                                        <option value="Igbo">Igbo</option>
+                                                        <option value="Insurance">Insurance</option>
+                                                        <option value="Islamic Studies">Islamic Studies</option>
+                                                        <option value="Literature in English">Literature in English</option>
+                                                        <option value="Marketing">Marketing</option>
+                                                        <option value="Music">Music</option>
+                                                        <option value="Office Practice">Office Practice</option>
+                                                        <option value="Painting & Decorating">Painting & Decorating</option>
+                                                        <option value="Photography">Photography</option>
+                                                        <option value="Physical Education">Physical Education</option>
+                                                        <option value="Physics">Physics</option>
+                                                        <option value="Salesmanship">Salesmanship</option>
+                                                        <option value="Stenography">Stenography</option>
+                                                        <option value="Store Keeping">Store Keeping</option>
+                                                        <option value="Store Management">Store Management</option>
+                                                        <option value="Tourism">Tourism</option>
+                                                        <option value="Type Writing">Type Writing</option>
+                                                        <option value="Visual Art">Visual Art</option>
+                                                        <option value="Yoruba">Yoruba</option>
+                                                    </select>
                                                 </div><!--end col-->
-    
+                                                
+                                                <div class="col-sm-5">
+                                                    <label for="year">Score</label>
+                                                    <input type="number" min="0" max="400" step="1" name="score" class="form-control" id="year">
+                                                </div><!--end col-->
+
                                                 <div class="col-auto">
                                                     <br>
-                                                    <button type="submit" class="btn btn-primary">Upload</button>
+                                                    <button type="submit" class="btn btn-primary">Save</button>
                                                 </div><!--end col-->
                                             </div>
                                         </form>
+                                        @endif
+                                        <hr>
+                                        <table class="table table-borderedless table-nowrap">
+                                            <thead>
+                                                <tr>
+                                                    <th scope="col">Id</th>
+                                                    <th scope="col">Subject</th>
+                                                    <th scope="col">Score</th>
+                                                    <th scope="col"></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach($applicant->utmes as $utme)
+                                                <tr>
+                                                    <th scope="row">{{ $loop->iteration }}</th>
+                                                    <td>{{ $utme->subject }}</td>
+                                                    <td>{{ $utme->score }}</td>
+                                                    <td>
+                                                        <div class="hstack gap-3 fs-15">
+                                                            <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#deleteScore{{$utme->id}}" class="link-danger"><i class="ri-delete-bin-5-line"></i></a>
+            
+                                                            <div id="deleteScore{{$utme->id}}" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
+                                                                <div class="modal-dialog modal-dialog-centered">
+                                                                    <div class="modal-content">
+                                                                        <div class="modal-body text-center p-5">
+                                                                            <div class="text-end">
+                                                                                <button type="button" class="btn-close text-end" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                                            </div>
+                                                                            <div class="mt-2">
+                                                                                <lord-icon src="https://cdn.lordicon.com/wwneckwc.json" trigger="hover" style="width:150px;height:150px">
+                                                                                </lord-icon>
+                                                                                <h4 class="mb-3 mt-4">Are you sure you want to delete <br>{{ $utme->subject }}?</h4>
+                                                                                <form action="{{ url('/applicant/deleteUtme') }}" method="POST">
+                                                                                    @csrf
+                                                                                    <input name="utme_id" type="hidden" value="{{$utme->id}}">
+            
+                                                                                    <hr>
+                                                                                    <button type="submit" class="btn btn-danger w-100">Yes, Delete</button>
+                                                                                </form>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="modal-footer bg-light p-3 justify-content-center">
+            
+                                                                        </div>
+                                                                    </div><!-- /.modal-content -->
+                                                                </div><!-- /.modal-dialog -->
+                                                            </div><!-- /.modal -->
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                        <hr>
+                                        <h5 class="card-title mb-3">Upload UTME Results Printout:</h5>
+                                        @if($applicant->utmes->count() > 3 && empty($applicant->status))
+                                            <form action="{{ url('applicant/uploadUtme') }}" method="POST" enctype="multipart/form-data">
+                                                @csrf
+                                                <div class="row ">
+        
+                                                    <div class="col-md-12 mt-3">
+                                                        <label for="utme">Upload UTME</label>
+                                                        <input type="file" name="utme" class="form-control" id="utme">
+                                                    </div><!--end col-->
+        
+                                                    <div class="col-auto">
+                                                        <br>
+                                                        <button type="submit" class="btn btn-primary">Upload</button>
+                                                    </div><!--end col-->
+                                                </div>
+                                            </form>
+                                        @endif
                                     @endif
                                 </div>
                             </div>
                         </div>
                     </div>
+
                     <!--end tab-pane-->
+                    <div class="tab-pane" id="deresult" role="tabpanel">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="mb-4 pb-2">
+                                    @if(empty($applicant->de_result))
+                                    <form action="{{ url('applicant/saveDe') }}" method="POST" enctype="multipart/form-data">
+                                        @csrf
+
+                                        <div class="col-md-12">
+                                            <label for="de_school_attended">Direct Entry Institution</label>
+                                            <textarea id="de_school_attended" name="de_school_attended" >{!! $applicant->de_school_attended !!}</textarea>
+                                        </div><!--end col-->
+            
+                                        <div class="col-md-12 mt-3">
+                                            <label for="de_result">Upload Direct Entry Result/Certificate</label>
+                                            <input type="file" name="de_result" class="form-control" id="de_result">
+                                        </div><!--end col-->
+                                        <div class="row g-2">
+                                            @if(empty($applicant->status))
+                                            <div class="col-lg-12">
+                                                <div class="text-end">
+                                                    <button type="submit" class="btn btn-success">Save</button>
+                                                </div>
+                                            </div>
+                                            @endif
+                                            <!--end col-->
+                                        </div>
+                                        <!--end row-->
+                                    </form>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
 
                     <div class="tab-pane fade" id="guardian" role="tabpanel">
                         <div class="card">
@@ -1247,57 +1230,64 @@
                     </div>
 
                     <div class="tab-pane fade" id="nok" role="tabpanel">
-                        <h5 class="card-title mb-3">Next of Kin Information</h5>
-                        <hr>
-                        <form action="{{ url('applicant/nokBioData') }}" method="POST" enctype="multipart/form-data">
-                            @csrf
-                            <input type="hidden" name="nextOfKin_id" value="{{ empty($applicant->nok)?'':$applicant->nok->id }}">
-                            <div class="row">
-                                <div class="col-lg-12">
-                                        <label for="name" class="form-label">Name</label>
-                                        <input type="text" class="form-control" id="name" name="name" value="{{ empty($applicant->nok)?'':$applicant->nok->name }}" required>
-                                    </div>
-                                </div>
-
-                                <div class="col-lg-6">
-                                    <div class="mb-3">
-                                        <label for="relationship" class="form-label">Relationship</label>
-                                        <input type="text" class="form-control" id="relationship" name="relationship" value="{{ empty($applicant->nok)?'':$applicant->nok->phone_number }}"  readonly>
-                                    </div>
-                                </div>
-
-                                <div class="col-lg-6">
-                                    <div class="mb-3">
-                                        <label for="email" class="form-label">Email</label>
-                                        <input type="text" class="form-control" id="email" name="email" value="{{ empty($applicant->nok)?'':$applicant->nok->email }}" required>
-                                    </div>
-                                </div>
-                                <!--end col-->
-
-                                <div class="col-lg-6">
-                                    <div class="mb-3">
-                                        <label for="phone_number" class="form-label">Phone Number</label>
-                                        <input type="text" class="form-control" id="phone_number" name="phone_number" value="{{ empty($applicant->nok)?'':$applicant->nok->phone_number }}"  readonly>
-                                    </div>
-                                </div>
-
-                                <div class="col-lg-12">
-                                    <label for="address">Address</label>
-                                    <textarea id="address" name="address" >{!! empty($applicant->nok)?'':$applicant->nok->address !!}</textarea>
-                                </div><!--end col-->
-
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title mb-3">Next of Kin Information</h5>
                                 <hr>
-                                @if(empty($applicant->status))
-                                <div class="col-lg-12">
-                                    <div class="hstack gap-2 justify-content-end">
-                                        <button type="submit" class="btn btn-primary">Save Next of Kin Information</button>
+                                <form action="{{ url('applicant/nokBioData') }}" method="POST" enctype="multipart/form-data">
+                                    @csrf
+                                    <input type="hidden" name="nextOfKin_id" value="{{ empty($applicant->nok)?'':$applicant->nok->id }}">
+                                        <div class="row">
+                                            <div class="col-lg-12">
+                                                <div class="mb-3">
+                                                    <label for="name" class="form-label">Name</label>
+                                                    <input type="text" class="form-control" id="name" name="name" value="{{ empty($applicant->nok)?'':$applicant->nok->name }}" required>
+                                                </div>    
+                                            </div>
+
+                                            <div class="col-lg-6">
+                                                <div class="mb-3">
+                                                    <label for="email" class="form-label">Email</label>
+                                                    <input type="text" class="form-control" id="email" name="email" value="{{ empty($applicant->nok)?'':$applicant->nok->email }}" required>
+                                                </div>
+                                            </div>
+                                            <!--end col-->
+
+                                            <div class="col-lg-6">
+                                                <div class="mb-3">
+                                                    <label for="phone_number" class="form-label">Phone Number</label>
+                                                    <input type="text" class="form-control" id="phone_number" name="phone_number" value="{{ empty($applicant->nok)?'':$applicant->nok->phone_number }}" required>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-lg-12">
+                                                <div class="mb-3">
+                                                    <label for="address">Address</label>
+                                                    <textarea id="address" name="address" >{!! empty($applicant->nok)?'':$applicant->nok->address !!}</textarea>
+                                                </div>
+                                            </div><!--end col-->
+
+                                            <div class="col-lg-12">
+                                                <div class="mb-3">
+                                                    <label for="relationship" class="form-label">Relationship</label>
+                                                    <input type="text" class="form-control" id="relationship" name="relationship" value="{{ empty($applicant->nok)?'':$applicant->nok->relationship }}"  required>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <hr>
+                                        @if(empty($applicant->status))
+                                        <div class="col-lg-12">
+                                            <div class="hstack gap-2 justify-content-end">
+                                                <button type="submit" class="btn btn-primary">Save Next of Kin Information</button>
+                                            </div>
+                                        </div>
+                                        @endif
+                                        <!--end col-->
                                     </div>
-                                </div>
-                                @endif
-                                <!--end col-->
+                                    <!--end row-->
+                                </form>
                             </div>
-                            <!--end row-->
-                        </form>
+                        </div>
                     </div>
                 </div>
                 <!--end tab-content-->
