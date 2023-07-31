@@ -129,7 +129,7 @@
             <!-- LOGO -->
             <div class="navbar-brand-box">
                 <!-- Dark Logo-->
-                <a href="{{url('admin/home')}}" class="logo logo-dark">
+                <a href="{{url('guardian/home')}}" class="logo logo-dark">
                     <span class="logo-sm">
                         <img src="{{asset('assets/images/logo-sm.png')}}" alt="" height="22">
                     </span>
