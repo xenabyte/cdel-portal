@@ -53,7 +53,7 @@ class AcademicController extends Controller
 
 
         $sessionSetting = new SessionSetting;
-        if(!empty($sessionSetting->sessionSetting_id) && !$sessionSetting = SessionSetting::find($request->sessionSetting_id)){
+        if(!empty($request->sessionSetting_id) && !$sessionSetting = SessionSetting::find($request->sessionSetting_id)){
             alert()->error('Oops', 'Invalid Session Setting Information')->persistent('Close');
             return redirect()->back();
         }

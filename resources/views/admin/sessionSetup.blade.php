@@ -83,7 +83,7 @@
                                                 <div class="modal-dialog modal-dialog-centered">
                                                     <div class="modal-content border-0 overflow-hidden">
                                                         <div class="modal-header p-3">
-                                                            <h4 class="card-title mb-0">Edit Level</h4>
+                                                            <h4 class="card-title mb-0">Edit Session</h4>
                                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                         </div>
                                 
@@ -94,7 +94,7 @@
                                                                 <input name="level_id" type="hidden" value="{{$session->id}}">
                                 
                                                                 <div class="mb-3">
-                                                                    <label for="year" class="form-label">Level</label>
+                                                                    <label for="year" class="form-label">Session</label>
                                                                     <input type="text" class="form-control" name="year"  minlength="9" maxlength="9" id="year" value="{{ $session->year }}">
                                                                 </div>
 
@@ -143,7 +143,7 @@
                                     <br>
                                     <div class="form-floating">
                                         <select class="form-select" id="academic_session" name="academic_session" aria-label="academic session">
-                                            <option selected>--Select--</option>
+                                            <option value="" selected>--Select--</option>
                                             @foreach($sessions as $session)<option value="{{$session->year}}">{{ $session->year}}</option>@endforeach
                                         </select>
                                         <label for="academic_session">Academic Session</label>
@@ -155,7 +155,7 @@
                                     <br>
                                     <div class="form-floating">
                                         <select class="form-select" id="admission_session" name="admission_session" aria-label="admission session">
-                                            <option selected>--Select--</option>
+                                            <option value="" selected>--Select--</option>
                                             @foreach($sessions as $session)<option value="{{$session->year}}">{{ $session->year}}</option>@endforeach
                                         </select>
                                         <label for="admission_session">Admission Session</label>
@@ -167,7 +167,7 @@
                                     <br>
                                     <div class="form-floating">
                                         <select class="form-select" id="application_session" name="application_session" aria-label="application session">
-                                            <option selected>--Select--</option>
+                                            <option value="" selected>--Select--</option>
                                             @foreach($sessions as $session)<option value="{{$session->year}}">{{ $session->year}}</option>@endforeach
                                         </select>
                                         <label for="application_session">Application Session</label>
@@ -194,7 +194,7 @@
     <div class="modal-dialog modal-xl">
         <div class="modal-content border-0 overflow-hidden">
             <div class="modal-header p-3">
-                <h4 class="card-title mb-0">Add Level</h4>
+                <h4 class="card-title mb-0">Add Session</h4>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
 
@@ -202,7 +202,7 @@
                 <form action="{{ url('/admin/addSession') }}" method="post" enctype="multipart/form-data">
                     @csrf
                     <div class="mb-3">
-                        <label for="year" class="form-label">Level</label>
+                        <label for="year" class="form-label">Session</label>
                         <input type="text" class="form-control" minlength="9" maxlength="9" name="year" id="year">
                     </div>
 

@@ -15,14 +15,14 @@ class CreateTransactionsTable extends Migration
     {
         Schema::create('transactions', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id');
-            $table->unsignedBigInteger('student_id');
-            $table->unsignedBigInteger('payment_id');
-            $table->integer('amount_payed');
-            $table->string('reference');
-            $table->string('payment_method');
-            $table->string('status');
-            $table->string('session');
+            $table->unsignedBigInteger('user_id')->nullable();
+            $table->unsignedBigInteger('student_id')->nullable();
+            $table->unsignedBigInteger('payment_id')->nullable();
+            $table->integer('amount_payed')->nullable();
+            $table->string('reference')->nullable();
+            $table->string('payment_method')->nullable();
+            $table->string('status')->nullable();
+            $table->string('session')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

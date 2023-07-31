@@ -6,6 +6,7 @@ use App\Notifications\UserResetPassword;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Hash;
 
 class User extends Authenticatable
 {
@@ -43,7 +44,8 @@ class User extends Authenticatable
         'academic_session',
         'guardian_id',
         'next_of_kin_id',
-        'partner_id'
+        'partner_id',
+        'password',
     ];
 
     /**
@@ -55,6 +57,30 @@ class User extends Authenticatable
         'password', 'remember_token',
     ];
 
+
+    /**
+     * Custom method to authenticate a user based on email, password, and academic session.
+     *
+     * @param string $email
+     * @param string $password
+     * @param string $academicSession
+     * @return \App\Models\User|null
+     */
+    public static function authenticateUser($email, $password, $academicSession)
+    {
+        // Retrieve the user based on the given email and academic session
+        $user = self::where('email', $email)
+        ->where('academic_session', $academicSession)
+        ->first();
+
+        // Check if the user exists and the password is correct
+        if ($user && Hash::check($password, $user->password)) {
+            return $user;
+        }
+
+        return null;
+    }
+
     /**
      * Send the password reset notification.
      *
@@ -64,5 +90,56 @@ class User extends Authenticatable
     public function sendPasswordResetNotification($token)
     {
         $this->notify(new UserResetPassword($token));
+    }
+
+    /**
+     * Get the programme that owns the User
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function programme()
+    {
+        return $this->belongsTo(Programme::class, 'programme_id', 'id');
+    }
+
+
+    /**
+     * Get all of the olevels for the User
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function olevels()
+    {
+        return $this->hasMany(Olevel::class);
+    }
+
+    /**
+     * Get the guardian associated with the User
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function guardian()
+    {
+        return $this->belongsTo(Guardian::class, 'guardian_id');
+    }
+
+    /**
+     * Get the nok associated with the User
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function nok()
+    {
+        return $this->hasOne(NextOfKin::class);
+    }
+
+    /**
+     * Get the student associated with the User
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function student()
+    {
+        return $this->hasOne(Student::class);
     }
 }

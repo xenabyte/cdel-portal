@@ -42,4 +42,14 @@ class Programme extends Model
     {
         return $this->belongsTo(Department::class, 'department_id');
     }
+
+    /**
+     * Get all of the payments for the Programme
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function programmePayments()
+    {
+        return $this->hasMany(Payment::class, 'programme_id', 'id')->where('type', '!=', 'General Fee');
+    }
 }

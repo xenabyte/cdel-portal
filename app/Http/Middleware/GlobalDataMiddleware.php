@@ -5,6 +5,8 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 
+use App\Models\SessionSetting;
+
 class GlobalDataMiddleware
 {
     /**
@@ -16,9 +18,13 @@ class GlobalDataMiddleware
      */
     public function handle(Request $request, Closure $next)
     {
-         // Add your data to the request object.
-         $request->merge([
-            'global_data' => 'value',
+        // Add your data to the request object.
+        $sessionSetting = SessionSetting::first();
+        $data = new \stdClass();
+        $data->sessionSetting = $sessionSetting;
+
+        $request->merge([
+            'global_data' => $data,
         ]);
 
         

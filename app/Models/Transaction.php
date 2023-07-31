@@ -10,6 +10,8 @@ class Transaction extends Model
 {
     use HasFactory, SoftDeletes;
 
+    const APPLICATION = 'Application Fee';
+
     protected $fillable = [
         'user_id',
         'student_id',
@@ -20,4 +22,36 @@ class Transaction extends Model
         'status',
         'session'
     ];
+
+    /**
+     * Get the owner that owns the Transaction
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function applicant()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+
+    /**
+     * Get the owner that owns the Transaction
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function student()
+    {
+        return $this->belongsTo(Student::class, 'student_id');
+    }
+
+
+    /**
+     * Get the paymentType that owns the Transaction
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function paymentType()
+    {
+        return $this->belongsTo(Payment::class, 'payment_id');
+    }
 }

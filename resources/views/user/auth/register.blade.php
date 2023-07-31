@@ -1,82 +1,268 @@
 @extends('user.layout.auth')
 
 @section('content')
-<div class="container">
-    <div class="row">
-        <div class="col-md-8 col-md-offset-2">
-            <div class="panel panel-default">
-                <div class="panel-heading">Register</div>
-                <div class="panel-body">
-                    <form class="form-horizontal" role="form" method="POST" action="{{ url('/user/register') }}">
-                        {{ csrf_field() }}
-
-                        <div class="form-group{{ $errors->has('name') ? ' has-error' : '' }}">
-                            <label for="name" class="col-md-4 control-label">Name</label>
-
-                            <div class="col-md-6">
-                                <input id="name" type="text" class="form-control" name="name" value="{{ old('name') }}" autofocus>
-
-                                @if ($errors->has('name'))
-                                    <span class="help-block">
-                                        <strong>{{ $errors->first('name') }}</strong>
-                                    </span>
-                                @endif
-                            </div>
-                        </div>
-
-                        <div class="form-group{{ $errors->has('email') ? ' has-error' : '' }}">
-                            <label for="email" class="col-md-4 control-label">E-Mail Address</label>
-
-                            <div class="col-md-6">
-                                <input id="email" type="email" class="form-control" name="email" value="{{ old('email') }}">
-
-                                @if ($errors->has('email'))
-                                    <span class="help-block">
-                                        <strong>{{ $errors->first('email') }}</strong>
-                                    </span>
-                                @endif
-                            </div>
-                        </div>
-
-                        <div class="form-group{{ $errors->has('password') ? ' has-error' : '' }}">
-                            <label for="password" class="col-md-4 control-label">Password</label>
-
-                            <div class="col-md-6">
-                                <input id="password" type="password" class="form-control" name="password">
-
-                                @if ($errors->has('password'))
-                                    <span class="help-block">
-                                        <strong>{{ $errors->first('password') }}</strong>
-                                    </span>
-                                @endif
-                            </div>
-                        </div>
-
-                        <div class="form-group{{ $errors->has('password_confirmation') ? ' has-error' : '' }}">
-                            <label for="password-confirm" class="col-md-4 control-label">Confirm Password</label>
-
-                            <div class="col-md-6">
-                                <input id="password-confirm" type="password" class="form-control" name="password_confirmation">
-
-                                @if ($errors->has('password_confirmation'))
-                                    <span class="help-block">
-                                        <strong>{{ $errors->first('password_confirmation') }}</strong>
-                                    </span>
-                                @endif
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <div class="col-md-6 col-md-offset-4">
-                                <button type="submit" class="btn btn-primary">
-                                    Register
-                                </button>
-                            </div>
-                        </div>
-                    </form>
+<div class="col-lg-8">
+    <!-- Primary Alert -->
+    <div class="alert alert-primary alert-dismissible alert-additional fade show" role="alert">
+        <div class="alert-body">
+            <div class="d-flex">
+                <div class="flex-shrink-0 me-3">
+                    <i class="fs-16 align-middle"></i>
+                </div>
+                <div class="flex-grow-1">
+                    <h5 class="alert-heading">Welcome to Application Portal</h5>
+                    <hr>
+                    <p class="mb-0">
+                        For Admission into Undergraduate Programme <strong> ({{ !empty($pageGlobalData->sessionSetting) ? $pageGlobalData->sessionSetting->application_session : null }} Academic Session) </strong>You are most welcome to study at {{ env('SCHOOL_NAME') }}. We offer candidates excellent and stable academic calendar, comfortable hall of residence, sound morals, entrepreneurial training, skill acquisition, serene and secure environment for learning. <strong> This application form will cost ₦{{ number_format($payment->structures->sum('amount')/100, 2) }}</strong>
+                    </p>
                 </div>
             </div>
         </div>
     </div>
+    @if(!empty($applicant))
+        <div class="p-lg-5">
+            <div>
+                <p class="text-muted">{{ $applicant->lastname.' '.$applicant->othernames }} Application</p>
+            </div>
+
+            <div>
+                <!-- Nav tabs -->
+                <ul class="nav nav-tabs nav-justified mb-3" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" data-bs-toggle="tab" href="#base-justified-home" role="tab" aria-selected="false">
+                            Make Payment
+                        </a>
+                    </li>
+                </ul>
+                <!-- Tab panes -->
+                <div class="tab-content  text-muted">
+                    <div class="tab-pane active" id="base-justified-home" role="tabpanel">
+                        <div class="p-2 mt-4">
+                            <form class="needs-validation" method="POST" novalidate action="{{ url('applicant/register') }}">
+                                @csrf
+                                <input type="hidden" name="user_id" value="{{ $applicant->id }}">
+                                <input type="hidden" name="programme_id" value="{{ $applicant->programme_id }}">
+
+                                <div class="mb-3">
+                                    <label for="paymentGateway" class="form-label">Select Payment Gateway<span class="text-danger">*</span></label>
+                                    <select class="form-select" aria-label="paymentGateway" name="paymentGateway" required onchange="handlePaymentMethodChange(event)">
+                                        <option value= "" selected>Select Payment Gateway</option>
+                                        <option value="Paystack">Paystack</option>
+                                        <option value="Remita">Remita</option>
+                                        <option value="Zenith">Zenith Pay</option>
+                                        <option value="BankTransfer">Transfer</option>
+                                    </select>
+                                </div>
+
+                                <hr>
+                                <!-- Primary Alert -->
+                                <div class="alert alert-primary alert-dismissible alert-additional fade show" role="alert" style="display: none" id="transferInfo">
+                                    <div class="alert-body">
+                                        <div class="d-flex">
+                                            <div class="flex-shrink-0 me-3">
+                                                <i class="fs-16 align-middle"></i>
+                                            </div>
+                                            <div class="flex-grow-1">
+                                                <h5 class="alert-heading">Well done !</h5>
+                                                <p class="mb-0">Kindly make transfer to the below transaction </p>
+                                                <br>
+                                                <ul class="list-group">
+                                                    <li class="list-group-item"><i class="mdi mdi-check-bold align-middle lh-1 me-2"></i><strong>Bank Name:</strong> {{env('BANK_NAME')}}</li>
+                                                    <li class="list-group-item"><i class="mdi mdi-check-bold align-middle lh-1 me-2"></i><strong>Bank Account Number:</strong> {{env('BANK_ACCOUNT_NUMBER')}}</li>
+                                                    <li class="list-group-item"><i class="mdi mdi-check-bold align-middle lh-1 me-2"></i><strong>Bank Account Name:</strong> {{env('BANK_ACCOUNT_NAME')}}</li>
+                                                </ul>
+                                                <br>
+                                                <p>Please send proof of payment as an attachment to {{ env('ACCOUNT_EMAIL') }}, including your name, registration number, and purpose of payment. For any inquiries, you can also call {{ env('ACCOUNT_PHONE') }}.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="alert-content">
+                                        <p class="mb-0">NOTE: PLEASE ENSURE TO VERIFY THE TRANSACTION DETAILS PROPERLY. TRANSFER ONLY TO THE ACCOUNT ABOVE. STUDENTS TAKE RESPONSIBILITY FOR ANY MISPLACEMENT OF FUNDS.</p>
+                                    </div>
+                                </div>
+
+                                <div class="mt-4">
+                                    <button class="btn btn-success w-100" id='submit-button' disabled type="submit">Make Payment</button>
+                                </div>
+
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- end card -->
+
+        </div>
+    @else
+        <div class="p-lg-5">
+
+            <div>
+                <h5>Kindly fill the form below</h5>
+
+                <div class="p-2 mt-4">
+                    <form class="needs-validation" method="POST" novalidate action="{{ url('applicant/register') }}">
+                        @csrf
+                        <div class="mb-3">
+                            <label for="lastname" class="form-label">Lastname(Surname) <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" name="lastname" id="lastname" placeholder="Enter lastname " required>
+                            <div class="invalid-feedback">
+                                Please enter lastname
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="othernames" class="form-label">Other names <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" name="othernames" id="othernames" placeholder="Enter othernames" required>
+                            <div class="invalid-feedback">
+                                Please enter othernames
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="phone_number" class="form-label">Phone Number <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" minlength="14" name="phone_number" id="phone_number" placeholder="Enter phone (+23481111111)" required>
+                            <div class="invalid-feedback">
+                                Please enter phone number
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email <span class="text-danger">*</span></label>
+                            <input type="email" class="form-control" name="email" id="email" placeholder="Enter email address" required>
+                            <div class="invalid-feedback">
+                                Please enter email
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="programme_id" class="form-label">Select Programme<span class="text-danger">*</span></label>
+                            <select class="form-select" aria-label="programme_id" name="programme_id" required>
+                                <option value= "" selected>Select Programme</option>
+                                @foreach($programmes as $programme)
+                                    <option value="{{ $programme->id }}">{{ $programme->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        {{-- <div class="alert alert-primary alert-dismissible alert-additional fade show" role="alert" style="display: none" id="paymentInfo">
+                            <div class="alert-content">
+                                <p id="amount" class="mb-0"></p>
+                            </div>
+                        </div> --}}
+
+
+                        <div class="mb-3">
+                            <label for="paymentGateway" class="form-label">Select Payment Gateway<span class="text-danger">*</span></label>
+                            <select class="form-select" aria-label="paymentGateway" name="paymentGateway" required onchange="handlePaymentMethodChange(event)">
+                                <option value= "" selected>Select Payment Gateway</option>
+                                <option value="Paystack">Paystack</option>
+                                <option value="Remita">Remita</option>
+                                <option value="Zenith">Zenith Pay</option>
+                                <option value="BankTransfer">Transfer</option>
+                            </select>
+                        </div>
+
+                        <hr>
+                        <!-- Primary Alert -->
+                        <div class="alert alert-primary alert-dismissible alert-additional fade show" role="alert" style="display: none" id="transferInfo">
+                            <div class="alert-body">
+                                <div class="d-flex">
+                                    <div class="flex-shrink-0 me-3">
+                                        <i class="fs-16 align-middle"></i>
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <h5 class="alert-heading">Well done !</h5>
+                                        <p class="mb-0">Kindly make transfer to the below transaction </p>
+                                        <br>
+                                        <ul class="list-group">
+                                            <li class="list-group-item"><i class="mdi mdi-check-bold align-middle lh-1 me-2"></i><strong>Bank Name:</strong> {{env('BANK_NAME')}}</li>
+                                            <li class="list-group-item"><i class="mdi mdi-check-bold align-middle lh-1 me-2"></i><strong>Bank Account Number:</strong> {{env('BANK_ACCOUNT_NUMBER')}}</li>
+                                            <li class="list-group-item"><i class="mdi mdi-check-bold align-middle lh-1 me-2"></i><strong>Bank Account Name:</strong> {{env('BANK_ACCOUNT_NAME')}}</li>
+                                        </ul>
+                                        <br>
+                                        <p>Please send proof of payment as an attachment to {{ env('ACCOUNT_EMAIL') }}, including your name, registration number, and purpose of payment. For any inquiries, you can also call {{ env('ACCOUNT_PHONE') }}.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="alert-content">
+                                <p class="mb-0">NOTE: PLEASE ENSURE TO VERIFY THE TRANSACTION DETAILS PROPERLY. TRANSFER ONLY TO THE ACCOUNT ABOVE. STUDENTS TAKE RESPONSIBILITY FOR ANY MISPLACEMENT OF FUNDS.</p>
+                            </div>
+                        </div>
+
+                        <div class="mt-4">
+                            <button class="btn btn-success w-100" id='submit-button' disabled type="submit">Make Payment</button>
+                        </div>
+
+                        <div class="mt-5 text-center">
+                            <p class="mb-0">Already paid for application ? <a href="{{url('/applicant/login')}}" class="fw-semibold text-primary text-decoration-underline"> Sign in to complete application</a> </p>
+                        </div>
+
+                    </form>
+
+                </div>
+            </div>
+            <!-- end card -->
+
+        </div>
+    @endif
 </div>
+
+<script>
+    function handlePaymentMethodChange(event) {
+        const selectedPaymentMethod = event.target.value;
+        console.log(selectedPaymentMethod);
+        const submitButton = document.getElementById('submit-button');
+        if(selectedPaymentMethod != ''){
+            if(selectedPaymentMethod == 'Remita' || selectedPaymentMethod == 'Zenith') {
+                submitButton.disabled = true;
+            }else{
+                submitButton.disabled = false;
+            }
+
+            if(selectedPaymentMethod == 'BankTransfer'){
+                document.getElementById('submit-button').style.display = 'none';
+                document.getElementById('transferInfo').style.display = 'block';
+                
+            }else{
+                document.getElementById('submit-button').style.display = 'block';
+                document.getElementById('transferInfo').style.display = 'none';
+            }
+        }else{
+            submitButton.disabled = true;
+        }
+    }
+
+    // function handleProgrammeChange(event) {
+    //     const selectedProgramme = event.target.value;
+    //     if(selectedProgramme != ''){
+    //         axios.get("{{ url('/applicant/programmeById')  }}/"+selectedProgramme)
+    //         .then(response => {
+    //             const data = response.data;
+    //             const totalAmount = getTotalAmountForApplicationFee(data);
+                
+    //             // Set the total amount in the paragraph element
+    //             const amountParagraph = document.getElementById('amount');
+    //             amountParagraph.textContent = `Application Fee(Non Refundable): ₦${totalAmount.toFixed(2)}`;
+    //             document.getElementById('paymentInfo').style.display = 'block';
+    //         })
+    //         .catch(error => {
+    //             console.error(error);
+    //         });
+    //     }else{
+    //         document.getElementById('paymentInfo').style.display = 'none';
+    //     }
+    // }
+
+    // function getTotalAmountForApplicationFee(data) {
+    //     const applicationFeePayment = data.payments.find(payment => payment.title === "Application Fee");
+    //     if (!applicationFeePayment) {
+    //         return 0;
+    //     }
+
+    //     const totalAmount = applicationFeePayment.structures.reduce((total, structure) => total + parseInt(structure.amount), 0);
+    //     return totalAmount/100 + 52;
+    // }
+
+</script>
 @endsection

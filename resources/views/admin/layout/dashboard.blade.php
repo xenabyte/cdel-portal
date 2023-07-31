@@ -316,7 +316,7 @@
 
                         <li class="nav-item">
                             <a class="nav-link menu-link" href="#bursary" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="bursary">
-                                <i class="las la-money-check"></i> <span data-key="t-bursary">Bursary</span>
+                                <i class="mdi mdi-bank-transfer"></i> <span data-key="t-bursary">Bursary</span>
                             </a>
                             <div class="collapse menu-dropdown" id="bursary">
                                 <ul class="nav nav-sm flex-column">
@@ -328,6 +328,24 @@
                                     </li>
                                     <li class="nav-item">
                                         <a href="{{('/admin/chargeStudent')}}" class="nav-link">Charge 'a' Student </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li> <!-- end Bursary Menu -->
+
+
+                        <li class="nav-item">
+                            <a class="nav-link menu-link" href="#admission" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="admission">
+                                <i class="mdi mdi-account-box-multiple"></i> <span data-key="t-admission">Admission</span>
+                            </a>
+                            <div class="collapse menu-dropdown" id="admission">
+                                <ul class="nav nav-sm flex-column">
+                                    <li class="nav-item">
+                                        <a href="{{ url('/admin/applicants') }}" class="nav-link">Applicants</a>
+                                    </li>
+            
+                                    <li class="nav-item">
+                                        <a href="{{ url('/admin/students') }}" class="nav-link">Students</a>
                                     </li>
                                 </ul>
                             </div>

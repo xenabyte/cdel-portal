@@ -7,6 +7,18 @@ use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Support\Facades\Auth;
 use AlAminFirdows\LaravelMultiAuth\Traits\LogsoutGuard;
 
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Hash;
+use App\Http\Requests;
+use Illuminate\Support\Facades\Validator;
+
+use App\Models\User;
+
+use SweetAlert;
+use Log;
+
 class LoginController extends Controller
 {
     /*
@@ -29,7 +41,7 @@ class LoginController extends Controller
      *
      * @var string
      */
-    public $redirectTo = '/user/home';
+    public $redirectTo = '/applicant/home';
 
     /**
      * Create a new controller instance.
@@ -59,5 +71,38 @@ class LoginController extends Controller
     protected function guard()
     {
         return Auth::guard('user');
+    }
+
+    public function login(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|email',
+            'password' => 'required',
+            'academic_session' => 'required|string',
+        ]);
+
+        if($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+        
+        $user = User::authenticateUser(
+            $request->email,
+            $request->password,
+            $request->academic_session
+        );
+        
+        if ($user) {
+            Auth::guard('user')->login($user, true); 
+
+            return redirect()->intended('/applicant/home');
+        }
+
+        return back()->withErrors(['email' => 'These credentials do not match our records.']);
+    }
+
+    public function username()
+    {
+        return 'email';
     }
 }

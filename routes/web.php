@@ -21,6 +21,9 @@ Route::get('/', function () {
 Auth::routes(['register' => false, 'login' => false]);
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('verifyPayment', [App\Http\Controllers\PaymentController::class, 'verifyPayment'])->name('verifyPayment');
+Route::post('/paystackWebhook', [App\Http\Controllers\PaymentController::class, 'paystackWebhook']);
+
 
 Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'admin'], function () {
   Route::get('/', [App\Http\Controllers\Admin\Auth\LoginController::class, 'showLoginForm'])->name('login');
@@ -73,6 +76,12 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'admin'],
 
   Route::post('chargeStudent', [App\Http\Controllers\Admin\PaymentController::class, 'chargeStudent'])->name('chargeStudent');
   Route::get('chargeStudent', [App\Http\Controllers\Admin\AdminController::class, 'chargeStudent'])->name('chargeStudent');
+
+
+  Route::get('applicants', [App\Http\Controllers\Admission\AdmissionController::class, 'applicants'])->name('applicants');
+  Route::get('applicant/{slug}', [App\Http\Controllers\Admission\AdmissionController::class, 'applicant'])->name('applicant');
+  Route::post('applicantWithSession', [App\Http\Controllers\Admission\AdmissionController::class, 'applicantWithSession'])->name('applicantWithSession');
+
 
 });
 
@@ -152,16 +161,20 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'guardian
 });
 
 Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'applicant'], function () {
-  Route::get('/', [App\Http\Controllers\User\Auth\LoginController::class, 'showLoginForm'])->name('login');
+  Route::get('/', [App\Http\Controllers\User\ApplicationController::class, 'showRegistrationForm'])->name('showRegistrationForm');
   Route::get('/login', [App\Http\Controllers\User\Auth\LoginController::class, 'showLoginForm'])->name('login');
   Route::post('/login', [App\Http\Controllers\User\Auth\LoginController::class, 'login']);
   Route::post('/logout', [App\Http\Controllers\User\Auth\LoginController::class, 'logout'])->name('logout');
 
-  // Route::get('/register', [App\Http\Controllers\User\Auth\RegisterController::class, 'showRegistrationForm'])->name('register');
-  // Route::post('/register', [App\Http\Controllers\User\Auth\RegisterController::class, 'register']);
+  Route::get('/register', [App\Http\Controllers\User\ApplicationController::class, 'showRegistrationForm'])->name('showRegistrationForm');
+  Route::post('/register', [App\Http\Controllers\User\ApplicationController::class, 'register']);
 
   Route::post('/password/email', [App\Http\Controllers\User\Auth\ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.request');
   Route::post('/password/reset', [App\Http\Controllers\User\Auth\ResetPasswordController::class, 'reset'])->name('password.email');
   Route::get('/password/reset', [App\Http\Controllers\User\Auth\ForgotPasswordController::class, 'showLinkRequestForm'])->name('password.reset');
   Route::get('/password/reset/{token}', [App\Http\Controllers\User\Auth\ResetPasswordController::class, 'showResetForm']);
+
+  Route::get('/home', [App\Http\Controllers\User\ApplicationController::class, 'index']);
+  Route::get('programmeById/{id}', [App\Http\Controllers\User\ApplicationController::class, 'programmeById'])->name('programmeById');
+
 });

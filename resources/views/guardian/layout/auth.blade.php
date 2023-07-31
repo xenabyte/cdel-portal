@@ -30,7 +30,7 @@
     @include('sweetalert::alert')
 
     <!-- auth-page wrapper -->
-    <div class="auth-page-wrapper auth-bg-cover py-5 d-flex justify-content-center align-items-center min-vh-100">
+    <div class="auth-page-wrapper py-5 d-flex justify-content-center align-items-center min-vh-100">
         <!-- auth-page content -->
         <div class="auth-page-content overflow-hidden pt-lg-5">
             <div class="container">
@@ -44,7 +44,7 @@
                                         <div class="position-relative h-100 d-flex flex-column">
                                             <div class="mb-4">
                                                 <a href="{{ env('WEBSITE_URL') }}" class="d-block">
-                                                    <img src="{{asset('assets/images/logo-light.png')}}" alt="" height="18">
+                                                    <img src="{{ !empty($pageGlobalData->setting) ? asset($pageGlobalData->setting->logo) : null }}" alt="" width="100">
                                                 </a>
                                             </div>
                                             <div class="mt-auto">

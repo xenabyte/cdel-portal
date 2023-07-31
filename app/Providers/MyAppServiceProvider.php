@@ -5,6 +5,7 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 
 use App\Models\SessionSetting;
+use App\Models\GlobalSetting as setting;
 
 use Log;
 
@@ -34,9 +35,11 @@ class MyAppServiceProvider extends ServiceProvider
 
     public function pageGlobalData(){
         $sessionSetting = SessionSetting::first();
+        $setting = Setting::first();
 
         $data = new \stdClass();
         $data->sessionSetting = $sessionSetting;
+        $data->setting = $setting;
 
         return $data;
     }

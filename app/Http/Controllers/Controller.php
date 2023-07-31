@@ -6,6 +6,14 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Routing\Controller as BaseController;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Hash;
+use App\Http\Requests;
 
 use Log;
 
@@ -13,21 +21,30 @@ use App\Models\Transaction;
 use App\Models\User;
 use App\Models\Student;
 use App\Models\Payment;
+use App\Models\SessionSetting;
 
 class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
     
     public function processPayment($paymentDetails){
+        $sessionSetting = SessionSetting::first();
+        $academicSession = $sessionSetting['academic_session'];
+        $applicationSession = $sessionSetting['application_session'];
+        $admissionSession = $sessionSetting['admission_session'];
+
+
         log::info("Processing payment:" . json_encode($paymentDetails));
         //get active editions
         $email = $paymentDetails['data']['metadata']['email'];
+        $applicationId = $paymentDetails['data']['metadata']['application_id'];
         $studentId = $paymentDetails['data']['metadata']['student_id'];
         $paymentId = $paymentDetails['data']['metadata']['payment_id'];
         $paymentGateway = $paymentDetails['data']['metadata']['payment_gateway'];
         $amount = $paymentDetails['data']['metadata']['amount'];
         $txRef = $paymentDetails['data']['metadata']['reference'];
         $reference = $paymentDetails['data']['reference'];
+        $session = $paymentDetails['data']['metadata']['academic_session'];
 
 
         if(!empty($txRef)){
@@ -46,12 +63,12 @@ class Controller extends BaseController
             return true;
         }
 
-       $payment = Payment::with('programme', 'programme.sessionSetting')->where('id', $paymentId)->first();
-       $session = $payment->programme->sessionSetting->year;
+       $payment = Payment::with('programme')->where('id', $paymentId)->first();
 
        //Create new transaction
        $transaction = Transaction::create([
-            'user_id' => $studentId,
+            'user_id' => !empty($applicationId)?$applicationId:null,
+            'student_id' => !empty($studentId)?$studentId:null,
             'payment_id' => $paymentId,
             'amount_payed' => $amount,
             'payment_method' => $paymentGateway,
