@@ -11,14 +11,21 @@ use Illuminate\Support\Facades\Hash;
 use App\Http\Requests;
 use Illuminate\Support\Facades\Validator;
 
+use App\Models\Faculty;
 use App\Models\Programme;
 use App\Models\Transaction;
 use App\Models\User as Applicant;
 use App\Models\Olevel;
 use App\Models\Guardian;
 use App\Models\NextOfKin;
+use App\Models\AcademicLevel;
+use App\Models\Student;
+
 
 use App\Mail\ApplicationMail;
+
+use App\Libraries\Pdf\Pdf;
+use App\Libraries\Google\Google;
 
 use SweetAlert;
 use Mail;
@@ -26,6 +33,7 @@ use Alert;
 use Log;
 use Carbon\Carbon;
 use Paystack;
+
 
 class AdmissionController extends Controller
 {
@@ -61,12 +69,94 @@ class AdmissionController extends Controller
     }
 
     public function applicant(Request $request, $slug){
-        
         $applicant = Applicant::with('programme', 'olevels', 'guardian')->where('slug', $slug)->first();
+        $programmes = Programme::where('category_id', $applicant->programme->category_id)->get();
+        $levels = AcademicLevel::get();
         
         return view('admin.applicant', [
-            'applicant' => $applicant
+            'applicant' => $applicant,
+            'programmes' => $programmes,
+            'levels' => $levels
         ]);
+    }
+
+    public function manageAdmission(Request $request){
+        $validator = Validator::make($request->all(), [
+            'applicant_id' => 'required',
+            'programme_id' => 'required',
+            'level' => 'required',
+            'status' => 'required'
+        ]);
+
+
+        if($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+
+        if(!$applicant = Applicant::with('programme')->where('id', $request->applicant_id)->first()){
+            alert()->error('Oops', 'Invalid Applicant Information')->persistent('Close');
+            return redirect()->back();
+        }
+
+        $globalData = $request->input('global_data');
+        $applicationSession = $globalData->sessionSetting['application_session'];
+        $admissionSession = $globalData->sessionSetting['admission_session'];
+
+        $applicantId = $applicant->id;
+        $programmeId = $request->programme_id;
+        $programme = Programme::with('department', 'department.faculty')->where('id', $programmeId)->first();
+        $codeNumber = $programme->code_number;
+        $code = $programme->code;
+        $newMatric = $programme->matric_last_number + 1;
+        $matricNumber = substr($applicationSession, 2, 2).'/'.$codeNumber.$code.sprintf("%03d", $newMatric);
+        $parts = explode("/", $admissionSession);
+        $entryYear = $parts[1];
+
+        $status = $request->status;
+        $accessCode = $applicant->passcode;
+        $email = $applicant->email;
+        $name = $applicant->lastname.' '.$applicant->othernames;
+        $studentEmail = strtolower($code).'.'.$applicant->lastname.'@tau.edu.ng';
+        
+
+        if(strtolower($status) == 'admitted'){
+            //create an email with tpa letter heading 
+            // $pdf = new Pdf();
+            // $admissionLetter = $pdf->generateAdmissionLetter($applicant->slug);
+            // $applicant->admission_letter = $admissionLetter;
+            // $google = new Google();
+            // $createStudentEmail = $google->createUser($email, $applicant->firstname, $applicant->lastname, $accessCode);
+            //create student records
+            $studentId = Student::create([
+                'matric_number' => $matricNumber,
+                'email' => $studentEmail,
+                'password' => bcrypt($accessCode),
+                'passcode' => $accessCode,
+                'user_id' => $applicantId,
+                'academic_session' => $admissionSession,
+                'level_id' => $request->level_id,
+                'faculty_id' => $programme->department->faculty->id,
+                'department_id' => $programme->department->id,
+                'entry_year' => $entryYear
+            ])->id;
+
+
+            $programme->matric_last_number = $newMatric;
+            $programme->save();
+
+            //In the email, create and provide student portal login information
+        }
+
+        $applicant->status = $status;
+
+        if($applicant->save()){
+            alert()->success('Changes Saved', '')->persistent('Close');
+            return redirect()->back();
+        }
+
+        alert()->error('Oops!', 'Something went wrong')->persistent('Close');
+        return redirect()->back();
     }
 
     

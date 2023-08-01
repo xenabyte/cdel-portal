@@ -47,7 +47,7 @@
                     <div class="d-flex">
                         <!-- LOGO -->
                         <div class="navbar-brand-box horizontal-logo">
-                            <a href="index.html" class="logo logo-dark">
+                            <a href="{{ env('WEBSITE_URL') }}" class="logo logo-dark">
                                 <span class="logo-sm">
                                     <img src="{{asset('assets/images/logo-sm.png')}}" alt="" height="22">
                                 </span>
@@ -56,7 +56,7 @@
                                 </span>
                             </a>
 
-                            <a href="index.html" class="logo logo-light">
+                            <a href="{{ env('WEBSITE_URL') }}" class="logo logo-light">
                                 <span class="logo-sm">
                                     <img src="{{asset('assets/images/logo-sm.png')}}" alt="" height="22">
                                 </span>
@@ -263,7 +263,7 @@
                     </span>
                 </a>
                 <!-- Light Logo-->
-                <a href="index.html" class="logo logo-light">
+                <a href="{{ env('WEBSITE_URL') }}" class="logo logo-light">
                     <span class="logo-sm">
                         <img src="{{asset('assets/images/logo-sm.png')}}" alt="" height="22">
                     </span>
@@ -351,14 +351,15 @@
                             </div>
                         </li> <!-- end Bursary Menu -->
 
+
                         <li class="nav-item">
-                            <a class="nav-link menu-link" href="#sidebarLayouts" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarLayouts">
-                                <i class="mdi mdi-view-carousel-outline"></i> <span data-key="t-layouts">Layouts</span> <span class="badge badge-pill bg-danger" data-key="t-hot">Hot</span>
+                            <a class="nav-link menu-link" href="#academicSettings" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="academicSettings">
+                                <i class="mdi mdi-view-carousel-outline"></i> <span data-key="t-layouts">Layouts</span> <span class="badge badge-pill bg-danger" data-key="t-hot">Academics</span>
                             </a>
-                            <div class="collapse menu-dropdown" id="sidebarLayouts">
+                            <div class="collapse menu-dropdown" id="academicSettings">
                                 <ul class="nav nav-sm flex-column">
                                     <li class="nav-item">
-                                        <a href="layouts-horizontal.html" class="nav-link" target="_blank" data-key="t-horizontal">Horizontal</a>
+                                        <a href="{{ url('/admin/faculties') }}" class="nav-link" data-key="t-horizontal">Faculties</a>
                                     </li>
                                     <li class="nav-item">
                                         <a href="layouts-detached.html" class="nav-link" target="_blank" data-key="t-detached">Detached</a>
@@ -1074,6 +1075,28 @@
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
 
+<script>
+    function handleFacultyChange(event) {
+        const selectedFaculty = event.target.value;
+        if(selectedFaculty != ''){
+            axios.get("{{ url('/applicant/facultyById')  }}/"+selectedFaculty)
+            .then(response => {
+                const data = response.data;
+                const totalAmount = getTotalAmountForApplicationFee(data);
+                
+                // Set the total amount in the paragraph element
+                const amountParagraph = document.getElementById('amount');
+                amountParagraph.textContent = `Application Fee(Non Refundable): ₦${totalAmount.toFixed(2)}`;
+                document.getElementById('paymentInfo').style.display = 'block';
+            })
+            .catch(error => {
+                console.error(error);
+            });
+        }else{
+            document.getElementById('paymentInfo').style.display = 'none';
+        }
+    }
+</script>
 </body>
 
 </html>

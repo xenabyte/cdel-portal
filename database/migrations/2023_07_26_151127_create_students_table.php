@@ -17,6 +17,7 @@ class CreateStudentsTable extends Migration
             $table->string('matric_number')->unique();
             $table->string('email')->unique();
             $table->string('password');
+            $table->string('passcode')->nullable();
             $table->unsignedBigInteger('programme_id')->nullable();
             $table->string('academic_session')->nullable();
             $table->string('image')->nullable();
@@ -29,7 +30,10 @@ class CreateStudentsTable extends Migration
             $table->year('max_graduating_year')->nullable();
             $table->unsignedBigInteger('user_id')->nullable();
             $table->unsignedBigInteger('partner_id')->nullable();
-            $table->softDeletes(); // Adds the 'deleted_at' column for soft deletes
+            $table->string('addmission_letter')->nullable();
+            $table->string('faculty_id')->nullable();
+            $table->string('department_id')->nullable();
+            $table->softDeletes();
             $table->rememberToken();
             $table->timestamps();
         });

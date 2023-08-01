@@ -25,6 +25,7 @@ class Staff extends Authenticatable
         'phone_number',
         'image',
         'faculty_id',
+        'department_id',
         'dob',
         'nationality',
         'religion',
@@ -55,4 +56,6 @@ class Staff extends Authenticatable
     {
         $this->notify(new StaffResetPassword($token));
     }
+
+    
 }

@@ -21,7 +21,8 @@ class Guardian extends Authenticatable
         'email', 
         'password',
         'phone_number',
-        'address'
+        'address',
+        'passcode'
     ];
 
     /**

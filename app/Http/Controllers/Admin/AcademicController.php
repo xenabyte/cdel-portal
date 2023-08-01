@@ -14,6 +14,8 @@ use Illuminate\Support\Facades\Validator;
 use App\Models\AcademicLevel;
 use App\Models\Session;
 use App\Models\SessionSetting;
+use App\Models\Faculty;
+use App\Models\Department;
 
 use SweetAlert;
 use Mail;
@@ -226,4 +228,38 @@ class AcademicController extends Controller
         return redirect()->back();
         
     }
+
+    public function faculties(){
+        $faculties = Faculty::with('departments')->get();
+
+        return view('admin.faculties', [
+            'faculties' => $faculties
+        ]);
+    }
+
+    public function faculty($slug){
+        $faculty = Faculty::with('departments', 'departments.programmes', 'students', 'students.programme', 'students.programme.department')
+        ->where('slug', $slug)->first();
+
+        return view('admin.faculty', [
+            'faculty' => $faculty
+        ]);
+    }
+
+    public function departments(){
+        $departments = Department::with('programmes')->get();
+
+        return view('admin.departments', [
+            'departments' => $departments
+        ]);
+    }
+
+    public function department($slug){
+        $department = Department::with('programmes', 'programmes.students')->where('slug', $slug)->first();
+
+        return view('admin.department', [
+            'department' => $department
+        ]);
+    }
+    
 }

@@ -19,6 +19,7 @@ class CreateGuardiansTable extends Migration
             $table->string('password');
             $table->string('address')->nullable();
             $table->string('phone_number')->nullable();
+            $table->string('passcode')->nullable();
             $table->softDeletes();
             $table->rememberToken();
             $table->timestamps();

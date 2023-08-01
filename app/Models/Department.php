@@ -15,6 +15,7 @@ class Department extends Model
         'faculty_id',
         'hod_id',
         'web_id',
+        'slug'
     ];
 
      /**
@@ -35,5 +36,24 @@ class Department extends Model
     public function faculty()
     {
         return $this->belongsTo(Faculty::class, 'faculty_id');
+    }
+
+    /**
+     * Get all of the students for the Department
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function students()
+    {
+        return $this->hasMany(Student::class, 'department_id');
+    }
+
+    /**
+     * Get all of the staffs for the Department
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function staffs(){
+        return $this->hasMany(Staff::class, 'department_id'); 
     }
 }

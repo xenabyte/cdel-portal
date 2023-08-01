@@ -40,6 +40,7 @@ class CronController extends Controller
                 $facultyNeededData = ([
                     'name' => $facultyData['name'],
                     'web_id' => $facultyData['id'],
+                    'slug' => strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $facultyData['name'])))
                 ]);
 
                 $facultyNames[] = $facultyData['name'];
@@ -55,6 +56,7 @@ class CronController extends Controller
                         'name' => $departmentData['name'],
                         'faculty_id' => $departmentData['facultyid'],
                         'web_id' => $departmentData['id'],
+                        'slug' => strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $departmentData['name'])))
                     ]);
 
                     $departmentNames[] = $departmentData['name'];
@@ -75,6 +77,7 @@ class CronController extends Controller
                             'award' => $programmeData['award'],
                             'duration' => intval($programmeData['duration']),
                             'max_duration' => intval($programmeData['max_duration']),
+                            'slug' => strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $programmeData['name'])))
                         ]);
 
                         $programmeNames[] = $programmeData['name'];
