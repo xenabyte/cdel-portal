@@ -18,7 +18,10 @@ class Programme extends Model
         'max_duration',
         'department_id',
         'web_id',
-        'slug'
+        'slug',
+        'code',
+        'code_number',
+        'matric_last_number'
     ];
 
     /**
@@ -62,5 +65,9 @@ class Programme extends Model
     public function students()
     {
         return $this->hasMany(Student::class, 'programme_id');
+    }
+
+    public function programmeCategory(){
+        return $this->belongsTo(ProgrammeCategory::class, 'category_id');
     }
 }

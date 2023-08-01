@@ -12,6 +12,7 @@ use App\Http\Requests;
 use Illuminate\Support\Facades\Validator;
 
 use App\Models\ProgrammeCategory;
+use App\Models\Programme;
 
 use SweetAlert;
 use Mail;
@@ -98,6 +99,59 @@ class ProgrammeController extends Controller
         
         if($programmeCategory->delete()){
             alert()->success('Delete Successfully', '')->persistent('Close');
+            return redirect()->back();
+        }
+
+        alert()->error('Oops!', 'Something went wrong')->persistent('Close');
+        return redirect()->back();
+        
+    }
+
+    public function programmes(){
+        $programmes = Programme::with('students')->get();
+
+        return view('admin.programmes', [
+            'programmes' => $programmes
+        ]);
+    }
+
+    public function programme($slug){
+        $programme = Programme::with('students')->where('slug', $slug)->first();
+
+        return view('admin.programme', [
+            'programme' => $programme
+        ]);
+    }
+
+    public function saveProgramme(Request $request){
+        $validator = Validator::make($request->all(), [
+            'programme_id' => 'required',
+        ]);
+
+        if($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+
+        if(!$programme = Programme::find($request->programme_id)){
+            alert()->error('Oops', 'Invalid Programme ')->persistent('Close');
+            return redirect()->back();
+        }
+
+        if(!empty($request->code) &&  $request->code != $programme->code){
+            $programme->code = strtoupper($request->code);
+        }
+
+        if(!empty($request->code_number) &&  $request->code_number != $programme->code_number){
+            $programme->code_number = $request->code_number;
+        }
+
+        if(!empty($request->matric_last_number) &&  $request->matric_last_number != $programme->matric_last_number){
+            $programme->matric_last_number = $request->matric_last_number;
+        }
+
+        if($programme->save()){
+            alert()->success('Changes Saved', '')->persistent('Close');
             return redirect()->back();
         }
 

@@ -22,6 +22,7 @@ class CreateStaffTable extends Migration
             $table->string('phone_number')->nullable();
             $table->string('image')->nullable();
             $table->unsignedBigInteger('faculty_id')->nullable();
+            $table->unsignedBigInteger('department_id')->nullable();
             $table->date('dob')->nullable();
             $table->string('nationality')->nullable();
             $table->string('religion')->nullable();

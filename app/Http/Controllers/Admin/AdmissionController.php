@@ -19,6 +19,8 @@ use App\Models\Olevel;
 use App\Models\Guardian;
 use App\Models\NextOfKin;
 use App\Models\AcademicLevel;
+use App\Models\Student;
+
 
 use App\Mail\ApplicationMail;
 
@@ -99,36 +101,49 @@ class AdmissionController extends Controller
 
         $globalData = $request->input('global_data');
         $applicationSession = $globalData->sessionSetting['application_session'];
+        $admissionSession = $globalData->sessionSetting['admission_session'];
 
         $applicantId = $applicant->id;
         $programmeId = $request->programme_id;
-        $programme = Programme::find($programmeId);
+        $programme = Programme::with('department', 'department.faculty')->where('id', $programmeId)->first();
         $codeNumber = $programme->code_number;
         $code = $programme->code;
-        $matricNumber = substr($applicationSession, 2, 2).'/'.$codeNumber.$code.$
+        $newMatric = $programme->matric_last_number + 1;
+        $matricNumber = substr($applicationSession, 2, 2).'/'.$codeNumber.$code.sprintf("%03d", $newMatric);
+        $parts = explode("/", $admissionSession);
+        $entryYear = $parts[1];
 
         $status = $request->status;
         $accessCode = $applicant->passcode;
         $email = $applicant->email;
         $name = $applicant->lastname.' '.$applicant->othernames;
+        $studentEmail = strtolower($code).'.'.$applicant->lastname.'@tau.edu.ng';
         
 
         if(strtolower($status) == 'admitted'){
             //create an email with tpa letter heading 
-            $pdf = new Pdf();
-            $admissionLetter = $pdf->generateAdmissionLetter($applicant->slug);
-            $applicant->admission_letter = $admissionLetter;
-            $google = new Google();
-            $createStudentEmail = $google->createUser($email, $applicant->firstname, $applicant->lastname, $accessCode);
+            // $pdf = new Pdf();
+            // $admissionLetter = $pdf->generateAdmissionLetter($applicant->slug);
+            // $applicant->admission_letter = $admissionLetter;
+            // $google = new Google();
+            // $createStudentEmail = $google->createUser($email, $applicant->firstname, $applicant->lastname, $accessCode);
             //create student records
             $studentId = Student::create([
-                'user_id' => $applicantId,
-                'email' => $email,
+                'matric_number' => $matricNumber,
+                'email' => $studentEmail,
                 'password' => bcrypt($accessCode),
-                'student_id' => $studentId,
+                'passcode' => $accessCode,
+                'user_id' => $applicantId,
+                'academic_session' => $admissionSession,
+                'level_id' => $request->level_id,
+                'faculty_id' => $programme->department->faculty->id,
+                'department_id' => $programme->department->id,
+                'entry_year' => $entryYear
             ])->id;
 
 
+            $programme->matric_last_number = $newMatric;
+            $programme->save();
 
             //In the email, create and provide student portal login information
         }

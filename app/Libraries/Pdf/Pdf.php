@@ -15,7 +15,7 @@ Class Pdf {
             'no_modify' => true,
         ];
 
-        $applicant = Applicant::with('programme', 'programmeType', 'programmeType.programmes', 'olevels', 'utmes')->where('slug', $applicantSlug)->first();
+        $applicant = Applicant::with('programme', 'olevels', 'utmes')->where('slug', $applicantSlug)->first();
 
         $fileDirectory = 'uploads/files/admission/letters/'.$applicantSlug.'.pdf';
 

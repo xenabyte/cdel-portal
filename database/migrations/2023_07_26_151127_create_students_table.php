@@ -17,6 +17,7 @@ class CreateStudentsTable extends Migration
             $table->string('matric_number')->unique();
             $table->string('email')->unique();
             $table->string('password');
+            $table->string('passcode')->nullable();
             $table->unsignedBigInteger('programme_id')->nullable();
             $table->string('academic_session')->nullable();
             $table->string('image')->nullable();

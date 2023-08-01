@@ -85,6 +85,17 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'admin'],
   Route::get('faculties', [App\Http\Controllers\Admin\AcademicController::class, 'faculties'])->name('faculties');
   Route::get('faculty/{slug}', [App\Http\Controllers\Admin\AcademicController::class, 'faculty'])->name('faculty');
 
+  Route::get('departments', [App\Http\Controllers\Admin\AcademicController::class, 'departments'])->name('departments');
+  Route::get('department/{slug}', [App\Http\Controllers\Admin\AcademicController::class, 'department'])->name('department');
+
+  Route::get('programmes', [App\Http\Controllers\Admin\ProgrammeController::class, 'programmes'])->name('programmes');
+  Route::get('programme/{slug}', [App\Http\Controllers\Admin\ProgrammeController::class, 'programme'])->name('programme');
+  Route::post('saveProgramme', [App\Http\Controllers\Admin\ProgrammeController::class, 'saveProgramme'])->name('saveProgramme');
+
+  Route::post('manageAdmission', [App\Http\Controllers\Admin\AdmissionController::class, 'manageAdmission'])->name('manageAdmission');
+
+
+
 });
 
 Route::group(['prefix' => 'student'], function () {

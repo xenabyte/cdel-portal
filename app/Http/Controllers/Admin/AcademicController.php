@@ -15,6 +15,7 @@ use App\Models\AcademicLevel;
 use App\Models\Session;
 use App\Models\SessionSetting;
 use App\Models\Faculty;
+use App\Models\Department;
 
 use SweetAlert;
 use Mail;
@@ -244,4 +245,21 @@ class AcademicController extends Controller
             'faculty' => $faculty
         ]);
     }
+
+    public function departments(){
+        $departments = Department::with('programmes')->get();
+
+        return view('admin.departments', [
+            'departments' => $departments
+        ]);
+    }
+
+    public function department($slug){
+        $department = Department::with('programmes', 'programmes.students')->where('slug', $slug)->first();
+
+        return view('admin.department', [
+            'department' => $department
+        ]);
+    }
+    
 }

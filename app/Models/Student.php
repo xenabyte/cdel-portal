@@ -20,6 +20,7 @@ class Student extends Authenticatable
         'matric_number', 
         'email', 
         'password',
+        'passcode',
         'programme_id',
         'faculty_id',
         'department_id',

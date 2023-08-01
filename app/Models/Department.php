@@ -47,4 +47,13 @@ class Department extends Model
     {
         return $this->hasMany(Student::class, 'department_id');
     }
+
+    /**
+     * Get all of the staffs for the Department
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function staffs(){
+        return $this->hasMany(Staff::class, 'department_id'); 
+    }
 }

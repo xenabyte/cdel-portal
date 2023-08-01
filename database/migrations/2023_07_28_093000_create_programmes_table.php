@@ -23,6 +23,7 @@ class CreateProgrammesTable extends Migration
             $table->unsignedBigInteger('department_id')->nullable();
             $table->integer('code_number')->nullable();
             $table->string('code')->nullable();
+            $table->string('matric_last_number')->nullable();
             $table->string('web_id')->nullable();
             $table->string('slug')->nullable();
             $table->softDeletes();
