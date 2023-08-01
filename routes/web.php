@@ -103,6 +103,7 @@ Route::group(['prefix' => 'student'], function () {
   Route::get('/login', [App\Http\Controllers\Student\Auth\LoginController::class, 'showLoginForm'])->name('login');
   Route::post('/login', [App\Http\Controllers\Student\Auth\LoginController::class, 'login']);
   Route::post('/logout', [App\Http\Controllers\Student\Auth\LoginController::class, 'logout'])->name('logout');
+  Route::get('/home', [App\Http\Controllers\Student\StudentController::class, 'index'])->name('home');
 
   // Route::get('/register', [App\Http\Controllers\Student\Auth\RegisterController::class, 'showRegistrationForm'])->name('register');
   // Route::post('/register', [App\Http\Controllers\Student\Auth\RegisterController::class, 'register']);

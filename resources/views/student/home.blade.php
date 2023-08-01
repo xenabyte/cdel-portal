@@ -1,4 +1,4 @@
-@extends('student.layout.auth')
+@extends('student.layout.dashboard')
 
 @section('content')
 <div class="container">
