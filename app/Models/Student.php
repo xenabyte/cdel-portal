@@ -21,6 +21,8 @@ class Student extends Authenticatable
         'email', 
         'password',
         'programme_id',
+        'faculty_id',
+        'department_id',
         'academic_session',
         'image',
         'level_id',
@@ -31,7 +33,8 @@ class Student extends Authenticatable
         'entry_year',
         'max_graduating_year',
         'user_id',
-        'partner_id'
+        'partner_id',
+        'addmission_letter'
     ];
 
     /**
@@ -52,5 +55,65 @@ class Student extends Authenticatable
     public function sendPasswordResetNotification($token)
     {
         $this->notify(new StudentResetPassword($token));
+    }
+
+    /**
+     * Get the programme that owns the Student
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function programme()
+    {
+        return $this->belongsTo(Programme::class, 'programme_id');
+    }
+
+    /**
+     * Get the faculty that owns the Student
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function faculty()
+    {
+        return $this->belongsTo(Students::class, 'faculty_id');
+    }
+
+    /**
+     * Get the department that owns the Student
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function department()
+    {
+        return $this->belongsTo(Department::class, 'department_id');
+    }
+
+    /**
+     * Get the level that owns the Student
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function level()
+    {
+        return $this->belongsTo(Level::class, 'level_id');
+    }
+
+    /**
+     * Get the applicant that owns the Student
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function applicant()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+    /**
+     * Get the partner that owns the Student
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function partner()
+    {
+        return $this->belongsTo(Partner::class, 'partner_id');
     }
 }

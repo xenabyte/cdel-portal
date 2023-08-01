@@ -70,7 +70,7 @@ class ApplicationController extends Controller
         }
 
         $percent = 1;
-        $total = 4;
+        $total = 6;
         if(!empty($applicant->lastname)){
             $percent = $percent + 1;
         }
@@ -80,20 +80,20 @@ class ApplicationController extends Controller
         if(!empty($applicant->guardian)){
             $percent = $percent + 1;
         }
+        if(count($applicant->olevels) > 4 && $applicant->sitting_no != 0){
+            $percent = $percent + 1;
+        }
+        if(!empty($applicant->olevel_1)){
+            $percent = $percent + 1;
+        }
         if(!empty($applicant->application_type) && $applicant->application_type == 'UTME'){
-            if(count($applicant->olevels) > 4 && $applicant->sitting_no != 0){
-                $percent = $percent + 1;
-            }
-            if(!empty($applicant->olevel_1)){
-                $percent = $percent + 1;
-            }
             if(count($applicant->utmes) > 3){
                 $percent = $percent + 1;
             }
             if(!empty($applicant->utme)){
                 $percent = $percent + 1;
             }
-            $total = $total + 4;
+            $total = $total + 2;
         }elseif(!empty($applicant->application_type) && $applicant->application_type == 'DE'){
             if(!empty($applicant->de_result)){
                 $percent = $percent + 1;
@@ -241,6 +241,10 @@ class ApplicationController extends Controller
 
         if(!empty($request->application_type) && $request->application_type != $user->application_type){
             $user->application_type = $request->application_type;
+        }
+
+        if(!empty($request->jamb_reg_no) && $request->jamb_reg_no != $user->jamb_reg_no){
+            $user->jamb_reg_no = $request->jamb_reg_no;
         }
 
         if($user->save()){

@@ -68,7 +68,7 @@ class AdmissionController extends Controller
 
     public function applicant(Request $request, $slug){
         $applicant = Applicant::with('programme', 'olevels', 'guardian')->where('slug', $slug)->first();
-        $programmes = Programme::get();
+        $programmes = Programme::where('category_id', $applicant->programme->category_id)->get();
         $levels = AcademicLevel::get();
         
         return view('admin.applicant', [
@@ -97,12 +97,15 @@ class AdmissionController extends Controller
             return redirect()->back();
         }
 
+        $globalData = $request->input('global_data');
+        $applicationSession = $globalData->sessionSetting['application_session'];
+
         $applicantId = $applicant->id;
         $programmeId = $request->programme_id;
         $programme = Programme::find($programmeId);
         $codeNumber = $programme->code_number;
         $code = $programme->code;
-        $matricNumber = $codeNumber.'/'.$code.$
+        $matricNumber = substr($applicationSession, 2, 2).'/'.$codeNumber.$code.$
 
         $status = $request->status;
         $accessCode = $applicant->passcode;

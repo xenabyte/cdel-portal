@@ -694,13 +694,22 @@
                                         @csrf
             
                                         <div class="col-md-12">
-                                            <label for="application_type">Application Type</label>
-                                            <select class="form-select" name="application_type" id="application_type">
-                                                <option selected>Choose...</option>
-                                                <option value="UTME"> UTME</option>
-                                                <option value="DE"> Direct Entry</option>
-                                            </select>
+                                            <div class="mb-3">
+                                                <label for="application_type">Application Type</label>
+                                                <select class="form-select" name="application_type" id="application_type">
+                                                    <option selected>Choose...</option>
+                                                    <option value="UTME"> UTME</option>
+                                                    <option value="DE"> Direct Entry</option>
+                                                </select>
+                                            </div>
                                         </div><!--end col-->
+
+                                        <div class="col-lg-12">
+                                            <div class="mb-3">
+                                                <label for="jamb_reg" class="form-label">Jamb Registration Number</label>
+                                                <input type="text" class="form-control" id="jamb_reg" name="jamb_reg_no" value="{{ $applicant->jamb_reg_no }}" required>
+                                            </div>
+                                        </div>
                                         <hr>
                                         <div class="row g-2">
                                             @if(empty($applicant->status))

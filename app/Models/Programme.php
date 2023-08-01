@@ -18,6 +18,7 @@ class Programme extends Model
         'max_duration',
         'department_id',
         'web_id',
+        'slug'
     ];
 
     /**
@@ -51,5 +52,15 @@ class Programme extends Model
     public function programmePayments()
     {
         return $this->hasMany(Payment::class, 'programme_id', 'id')->where('type', '!=', 'General Fee');
+    }
+
+    /**
+     * Get all of the students for the Programme
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function students()
+    {
+        return $this->hasMany(Student::class, 'programme_id');
     }
 }

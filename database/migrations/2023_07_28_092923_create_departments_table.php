@@ -19,6 +19,7 @@ class CreateDepartmentsTable extends Migration
             $table->unsignedBigInteger('faculty_id')->nullable();
             $table->unsignedBigInteger('hod_id')->nullable();
             $table->string('web_id')->nullable();
+            $table->string('slug')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

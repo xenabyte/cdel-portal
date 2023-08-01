@@ -24,6 +24,7 @@ class CreateProgrammesTable extends Migration
             $table->integer('code_number')->nullable();
             $table->string('code')->nullable();
             $table->string('web_id')->nullable();
+            $table->string('slug')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });
