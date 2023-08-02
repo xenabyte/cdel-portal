@@ -5,12 +5,12 @@
 <div class="row">
     <div class="col-12">
         <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-            <h4 class="mb-sm-0">Applicant</h4>
+            <h4 class="mb-sm-0">Student</h4>
 
             <div class="page-title-right">
                 <ol class="breadcrumb m-0">
                     <li class="breadcrumb-item"><a href="javascript: void(0);">Pages</a></li>
-                    <li class="breadcrumb-item active">Applicant</li>
+                    <li class="breadcrumb-item active">Student</li>
                 </ol>
             </div>
 
@@ -29,47 +29,11 @@
                             <div class="swiper product-thumbnail-slider p-2 rounded bg-light">
                                 <div class="swiper-wrapper">
                                     <div class="swiper-slide">
-                                        <img src="{{asset($applicant->image)}}" alt="" class="img-fluid d-block" />
+                                        <img src="{{asset($student->applicant->image)}}" alt="" class="img-fluid d-block" />
                                     </div>
                                 </div>
                             </div>
                         </div>
-
-                        <h4 class="mt-3 alert alert-info">Admission Status: {{ empty($applicant->status)? 'Processing' : ucwords($applicant->status) }}</h4>
-                        <br>
-                        @if($applicant->status == 'submitted')
-                        <form action="{{ url('admin/manageAdmission') }}" method="POST">
-                            @csrf
-                            <input type="hidden" name="applicant_id" value="{{ $applicant->id }}">
-                            <div class="mb-3">
-                                <label for="programme" class="form-label">Programmes</label>
-                                <select class="form-select" name="programme_id" id="programme" data-choices data-choices-search-false required>
-                                    @foreach($programmes as $programme)<option @if($programme->id == $applicant->programme_id) selected  @endif value="{{ $programme->id }}">{{ $programme->name }}</option>@endforeach
-                                </select>
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="level" class="form-label">Level</label>
-                                <select class="form-select" name="level_id" id="level" data-choices data-choices-search-false required>
-                                    <option value="" selected>Choose...</option>
-                                    @foreach($levels as $academicLevel)<option value="{{ $academicLevel->id }}">{{ $academicLevel->level }}</option>@endforeach
-                                </select>
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="choices-publish-status-input" class="form-label">Manage Application</label>
-                                <select class="form-select" name="status" id="choices-publish-status-input" data-choices data-choices-search-false required>
-                                    <option value="" selected>Choose...</option>
-                                    <option value="Admitted">Admitted</option>
-                                    <option value="Declined">Declined</option>
-                                </select>
-                            </div>
-
-                            <br>
-                            <button type="submit" class="btn btn-lg btn-primary"> Submit</button>
-                        </form>
-                        
-                        @endif
                     </div>
                     <!-- end col -->
 
@@ -77,17 +41,21 @@
                         <div class="mt-xl-0 mt-5">
                             <div class="d-flex">
                                 <div class="flex-grow-1">
-                                    <h4>{{ $applicant->lastname .' '. $applicant->othernames }}</h4>
+                                    <h4>{{ $student->applicant->lastname .' '. $student->applicant->othernames }}</h4>
                                     <div class="hstack gap-3 flex-wrap">
-                                        <div><a href="#" class="text-primary d-block">{{ $applicant->programme->name }}</a></div>
+                                        <div><a href="#" class="text-primary d-block">Applied Programme: {{ $student->applicant->programme->name }}</a></div>
                                         <div class="vr"></div>
-                                        <div class="text-muted">Application ID : <span class="text-body fw-medium"> {{ $applicant->application_number }}</span></div>
-                                        @if($applicant->application_type == 'UTME')
+                                        <div class="text-muted">Addmitted Programme : <span class="text-body fw-medium">{{ $student->programme->name }}</span></div>
                                         <div class="vr"></div>
-                                        <div class="text-muted">UTME Scores : <span class="text-body fw-medium"> {{ $applicant->utmes->sum('score') }}</span></div>
+                                        <div class="text-muted">Application ID : <span class="text-body fw-medium"> {{ $student->applicant->application_number }}</span></div>
+                                        @if($student->applicant->application_type == 'UTME')
+                                        <div class="vr"></div>
+                                        <div class="text-muted">UTME Scores : <span class="text-body fw-medium"> {{ $student->applicant->utmes->sum('score') }}</span></div>
                                         @endif
                                         <div class="vr"></div>
-                                        <div class="text-muted">Application Date : <span class="text-body fw-medium">{{ $applicant->updated_at }}</span></div>
+                                        <div class="text-muted">Application Date : <span class="text-body fw-medium">{{ $student->applicant->updated_at }}</span></div>
+                                        <div class="vr"></div>
+                                        <div class="text-muted">Admitted Date : <span class="text-body fw-medium">{{ $student->created_at }}</span></div>
                                     </div>
                                 </div>
                                 <div class="flex-shrink-0">
@@ -97,7 +65,7 @@
                             </div>
 
                             <div class="product-content mt-5">
-                                <h5 class="fs-14 mb-3"> Applicant Information</h5>
+                                <h5 class="fs-14 mb-3"> Student Information</h5>
                                 <nav>
                                     <ul class="nav nav-tabs nav-tabs-custom nav-info" id="nav-tab" role="tablist">
                                         <li class="nav-item">
@@ -107,13 +75,13 @@
                                         <li class="nav-item">
                                             <a class="nav-link" id="nav-detail-tab" data-bs-toggle="tab" href="#olevel" role="tab" aria-controls="nav-detail" aria-selected="false">Olevel Result</a>
                                         </li>
-                                        @if($applicant->application_type == 'UTME')
+                                        @if($student->applicant->application_type == 'UTME')
                                         <li class="nav-item">
                                             <a class="nav-link" id="nav-detail-tab" data-bs-toggle="tab" href="#utme" role="tab" aria-controls="nav-detail" aria-selected="false">UTME Result</a>
                                         </li>
                                         @endif
 
-                                        @if($applicant->application_type == 'DE')
+                                        @if($student->applicant->application_type == 'DE')
                                         <li class="nav-item">
                                             <a class="nav-link" id="nav-detail-tab" data-bs-toggle="tab" href="#de" role="tab" aria-controls="nav-detail" aria-selected="false">Direct Entry Result</a>
                                         </li>
@@ -127,43 +95,43 @@
                                                 <tbody>
                                                     <tr>
                                                         <th scope="row" style="width: 200px;">Fullname</th>
-                                                        <td>{{ $applicant->lastname .' '. $applicant->othernames }}</td>
+                                                        <td>{{ $student->applicant->lastname .' '. $student->applicant->othernames }}</td>
                                                     </tr>
                                                     <tr>
                                                         <th scope="row">Email</th>
-                                                        <td>{{ $applicant->email }}</td>
+                                                        <td>{{ $student->applicant->email }}</td>
                                                     </tr>
                                                     <tr>
                                                         <th scope="row">Phone Number</th>
-                                                        <td>{{ $applicant->phone_number }}</td>
+                                                        <td>{{ $student->applicant->phone_number }}</td>
                                                     </tr>
                                                     <tr>
                                                         <th scope="row">Gender</th>
-                                                        <td>{{ $applicant->gender }}</td>
+                                                        <td>{{ $student->applicant->gender }}</td>
                                                     </tr>
                                                     <tr>
                                                         <th scope="row">Date of Birth</th>
-                                                        <td>{{ $applicant->dob }}</td>
+                                                        <td>{{ $student->applicant->dob }}</td>
                                                     </tr>
                                                     <tr>
                                                         <th scope="row">Religion</th>
-                                                        <td>{{ $applicant->religion }}</td>
+                                                        <td>{{ $student->applicant->religion }}</td>
                                                     </tr>
                                                     <tr>
                                                         <th scope="row">Marital Status</th>
-                                                        <td>{{ $applicant->marital_status }}</td>
+                                                        <td>{{ $student->applicant->marital_status }}</td>
                                                     </tr>
                                                     <tr>
                                                         <th scope="row">Nationality</th>
-                                                        <td>{{ $applicant->nationality }}</td>
+                                                        <td>{{ $student->applicant->nationality }}</td>
                                                     </tr>
                                                     <tr>
                                                         <th scope="row">State of Origin</th>
-                                                        <td>{{ $applicant->state }}</td>
+                                                        <td>{{ $student->applicant->state }}</td>
                                                     </tr>
                                                     <tr>
                                                         <th scope="row">Local Government Area</th>
-                                                        <td>{{ $applicant->lga }}</td>
+                                                        <td>{{ $student->applicant->lga }}</td>
                                                     </tr>
                                                 </tbody>
                                             </table>
@@ -171,21 +139,21 @@
                                     </div>
                                     <div class="tab-pane fade" id="olevel" role="tabpanel" aria-labelledby="nav-detail-tab">
                                         <div>
-                                            @if(!empty($applicant->olevel_1))
+                                            @if(!empty($student->applicant->olevel_1))
                                             <h5 class="fs-14 mb-3"> Schools Attended</h5>
-                                            {!! $applicant->schools_attended !!}
+                                            {!! $student->applicant->schools_attended !!}
                                             <hr>
                                             <div class="row mb-2">
                                                 <div class="col-sm-6 col-xl-12">
                                                     <!-- Simple card -->
                                                     <i class="bx bxs-file-jpg text-danger" style="font-size: 50px"></i><span style="font-size: 20px">Olevel Result</span>
                                                     <div class="text-end">
-                                                        <a href="{{ asset($applicant->olevel_1) }}" target="blank" class="btn btn-success">View</a>
+                                                        <a href="{{ asset($student->applicant->olevel_1) }}" target="blank" class="btn btn-success">View</a>
                                                     </div>
-                                                    @if($applicant->sitting_no > 1)
+                                                    @if($student->applicant->sitting_no > 1)
                                                     <i class="bx bxs-file-jpg text-danger" style="font-size: 50px"></i><span style="font-size: 20px">Olevel Result (Second Sitting)</span>
                                                     <div class="text-end">
-                                                        <a href="{{ asset($applicant->olevel_2) }}" target="blank"  class="btn btn-success">View</a>
+                                                        <a href="{{ asset($student->applicant->olevel_2) }}" target="blank"  class="btn btn-success">View</a>
                                                     </div>
                                                     @endif
                                                 </div><!-- end col -->
@@ -203,7 +171,7 @@
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    @foreach($applicant->olevels as $olevel)
+                                                    @foreach($student->applicant->olevels as $olevel)
                                                     <tr>
                                                         <th scope="row">{{ $loop->iteration }}</th>
                                                         <td>{{ $olevel->subject }}</td>
@@ -216,16 +184,16 @@
                                             </table>
                                         </div>
                                     </div>
-                                    @if($applicant->application_type == 'UTME')
+                                    @if($student->applicant->application_type == 'UTME')
                                     <div class="tab-pane fade" id="utme" role="tabpanel" aria-labelledby="nav-detail-tab">
                                         <div>
-                                            @if(!empty($applicant->utme))
+                                            @if(!empty($student->applicant->utme))
                                             <div class="row mb-2">
                                                 <div class="col-sm-6 col-xl-12">
                                                     <!-- Simple card -->
                                                     <i class="bx bxs-file-jpg text-danger" style="font-size: 50px"></i><span style="font-size: 20px">UTME Result Printout</span>
                                                     <div class="text-end">
-                                                        <a href="{{ asset($applicant->utme) }}"  target="blank" class="btn btn-success">View</a>
+                                                        <a href="{{ asset($student->applicant->utme) }}"  target="blank" class="btn btn-success">View</a>
                                                     </div>
                                                 </div><!-- end col -->
                                             </div>
@@ -240,7 +208,7 @@
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    @foreach($applicant->utmes as $utme)
+                                                    @foreach($student->applicant->utmes as $utme)
                                                     <tr>
                                                         <th scope="row">{{ $loop->iteration }}</th>
                                                         <td>{{ $utme->subject }}</td>
@@ -250,26 +218,26 @@
                                                     <tr>
                                                         <th scope="row"></th>
                                                         <td>Total</td>
-                                                        <td><strong>{{$applicant->utmes->sum('score')}}</strong></td>
+                                                        <td><strong>{{$student->applicant->utmes->sum('score')}}</strong></td>
                                                     </tr>
                                                 </tbody>
                                             </table>
                                         </div>
                                     </div>
                                     @endif
-                                    @if($applicant->application_type == 'DE')
+                                    @if($student->applicant->application_type == 'DE')
                                     <div class="tab-pane fade" id="de" role="tabpanel" aria-labelledby="nav-detail-tab">
                                         <div>
                                             <h5 class="fs-14 mb-3"> Institution Attended</h5>
-                                            {!! $applicant->de_school_attended !!}
+                                            {!! $student->applicant->de_school_attended !!}
                                             <hr>
-                                            @if(!empty($applicant->de_result))
+                                            @if(!empty($student->applicant->de_result))
                                             <div class="row mb-2">
                                                 <div class="col-sm-6 col-xl-12">
                                                     <!-- Simple card -->
                                                     <i class="bx bxs-file-jpg text-danger" style="font-size: 50px"></i><span style="font-size: 20px">Direct Entry Result</span>
                                                     <div class="text-end">
-                                                        <a href="{{ asset($applicant->de_result) }}"  target="blank" class="btn btn-success">View</a>
+                                                        <a href="{{ asset($student->applicant->de_result) }}"  target="blank" class="btn btn-success">View</a>
                                                     </div>
                                                 </div><!-- end col -->
                                             </div>

@@ -82,6 +82,9 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'admin'],
   Route::get('applicant/{slug}', [App\Http\Controllers\Admin\AdmissionController::class, 'applicant'])->name('applicant');
   Route::post('applicantWithSession', [App\Http\Controllers\Admin\AdmissionController::class, 'applicantWithSession'])->name('applicantWithSession');
 
+  Route::get('students', [App\Http\Controllers\Admin\AdmissionController::class, 'students'])->name('students');
+  Route::get('student/{slug}', [App\Http\Controllers\Admin\AdmissionController::class, 'student'])->name('student');
+
   Route::get('faculties', [App\Http\Controllers\Admin\AcademicController::class, 'faculties'])->name('faculties');
   Route::get('faculty/{slug}', [App\Http\Controllers\Admin\AcademicController::class, 'faculty'])->name('faculty');
 

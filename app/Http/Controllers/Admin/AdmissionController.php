@@ -84,7 +84,7 @@ class AdmissionController extends Controller
         $validator = Validator::make($request->all(), [
             'applicant_id' => 'required',
             'programme_id' => 'required',
-            'level' => 'required',
+            'level_id' => 'required',
             'status' => 'required'
         ]);
 
@@ -117,20 +117,22 @@ class AdmissionController extends Controller
         $accessCode = $applicant->passcode;
         $email = $applicant->email;
         $name = $applicant->lastname.' '.$applicant->othernames;
-        $studentEmail = strtolower($code).'.'.$applicant->lastname.'@tau.edu.ng';
+        $nameParts = explode(' ', $applicant->othernames);
+        $firstName = $nameParts[0];
+        $studentEmail = strtolower($code.'.'.$applicant->lastname.'.'.$firstName.'@tau.edu.ng');
         
 
         if(strtolower($status) == 'admitted'){
-            //create an email with tpa letter heading 
+            // //create an email with tpa letter heading 
             // $pdf = new Pdf();
             // $admissionLetter = $pdf->generateAdmissionLetter($applicant->slug);
             // $applicant->admission_letter = $admissionLetter;
             // $google = new Google();
-            // $createStudentEmail = $google->createUser($email, $applicant->firstname, $applicant->lastname, $accessCode);
+            // $createStudentEmail = $google->createUser($studentEmail, $applicant->othernames, $applicant->lastname, $accessCode);
             //create student records
             $studentId = Student::create([
-                'matric_number' => $matricNumber,
-                'email' => $studentEmail,
+                'slug' => $applicant->slug,
+                'email' => $applicant->email,
                 'password' => bcrypt($accessCode),
                 'passcode' => $accessCode,
                 'user_id' => $applicantId,
@@ -138,6 +140,7 @@ class AdmissionController extends Controller
                 'level_id' => $request->level_id,
                 'faculty_id' => $programme->department->faculty->id,
                 'department_id' => $programme->department->id,
+                'programme_id' => $programme->id,
                 'entry_year' => $entryYear
             ])->id;
 
@@ -157,6 +160,26 @@ class AdmissionController extends Controller
 
         alert()->error('Oops!', 'Something went wrong')->persistent('Close');
         return redirect()->back();
+    }
+
+    public function students(Request $request){
+        $globalData = $request->input('global_data');
+        $applicationSession = $globalData->sessionSetting['application_session'];
+        $admissionSession = $globalData->sessionSetting['admission_session'];
+
+        $students = Student::with('applicant', 'programme')->where('academic_session', $admissionSession)->get();
+
+        return view('admin.students', [
+            'students' => $students
+        ]);
+    }
+
+    public function student($slug){
+        $student = Student::with('applicant', 'applicant.utmes', 'programme')->first();
+
+        return view('admin.student', [
+            'student' => $student
+        ]);
     }
 
     

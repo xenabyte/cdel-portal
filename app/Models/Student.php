@@ -35,7 +35,8 @@ class Student extends Authenticatable
         'max_graduating_year',
         'user_id',
         'partner_id',
-        'addmission_letter'
+        'addmission_letter',
+        'slug',
     ];
 
     /**

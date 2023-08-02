@@ -4,10 +4,11 @@ namespace App\Libraries\Pdf;
 
 use Barryvdh\DomPDF\Facade as PDFDocument;
 use App\Models\User as Applicant;
+use App\Models\Student;
 
 Class Pdf {
 
-    public function generateAdmissionLetter($applicantSlug){
+    public function generateAdmissionLetter($slug){
         $options = [
             'isRemoteEnabled' => true,
             'encryption' => '128',
@@ -15,11 +16,11 @@ Class Pdf {
             'no_modify' => true,
         ];
 
-        $applicant = Applicant::with('programme', 'olevels', 'utmes')->where('slug', $applicantSlug)->first();
+        $student = Student::with('programme', 'applicant')->where('slug', $slug)->first();
 
-        $fileDirectory = 'uploads/files/admission/letters/'.$applicantSlug.'.pdf';
+        $fileDirectory = 'uploads/files/admission/letters/'.$slug.'.pdf';
 
-        $pdf = PDFDocument::loadView('pdf.admissionLetter', $applicant)
+        $pdf = PDFDocument::loadView('pdf.admissionLetter', $student)
         ->setOptions($options)
         ->save($fileDirectory);
 
