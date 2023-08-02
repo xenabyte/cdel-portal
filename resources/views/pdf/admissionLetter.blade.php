@@ -1,12 +1,12 @@
-<table style="width: 50%;">
+<table style="width: 40%;">
     <tbody>
         <tr>
-            <td><img src="https://tau.edu.ng/assets/images/logo.png" width="50%"></td>
+            <td><img src="https://tau.edu.ng/assets/images/logo.png" width="40%"></td>
         </tr>
     </tbody>
 </table>
-<p style='margin:0cm;font-size:14px;font-family:"Calibri",sans-serif;text-align:center;'><br><br><strong><span style="font-size: 30px; color: rgb(226, 80, 65);">Office of the Registrar</span></strong></p>
-<p style='margin:0cm;font-size:14px;font-family:"Calibri",sans-serif;text-align:center;'><strong><span style="font-size: 16px; color: rgb(0, 0, 0);">Email: <a href="mailto:registrar@tau.edu.ng">registrar@tau.edu.ng</a></span></strong></p>
+<p style='margin:0cm;font-size:14px;font-family:"Calibri",sans-serif;text-align:center;'><br><br><strong><span style="font-size: 22px; color: rgb(226, 80, 65);">Office of the Registrar</span></strong></p>
+<p style='margin:0cm;font-size:14px;font-family:"Calibri",sans-serif;text-align:center;'><strong><span style="font-size: 14px; color: rgb(0, 0, 0);">Email: <a href="mailto:registrar@tau.edu.ng">registrar@tau.edu.ng</a></span></strong></p>
 <p style="text-align: right;"><strong>Date:</strong> {{date('F j, Y', strtotime($created_at))}}</p>
 <p><strong>Registration No:</strong> {{ $jamb_reg_no }}<br><strong>Programme:</strong> {{ $programme_name }}<br><strong>Duration:</strong> {{ $duration }} Academic Sessions<br><strong>Department:</strong> {{ $department_name }}<br><strong>Faculty:</strong> {{ $faculty_name }}</p>
 <p>Dear <strong>{{ $student_name }}</strong>,</p>
