@@ -15,7 +15,41 @@ class Authenticate extends Middleware
     protected function redirectTo($request)
     {
         if (! $request->expectsJson()) {
-            return route('login');
+            $guard = $this->getGuard($request);
+            
+            switch ($guard) {
+                case 'admin':
+                    return route('admin.login'); 
+    
+                case 'staff':
+                    return route('staff.login'); 
+
+                case 'partner':
+                    return route('partner.login'); 
+                
+                case 'student':
+                    return route('student.login'); 
+
+                case 'user':
+                    return route('applicant.login'); 
+
+                case 'guardian':
+                    return route('guardian.login'); 
+    
+                default:
+                    return env('WEBSITE_URL');
+            }
+            
+            return env('WEBSITE_URL');
         }
+    }
+
+    protected function getGuard($request)
+    {
+        if ($request->expectsJson()) {
+            return null;
+        }
+
+        return $request->segment(1);
     }
 }

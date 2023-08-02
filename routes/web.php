@@ -26,7 +26,7 @@ Route::post('/paystackWebhook', [App\Http\Controllers\PaymentController::class, 
 
 
 Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'admin'], function () {
-  Route::get('/', [App\Http\Controllers\Admin\Auth\LoginController::class, 'showLoginForm'])->name('login');
+  Route::get('/', [App\Http\Controllers\Admin\Auth\LoginController::class, 'showLoginForm'])->name('admin.login');
   Route::get('/login', [App\Http\Controllers\Admin\Auth\LoginController::class, 'showLoginForm'])->name('login');
   Route::post('/login', [App\Http\Controllers\Admin\Auth\LoginController::class, 'login']);
   Route::post('/logout', [App\Http\Controllers\Admin\Auth\LoginController::class, 'logout'])->name('logout');
@@ -102,7 +102,7 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'admin'],
 });
 
 Route::group(['prefix' => 'student'], function () {
-  Route::get('/', [App\Http\Controllers\Student\Auth\LoginController::class, 'showLoginForm'])->name('login');
+  Route::get('/', [App\Http\Controllers\Student\Auth\LoginController::class, 'showLoginForm'])->name('student.login');
   Route::get('/login', [App\Http\Controllers\Student\Auth\LoginController::class, 'showLoginForm'])->name('login');
   Route::post('/login', [App\Http\Controllers\Student\Auth\LoginController::class, 'login']);
   Route::post('/logout', [App\Http\Controllers\Student\Auth\LoginController::class, 'logout'])->name('logout');
@@ -152,7 +152,7 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'bursary'
 });
 
 Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'partner'], function () {
-  Route::get('/', [App\Http\Controllers\Partner\Auth\LoginController::class, 'showLoginForm'])->name('login');
+  Route::get('/', [App\Http\Controllers\Partner\Auth\LoginController::class, 'showLoginForm'])->name('partner.login');
   Route::get('/login', [App\Http\Controllers\Partner\Auth\LoginController::class, 'showLoginForm'])->name('login');
   Route::post('/login', [App\Http\Controllers\Partner\Auth\LoginController::class, 'login']);
   Route::post('/logout', [App\Http\Controllers\Partner\Auth\LoginController::class, 'logout'])->name('logout');
@@ -174,7 +174,7 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'partner'
 });
 
 Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'guardian'], function () {
-  Route::get('/', [App\Http\Controllers\Guardian\Auth\LoginController::class, 'showLoginForm'])->name('login');
+  Route::get('/', [App\Http\Controllers\Guardian\Auth\LoginController::class, 'showLoginForm'])->name('guardian.login');
   Route::get('/login', [App\Http\Controllers\Guardian\Auth\LoginController::class, 'showLoginForm'])->name('login');
   Route::post('/login', [App\Http\Controllers\Guardian\Auth\LoginController::class, 'login']);
   Route::post('/logout', [App\Http\Controllers\Guardian\Auth\LoginController::class, 'logout'])->name('logout');
@@ -192,7 +192,7 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'guardian
 
 Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'applicant'], function () {
   Route::get('/', [App\Http\Controllers\User\ApplicationController::class, 'showRegistrationForm'])->name('showRegistrationForm');
-  Route::get('/login', [App\Http\Controllers\User\Auth\LoginController::class, 'showLoginForm'])->name('login');
+  Route::get('/login', [App\Http\Controllers\User\Auth\LoginController::class, 'showLoginForm'])->name('applicant.login');
   Route::post('/login', [App\Http\Controllers\User\Auth\LoginController::class, 'login']);
   Route::post('/logout', [App\Http\Controllers\User\Auth\LoginController::class, 'logout'])->name('logout');
 
