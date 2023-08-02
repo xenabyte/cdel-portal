@@ -120,7 +120,7 @@ Route::group(['prefix' => 'student'], function () {
 });
 
 Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'staff'], function () {
-  Route::get('/', [App\Http\Controllers\Staff\Auth\LoginController::class, 'showLoginForm'])->name('login');
+  Route::get('/', [App\Http\Controllers\Staff\Auth\LoginController::class, 'showLoginForm'])->name('staff.login');
   Route::get('/login', [App\Http\Controllers\Staff\Auth\LoginController::class, 'showLoginForm'])->name('login');
   Route::post('/login', [App\Http\Controllers\Staff\Auth\LoginController::class, 'login']);
   Route::post('/logout', [App\Http\Controllers\Staff\Auth\LoginController::class, 'logout'])->name('logout');
@@ -137,7 +137,7 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'staff'],
 });
 
 Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'bursary'], function () {
-  Route::get('/', [App\Http\Controllers\Bursary\Auth\LoginController::class, 'showLoginForm'])->name('login');
+  Route::get('/', [App\Http\Controllers\Bursary\Auth\LoginController::class, 'showLoginForm'])->name('bursary.login');
   Route::get('/login', [App\Http\Controllers\Bursary\Auth\LoginController::class, 'showLoginForm'])->name('login');
   Route::post('/login', [App\Http\Controllers\Bursary\Auth\LoginController::class, 'login']);
   Route::post('/logout', [App\Http\Controllers\Bursary\Auth\LoginController::class, 'logout'])->name('logout');
