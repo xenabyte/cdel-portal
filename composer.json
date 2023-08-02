@@ -7,16 +7,16 @@
     "require": {
         "php": "^7.3|^8.0",
         "alaminfirdows/laravel-multi-auth": "^0.0.1@alpha",
+        "barryvdh/laravel-dompdf": "^2.0",
         "fruitcake/laravel-cors": "^2.0",
+        "google/apiclient": "^2.0",
         "guzzlehttp/guzzle": "^7.0.1",
         "laravel/framework": "^8.75",
         "laravel/sanctum": "^2.11",
         "laravel/tinker": "^2.5",
         "laravel/ui": "^3.4",
         "realrashid/sweet-alert": "^7.0",
-        "unicodeveloper/laravel-paystack": "^1.1",
-        "google/apiclient": "^2.0",
-        "barryvdh/laravel-dompdf": "^2.0"
+        "unicodeveloper/laravel-paystack": "^1.1"
     },
     "require-dev": {
         "facade/ignition": "^2.5",

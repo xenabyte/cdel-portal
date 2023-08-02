@@ -5,7 +5,7 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 
 use App\Models\SessionSetting;
-use App\Models\GlobalSetting as setting;
+use App\Models\GlobalSetting as Setting;
 
 use Log;
 

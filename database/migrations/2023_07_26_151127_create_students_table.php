@@ -31,7 +31,7 @@ class CreateStudentsTable extends Migration
             $table->year('max_graduating_year')->nullable();
             $table->unsignedBigInteger('user_id')->nullable();
             $table->unsignedBigInteger('partner_id')->nullable();
-            $table->string('addmission_letter')->nullable();
+            $table->string('admission_letter')->nullable();
             $table->string('faculty_id')->nullable();
             $table->string('department_id')->nullable();
             $table->softDeletes();

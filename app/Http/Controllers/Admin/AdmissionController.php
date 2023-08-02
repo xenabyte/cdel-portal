@@ -123,10 +123,7 @@ class AdmissionController extends Controller
         
 
         if(strtolower($status) == 'admitted'){
-            // //create an email with tpa letter heading 
-            // $pdf = new Pdf();
-            // $admissionLetter = $pdf->generateAdmissionLetter($applicant->slug);
-            // $applicant->admission_letter = $admissionLetter;
+
             // $google = new Google();
             // $createStudentEmail = $google->createUser($studentEmail, $applicant->othernames, $applicant->lastname, $accessCode);
             //create student records
@@ -144,6 +141,12 @@ class AdmissionController extends Controller
                 'entry_year' => $entryYear
             ])->id;
 
+            //create an email with tpa letter heading 
+            $pdf = new Pdf();
+            $admissionLetter = $pdf->generateAdmissionLetter($applicant->slug);
+
+            $student = Student::find($studentId);
+            $student->admission_letter = $admissionLetter;
 
             $programme->matric_last_number = $newMatric;
             $programme->save();

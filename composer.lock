@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "9ed84b73f960146461f99c1ebd202da4",
+    "content-hash": "752c1c768fba93e3cb89c097e2e1e4d4",
     "packages": [
         {
             "name": "alaminfirdows/laravel-multi-auth",

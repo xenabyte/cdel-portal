@@ -35,7 +35,7 @@ class Student extends Authenticatable
         'max_graduating_year',
         'user_id',
         'partner_id',
-        'addmission_letter',
+        'admission_letter',
         'slug',
     ];
 
@@ -76,7 +76,7 @@ class Student extends Authenticatable
      */
     public function faculty()
     {
-        return $this->belongsTo(Students::class, 'faculty_id');
+        return $this->belongsTo(Faculty::class, 'faculty_id');
     }
 
     /**
