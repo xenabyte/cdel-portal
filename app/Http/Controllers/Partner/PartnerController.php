@@ -27,4 +27,25 @@ class PartnerController extends Controller
 
         return view('partner.home');
     }
+
+    public function transactions(Request $request){
+
+        return view('partner.transactions');
+    }
+
+    public function students(Request $request){
+
+        return view('partner.students');
+    }
+
+    public function applicants(Request $request){
+
+        return view('partner.applicants');
+    }
+
+    public function profile(Request $request){
+
+        return view('partner.profile');
+    }
+
 }

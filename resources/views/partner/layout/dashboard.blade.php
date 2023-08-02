@@ -111,8 +111,10 @@
                             <div class="dropdown-menu dropdown-menu-end">
                                 <!-- item-->
                                 <h6 class="dropdown-header">Welcome {{ $partner->name }}!</h6>
+                                <a class="dropdown-item" href="{{url('/partner/students')}}"><i class="mdi mdi-account text-muted fs-16 align-middle me-1"></i> <span class="align-middle">Students</span></a>
+                                <a class="dropdown-item" href="{{url('/partner/transactions')}}"><i class="mdi mdi-bank-transfer text-muted fs-16 align-middle me-1"></i> <span class="align-middle">Transaction</span></a>
                                 <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="pages-profile-settings.html"><span class="badge bg-soft-success text-success mt-1 float-end">New</span><i class="mdi mdi-cog-outline text-muted fs-16 align-middle me-1"></i> <span class="align-middle">Settings</span></a>
+                                <a class="dropdown-item" href="{{url('/partner/profile')}}"><i class="mdi mdi-cog-outline text-muted fs-16 align-middle me-1"></i> <span class="align-middle">Settings</span></a>
                                 <a class="dropdown-item" href="{{ url('/partner/logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();"><i class="mdi mdi-logout text-muted fs-16 align-middle me-1"></i> <span class="align-middle" data-key="t-logout">Logout</span></a>
                                 <form id="logout-form" action="{{ url('/partner/logout') }}" method="POST" style="display: none;">@csrf</form>
                             </div>
@@ -160,6 +162,35 @@
                         <li class="nav-item">
                             <a class="nav-link menu-link" href="{{ url('/partner/home') }}">
                                 <i class="mdi mdi-view-dashboard"></i> <span>Dashboard</span>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link menu-link" href="#admission" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="admission">
+                                <i class="mdi mdi-account-box-multiple"></i> <span data-key="t-admission">Manage Applicant & Student</span>
+                            </a>
+                            <div class="collapse menu-dropdown" id="admission">
+                                <ul class="nav nav-sm flex-column">
+                                    <li class="nav-item">
+                                        <a href="{{ url('/partner/applicants') }}" class="nav-link">Applicants</a>
+                                    </li>
+            
+                                    <li class="nav-item">
+                                        <a href="{{ url('/partner/students') }}" class="nav-link">Students</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li> <!-- end Bursary Menu -->
+
+                        <li class="nav-item">
+                            <a class="nav-link menu-link" href="{{ url('/partner/transactions') }}">
+                                <i class="mdi mdi-bank-transfer"></i> <span>Transactions</span>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link menu-link" href="{{ url('/partner/profile') }}">
+                                <i class="mdi mdi-account-cog"></i> <span>Profile</span>
                             </a>
                         </li>
                        

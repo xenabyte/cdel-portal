@@ -164,6 +164,10 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'partner'
   Route::get('/password/reset/{token}', [App\Http\Controllers\Partner\Auth\ResetPasswordController::class, 'showResetForm']);
 
   Route::get('/home', [App\Http\Controllers\Partner\PartnerController::class, 'index'])->name('home');
+  Route::get('/students', [App\Http\Controllers\Partner\PartnerController::class, 'students'])->name('students');
+  Route::get('/applicants', [App\Http\Controllers\Partner\PartnerController::class, 'applicants'])->name('applicants');
+  Route::get('/transactions', [App\Http\Controllers\Partner\PartnerController::class, 'transactions'])->name('transactions');
+  Route::get('/profile', [App\Http\Controllers\Partner\PartnerController::class, 'profile'])->name('profile');
 
 });
 
