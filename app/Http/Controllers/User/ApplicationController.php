@@ -64,10 +64,10 @@ class ApplicationController extends Controller
             ]);
         }
 
-        if(strtolower($applicant->status) == 'admitted'){
-            alert()->success('Congratulation', 'You have been admitted, proceed to student portal, check our mail for more information')->persistent('Close');
-            return view('student.auth.login');
-        }
+        // if(strtolower($applicant->status) == 'admitted'){
+        //     alert()->success('Congratulation', 'You have been admitted, proceed to student portal, check our mail for more information')->persistent('Close');
+        //     return view('student.auth.login');
+        // }
 
         $percent = 1;
         $total = 6;

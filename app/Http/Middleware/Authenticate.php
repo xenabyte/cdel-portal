@@ -30,7 +30,7 @@ class Authenticate extends Middleware
                 case 'student':
                     return route('student.login'); 
 
-                case 'user':
+                case 'applicant':
                     return route('applicant.login'); 
 
                 case 'guardian':
