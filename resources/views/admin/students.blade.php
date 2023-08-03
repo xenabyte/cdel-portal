@@ -49,7 +49,7 @@
                             <td>{{ $student->applicant->lastname .' '. $student->applicant->othernames }}</td>
                             <td>{{ $student->applicant->programme->name }}</td>
                             <td>{{ $student->applicant->email }} </td>
-                            <td>{{ $student->applicant->passcode }} </td>
+                            <td>{{ $student->passcode }} </td>
                             <td>{{ $student->applicant->phone_number }} </td>
                             <td>{{ $student->academic_session }} </td>
                             <td>{{ $student->created_at }} </td>

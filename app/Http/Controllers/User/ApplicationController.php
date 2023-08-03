@@ -52,7 +52,7 @@ class ApplicationController extends Controller
         
         $applicant = Applicant::with('programme', 'olevels', 'guardian')->where('id', $userId)->first();
 
-        $applicationPayment = Payment::with('structures')->where('type', 'Application Fee')->first();
+        $applicationPayment = Payment::with('structures')->where('type', Payment::PAYMENT_TYPE_APPLICATION)->first();
         $paymentId = $applicationPayment->id;
         $transaction = Transaction::where('user_id', $applicant->id)->where('session', $applicationSession)->where('payment_id', $paymentId)->where('status', 1)->first();
 

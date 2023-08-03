@@ -37,7 +37,7 @@
                         <div class="card">
                             <div class="card-body">
                                 <h4 class="card-title mb-2">{{ $payment->title }}</h4>
-                                <p class="card-text">Programme: {{ $payment->programme ? $payment->programme->title : null }}</p>
+                                <p class="card-text">Programme: {{ $payment->programme ? $payment->programme->name : null }}</p>
                                 <p class="text-muted">Payment Type: {{ $payment->type }} </p>
                                 <hr>
                                 <div class="text-start">
@@ -76,15 +76,17 @@
                                                 </select>
                                             </div>
 
+                                            @if($payment->type == 'School Fee')
                                             <div class="mb-3">
                                                 <label for="category" class="form-label">Select Programme</label>
                                                 <select class="form-select" aria-label="category" name="programme_id">
                                                     <option selected value= "">Select Programme </option>
                                                     @foreach($programmes as $programme)
-                                                    <option value="{{ $programme->id }}">{{ $programme->title }}</option>
+                                                    <option value="{{ $programme->id }}">{{ $programme->name }}</option>
                                                     @endforeach
                                                 </select>
                                             </div>
+                                            @endif
             
                                             <div class="mb-3">
                                                 <label for="description" class="form-label">Description</label>
@@ -174,7 +176,7 @@
                         <select class="form-select" aria-label="category" name="programme_id">
                             <option selected value= "">Select Programme </option>
                             @foreach($programmes as $programme)
-                            <option value="{{ $programme->id }}">{{ $programme->title }}</option>
+                            <option value="{{ $programme->id }}">{{ $programme->name }}</option>
                             @endforeach
                         </select>
                     </div>

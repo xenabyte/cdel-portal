@@ -49,38 +49,50 @@ class PaymentController extends Controller
             $paymentId = $paymentDetails['data']['metadata']['payment_id'];
             $payment = Payment::where('id', $paymentId)->first();
             $paymentType = $payment->type;
+            log::info($paymentType);
             
 
             if($paymentDetails['status'] == true){
                 if($this->processPayment($paymentDetails)){
                     alert()->success('Good Job', 'Payment successful')->persistent('Close');
-                    if($paymentType == Transaction::APPLICATION){
+                    if($paymentType == Payment::PAYMENT_TYPE_APPLICATION){
                         return view('user.auth.register', [
                             'programmes' => $this->programmes,
                             'payment' => $payment
                         ]);
+                    }elseif($paymentType == Payment::PAYMENT_TYPE_ACCEPTANCE){
+                        return redirect('student/home');
                     }else{
-                        return redirect('student/transaction');
+                        return redirect('student/transactions');
                     }
                 }else{
                     alert()->info('oops!!!', 'Something happpened, contact administrator')->persistent('Close');
-                    if($paymentType == Transaction::APPLICATION){
+                    if($paymentType == Payment::PAYMENT_TYPE_APPLICATION){
                         return view('user.auth.register', [
                             'programmes' => $this->programmes,
                             'payment' => $payment
                         ]);
+                    }elseif($paymentType == Payment::PAYMENT_TYPE_ACCEPTANCE){
+                        return redirect('student/home');
+                    }else{
+                        return redirect('student/transactions');
                     }
                 }
 
             }
 
             alert()->error('Error', 'Payment not successful')->persistent('Close');
-            if($paymentType == Transaction::APPLICATION){
+            if($paymentType == Payment::PAYMENT_TYPE_APPLICATION){
                 return view('user.auth.register', [
                     'programmes' => $this->programmes,
                     'payment' => $payment
                 ]);
+            }elseif($paymentType == Payment::PAYMENT_TYPE_ACCEPTANCE){
+                return redirect('student/home');
+            }else{
+                return redirect('student/transactions');
             }
+            
 
         }catch(\Exception $e) {
             Log::error($e);

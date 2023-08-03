@@ -1,6 +1,6 @@
 
 <!doctype html>
-<html lang="en" data-layout="vertical" data-layout-style="default" data-layout-position="fixed" data-topbar="light" data-sidebar="dark" data-sidebar-size="lg" data-layout-width="fluid" data-preloader="disable">
+<html lang="en" data-layout="vertical" data-topbar="light" data-sidebar="dark" data-sidebar-size="lg" data-sidebar-image="none" data-preloader="disable">
 <?php 
     $student = Auth::guard('student')->user();
 ?>
@@ -8,7 +8,7 @@
 <head>
 
     <meta charset="utf-8" />
-    <title>Student Dashboard | {{ env('APP_NAME') }} </title>
+    <title>Student Dashboard || {{ env('APP_NAME') }} </title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta content="{{ env('APP_NAME') }} Dashboard" name="description" />
@@ -162,6 +162,12 @@
                                 <i class="mdi mdi-view-dashboard"></i> <span>Dashboard</span>
                             </a>
                         </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link menu-link" href="{{ url('student/transaction') }}">
+                                <i class="mdi mdi-bank-transfer"></i> <span data-key="t-transaction">Transaction</span>
+                            </a>
+                        </li>
                        
 
                         <li class="menu-title"><i class="ri-more-fill"></i> <span data-key="t-pages"></span></li>
@@ -263,6 +269,32 @@
     <script src="{{asset('assets/js/pages/datatables.init.js')}}"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+
+    <script>
+        function handlePaymentMethodChange(event) {
+            const selectedPaymentMethod = event.target.value;
+            console.log(selectedPaymentMethod);
+            const submitButton = document.getElementById('submit-button');
+            if(selectedPaymentMethod != ''){
+                if(selectedPaymentMethod == 'Remita' || selectedPaymentMethod == 'Zenith') {
+                    submitButton.disabled = true;
+                }else{
+                    submitButton.disabled = false;
+                }
+
+                if(selectedPaymentMethod == 'BankTransfer'){
+                    document.getElementById('transferInfo').style.display = 'block';
+                    document.getElementById('submit-button').style.display = 'none';
+                }else{
+                    document.getElementById('transferInfo').style.display = 'none';
+                    document.getElementById('submit-button').style.display = 'block';
+                }
+               
+            }else{
+                submitButton.disabled = true;
+            }
+        }
+    </script>
 
 </body>
 
