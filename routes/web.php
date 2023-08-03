@@ -188,6 +188,9 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'guardian
   Route::get('/password/reset/{token}', [App\Http\Controllers\Guardian\Auth\ResetPasswordController::class, 'showResetForm']);
 
   Route::get('/home', [App\Http\Controllers\Guardian\GuardianController::class, 'index'])->name('home')->middleware(['auth:guardian']);
+  Route::get('/students', [App\Http\Controllers\Guardian\GuardianController::class, 'students'])->name('students')->middleware(['auth:guardian']);
+  Route::get('/profile', [App\Http\Controllers\Guardian\GuardianController::class, 'profile'])->name('profile')->middleware(['auth:guardian']);
+  
 });
 
 Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'applicant'], function () {
