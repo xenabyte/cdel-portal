@@ -14,8 +14,12 @@ use Illuminate\Support\Facades\Validator;
 use App\Models\Programme;
 use App\Models\Transaction;
 use App\Models\Payment;
+use App\Models\Student;
+use App\Models\SessionSetting;
 
 use App\Mail\ApplicationPayment;
+
+use App\Libraries\Google\Google;
 
 use Paystack;
 use SweetAlert;
@@ -47,9 +51,10 @@ class PaymentController extends Controller
         try{
             $paymentDetails = Paystack::getPaymentData();
             $paymentId = $paymentDetails['data']['metadata']['payment_id'];
+            $studentId = $paymentDetails['data']['metadata']['student_id'];
             $payment = Payment::where('id', $paymentId)->first();
             $paymentType = $payment->type;
-            log::info($paymentType);
+            $student = Student::with('applicant')->where('id', $studentId)->first();
             
 
             if($paymentDetails['status'] == true){
@@ -62,6 +67,9 @@ class PaymentController extends Controller
                         ]);
                     }elseif($paymentType == Payment::PAYMENT_TYPE_ACCEPTANCE){
                         return redirect('student/home');
+                    }elseif($paymentType == Payment::PAYMENT_TYPE_SCHOOL){
+                        $this->generateMatricAndEmail($student);
+                        return redirect('student/transactions');
                     }else{
                         return redirect('student/transactions');
                     }
@@ -113,6 +121,40 @@ class PaymentController extends Controller
         }
         catch (ValidationException $e) {
           Log::info(json_encode($e));
+        }
+    }
+
+    private function generateMatricAndEmail($student){
+        if(!$student->is_active && empty($student->matric_number)){
+            $sessionSetting = SessionSetting::first();
+            $admissionSession = $sessionSetting->admission_session;
+
+            $programme = Programme::where('id', $student->programme_id)->first();
+            $codeNumber = $programme->code_number;
+            $code = $programme->code;
+
+            $accessCode = $student->applicant->passcode;
+
+            $name = $student->applicant->lastname.' '.$student->applicant->othernames;
+            $nameParts = explode(' ', $student->applicant->othernames);
+            $firstName = $nameParts[0];
+            $studentEmail = strtolower($code.'.'.$student->applicant->lastname.'.'.$firstName.'@tau.edu.ng');
+
+            $newMatric = $programme->matric_last_number + 1;
+            $matricNumber = substr($admissionSession, 2, 2).'/'.$codeNumber.$code.sprintf("%03d", $newMatric);
+
+            $google = new Google();
+            $createStudentEmail = $google->createUser($studentEmail, $applicant->othernames, $applicant->lastname, $accessCode);
+
+            $student->email = $studentEmail;
+            $student->matric_number = $matricNumber;
+            $student->is_active = true;
+            $student->save();
+
+            $programme->matric_last_number = $newMatric;
+            $programme->save();
+
+            return true;
         }
     }
 

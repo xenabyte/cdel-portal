@@ -24,6 +24,7 @@ class Student extends Authenticatable
         'programme_id',
         'faculty_id',
         'department_id',
+        'is_active',
         'academic_session',
         'image',
         'level_id',

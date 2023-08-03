@@ -12,7 +12,7 @@ class Google
 
     public function __construct()
     {
-        $path = 'public/google/tpa-core-c0725725634e.json';
+        $path = 'public/google/tau-core-1970c12dcf83.json';
         $this->client = new GoogleClient();
         $this->client->setAuthConfig($path);
         $this->client->addScope('https://www.googleapis.com/auth/admin.directory.user');

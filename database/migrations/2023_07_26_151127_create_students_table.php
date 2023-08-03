@@ -26,6 +26,7 @@ class CreateStudentsTable extends Migration
             $table->integer('credit_load')->default(0);
             $table->boolean('is_passed_out')->default(false);
             $table->boolean('is_rusticated')->default(false);
+            $table->boolean('is_active')->default(false);
             $table->integer('amount_balance')->default(0);
             $table->year('entry_year')->nullable();
             $table->year('max_graduating_year')->nullable();

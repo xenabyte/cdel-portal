@@ -25,7 +25,6 @@ use App\Models\Student;
 use App\Mail\ApplicationMail;
 
 use App\Libraries\Pdf\Pdf;
-use App\Libraries\Google\Google;
 
 use SweetAlert;
 use Mail;
@@ -106,10 +105,6 @@ class AdmissionController extends Controller
         $applicantId = $applicant->id;
         $programmeId = $request->programme_id;
         $programme = Programme::with('department', 'department.faculty')->where('id', $programmeId)->first();
-        $codeNumber = $programme->code_number;
-        $code = $programme->code;
-        $newMatric = $programme->matric_last_number + 1;
-        $matricNumber = substr($applicationSession, 2, 2).'/'.$codeNumber.$code.sprintf("%03d", $newMatric);
         $parts = explode("/", $admissionSession);
         $entryYear = $parts[1];
 
@@ -123,9 +118,6 @@ class AdmissionController extends Controller
         
 
         if(strtolower($status) == 'admitted'){
-
-            // $google = new Google();
-            // $createStudentEmail = $google->createUser($studentEmail, $applicant->othernames, $applicant->lastname, $accessCode);
             //create student records
             $studentId = Student::create([
                 'slug' => $applicant->slug,
@@ -147,9 +139,7 @@ class AdmissionController extends Controller
 
             $student = Student::find($studentId);
             $student->admission_letter = $admissionLetter;
-
-            $programme->matric_last_number = $newMatric;
-            $programme->save();
+            $student->save();
 
             //In the email, create and provide student portal login information
         }
