@@ -27,4 +27,17 @@ class GuardianController extends Controller
 
         return view('guardian.home');
     }
+
+    public function students(Request $request){
+
+        return view('guardian.students');
+    }
+
+    public function profile(Request $request){
+
+        return view('guardian.profile');
+    }
+
+    
+
 }

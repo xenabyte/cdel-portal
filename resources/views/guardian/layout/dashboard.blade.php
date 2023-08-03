@@ -112,8 +112,9 @@
                             <div class="dropdown-menu dropdown-menu-end">
                                 <!-- item-->
                                 <h6 class="dropdown-header">Welcome {{ $guardian->name }}!</h6>
+                                <a class="dropdown-item" href="{{url('/guardian/students')}}"><i class="mdi mdi-account text-muted fs-16 align-middle me-1"></i> <span class="align-middle">Students</span></a>
                                 <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="pages-profile-settings.html"><span class="badge bg-soft-success text-success mt-1 float-end">New</span><i class="mdi mdi-cog-outline text-muted fs-16 align-middle me-1"></i> <span class="align-middle">Settings</span></a>
+                                <a class="dropdown-item" href="{{url('/guardian/profile')}}"><i class="mdi mdi-cog-outline text-muted fs-16 align-middle me-1"></i> <span class="align-middle">Settings</span></a>
                                 <a class="dropdown-item" href="{{ url('/guardian/logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();"><i class="mdi mdi-logout text-muted fs-16 align-middle me-1"></i> <span class="align-middle" data-key="t-logout">Logout</span></a>
                                 <form id="logout-form" action="{{ url('/guardian/logout') }}" method="POST" style="display: none;">@csrf</form>
                             </div>
@@ -163,7 +164,18 @@
                                 <i class="mdi mdi-view-dashboard"></i> <span>Dashboard</span>
                             </a>
                         </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link menu-link" href="{{ url('/guardian/students') }}">
+                                <i class="mdi mdi-account-multiple-outline"></i> <span>Students</span>
+                            </a>
+                        </li>
                        
+                        <li class="nav-item">
+                            <a class="nav-link menu-link" href="{{ url('/guardian/profile') }}">
+                                <i class="mdi mdi-account-cog"></i> <span>Profile</span>
+                            </a>
+                        </li>
 
                         <li class="menu-title"><i class="ri-more-fill"></i> <span data-key="t-pages"></span></li>
                         <li class="nav-item">
