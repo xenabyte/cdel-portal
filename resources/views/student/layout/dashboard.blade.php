@@ -104,7 +104,7 @@
                                     <img class="rounded-circle header-profile-user" src="{{asset('assets/images/users/user-dummy-img.jpg')}}" alt="Header Avatar">
                                     <span class="text-start ms-xl-2">
                                         <span class="d-none d-xl-inline-block ms-1 fw-medium user-name-text">{{ $student->applicant->lastname.' '.$student->applicant->othernames }}</span>
-                                        <span class="d-none d-xl-block ms-1 fs-12 text-muted user-name-sub-text">Student</span>
+                                        <span class="d-none d-xl-block ms-1 fs-12 text-muted user-name-sub-text"><strong>Matric Number:</strong> {{ $student->matric_number }}</span>
                                     </span>
                                 </span>
                             </button>
@@ -164,10 +164,27 @@
                         </li>
 
                         <li class="nav-item">
-                            <a class="nav-link menu-link" href="{{ url('student/transaction') }}">
+                            <a class="nav-link menu-link" href="{{ url('student/transactions') }}">
                                 <i class="mdi mdi-bank-transfer"></i> <span data-key="t-transaction">Transaction</span>
                             </a>
                         </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link menu-link" href="#courseManagement" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="courseManagement">
+                                <i class="mdi mdi-bookshelf"></i> <span data-key="t-courseManagement">Course Management</span>
+                            </a>
+                            <div class="collapse menu-dropdown" id="courseManagement">
+                                <ul class="nav nav-sm flex-column">
+                                    <li class="nav-item">
+                                        <a href="{{ url('/student/courseRegistration') }}" class="nav-link">Course Registration</a>
+                                    </li>
+            
+                                    <li class="nav-item">
+                                        <a href="{{ url('/admin/editCourseReg') }}" class="nav-link">Add/Remove Course(s)</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li> <!-- end Bursary Menu -->
                        
 
                         <li class="menu-title"><i class="ri-more-fill"></i> <span data-key="t-pages"></span></li>

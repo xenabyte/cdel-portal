@@ -95,9 +95,9 @@ class Student extends Authenticatable
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function level()
+    public function academicLevel()
     {
-        return $this->belongsTo(Level::class, 'level_id');
+        return $this->belongsTo(AcademicLevel::class, 'level_id');
     }
 
     /**
@@ -118,5 +118,15 @@ class Student extends Authenticatable
     public function partner()
     {
         return $this->belongsTo(Partner::class, 'partner_id');
+    }
+
+    /**
+     * Get all of the registeredCourses for the Student
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function registeredCourses()
+    {
+        return $this->hasMany(CourseRegistration::class, 'student_id');
     }
 }

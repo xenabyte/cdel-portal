@@ -23,4 +23,24 @@ class CourseRegistration extends Model
         'result_approval_id',
         'status'
     ];
+
+    /**
+     * Get the student that owns the CourseRegistration
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function student()
+    {
+        return $this->belongsTo(Student::class, 'student_id');
+    }
+
+    /**
+     * Get the course that owns the CourseRegistration
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function course()
+    {
+        return $this->belongsTo(Course::class, 'course_id');
+    }
 }

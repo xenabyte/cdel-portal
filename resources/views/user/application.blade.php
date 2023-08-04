@@ -1152,7 +1152,19 @@
                         <div class="card">
                             <div class="card-body">
                                 <div class="mb-4 pb-2">
-                                    @if(empty($applicant->de_result))
+                                    @if(!empty($applicant->de_result))
+                                        <div class="row mb-2">
+                                            <div class="col-sm-6 col-xl-12">
+                                                <!-- Simple card -->
+                                                <i class="bx bxs-file-jpg text-danger" style="font-size: 50px"></i><span style="font-size: 20px">DE Result Printout</span>
+                                                <div class="text-end">
+                                                    <a href="{{ asset($applicant->de_result) }}"  target="blank" class="btn btn-success">View</a>
+                                                </div>
+                                            </div><!-- end col -->
+                                        </div>
+                                        <hr>
+                                    @endif
+                                    
                                     <form action="{{ url('applicant/saveDe') }}" method="POST" enctype="multipart/form-data">
                                         @csrf
 
@@ -1177,7 +1189,6 @@
                                         </div>
                                         <!--end row-->
                                     </form>
-                                    @endif
                                 </div>
                             </div>
                         </div>

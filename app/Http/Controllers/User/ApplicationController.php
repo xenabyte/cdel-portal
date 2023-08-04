@@ -271,8 +271,8 @@ class ApplicationController extends Controller
         }
         $user = Auth::guard('user')->user();
 
-
-        if($guardian = Guardian::where('email', $request->email)->first() && empty($user->guardian_id)){
+        $guardian = Guardian::where('email', $request->email)->first();
+        if($guardian && empty($user->guardian_id)){
             $user->guardian_id = $guardian->id;
             $user->save();
 
@@ -525,7 +525,10 @@ class ApplicationController extends Controller
 
     public function nokBioData(Request $request){
 
-        if($nok = NextOfKin::where('email', $request->email)->first() && empty($user->next_of_kin_id)){
+        $user = Auth::guard('user')->user();
+        
+        $nok = NextOfKin::where('email', $request->email)->first();
+        if($nok && empty($user->next_of_kin_id)){
             $user->next_of_kin_id = $nok->id;
             $user->save();
 

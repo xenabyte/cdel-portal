@@ -1,0 +1,246 @@
+@extends('student.layout.dashboard')
+<?php 
+    $student = Auth::guard('student')->user();
+?>
+@section('content')
+<style>
+    /* Adjust the width of the ID column */
+    .table th:nth-child(1),
+    .table td:nth-child(1) {
+        width: 10px; /* Adjust the width as needed */
+    }
+    .semester-heading {
+        font-weight: bold;
+        font-size: 1.2em;
+        padding: 10px 0;
+    }
+</style>
+<div class="row">
+    <div class="col-12">
+        <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+            <h4 class="mb-sm-0">Course Registration for {{ $pageGlobalData->sessionSetting->academic_session }} academic session</h4>
+
+            <div class="page-title-right">
+                <ol class="breadcrumb m-0">
+                    <li class="breadcrumb-item"><a href="javascript: void(0);">Pages</a></li>
+                    <li class="breadcrumb-item active">Course Registration</li>
+                </ol>
+            </div>
+
+        </div>
+    </div>
+</div>
+@if($existingRegistration->count() > 0)
+<div class="row justify-content-center">
+    <div class="col-lg-6">
+        <div class="card">
+            <div class="card-body">
+                <div class="text-center">
+                    <div class="row justify-content-center">
+                        <div class="col-lg-9">
+                            <h4 class="mt-4 fw-semibold">Course Registration for {{ $pageGlobalData->sessionSetting->academic_session }} academic session</h4>
+                            <p class="text-muted mt-3"></p>
+                            <div class="mt-4">
+                              Your <strong>Course Registration</strong> is complete! Click the button below to print your course review.
+                            </div>
+                            <div class="mt-4">
+                                <form action="{{ url('/student/printCourseReg') }}" method="post" enctype="multipart/form-data">
+                                    @csrf
+                                    <button type="submit" class="btn btn-info">
+                                        Click here to download
+                                    </button>
+                                </form>
+                                
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row justify-content-center mt-5 mb-2">
+                        <div class="col-sm-7 col-8">
+                            <img src="{{asset('assets/images/done_creg.png')}}" alt="" class="img-fluid" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--end card-->
+    </div>
+    <!--end col-->
+</div>
+@else
+    @if($courseRegMgt->status == 'stop')
+        <div class="row justify-content-center">
+            <div class="col-lg-6">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="text-center">
+                            <div class="row justify-content-center">
+                                <div class="col-lg-9">
+                                    <h4 class="mt-4 fw-semibold">Course Registration</h4>
+                                    <p class="text-muted mt-3"></p>
+                                    <div class="mt-4">
+                                        Please be advised that course registration has not yet begun. We will notify you as soon as the registration period becomes available.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row justify-content-center mt-5 mb-2">
+                                <div class="col-sm-7 col-8">
+                                    <img src="{{asset('assets/images/course_reg.png')}}" alt="" class="img-fluid" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--end card-->
+            </div>
+            <!--end col-->
+        </div>
+    @else
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-header align-items-center">
+                        <h4 class="card-title mb-0 flex-grow-1">Course Registration {{ $pageGlobalData->sessionSetting->academic_session }} academic session</h4>
+                        <br/>
+                        <p class=""><strong>Programme:</strong> {{ $student->programme->name }}
+                        <br/><strong>Academic Session:</strong> {{ $student->academic_session }}
+                        <br/><strong>Level:</strong> {{ $student->academicLevel->level }} Level</p>
+
+                    </div><!-- end card header -->
+
+                    <div class="card-body table-responsive">
+                        <!-- Bordered Tables -->
+                        <form method="post" action="{{ url('/student/registerCourses') }}">
+                            @csrf
+                            <table class="table table-borderless table-nowrap">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">ID</th>
+                                        <th scope="col">Course Code</th>
+                                        <th scope="col">Course Title</th>
+                                        <th scope="col">Course Unit</th>
+                                        <th scope="col">Status</th>
+                                        <th scope="col">Select</th>
+                                    </tr>
+                                </thead>
+                                
+                                <tbody class="first-semester">
+                                    <tr>
+                                        <td colspan="6" class="semester-heading">
+                                            
+                                            <div class="card-header align-items-center">
+                                                <h4 class="card-title mb-0 flex-grow-1">First Semester Courses</h4>
+                                            </div><!-- end card header -->
+
+                                        </td>
+                                    </tr>
+                                    @foreach($courses->where('semester', 1) as $course11)
+                                    <tr>
+                                        <td scope="row">{{ $loop->iteration }}</td>
+                                        <td>{{ $course11->code }}</td>
+                                        <td>{{ $course11->name }}</td>
+                                        <td>{{ $course11->credit_unit }}</td>
+                                        <td>{{ $course11->status }}</td>
+                                        <td>
+                                            <input type="checkbox" name="selected_courses[]" value="{{ $course11->id }}">
+                                        </td>
+                                    </tr>
+                                    @endforeach
+                                </tbody>
+                                <tbody>
+                                    <tr class="first-semester-total">
+                                        <td>Total First Semester Credit Unit</td>
+                                        <td></td>
+                                        <td></td>
+                                        <td>0</td>
+                                        <td></td>
+                                    
+                                    </tr>
+                                </tbody>
+                                
+                                <tbody class="second-semester">
+                                    <tr>
+                                        <td colspan="6" class="semester-heading">
+                                            
+                                            <div class="card-header align-items-center">
+                                                <h4 class="card-title mb-0 flex-grow-1">Second Semester Courses</h4>
+                                            </div><!-- end card header -->
+
+                                        </td>
+                                    </tr>
+                                    @foreach($courses->where('semester', 2) as $course12)
+                                    <tr>
+                                        <td scope="row">{{ $loop->iteration }}</td>
+                                        <td>{{ $course12->code }}</td>
+                                        <td>{{ $course12->name }}</td>
+                                        <td>{{ $course12->credit_unit }}</td>
+                                        <td>{{ $course12->status }}</td>
+                                        <td>
+                                            <input type="checkbox" name="selected_courses[]" value="{{ $course12->id }}">
+                                        </td>
+                                    </tr>
+                                    @endforeach
+                                </tbody>
+                                <tbody>
+                                    <tr class="second-semester-total">
+                                        <td>Total Second Semester Credit Unit</td>
+                                        <td></td>
+                                        <td></td>
+                                        <td>0</td>
+                                        <td></td>
+                                    
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <hr>
+                            <button type="submit" class="btn btn-primary">Register Selected Courses</button>
+                        </form>                
+                    </div>
+                </div><!-- end card -->
+            </div>
+            <!-- end col -->
+        </div>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script>
+            $(document).ready(function() {
+                $("input[name='selected_courses[]']").change(function() {
+                    calculateTotals();
+                });
+
+                function calculateTotals() {
+                    let firstSemesterTotal = 0;
+                    let secondSemesterTotal = 0;
+
+                    $("input[name='selected_courses[]']:checked").each(function() {
+                        let creditUnit = parseFloat($(this).closest("tr").find("td:eq(3)").text());
+                        if ($(this).closest("tbody").hasClass("first-semester")) {
+                            firstSemesterTotal += creditUnit;
+                        } else if ($(this).closest("tbody").hasClass("second-semester")) {
+                            secondSemesterTotal += creditUnit;
+                        }
+                    });
+
+                    // Update the total credit units for each semester
+                    $(".first-semester-total td:eq(3)").text(firstSemesterTotal);
+                    $(".second-semester-total td:eq(3)").text(secondSemesterTotal);
+
+                    // Enable/Disable rows based on selected credit units
+                    $("input[name='selected_courses[]']").each(function() {
+                        let creditUnit = parseFloat($(this).closest("tr").find("td:eq(3)").text());
+                        if (!$(this).prop("checked")) {
+                            if ($(this).closest("tbody").hasClass("first-semester") && firstSemesterTotal + creditUnit > 24) {
+                                $(this).prop("disabled", true);
+                            } else if ($(this).closest("tbody").hasClass("second-semester") && secondSemesterTotal + creditUnit > 24) {
+                                $(this).prop("disabled", true);
+                            } else {
+                                $(this).prop("disabled", false);
+                            }
+                        }
+                    });
+                }
+            });
+        </script>
+    @endif
+@endif
+@endsection

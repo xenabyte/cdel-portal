@@ -43,4 +43,18 @@ Class Pdf {
 
         return $fileDirectory;
     }
+
+    public function generateCourseRegistration($studentId, $academicSession){
+        $options = [
+            'isRemoteEnabled' => true,
+            'encryption' => '128',
+            'no_modify' => true,
+        ];
+
+        $student = Student::with('applicant')->where('id', $studentId)->first();
+        $name = $student->applicant->lastname.' '.$student->applicant->othernames;
+        $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $name .' '. $academicSession)));
+
+        $fileDirectory = 'uploads/files/course_registration/'.$slug.'.pdf';
+    }
 }

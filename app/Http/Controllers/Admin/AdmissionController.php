@@ -113,9 +113,7 @@ class AdmissionController extends Controller
         $email = $applicant->email;
         $name = $applicant->lastname.' '.$applicant->othernames;
         $nameParts = explode(' ', $applicant->othernames);
-        $firstName = $nameParts[0];
-        $studentEmail = strtolower($code.'.'.$applicant->lastname.'.'.$firstName.'@tau.edu.ng');
-        
+        $firstName = $nameParts[0];        
 
         if(strtolower($status) == 'admitted'){
             //create student records
@@ -133,7 +131,7 @@ class AdmissionController extends Controller
                 'entry_year' => $entryYear
             ])->id;
 
-            //create an email with tpa letter heading 
+            //create an email with tau letter heading 
             $pdf = new Pdf();
             $admissionLetter = $pdf->generateAdmissionLetter($applicant->slug);
 
@@ -167,8 +165,8 @@ class AdmissionController extends Controller
         ]);
     }
 
-    public function student($slug){
-        $student = Student::with('applicant', 'applicant.utmes', 'programme')->first();
+    public function student(Request $request, $slug){
+        $student = Student::with('applicant', 'applicant.utmes', 'programme')->where('slug', $slug)->first();
 
         return view('admin.student', [
             'student' => $student

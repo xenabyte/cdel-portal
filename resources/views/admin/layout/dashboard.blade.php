@@ -359,10 +359,10 @@
                             <div class="collapse menu-dropdown" id="academicSettings">
                                 <ul class="nav nav-sm flex-column">
                                     <li class="nav-item">
-                                        <a href="{{ url('/admin/faculties') }}" class="nav-link" data-key="t-horizontal">Faculties</a>
+                                        <a href="{{ url('/admin/faculties') }}" class="nav-link">Faculties</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a href="layouts-detached.html" class="nav-link" target="_blank" data-key="t-detached">Detached</a>
+                                        <a href="{{ url('/admin/courseRegMgt') }}" class="nav-link">Course Reg. Mgt</a>
                                     </li>
                                     <li class="nav-item">
                                         <a href="layouts-two-column.html" class="nav-link" target="_blank" data-key="t-two-column">Two Column</a>

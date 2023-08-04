@@ -16,6 +16,7 @@ use App\Models\Session;
 use App\Models\SessionSetting;
 use App\Models\Faculty;
 use App\Models\Department;
+use App\Models\CourseRegistrationSetting;
 
 use SweetAlert;
 use Mail;
@@ -260,6 +261,40 @@ class AcademicController extends Controller
         return view('admin.department', [
             'department' => $department
         ]);
+    }
+
+    public function courseRegMgt(Request $request){
+
+        $courseRegMgt = CourseRegistrationSetting::first();
+
+        return view('admin.courseRegMgt', [
+            'courseRegMgt' => $courseRegMgt
+        ]);
+    }
+
+    public function setCourseRegStatus(Request $request){
+        
+        $courseRegMgt = new CourseRegistrationSetting;
+        if(!empty($request->courseRegMgt_id) && !$courseRegMgt = CourseRegistrationSetting::find($request->courseRegMgt_id)){
+            alert()->error('Oops', 'Invalid Course Reg. Setting Information')->persistent('Close');
+            return redirect()->back();
+        }
+
+        if(!empty($request->status) &&  $request->status != $courseRegMgt->status){
+            $courseRegMgt->status = $request->status;
+        }
+
+        if(!empty($request->academic_session) &&  $request->academic_session != $courseRegMgt->academic_session){
+            $courseRegMgt->academic_session = $request->academic_session;
+        }
+        
+        if($courseRegMgt->save()){
+            alert()->success('Changes Saved', 'Course registration changes saved successfully')->persistent('Close');
+            return redirect()->back();
+        }
+
+        alert()->error('Oops!', 'Something went wrong')->persistent('Close');
+        return redirect()->back();
     }
     
 }

@@ -35,11 +35,11 @@ class Programme extends Model
     }
 
     public function firstSemesterCourses(){
-        return $this->hasMany(Course::class, 'programme_id')->where('course_semester', 1);
+        return $this->hasMany(Course::class, 'programme_id')->where('semester', 1);
     }
 
     public function secondSemesterCourses(){
-        return $this->hasMany(Course::class, 'programme_id')->where('course_semester', 2);
+        return $this->hasMany(Course::class, 'programme_id')->where('semester', 2);
     }
 
     public function department()
