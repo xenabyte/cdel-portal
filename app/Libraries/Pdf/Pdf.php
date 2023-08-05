@@ -53,7 +53,7 @@ Class Pdf {
 
         $student = Student::with('applicant')->where('id', $studentId)->first();
         $name = $student->applicant->lastname.' '.$student->applicant->othernames;
-        $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $name .' '. $academicSession)));
+        $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $name .' course registration '. $academicSession)));
 
         $fileDirectory = 'uploads/files/course_registration/'.$slug.'.pdf';
     }
