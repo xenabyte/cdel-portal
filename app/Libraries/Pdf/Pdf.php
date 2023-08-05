@@ -6,6 +6,7 @@ use PDF as PDFDocument;
 use App\Models\User as Applicant;
 use App\Models\Student;
 use App\Models\GlobalSetting as Setting;
+use App\Models\CourseRegistration;
 
 
 use Log;
@@ -22,7 +23,7 @@ Class Pdf {
         $student = Student::with('programme', 'faculty', 'department', 'applicant')->where('slug', $slug)->first();
         $setting = Setting::first();
 
-        $fileDirectory = 'uploads/files/admission/letters/'.$slug.'.pdf';
+        $fileDirectory = 'uploads/files/admission/'.$slug.'.pdf';
 
         $studentData = [
             'created_at' => $student->created_at,
@@ -51,10 +52,19 @@ Class Pdf {
             'no_modify' => true,
         ];
 
-        $student = Student::with('applicant')->where('id', $studentId)->first();
+        $student = Student::with('applicant', 'academicLevel', 'faculty', 'department', 'programme')->where('id', $studentId)->first();
         $name = $student->applicant->lastname.' '.$student->applicant->othernames;
         $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $name .' course registration '. $academicSession)));
 
         $fileDirectory = 'uploads/files/course_registration/'.$slug.'.pdf';
+        $courseReg = CourseRegistration::with('course')->where('student_id', $studentId)->where('academic_session', $academicSession)->get();
+
+        $data = ['info'=>$student, 'registeredCourses' => $courseReg];
+
+        $pdf = PDFDocument::loadView('pdf.courseRegistration', $data)
+        ->setOptions($options)
+        ->save($fileDirectory);
+
+        return $fileDirectory;
     }
 }

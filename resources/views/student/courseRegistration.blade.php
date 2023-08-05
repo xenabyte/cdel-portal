@@ -50,7 +50,6 @@
                                         Click here to download
                                     </button>
                                 </form>
-                                
                             </div>
                         </div>
                     </div>
@@ -114,17 +113,7 @@
                         <form method="post" action="{{ url('/student/registerCourses') }}">
                             @csrf
                             <table class="table table-borderless table-nowrap">
-                                <thead>
-                                    <tr>
-                                        <th scope="col">ID</th>
-                                        <th scope="col">Course Code</th>
-                                        <th scope="col">Course Title</th>
-                                        <th scope="col">Course Unit</th>
-                                        <th scope="col">Status</th>
-                                        <th scope="col">Select</th>
-                                    </tr>
-                                </thead>
-                                
+                            
                                 <tbody class="first-semester">
                                     <tr>
                                         <td colspan="6" class="semester-heading">
@@ -135,9 +124,34 @@
 
                                         </td>
                                     </tr>
+                                    <tr>
+                                        <th scope="col">ID</th>
+                                        <th scope="col">Course Code</th>
+                                        <th scope="col">Course Title</th>
+                                        <th scope="col">Course Unit</th>
+                                        <th scope="col">Status</th>
+                                        <th scope="col">Select</th>
+                                    </tr>
+                                    @php
+                                        $firstSemester = 1;
+                                        $secondSemester = 1;
+                                    @endphp
+                                    @foreach($carryOverCourses->where('semester', 1) as $failedCourse)
+                                        <tr>
+                                            <td>{{ $firstSemester++ }}</td>
+                                            <td>{{ $failedCourse->code }}</td>
+                                            <td>{{ $failedCourse->name }}</td>
+                                            <td>{{ $failedCourse->credit_unit }}</td>
+                                            <td>{{ $failedCourse->status }}</td>
+                                            <td>
+                                                <input type="checkbox" name="selected_courses[]" value="{{ $failedCourse->id }}"
+                                                    checked disabled>
+                                            </td>
+                                        </tr>
+                                    @endforeach
                                     @foreach($courses->where('semester', 1) as $course11)
                                     <tr>
-                                        <td scope="row">{{ $loop->iteration }}</td>
+                                        <td>{{ $firstSemester++ }}</td>
                                         <td>{{ $course11->code }}</td>
                                         <td>{{ $course11->name }}</td>
                                         <td>{{ $course11->credit_unit }}</td>
@@ -155,7 +169,6 @@
                                         <td></td>
                                         <td>0</td>
                                         <td></td>
-                                    
                                     </tr>
                                 </tbody>
                                 
@@ -169,9 +182,30 @@
 
                                         </td>
                                     </tr>
+                                    <tr>
+                                        <th scope="col">ID</th>
+                                        <th scope="col">Course Code</th>
+                                        <th scope="col">Course Title</th>
+                                        <th scope="col">Course Unit</th>
+                                        <th scope="col">Status</th>
+                                        <th scope="col">Select</th>
+                                    </tr>
+                                    @foreach($carryOverCourses->where('semester', 2) as $failedCourse2)
+                                        <tr>
+                                            <td>{{ $secondSemester++ }}</td>
+                                            <td>{{ $failedCourse2->code }}</td>
+                                            <td>{{ $failedCourse2->name }}</td>
+                                            <td>{{ $failedCourse2->credit_unit }}</td>
+                                            <td>{{ $failedCourse2->status }}</td>
+                                            <td>
+                                                <input type="checkbox" name="selected_courses[]" value="{{ $failedCourse2->id }}"
+                                                    checked disabled>
+                                            </td>
+                                        </tr>
+                                    @endforeach
                                     @foreach($courses->where('semester', 2) as $course12)
                                     <tr>
-                                        <td scope="row">{{ $loop->iteration }}</td>
+                                        <td>{{ $secondSemester++ }}</td>
                                         <td>{{ $course12->code }}</td>
                                         <td>{{ $course12->name }}</td>
                                         <td>{{ $course12->credit_unit }}</td>

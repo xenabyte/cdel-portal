@@ -129,4 +129,14 @@ class Student extends Authenticatable
     {
         return $this->hasMany(CourseRegistration::class, 'student_id');
     }
+
+    /**
+     * Get all of the courseRegistrationDocument for the Student
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function courseRegistrationDocument()
+    {
+        return $this->hasMany(StudentCourseRegistration::class, 'student_id');
+    }
 }

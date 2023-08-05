@@ -10,7 +10,6 @@
     <meta charset="utf-8" />
     <title>Student Dashboard || {{ env('APP_NAME') }} </title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta content="{{ env('APP_NAME') }} Dashboard" name="description" />
     <meta content="Olanrewaju kolawole" name="author" />
     <!-- App favicon -->
@@ -55,7 +54,7 @@
                     <div class="d-flex">
                         <!-- LOGO -->
                         <div class="navbar-brand-box horizontal-logo">
-                            <a href="index.html" class="logo logo-dark">
+                            <a href="{{ url('/student/home') }}" class="logo logo-dark">
                                 <span class="logo-sm">
                                     <img src="{{asset('assets/images/logo-sm.png')}}" alt="" height="22">
                                 </span>
@@ -64,7 +63,7 @@
                                 </span>
                             </a>
 
-                            <a href="index.html" class="logo logo-light">
+                            <a href="{{ url('/student/home') }}" class="logo logo-light">
                                 <span class="logo-sm">
                                     <img src="{{asset('assets/images/logo-sm.png')}}" alt="" height="22">
                                 </span>
@@ -128,7 +127,7 @@
             <!-- LOGO -->
             <div class="navbar-brand-box">
                 <!-- Dark Logo-->
-                <a href="{{url('admin/home')}}" class="logo logo-dark">
+                <a href="{{url('student/home')}}" class="logo logo-dark">
                     <span class="logo-sm">
                         <img src="{{asset('assets/images/logo-sm.png')}}" alt="" height="22">
                     </span>
@@ -137,7 +136,7 @@
                     </span>
                 </a>
                 <!-- Light Logo-->
-                <a href="index.html" class="logo logo-light">
+                <a href="{{ url('/student/home') }}" class="logo logo-light">
                     <span class="logo-sm">
                         <img src="{{asset('assets/images/logo-sm.png')}}" alt="" height="22">
                     </span>

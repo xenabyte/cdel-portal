@@ -14,6 +14,9 @@ use Illuminate\Support\Facades\Validator;
 use App\Models\Course;
 use App\Models\CourseRegistrationSetting;
 use App\Models\CourseRegistration;
+use App\Models\StudentCourseRegistration;
+
+use App\Libraries\Pdf\Pdf;
 
 use SweetAlert;
 use Mail;
@@ -41,14 +44,17 @@ class AcademicController extends Controller
         ])->get();
 
         //carryover courses
-        $carryOverCourses = CourseRegistration::with('course')->where('student_id', $studentId)->where('grade', 'F')->get();
+        $failedCourses = CourseRegistration::with('course')->where('student_id', $studentId)->where('grade', 'F')->get();
+        $failedCourseIds = $failedCourses->pluck('course.id')->toArray();
+        $carryOverCourses = Course::where('programme_id', $student->programme_id)->whereIn('id', $failedCourseIds)->get();
 
         $courseRegMgt = CourseRegistrationSetting::first();
 
         return view('student.courseRegistration', [
             'courseRegMgt' => $courseRegMgt,
             'courses' => $courses,
-            'existingRegistration' => $existingRegistration
+            'existingRegistration' => $existingRegistration,
+            'carryOverCourses' => $carryOverCourses
         ]);
     }
 
@@ -86,11 +92,21 @@ class AcademicController extends Controller
                 }
             }
     
+            $pdf = new Pdf();
+            $courseReg = $pdf->generateCourseRegistration($studentId, $academicSession);
+
+            $studentRegistration = StudentCourseRegistration::create([
+                'student_id' => $studentId,
+                'academic_session' => $academicSession,
+                'file' => $courseReg
+            ]);
+
         
             alert()->success('Changes Saved', 'Course registration saved successfully')->persistent('Close');
             return redirect()->back();
 
         } catch (\Exception $e) {
+            Log::info($e);
             alert()->error('Oops!', 'Something went wrong')->persistent('Close');
             return redirect()->back();
         }
@@ -104,9 +120,12 @@ class AcademicController extends Controller
         $admissionSession = $globalData->sessionSetting['admission_session'];
         $academicSession = $globalData->sessionSetting['academic_session'];
 
-        $pdf = new Pdf();
-        $courseReg = $pdf->generateCourseRegistration($studentId, $academicSession);
+        //create record for file
+        $studentRegistration = StudentCourseRegistration::where([
+            'student_id' => $studentId,
+            'academic_session' => $academicSession,
+        ])->first();
 
-        return;
+        return redirect(asset($studentRegistration->file));
     }
 }
