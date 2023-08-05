@@ -23,6 +23,7 @@ class CreateTransactionsTable extends Migration
             $table->string('payment_method')->nullable();
             $table->string('status')->nullable();
             $table->string('session')->nullable();
+            $table->string('is_used')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

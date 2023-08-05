@@ -185,6 +185,7 @@
                                                                 <option value="Acceptance Fee">Acceptance Fee</option>
                                                                 <option value="School Fee">School Fee</option>
                                                                 <option value="General Fee">General Fee</option>
+                                                                <option value="Course Reg">Modify Course Reg Fee</option>
                                                             </select>
                                                         </div>
             
@@ -282,6 +283,7 @@
                             <option value="Acceptance Fee">Acceptance Fee</option>
                             <option value="School Fee">School Fee</option>
                             <option value="General Fee">General Fee</option>
+                            <option value="Course Reg">Modify Course Reg Fee</option>
                         </select>
                     </div>
 

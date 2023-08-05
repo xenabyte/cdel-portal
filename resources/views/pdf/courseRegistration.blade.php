@@ -42,28 +42,43 @@
 </head>
 <body>
 <div class="container">
-    <div class="row">
-        <div class="header-logo text-center">
-            <img src="https://tau.edu.ng/assets/images/logo.png" alt="atarapay logo">
-        </div>
-    </div>
-    <div class="row">
+    <table style="width: 100%;">
+        <tbody>
+            <tr>
+                <td style="width: 50%; border: none;">
+                    <img src="https://tau.edu.ng/assets/images/logo.png" width="70%" style="float: left;">
+                </td>
+                <td style="width: 50%; border: none;">
+                    <img src="{{ asset($info->image) }}" width="40%" style="float: right; border: 1px solid black;">
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <div class="row" style="margin-top: 20%;">
         <div class="text-center">
             <h1>Course Registration Form</h1>
             <br>
         </div>
     </div>
 
-    <div class="info-column">
-        <div><strong>MATRIC NUMBER:</strong> {{ $info->matric_number }}</div>
-        <div><strong>APPLICATION NO:</strong> {{ $info->applicant->application_number }}</div>
-        <div><strong>FULL NAME:</strong> {{ $info->applicant->lastname.' '. $info->applicant->othernames }}</div>
-        <div><strong>LEVEL:</strong> {{ $info->academicLevel->level }} Level</div>
-        <div><strong>FACULTY:</strong>  {{ $info->faculty->name }} </div>
-        <div><strong>DEPARTMENT:</strong> {{ $info->department->name }}</div>
-        <div><strong>PROGRAMME:</strong> {{ $info->programme->name }}</div>
-        <div><strong>SESSION:</strong> {{ $info->academic_session }}</div>
-    </div>
+    <table style="width: 100%;">
+        <tbody>
+            <tr>
+                <td style="width: 40%; vertical-align: top; text-align: left; border: none; padding-right: 20px;">
+                    <div><strong>MATRIC NUMBER:</strong> {{ $info->matric_number }}</div>
+                    <div><strong>APPLICATION NO:</strong> {{ $info->applicant->application_number }}</div>
+                    <div><strong>FULL NAME:</strong> {{ $info->applicant->lastname.' '. $info->applicant->othernames }}</div>
+                    <div><strong>LEVEL:</strong> {{ $info->academicLevel->level }} Level</div>
+                </td>
+                <td style="width: 60%; vertical-align: top; text-align: left; border: none; padding-left: 20px;">
+                    <div><strong>FACULTY:</strong>  {{ $info->faculty->name }} </div>
+                    <div><strong>DEPARTMENT:</strong> {{ $info->department->name }}</div>
+                    <div><strong>PROGRAMME:</strong> {{ $info->programme->name }}</div>
+                    <div><strong>SESSION:</strong> {{ $info->academic_session }}</div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
     <br>
     <div class="row">
         <div class="col-md-12 text-center">
@@ -109,7 +124,7 @@
         </div>
         <div class="col-md-12">
             <div class="table-responsive">
-                <table class="table table-bordered table-striped">
+                <table class="table table-bordered table-stripped">
                     <thead>
                     <tr>
                         <th>SN</th>

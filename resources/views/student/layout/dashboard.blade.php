@@ -177,9 +177,11 @@
                                     <li class="nav-item">
                                         <a href="{{ url('/student/courseRegistration') }}" class="nav-link">Course Registration</a>
                                     </li>
-            
                                     <li class="nav-item">
-                                        <a href="{{ url('/admin/editCourseReg') }}" class="nav-link">Add/Remove Course(s)</a>
+                                        <a href="{{ url('/student/allCourseRegs') }}" class="nav-link">All Course Registrations</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="{{ url('/student/editCourseReg') }}" class="nav-link">Add/Remove Course(s)</a>
                                     </li>
                                 </ul>
                             </div>

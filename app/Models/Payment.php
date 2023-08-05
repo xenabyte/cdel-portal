@@ -14,6 +14,7 @@ class Payment extends Model
     const PAYMENT_TYPE_ACCEPTANCE = 'Acceptance Fee';
     const PAYMENT_TYPE_SCHOOL = 'School Fee';
     const PAYMENT_TYPE_GENERAL = 'General Fee';
+    const PAYMENT_MODIFY_COURSE_REG = 'Course Reg';
 
     protected $fillable = [
         'title',

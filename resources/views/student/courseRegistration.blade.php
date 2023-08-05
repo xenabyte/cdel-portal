@@ -30,7 +30,7 @@
         </div>
     </div>
 </div>
-@if($existingRegistration->count() > 0)
+@if($existingRegistration->count() > 0 && !$addOrRemoveTxs->count() > 0)
 <div class="row justify-content-center">
     <div class="col-lg-6">
         <div class="card">
@@ -111,6 +111,7 @@
                     <div class="card-body table-responsive">
                         <!-- Bordered Tables -->
                         <form method="post" action="{{ url('/student/registerCourses') }}">
+                            <input type="hidden" value="{{ !empty($addOrRemoveTxs)?$addOrRemoveTxs->first()->id:null }}" name="tx_id">
                             @csrf
                             <table class="table table-borderless table-nowrap">
                             

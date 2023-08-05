@@ -15,6 +15,8 @@ use App\Models\Course;
 use App\Models\CourseRegistrationSetting;
 use App\Models\CourseRegistration;
 use App\Models\StudentCourseRegistration;
+use App\Models\Payment;
+use App\Models\Transaction;
 
 use App\Libraries\Pdf\Pdf;
 
@@ -48,19 +50,31 @@ class AcademicController extends Controller
         $failedCourseIds = $failedCourses->pluck('course.id')->toArray();
         $carryOverCourses = Course::where('programme_id', $student->programme_id)->whereIn('id', $failedCourseIds)->get();
 
+        $addOrRemoveTxPay = Payment::with('structures')->where('type', Payment::PAYMENT_MODIFY_COURSE_REG)->first();
+        $addOrRemoveTxId = $addOrRemoveTxPay->id;
+        $addOrRemoveTxs = Transaction::where([
+            'student_id' =>  $studentId,
+            'payment_id' => $addOrRemoveTxId,
+            'is_used' => null,
+            'status' => 1
+        ])->orderBy('id', 'DESC')->get();
+
         $courseRegMgt = CourseRegistrationSetting::first();
 
         return view('student.courseRegistration', [
             'courseRegMgt' => $courseRegMgt,
             'courses' => $courses,
             'existingRegistration' => $existingRegistration,
-            'carryOverCourses' => $carryOverCourses
+            'carryOverCourses' => $carryOverCourses,
+            'addOrRemoveTxs' => $addOrRemoveTxs
         ]);
     }
 
     public function registerCourses(Request $request)
     {
         $selectedCourses = $request->input('selected_courses', []);
+        $txId = $request->input('tx_id');
+
         if(empty($selectedCourses)){
             alert()->info('Kindly select your courses', '')->persistent('Close');
             return redirect()->back();
@@ -71,6 +85,26 @@ class AcademicController extends Controller
         $globalData = $request->input('global_data');
         $admissionSession = $globalData->sessionSetting['admission_session'];
         $academicSession = $globalData->sessionSetting['academic_session'];
+
+        if(!empty($txId)) {
+            //delete existing registrattion
+            CourseRegistration::where([
+                'student_id' => $studentId,
+                'academic_session' => $academicSession
+            ])->forceDelete();
+
+            StudentCourseRegistration::where([
+                'student_id' => $studentId,
+                'academic_session' => $academicSession,
+            ])->forceDelete();
+
+            Transaction::where([
+                'student_id' =>  $studentId,
+                'id' => $txId,
+                'is_used' => null,
+                'status' => 1
+            ])->update(['is_used' => 1]);
+        }
         
         try {
             foreach ($selectedCourses as $courseId) {
@@ -128,4 +162,39 @@ class AcademicController extends Controller
 
         return redirect(asset($studentRegistration->file));
     }
+
+    public function allCourseRegs(Request $request)
+    {
+        $student = Auth::guard('student')->user();
+        $studentId = $student->id;
+        $globalData = $request->input('global_data');
+        $admissionSession = $globalData->sessionSetting['admission_session'];
+        $academicSession = $globalData->sessionSetting['academic_session'];
+
+        $studentRegistrations = StudentCourseRegistration::where([
+            'student_id' => $studentId,
+        ])->orderBy('id', 'DESC')->get();
+
+        return view('student.allCourseRegs', [
+            'studentRegistrations' => $studentRegistrations,
+        ]);
+    }
+
+    public function editCourseReg(Request $request)
+    {
+        $student = Auth::guard('student')->user();
+        $studentId = $student->id;
+        $globalData = $request->input('global_data');
+        $admissionSession = $globalData->sessionSetting['admission_session'];
+        $academicSession = $globalData->sessionSetting['academic_session'];
+        $addOrRemoveTxPay = Payment::with('structures')->where('type', Payment::PAYMENT_MODIFY_COURSE_REG)->first();
+        $addOrRemoveTxId = $addOrRemoveTxPay->id;
+        $addOrRemoveTxs = Transaction::where('student_id', $studentId)->where('payment_id', $addOrRemoveTxId)->where('status', 1)->orderBy('id', 'DESC')->get();
+
+        return view('student.editCourseReg', [
+            'addOrRemoveTxs' => $addOrRemoveTxs,
+            'payment' => $addOrRemoveTxPay
+        ]);
+    }
+    
 }
