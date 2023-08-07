@@ -14,9 +14,10 @@ class CreateStaffTable extends Migration
     {
         Schema::create('staff', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->string('title')->nullable();
             $table->string('lastname')->nullable();
             $table->string('othernames')->nullable();
-            $table->string('tau_staff_id')->unique();
+            $table->string('staffId')->unique();
             $table->string('email')->unique();
             $table->string('password');
             $table->string('phone_number')->nullable();
@@ -33,6 +34,12 @@ class CreateStaffTable extends Migration
             $table->text('address')->nullable();
             $table->string('referral_code')->nullable();
             $table->string('signature')->nullable();
+            $table->string('qualification')->nullable();
+            $table->string('department')->nullable();
+            $table->string('current_position')->nullable();
+            $table->text('description')->nullable();
+            $table->string('slug')->nullable();
+            $table->string('url')->nullable();
             $table->softDeletes();
             $table->rememberToken();
             $table->timestamps();

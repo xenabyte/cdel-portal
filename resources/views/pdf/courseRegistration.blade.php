@@ -64,13 +64,13 @@
     <table style="width: 100%;">
         <tbody>
             <tr>
-                <td style="width: 40%; vertical-align: top; text-align: left; border: none; padding-right: 20px;">
+                <td style="width: 50%; vertical-align: top; text-align: left; border: none; padding-right: 10px;">
                     <div><strong>MATRIC NUMBER:</strong> {{ $info->matric_number }}</div>
                     <div><strong>APPLICATION NO:</strong> {{ $info->applicant->application_number }}</div>
                     <div><strong>FULL NAME:</strong> {{ $info->applicant->lastname.' '. $info->applicant->othernames }}</div>
                     <div><strong>LEVEL:</strong> {{ $info->academicLevel->level }} Level</div>
                 </td>
-                <td style="width: 60%; vertical-align: top; text-align: left; border: none; padding-left: 20px;">
+                <td style="width: 50%; vertical-align: top; text-align: left; border: none; padding-left: 10px;">
                     <div><strong>FACULTY:</strong>  {{ $info->faculty->name }} </div>
                     <div><strong>DEPARTMENT:</strong> {{ $info->department->name }}</div>
                     <div><strong>PROGRAMME:</strong> {{ $info->programme->name }}</div>

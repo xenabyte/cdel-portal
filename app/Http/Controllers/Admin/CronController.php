@@ -11,6 +11,7 @@ use App\Models\Programme;
 use App\Models\ProgrammeCategory;
 use App\Models\Course;
 use App\Models\AcademicLevel;
+use App\Models\Staff;
 
 use Illuminate\Support\Facades\Http;
 
@@ -24,116 +25,235 @@ class CronController extends Controller
 {
 
     public function populateFaculty(){
-        // Fetch the API response
-        $response = Http::get(env('FACULTY_API_URL'));
 
-        // Check if the API call was successful
-        if ($response->successful()) {
-            $data = $response->json()['data'];
+        try {
+            // Fetch the API response
+            $response = Http::get(env('FACULTY_API_URL'));
 
-            $departmentNames = [];
-            $programmeNames = [];
-            $facultyNames = [];
+            // Check if the API call was successful
+            if ($response->successful()) {
+                $data = $response->json()['data'];
 
-            // Process the faculties
-            foreach ($data as $facultyData) {
-                $facultyNeededData = ([
-                    'name' => $facultyData['name'],
-                    'web_id' => $facultyData['id'],
-                    'slug' => strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $facultyData['name'])))
-                ]);
+                $departmentNames = [];
+                $programmeNames = [];
+                $facultyNames = [];
 
-                $facultyNames[] = $facultyData['name'];
-                if(!$faculty = Faculty::where('web_id', $facultyData['id'])->first()){
-                    $faculty = Faculty::create($facultyNeededData);
-                }else{
-                    $faculty->update($facultyNeededData);
-                }
-
-                // Process the departments for each faculty
-                foreach ($facultyData['departments'] as $departmentData) {
-                    $departmentNeededData = ([
-                        'name' => $departmentData['name'],
-                        'faculty_id' => $departmentData['facultyid'],
-                        'web_id' => $departmentData['id'],
-                        'slug' => strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $departmentData['name'])))
+                // Process the faculties
+                foreach ($data as $facultyData) {
+                    $facultyNeededData = ([
+                        'name' => $facultyData['name'],
+                        'web_id' => $facultyData['id'],
+                        'slug' => strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $facultyData['name'])))
                     ]);
 
-                    $departmentNames[] = $departmentData['name'];
-                    if(!$department = Department::where('web_id', $departmentData['id'])->first()){
-                        $department = Department::create($departmentNeededData);
+                    $facultyNames[] = $facultyData['name'];
+                    if(!$faculty = Faculty::where('web_id', $facultyData['id'])->first()){
+                        $faculty = Faculty::create($facultyNeededData);
                     }else{
-                        $department->update($departmentNeededData);
+                        $faculty->update($facultyNeededData);
                     }
-                    $faculty->departments()->save($department);
 
-                    // Process the programmes for each department
-                    foreach ($departmentData['programmes'] as $programmeData) {
-                        $programmeNeededData = ([
-                            'name' => $programmeData['name'],
-                            'web_id' => $programmeData['id'],
-                            'department_id' => $programmeData['deptid'],
-                            'category_id' => ProgrammeCategory::where('category', $programmeData['category'])->value('id'),
-                            'award' => $programmeData['award'],
-                            'duration' => intval($programmeData['duration']),
-                            'max_duration' => intval($programmeData['max_duration']),
-                            'slug' => strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $programmeData['name'])))
+                    // Process the departments for each faculty
+                    foreach ($facultyData['departments'] as $departmentData) {
+                        $departmentNeededData = ([
+                            'name' => $departmentData['name'],
+                            'faculty_id' => $departmentData['facultyid'],
+                            'web_id' => $departmentData['id'],
+                            'slug' => strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $departmentData['name'])))
                         ]);
 
-                        $programmeNames[] = $programmeData['name'];
-                        if(!$programme = Programme::where('web_id', $programmeData['id'])->first()){
-                            $programme = Programme::create($programmeNeededData);
+                        $departmentNames[] = $departmentData['name'];
+                        if(!$department = Department::where('web_id', $departmentData['id'])->first()){
+                            $department = Department::create($departmentNeededData);
                         }else{
-                            $programme->update($programmeNeededData);
+                            $department->update($departmentNeededData);
                         }
-                        // Associate the programme with the department
-                        $department->programmes()->save($programme);
+                        $faculty->departments()->save($department);
+
+                        // Process the programmes for each department
+                        foreach ($departmentData['programmes'] as $programmeData) {
+                            $programmeNeededData = ([
+                                'name' => $programmeData['name'],
+                                'web_id' => $programmeData['id'],
+                                'department_id' => $programmeData['deptid'],
+                                'category_id' => ProgrammeCategory::where('category', $programmeData['category'])->value('id'),
+                                'award' => $programmeData['award'],
+                                'duration' => intval($programmeData['duration']),
+                                'max_duration' => intval($programmeData['max_duration']),
+                                'slug' => strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $programmeData['name'])))
+                            ]);
+
+                            $programmeNames[] = $programmeData['name'];
+                            if(!$programme = Programme::where('web_id', $programmeData['id'])->first()){
+                                $programme = Programme::create($programmeNeededData);
+                            }else{
+                                $programme->update($programmeNeededData);
+                            }
+                            // Associate the programme with the department
+                            $department->programmes()->save($programme);
+                        }
                     }
                 }
-            }
 
-            // Delete any missing faculties, departments, or programmes
-            Faculty::whereNotIn('name', $facultyNames)->delete();
-            Department::whereNotIn('name', $departmentNames)->delete();
-            Programme::whereNotIn('name', $programmeNames)->delete();
+                // Delete any missing faculties, departments, or programmes
+                Faculty::whereNotIn('name', $facultyNames)->delete();
+                Department::whereNotIn('name', $departmentNames)->delete();
+                Programme::whereNotIn('name', $programmeNames)->delete();
+            }
+        
+            alert()->success('Changes Saved', 'Faculty populated successfully')->persistent('Close');
+            return redirect()->back();
+
+        } catch (\Exception $e) {
+            Log::info($e);
+            alert()->error('Oops!', 'Something went wrong')->persistent('Close');
+            return redirect()->back();
         }
     }
 
     public function populateCourse(){
-        $programmes = Programme::get();
-        $courseCodes = [];
-        foreach ($programmes as $programme){
-            $response = Http::get(env('PROGRAMME_API_URL').'/'.$programme->web_id);
+        try {
+
+            $programmes = Programme::get();
+            $courseCodes = [];
+            foreach ($programmes as $programme){
+                $response = Http::get(env('PROGRAMME_API_URL').'/'.$programme->web_id);
+
+                if ($response->successful()) {
+                    $programmeData = $response->json()['data'];
+
+                    $courseData = $programmeData['courses'];
+                    $programmeId = $programmeData['id'];
+
+                    foreach ($courseData as $course) {
+                        $courseNeededData = ([
+                            'name' => $course['course_name'],
+                            'web_id' => $course['id'],
+                            'programme_id' => $programmeId,
+                            'code' => $course['course_code'],
+                            'semester' => $course['course_semester'],
+                            'credit_unit' => $course['creditUnits'],
+                            'level_id' => AcademicLevel::where('level', ($course['course_year']*100))->value('id'),
+                            'status' => $course['status'],
+                        ]);
+                        $courseCodes[] = $course['course_code'];
+                        if(!$course = Course::where('web_id', $course['id'])->first()){
+                            $course = Course::create($courseNeededData);
+                        }else{
+                            $course->update($facultyNeededData);
+                        }
+                        $programme->courses()->save($course);
+                    }
+
+                }
+                // Delete courses that are not in the API response
+                Course::whereNotIn('code', $courseCodes)->delete();
+            }
+        
+            alert()->success('Changes Saved', 'Course populated successfully')->persistent('Close');
+            return redirect()->back();
+
+        } catch (\Exception $e) {
+            Log::info($e);
+            alert()->error('Oops!', 'Something went wrong')->persistent('Close');
+            return redirect()->back();
+        }
+    }
+
+    public function populateStaff(){
+
+        try {
+            // Fetch the API response
+            $response = Http::get(env('STAFF_API_URL'));
 
             if ($response->successful()) {
-                $programmeData = $response->json()['data'];
 
-                $courseData = $programmeData['courses'];
-                $programmeId = $programmeData['id'];
+                $staffRecords = $response->json()['data'];
 
-                foreach ($courseData as $course) {
-                    $courseNeededData = ([
-                        'name' => $course['course_name'],
-                        'web_id' => $course['id'],
-                        'programme_id' => $programmeId,
-                        'code' => $course['course_code'],
-                        'semester' => $course['course_semester'],
-                        'credit_unit' => $course['creditUnits'],
-                        'level_id' => AcademicLevel::where('level', ($course['course_year']*100))->value('id'),
-                        'status' => $course['status'],
-                    ]);
-                    $courseCodes[] = $course['course_code'];
-                    if(!$course = Course::where('web_id', $course['id'])->first()){
-                        $course = Course::create($courseNeededData);
-                    }else{
-                        $course->update($facultyNeededData);
+                foreach ($staffRecords as $staffRecord) {
+                    $existingStaff = Staff::where('staffId', $staffRecord['staffid'])->first();
+                    
+                    $email = $staffRecord['email'];
+                    $password = $staffRecord['password'];
+                    $title = $staffRecord['title'];
+                    $lastname = $staffRecord['lastname'];
+                    $othernames = $staffRecord['firstname'].' '.$staffRecord['middlename'];
+                    $phoneNumber = $staffRecord['phone'];
+                    $address = $staffRecord['address'];
+                    $staffId = $staffRecord['staffid'];
+                    $dob = $staffRecord['dob'];
+                    $description = $staffRecord['biodata'];
+                    $currentPosition = $staffRecord['currentposition'];
+                    $nationality = $staffRecord['nationality'];
+                    $image = $staffRecord['photo'];
+                    $category = $staffRecord['category'];
+                    $qualification = $staffRecord['qualification'];
+                    $url = $staffRecord['url'];
+                    $department = $staffRecord['department'];
+                    $academicDepartment = $staffRecord['academic_department'];
+                    $acadDeptId = null;
+                    $facultyId = null;
+                    if(!empty($academicDepartment)){
+                        $portalDept = Department::where('web_id', $academicDepartment['id'])->first();
+                        $acadDeptId = $portalDept->id;
+                        $facultyId = $portalDept->faculty_id;
                     }
-                    $programme->courses()->save($course);
-                }
+                
+                    if ($existingStaff) {
 
+                        $existingStaff->update([
+                            'email' => $email,
+                            'password' => $password,
+                            'lastname' => $lastname,
+                            'othernames' => $othernames,
+                            'phone_number' => $phoneNumber,
+                            'address' => $address,
+                            'staffId' => $staffId,
+                            'description' => $description,
+                            'current_position' => $currentPosition,
+                            'nationality' => $nationality,
+                            'image' => rtrim(env('WEBSITE_URL'), '/') . '/' . ltrim($image, '/'),
+                            'category' => $category,
+                            'qualification' => $qualification,
+                            'url' => $url,
+                            'department_id' => $acadDeptId,
+                            'faculty_id' => $facultyId,
+                            'dob' => $dob,
+                            'title' => $title,
+                        ]);
+                    } else {
+                        // Create new staff record
+                        Staff::create([
+                            'email' => $email,
+                            'password' => $password,
+                            'lastname' => $lastname,
+                            'othernames' => $othernames,
+                            'phone_number' => $phoneNumber,
+                            'address' => $address,
+                            'staffId' => $staffId,
+                            'description' => $description,
+                            'current_position' => $currentPosition,
+                            'nationality' => $nationality,
+                            'image' => rtrim(env('WEBSITE_URL'), '/') . '/' . ltrim($image, '/'),
+                            'category' => $category,
+                            'qualification' => $qualification,
+                            'url' => $url,
+                            'department_id' => $acadDeptId,
+                            'faculty_id' => $facultyId,
+                            'dob' => $dob,
+                            'title' => $title,
+                        ]);
+                    }
+                }
             }
-            // Delete courses that are not in the API response
-            Course::whereNotIn('code', $courseCodes)->delete();
+        
+            alert()->success('Changes Saved', 'Staff populated successfully')->persistent('Close');
+            return redirect()->back();
+
+        } catch (\Exception $e) {
+            Log::info($e);
+            alert()->error('Oops!', 'Something went wrong')->persistent('Close');
+            return redirect()->back();
         }
     }
 

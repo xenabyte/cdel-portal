@@ -19,7 +19,7 @@ class Staff extends Authenticatable
     protected $fillable = [
         'lastname',
         'othernames',
-        'tau_staff_id', 
+        'staffId', 
         'email', 
         'password',
         'phone_number',
@@ -34,6 +34,12 @@ class Staff extends Authenticatable
         'lga',
         'gender',
         'address',
+        'qualification',
+        'department',
+        'current_position',
+        'description',
+        'slug',
+        'title',
         'referral_code'
     ];
 

@@ -164,6 +164,12 @@
 
                         <li class="nav-item">
                             <a class="nav-link menu-link" href="{{ url('student/transactions') }}">
+                                <i class="mdi mdi-account-child-circle"></i> <span data-key="t-transaction">Mentor</span>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link menu-link" href="{{ url('student/mentor') }}">
                                 <i class="mdi mdi-bank-transfer"></i> <span data-key="t-transaction">Transaction</span>
                             </a>
                         </li>
@@ -182,6 +188,22 @@
                                     </li>
                                     <li class="nav-item">
                                         <a href="{{ url('/student/editCourseReg') }}" class="nav-link">Add/Remove Course(s)</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li> <!-- end Bursary Menu -->
+
+                        <li class="nav-item">
+                            <a class="nav-link menu-link" href="#examManagement" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="examManagement">
+                                <i class="mdi mdi-facebook-gaming"></i> <span data-key="t-examManagement">Exam Management</span>
+                            </a>
+                            <div class="collapse menu-dropdown" id="examManagement">
+                                <ul class="nav nav-sm flex-column">
+                                    <li class="nav-item">
+                                        <a href="{{ url('/student/generateExamDockets') }}" class="nav-link">Exam Docket</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="{{ url('/student/allExamDockets') }}" class="nav-link">All Exam Docket</a>
                                     </li>
                                 </ul>
                             </div>

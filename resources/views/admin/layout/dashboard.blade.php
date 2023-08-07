@@ -365,10 +365,16 @@
                                         <a href="{{ url('/admin/courseRegMgt') }}" class="nav-link">Course Reg. Mgt</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a href="layouts-two-column.html" class="nav-link" target="_blank" data-key="t-two-column">Two Column</a>
+                                        <a href="{{ url('/admin/examDocketMgt') }}" class="nav-link">Exam Docket Mgt</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a href="layouts-vertical-hovered.html" class="nav-link" target="_blank" data-key="t-hovered">Hovered</a>
+                                        <a href="{{ url('/admin/populateFaculty') }}" class="nav-link">Populate Faculty</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="{{ url('/admin/populateCourse') }}" class="nav-link">Populate Course</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="{{ url('/admin/populateStaff') }}" class="nav-link">Populate Staff</a>
                                     </li>
                                 </ul>
                             </div>
