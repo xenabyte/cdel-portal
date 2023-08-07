@@ -392,6 +392,7 @@ class ApplicationController extends Controller
                 'password' => Hash::make($accessCode),
                 'passcode' => $accessCode,
                 'academic_session' => $applicationSession,
+                'referrer' => $request->referrer,
             ]);
     
             $applicant = Applicant::create($newApplicant);

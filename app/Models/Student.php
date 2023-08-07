@@ -139,4 +139,14 @@ class Student extends Authenticatable
     {
         return $this->hasMany(StudentCourseRegistration::class, 'student_id');
     }
+
+    /**
+     * Get all of the transactions for the Student
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function transactions()
+    {
+        return $this->hasMany(Transaction::class, 'student_id');
+    }
 }

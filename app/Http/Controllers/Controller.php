@@ -22,6 +22,8 @@ use App\Models\User;
 use App\Models\Student;
 use App\Models\Payment;
 use App\Models\SessionSetting;
+use App\Models\Staff;
+use App\Models\Partner;
 
 class Controller extends BaseController
 {
@@ -104,6 +106,19 @@ class Controller extends BaseController
         }
 
         return $paymentAmount;
+    }
+
+    public function generateReferralCode() {
+        $referralCode = "";
+        $current = $this->generateRandomString();
+        $isExist = Staff::where('referral_code', $current)->get();
+        $isExistPartner = Partner::where('referral_code', $current)->get();
+        if(!($isExist->count() > 0) && !($isExistPartner->count() > 0)) {
+            $referralCode = $current;
+            return $referralCode;
+        } else {
+            return $this->generateReferralCode();
+        }           
     }
 
 

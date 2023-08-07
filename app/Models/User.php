@@ -52,7 +52,8 @@ class User extends Authenticatable
         'utme',
         'application_type',
         'de_result',
-        'de_school_attended'
+        'de_school_attended',
+        'referral_code',
     ];
 
     /**

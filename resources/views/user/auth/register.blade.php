@@ -136,6 +136,14 @@
                         </div>
 
                         <div class="mb-3">
+                            <label for="referrer" class="form-label">Referrer Code </label>
+                            <input type="text" class="form-control" name="referrer" id="referrer" placeholder="Enter email referrer" required>
+                            <div class="invalid-feedback">
+                                Please enter referrer code
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
                             <label for="programme_id" class="form-label">Select Programme<span class="text-danger">*</span></label>
                             <select class="form-select" aria-label="programme_id" name="programme_id" required>
                                 <option value= "" selected>Select Programme</option>

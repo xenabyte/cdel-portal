@@ -55,7 +55,7 @@
                     <div class="d-flex">
                         <!-- LOGO -->
                         <div class="navbar-brand-box horizontal-logo">
-                            <a href="index.html" class="logo logo-dark">
+                            <a href="{{url('staff/home')}}" class="logo logo-dark">
                                 <span class="logo-sm">
                                     <img src="{{asset('assets/images/logo-sm.png')}}" alt="" height="22">
                                 </span>
@@ -64,7 +64,7 @@
                                 </span>
                             </a>
 
-                            <a href="index.html" class="logo logo-light">
+                            <a href="{{url('staff/home')}}" class="logo logo-light">
                                 <span class="logo-sm">
                                     <img src="{{asset('assets/images/logo-sm.png')}}" alt="" height="22">
                                 </span>
@@ -101,16 +101,17 @@
                         <div class="dropdown ms-sm-3 header-item topbar-user">
                             <button type="button" class="btn shadow-none" id="page-header-user-dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <span class="d-flex align-items-center">
-                                    <img class="rounded-circle header-profile-user" src="{{asset('assets/images/users/user-dummy-img.jpg')}}" alt="Header Avatar">
+                                    <img class="rounded-circle header-profile-user" src="{{asset(!empty($staff->image)? $staff->image : 'assets/images/users/user-dummy-img.jpg')}}" alt="Header Avatar">
                                     <span class="text-start ms-xl-2">
-                                        <span class="d-none d-xl-inline-block ms-1 fw-medium user-name-text">{{ $staff->name }}</span>
+                                        <span class="d-none d-xl-inline-block ms-1 fw-medium user-name-text">{{ $staff->title.' '. $staff->lastname .' '.$staff->othernames }}</span>
                                         <span class="d-none d-xl-block ms-1 fs-12 text-muted user-name-sub-text">Staff</span>
                                     </span>
                                 </span>
                             </button>
                             <div class="dropdown-menu dropdown-menu-end">
                                 <!-- item-->
-                                <h6 class="dropdown-header">Welcome {{ $staff->name }}!</h6>
+                                <h6 class="dropdown-header">Welcome {{ $staff->title.' '. $staff->lastname .' '.$staff->othernames }}!</h6>
+                                <span class="dropdown-item"><i class="mdi mdi-account-child-circle text-muted fs-16 align-middle me-1"></i> <span class="align-middle">Referral Code: {{ $staff->referral_code }}</span></span>
                                 <div class="dropdown-divider"></div>
                                 <a class="dropdown-item" href="pages-profile-settings.html"><span class="badge bg-soft-success text-success mt-1 float-end">New</span><i class="mdi mdi-cog-outline text-muted fs-16 align-middle me-1"></i> <span class="align-middle">Settings</span></a>
                                 <a class="dropdown-item" href="{{ url('/staff/logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();"><i class="mdi mdi-logout text-muted fs-16 align-middle me-1"></i> <span class="align-middle" data-key="t-logout">Logout</span></a>
@@ -137,7 +138,7 @@
                     </span>
                 </a>
                 <!-- Light Logo-->
-                <a href="index.html" class="logo logo-light">
+                <a href="{{url('staff/home')}}" class="logo logo-light">
                     <span class="logo-sm">
                         <img src="{{asset('assets/images/logo-sm.png')}}" alt="" height="22">
                     </span>
@@ -162,7 +163,49 @@
                                 <i class="mdi mdi-view-dashboard"></i> <span>Dashboard</span>
                             </a>
                         </li>
-                       
+
+                        <li class="nav-item">
+                            <a class="nav-link menu-link" href="{{ url('staff/mentee') }}">
+                                <i class="mdi mdi-account-child-circle"></i> <span data-key="t-transaction">Mentee(s)</span>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link menu-link" href="{{ url('staff/reffs') }}">
+                                <i class="mdi mdi-account-network-outline"></i> <span data-key="t-transaction">Referred Student(s)</span>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link menu-link" href="{{ url('staff/courses') }}">
+                                <i class="mdi mdi-book-education-outline"></i> <span data-key="t-transaction">Course(s)</span>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="na<li class="nav-item">
+                                <a class="nav-link menu-link" href="#courseManagement" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="courseManagement">
+                                    <i class="mdi mdi-bookshelf"></i> <span data-key="t-courseManagement">Course Management</span>
+                                </a>
+                                <div class="collapse menu-dropdown" id="courseManagement">
+                                    <ul class="nav nav-sm flex-column">
+                                        <li class="nav-item">
+                                            <a href="{{ url('/staff/courseAllocation') }}" class="nav-link">Course/Staff Allocation</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a href="{{ url('/student/roleAllocation') }}" class="nav-link">Staff Role(s)</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li> <!-- end Bursary Menu -->
+                        </li>
+
+
+                        <li class="nav-item">
+                            <a class="nav-link menu-link" href="{{ url('staff/profile') }}">
+                                <i class="mdi mdi-account-child-circle"></i> <span data-key="t-transaction">Profile</span>
+                            </a>
+                        </li>
 
                         <li class="menu-title"><i class="ri-more-fill"></i> <span data-key="t-pages"></span></li>
                         <li class="nav-item">

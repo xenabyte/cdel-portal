@@ -46,6 +46,7 @@ class CreateUsersTable extends Migration
             $table->string('de_result')->nullable();
             $table->string('application_type')->nullable();
             $table->string('de_school_attended')->nullable();
+            $table->string('referral_code')->nullable();
             $table->softDeletes();
             $table->rememberToken();
             $table->timestamps();

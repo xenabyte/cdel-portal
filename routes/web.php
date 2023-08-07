@@ -145,6 +145,18 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'staff'],
   Route::get('/password/reset/{token}', [App\Http\Controllers\Staff\Auth\ResetPasswordController::class, 'showResetForm']);
 
   Route::get('/home', [App\Http\Controllers\Staff\StaffController::class, 'index'])->name('home')->middleware(['auth:staff']);
+  Route::get('/mentee', [App\Http\Controllers\Staff\StaffController::class, 'mentee'])->name('mentee')->middleware(['auth:staff']);
+  Route::get('/reffs', [App\Http\Controllers\Staff\StaffController::class, 'reffs'])->name('reffs')->middleware(['auth:staff']);
+  Route::get('/courses', [App\Http\Controllers\Staff\StaffController::class, 'courses'])->name('courses')->middleware(['auth:staff']);
+  
+  Route::get('/courseAllocation', [App\Http\Controllers\Staff\StaffController::class, 'courseAllocation'])->name('courseAllocation')->middleware(['auth:staff']);
+  Route::get('/roleAllocation', [App\Http\Controllers\Staff\StaffController::class, 'roleAllocation'])->name('roleAllocation')->middleware(['auth:staff']);
+  Route::get('student/{slug}', [App\Http\Controllers\Staff\StaffController::class, 'student'])->name('student')->middleware(['auth:staff']);
+  Route::get('applicant/{slug}', [App\Http\Controllers\Staff\StaffController::class, 'applicant'])->name('applicant')->middleware(['auth:staff']);
+  Route::post('applicantWithSession', [App\Http\Controllers\Staff\StaffController::class, 'applicantWithSession'])->name('applicantWithSession')->middleware(['auth:staff']);
+
+  
+
 });
 
 Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'bursary'], function () {

@@ -242,6 +242,7 @@ class CronController extends Controller
                             'faculty_id' => $facultyId,
                             'dob' => $dob,
                             'title' => $title,
+                            'referral_code' => $this->generateReferralCode(),
                         ]);
                     }
                 }
