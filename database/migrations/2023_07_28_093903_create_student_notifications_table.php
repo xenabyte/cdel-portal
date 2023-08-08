@@ -18,7 +18,7 @@ class CreateStudentNotificationsTable extends Migration
             $table->unsignedBigInteger('student_id')->nullable();
             $table->unsignedBigInteger('staff_id')->nullable();
             $table->unsignedBigInteger('user_id')->nullable();
-            $table->string('description')->nullable();
+            $table->text('description')->nullable();
             $table->string('status')->nullable();
             $table->string('owner_type')->nullable();
             $table->softDeletes();

@@ -17,6 +17,9 @@ use App\Models\Student;
 use App\Models\Programme;
 use App\Models\AcademicLevel;
 use App\Models\Course;
+use App\Models\Notification;
+
+use App\Mail\NotificationMail;
 
 
 use SweetAlert;
@@ -224,6 +227,11 @@ class StaffController extends Controller
     }
 
     public function sendMessage(Request $request){
+        $globalData = $request->input('global_data');
+        $admissionSession = $globalData->sessionSetting['admission_session'];
+        $academicSession = $globalData->sessionSetting['academic_session'];
+        $applicationSession = $globalData->sessionSetting['application_session'];
+
         $validator = Validator::make($request->all(), [
             'message' => 'required',
         ]);
@@ -232,14 +240,36 @@ class StaffController extends Controller
             alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
             return redirect()->back();
         }
+        $staff = Auth::guard('staff')->user();
+        $staffName = $staff->title.' '.$staff->lastname.' '.$staff->othernames;
+        $staffId = $staff->id;
 
         $message = $request->message;
-        
+        $course = Course::with('level', 'registrations', 'registrations.student', 'registrations.student.applicant', 'registrations.student.programme')->where('staff_id', $staffId)->first();
+        $registeredStudents = $course->registrations->where('academic_session', $academicSession)->pluck('student');
 
-        if($course->save()){
-            alert()->success('Message sent', '')->persistent('Close');
-            return redirect()->back();
+        foreach ($registeredStudents as $student){
+            $description = $staffName ." sent you a message; ".$message;
+            $receiverName = $student->applicant->lastname . ' ' . $student->applicant->othernames;
+            Notification::create([
+                'student_id' => $student->id,
+                'description' => $description,
+                'status' => 0
+            ]);
+
+            $staffDescription = "You sent you a message to all student offering ".$course->code.", messages says; ".$message;
+            Notification::create([
+                'staff_id' => $staffId,
+                'description' => $staffDescription,
+                'status' => 0
+            ]);
+
+            //send a notification mail
+            Mail::to($request->email)->send(new NotificationMail($staffName, $message, $receiverName));
         }
+
+        alert()->success('Message sent', '')->persistent('Close');
+        return redirect()->back();
     }
 
     public function roleAllocation(Request $request){
