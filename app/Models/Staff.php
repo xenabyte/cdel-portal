@@ -63,5 +63,34 @@ class Staff extends Authenticatable
         $this->notify(new StaffResetPassword($token));
     }
 
+    /**
+     * Get the faculty that owns the Staff
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function faculty()
+    {
+        return $this->belongsTo(Faculty::class, 'faculty_id');
+    }
+
+    /**
+     * Get the department that owns the Staff
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function department()
+    {
+        return $this->belongsTo(Department::class, 'department_id');
+    }
+
+    /**
+     * Get all of the courses for the Staff
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function courses()
+    {
+        return $this->hasMany(Courses::class, 'staff_id');
+    }
     
 }

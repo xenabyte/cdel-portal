@@ -14,6 +14,9 @@ use Illuminate\Support\Facades\Validator;
 use App\Models\Staff;
 use App\Models\User as Applicant;
 use App\Models\Student;
+use App\Models\Programme;
+use App\Models\AcademicLevel;
+use App\Models\Course;
 
 
 use SweetAlert;
@@ -38,7 +41,14 @@ class StaffController extends Controller
 
     public function courses(Request $request){
 
-        return view('staff.courses');
+        $staff = Auth::guard('staff')->user();
+        $staffId = $staff->id;
+
+        $courses = Course::withCount('registrations')->with('level')->where('staff_id', $staffId)->get();
+
+        return view('staff.courses', [
+            'courses' => $courses,
+        ]);
     }
 
     public function reffs(Request $request){
@@ -96,9 +106,107 @@ class StaffController extends Controller
     }
 
     public function courseAllocation(Request $request){
+        $staff = Auth::guard('staff')->user();
+        $staffId = $staff->id;
+        $staffDepartmentId = $staff->department_id;
 
-        return view('staff.courseAllocation');
+        $programmes = Programme::where('department_id', $staffDepartmentId)->get();
+        $levels = AcademicLevel::get();
+
+        return view('staff.courseAllocation', [
+            'programmes' => $programmes,
+            'levels' => $levels
+        ]);
     }
+
+    public function getCourses(Request $request){
+        $staff = Auth::guard('staff')->user();
+        $staffId = $staff->id;
+        $staffDepartmentId = $staff->department_id;
+
+        $levelId = $request->level_id;
+        $semester = $request->semester;
+        $programmeId = $request->programme_id;
+
+        $courses = Course::with('staff')->where([
+            'programme_id' => $programmeId,
+            'semester' => $semester,
+            'level_id' => $levelId
+        ])->get();
+
+        $programme = Programme::find($programmeId);
+        $level = AcademicLevel::find($levelId);
+
+        
+        $programmes = Programme::where('department_id', $staffDepartmentId)->get();
+        $levels = AcademicLevel::get();
+
+        return view('staff.courseAllocation', [
+            'programmes' => $programmes,
+            'levels' => $levels,
+            'courses' => $courses,
+            'mainProgramme' => $programme,
+            'mainLevel' => $level,
+        ]);
+    }
+
+    public function assignCourse(Request $request){
+        $staff = Auth::guard('staff')->user();
+        $staffId = $staff->id;
+        $staffDepartmentId = $staff->department_id;
+        $levelId = $request->level_id;
+        $semester = $request->semester;
+        $programmeId = $request->programme_id;
+
+        $programme = Programme::find($programmeId);
+        $level = AcademicLevel::find($levelId);
+
+        $courses = Course::with('staff')->where([
+            'programme_id' => $programmeId,
+            'semester' => $semester,
+            'level_id' => $levelId
+        ])->get();
+        
+        $programmes = Programme::where('department_id', $staffDepartmentId)->get();
+        $levels = AcademicLevel::get();
+
+        $tauStaffId = strtoupper($request->staff_id);
+
+        if(!$staff = Staff::where('staffId', $tauStaffId)->first()){
+            alert()->error('Oops', 'Invalid Staff ')->persistent('Close');
+
+            return view('staff.courseAllocation', [
+                'programmes' => $programmes,
+                'levels' => $levels,
+                'courses' => $courses,
+                'mainProgramme' => $programme,
+                'mainLevel' => $level,
+            ]);
+        }
+
+        $course = Course::find($request->course_id);
+        $course->staff_id = $staff->id;
+
+        if($course->save()){
+            alert()->success('Changes Saved', '')->persistent('Close');
+        }
+
+        $courses = Course::with('staff')->where([
+            'programme_id' => $programmeId,
+            'semester' => $semester,
+            'level_id' => $levelId
+        ])->get();
+
+        return view('staff.courseAllocation', [
+            'programmes' => $programmes,
+            'levels' => $levels,
+            'courses' => $courses,
+            'mainProgramme' => $programme,
+            'mainLevel' => $level,
+        ]);
+    }
+
+    
 
     public function roleAllocation(Request $request){
 

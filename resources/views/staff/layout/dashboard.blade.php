@@ -104,7 +104,7 @@
                                     <img class="rounded-circle header-profile-user" src="{{asset(!empty($staff->image)? $staff->image : 'assets/images/users/user-dummy-img.jpg')}}" alt="Header Avatar">
                                     <span class="text-start ms-xl-2">
                                         <span class="d-none d-xl-inline-block ms-1 fw-medium user-name-text">{{ $staff->title.' '. $staff->lastname .' '.$staff->othernames }}</span>
-                                        <span class="d-none d-xl-block ms-1 fs-12 text-muted user-name-sub-text">Staff</span>
+                                        <span class="d-none d-xl-block ms-1 fs-12 text-muted user-name-sub-text">Staff ID: {{ $staff->staffId}}</span>
                                     </span>
                                 </span>
                             </button>

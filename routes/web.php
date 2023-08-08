@@ -155,6 +155,12 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'staff'],
   Route::get('applicant/{slug}', [App\Http\Controllers\Staff\StaffController::class, 'applicant'])->name('applicant')->middleware(['auth:staff']);
   Route::post('applicantWithSession', [App\Http\Controllers\Staff\StaffController::class, 'applicantWithSession'])->name('applicantWithSession')->middleware(['auth:staff']);
 
+  Route::post('getCourses', [App\Http\Controllers\Staff\StaffController::class, 'getCourses'])->name('getCourses')->middleware(['auth:staff']);
+  Route::post('assignCourse', [App\Http\Controllers\Staff\StaffController::class, 'assignCourse'])->name('assignCourse')->middleware(['auth:staff']);
+
+  Route::get('courseDetail/{id}', [App\Http\Controllers\Staff\StaffController::class, 'courseDetail'])->name('courseDetail')->middleware(['auth:staff']);
+
+
   
 
 });
