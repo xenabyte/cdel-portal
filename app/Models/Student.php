@@ -149,4 +149,14 @@ class Student extends Authenticatable
     {
         return $this->hasMany(Transaction::class, 'student_id');
     }
+
+    /**
+     * Get all of the notifications for the Student
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function notifications()
+    {
+        return $this->hasMany(Notification::class, 'student_id');
+    }
 }

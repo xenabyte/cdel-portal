@@ -30,7 +30,7 @@
                 </div>
             </div><!-- end card header -->
 
-            <div class="card-body">
+            <div class="card-body table-responsive">
                 <!-- Bordered Tables -->
                 <table id="buttons-datatables" class="display table table-bordered" style="width:100%">
                     <thead>
@@ -39,7 +39,6 @@
                             <th scope="col">Name</th>
                             <th scope="col">Programme</th>
                             <th scope="col">Email</th>
-                            <th scope="col">Access Code</th>
                             <th scope="col">Phone Number</th>
                             <th scope="col">Academic Session</th>
                             <th scope="col">Application Status</th>
@@ -54,7 +53,6 @@
                             <td>{{ $applicant->lastname .' '. $applicant->othernames }}</td>
                             <td>{{ $applicant->programme->name }}</td>
                             <td>{{ $applicant->email }} </td>
-                            <td>{{ $applicant->passcode }} </td>
                             <td>{{ $applicant->phone_number }} </td>
                             <td>{{ $applicant->academic_session }} </td>
                             <td>{{ ucwords($applicant->status) }} </td>

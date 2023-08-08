@@ -51,6 +51,23 @@ class StaffController extends Controller
         ]);
     }
 
+    public function courseDetail(Request $request, $id){
+        $staff = Auth::guard('staff')->user();
+        $staffId = $staff->id;
+        $globalData = $request->input('global_data');
+        $admissionSession = $globalData->sessionSetting['admission_session'];
+        $academicSession = $globalData->sessionSetting['academic_session'];
+        $applicationSession = $globalData->sessionSetting['application_session'];
+
+        $course = Course::with('level', 'registrations', 'registrations.student', 'registrations.student.applicant', 'registrations.student.programme')->where('staff_id', $staffId)->first();
+        $registeredStudents = $course->registrations->where('academic_session', $academicSession)->pluck('student');
+        $course->registeredStudents = $registeredStudents;
+
+        return view('staff.courseDetail', [
+            'course' => $course,
+        ]);
+    }
+
     public function reffs(Request $request){
         $staff = Auth::guard('staff')->user();
         $staffId = $staff->id;
@@ -206,7 +223,24 @@ class StaffController extends Controller
         ]);
     }
 
-    
+    public function sendMessage(Request $request){
+        $validator = Validator::make($request->all(), [
+            'message' => 'required',
+        ]);
+
+        if($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+
+        $message = $request->message;
+        
+
+        if($course->save()){
+            alert()->success('Message sent', '')->persistent('Close');
+            return redirect()->back();
+        }
+    }
 
     public function roleAllocation(Request $request){
 

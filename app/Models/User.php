@@ -160,4 +160,14 @@ class User extends Authenticatable
     {
         return $this->hasMany(Utme::class);
     }
+
+    /**
+     * Get all of the notifications for the User
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function notifications()
+    {
+        return $this->hasMany(Notification::class, 'user_id');
+    }
 }

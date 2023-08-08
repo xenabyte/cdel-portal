@@ -92,5 +92,15 @@ class Staff extends Authenticatable
     {
         return $this->hasMany(Courses::class, 'staff_id');
     }
+
+    /**
+     * Get all of the notifications for the Staff
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function notifications()
+    {
+        return $this->hasMany(Notification::class, 'staff_id');
+    }
     
 }
