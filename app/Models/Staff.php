@@ -104,5 +104,15 @@ class Staff extends Authenticatable
     {
         return $this->hasMany(Notification::class, 'staff_id');
     }
+
+    /**
+     * Get all of the roles for the Staff
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function staffRoles()
+    {
+        return $this->hasMany(StaffRole::class, 'staff_id');
+    }
     
 }

@@ -1,6 +1,7 @@
 @extends('student.layout.dashboard')
 <?php 
     $student = Auth::guard('student')->user();
+    $maxUnit = !empty($student->credit_load)?$student->credit_load:24;
 ?>
 @section('content')
 <style>
@@ -239,6 +240,9 @@
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script>
             $(document).ready(function() {
+
+                const maxUnit = <?php echo $maxUnit; ?>; 
+
                 $("input[name='selected_courses[]']").change(function() {
                     calculateTotals();
                 });
@@ -264,9 +268,9 @@
                     $("input[name='selected_courses[]']").each(function() {
                         let creditUnit = parseFloat($(this).closest("tr").find("td:eq(3)").text());
                         if (!$(this).prop("checked")) {
-                            if ($(this).closest("tbody").hasClass("first-semester") && firstSemesterTotal + creditUnit > 24) {
+                            if ($(this).closest("tbody").hasClass("first-semester") && firstSemesterTotal + creditUnit > maxUnit) {
                                 $(this).prop("disabled", true);
-                            } else if ($(this).closest("tbody").hasClass("second-semester") && secondSemesterTotal + creditUnit > 24) {
+                            } else if ($(this).closest("tbody").hasClass("second-semester") && secondSemesterTotal + creditUnit > maxUnit) {
                                 $(this).prop("disabled", true);
                             } else {
                                 $(this).prop("disabled", false);

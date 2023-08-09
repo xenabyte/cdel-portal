@@ -6,6 +6,9 @@ use Closure;
 use Illuminate\Http\Request;
 
 use App\Models\SessionSetting;
+use App\Models\ExaminationSetting;
+
+use Log;
 
 class GlobalDataMiddleware
 {
@@ -20,8 +23,11 @@ class GlobalDataMiddleware
     {
         // Add your data to the request object.
         $sessionSetting = SessionSetting::first();
+        $examinationSetting = ExaminationSetting::first();
+
         $data = new \stdClass();
         $data->sessionSetting = $sessionSetting;
+        $data->examSetting = $examinationSetting;
 
         $request->merge([
             'global_data' => $data,

@@ -18,6 +18,8 @@ class CreateExaminationSettingsTable extends Migration
             $table->string('exam_docket_status')->nullable();
             $table->string('academic_session')->nullable();
             $table->string('result_processing_status')->nullable();
+            $table->string('semester')->nullable();
+            $table->string('status')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

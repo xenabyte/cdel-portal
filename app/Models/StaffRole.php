@@ -14,4 +14,14 @@ class StaffRole extends Model
         'role_id',
         'staff_id',
     ];
+
+    /**
+     * Get the role that owns the StaffRole
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function role()
+    {
+        return $this->belongsTo(Role::class, 'role_id');
+    }
 }

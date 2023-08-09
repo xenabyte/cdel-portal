@@ -17,6 +17,7 @@ use App\Models\SessionSetting;
 use App\Models\Faculty;
 use App\Models\Department;
 use App\Models\CourseRegistrationSetting;
+use App\Models\ExaminationSetting;
 
 use SweetAlert;
 use Mail;
@@ -296,5 +297,54 @@ class AcademicController extends Controller
         alert()->error('Oops!', 'Something went wrong')->persistent('Close');
         return redirect()->back();
     }
+
+    public function examDocketMgt (){
+        $examDocketMgt = ExaminationSetting::first();
+
+        return view('admin.examDocketMgt', [
+            'examDocketMgt' => $examDocketMgt
+        ]);
+    }
+
+    public function setExamSetting(Request $request){
+        $validator = Validator::make($request->all(), [
+            'exam_docket_status' => 'required',
+            'academic_session' => 'required',
+            'result_processing_status' => 'required',
+            'semester' => 'required',
+        ]);
+
+
+        $examSettting = new ExaminationSetting;
+        if(!empty($request->examSetting_id) && !$examSettting = ExaminationSetting::find($request->examSetting_id)){
+            alert()->error('Oops', 'Invalid Exam Setting Information')->persistent('Close');
+            return redirect()->back();
+        }
+
+        if(!empty($request->exam_docket_status) &&  $request->exam_docket_status != $examSettting->exam_docket_status){
+            $examSettting->exam_docket_status = $request->exam_docket_status;
+        }
+
+        if(!empty($request->academic_session) &&  $request->academic_session != $examSettting->academic_session){
+            $examSettting->academic_session = $request->academic_session;
+        }
+
+        if(!empty($request->semester) &&  $request->semester != $examSettting->semester){
+            $examSettting->semester = $request->semester;
+        }
+
+        if(!empty($request->result_processing_status) &&  $request->result_processing_status != $examSettting->result_processing_status){
+            $examSettting->result_processing_status = $request->result_processing_status;
+        }
+
+        if($examSettting->save()){
+            alert()->success('Changes Saved', 'Exam setttings saved successfully')->persistent('Close');
+            return redirect()->back();
+        }
+
+        alert()->error('Oops!', 'Something went wrong')->persistent('Close');
+        return redirect()->back();
+    }
+    
     
 }

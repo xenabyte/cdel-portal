@@ -13,6 +13,8 @@ class ExaminationSetting extends Model
     protected $fillable = [
         'exam_docket_status',
         'academic_session',
+        'semester',
         'result_processing_status',
+        'status'
     ];
 }

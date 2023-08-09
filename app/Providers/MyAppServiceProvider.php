@@ -6,6 +6,7 @@ use Illuminate\Support\ServiceProvider;
 
 use App\Models\SessionSetting;
 use App\Models\GlobalSetting as Setting;
+use App\Models\ExaminationSetting;
 
 use Log;
 
@@ -36,10 +37,13 @@ class MyAppServiceProvider extends ServiceProvider
     public function pageGlobalData(){
         $sessionSetting = SessionSetting::first();
         $setting = Setting::first();
+        $examinationSetting = ExaminationSetting::first();
+        
 
         $data = new \stdClass();
         $data->sessionSetting = $sessionSetting;
         $data->setting = $setting;
+        $data->examSetting = $examinationSetting;
 
         return $data;
     }
