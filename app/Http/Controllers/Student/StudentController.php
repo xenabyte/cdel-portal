@@ -29,6 +29,7 @@ class StudentController extends Controller
     public function index(Request $request){
         $student = Auth::guard('student')->user();
         $studentId = $student->id;
+        $levelId = $student->level_id;
         $globalData = $request->input('global_data');
         $admissionSession = $globalData->sessionSetting['admission_session'];
 
@@ -36,7 +37,7 @@ class StudentController extends Controller
         $acceptancePaymentId = $acceptancePayment->id;
         $acceptanceTransaction = Transaction::where('student_id', $studentId)->where('payment_id', $acceptancePaymentId)->where('status', 1)->first();
 
-        $schoolPayment = Payment::with('structures')->where('type', Payment::PAYMENT_TYPE_SCHOOL)->where('programme_id', $student->programme_id)->first();
+        $schoolPayment = Payment::with('structures')->where('type', Payment::PAYMENT_TYPE_SCHOOL)->where('programme_id', $student->programme_id)->where('level_id', $levelId)->first();
         $schoolPaymentId = $schoolPayment->id;
         $schoolAmount = $schoolPayment->structures->sum('amount');
         $schoolPaymentTransaction = Transaction::where('student_id', $studentId)->where('payment_id', $schoolPaymentId)->where('session', $student->academic_session)->where('status', 1)->first();
@@ -146,7 +147,7 @@ class StudentController extends Controller
         $studentId = $student->id;
         $transactions = Transaction::where('student_id', $studentId)->orderBy('id', 'DESC')->get();
 
-        $schoolPayment = Payment::with('structures')->where('type', Payment::PAYMENT_TYPE_SCHOOL)->where('programme_id', $student->programme_id)->first();
+        $schoolPayment = Payment::with('structures')->where('type', Payment::PAYMENT_TYPE_SCHOOL)->where('programme_id', $student->programme_id)->where('level_id', $levelId)->first();
         $schoolPaymentId = $schoolPayment->id;
         $schoolAmount = $schoolPayment->structures->sum('amount');
         $schoolPaymentTransaction = Transaction::where('student_id', $studentId)->where('payment_id', $schoolPaymentId)->where('session', $student->academic_session)->where('status', 1)->get();

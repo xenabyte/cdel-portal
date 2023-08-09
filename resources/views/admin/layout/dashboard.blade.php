@@ -382,38 +382,38 @@
                             </div>
                         </li> <!-- end Dashboard Menu -->
 
-                        <li class="menu-title"><i class="ri-more-fill"></i> <span data-key="t-pages">Pages</span></li>
+                        <li class="menu-title"><i class="ri-more-fill"></i> <span data-key="t-pages">Staff Management</span></li>
 
                         <li class="nav-item">
-                            <a class="nav-link menu-link" href="#sidebarAuth" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarAuth">
-                                <i class="mdi mdi-account-circle-outline"></i> <span data-key="t-authentication">Authentication</span>
+                            <a class="nav-link menu-link" href="#staffMgt" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="staffMgt">
+                                <i class="mdi mdi-account-circle-outline"></i> <span data-key="t-authentication">Staff Management</span>
                             </a>
-                            <div class="collapse menu-dropdown" id="sidebarAuth">
+                            <div class="collapse menu-dropdown" id="staffMgt">
                                 <ul class="nav nav-sm flex-column">
                                     <li class="nav-item">
-                                        <a href="#sidebarSignIn" class="nav-link" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarSignIn" data-key="t-signin"> Sign In
+                                        <a href="#staffApplicants" class="nav-link" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarSignIn" data-key="t-signin"> Staff Applicants
                                         </a>
-                                        <div class="collapse menu-dropdown" id="sidebarSignIn">
+                                        <div class="collapse menu-dropdown" id="staffApplicants">
                                             <ul class="nav nav-sm flex-column">
                                                 <li class="nav-item">
-                                                    <a href="auth-signin-basic.html" class="nav-link" data-key="t-basic"> Basic </a>
+                                                    <a href="auth-signin-basic.html" class="nav-link" data-key="t-basic"> Staff Applications </a>
                                                 </li>
                                                 <li class="nav-item">
-                                                    <a href="auth-signin-cover.html" class="nav-link" data-key="t-cover"> Cover </a>
+                                                    <a href="auth-signin-cover.html" class="nav-link" data-key="t-cover"> Role Applicattions </a>
                                                 </li>
                                             </ul>
                                         </div>
                                     </li>
                                     <li class="nav-item">
-                                        <a href="#sidebarSignUp" class="nav-link" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarSignUp" data-key="t-signup"> Sign Up
+                                        <a href="#staffs" class="nav-link" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="staffs" data-key="t-staffs"> Staff
                                         </a>
-                                        <div class="collapse menu-dropdown" id="sidebarSignUp">
+                                        <div class="collapse menu-dropdown" id="staffs">
                                             <ul class="nav nav-sm flex-column">
                                                 <li class="nav-item">
-                                                    <a href="auth-signup-basic.html" class="nav-link" data-key="t-basic"> Basic </a>
+                                                    <a href="{{ url('/admin/staff') }}" class="nav-link" data-key="t-basic"> All Staff </a>
                                                 </li>
                                                 <li class="nav-item">
-                                                    <a href="auth-signup-cover.html" class="nav-link" data-key="t-cover"> Cover </a>
+                                                    <a href="{{('/admin/staffRoles')}}" class="nav-link" data-key="t-cover"> Staff Roles </a>
                                                 </li>
                                             </ul>
                                         </div>

@@ -22,6 +22,7 @@ class Payment extends Model
         'slug',
         'type',
         'programme_id',
+        'level_id'
     ];
 
     /**
@@ -42,5 +43,15 @@ class Payment extends Model
     public function programme()
     {
         return $this->belongsTo(Programme::class, 'programme_id');
+    }
+
+    /**
+     * Get the level that owns the Payment
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function level()
+    {
+        return $this->belongsTo(AcademicLevel::class, 'level_id');
     }
 }

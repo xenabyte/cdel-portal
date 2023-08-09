@@ -193,6 +193,7 @@ class CronController extends Controller
                     $academicDepartment = $staffRecord['academic_department'];
                     $acadDeptId = null;
                     $facultyId = null;
+                    $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $lastname.' '.$othernames)));
                     if(!empty($academicDepartment)){
                         $portalDept = Department::where('web_id', $academicDepartment['id'])->first();
                         $acadDeptId = $portalDept->id;
@@ -212,10 +213,10 @@ class CronController extends Controller
                             'description' => $description,
                             'current_position' => $currentPosition,
                             'nationality' => $nationality,
-                            'image' => rtrim(env('WEBSITE_URL'), '/') . '/' . ltrim($image, '/'),
-                            'category' => $category,
+                            'image' => !empty($image)?env('WEBSITE_URL') . str_replace('..', '', $image):null,
                             'qualification' => $qualification,
                             'url' => $url,
+                            'slug' => $slug,
                             'department_id' => $acadDeptId,
                             'faculty_id' => $facultyId,
                             'dob' => $dob,
@@ -234,10 +235,11 @@ class CronController extends Controller
                             'description' => $description,
                             'current_position' => $currentPosition,
                             'nationality' => $nationality,
-                            'image' => rtrim(env('WEBSITE_URL'), '/') . '/' . ltrim($image, '/'),
+                            'image' => !empty($image)?env('WEBSITE_URL') . str_replace('..', '', $image):null,
                             'category' => $category,
                             'qualification' => $qualification,
                             'url' => $url,
+                            'slug' => $slug,
                             'department_id' => $acadDeptId,
                             'faculty_id' => $facultyId,
                             'dob' => $dob,

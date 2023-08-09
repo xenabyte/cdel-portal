@@ -64,6 +64,8 @@
                     <div class="card-body">
                         <p class="text-muted">Payment Type: {{ $payment->type }} </p>
                         <hr>
+                        <p class="text-muted">Level : {{ !empty($payment->level)? $payment->level->level : null }} </p>
+                        <hr>
                         {!! $payment->description !!}
                     </div><!-- end card body -->
                 </div><!-- end card -->
@@ -216,6 +218,26 @@
                             <option value="School Fee">School Fee</option>
                             <option value="General Fee">General Fee</option>
                             <option value="Course Reg">Modify Course Reg Fee</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="category" class="form-label">Select Programme</label>
+                        <select class="form-select" aria-label="category" name="programme_id">
+                            <option selected value= "">Select Programme </option>
+                            @foreach($programmes as $programme)
+                            <option value="{{ $programme->id }}">{{ $programme->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="level" class="form-label">Select Level</label>
+                        <select class="form-select" aria-label="level" name="level_id">
+                            <option selected value= "">Select Level </option>
+                            @foreach($levels as $acadlevel)
+                            <option value="{{ $acadlevel->id }}">{{ $acadlevel->level }}</option>
+                            @endforeach
                         </select>
                     </div>
 

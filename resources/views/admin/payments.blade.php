@@ -42,6 +42,7 @@
                                 <h4 class="card-title mb-2">{{ $payment->title }}</h4>
                                 <p class="card-text">Programme: {{ $payment->programme ? $payment->programme->name : null }}</p>
                                 <p class="text-muted">Payment Type: {{ $payment->type }} </p>
+                                <p class="text-muted">Total Amount: ₦{{ number_format($payment->structures->sum('amount')/100, 2) }} </p>
                                 <hr>
                                 <div class="text-start">
                                     <a href="{{ url('admin/payment/'.$payment->slug) }}" class="btn btn-warning">View</a>
@@ -90,6 +91,16 @@
                                                 </select>
                                             </div>
                                             @endif
+
+                                            <div class="mb-3">
+                                                <label for="level" class="form-label">Select Level</label>
+                                                <select class="form-select" aria-label="level" name="level_id">
+                                                    <option selected value= "">Select Level </option>
+                                                    @foreach($levels as $acadlevel)
+                                                    <option value="{{ $acadlevel->id }}">{{ $acadlevel->level }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
             
                                             <div class="mb-3">
                                                 <label for="description" class="form-label">Description</label>
@@ -139,12 +150,15 @@
                     <div class="card-header align-items-center">
                         <h4 class="card-title mb-0 flex-grow-1">School Fee Payment</h4>
                     </div><!-- end card header -->
-                    <table class="display table table-bordered" style="width:100%">
+                    <hr>
+                    <table  id="buttons-datatables" class="display table table-bordered" style="width:100%">
                         <br>
                         <thead>
                             <tr>
                                 <th scope="col">Id</th>
                                 <th scope="col">Programme</th>
+                                <th scope="col">Total Amount</th>
+                                <th scope="col">Level</th>
                                 <th scope="col"></th>
                             </tr>
                         </thead>
@@ -153,6 +167,8 @@
                             <tr>
                                 <th scope="row">{{ $loop->iteration }}</th>
                                 <td>{{ $schoolFeePayment->programme->name  }} </td>
+                                <td>₦{{ number_format($schoolFeePayment->structures->sum('amount')/100, 2) }}</td>
+                                <td>{{ $schoolFeePayment->level->level }}</td>
                                 <td>
                                     <div class="text-start">
                                         <a href="{{ url('admin/payment/'.$schoolFeePayment->slug) }}" class="btn btn-warning">View</a>
@@ -195,6 +211,16 @@
                                                                 <option selected value= "">Select Programme </option>
                                                                 @foreach($programmes as $programme)
                                                                 <option value="{{ $programme->id }}">{{ $programme->name }}</option>
+                                                                @endforeach
+                                                            </select>
+                                                        </div>
+
+                                                        <div class="mb-3">
+                                                            <label for="level" class="form-label">Select Level</label>
+                                                            <select class="form-select" aria-label="level" name="level_id">
+                                                                <option selected value= "">Select Level </option>
+                                                                @foreach($levels as $acadlevel)
+                                                                <option value="{{ $acadlevel->id }}">{{ $acadlevel->level }}</option>
                                                                 @endforeach
                                                             </select>
                                                         </div>
@@ -293,6 +319,17 @@
                             <option selected value= "">Select Programme </option>
                             @foreach($programmes as $programme)
                             <option value="{{ $programme->id }}">{{ $programme->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+
+                    <div class="mb-3">
+                        <label for="level" class="form-label">Select Level</label>
+                        <select class="form-select" aria-label="level" name="level_id">
+                            <option selected value= "">Select Level </option>
+                            @foreach($levels as $acadlevel)
+                            <option value="{{ $acadlevel->id }}">{{ $acadlevel->level }}</option>
                             @endforeach
                         </select>
                     </div>

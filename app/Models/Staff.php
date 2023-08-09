@@ -39,7 +39,9 @@ class Staff extends Authenticatable
         'current_position',
         'description',
         'slug',
+        'url',
         'title',
+        'category',
         'referral_code'
     ];
 
@@ -78,7 +80,7 @@ class Staff extends Authenticatable
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function department()
+    public function acad_department()
     {
         return $this->belongsTo(Department::class, 'department_id');
     }

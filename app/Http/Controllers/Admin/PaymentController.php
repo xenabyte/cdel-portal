@@ -17,6 +17,7 @@ use App\Models\Programme;
 use App\Models\Transaction;
 use App\Models\User as Applicant;
 use App\Models\Student;
+use App\Models\AcademicLevel as Level;
 
 use SweetAlert;
 use Mail;
@@ -39,10 +40,12 @@ class PaymentController extends Controller
 
         $payments = Payment::with(['structures', 'programme'])->get();
         $programmes = Programme::get();
+        $levels = Level::get();
 
         return view('admin.payments', [
             'payments' => $payments,
-            'programmes' => $programmes
+            'programmes' => $programmes,
+            'levels' => $levels
         ]);
     }
 
@@ -64,6 +67,7 @@ class PaymentController extends Controller
             'description' => $request->description,
             'title' => $request->title,
             'programme_id' => $request->programme_id,
+            'level_id' => $request->level_id,
             'type' => $request->type,
             'slug' => $slug
         ]);
@@ -111,6 +115,10 @@ class PaymentController extends Controller
             $payment->programme_id = $request->programme_id;
         }
 
+        if(!empty($request->level_id) &&  $request->level_id != $payment->level_id){
+            $payment->level_id = $request->level_id;
+        }
+
         if($payment->save()){
             alert()->success('Changes Saved', 'Payment changes saved successfully')->persistent('Close');
             return redirect()->back();
@@ -145,9 +153,13 @@ class PaymentController extends Controller
     public function payment($slug) {
 
         $payment = Payment::with(['structures'])->where('slug', $slug)->first();
+        $programmes = Programme::get();
+        $levels = Level::get();
 
         return view('admin.payment', [
-            'payment' => $payment
+            'payment' => $payment,
+            'programmes' => $programmes,
+            'levels' => $levels
         ]);
     }
 
