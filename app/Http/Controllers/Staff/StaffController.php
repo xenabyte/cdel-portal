@@ -18,9 +18,12 @@ use App\Models\Programme;
 use App\Models\AcademicLevel;
 use App\Models\Course;
 use App\Models\Notification;
+use App\Models\GradeScale;
+use App\Models\CourseRegistration;
 
 use App\Mail\NotificationMail;
 
+use App\Libraries\Result\Result;
 
 use SweetAlert;
 use Mail;
@@ -269,6 +272,100 @@ class StaffController extends Controller
         }
 
         alert()->success('Message sent', '')->persistent('Close');
+        return redirect()->back();
+    }
+
+    public function staffUploadResult(Request $request){
+        $globalData = $request->input('global_data');
+        $admissionSession = $globalData->sessionSetting['admission_session'];
+        $academicSession = $globalData->sessionSetting['academic_session'];
+        $applicationSession = $globalData->sessionSetting['application_session'];
+
+        $validator = Validator::make($request->all(), [
+            'result' => 'required|file',
+            'course_id' => 'required',
+        ]);
+
+        if($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+        $file = $request->file('result');
+        $fileExtension = $file->getClientOriginalExtension();
+        
+        if ($fileExtension != 'csv') {
+            alert()->error('Invalid file format, only CSV is allowed', '')->persistent('Close');
+            return redirect()->back();
+        }
+
+        $staff = Auth::guard('staff')->user();
+        $staffId = $staff->id;
+        $courseId = $request->course_id;
+
+    
+        $file = $request->file('result');
+        $processResult = Result::processResult($file, $courseId, $globalData);
+
+        if($processResult){
+            alert()->success('Student scores updated successfully!', '')->persistent('Close');
+            return redirect()->back();
+        }
+
+        alert()->error('No file uploaded. Result not processed', '')->persistent('Close');
+        return redirect()->back();
+    }
+
+    public function updateStudentResult(Request $request){
+        $validator = Validator::make($request->all(), [
+            'test' => 'required',
+            'exam' => 'required',
+            'course_id' => 'required',
+            'matric_number' => 'required',
+        ]);
+
+        $matricNumber = $request->matric_number;
+
+        if(!$student = Student::where('matric_number', $matricNumber)->first()){
+            alert()->error('Invalid Matric Number', '')->persistent('Close');
+            return redirect()->back();
+        }
+        $studentId = $student->id;
+        $courseId = $request->course_id;
+
+        $studentRegistration = CourseRegistration::where([
+            'student_id' => $studentId,
+            'course_id' => $courseId,
+        ])->first();
+
+        if(!$studentRegistration){
+            alert()->error('Student didnt enroll for this course', '')->persistent('Close');
+            return redirect()->back();
+        }
+
+        if(!empty($studentRegistration->result_approval_id)){
+            alert()->error('Result already approved', 'Visit the ICT with relevant approval for modification')->persistent('Close');
+            return redirect()->back();
+        }
+
+        $testScore = $request->test;
+        $examScore = $request->exam;
+        $totalScore = $testScore + $examScore;
+        $grading = GradeScale::computeGrade($totalScore);
+        $grade = $grading->grade;
+        $points = $grading->point;
+        
+      
+        $studentRegistration->ca_score = $testScore;
+        $studentRegistration->exam_score = $examScore;
+        $studentRegistration->total = $totalScore;
+        $studentRegistration->grade = $grade;
+        $studentRegistration->points = $points;
+        if($studentRegistration->save()){
+            alert()->success('Student scores updated successfully!', '')->persistent('Close');
+            return redirect()->back();
+        }
+
+        alert()->error('Oops!', 'Something went wrong')->persistent('Close');
         return redirect()->back();
     }
 

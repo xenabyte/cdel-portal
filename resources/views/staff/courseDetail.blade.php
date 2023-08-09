@@ -87,11 +87,15 @@
                     <h4 class="card-title mb-0 flex-grow-1">Registered Student(s) </h4>
                     <div class="flex-shrink-0">
                         <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#messageStudents">Message All Students</button>
-                        <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#searchApplicant">Bulk upload result</button>
+                        <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#uploadResult">Bulk upload result</button>
+                        <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#updateStudentResult">Update Student Result</button>
                     </div>
                 </div><!-- end card header -->
     
                 <div class="table-responsive mt-5">
+                    <div class="alert alert-info alert-dismissible fade show" role="alert">
+                        <strong>Attention Lecturers!</strong> Download the CSV file of students enrolled for this course by clicking <strong>CSV Button</strong>  below, update the scores, and upload the file to update student results.
+                    </div>
                     <table id="buttons-datatables" class="display table table-bordered" style="width:100%">
                         <thead>
                             <tr>
@@ -150,6 +154,75 @@
                     <hr>
                     <div class="text-end">
                         <button type="submit" class="btn btn-primary">Send Message</button>
+                    </div>
+                </form>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<div id="updateStudentResult" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 overflow-hidden">
+            <div class="modal-header p-3">
+                <h4 class="card-title mb-0">Update Result</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <hr>
+            <div class="modal-body">
+                <form action="{{ url('/staff/updateStudentResult') }}" method="post" enctype="multipart/form-data">
+                    @csrf
+                    <input type="hidden" name="course_id" value="{{ $course->id }}">
+                    <div class="form-floating mb-3">
+                        <input type="text" name="matric_number" id="matric_number" class="form-control" required>
+                        <label for="matric_number">Matric Number</label>
+                    </div>
+
+                    <div class="form-floating mb-3">
+                        <input type="number" name="test" id="test" class="form-control" required>
+                        <label for="test">Test Score</label>
+                    </div>
+
+                    <div class="form-floating mb-3">
+                        <input type="number" name="exam" id="exam" class="form-control" required>
+                        <label for="exam">Exam Score</label>
+                    </div>
+
+                    <hr>
+                    <div class="text-end">
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                    </div>
+                </form>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+
+<div id="uploadResult" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 overflow-hidden">
+            <div class="modal-header p-3">
+                <h4 class="card-title mb-0">Upload Result</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <hr>
+            <div class="modal-body">
+                <form action="{{ url('/staff/staffUploadResult') }}" method="post" enctype="multipart/form-data">
+                    @csrf
+                    <input type="hidden" name="course_id" value="{{ $course->id }}">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div>
+                                <label for="formSizeLarge" class="form-label">Result (CSV)</label>
+                                <input name="result"  class="form-control form-control-lg" id="formSizeLarge" type="file" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr>
+                    <div class="text-end">
+                        <button type="submit" class="btn btn-primary">Upload Result</button>
                     </div>
                 </form>
             </div>
