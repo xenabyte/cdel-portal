@@ -33,7 +33,7 @@ class Student extends Authenticatable
         'is_rusticated',
         'amount_balance',
         'entry_year',
-        'max_graduating_year',
+        'max_graduating_level',
         'user_id',
         'partner_id',
         'admission_letter',

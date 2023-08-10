@@ -129,6 +129,7 @@ class AdmissionController extends Controller
                 'department_id' => $programme->department->id,
                 'programme_id' => $programme->id,
                 'entry_year' => $entryYear
+                
             ])->id;
 
             //create an email with tau letter heading 
@@ -158,7 +159,12 @@ class AdmissionController extends Controller
         $applicationSession = $globalData->sessionSetting['application_session'];
         $admissionSession = $globalData->sessionSetting['admission_session'];
 
-        $students = Student::with('applicant', 'programme')->where('academic_session', $admissionSession)->get();
+        $students = Student::with('applicant', 'programme')
+        ->where('academic_session', $admissionSession)
+        ->whereHas('applicant', function ($query) use ($admissionSession) {
+            $query->where('academic_session', $admissionSession);
+        })
+        ->get();
 
         return view('admin.students', [
             'students' => $students

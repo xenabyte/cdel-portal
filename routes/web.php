@@ -48,6 +48,11 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'admin'],
   Route::post('/addLevel', [App\Http\Controllers\Admin\AcademicController::class, 'addLevel'])->name('addLevel')->middleware(['auth:admin']);
   Route::post('/updateLevel', [App\Http\Controllers\Admin\AcademicController::class, 'updateLevel'])->name('updateLevel')->middleware(['auth:admin']);
   Route::post('/deleteLevel', [App\Http\Controllers\Admin\AcademicController::class, 'deleteLevel'])->name('deleteLevel')->middleware(['auth:admin']);
+
+  Route::get('/approvalLevel', [App\Http\Controllers\Admin\AcademicController::class, 'approvalLevel'])->name('approvalLevel')->middleware(['auth:admin']);
+  Route::post('/addApprovalLevel', [App\Http\Controllers\Admin\AcademicController::class, 'addApprovalLevel'])->name('addApprovalLevel')->middleware(['auth:admin']);
+  Route::post('/updateApprovalLevel', [App\Http\Controllers\Admin\AcademicController::class, 'updateApprovalLevel'])->name('updateApprovalLevel')->middleware(['auth:admin']);
+  Route::post('/deleteApprovalLevel', [App\Http\Controllers\Admin\AcademicController::class, 'deleteApprovalLevel'])->name('deleteApprovalLevel')->middleware(['auth:admin']);
   
   Route::get('/programmeCategory', [App\Http\Controllers\Admin\ProgrammeController::class, 'programmeCategory'])->name('programmeCategory')->middleware(['auth:admin']);
   Route::post('/addProgrammeCategory', [App\Http\Controllers\Admin\ProgrammeController::class, 'addProgrammeCategory'])->name('addProgrammeCategory')->middleware(['auth:admin']);
@@ -116,6 +121,13 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'admin'],
   Route::get('/examDocketMgt', [App\Http\Controllers\Admin\AcademicController::class, 'examDocketMgt'])->name('examDocketMgt')->middleware(['auth:admin']);
   Route::post('setExamSetting', [App\Http\Controllers\Admin\AcademicController::class, 'setExamSetting'])->name('setExamSetting')->middleware(['auth:admin']);
 
+  Route::get('/campusCapacity', [App\Http\Controllers\Admin\AcademicController::class, 'campusCapacity'])->name('campusCapacity')->middleware(['auth:admin']);
+  Route::get('/allStudents', [App\Http\Controllers\Admin\AcademicController::class, 'allStudents'])->name('allStudents')->middleware(['auth:admin']);
+  Route::get('/massPromotion', [App\Http\Controllers\Admin\AcademicController::class, 'massPromotion'])->name('massPromotion')->middleware(['auth:admin']);
+  Route::get('/demoteStudent', [App\Http\Controllers\Admin\AcademicController::class, 'demoteStudent'])->name('demoteStudent')->middleware(['auth:admin']);
+
+  Route::post('promoteStudent', [App\Http\Controllers\Admin\AcademicController::class, 'promoteStudent'])->name('promoteStudent')->middleware(['auth:admin']);
+  
 
 });
 

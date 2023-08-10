@@ -26,6 +26,7 @@ class CreateProgrammesTable extends Migration
             $table->string('matric_last_number')->nullable();
             $table->string('web_id')->nullable();
             $table->string('slug')->nullable();
+            $table->string('academic_session')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

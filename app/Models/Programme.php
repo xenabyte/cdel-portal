@@ -21,7 +21,8 @@ class Programme extends Model
         'slug',
         'code',
         'code_number',
-        'matric_last_number'
+        'matric_last_number',
+        'academic_session'
     ];
 
     /**

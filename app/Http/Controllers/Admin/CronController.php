@@ -12,6 +12,7 @@ use App\Models\ProgrammeCategory;
 use App\Models\Course;
 use App\Models\AcademicLevel;
 use App\Models\Staff;
+use App\Models\SessionSetting;
 
 use Illuminate\Support\Facades\Http;
 
@@ -29,6 +30,8 @@ class CronController extends Controller
         try {
             // Fetch the API response
             $response = Http::get(env('FACULTY_API_URL'));
+            $sessionSetting = SessionSetting::first();
+            $academicSession = $sessionSetting->academic_session;
 
             // Check if the API call was successful
             if ($response->successful()) {
@@ -80,7 +83,8 @@ class CronController extends Controller
                                 'award' => $programmeData['award'],
                                 'duration' => intval($programmeData['duration']),
                                 'max_duration' => intval($programmeData['max_duration']),
-                                'slug' => strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $programmeData['name'])))
+                                'slug' => strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $programmeData['name']))),
+                                'academic_session' => $academicSession
                             ]);
 
                             $programmeNames[] = $programmeData['name'];

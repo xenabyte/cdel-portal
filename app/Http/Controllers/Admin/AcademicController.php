@@ -12,12 +12,15 @@ use App\Http\Requests;
 use Illuminate\Support\Facades\Validator;
 
 use App\Models\AcademicLevel;
+use App\Models\ApprovalLevel;
 use App\Models\Session;
 use App\Models\SessionSetting;
 use App\Models\Faculty;
 use App\Models\Department;
 use App\Models\CourseRegistrationSetting;
 use App\Models\ExaminationSetting;
+use App\Models\Programme;
+use App\Models\Student;
 
 use SweetAlert;
 use Mail;
@@ -345,6 +348,199 @@ class AcademicController extends Controller
         alert()->error('Oops!', 'Something went wrong')->persistent('Close');
         return redirect()->back();
     }
+
+    public function approvalLevel(){
+
+        $approvalLevels = ApprovalLevel::get();
+        
+        return view('admin.approvalLevel', [
+            'approvalLevels' => $approvalLevels
+        ]);
+    }
     
+    public function addApprovalLevel(Request $request){
+        $validator = Validator::make($request->all(), [
+            'level' => 'required|string|unique:academic_levels',
+        ]);
+
+        if($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+
+        $newLevel = [
+            'level' => $request->level,
+        ];
+        
+        if(ApprovalLevel::create($newLevel)){
+            alert()->success('Academic level added successfully', '')->persistent('Close');
+            return redirect()->back();
+        }
+
+        alert()->error('Oops!', 'Something went wrong')->persistent('Close');
+        return redirect()->back();
+        
+    }
+
+    public function updateApprovalLevel(Request $request){
+        $validator = Validator::make($request->all(), [
+            'level_id' => 'required',
+        ]);
+
+        if($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+        if(!$level = ApprovalLevel::find($request->level_id)){
+            alert()->error('Oops', 'Invalid Level ')->persistent('Close');
+            return redirect()->back();
+        }
+
+        $level->level = $request->level;
+
+        if($level->save()){
+            alert()->success('Changes Saved', '')->persistent('Close');
+            return redirect()->back();
+        }
+
+        alert()->error('Oops!', 'Something went wrong')->persistent('Close');
+        return redirect()->back();
+        
+    }
+
+    public function deleteApprovalLevel(Request $request){
+        $validator = Validator::make($request->all(), [
+            'level_id' => 'required',
+        ]);
+
+        if($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+        if(!$level = ApprovalLevel::find($request->level_id)){
+            alert()->error('Oops', 'Invalid Level ')->persistent('Close');
+            return redirect()->back();
+        }
+        
+        if($level->delete()){
+            alert()->success('Delete Successfully', '')->persistent('Close');
+            return redirect()->back();
+        }
+
+        alert()->error('Oops!', 'Something went wrong')->persistent('Close');
+        return redirect()->back();
+        
+    }
     
+
+    public function campusCapacity(){
+
+        $programmes = Programme::with(['students' => function ($query) {
+            $query->where('is_active', true)
+                  ->where('is_passed_out', false)
+                  ->where('is_rusticated', false);
+        }, 'programmeCategory'])->get();
+        
+        return view('admin.campusCapacity', [
+            'programmes' => $programmes
+        ]);
+    }
+
+    public function allStudents(){
+
+        $student = Student::
+            with(['applicant', 'programme', 'transactions', 'courseRegistrationDocument', 'registeredCourses', 'partner', 'academicLevel', 'department', 'faculty'])
+            ->where('is_active', true)
+            ->where('is_passed_out', false)
+            ->where('is_rusticated', false)
+            ->get();
+        
+        return view('admin.allStudents', [
+            'students' => $students
+        ]);
+    }
+
+    public function studentInfo($slug){
+
+        $student = Student::
+            with(['applicant', 'programme', 'transactions', 'courseRegistrationDocument', 'registeredCourses', 'partner', 'academicLevel', 'department', 'faculty'])
+            ->where('slug', $slug)
+            ->where('is_active', true)
+            ->where('is_passed_out', false)
+            ->where('is_rusticated', false)
+            ->first();
+        
+        return view('admin.studentInfo', [
+            'student' => $student
+        ]);
+    }
+
+    public function massPromotion(Request $request){
+        $globalData = $request->input('global_data');
+        $academicSession = $globalData->sessionSetting['academic_session'];
+
+        $programmes = Programme::with(['students' => function ($query) {
+            $query->where('is_active', true)
+                  ->where('is_passed_out', false)
+                  ->where('is_rusticated', false);
+        }, 'programmeCategory'])
+        ->where(function ($query) use ($academicSession) {
+            $query->where('academic_session', '!=', $academicSession)
+                  ->orWhereNull('academic_session');
+        })
+        ->get();
+
+         
+        return view('admin.massPromotion', [
+            'programmes' => $programmes
+        ]);
+    }
+
+    public function demoteStudent(){
+
+        $demoteStudent = null;
+        
+        return view('admin.demoteStudent', [
+            'demoteStudent' => $demoteStudent
+        ]);
+    }
+
+    public function promoteStudent(Request $request){
+        $programmeId = $request->programme_id;
+        $globalData = $request->input('global_data');
+        $academicSession = $globalData->sessionSetting['academic_session'];
+
+        $programme = Programme::with(['students' => function ($query) {
+            $query->where('is_active', true)
+                  ->where('is_passed_out', false)
+                  ->where('is_rusticated', false);
+        }, 'programmeCategory'])
+        ->where(function ($query) use ($academicSession) {
+            $query->where('academic_session', '!=', $academicSession)
+                  ->orWhereNull('academic_session');
+        })
+        ->where('id', $programmeId)
+        ->first();
+
+        $globalData = $request->input('global_data');
+        $academicSession = $globalData->sessionSetting['academic_session'];
+
+        $programme->academic_session = $academicSession;
+
+        $students = $programme->students;
+        $promotionOffset = 1;
+        foreach ($students as $student) {
+            $student->update([
+                'level_id' => $student->level_id + $promotionOffset,
+                'academic_session' => $academicSession,
+            ]);
+        }
+        if($programme->save()){
+            alert()->success('Student Promoted Successfully', '')->persistent('Close');
+            return redirect()->back();
+        }
+
+        alert()->error('Oops!', 'Something went wrong')->persistent('Close');
+        return redirect()->back();
+    }
 }
