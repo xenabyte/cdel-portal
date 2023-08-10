@@ -38,6 +38,10 @@ class StudentController extends Controller
         $acceptanceTransaction = Transaction::where('student_id', $studentId)->where('payment_id', $acceptancePaymentId)->where('status', 1)->first();
 
         $schoolPayment = Payment::with('structures')->where('type', Payment::PAYMENT_TYPE_SCHOOL)->where('programme_id', $student->programme_id)->where('level_id', $levelId)->first();
+        if(!$schoolPayment){
+            alert()->info('Programme info missing, contact administrator', '')->persistent('Close');
+            return redirect()->back();
+        }
         $schoolPaymentId = $schoolPayment->id;
         $schoolAmount = $schoolPayment->structures->sum('amount');
         $schoolPaymentTransaction = Transaction::where('student_id', $studentId)->where('payment_id', $schoolPaymentId)->where('session', $student->academic_session)->where('status', 1)->first();
@@ -148,6 +152,10 @@ class StudentController extends Controller
         $transactions = Transaction::where('student_id', $studentId)->orderBy('id', 'DESC')->get();
 
         $schoolPayment = Payment::with('structures')->where('type', Payment::PAYMENT_TYPE_SCHOOL)->where('programme_id', $student->programme_id)->where('level_id', $levelId)->first();
+        if(!$schoolPayment){
+            alert()->info('Programme info missing, contact administrator', '')->persistent('Close');
+            return redirect()->back();
+        }
         $schoolPaymentId = $schoolPayment->id;
         $schoolAmount = $schoolPayment->structures->sum('amount');
         $schoolPaymentTransaction = Transaction::where('student_id', $studentId)->where('payment_id', $schoolPaymentId)->where('session', $student->academic_session)->where('status', 1)->get();

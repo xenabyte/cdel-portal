@@ -127,7 +127,8 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'admin'],
   Route::get('/demoteStudent', [App\Http\Controllers\Admin\AcademicController::class, 'demoteStudent'])->name('demoteStudent')->middleware(['auth:admin']);
 
   Route::post('promoteStudent', [App\Http\Controllers\Admin\AcademicController::class, 'promoteStudent'])->name('promoteStudent')->middleware(['auth:admin']);
-  
+  Route::post('getStudent', [App\Http\Controllers\Admin\AcademicController::class, 'getStudent'])->name('getStudent')->middleware(['auth:admin']);
+  Route::post('makeDemoteStudent', [App\Http\Controllers\Admin\AcademicController::class, 'makeDemoteStudent'])->name('makeDemoteStudent')->middleware(['auth:admin']);
 
 });
 

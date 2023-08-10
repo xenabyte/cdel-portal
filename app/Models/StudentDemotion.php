@@ -20,4 +20,14 @@ class StudentDemotion extends Model
         'academic_session',
         'is_approved',
     ];
+
+    /**
+     * Get the student that owns the StudentDemotion
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function student()
+    {
+        return $this->belongsTo(Student::class, 'student_id');
+    }
 }

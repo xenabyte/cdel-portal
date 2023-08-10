@@ -114,14 +114,16 @@ class AcademicController extends Controller
                 $existingRegistration = CourseRegistration::where([
                     'student_id' => $studentId,
                     'course_id' => $courseId,
-                    'academic_session' => $academicSession
+                    'academic_session' => $academicSession,
+                    'level_id' => $student->level_id
                 ])->first();
 
                 if (!$existingRegistration) {
                     $courseReg = CourseRegistration::create([
                         'student_id' => $studentId,
                         'course_id' => $courseId,
-                        'academic_session' => $academicSession
+                        'academic_session' => $academicSession,
+                        'level_id' => $student->level_id,
                     ]);
                 }
             }

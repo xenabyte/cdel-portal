@@ -19,7 +19,7 @@ class CourseRegistration extends Model
         'grade',
         'points',
         'academic_session',
-        'level',
+        'level_id',
         'result_approval_id',
         'status'
     ];
@@ -42,5 +42,15 @@ class CourseRegistration extends Model
     public function course()
     {
         return $this->belongsTo(Course::class, 'course_id');
+    }
+
+    /**
+     * Get the academicLevel that owns the CourseRegistration
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function academicLevel()
+    {
+        return $this->belongsTo(AcademicLevel::class, 'level_id');
     }
 }

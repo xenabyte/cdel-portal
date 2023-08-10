@@ -24,6 +24,8 @@ use App\Models\Payment;
 use App\Models\SessionSetting;
 use App\Models\Staff;
 use App\Models\Partner;
+use App\Models\AcademicLevel;
+use App\Models\Programme;
 
 class Controller extends BaseController
 {
@@ -121,6 +123,57 @@ class Controller extends BaseController
         }           
     }
 
+    public function getSingleStudent($studentIdCode, $path){
+
+        $student = Student::with('programme')->where('matric_number', $studentIdCode)->first();
+        if(!$student){
+            alert()->info('Record not found', '')->persistent('Close');
+            return redirect()->back();
+        }
+        $studentId = $student->id;
+        $levelId = $student->level_id;
+
+        $levels = AcademicLevel::get();
+        $programmes = Programme::get();
+
+        $transactions = Transaction::where('student_id', $studentId)->orderBy('id', 'DESC')->get();
+
+        $schoolPayment = Payment::with('structures')->where('type', Payment::PAYMENT_TYPE_SCHOOL)->where('programme_id', $student->programme_id)->where('level_id', $levelId)->first();
+        if(!$schoolPayment){
+            alert()->info('Programme info missing, contact administrator', '')->persistent('Close');
+            return redirect()->back();
+        }
+        $schoolPaymentId = $schoolPayment->id;
+        $schoolAmount = $schoolPayment->structures->sum('amount');
+        $schoolPaymentTransaction = Transaction::where('student_id', $studentId)->where('payment_id', $schoolPaymentId)->where('session', $student->academic_session)->where('status', 1)->get();
+
+        $passTuitionPayment = false;
+        $fullTuitionPayment = false;
+        $passEightyTuititon = false;
+        if($schoolPaymentTransaction && $schoolPaymentTransaction->sum('amount_payed') > $schoolAmount * 0.4){
+            $passTuitionPayment = true;
+        }
+
+        if($schoolPaymentTransaction && $schoolPaymentTransaction->sum('amount_payed') > $schoolAmount * 0.7){
+            $passEightyTuititon = true;
+        }
+
+        if($schoolPaymentTransaction && $schoolPaymentTransaction->sum('amount_payed') >= $schoolAmount){
+            $fullTuitionPayment = true;
+        }
+
+        return view($path, [
+            'transactions' => $transactions,
+            'payment' => $schoolPayment,
+            'passTuition' => $passTuitionPayment,
+            'fullTuitionPayment' => $fullTuitionPayment,
+            'passEightyTuititon' => $passEightyTuititon,
+            'student' => $student,
+            'levels' => $levels,
+            'programmes' => $programmes
+        ]);
+
+    }
 
     //generate clean strings
     public function generateRandomString($length = 6) {

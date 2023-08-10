@@ -281,43 +281,7 @@ class PaymentController extends Controller
         }
 
         $studentIdCode = $request->reg_number;
-        return $this->getSingleStudent($studentIdCode);
-    }
-
-    public function getSingleStudent($studentIdCode){
-
-        $applicant = Applicant::with('programme', 'olevels', 'guardian', 'student')->where('user_id', $studentIdCode)->first();
-        if(!$applicant){
-            alert()->info('Record not found', '')->persistent('Close');
-            return redirect()->back();
-        }
-        $transactions = Transaction::where('user_id', $applicant->id)->get();
-        $applicant->transactions = $transactions;
-        $programmePayments = $applicant->programme->payments;
-        $programmeTuitionPayment = $programmePayments->where('type', 'School Fee')->first();
-
-        $tuitionPaymentId = $programmeTuitionPayment->id;
-        $tuitionAmount = $programmeTuitionPayment->structures->sum('amount');
-        $paidTuition = Transaction::where('user_id', $applicant->id)->where('payment_id', $tuitionPaymentId)->first();
-        $passTuitionPayment = false;
-        $fullTuitionPayment = false;
-        if($paidTuition && $paidTuition->amount_payed > $tuitionAmount * 0.4){
-            $passTuitionPayment = true;
-        }
-
-        if($paidTuition && $paidTuition->amount_payed >= $tuitionAmount){
-            $fullTuitionPayment = true;
-        }
-
-        return view('admin.chargeStudent', [
-            'applicant' => $applicant,
-            'programmePayments' => $programmePayments->where('type', '!=', 'School Fee'),
-            'programmePaymentTypes' => $programmePayments,
-            'programmeTuitionPayment' => $programmeTuitionPayment,
-            'passTuition' => $passTuitionPayment,
-            'fullTuitionPayment' => $fullTuitionPayment,
-        ]);
-
+        return $this->getSingleStudent($studentIdCode, 'admin.chargeStudent');
     }
 
     public function chargeStudent(Request $request){
@@ -346,7 +310,7 @@ class PaymentController extends Controller
 
         if($validator->fails()) {
             alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
-            return $this->getSingleStudent($applicant->user_id);
+            return $this->getSingleStudent($applicant->user_id, 'admin.chargeStudent');
         }
 
         if($payment->type == 'Application Fee'){
@@ -374,6 +338,6 @@ class PaymentController extends Controller
             'status' => $request->paymentStatus == 1 ? 1 : null
         ]);
 
-        return $this->getSingleStudent($applicant->user_id);
+        return $this->getSingleStudent($applicant->user_id, 'admin.chargeStudent');
     }
 }

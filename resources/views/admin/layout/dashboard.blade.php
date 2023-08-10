@@ -401,7 +401,10 @@
                                         <a href="{{ url('/admin/massPromotion') }}" class="nav-link">Promote Student</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a href="{{ url('/admin/demoteStudent') }}" class="nav-link">Demote Faculty</a>
+                                        <a href="{{ url('/admin/demoteStudent') }}" class="nav-link">Demote Student</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="{{ url('/admin/demoteStudentRecord') }}" class="nav-link">Demoted Student Record</a>
                                     </li>
                                 </ul>
                             </div>

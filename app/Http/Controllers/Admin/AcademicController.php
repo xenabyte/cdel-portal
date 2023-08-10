@@ -21,6 +21,7 @@ use App\Models\CourseRegistrationSetting;
 use App\Models\ExaminationSetting;
 use App\Models\Programme;
 use App\Models\Student;
+use App\Models\StudentDemotion;
 
 use SweetAlert;
 use Mail;
@@ -448,7 +449,7 @@ class AcademicController extends Controller
 
     public function allStudents(){
 
-        $student = Student::
+        $students = Student::
             with(['applicant', 'programme', 'transactions', 'courseRegistrationDocument', 'registeredCourses', 'partner', 'academicLevel', 'department', 'faculty'])
             ->where('is_active', true)
             ->where('is_passed_out', false)
@@ -496,13 +497,8 @@ class AcademicController extends Controller
         ]);
     }
 
-    public function demoteStudent(){
-
-        $demoteStudent = null;
-        
-        return view('admin.demoteStudent', [
-            'demoteStudent' => $demoteStudent
-        ]);
+    public function demoteStudent(){        
+        return view('admin.demoteStudent');
     }
 
     public function promoteStudent(Request $request){
@@ -533,6 +529,7 @@ class AcademicController extends Controller
             $student->update([
                 'level_id' => $student->level_id + $promotionOffset,
                 'academic_session' => $academicSession,
+                'credit_load' => null
             ]);
         }
         if($programme->save()){
@@ -543,4 +540,79 @@ class AcademicController extends Controller
         alert()->error('Oops!', 'Something went wrong')->persistent('Close');
         return redirect()->back();
     }
+
+    public function getStudent(Request $request){
+        $validator = Validator::make($request->all(), [
+            'reg_number' => 'required',
+        ]);
+
+        if($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+
+        $studentIdCode = $request->reg_number;
+        return $this->getSingleStudent($studentIdCode, 'admin.demoteStudent');
+    }
+
+    public function makeDemoteStudent(Request $request){
+        $studentId = $request->student_id;
+        $student = Student::find($studentId);
+
+        $validator = Validator::make($request->all(), [
+            'new_level' => 'required',
+        ]);
+
+        if($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return $this->getSingleStudent($student->matric_number, 'admin.demoteStudent');
+        }
+
+        if (!$student) {
+            alert()->error('Oops!', 'Student record not found')->persistent('Close');
+            return $this->getSingleStudent($student->matric_number, 'admin.demoteStudent');
+        }
+
+        $programmeId = $request->programme_id;
+        if(!empty($programmeId)){
+            $programme = Programme::with('department', 'department.faculty')->where('id', $programmeId)->first();
+        }
+
+        $existingDemotion = StudentDemotion::where([
+            'student_id' => $studentId,
+            'old_level_id' => $student->level_id,
+            'new_level_id' => $request->new_level,
+            'old_programme_id' => $student->programme_id,
+            'new_programme_id' => !empty($programmeId)?$programme->id:$student->programme_id,
+            'reason' => $request->reason,
+            'academic_session' => $student->academic_session,
+        ])->first();
+    
+        if ($existingDemotion) {
+            alert()->error('Oops!', 'Student already demoted')->persistent('Close');
+            return $this->getSingleStudent($student->matric_number, 'admin.demoteStudent'); 
+        }
+
+        StudentDemotion::create([
+            'student_id' => $studentId,
+            'old_level_id' => $student->level_id,
+            'new_level_id' => $request->new_level,
+            'old_programme_id' => $student->programme_id,
+            'new_programme_id' => !empty($programmeId)?$programme->id:$student->programme_id,
+            'reason' => $request->reason,
+            'academic_session' => $student->academic_session,
+        ]);
+
+        $student->update([
+            'level_id' => $request->new_level,
+            'programme_id' => !empty($programmeId)?$programme->id:$student->programme_id,
+            'department_id' => !empty($programmeId)?$programme->department->id:$student->department_id,
+            'faculty_id' => !empty($programmeId)?$programme->department->faculty->id:$student->faculty_id,
+        ]);
+
+        alert()->success('Student Demoted Successfully', '')->persistent('Close');
+        return $this->getSingleStudent($student->matric_number, 'admin.demoteStudent');
+
+    }
+    
 }
