@@ -16,6 +16,8 @@ class StudentExamCard extends Model
         'academic_session',
         'file',
         'semester',
+        'level_adviser_status',
+        'hod_status'
     ];
 
     /**

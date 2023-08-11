@@ -10,7 +10,6 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Requests;
 use Illuminate\Support\Facades\Validator;
-use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 use App\Models\Course;
 use App\Models\CourseRegistrationSetting;
@@ -18,6 +17,7 @@ use App\Models\CourseRegistration;
 use App\Models\StudentCourseRegistration;
 use App\Models\Payment;
 use App\Models\Transaction;
+use App\Models\StudentExamCard;
 
 
 use App\Libraries\Pdf\Pdf;
@@ -236,9 +236,16 @@ class AcademicController extends Controller
             $fullTuitionPayment = true;
         }
 
+        $studentExamCards = StudentExamCard::where([
+            'student_id' => $studentId,
+            'academic_session' => $academicSession,
+            'semester' => $semester
+        ])->get();
+
         $courseRegs = CourseRegistration::with('course')
             ->where('student_id', $studentId)
             ->where('academic_session', $academicSession)
+            ->where('total', null)
             ->whereHas('course', function ($query) use ($semester) {
                 $query->where('semester', $semester);
             })
@@ -250,7 +257,74 @@ class AcademicController extends Controller
             'payment' => $schoolPaymentTransaction,
             'passTuition' => $passTuitionPayment,
             'fullTuitionPayment' => $fullTuitionPayment,
-            'passEightyTuition' => $passEightyTuition
+            'passEightyTuition' => $passEightyTuition,
+            'studentExamCards' => $studentExamCards
+        ]);
+    }
+
+    public function genExamDocket(Request $request){
+        $student = Auth::guard('student')->user();
+        $studentId = $student->id;
+        $globalData = $request->input('global_data');
+        $admissionSession = $globalData->sessionSetting['admission_session'];
+        $academicSession = $globalData->sessionSetting['academic_session'];
+        $semester  = $globalData->examSetting['semester'];
+
+        try {
+
+            $pdf = new Pdf();
+            $examDocket = $pdf->generateExamDocket($studentId, $academicSession, $semester);
+
+            $studentExamCard = StudentExamCard::create([
+                'student_id' => $studentId,
+                'academic_session' => $academicSession,
+                'semester' => $semester,
+                'file' => $examDocket
+            ]);
+
+            alert()->success('Good Job', 'Examination card generate successfully')->persistent('Close');
+            return redirect()->back();
+
+        } catch (\Exception $e) {
+            Log::info($e);
+            alert()->error('Oops!', 'Something went wrong')->persistent('Close');
+            return redirect()->back();
+        }
+
+    }
+
+    public function printExamCard(Request $request){
+        $student = Auth::guard('student')->user();
+        $studentId = $student->id;
+        $globalData = $request->input('global_data');
+        $admissionSession = $globalData->sessionSetting['admission_session'];
+        $academicSession = $globalData->sessionSetting['academic_session'];
+        $semester  = $globalData->examSetting['semester'];
+
+        //create record for file
+        $studentExamCard = StudentExamCard::where([
+            'student_id' => $studentId,
+            'academic_session' => $academicSession,
+            'semester' => $semester
+        ])->first();
+
+        return redirect(asset($studentExamCard->file));
+    }
+
+    public function allExamDockets(Request $request)
+    {
+        $student = Auth::guard('student')->user();
+        $studentId = $student->id;
+        $globalData = $request->input('global_data');
+        $admissionSession = $globalData->sessionSetting['admission_session'];
+        $academicSession = $globalData->sessionSetting['academic_session'];
+
+        $studentExamCards = StudentExamCard::where([
+            'student_id' => $studentId
+        ])->get();
+        
+        return view('student.examDockets', [
+            'studentExamCards' => $studentExamCards,
         ]);
     }
     

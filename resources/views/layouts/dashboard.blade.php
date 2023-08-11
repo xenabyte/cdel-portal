@@ -1,9 +1,6 @@
 
 <!doctype html>
 <html lang="en" data-layout="horizontal" data-layout-style="default" data-layout-position="fixed" data-topbar="dark" data-sidebar="dark" data-sidebar-size="lg" data-layout-width="fluid" data-preloader="disable">
-<?php 
-    $applicant = Auth::guard('user')->user();
-?>
 
 <head>
 
@@ -102,20 +99,17 @@
                         <div class="dropdown ms-sm-3 header-item topbar-user">
                             <button type="button" class="btn shadow-none" id="page-header-user-dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <span class="d-flex align-items-center">
-                                    <img class="rounded-circle header-profile-user" src="{{asset('assets/images/users/user-dummy-img.jpg')}}" alt="Header Avatar">
+                                    <img class="rounded-circle header-profile-user" src="{{asset(empty($student->image)?'assets/images/users/user-dummy-img.jpg':$student->image)}}" alt="Header Avatar">
                                     <span class="text-start ms-xl-2">
-                                        <span class="d-none d-xl-inline-block ms-1 fw-medium user-name-text">{{ $applicant->lastname.' '. $applicant->othernames }}</span>
-                                        <span class="d-none d-xl-block ms-1 fs-12 text-muted user-name-sub-text">{{ $applicant->role }}</span>
+                                        <span class="d-none d-xl-inline-block ms-1 fw-medium user-name-text">{{ $student->applicant->lastname.' '.$student->applicant->othernames }}</span>
+                                        <span class="d-none d-xl-block ms-1 fs-12 text-muted user-name-sub-text">{{ $student->matric_number }}</span>
                                     </span>
                                 </span>
                             </button>
                             <div class="dropdown-menu dropdown-menu-end">
                                 <!-- item-->
-                                <h6 class="dropdown-header">Welcome {{ $applicant->name }}!</h6>
+                                <h6 class="dropdown-header">Welcome {{ $student->applicant->lastname.' '.$student->applicant->othernames }}!</h6>
                                 <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="pages-profile-settings.html"><span class="badge bg-soft-success text-success mt-1 float-end">New</span><i class="mdi mdi-cog-outline text-muted fs-16 align-middle me-1"></i> <span class="align-middle">Settings</span></a>
-                                <a class="dropdown-item" href="{{ url('/applicant/logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();"><i class="mdi mdi-logout text-muted fs-16 align-middle me-1"></i> <span class="align-middle" data-key="t-logout">Logout</span></a>
-                                <form id="logout-form" action="{{ url('/applicant/logout') }}" method="POST" style="display: none;">@csrf</form>
                             </div>
                         </div>
                     </div>
@@ -159,18 +153,11 @@
                     <ul class="navbar-nav" id="navbar-nav">
                         <li class="menu-title"><span data-key="t-menu">Menu</span></li>
                         <li class="nav-item">
-                            <a class="nav-link menu-link" href="{{ url('/applicant/home') }}">
+                            <a class="nav-link menu-link" href="{{ url('/') }}">
                                 <i class="mdi mdi-view-dashboard"></i> <span>Dashboard</span>
                             </a>
                         </li>
                        
-
-                        <li class="menu-title"><i class="ri-more-fill"></i> <span data-key="t-pages"></span></li>
-                        <li class="nav-item">
-                            <a class="nav-link menu-link" href="{{ url('user/logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                                <i class="mdi mdi-power"></i> <span data-key="t-logout">Logout</span>
-                            </a>
-                        </li> <!-- end Logout Menu -->
                     </ul>
                 </div>
                 <!-- Sidebar -->

@@ -19,6 +19,8 @@ class CreateStudentExamCardsTable extends Migration
             $table->string('academic_session')->nullable();
             $table->string('file')->nullable();
             $table->string('semester')->nullable();
+            $table->string('level_adviser_status')->nullable();
+            $table->string('hod_status')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });
