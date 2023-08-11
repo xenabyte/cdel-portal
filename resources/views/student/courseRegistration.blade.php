@@ -112,7 +112,7 @@
                     <div class="card-body table-responsive">
                         <!-- Bordered Tables -->
                         <form method="post" action="{{ url('/student/registerCourses') }}">
-                            <input type="hidden" value="{{ !empty($addOrRemoveTxs)?$addOrRemoveTxs->first()->id:null }}" name="tx_id">
+                            <input type="hidden" value="{{ $addOrRemoveTxs->count() > 0?$addOrRemoveTxs->first()->id:null }}" name="tx_id">
                             @csrf
                             <table class="table table-borderless table-nowrap">
                             

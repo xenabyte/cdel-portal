@@ -48,13 +48,13 @@ class StudentController extends Controller
 
         $passTuitionPayment = false;
         $fullTuitionPayment = false;
-        $passEightyTuititon = false;
+        $passEightyTuition = false;
         if($schoolPaymentTransaction && $schoolPaymentTransaction->amount_payed > $schoolAmount * 0.4){
             $passTuitionPayment = true;
         }
 
         if($schoolPaymentTransaction && $schoolPaymentTransaction->amount_payed > $schoolAmount * 0.8){
-            $passEightyTuititon = true;
+            $passEightyTuition = true;
         }
 
         if($schoolPaymentTransaction && $schoolPaymentTransaction->amount_payed >= $schoolAmount){
@@ -72,7 +72,7 @@ class StudentController extends Controller
                 'payment' => $schoolPayment,
                 'passTuition' => $passTuitionPayment,
                 'fullTuitionPayment' => $fullTuitionPayment,
-                'passEightyTuititon' => $passEightyTuititon
+                'passEightyTuition' => $passEightyTuition
             ]);
         }
 
@@ -149,6 +149,7 @@ class StudentController extends Controller
     {
         $student = Auth::guard('student')->user();
         $studentId = $student->id;
+        $levelId = $student->level_id;
         $transactions = Transaction::where('student_id', $studentId)->orderBy('id', 'DESC')->get();
 
         $schoolPayment = Payment::with('structures')->where('type', Payment::PAYMENT_TYPE_SCHOOL)->where('programme_id', $student->programme_id)->where('level_id', $levelId)->first();
@@ -162,16 +163,17 @@ class StudentController extends Controller
 
         $passTuitionPayment = false;
         $fullTuitionPayment = false;
-        $passEightyTuititon = false;
+        $passEightyTuition = false;
         if($schoolPaymentTransaction && $schoolPaymentTransaction->sum('amount_payed') > $schoolAmount * 0.4){
             $passTuitionPayment = true;
         }
 
         if($schoolPaymentTransaction && $schoolPaymentTransaction->sum('amount_payed') > $schoolAmount * 0.7){
-            $passEightyTuititon = true;
+            $passEightyTuition = true;
         }
 
         if($schoolPaymentTransaction && $schoolPaymentTransaction->sum('amount_payed') >= $schoolAmount){
+            $passEightyTuition = true;
             $fullTuitionPayment = true;
         }
         
@@ -180,7 +182,7 @@ class StudentController extends Controller
             'payment' => $schoolPayment,
             'passTuition' => $passTuitionPayment,
             'fullTuitionPayment' => $fullTuitionPayment,
-            'passEightyTuititon' => $passEightyTuititon
+            'passEightyTuition' => $passEightyTuition
         ]);
     }
 }

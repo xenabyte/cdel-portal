@@ -167,11 +167,11 @@
                             <option value="{{ $payment->structures->sum('amount') }}">₦{{ number_format($payment->structures->sum('amount')/100, 2) }} - 100%</option>
                             <option value="{{ $payment->structures->sum('amount')*0.5 }}">₦{{ number_format($payment->structures->sum('amount')*0.5/100, 2) }} - 50%</option>
                             @endif
-                            @if($passTuition && !$fullTuitionPayment && !$passEightyTuititon)
+                            @if($passTuition && !$fullTuitionPayment && !$passEightyTuition)
                             <option value="{{ $payment->structures->sum('amount')*0.5 }}">₦{{ number_format($payment->structures->sum('amount')*0.5/100, 2) }} - 50%</option>
                             <option value="{{ $payment->structures->sum('amount')*0.3 }}">₦{{ number_format($payment->structures->sum('amount')*0.3/100, 2) }} - 30%</option>
                             @endif
-                            @if($passTuition && !$fullTuitionPayment && $passEightyTuititon)
+                            @if($passTuition && !$fullTuitionPayment && $passEightyTuition)
                             <option value="{{ $payment->structures->sum('amount')*0.2 }}">₦{{ number_format($payment->structures->sum('amount')*0.2/100, 2) }} - 20%</option>
                             @endif
                         </select>

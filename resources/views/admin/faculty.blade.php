@@ -33,7 +33,7 @@
                             <div class="flex-grow-1 overflow-hidden ms-3">
                                 <p class="text-uppercase fw-medium text-muted text-truncate mb-3">Staffs</p>
                                 <div class="d-flex align-items-center mb-3">
-                                    <h4 class="fs-4 flex-grow-1 mb-0"><span class="counter-value" data-target="{{ $faculty->staffs->count() }}">0</span></h4>
+                                    <h4 class="fs-4 flex-grow-1 mb-0"><span class="counter-value" data-target="{{$faculty->staffs? $faculty->staffs->count():0 }}">0</span></h4>
                                 </div>
                             </div>
                         </div>
@@ -53,7 +53,7 @@
                             <div class="flex-grow-1 ms-3">
                                 <p class="text-uppercase fw-medium text-muted mb-3">Departments</p>
                                 <div class="d-flex align-items-center mb-3">
-                                    <h4 class="fs-4 flex-grow-1 mb-0"><span class="counter-value" data-target="{{ $faculty->departments->count() }}">0</span></h4>
+                                    <h4 class="fs-4 flex-grow-1 mb-0"><span class="counter-value" data-target="{{ $faculty->departments?$faculty->departments->count():0 }}">0</span></h4>
                                 </div>
                             </div>
                         </div>
@@ -192,7 +192,7 @@
                             @foreach($faculty->staffs as $staff)
                             <tr>
                                 <td class="d-flex">
-                                    <img src="{{ env('APP_URL').'/'.$staff->image }}" alt="" class="avatar-xs rounded-3 shadow me-2">
+                                    <img src="{{ $staff->image }}" alt="" class="avatar-xs rounded-3 shadow me-2">
                                     <div>
                                         <h5 class="fs-13 mb-0">{{ $staff->lastname.' '.$staff->othernames }}</h5>
                                         <p class="fs-12 mb-0 text-muted">{{ $staff->qualification }}</p>
@@ -232,8 +232,8 @@
                                 <td class="d-flex">
                                     <img src="{{ env('APP_URL').'/'.$student->image }}" alt="" class="avatar-xs rounded-3 shadow me-2">
                                     <div>
-                                        <h5 class="fs-13 mb-0">{{ $student->lastname.' '.$student->othernames }}</h5>
-                                        <p class="fs-12 mb-0 text-muted">{{ $student->programme->department->name }}</p>
+                                        <h5 class="fs-13 mb-0">{{ $student->applicant->lastname.' '.$student->applicant->othernames }}</h5>
+                                        <p class="fs-12 mb-0 text-muted"><strong>Dept:</strong> {{ $student->programme->department->name }}</p>
                                     </div>
                                 </td>
 

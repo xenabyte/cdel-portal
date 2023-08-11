@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateFacultiesTable extends Migration
+class CreateStudentExamCardsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,12 @@ class CreateFacultiesTable extends Migration
      */
     public function up()
     {
-        Schema::create('faculties', function (Blueprint $table) {
+        Schema::create('student_exam_cards', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->nullable();
-            $table->unsignedBigInteger('dean_id')->nullable();
-            $table->unsignedBigInteger('sub_dean_id')->nullable();
-            $table->unsignedBigInteger('web_id')->unique();
-            $table->string('slug')->nullable();
+            $table->unsignedBigInteger('student_id')->nullable();
+            $table->string('academic_session')->nullable();
+            $table->string('file')->nullable();
+            $table->string('semester')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });
@@ -32,6 +31,6 @@ class CreateFacultiesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('faculties');
+        Schema::dropIfExists('student_exam_cards');
     }
 }

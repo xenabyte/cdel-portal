@@ -32,7 +32,7 @@
                         <tr>
                             <th scope="col">Id</th>
                             <th scope="col">Name</th>
-                            <th scope="col">Department Number</th>
+                            <th scope="col">Department Number(s)</th>
                             <th scope="col"></th>
                         </tr>
                     </thead>

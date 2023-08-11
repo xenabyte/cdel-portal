@@ -19,7 +19,7 @@ class Course extends Model
         'level_id',
         'staff_id',
         'status',
-        'web_id',
+        'web_id'
     ];
 
     /**

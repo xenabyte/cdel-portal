@@ -17,6 +17,7 @@
         "laravel/ui": "^3.4",
         "league/csv": "^9.8",
         "realrashid/sweet-alert": "^7.0",
+        "simplesoftwareio/simple-qrcode": "^4.2",
         "unicodeveloper/laravel-paystack": "^1.1"
     },
     "require-dev": {

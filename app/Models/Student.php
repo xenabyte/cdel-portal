@@ -38,6 +38,7 @@ class Student extends Authenticatable
         'partner_id',
         'admission_letter',
         'slug',
+        'qr_code',
     ];
 
     /**

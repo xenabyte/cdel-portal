@@ -163,13 +163,13 @@
                         </li>
 
                         <li class="nav-item">
-                            <a class="nav-link menu-link" href="{{ url('student/transactions') }}">
+                            <a class="nav-link menu-link" href="{{ url('student/mentor') }}">
                                 <i class="mdi mdi-account-child-circle"></i> <span data-key="t-transaction">Mentor</span>
                             </a>
                         </li>
 
                         <li class="nav-item">
-                            <a class="nav-link menu-link" href="{{ url('student/mentor') }}">
+                            <a class="nav-link menu-link" href="{{ url('student/transactions') }}">
                                 <i class="mdi mdi-bank-transfer"></i> <span data-key="t-transaction">Transaction</span>
                             </a>
                         </li>
@@ -200,7 +200,7 @@
                             <div class="collapse menu-dropdown" id="examManagement">
                                 <ul class="nav nav-sm flex-column">
                                     <li class="nav-item">
-                                        <a href="{{ url('/student/generateExamDockets') }}" class="nav-link">Exam Docket</a>
+                                        <a href="{{ url('/student/examDocket') }}" class="nav-link">Exam Docket</a>
                                     </li>
                                     <li class="nav-item">
                                         <a href="{{ url('/student/allExamDockets') }}" class="nav-link">All Exam Docket</a>

@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Requests;
 use Illuminate\Support\Facades\Validator;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 use App\Models\Course;
 use App\Models\CourseRegistrationSetting;
@@ -17,6 +18,7 @@ use App\Models\CourseRegistration;
 use App\Models\StudentCourseRegistration;
 use App\Models\Payment;
 use App\Models\Transaction;
+
 
 use App\Libraries\Pdf\Pdf;
 
@@ -196,6 +198,59 @@ class AcademicController extends Controller
         return view('student.editCourseReg', [
             'addOrRemoveTxs' => $addOrRemoveTxs,
             'payment' => $addOrRemoveTxPay
+        ]);
+    }
+
+    public function examDocket(Request $request){
+        $student = Auth::guard('student')->user();
+        $studentId = $student->id;
+        $globalData = $request->input('global_data');
+        $admissionSession = $globalData->sessionSetting['admission_session'];
+        $academicSession = $globalData->sessionSetting['academic_session'];
+        $semester  = $globalData->examSetting['semester'];
+        $levelId = $student->level_id;
+
+        $schoolPayment = Payment::with('structures')->where('type', Payment::PAYMENT_TYPE_SCHOOL)->where('programme_id', $student->programme_id)->where('level_id', $levelId)->first();
+        if(!$schoolPayment){
+            alert()->info('Programme info missing, contact administrator', '')->persistent('Close');
+            return redirect()->back();
+        }
+
+        $schoolPaymentId = $schoolPayment->id;
+        $schoolAmount = $schoolPayment->structures->sum('amount');
+        $schoolPaymentTransaction = Transaction::where('student_id', $studentId)->where('payment_id', $schoolPaymentId)->where('session', $student->academic_session)->where('status', 1)->get();
+
+        $passTuitionPayment = false;
+        $fullTuitionPayment = false;
+        $passEightyTuition = false;
+        if($schoolPaymentTransaction && $schoolPaymentTransaction->sum('amount_payed') > $schoolAmount * 0.4){
+            $passTuitionPayment = true;
+        }
+
+        if($schoolPaymentTransaction && $schoolPaymentTransaction->sum('amount_payed') > $schoolAmount * 0.7){
+            $passEightyTuition = true;
+        }
+
+        if($schoolPaymentTransaction && $schoolPaymentTransaction->sum('amount_payed') >= $schoolAmount){
+            $passEightyTuition = true;
+            $fullTuitionPayment = true;
+        }
+
+        $courseRegs = CourseRegistration::with('course')
+            ->where('student_id', $studentId)
+            ->where('academic_session', $academicSession)
+            ->whereHas('course', function ($query) use ($semester) {
+                $query->where('semester', $semester);
+            })
+            ->get();
+
+
+        return view('student.examDocket', [
+            'courseRegs' => $courseRegs,
+            'payment' => $schoolPaymentTransaction,
+            'passTuition' => $passTuitionPayment,
+            'fullTuitionPayment' => $fullTuitionPayment,
+            'passEightyTuition' => $passEightyTuition
         ]);
     }
     

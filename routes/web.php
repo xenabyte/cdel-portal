@@ -156,6 +156,11 @@ Route::group(['prefix' => 'student'], function () {
   Route::get('/editCourseReg', [App\Http\Controllers\Student\AcademicController::class, 'editCourseReg'])->name('editCourseReg')->middleware(['auth:student']);
   Route::get('/allCourseRegs', [App\Http\Controllers\Student\AcademicController::class, 'allCourseRegs'])->name('allCourseRegs')->middleware(['auth:student']);
 
+  Route::get('/examDocket', [App\Http\Controllers\Student\AcademicController::class, 'examDocket'])->name('examDocket')->middleware(['auth:student']);
+  Route::get('/genExamDocket', [App\Http\Controllers\Student\AcademicController::class, 'genExamDocket'])->name('genExamDocket')->middleware(['auth:student']);
+  Route::get('/allExamDockets', [App\Http\Controllers\Student\AcademicController::class, 'allExamDockets'])->name('allExamDockets')->middleware(['auth:student']);
+
+
   
 });
 

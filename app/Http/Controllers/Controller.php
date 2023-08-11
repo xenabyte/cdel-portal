@@ -149,16 +149,17 @@ class Controller extends BaseController
 
         $passTuitionPayment = false;
         $fullTuitionPayment = false;
-        $passEightyTuititon = false;
+        $passEightyTuition = false;
         if($schoolPaymentTransaction && $schoolPaymentTransaction->sum('amount_payed') > $schoolAmount * 0.4){
             $passTuitionPayment = true;
         }
 
         if($schoolPaymentTransaction && $schoolPaymentTransaction->sum('amount_payed') > $schoolAmount * 0.7){
-            $passEightyTuititon = true;
+            $passEightyTuition = true;
         }
 
         if($schoolPaymentTransaction && $schoolPaymentTransaction->sum('amount_payed') >= $schoolAmount){
+            $passEightyTuition = true;
             $fullTuitionPayment = true;
         }
 
@@ -167,7 +168,7 @@ class Controller extends BaseController
             'payment' => $schoolPayment,
             'passTuition' => $passTuitionPayment,
             'fullTuitionPayment' => $fullTuitionPayment,
-            'passEightyTuititon' => $passEightyTuititon,
+            'passEightyTuition' => $passEightyTuition,
             'student' => $student,
             'levels' => $levels,
             'programmes' => $programmes

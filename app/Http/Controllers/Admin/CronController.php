@@ -118,8 +118,8 @@ class CronController extends Controller
     public function populateCourse(){
         try {
 
-            $programmes = Programme::get();
-            $courseCodes = [];
+            $programmes = Programme::orderBy('id', 'ASC')->get();
+            $courseWebID = [];
             foreach ($programmes as $programme){
                 $response = Http::get(env('PROGRAMME_API_URL').'/'.$programme->web_id);
 
@@ -128,32 +128,42 @@ class CronController extends Controller
 
                     $courseData = $programmeData['courses'];
                     $programmeId = $programmeData['id'];
+                    $portalProgramme = Programme::where('web_id', $programmeId)->first();
+                    if($portalProgramme){
+                        foreach ($courseData as $course) {
+                            $existingCourse = Course::where([
+                                'programme_id' => $portalProgramme->id,
+                                'code' => $course['course_code'],
+                                'semester' => $course['course_semester'],
+                                'level_id' => AcademicLevel::where('level', ($course['course_year'] * 100))->value('id'),
+                            ])->first();
 
-                    foreach ($courseData as $course) {
-                        $courseNeededData = ([
-                            'name' => $course['course_name'],
-                            'web_id' => $course['id'],
-                            'programme_id' => $programmeId,
-                            'code' => $course['course_code'],
-                            'semester' => $course['course_semester'],
-                            'credit_unit' => $course['creditUnits'],
-                            'level_id' => AcademicLevel::where('level', ($course['course_year']*100))->value('id'),
-                            'status' => $course['status'],
-                        ]);
-                        $courseCodes[] = $course['course_code'];
-                        if(!$course = Course::where('web_id', $course['id'])->first()){
-                            $course = Course::create($courseNeededData);
-                        }else{
-                            $course->update($facultyNeededData);
+                            $courseNeededData = [
+                                'name' => $course['course_name'],
+                                'web_id' => $course['id'],
+                                'programme_id' => $portalProgramme->id,
+                                'code' => $course['course_code'],
+                                'semester' => $course['course_semester'],
+                                'credit_unit' => $course['creditUnits'],
+                                'level_id' => AcademicLevel::where('level', ($course['course_year'] * 100))->value('id'),
+                                'status' => $course['status'],
+                            ];
+                        
+
+                        
+                            if ($existingCourse) {
+                                $existingCourse->update($courseNeededData);
+                            } else {
+                                Course::create($courseNeededData);
+                            }
+                            $courseWebID[] = $course['id'];
                         }
-                        $programme->courses()->save($course);
                     }
-
                 }
-                // Delete courses that are not in the API response
-                Course::whereNotIn('code', $courseCodes)->delete();
             }
         
+            Course::whereNotIn('web_id', $courseWebID)->delete();
+
             alert()->success('Changes Saved', 'Course populated successfully')->persistent('Close');
             return redirect()->back();
 

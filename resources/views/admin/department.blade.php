@@ -193,7 +193,7 @@
                             @foreach($department->faculty->staffs as $staff)
                             <tr>
                                 <td class="d-flex">
-                                    <img src="{{ env('APP_URL').'/'.$staff->image }}" alt="" class="avatar-xs rounded-3 shadow me-2">
+                                    <img src="{{ $staff->image }}" alt="" class="avatar-xs rounded-3 shadow me-2">
                                     <div>
                                         <h5 class="fs-13 mb-0">{{ $staff->lastname .' '. $staff->othernames }}</h5>
                                         <p class="fs-12 mb-0 text-muted">{{ $staff->qualification }}</p>
