@@ -164,8 +164,8 @@ Route::group(['prefix' => 'student'], function () {
   Route::get('/allExamDockets', [App\Http\Controllers\Student\AcademicController::class, 'allExamDockets'])->name('allExamDockets')->middleware(['auth:student']);
   Route::post('/printExamCard', [App\Http\Controllers\Student\AcademicController::class, 'printExamCard'])->name('printExamCard')->middleware(['auth:student']);
 
-  
-
+  Route::get('/examResult', [App\Http\Controllers\Student\AcademicController::class, 'examResult'])->name('examResult')->middleware(['auth:student']);
+  Route::post('/generateResult', [App\Http\Controllers\Student\AcademicController::class, 'generateResult'])->name('generateResult')->middleware(['auth:student']);
 });
 
 Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'staff'], function () {

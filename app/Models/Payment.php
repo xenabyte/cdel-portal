@@ -22,7 +22,8 @@ class Payment extends Model
         'slug',
         'type',
         'programme_id',
-        'level_id'
+        'level_id',
+        'academic_session'
     ];
 
     /**

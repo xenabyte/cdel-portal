@@ -41,12 +41,23 @@ class HomeController extends Controller
      */
     public function getExamDocket(Request $request, $slug){
 
+        $globalData = $request->input('global_data');
+        $admissionSession = $globalData->sessionSetting['admission_session'];
+        $academicSession = $globalData->sessionSetting['academic_session'];
+        $semester  = $globalData->examSetting['semester'];
+
         $student = Student::with('applicant', 'academicLevel', 'faculty', 'department', 'programme')->where('slug', $slug)->first();
         $studentId = $student->id;
         $levelId = $student->level_id;
         $transactions = Transaction::where('student_id', $studentId)->orderBy('id', 'DESC')->get();
 
-        $schoolPayment = Payment::with('structures')->where('type', Payment::PAYMENT_TYPE_SCHOOL)->where('programme_id', $student->programme_id)->where('level_id', $levelId)->first();
+        $schoolPayment = Payment::with('structures')
+            ->where('type', Payment::PAYMENT_TYPE_SCHOOL)
+            ->where('programme_id', $student->programme_id)
+            ->where('level_id', $levelId)
+            ->where('academic_session', $student->academic_session)
+            ->first();
+
         if(!$schoolPayment){
             alert()->info('Programme info missing, contact administrator', '')->persistent('Close');
             return redirect()->back();
@@ -70,6 +81,15 @@ class HomeController extends Controller
             $passEightyTuition = true;
             $fullTuitionPayment = true;
         }
+
+        $registeredCourses = CourseRegistration::with('course')
+        ->where('student_id', $studentId)
+        ->where('academic_session', $academicSession)
+        ->where('total', null)
+        ->whereHas('course', function ($query) use ($semester) {
+            $query->where('semester', $semester);
+        })
+        ->get();
         
         return view('studentExamDocket', [
             'student' => $student,
@@ -77,7 +97,8 @@ class HomeController extends Controller
             'payment' => $schoolPayment,
             'passTuition' => $passTuitionPayment,
             'fullTuitionPayment' => $fullTuitionPayment,
-            'passEightyTuition' => $passEightyTuition
+            'passEightyTuition' => $passEightyTuition,
+            'registeredCourses' => $registeredCourses
         ]);
     }
 }

@@ -138,7 +138,13 @@ class Controller extends BaseController
 
         $transactions = Transaction::where('student_id', $studentId)->orderBy('id', 'DESC')->get();
 
-        $schoolPayment = Payment::with('structures')->where('type', Payment::PAYMENT_TYPE_SCHOOL)->where('programme_id', $student->programme_id)->where('level_id', $levelId)->first();
+        $schoolPayment = Payment::with('structures')
+            ->where('type', Payment::PAYMENT_TYPE_SCHOOL)
+            ->where('programme_id', $student->programme_id)
+            ->where('level_id', $levelId)
+            ->where('academic_session', $student->academic_session)
+            ->first();
+
         if(!$schoolPayment){
             alert()->info('Programme info missing, contact administrator', '')->persistent('Close');
             return redirect()->back();
@@ -186,4 +192,15 @@ class Controller extends BaseController
         }
         return $randomString;
     }
+
+    public function getPreviousAcademicYear($session)
+    {
+        list($startYear, $endYear) = explode('/', $session);
+    
+        $startAcademicYear = Carbon::createFromDate($startYear, 1, 1)->subYear()->format('Y');
+        $endAcademicYear = Carbon::createFromDate($endYear, 1, 1)->subYear()->format('Y');
+    
+        return $startAcademicYear . '/' . $endAcademicYear;
+    }
+    
 }

@@ -34,6 +34,8 @@ class Result
             $grade = $grading->grade;
             $points = $grading->point;
 
+            $course = Course::find($courseId);
+
             $student = Student::where('matric_number', $matricNumber)->first();
             $studentId = $student->id;
 
@@ -49,7 +51,7 @@ class Result
                 $studentRegistration->exam_score = $examScore;
                 $studentRegistration->total = $totalScore;
                 $studentRegistration->grade = $grade;
-                $studentRegistration->points = $points;
+                $studentRegistration->points = $points * $course->credit_unit;
                 $studentRegistration->save();
             }
         }

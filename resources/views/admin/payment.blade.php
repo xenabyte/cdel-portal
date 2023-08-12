@@ -66,6 +66,8 @@
                         <hr>
                         <p class="text-muted">Level : {{ !empty($payment->level)? $payment->level->level : null }} </p>
                         <hr>
+                        <p class="text-muted">Payment Academic Session: {{ $payment->academic_session }} </p>
+                        <hr>
                         {!! $payment->description !!}
                     </div><!-- end card body -->
                 </div><!-- end card -->
@@ -227,6 +229,16 @@
                             <option selected value= "">Select Programme </option>
                             @foreach($programmes as $programme)
                             <option value="{{ $programme->id }}">{{ $programme->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="level" class="form-label">Select Academic Session</label>
+                        <select class="form-select" aria-label="level" name="level_id">
+                            <option selected value= "">Select Select Academic Session </option>
+                            @foreach($sessions as $session)
+                            <option value="{{ $session->year }}">{{ $session->year }}</option>
                             @endforeach
                         </select>
                     </div>

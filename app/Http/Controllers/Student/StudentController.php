@@ -37,7 +37,14 @@ class StudentController extends Controller
         $acceptancePaymentId = $acceptancePayment->id;
         $acceptanceTransaction = Transaction::where('student_id', $studentId)->where('payment_id', $acceptancePaymentId)->where('status', 1)->first();
 
-        $schoolPayment = Payment::with('structures')->where('type', Payment::PAYMENT_TYPE_SCHOOL)->where('programme_id', $student->programme_id)->where('level_id', $levelId)->first();
+
+        $schoolPayment = Payment::with('structures')
+            ->where('type', Payment::PAYMENT_TYPE_SCHOOL)
+            ->where('programme_id', $student->programme_id)
+            ->where('level_id', $levelId)
+            ->where('academic_session', $student->academic_session)
+            ->first();
+
         if(!$schoolPayment){
             alert()->info('Programme info missing, contact administrator', '')->persistent('Close');
             return redirect()->back();
@@ -152,7 +159,14 @@ class StudentController extends Controller
         $levelId = $student->level_id;
         $transactions = Transaction::where('student_id', $studentId)->orderBy('id', 'DESC')->get();
 
-        $schoolPayment = Payment::with('structures')->where('type', Payment::PAYMENT_TYPE_SCHOOL)->where('programme_id', $student->programme_id)->where('level_id', $levelId)->first();
+        $schoolPayment = Payment::with('structures')
+            ->where('type', Payment::PAYMENT_TYPE_SCHOOL)
+            ->where('programme_id', $student->programme_id)
+            ->where('level_id', $levelId)
+            ->where('academic_session', $student->academic_session)
+            ->first();
+
+
         if(!$schoolPayment){
             alert()->info('Programme info missing, contact administrator', '')->persistent('Close');
             return redirect()->back();

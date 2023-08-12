@@ -98,4 +98,39 @@ Class Pdf {
 
         return $fileDirectory;
     }
+
+    public function generateExamResult($studentId, $academicSession, $semester, $level){
+        $options = [
+            'isRemoteEnabled' => true,
+            'encryption' => '128',
+            'no_modify' => true,
+        ];
+
+        $student = Student::with('applicant', 'academicLevel', 'faculty', 'department', 'programme')->where('id', $studentId)->first();
+        $name = $student->applicant->lastname.' '.$student->applicant->othernames;
+        $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $name .' examination result '. $semester .' '. $academicSession)));
+
+        $courseRegs = CourseRegistration::with('course')
+            ->where('student_id', $studentId)
+            ->where('academic_session', $academicSession)
+            ->where('total', null)
+            ->whereHas('course', function ($query) use ($semester) {
+                $query->where('semester', $semester);
+            })
+            ->get();
+
+        
+        $student->resultSession = $academicSession;
+        $student->resultSemester = $semester;
+        $student->resultLevel = $level;
+
+        $fileDirectory = 'uploads/files/result_card/'.$slug.'.pdf';
+        $data = ['info'=>$student, 'registeredCourses' => $courseRegs];
+
+        $pdf = PDFDocument::loadView('pdf.resultCard', $data)
+        ->setOptions($options)
+        ->save($fileDirectory);
+
+        return $fileDirectory;
+    }
 }

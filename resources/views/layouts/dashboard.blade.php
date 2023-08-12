@@ -5,7 +5,7 @@
 <head>
 
     <meta charset="utf-8" />
-    <title>Applicant Dashboard | {{ env('APP_NAME') }} </title>
+    <title>Examination Profile | {{ env('APP_NAME') }} </title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta content="{{ env('APP_NAME') }} Dashboard" name="description" />
@@ -106,11 +106,6 @@
                                     </span>
                                 </span>
                             </button>
-                            <div class="dropdown-menu dropdown-menu-end">
-                                <!-- item-->
-                                <h6 class="dropdown-header">Welcome {{ $student->applicant->lastname.' '.$student->applicant->othernames }}!</h6>
-                                <div class="dropdown-divider"></div>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -151,13 +146,7 @@
                     <div id="two-column-menu">
                     </div>
                     <ul class="navbar-nav" id="navbar-nav">
-                        <li class="menu-title"><span data-key="t-menu">Menu</span></li>
-                        <li class="nav-item">
-                            <a class="nav-link menu-link" href="{{ url('/') }}">
-                                <i class="mdi mdi-view-dashboard"></i> <span>Dashboard</span>
-                            </a>
-                        </li>
-                       
+                        <li class="nav-item"></li>
                     </ul>
                 </div>
                 <!-- Sidebar -->

@@ -5,7 +5,7 @@
 <div class="row">
     <div class="col-12">
         <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-            <h4 class="mb-sm-0">Payments</h4>
+            <h4 class="mb-sm-0">Payments Setup for {{ $pageGlobalData->sessionSetting->academic_session }} Academic Session</h4>
 
             <div class="page-title-right">
                 <ol class="breadcrumb m-0">
@@ -32,7 +32,7 @@
             <div class="card-body">
                 <div class="row">
                     <div class="card-header align-items-center">
-                        <h4 class="card-title mb-0 flex-grow-1">First Semester Courses</h4>
+                        <h4 class="card-title mb-0 flex-grow-1">Other Payments</h4>
                     </div><!-- end card header -->
                     @foreach($payments->where('type', '!=', 'School Fee') as $payment)
                     <div class="col-sm-6 col-xl-4">
@@ -42,6 +42,7 @@
                                 <h4 class="card-title mb-2">{{ $payment->title }}</h4>
                                 <p class="card-text">Programme: {{ $payment->programme ? $payment->programme->name : null }}</p>
                                 <p class="text-muted">Payment Type: {{ $payment->type }} </p>
+                                <p class="text-muted">Payment Academic Session: {{ $payment->academic_session }}  Academic Session</p>
                                 <p class="text-muted">Total Amount: ₦{{ number_format($payment->structures->sum('amount')/100, 2) }} </p>
                                 <hr>
                                 <div class="text-start">
@@ -91,6 +92,16 @@
                                                 </select>
                                             </div>
                                             @endif
+
+                                            <div class="mb-3">
+                                                <label for="academic_session" class="form-label">Select Academic Session</label>
+                                                <select class="form-select" aria-label="academic_session" name="academic_session">
+                                                    <option selected value= "">Select Select Academic Session </option>
+                                                    @foreach($sessions as $session)
+                                                    <option value="{{ $session->year }}">{{ $session->year }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
 
                                             <div class="mb-3">
                                                 <label for="level" class="form-label">Select Level</label>
@@ -216,6 +227,16 @@
                                                         </div>
 
                                                         <div class="mb-3">
+                                                            <label for="academic_session" class="form-label">Select Academic Session</label>
+                                                            <select class="form-select" aria-label="academic_session" name="academic_session">
+                                                                <option selected value= "">Select Select Academic Session </option>
+                                                                @foreach($sessions as $session)
+                                                                <option value="{{ $session->year }}">{{ $session->year }}</option>
+                                                                @endforeach
+                                                            </select>
+                                                        </div>
+
+                                                        <div class="mb-3">
                                                             <label for="level" class="form-label">Select Level</label>
                                                             <select class="form-select" aria-label="level" name="level_id">
                                                                 <option selected value= "">Select Level </option>
@@ -322,6 +343,16 @@
                             @endforeach
                         </select>
                     </div>
+
+                    <div class="mb-3">
+                    <label for="level" class="form-label">Select Academic Session</label>
+                    <select class="form-select" aria-label="level" name="academic_session">
+                        <option selected value= "">Select Select Academic Session </option>
+                        @foreach($sessions as $session)
+                        <option value="{{ $session->year }}">{{ $session->year }}</option>
+                        @endforeach
+                    </select>
+                </div>
 
 
                     <div class="mb-3">

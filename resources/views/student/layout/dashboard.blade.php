@@ -191,7 +191,7 @@
                                     </li>
                                 </ul>
                             </div>
-                        </li> <!-- end Bursary Menu -->
+                        </li> 
 
                         <li class="nav-item">
                             <a class="nav-link menu-link" href="#examManagement" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="examManagement">
@@ -207,10 +207,22 @@
                                     </li>
                                 </ul>
                             </div>
-                        </li> <!-- end Bursary Menu -->
-                       
+                        </li> 
 
-                        <li class="menu-title"><i class="ri-more-fill"></i> <span data-key="t-pages"></span></li>
+
+                        <li class="nav-item">
+                            <a class="nav-link menu-link" href="#resultManagement" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="resultManagement">
+                                <i class="mdi mdi-cards"></i> <span data-key="t-resultManagement">Result Management</span>
+                            </a>
+                            <div class="collapse menu-dropdown" id="resultManagement">
+                                <ul class="nav nav-sm flex-column">
+                                    <li class="nav-item">
+                                        <a href="{{ url('/student/examResult') }}" class="nav-link">Exam Result</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li> 
+                       
                         <li class="nav-item">
                             <a class="nav-link menu-link" href="{{ url('user/logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                                 <i class="mdi mdi-power"></i> <span data-key="t-logout">Logout</span>

@@ -18,6 +18,7 @@ use App\Models\Transaction;
 use App\Models\User as Applicant;
 use App\Models\Student;
 use App\Models\AcademicLevel as Level;
+use App\Models\Session;
 
 use SweetAlert;
 use Mail;
@@ -36,16 +37,20 @@ class PaymentController extends Controller
         $this->middleware(['auth:admin']);
     }
 
-    public function payments() {
+    public function payments(Request $request) {
+        $globalData = $request->input('global_data');
+        $academicSession = $globalData->sessionSetting['academic_session'];
 
-        $payments = Payment::with(['structures', 'programme'])->get();
+        $payments = Payment::with(['structures', 'programme'])->where('academic_session', $academicSession)->get();
         $programmes = Programme::get();
         $levels = Level::get();
+        $sessions = Session::orderBy('id', 'DESC')->get();
 
         return view('admin.payments', [
             'payments' => $payments,
             'programmes' => $programmes,
-            'levels' => $levels
+            'levels' => $levels,
+            'sessions' => $sessions
         ]);
     }
 
@@ -54,6 +59,7 @@ class PaymentController extends Controller
             'description' => 'required',
             'title' => 'required',
             'type' => 'required',
+            'academic_session' => 'required'
         ]);
 
         if($validator->fails()) {
@@ -69,7 +75,8 @@ class PaymentController extends Controller
             'programme_id' => $request->programme_id,
             'level_id' => $request->level_id,
             'type' => $request->type,
-            'slug' => $slug
+            'slug' => $slug,
+            'academic_session' => $request->academic_session
         ]);
 
         if(Payment::create($addPayment)){
@@ -117,6 +124,10 @@ class PaymentController extends Controller
 
         if(!empty($request->level_id) &&  $request->level_id != $payment->level_id){
             $payment->level_id = $request->level_id;
+        }
+
+        if(!empty($request->academic_session) &&  $request->academic_session != $payment->academic_session){
+            $payment->academic_session = $request->academic_session;
         }
 
         if($payment->save()){

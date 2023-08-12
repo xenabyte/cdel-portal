@@ -18,7 +18,8 @@ use App\Models\StudentCourseRegistration;
 use App\Models\Payment;
 use App\Models\Transaction;
 use App\Models\StudentExamCard;
-
+use App\Models\Session;
+use App\Models\AcademicLevel;
 
 use App\Libraries\Pdf\Pdf;
 
@@ -210,7 +211,14 @@ class AcademicController extends Controller
         $semester  = $globalData->examSetting['semester'];
         $levelId = $student->level_id;
 
-        $schoolPayment = Payment::with('structures')->where('type', Payment::PAYMENT_TYPE_SCHOOL)->where('programme_id', $student->programme_id)->where('level_id', $levelId)->first();
+
+        $schoolPayment = Payment::with('structures')
+            ->where('type', Payment::PAYMENT_TYPE_SCHOOL)
+            ->where('programme_id', $student->programme_id)
+            ->where('level_id', $levelId)
+            ->where('academic_session', $student->academic_session)
+            ->first();
+
         if(!$schoolPayment){
             alert()->info('Programme info missing, contact administrator', '')->persistent('Close');
             return redirect()->back();
@@ -327,5 +335,102 @@ class AcademicController extends Controller
             'studentExamCards' => $studentExamCards,
         ]);
     }
-    
+
+    public function examResult(Request $request){
+        $sessions = Session::orderBy('id', 'DESC')->get();
+        $academicLevels = AcademicLevel::get();
+
+        return view('student.examResult', [
+            'sessions' => $sessions,
+            'academicLevels' => $academicLevels
+        ]);
+    }
+
+    public function generateResult(Request $request){
+        $validator = Validator::make($request->all(), [
+            'semester' => 'required',
+            'session' => 'required',
+            'level_id' => 'required',
+        ]);
+
+        if($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+
+        $student = Auth::guard('student')->user();
+        $studentId = $student->id;
+        $globalData = $request->input('global_data');
+
+        $semester = $request->semester;
+        $academicSession = $request->session;
+        $levelId = $request->level_id;
+        $academicLevel = AcademicLevel::find($levelId);
+        $level = $academicLevel->level;
+
+        $courseRegs = CourseRegistration::with('course')
+        ->where('student_id', $studentId)
+        ->where('academic_session', $academicSession)
+        ->where('total', null)
+        ->whereHas('course', function ($query) use ($semester) {
+            $query->where('semester', $semester);
+        })
+        ->get();
+
+        if(!$courseRegs->count() > 0) {
+            alert()->info('Oops!', 'Record not found')->persistent('Close');
+            return redirect()->back();
+        }
+
+        $schoolPayment = Payment::with('structures')
+            ->where('type', Payment::PAYMENT_TYPE_SCHOOL)
+            ->where('programme_id', $student->programme_id)
+            ->where('level_id', $levelId)
+            ->where('academic_session', $academicSession)
+            ->first();
+
+        if(!$schoolPayment){
+            alert()->info('Programme info missing, contact administrator', '')->persistent('Close');
+            return redirect()->back();
+        }
+
+        $schoolPaymentId = $schoolPayment->id;
+        $schoolAmount = $schoolPayment->structures->sum('amount');
+        $schoolPaymentTransaction = Transaction::where('student_id', $studentId)
+            ->where('payment_id', $schoolPaymentId)
+            ->where('session', $academicSession)
+            ->where('status', 1)
+            ->get();
+
+        $passTuitionPayment = false;
+        $fullTuitionPayment = false;
+        $passEightyTuition = false;
+        if($schoolPaymentTransaction && $schoolPaymentTransaction->sum('amount_payed') > $schoolAmount * 0.4){
+            $passTuitionPayment = true;
+        }
+
+        if($schoolPaymentTransaction && $schoolPaymentTransaction->sum('amount_payed') > $schoolAmount * 0.7){
+            $passEightyTuition = true;
+        }
+
+        if($schoolPaymentTransaction && $schoolPaymentTransaction->sum('amount_payed') >= $schoolAmount){
+            $passEightyTuition = true;
+            $fullTuitionPayment = true;
+        }
+
+        // if($semester == 1 && !$passTuitionPayment){
+        //     alert()->info('Oops!', 'Please be informed that in order to generate your examination results, it is necessary to clear 100% of your school fees.')->persistent('Close');
+        //     return redirect()->back();
+        // }
+
+        // if($semester == 2 && !$fullTuitionPayment){
+        //     alert()->info('Oops!', 'Please be informed that in order to generate your examination results, it is necessary to clear 100% of your school fees.')->persistent('Close');
+        //     return redirect()->back();
+        // }
+
+        $pdf = new Pdf();
+        $examResult = $pdf->generateExamResult($studentId, $academicSession, $semester, $level);
+
+        return redirect(asset($examResult));
+    }
 }
