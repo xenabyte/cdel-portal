@@ -114,5 +114,15 @@ class Staff extends Authenticatable
     {
         return $this->hasMany(StaffRole::class, 'staff_id');
     }
+
+    /**
+     * Get all of the mentee for the Staff
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function mentee()
+    {
+        return $this->hasMany(Student::class, 'mentor_id');
+    }
     
 }

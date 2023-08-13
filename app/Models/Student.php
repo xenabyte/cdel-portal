@@ -38,6 +38,7 @@ class Student extends Authenticatable
         'partner_id',
         'admission_letter',
         'slug',
+        'mentor_id',
         'cgpa'
     ];
 
@@ -159,5 +160,15 @@ class Student extends Authenticatable
     public function notifications()
     {
         return $this->hasMany(Notification::class, 'student_id');
+    }
+
+    /**
+     * Get the mentor that owns the Student
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function mentor()
+    {
+        return $this->belongsTo(Staff::class, 'mentor_id');
     }
 }

@@ -189,7 +189,7 @@
                     </div>
 
                     <!-- Primary Alert -->
-                    <div class="alert alert-primary alert-dismissible alert-additional fade show" role="alert" style="display: none" id="transferInfoMain">
+                    <div class="alert alert-primary alert-dismissible alert-additional fade show" role="alert" style="display: none" id="transferInfo">
                         <div class="alert-body">
                             <div class="d-flex">
                                 <div class="flex-shrink-0 me-3">

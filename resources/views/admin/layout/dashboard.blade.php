@@ -574,6 +574,32 @@
         }
     }
 </script>
+<script>
+    // Get the current time
+    var currentTime = new Date();
+    var currentHour = currentTime.getHours();
+
+    // Define the greeting messages
+    var morningGreeting = "Good morning";
+    var afternoonGreeting = "Good afternoon";
+    var eveningGreeting = "Good evening";
+
+    // Get the DOM element to display the greeting
+    var greetingElement = document.getElementById("greeting");
+
+    // Determine the appropriate greeting based on the time of day
+    var greeting;
+    if (currentHour >= 0 && currentHour < 12) {
+        greeting = morningGreeting;
+    } else if (currentHour >= 12 && currentHour < 18) {
+        greeting = afternoonGreeting;
+    } else {
+        greeting = eveningGreeting;
+    }
+
+    // Display the greeting
+    greetingElement.innerHTML = greeting;
+</script>
 </body>
 
 </html>

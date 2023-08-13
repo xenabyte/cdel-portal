@@ -36,6 +36,7 @@ class CreateStudentsTable extends Migration
             $table->string('faculty_id')->nullable();
             $table->string('department_id')->nullable();
             $table->string('cgpa')->nullable();
+            $table->string('mentor_id')->nullable();
             $table->softDeletes();
             $table->rememberToken();
             $table->timestamps();

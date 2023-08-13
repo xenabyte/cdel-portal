@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Validator;
 
 use App\Models\Payment;
 use App\Models\Transaction;
+use App\Models\Staff;
 
 use SweetAlert;
 use Mail;
@@ -68,20 +69,20 @@ class StudentController extends Controller
             $fullTuitionPayment = true;
         }
 
-        if(!$acceptanceTransaction){
-            return view('student.acceptanceFee', [
-                'payment' => $acceptancePayment
-            ]);
-        }
+        // if(!$acceptanceTransaction){
+        //     return view('student.acceptanceFee', [
+        //         'payment' => $acceptancePayment
+        //     ]);
+        // }
 
-        if(!$schoolPaymentTransaction){
-            return view('student.schoolFee', [
-                'payment' => $schoolPayment,
-                'passTuition' => $passTuitionPayment,
-                'fullTuitionPayment' => $fullTuitionPayment,
-                'passEightyTuition' => $passEightyTuition
-            ]);
-        }
+        // if(!$schoolPaymentTransaction){
+        //     return view('student.schoolFee', [
+        //         'payment' => $schoolPayment,
+        //         'passTuition' => $passTuitionPayment,
+        //         'fullTuitionPayment' => $fullTuitionPayment,
+        //         'passEightyTuition' => $passEightyTuition
+        //     ]);
+        // }
 
         return view('student.home');
     }
@@ -201,7 +202,15 @@ class StudentController extends Controller
     }
 
     public function mentor(){
+        $student = Auth::guard('student')->user();
+        $studentId = $student->id;
 
-        return view('student.mentor');
+        $mentorId  = $student->mentor_id;
+
+        $mentor = Staff::with('faculty', 'acad_department')->where('id', $mentorId)->first();
+
+        return view('student.mentor', [
+            'mentor' => $mentor,
+        ]);
     }
 }
