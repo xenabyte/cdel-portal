@@ -43,6 +43,16 @@ class AcademicController extends Controller
         $admissionSession = $globalData->sessionSetting['admission_session'];
         $academicSession = $globalData->sessionSetting['academic_session'];
 
+        $paymentCheck = $this->checkSchoolFees($student);
+        if(!$paymentCheck->schoolPaymentTransaction){
+            return view('student.schoolFee', [
+                'payment' => $paymentCheck->schoolPayment,
+                'passTuition' => $paymentCheck->passTuitionPayment,
+                'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
+                'passEightyTuition' => $paymentCheck->passEightyTuition
+            ]);
+        }
+
         $courses = Course::where('programme_id', $student->programme_id)->where('level_id', $student->level_id)->get();
         $existingRegistration = CourseRegistration::where([
             'student_id' => $studentId,
@@ -65,12 +75,17 @@ class AcademicController extends Controller
 
         $courseRegMgt = CourseRegistrationSetting::first();
 
+        $paymentCheck = $this->checkSchoolFees($student);
+
         return view('student.courseRegistration', [
             'courseRegMgt' => $courseRegMgt,
             'courses' => $courses,
             'existingRegistration' => $existingRegistration,
             'carryOverCourses' => $carryOverCourses,
-            'addOrRemoveTxs' => $addOrRemoveTxs
+            'addOrRemoveTxs' => $addOrRemoveTxs,
+            'passTuition' => $paymentCheck->passTuitionPayment,
+            'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
+            'passEightyTuition' => $paymentCheck->passEightyTuition
         ]);
     }
 
@@ -89,6 +104,16 @@ class AcademicController extends Controller
         $globalData = $request->input('global_data');
         $admissionSession = $globalData->sessionSetting['admission_session'];
         $academicSession = $globalData->sessionSetting['academic_session'];
+
+        $paymentCheck = $this->checkSchoolFees($student);
+        if(!$paymentCheck->schoolPaymentTransaction){
+            return view('student.schoolFee', [
+                'payment' => $paymentCheck->schoolPayment,
+                'passTuition' => $paymentCheck->passTuitionPayment,
+                'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
+                'passEightyTuition' => $paymentCheck->passEightyTuition
+            ]);
+        }
 
         if(!empty($txId)) {
             //delete existing registrattion
@@ -160,6 +185,16 @@ class AcademicController extends Controller
         $admissionSession = $globalData->sessionSetting['admission_session'];
         $academicSession = $globalData->sessionSetting['academic_session'];
 
+        $paymentCheck = $this->checkSchoolFees($student);
+        if(!$paymentCheck->schoolPaymentTransaction){
+            return view('student.schoolFee', [
+                'payment' => $paymentCheck->schoolPayment,
+                'passTuition' => $paymentCheck->passTuitionPayment,
+                'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
+                'passEightyTuition' => $paymentCheck->passEightyTuition
+            ]);
+        }
+
         //create record for file
         $studentRegistration = StudentCourseRegistration::where([
             'student_id' => $studentId,
@@ -181,8 +216,21 @@ class AcademicController extends Controller
             'student_id' => $studentId,
         ])->orderBy('id', 'DESC')->get();
 
+        $paymentCheck = $this->checkSchoolFees($student);
+        if(!$paymentCheck->schoolPaymentTransaction){
+            return view('student.schoolFee', [
+                'payment' => $paymentCheck->schoolPayment,
+                'passTuition' => $paymentCheck->passTuitionPayment,
+                'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
+                'passEightyTuition' => $paymentCheck->passEightyTuition
+            ]);
+        }
+
         return view('student.allCourseRegs', [
             'studentRegistrations' => $studentRegistrations,
+            'passTuition' => $paymentCheck->passTuitionPayment,
+            'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
+            'passEightyTuition' => $paymentCheck->passEightyTuition
         ]);
     }
 
@@ -197,9 +245,22 @@ class AcademicController extends Controller
         $addOrRemoveTxId = $addOrRemoveTxPay->id;
         $addOrRemoveTxs = Transaction::where('student_id', $studentId)->where('payment_id', $addOrRemoveTxId)->where('status', 1)->orderBy('id', 'DESC')->get();
 
+        $paymentCheck = $this->checkSchoolFees($student);
+        if(!$paymentCheck->schoolPaymentTransaction){
+            return view('student.schoolFee', [
+                'payment' => $paymentCheck->schoolPayment,
+                'passTuition' => $paymentCheck->passTuitionPayment,
+                'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
+                'passEightyTuition' => $paymentCheck->passEightyTuition
+            ]);
+        }
+
         return view('student.editCourseReg', [
             'addOrRemoveTxs' => $addOrRemoveTxs,
-            'payment' => $addOrRemoveTxPay
+            'payment' => $addOrRemoveTxPay,
+            'passTuition' => $paymentCheck->passTuitionPayment,
+            'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
+            'passEightyTuition' => $paymentCheck->passEightyTuition
         ]);
     }
 
@@ -211,6 +272,16 @@ class AcademicController extends Controller
         $academicSession = $globalData->sessionSetting['academic_session'];
         $semester  = $globalData->examSetting['semester'];
         $levelId = $student->level_id;
+
+        $paymentCheck = $this->checkSchoolFees($student);
+        if(!$paymentCheck->schoolPaymentTransaction){
+            return view('student.schoolFee', [
+                'payment' => $paymentCheck->schoolPayment,
+                'passTuition' => $paymentCheck->passTuitionPayment,
+                'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
+                'passEightyTuition' => $paymentCheck->passEightyTuition
+            ]);
+        }
 
 
         $schoolPayment = Payment::with('structures')
@@ -331,9 +402,22 @@ class AcademicController extends Controller
         $studentExamCards = StudentExamCard::where([
             'student_id' => $studentId
         ])->get();
+
+        $paymentCheck = $this->checkSchoolFees($student);
+        if(!$paymentCheck->schoolPaymentTransaction){
+            return view('student.schoolFee', [
+                'payment' => $paymentCheck->schoolPayment,
+                'passTuition' => $paymentCheck->passTuitionPayment,
+                'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
+                'passEightyTuition' => $paymentCheck->passEightyTuition
+            ]);
+        }
         
         return view('student.examDockets', [
             'studentExamCards' => $studentExamCards,
+            'passTuition' => $paymentCheck->passTuitionPayment,
+            'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
+            'passEightyTuition' => $paymentCheck->passEightyTuition
         ]);
     }
 
@@ -341,9 +425,22 @@ class AcademicController extends Controller
         $sessions = Session::orderBy('id', 'DESC')->get();
         $academicLevels = AcademicLevel::get();
 
+        $paymentCheck = $this->checkSchoolFees($student);
+        if(!$paymentCheck->schoolPaymentTransaction){
+            return view('student.schoolFee', [
+                'payment' => $paymentCheck->schoolPayment,
+                'passTuition' => $paymentCheck->passTuitionPayment,
+                'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
+                'passEightyTuition' => $paymentCheck->passEightyTuition
+            ]);
+        }
+
         return view('student.examResult', [
             'sessions' => $sessions,
-            'academicLevels' => $academicLevels
+            'academicLevels' => $academicLevels,
+            'passTuition' => $paymentCheck->passTuitionPayment,
+            'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
+            'passEightyTuition' => $paymentCheck->passEightyTuition
         ]);
     }
 

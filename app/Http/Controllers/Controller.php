@@ -202,5 +202,54 @@ class Controller extends BaseController
     
         return $startAcademicYear . '/' . $endAcademicYear;
     }
+
+    public function checkSchoolFees($student)
+    {
+        $levelId = $student->level_id;
+        $studentId = $student->id;
+
+        $schoolPayment = Payment::with('structures')
+            ->where('type', Payment::PAYMENT_TYPE_SCHOOL)
+            ->where('programme_id', $student->programme_id)
+            ->where('level_id', $levelId)
+            ->where('academic_session', $student->academic_session)
+            ->first();
+
+        if(!$schoolPayment){
+            alert()->info('Programme info missing, contact administrator', '')->persistent('Close');
+            return redirect()->back();
+        }
+
+        $schoolPaymentId = $schoolPayment->id;
+        $schoolAmount = $schoolPayment->structures->sum('amount');
+        $schoolPaymentTransaction = Transaction::where('student_id', $studentId)->where('payment_id', $schoolPaymentId)->where('session', $student->academic_session)->where('status', 1)->first();
+
+        $passTuitionPayment = false;
+        $fullTuitionPayment = false;
+        $passEightyTuition = false;
+        if($schoolPaymentTransaction && $schoolPaymentTransaction->amount_payed > $schoolAmount * 0.4){
+            $passTuitionPayment = true;
+        }
+
+        if($schoolPaymentTransaction && $schoolPaymentTransaction->amount_payed > $schoolAmount * 0.8){
+            $passTuitionPayment = true;
+            $passEightyTuition = true;
+        }
+
+        if($schoolPaymentTransaction && $schoolPaymentTransaction->amount_payed >= $schoolAmount){
+            $passTuitionPayment = true;
+            $passEightyTuition = true;
+            $fullTuitionPayment = true;
+        }
+
+        $data = new \stdClass();
+        $data->passTuitionPayment = $passTuitionPayment;
+        $data->passEightyTuition = $passEightyTuition;
+        $data->fullTuitionPayment = $fullTuitionPayment;
+        $data->schoolPaymentTransaction = $schoolPaymentTransaction;
+        $data->schoolPayment = $schoolPayment;
+
+        return $data;
+    }
     
 }

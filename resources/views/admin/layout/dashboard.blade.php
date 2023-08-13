@@ -301,7 +301,13 @@
                                         <a href="{{url('/admin/setting')}}" class="nav-link" data-key="t-calendar">App Settings </a>
                                     </li>
                                     <li class="nav-item">
-                                        <a href="{{url('/admin/sessionSetup')}}" class="nav-link" data-key="t-calendar">All Session Setup </a>
+                                        <a href="{{url('/admin/sessionSetup')}}" class="nav-link" data-key="t-calendar">Academic Session Setup </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="{{ url('/admin/courseRegMgt') }}" class="nav-link">Course Reg. Mgt</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="{{ url('/admin/examDocketMgt') }}" class="nav-link">Exam Docket Mgt</a>
                                     </li>
                                     <li class="nav-item">
                                         <a href="{{url('/admin/programmeCategory')}}" class="nav-link" data-key="t-chat">Programme Category </a>
@@ -363,12 +369,6 @@
                                 <ul class="nav nav-sm flex-column">
                                     <li class="nav-item">
                                         <a href="{{ url('/admin/faculties') }}" class="nav-link">Faculties</a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a href="{{ url('/admin/courseRegMgt') }}" class="nav-link">Course Reg. Mgt</a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a href="{{ url('/admin/examDocketMgt') }}" class="nav-link">Exam Docket Mgt</a>
                                     </li>
                                     <li class="nav-item">
                                         <a href="{{ url('/admin/populateFaculty') }}" class="nav-link">Populate Faculty</a>

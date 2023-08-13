@@ -25,8 +25,7 @@ use Paystack;
 
 class StudentController extends Controller
 {
-    //
-
+    
     public function index(Request $request){
         $student = Auth::guard('student')->user();
         $studentId = $student->id;
@@ -39,52 +38,29 @@ class StudentController extends Controller
         $acceptanceTransaction = Transaction::where('student_id', $studentId)->where('payment_id', $acceptancePaymentId)->where('status', 1)->first();
 
 
-        $schoolPayment = Payment::with('structures')
-            ->where('type', Payment::PAYMENT_TYPE_SCHOOL)
-            ->where('programme_id', $student->programme_id)
-            ->where('level_id', $levelId)
-            ->where('academic_session', $student->academic_session)
-            ->first();
+        $paymentCheck = $this->checkSchoolFees($student);
 
-        if(!$schoolPayment){
-            alert()->info('Programme info missing, contact administrator', '')->persistent('Close');
-            return redirect()->back();
-        }
-        $schoolPaymentId = $schoolPayment->id;
-        $schoolAmount = $schoolPayment->structures->sum('amount');
-        $schoolPaymentTransaction = Transaction::where('student_id', $studentId)->where('payment_id', $schoolPaymentId)->where('session', $student->academic_session)->where('status', 1)->first();
-
-        $passTuitionPayment = false;
-        $fullTuitionPayment = false;
-        $passEightyTuition = false;
-        if($schoolPaymentTransaction && $schoolPaymentTransaction->amount_payed > $schoolAmount * 0.4){
-            $passTuitionPayment = true;
+        if(!$acceptanceTransaction){
+            return view('student.acceptanceFee', [
+                'payment' => $acceptancePayment
+            ]);
         }
 
-        if($schoolPaymentTransaction && $schoolPaymentTransaction->amount_payed > $schoolAmount * 0.8){
-            $passEightyTuition = true;
+        if(!$paymentCheck->schoolPaymentTransaction){
+            return view('student.schoolFee', [
+                'payment' => $paymentCheck->schoolPayment,
+                'passTuition' => $paymentCheck->passTuitionPayment,
+                'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
+                'passEightyTuition' => $paymentCheck->passEightyTuition
+            ]);
         }
 
-        if($schoolPaymentTransaction && $schoolPaymentTransaction->amount_payed >= $schoolAmount){
-            $fullTuitionPayment = true;
-        }
-
-        // if(!$acceptanceTransaction){
-        //     return view('student.acceptanceFee', [
-        //         'payment' => $acceptancePayment
-        //     ]);
-        // }
-
-        // if(!$schoolPaymentTransaction){
-        //     return view('student.schoolFee', [
-        //         'payment' => $schoolPayment,
-        //         'passTuition' => $passTuitionPayment,
-        //         'fullTuitionPayment' => $fullTuitionPayment,
-        //         'passEightyTuition' => $passEightyTuition
-        //     ]);
-        // }
-
-        return view('student.home');
+        return view('student.home', [
+            'payment' => $paymentCheck->schoolPayment,
+            'passTuition' => $paymentCheck->passTuitionPayment,
+            'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
+            'passEightyTuition' => $paymentCheck->passEightyTuition
+        ]);
     }
 
     public function makePayment(Request $request)
@@ -96,7 +72,7 @@ class StudentController extends Controller
         $paymentId = $request->payment_id;
 
         if(!$payment = Payment::with('structures')->where('id', $paymentId)->first()){
-            alert()->error('Oops', 'Invalid Payment Initialization, contact ICT ')->persistent('Close');
+            alert()->error('Oops', 'Invalid Payment Initialization, contact ICT')->persistent('Close');
             return redirect()->back();
         }
 
@@ -132,22 +108,6 @@ class StudentController extends Controller
             return Paystack::getAuthorizationUrl($data)->redirectNow();
         }
 
-        // if(strtolower($paymentGateway) == 'banktransfer'){
-            
-        //     $userData = new \stdClass();
-        //     $userData->lastname = $applicant->lastname;
-        //     $userData->othernames = $applicant->othernames;
-        //     $userData->application_id = $applicant->application_number;
-        //     $userData->amount = $this->getPaystackAmount($amount);
-            
-        //     //create email to sennd bank details
-        //     Mail::to($request->email)->send(new BankDetailsMail($userData));
-
-        //     $message = 'Kindly proceed to your email to complete application';
-        //     alert()->info('Nice Work!', $message)->persistent('Close');
-        //     return redirect()->back();
-        // }
-
         $message = 'Invalid Payment Gateway';
         alert()->info('Nice Work!', $message)->persistent('Close');
         return redirect()->back();
@@ -160,44 +120,22 @@ class StudentController extends Controller
         $levelId = $student->level_id;
         $transactions = Transaction::where('student_id', $studentId)->orderBy('id', 'DESC')->get();
 
-        $schoolPayment = Payment::with('structures')
-            ->where('type', Payment::PAYMENT_TYPE_SCHOOL)
-            ->where('programme_id', $student->programme_id)
-            ->where('level_id', $levelId)
-            ->where('academic_session', $student->academic_session)
-            ->first();
-
-
-        if(!$schoolPayment){
-            alert()->info('Programme info missing, contact administrator', '')->persistent('Close');
-            return redirect()->back();
-        }
-        $schoolPaymentId = $schoolPayment->id;
-        $schoolAmount = $schoolPayment->structures->sum('amount');
-        $schoolPaymentTransaction = Transaction::where('student_id', $studentId)->where('payment_id', $schoolPaymentId)->where('session', $student->academic_session)->where('status', 1)->get();
-
-        $passTuitionPayment = false;
-        $fullTuitionPayment = false;
-        $passEightyTuition = false;
-        if($schoolPaymentTransaction && $schoolPaymentTransaction->sum('amount_payed') > $schoolAmount * 0.4){
-            $passTuitionPayment = true;
-        }
-
-        if($schoolPaymentTransaction && $schoolPaymentTransaction->sum('amount_payed') > $schoolAmount * 0.7){
-            $passEightyTuition = true;
-        }
-
-        if($schoolPaymentTransaction && $schoolPaymentTransaction->sum('amount_payed') >= $schoolAmount){
-            $passEightyTuition = true;
-            $fullTuitionPayment = true;
+        $paymentCheck = $this->checkSchoolFees($student);
+        if(!$paymentCheck->schoolPaymentTransaction){
+            return view('student.schoolFee', [
+                'payment' => $paymentCheck->schoolPayment,
+                'passTuition' => $paymentCheck->passTuitionPayment,
+                'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
+                'passEightyTuition' => $paymentCheck->passEightyTuition
+            ]);
         }
         
         return view('student.transactions', [
             'transactions' => $transactions,
-            'payment' => $schoolPayment,
-            'passTuition' => $passTuitionPayment,
-            'fullTuitionPayment' => $fullTuitionPayment,
-            'passEightyTuition' => $passEightyTuition
+            'payment' => $paymentCheck->schoolPayment,
+            'passTuition' => $paymentCheck->passTuitionPayment,
+            'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
+            'passEightyTuition' => $paymentCheck->passEightyTuition
         ]);
     }
 
@@ -206,11 +144,24 @@ class StudentController extends Controller
         $studentId = $student->id;
 
         $mentorId  = $student->mentor_id;
+        $paymentCheck = $this->checkSchoolFees($student);
+        if(!$paymentCheck->schoolPaymentTransaction){
+            return view('student.schoolFee', [
+                'payment' => $paymentCheck->schoolPayment,
+                'passTuition' => $paymentCheck->passTuitionPayment,
+                'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
+                'passEightyTuition' => $paymentCheck->passEightyTuition
+            ]);
+        }
 
         $mentor = Staff::with('faculty', 'acad_department')->where('id', $mentorId)->first();
 
         return view('student.mentor', [
             'mentor' => $mentor,
+            'payment' => $paymentCheck->schoolPayment,
+            'passTuition' => $paymentCheck->passTuitionPayment,
+            'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
+            'passEightyTuition' => $paymentCheck->passEightyTuition
         ]);
     }
 }

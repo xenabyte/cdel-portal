@@ -100,7 +100,7 @@
                         <div class="dropdown ms-sm-3 header-item topbar-user">
                             <button type="button" class="btn shadow-none" id="page-header-user-dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <span class="d-flex align-items-center">
-                                    <img class="rounded-circle header-profile-user" src="{{asset('assets/images/users/user-dummy-img.jpg')}}" alt="Header Avatar">
+                                    <img class="rounded-circle header-profile-user" src="{{empty($student->image)?asset('assets/images/users/user-dummy-img.jpg'):asset($student->image)}}" alt="Header Avatar">
                                     <span class="text-start ms-xl-2">
                                         <span class="d-none d-xl-inline-block ms-1 fw-medium user-name-text">{{ $student->applicant->lastname.' '.$student->applicant->othernames }}</span>
                                         <span class="d-none d-xl-block ms-1 fs-12 text-muted user-name-sub-text"><strong>Matric Number:</strong> {{ $student->matric_number }}</span>
@@ -162,6 +162,7 @@
                             </a>
                         </li>
 
+                        @if($passTuition)
                         <li class="nav-item">
                             <a class="nav-link menu-link" href="{{ url('student/mentor') }}">
                                 <i class="mdi mdi-account-child-circle"></i> <span data-key="t-transaction">Mentor</span>
@@ -222,6 +223,7 @@
                                 </ul>
                             </div>
                         </li> 
+                        @endif
                        
                         <li class="nav-item">
                             <a class="nav-link menu-link" href="{{ url('user/logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
@@ -340,6 +342,30 @@
                 }else{
                     document.getElementById('transferInfo').style.display = 'none';
                     document.getElementById('submit-button').style.display = 'block';
+                }
+               
+            }else{
+                submitButton.disabled = true;
+            }
+        }
+
+        function handlePaymentMainMethodChange(event) {
+            const selectedPaymentMethod = event.target.value;
+            console.log(selectedPaymentMethod);
+            const submitButton = document.getElementById('submit-button-main');
+            if(selectedPaymentMethod != ''){
+                if(selectedPaymentMethod == 'Remita' || selectedPaymentMethod == 'Zenith') {
+                    submitButton.disabled = true;
+                }else{
+                    submitButton.disabled = false;
+                }
+
+                if(selectedPaymentMethod == 'BankTransfer'){
+                    document.getElementById('transferInfoMain').style.display = 'block';
+                    document.getElementById('submit-button-main').style.display = 'none';
+                }else{
+                    document.getElementById('transferInfoMain').style.display = 'none';
+                    document.getElementById('submit-button-main').style.display = 'block';
                 }
                
             }else{

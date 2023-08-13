@@ -179,7 +179,7 @@
 
                     <div class="mb-3">
                         <label for="paymentGateway" class="form-label">Select Payment Gateway<span class="text-danger">*</span></label>
-                        <select class="form-select" aria-label="paymentGateway" name="paymentGateway" required onchange="handlePaymentMethodChange(event)">
+                        <select class="form-select" aria-label="paymentGateway" name="paymentGateway" required onchange="handlePaymentMainMethodChange(event)">
                             <option value= "" selected>Select Payment Gateway</option>
                             <option value="Paystack">Paystack</option>
                             <option value="Remita">Remita</option>
@@ -189,7 +189,7 @@
                     </div>
 
                     <!-- Primary Alert -->
-                    <div class="alert alert-primary alert-dismissible alert-additional fade show" role="alert" style="display: none" id="transferInfo">
+                    <div class="alert alert-primary alert-dismissible alert-additional fade show" role="alert" style="display: none" id="transferInfoMain">
                         <div class="alert-body">
                             <div class="d-flex">
                                 <div class="flex-shrink-0 me-3">
