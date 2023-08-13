@@ -13,4 +13,9 @@ class ResultApprovalStatus extends Model
     protected $fillable = [
         'status',
     ];
+
+    public static function getApprovalStatusId ( $status ) {
+        $status = self::where('status', $status)->first();
+        return $status['id'];
+    }
 }

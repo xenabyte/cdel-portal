@@ -199,4 +199,9 @@ class StudentController extends Controller
             'passEightyTuition' => $passEightyTuition
         ]);
     }
+
+    public function mentor(){
+
+        return view('student.mentor');
+    }
 }

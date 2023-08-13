@@ -1,9 +1,45 @@
 
 <!doctype html>
 <html lang="en" data-layout="vertical" data-layout-style="default" data-layout-position="fixed" data-topbar="light" data-sidebar="dark" data-sidebar-size="lg" data-layout-width="fluid" data-preloader="disable">
-<?php 
+@php
     $staff = Auth::guard('staff')->user();
-?>
+    $staffDeanRole = false;
+    $staffSubDeanRole = false;
+    $staffHODRole = false;
+    $staffVCRole = false;
+    $staffRegistrarRole = false;
+    $staffHRRole = false;
+    $staffLevelAdvicerRole = false;
+    $staffExamOfficerRole = false;
+    
+    
+    foreach ($staff->staffRoles as $staffRole) {
+        if (strtolower($staffRole->role->role) == 'dean') {
+            $staffDeanRole = true;
+        }
+        if (strtolower($staffRole->role->role) == 'sub-dean') {
+            $staffSubDeanRole = true;
+        }
+        if (strtolower($staffRole->role->role) == 'hod') {
+            $staffHODRole = true;
+        }
+        if (strtolower($staffRole->role->role) == 'vice chancellor') {
+            $staffVCRole = true;
+        }
+        if (strtolower($staffRole->role->role) == 'registrar') {
+            $staffRegistrarRole = true;
+        }
+        if (strtolower($staffRole->role->role) == 'human resource') {
+            $staffHRRole = true;
+        }
+        if (strtolower($staffRole->role->role) == 'level adviser') {
+            $staffLevelAdvicerRole = true;
+        }
+        if (strtolower($staffRole->role->role) == 'exam officer') {
+            $staffExamOfficerRole = true;
+        }
+    }
+@endphp
 
 <head>
 
@@ -182,23 +218,29 @@
                             </a>
                         </li>
 
+                        @if($staffDeanRole || $staffSubDeanRole || $staffHODRole || $staffRegistrarRole ||  $staffHRRole || $staffVCRole)
                         <li class="nav-item">
                             <a class="na<li class="nav-item">
-                                <a class="nav-link menu-link" href="#courseManagement" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="courseManagement">
-                                    <i class="mdi mdi-bookshelf"></i> <span data-key="t-courseManagement">Course Management</span>
+                                <a class="nav-link menu-link" href="#staffManagement" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="staffManagement">
+                                    <i class="mdi mdi-account-supervisor"></i> <span data-key="t-staffManagement">Staff Management</span>
                                 </a>
-                                <div class="collapse menu-dropdown" id="courseManagement">
+                                <div class="collapse menu-dropdown" id="staffManagement">
                                     <ul class="nav nav-sm flex-column">
+                                        @if($staffDeanRole || $staffSubDeanRole)
                                         <li class="nav-item">
-                                            <a href="{{ url('/staff/courseAllocation') }}" class="nav-link">Course/Staff Allocation</a>
+                                            <a href="{{ url('/staff/courseAllocation') }}" class="nav-link">Course-to-Staff Allocation</a>
                                         </li>
+                                        @endif
+                                        @if($staffDeanRole || $staffSubDeanRole || $staffHODRole || $staffRegistrarRole || $staffHRRole || $staffVCRole)
                                         <li class="nav-item">
-                                            <a href="{{ url('/student/roleAllocation') }}" class="nav-link">Staff Role(s)</a>
+                                            <a href="{{ url('/staff/staff') }}" class="nav-link" data-key="t-basic"> All Staff </a>
                                         </li>
+                                        @endif
                                     </ul>
                                 </div>
                             </li> <!-- end Bursary Menu -->
                         </li>
+                        @endif
 
 
                         <li class="nav-item">

@@ -22,6 +22,8 @@ use App\Models\GradeScale;
 use App\Models\CourseRegistration;
 use App\Models\Role;
 use App\Models\StaffRole;
+use App\Models\Faculty;
+use App\Models\Department;
 
 use App\Mail\NotificationMail;
 
@@ -39,7 +41,7 @@ class StaffController extends Controller
 
     public function staff(Request $request){
 
-        $staff  = Staff::with('faculty', 'acad_department')->get();
+        $staff  = Staff::withTrashed()->with('faculty', 'acad_department')->get();
 
         return view('admin.staff', [
             'staff' => $staff
@@ -131,12 +133,14 @@ class StaffController extends Controller
 
     public function singleStaff(Request $request, $slug){
 
-        $staff  = Staff::with('faculty', 'acad_department', 'staffRoles', 'staffRoles.role')->where('slug', $slug)->first();
+        $staff  = Staff::withTrashed()->with('faculty', 'acad_department', 'staffRoles', 'staffRoles.role')->where('slug', $slug)->first();
         $roles  = Role::get();
+        $departments = Department::where('faculty_id', $staff->faculty_id)->get();
 
         return view('admin.singleStaff', [
             'singleStaff' => $staff,
-            'roles' => $roles
+            'roles' => $roles,
+            'departments' => $departments
         ]);
     }
 
@@ -193,7 +197,7 @@ class StaffController extends Controller
             return redirect()->back();
         }
         
-        if($staffRole->delete()){
+        if($staffRole->forceDelete()){
             alert()->success('Role  unassigned successfully', '')->persistent('Close');
             return redirect()->back();
         }
@@ -201,6 +205,139 @@ class StaffController extends Controller
         alert()->error('Oops!', 'Something went wrong')->persistent('Close');
         return redirect()->back();
         
+    }
+
+    public function disableStaff(Request $request){
+        $validator = Validator::make($request->all(), [
+            'staff_id' => 'required',
+        ]);
+
+        if($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+        if(!$staff = Staff::find($request->staff_id)){
+            alert()->error('Oops', 'Invalid Staff ')->persistent('Close');
+            return redirect()->back();
+        }
+        
+        if($staff->delete()){
+            alert()->success('Disable Successfully', '')->persistent('Close');
+            return redirect()->back();
+        }
+
+        alert()->error('Oops!', 'Something went wrong')->persistent('Close');
+        return redirect()->back(); 
+    }
+
+    public function enableStaff(Request $request){
+        $validator = Validator::make($request->all(), [
+            'staff_id' => 'required',
+        ]);
+
+        if($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+        if(!$staff = Staff::withTrashed()->find($request->staff_id)){
+            alert()->error('Oops', 'Invalid Staff ')->persistent('Close');
+            return redirect()->back();
+        }
+        
+        if($staff->restore()){
+            alert()->success('Enable Successfully', '')->persistent('Close');
+            return redirect()->back();
+        }
+
+        alert()->error('Oops!', 'Something went wrong')->persistent('Close');
+        return redirect()->back(); 
+    }
+
+    public function assignDeanToFaculty(Request $request){
+        $validator = Validator::make($request->all(), [
+            'staff_id' => 'required',
+            'faculty_id' => 'required',
+        ]);
+
+        if($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+        if(!$staff = Staff::find($request->staff_id)){
+            alert()->error('Oops', 'Invalid Staff ')->persistent('Close');
+            return redirect()->back();
+        }
+
+        if(!$faculty = Faculty::find($request->faculty_id)){
+            alert()->error('Oops', 'Invalid Faculty ')->persistent('Close');
+            return redirect()->back();
+        }
+        $faculty->dean_id = $staff->id;
+        if($faculty->save()){
+            alert()->success('Dean assigned to Faculty', '')->persistent('Close');
+            return redirect()->back();
+        }
+
+        alert()->error('Oops!', 'Something went wrong')->persistent('Close');
+        return redirect()->back(); 
+    }
+    public function assignSubDeanToFaculty(Request $request){
+        $validator = Validator::make($request->all(), [
+            'staff_id' => 'required',
+            'faculty_id' => 'required',
+        ]);
+
+        if($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+        if(!$staff = Staff::find($request->staff_id)){
+            alert()->error('Oops', 'Invalid Staff ')->persistent('Close');
+            return redirect()->back();
+        }
+
+        if(!$faculty = Faculty::find($request->faculty_id)){
+            alert()->error('Oops', 'Invalid Faculty ')->persistent('Close');
+            return redirect()->back();
+        }
+        $faculty->sub_dean_id = $staff->id;
+        if($faculty->save()){
+            alert()->success('Sub Dean assigned to Faculty', '')->persistent('Close');
+            return redirect()->back();
+        }
+
+        alert()->error('Oops!', 'Something went wrong')->persistent('Close');
+        return redirect()->back(); 
+    }
+    
+
+    public function assignHodToDepartment(Request $request){
+        $validator = Validator::make($request->all(), [
+            'staff_id' => 'required',
+            'department_id' => 'required',
+        ]);
+
+        if($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+        if(!$staff = Staff::find($request->staff_id)){
+            alert()->error('Oops', 'Invalid Staff ')->persistent('Close');
+            return redirect()->back();
+        }
+
+        if(!$department = Department::find($request->department_id)){
+            alert()->error('Oops', 'Invalid Department ')->persistent('Close');
+            return redirect()->back();
+        }
+        $department->hod_id = $staff->id;
+        if($department->save()){
+            alert()->success('HOD assigned to Department', '')->persistent('Close');
+            return redirect()->back();
+        }
+
+        alert()->error('Oops!', 'Something went wrong')->persistent('Close');
+        return redirect()->back(); 
     }
     
 }

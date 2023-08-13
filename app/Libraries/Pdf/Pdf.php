@@ -7,6 +7,7 @@ use App\Models\User as Applicant;
 use App\Models\Student;
 use App\Models\GlobalSetting as Setting;
 use App\Models\CourseRegistration;
+use App\Models\ResultApprovalStatus;
 
 
 use Log;
@@ -113,7 +114,7 @@ Class Pdf {
         $courseRegs = CourseRegistration::with('course')
             ->where('student_id', $studentId)
             ->where('academic_session', $academicSession)
-            ->where('total', null)
+            ->where('result_approval_id',  ResultApprovalStatus::getApprovalStatusId(ResultApprovalStatus::SENATE_APPROVED))
             ->whereHas('course', function ($query) use ($semester) {
                 $query->where('semester', $semester);
             })

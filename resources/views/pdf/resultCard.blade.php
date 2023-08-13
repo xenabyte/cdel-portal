@@ -130,7 +130,7 @@
         <div class="col-md-12">
             <h4>G.P.A: {{ number_format($totalPoints / $totalCreditUnits, 2) }}</h4>
             <br>
-            <h4>C.G.P.A: {{ number_format($totalPoints / $totalCreditUnits, 2) }}</h4>
+            <h4>C.G.P.A: {{ $info->cgpa }}</h4>
         </div>
     </div>
 </div>

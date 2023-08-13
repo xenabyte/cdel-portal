@@ -121,6 +121,15 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'admin'],
   Route::post('assignRole', [App\Http\Controllers\Admin\StaffController::class, 'assignRole'])->name('assignRole')->middleware(['auth:admin']);
   Route::post('unAssignRole', [App\Http\Controllers\Admin\StaffController::class, 'unAssignRole'])->name('unAssignRole')->middleware(['auth:admin']);
 
+  Route::post('disableStaff', [App\Http\Controllers\Admin\StaffController::class, 'disableStaff'])->name('disableStaff')->middleware(['auth:admin']);
+  Route::post('enableStaff', [App\Http\Controllers\Admin\StaffController::class, 'enableStaff'])->name('enableStaff')->middleware(['auth:admin']);
+  
+  Route::post('assignDeanToFaculty', [App\Http\Controllers\Admin\StaffController::class, 'assignDeanToFaculty'])->name('assignDeanToFaculty')->middleware(['auth:admin']);
+  Route::post('assignHodToDepartment', [App\Http\Controllers\Admin\StaffController::class, 'assignHodToDepartment'])->name('assignHodToDepartment')->middleware(['auth:admin']);
+  Route::post('assignSubDeanToFaculty', [App\Http\Controllers\Admin\StaffController::class, 'assignSubDeanToFaculty'])->name('assignSubDeanToFaculty')->middleware(['auth:admin']);
+  
+  
+
   Route::get('/examDocketMgt', [App\Http\Controllers\Admin\AcademicController::class, 'examDocketMgt'])->name('examDocketMgt')->middleware(['auth:admin']);
   Route::post('setExamSetting', [App\Http\Controllers\Admin\AcademicController::class, 'setExamSetting'])->name('setExamSetting')->middleware(['auth:admin']);
 
@@ -133,6 +142,7 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'admin'],
   Route::post('getStudent', [App\Http\Controllers\Admin\AcademicController::class, 'getStudent'])->name('getStudent')->middleware(['auth:admin']);
   Route::post('makeDemoteStudent', [App\Http\Controllers\Admin\AcademicController::class, 'makeDemoteStudent'])->name('makeDemoteStudent')->middleware(['auth:admin']);
 
+  
 });
 
 Route::group(['prefix' => 'student'], function () {
@@ -166,6 +176,8 @@ Route::group(['prefix' => 'student'], function () {
 
   Route::get('/examResult', [App\Http\Controllers\Student\AcademicController::class, 'examResult'])->name('examResult')->middleware(['auth:student']);
   Route::post('/generateResult', [App\Http\Controllers\Student\AcademicController::class, 'generateResult'])->name('generateResult')->middleware(['auth:student']);
+
+  Route::get('/mentor', [App\Http\Controllers\Student\StudentController::class, 'mentor'])->name('mentor')->middleware(['auth:student']);
 });
 
 Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'staff'], function () {
@@ -202,6 +214,24 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'staff'],
   Route::post('staffUploadResult', [App\Http\Controllers\Staff\StaffController::class, 'staffUploadResult'])->name('staffUploadResult')->middleware(['auth:staff']);
   Route::post('updateStudentResult', [App\Http\Controllers\Staff\StaffController::class, 'updateStudentResult'])->name('updateStudentResult')->middleware(['auth:staff']);
 
+  Route::get('staff', [App\Http\Controllers\Staff\StaffController::class, 'staff'])->name('staff')->middleware(['auth:admin']);
+  Route::get('staff/{slug}', [App\Http\Controllers\Staff\StaffController::class, 'singleStaff'])->name('singleStaff')->middleware(['auth:admin']);
+
+  Route::get('staffRoles', [App\Http\Controllers\Staff\StaffController::class, 'roles'])->name('roles')->middleware(['auth:admin']);
+  Route::post('addRole', [App\Http\Controllers\Staff\StaffController::class, 'addRole'])->name('addRole')->middleware(['auth:admin']);
+  Route::post('updateRole', [App\Http\Controllers\Staff\StaffController::class, 'updateRole'])->name('updateRole')->middleware(['auth:admin']);
+  Route::post('deleteRole', [App\Http\Controllers\Staff\StaffController::class, 'deleteRole'])->name('deleteRole')->middleware(['auth:admin']);
+
+  Route::post('assignRole', [App\Http\Controllers\Staff\StaffController::class, 'assignRole'])->name('assignRole')->middleware(['auth:admin']);
+  Route::post('unAssignRole', [App\Http\Controllers\Staff\StaffController::class, 'unAssignRole'])->name('unAssignRole')->middleware(['auth:admin']);
+
+  Route::post('disableStaff', [App\Http\Controllers\Staff\StaffController::class, 'disableStaff'])->name('disableStaff')->middleware(['auth:admin']);
+  Route::post('enableStaff', [App\Http\Controllers\Staff\StaffController::class, 'enableStaff'])->name('enableStaff')->middleware(['auth:admin']);
+  
+  Route::post('assignDeanToFaculty', [App\Http\Controllers\Staff\StaffController::class, 'assignDeanToFaculty'])->name('assignDeanToFaculty')->middleware(['auth:admin']);
+  Route::post('assignHodToDepartment', [App\Http\Controllers\Staff\StaffController::class, 'assignHodToDepartment'])->name('assignHodToDepartment')->middleware(['auth:admin']);
+  Route::post('assignSubDeanToFaculty', [App\Http\Controllers\Staff\StaffController::class, 'assignSubDeanToFaculty'])->name('assignSubDeanToFaculty')->middleware(['auth:admin']);
+  
 });
 
 Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'bursary'], function () {

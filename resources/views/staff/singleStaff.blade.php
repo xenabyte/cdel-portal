@@ -1,5 +1,43 @@
-@extends('admin.layout.dashboard')
-
+@extends('staff.layout.dashboard')
+@php
+    $staff = Auth::guard('staff')->user();
+    $staffDeanRole = false;
+    $staffSubDeanRole = false;
+    $staffHODRole = false;
+    $staffVCRole = false;
+    $staffRegistrarRole = false;
+    $staffHRRole = false;
+    $staffLevelAdvicerRole = false;
+    $staffExamOfficerRole = false;
+    
+    
+    foreach ($staff->staffRoles as $staffRole) {
+        if (strtolower($staffRole->role->role) == 'dean') {
+            $staffDeanRole = true;
+        }
+        if (strtolower($staffRole->role->role) == 'sub-dean') {
+            $staffSubDeanRole = true;
+        }
+        if (strtolower($staffRole->role->role) == 'hod') {
+            $staffHODRole = true;
+        }
+        if (strtolower($staffRole->role->role) == 'vice chancellor') {
+            $staffVCRole = true;
+        }
+        if (strtolower($staffRole->role->role) == 'registrar') {
+            $staffRegistrarRole = true;
+        }
+        if (strtolower($staffRole->role->role) == 'human resource') {
+            $staffHRRole = true;
+        }
+        if (strtolower($staffRole->role->role) == 'level adviser') {
+            $staffLevelAdvicerRole = true;
+        }
+        if (strtolower($staffRole->role->role) == 'exam officer') {
+            $staffExamOfficerRole = true;
+        }
+    }
+@endphp
 @section('content')
 <div class="row">
     <div class="col-lg-12">
@@ -65,7 +103,6 @@
     </div>
     <!-- end col -->
 </div>
-
 
 <!-- end row -->
 <div class="row">
@@ -192,7 +229,6 @@
                             <!-- end card body -->
                         </div>
                         <!-- end card -->
-
                     </div>
                     <!-- end col -->
                 </div>
@@ -203,7 +239,6 @@
     <!-- end col -->
 </div>
 <!-- end row -->
-
 
 <div id="assignRole" class="modal fade" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" style="display: none;">
     <!-- Fullscreen Modals -->
@@ -392,6 +427,5 @@
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
-
 
 @endsection

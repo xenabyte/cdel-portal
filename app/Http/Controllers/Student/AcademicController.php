@@ -20,6 +20,7 @@ use App\Models\Transaction;
 use App\Models\StudentExamCard;
 use App\Models\Session;
 use App\Models\AcademicLevel;
+use App\Models\ResultApprovalStatus;
 
 use App\Libraries\Pdf\Pdf;
 
@@ -371,7 +372,7 @@ class AcademicController extends Controller
         $courseRegs = CourseRegistration::with('course')
         ->where('student_id', $studentId)
         ->where('academic_session', $academicSession)
-        ->where('total', null)
+        ->where('result_approval_id',  ResultApprovalStatus::getApprovalStatusId(ResultApprovalStatus::SENATE_APPROVED))
         ->whereHas('course', function ($query) use ($semester) {
             $query->where('semester', $semester);
         })
@@ -418,15 +419,15 @@ class AcademicController extends Controller
             $fullTuitionPayment = true;
         }
 
-        // if($semester == 1 && !$passTuitionPayment){
-        //     alert()->info('Oops!', 'Please be informed that in order to generate your examination results, it is necessary to clear 100% of your school fees.')->persistent('Close');
-        //     return redirect()->back();
-        // }
+        if($semester == 1 && !$passTuitionPayment){
+            alert()->info('Oops!', 'Please be informed that in order to generate your examination results, it is necessary to clear 100% of your school fees.')->persistent('Close');
+            return redirect()->back();
+        }
 
-        // if($semester == 2 && !$fullTuitionPayment){
-        //     alert()->info('Oops!', 'Please be informed that in order to generate your examination results, it is necessary to clear 100% of your school fees.')->persistent('Close');
-        //     return redirect()->back();
-        // }
+        if($semester == 2 && !$fullTuitionPayment){
+            alert()->info('Oops!', 'Please be informed that in order to generate your examination results, it is necessary to clear 100% of your school fees.')->persistent('Close');
+            return redirect()->back();
+        }
 
         $pdf = new Pdf();
         $examResult = $pdf->generateExamResult($studentId, $academicSession, $semester, $level);
