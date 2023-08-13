@@ -41,8 +41,19 @@ class StaffController extends Controller
     //
 
     public function index(Request $request){
+        $staff = Auth::guard('staff')->user();
+        $staffId = $staff->id;
+        $referalCode = $staff->referral_code;
+        $globalData = $request->input('global_data');
+        $admissionSession = $globalData->sessionSetting['admission_session'];
+        $academicSession = $globalData->sessionSetting['academic_session'];
+        $applicationSession = $globalData->sessionSetting['application_session'];
 
-        return view('staff.home');
+        $applicants = Applicant::with('student')->where('referrer', $referalCode)->where('academic_session', $applicationSession)->get();
+
+        return view('staff.home', [
+            'applicants' => $applicants,
+        ]);
     }
 
     public function mentee(Request $request){
@@ -129,6 +140,14 @@ class StaffController extends Controller
         $student = Student::with('applicant', 'applicant.utmes', 'programme', 'transactions')->where('slug', $slug)->first();
 
         return view('staff.student', [
+            'student' => $student
+        ]);
+    }
+
+    public function studentProfile(Request $request, $slug){
+        $student = Student::with('applicant', 'applicant.utmes', 'programme', 'transactions')->where('slug', $slug)->first();
+
+        return view('staff.studentProfile', [
             'student' => $student
         ]);
     }

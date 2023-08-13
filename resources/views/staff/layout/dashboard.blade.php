@@ -137,7 +137,7 @@
                         <div class="dropdown ms-sm-3 header-item topbar-user">
                             <button type="button" class="btn shadow-none" id="page-header-user-dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <span class="d-flex align-items-center">
-                                    <img class="rounded-circle header-profile-user" src="{{asset(!empty($staff->image)? $staff->image : 'assets/images/users/user-dummy-img.jpg')}}" alt="Header Avatar">
+                                    <img class="rounded-circle header-profile-user" src="{{!empty($staff->image) ? $staff->image : asset('assets/images/users/user-dummy-img.jpg')}}" alt="Header Avatar">
                                     <span class="text-start ms-xl-2">
                                         <span class="d-none d-xl-inline-block ms-1 fw-medium user-name-text">{{ $staff->title.' '. $staff->lastname .' '.$staff->othernames }}</span>
                                         <span class="d-none d-xl-block ms-1 fs-12 text-muted user-name-sub-text">Staff ID: {{ $staff->staffId}}</span>

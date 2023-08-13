@@ -32,13 +32,14 @@ class StudentController extends Controller
         $levelId = $student->level_id;
         $globalData = $request->input('global_data');
         $admissionSession = $globalData->sessionSetting['admission_session'];
+        $academicSession = $globalData->sessionSetting['academic_session'];
 
         $acceptancePayment = Payment::with('structures')->where('type', Payment::PAYMENT_TYPE_ACCEPTANCE)->first();
         $acceptancePaymentId = $acceptancePayment->id;
         $acceptanceTransaction = Transaction::where('student_id', $studentId)->where('payment_id', $acceptancePaymentId)->where('status', 1)->first();
 
 
-        $paymentCheck = $this->checkSchoolFees($student);
+        $paymentCheck = $this->checkSchoolFees($student, $academicSession, $levelId);
 
         if(!$acceptanceTransaction){
             return view('student.acceptanceFee', [
@@ -113,14 +114,18 @@ class StudentController extends Controller
         return redirect()->back();
     }
 
-    public function transactions()
+    public function transactions(Request $request)
     {
         $student = Auth::guard('student')->user();
         $studentId = $student->id;
         $levelId = $student->level_id;
+        $globalData = $request->input('global_data');
+        $admissionSession = $globalData->sessionSetting['admission_session'];
+        $academicSession = $globalData->sessionSetting['academic_session'];
+
         $transactions = Transaction::where('student_id', $studentId)->orderBy('id', 'DESC')->get();
 
-        $paymentCheck = $this->checkSchoolFees($student);
+        $paymentCheck = $this->checkSchoolFees($student, $academicSession, $levelId);
         if(!$paymentCheck->schoolPaymentTransaction){
             return view('student.schoolFee', [
                 'payment' => $paymentCheck->schoolPayment,
@@ -139,12 +144,17 @@ class StudentController extends Controller
         ]);
     }
 
-    public function mentor(){
+    public function mentor(Request $request){
         $student = Auth::guard('student')->user();
         $studentId = $student->id;
+        $levelId = $student->level_id;
+        $globalData = $request->input('global_data');
+        $admissionSession = $globalData->sessionSetting['admission_session'];
+        $academicSession = $globalData->sessionSetting['academic_session'];
+
 
         $mentorId  = $student->mentor_id;
-        $paymentCheck = $this->checkSchoolFees($student);
+        $paymentCheck = $this->checkSchoolFees($student, $academicSession, $levelId);
         if(!$paymentCheck->schoolPaymentTransaction){
             return view('student.schoolFee', [
                 'payment' => $paymentCheck->schoolPayment,

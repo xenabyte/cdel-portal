@@ -92,7 +92,7 @@ class Staff extends Authenticatable
      */
     public function courses()
     {
-        return $this->hasMany(Courses::class, 'staff_id');
+        return $this->hasMany(Course::class, 'staff_id');
     }
 
     /**
@@ -120,9 +120,10 @@ class Staff extends Authenticatable
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function mentee()
+    public function mentees()
     {
         return $this->hasMany(Student::class, 'mentor_id');
     }
+    
     
 }

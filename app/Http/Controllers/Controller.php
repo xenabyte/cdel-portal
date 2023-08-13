@@ -26,6 +26,7 @@ use App\Models\Staff;
 use App\Models\Partner;
 use App\Models\AcademicLevel;
 use App\Models\Programme;
+use App\Models\Session;
 
 class Controller extends BaseController
 {
@@ -123,9 +124,33 @@ class Controller extends BaseController
         }           
     }
 
+    public function getSingleApplicant($studentIdCode, $path){
+        $student = User::with('programme', 'transactions')->where('application_number', $studentIdCode)->first();
+        if(!$student){
+            alert()->info('Record not found', '')->persistent('Close');
+            return redirect()->back();
+        }
+
+        $studentId = $student->id;
+
+        $levels = AcademicLevel::get();
+        $programmes = Programme::get();
+        $sessions = Session::orderBy('id', 'DESC')->get();
+
+        $transactions = Transaction::where('user_id', $studentId)->orderBy('id', 'DESC')->get();
+
+        return view($path, [
+            'transactions' => $transactions,
+            'applicant' => $student,
+            'levels' => $levels,
+            'programmes' => $programmes,
+            'sessions' => $sessions   
+        ]);
+    }
+
     public function getSingleStudent($studentIdCode, $path){
 
-        $student = Student::with('programme')->where('matric_number', $studentIdCode)->first();
+        $student = Student::with('programme', 'transactions', 'applicant')->where('matric_number', $studentIdCode)->first();
         if(!$student){
             alert()->info('Record not found', '')->persistent('Close');
             return redirect()->back();
@@ -135,6 +160,7 @@ class Controller extends BaseController
 
         $levels = AcademicLevel::get();
         $programmes = Programme::get();
+        $sessions = Session::orderBy('id', 'DESC')->get();
 
         $transactions = Transaction::where('student_id', $studentId)->orderBy('id', 'DESC')->get();
 
@@ -177,7 +203,8 @@ class Controller extends BaseController
             'passEightyTuition' => $passEightyTuition,
             'student' => $student,
             'levels' => $levels,
-            'programmes' => $programmes
+            'programmes' => $programmes,
+            'sessions' => $sessions   
         ]);
 
     }
@@ -203,16 +230,15 @@ class Controller extends BaseController
         return $startAcademicYear . '/' . $endAcademicYear;
     }
 
-    public function checkSchoolFees($student)
+    public function checkSchoolFees($student, $academicSession, $levelId)
     {
-        $levelId = $student->level_id;
         $studentId = $student->id;
 
         $schoolPayment = Payment::with('structures')
             ->where('type', Payment::PAYMENT_TYPE_SCHOOL)
             ->where('programme_id', $student->programme_id)
             ->where('level_id', $levelId)
-            ->where('academic_session', $student->academic_session)
+            ->where('academic_session', $academicSession)
             ->first();
 
         if(!$schoolPayment){
@@ -222,7 +248,7 @@ class Controller extends BaseController
 
         $schoolPaymentId = $schoolPayment->id;
         $schoolAmount = $schoolPayment->structures->sum('amount');
-        $schoolPaymentTransaction = Transaction::where('student_id', $studentId)->where('payment_id', $schoolPaymentId)->where('session', $student->academic_session)->where('status', 1)->first();
+        $schoolPaymentTransaction = Transaction::where('student_id', $studentId)->where('payment_id', $schoolPaymentId)->where('session', $academicSession)->where('status', 1)->first();
 
         $passTuitionPayment = false;
         $fullTuitionPayment = false;

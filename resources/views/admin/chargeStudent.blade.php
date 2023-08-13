@@ -26,149 +26,279 @@
     <div class="col-lg-12">
         <div class="card">
             <div class="card-header align-items-center d-flex">
-                <h4 class="card-title mb-0 flex-grow-1">Student Information</h4>
+                <h4 class="card-title mb-0 flex-grow-1">Get Student Information</h4>
                 <div class="flex-shrink-0">
                     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#getStudent">Get Student</button>
                 </div>
             </div><!-- end card header -->
-            @if(!empty($applicant))
-            <div class="card-body">
-                <div class="row mb-2">
-                    <div class="col-sm-6 col-xl-4">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <img class="rounded shadow" width="100%" src="{{asset($applicant->image)}}" alt="Student Logo">
-                                <hr>
-                            </div>
-                        </div>
-                        <p class="card-text"><strong>Student Name: </strong> {{ $applicant->lastname .' '. $applicant->othernames }} </p>
-                        <hr>
-                        <p class="card-text"><strong>Programme: </strong> {{ $applicant->programme->title }} </p>
-                        <hr>
-                        <p class="card-text"><strong>email: </strong> {{ $applicant->email }}</p>
-                        <hr>
-                        <p class="card-text"><strong>Phone Number(s): </strong> {{ $applicant->phone_number }}</p>
-                    </div><!-- end col -->
-
-                    <div class="col-sm-6 col-xl-8">
-                        <div class="text-end mb-5">
-                            <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#addTransaction" class="btn btn-primary">Charge Student</a>
-                        </div>
-                        <div class="card card-body table-responsive">
-                            @if(!empty($applicant->transactions))
-                            <table id="buttons-datatables" class="display table table-bordered" style="width:100%">
-                                <thead>
-                                    <tr>
-                                        <th scope="col">Id</th>
-                                        <th scope="col">Reference</th>
-                                        <th scope="col">Amount(₦)</th>
-                                        <th scope="col">Payment For</th>
-                                        <th scope="col">Session</th>
-                                        <th scope="col">Payment Gateway</th>
-                                        <th scope="col">Status</th>
-                                        <th scope="col">Payment Date</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach($applicant->transactions as $payment)
-                                    <tr>
-                                        <th scope="row">{{ $loop->iteration }}</th>
-                                        <td>{{ $payment->reference }}</td>
-                                        <td>₦{{ number_format($payment->amount_payed/100, 2) }} </td>
-                                        <td>{{ $payment->paymentType->title }} </td>
-                                        <td>{{ $payment->session }}</td>
-                                        <td>{{ $payment->payment_method }}</td>
-                                        <td><span class="badge badge-soft-{{ $payment->status == 1 ? 'success' : 'warning' }}">{{ $payment->status == 1 ? 'Paid' : 'Pending' }}</span></td>
-                                        <td>{{ $payment->created_at }} </td>
-                                    </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                            @endif
-                        </div>
-                    </div>
-                </div>
-            </div>
-            @endif
         </div><!-- end card -->
     </div>
 </div>
 <!-- end row -->
-
-
-<div id="getStudent" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content border-0 overflow-hidden">
-            <div class="modal-header p-3">
-                <h4 class="card-title mb-0">Get Student</h4>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+@if(!empty($student))
+<div class="row">
+    <div class="col-xxl-4">
+        <div class="card">
+            <div class="card-body p-4">
+                <div>
+                    <div class="flex-shrink-0 avatar-md mx-auto">
+                        <div class="avatar-title bg-light rounded">
+                            <img src="{{empty($student->image)?asset('assets/images/users/user-dummy-img.jpg'):asset($student->image)}}" alt="" height="50" />
+                        </div>
+                    </div>
+                    <div class="mt-4 text-center">
+                        <h5 class="mb-1">{{$student->applicant->lastname.' '.$student->applicant->othernames}}</h5>
+                        <p class="text-muted">{{ $student->programme->name }} <br>
+                            <strong>Matric Number:</strong> {{ $student->matric_number }}<br>
+                            <strong>Jamb Reg. Number:</strong> {{ $student->applicant->jamb_reg_no }}
+                        </p>
+                    </div>
+                    <div class="table-responsive border-top border-top-dashed">
+                        <table class="table mb-0 table-borderless">
+                            <tbody>
+                                <tr>
+                                    <th><span class="fw-medium">Department:</span></th>
+                                    <td>{{ $student->department->name }}</td>
+                                </tr>
+                                <tr>
+                                    <th><span class="fw-medium">Faculty:</span></th>
+                                    <td>{{ $student->faculty->name }}</td>
+                                </tr>
+                                <tr>
+                                    <th><span class="fw-medium">Email:</span></th>
+                                    <td>{{ $student->email }}</td>
+                                </tr>
+                                <tr>
+                                    <th><span class="fw-medium">Contact No.:</span></th>
+                                    <td>{{ $student->applicant->phone_number }}</td>
+                                </tr>
+                                <tr>
+                                    <th><span class="fw-medium">Address:</span></th>
+                                    <td>{!! $student->applicant->address !!}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
 
-            <div class="modal-body">
-
-                <form action="{{ url('/admin/getStudent') }}" method="post" enctype="multipart/form-data">
-                    @csrf
-
-                    <div class="mb-3">
-                        <label for="reg" class="form-label">Registration Number</label>
-                        <input type="text" class="form-control" name="reg_number" id="reg">
+            <div class="card-body border-top border-top-dashed p-4">
+                <div>
+                    <h6 class="text-muted text-uppercase fw-semibold mb-4">Guardian Info</h6>
+                    <div class="table-responsive">
+                        <table class="table mb-0 table-borderless">
+                            <tbody>
+                                <tr>
+                                    <th><span class="fw-medium">Name</span></th>
+                                    <td>{{ $student->applicant->guardian->name }}</td>
+                                </tr>
+                                <tr>
+                                    <th><span class="fw-medium">Email</span></th>
+                                    <td>{{ $student->applicant->guardian->email }}</td>
+                                </tr>
+                                <tr>
+                                    <th><span class="fw-medium">Contact No.</span></th>
+                                    <td>{{ $student->applicant->guardian->phone_number }}</td>
+                                </tr>
+                                <tr>
+                                    <th><span class="fw-medium">Address</span></th>
+                                    <td>{!! $student->applicant->guardian->address !!}</td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
-
-                    <hr>
-                    <div class="text-end">
-                        <button type="submit" class="btn btn-primary">Get student</button>
-                    </div>
-                </form>
+                </div>
             </div>
-        </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
+        </div>
+        <!--end card-->
+    
+    </div>
+    <!--end col-->
 
-@if(!empty($applicant))
+    <div class="col-xxl-8">
+        <div class="card">
+            <div class="card-header border-0 align-items-center d-flex">
+                <h4 class="card-title mb-0 flex-grow-1">Transactions</h4>
+                <div class="text-end mb-5">
+                    <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#addTransaction" class="btn btn-primary">Charge Student</a>
+                </div>
+            </div><!-- end card header -->
+
+            <div class="card-body pb-2 border-top border-top-dashed">
+                <div class="table-responsive">
+                    <table id="buttons-datatables" class="display table table-stripped" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th scope="col">Id</th>
+                                <th scope="col">Reference</th>
+                                <th scope="col">Amount(₦)</th>
+                                <th scope="col">Payment For</th>
+                                <th scope="col">Session</th>
+                                <th scope="col">Payment Gateway</th>
+                                <th scope="col">Status</th>
+                                <th scope="col">Payment Date</th>
+                                <th scope="col"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($transactions as $transaction)
+                            <tr>
+                                <th scope="row">{{ $loop->iteration }}</th>
+                                <td>{{ $transaction->reference }}</td>
+                                <td>₦{{ number_format($transaction->amount_payed/100, 2) }} </td>
+                                <td>{{ $transaction->paymentType->type }} </td>
+                                <td>{{ $transaction->session }}</td>
+                                <td>{{ $transaction->payment_method }}</td>
+                                <td><span class="badge badge-soft-{{ $transaction->status == 1 ? 'success' : 'warning' }}">{{ $transaction->status == 1 ? 'Paid' : 'Pending' }}</span></td>
+                                <td>{{ $transaction->status == 1 ? $transaction->updated_at : null }} </td>
+                                <td>
+                                    @if($transaction->status == 0)
+                                        <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#payNow{{$transaction->id}}" style="margin: 5px" class="btn btn-warning">Pay Now</a>
+                                    @endif
+                                </td>
+                            </tr>
+    
+                            <div id="payNow{{$transaction->id}}" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
+                                <div class="modal-dialog modal-lg modal-dialog-centered">
+                                    <div class="modal-content border-0 overflow-hidden">
+                                        <div class="modal-header p-3">
+                                            <h4 class="card-title mb-0">Pay Now</h4>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+    
+                                        <div class="modal-body">
+                                            <div class="mt-2 text-center">
+                                            <lord-icon src="https://cdn.lordicon.com/ggihhudh.json" trigger="hover" style="width:150px;height:150px">
+                                            </lord-icon>
+                                            </div>
+                                            <form action="{{ url('/student/makePayment') }}" method="post" enctype="multipart/form-data">
+                                                @csrf
+                                                <input type="hidden" name='programme_id' value="{{ $student->programme->id }}">
+                                                <input type="hidden" name="student_id" value="{{ $student->id }}">
+                                                <input type="hidden" name="transaction_id" value="{{ $transaction->id }}">
+                                                <input type="hidden" name="payment_id" value="{{ $transaction->paymentType->id }}">
+                                                <input type="hidden" name="reference" value="{{ $transaction->reference }}">
+                                                <input type="hidden" name="amount" value="{{ $transaction->amount_payed }}">
+                                                
+                                                <div class="mb-3">
+                                                    <label for="paymentGateway" class="form-label">Select Payment Gateway<span class="text-danger">*</span></label>
+                                                    <select class="form-select" aria-label="paymentGateway" name="paymentGateway" required onchange="handlePaymentTypeChange(event)">
+                                                        <option value= "" selected>Select Payment Gateway</option>
+                                                        <option value="Paystack">Paystack</option>
+                                                        <option value="Remita">Remita</option>
+                                                        <option value="Zenith">Zenith Pay</option>
+                                                        <option value="BankTransfer">Transfer</option>
+                                                    </select>
+                                                </div>
+    
+                                                <hr>
+                                                <!-- Primary Alert -->
+                                                <div class="alert alert-primary alert-dismissible alert-additional fade show" role="alert" style="display: none" id="transferInfo">
+                                                    <div class="alert-body">
+                                                        <div class="d-flex">
+                                                            <div class="flex-shrink-0 me-3">
+                                                                <i class="fs-16 align-middle"></i>
+                                                            </div>
+                                                            <div class="flex-grow-1">
+                                                                <h5 class="alert-heading">Well done !</h5>
+                                                                <p class="mb-0">Kindly make transfer to the below transaction </p>
+                                                                <br>
+                                                                <ul class="list-group">
+                                                                    <li class="list-group-item"><i class="mdi mdi-check-bold align-middle lh-1 me-2"></i><strong>Bank Name:</strong> {{env('BANK_NAME')}}</li>
+                                                                    <li class="list-group-item"><i class="mdi mdi-check-bold align-middle lh-1 me-2"></i><strong>Bank Account Number:</strong> {{env('BANK_ACCOUNT_NUMBER')}}</li>
+                                                                    <li class="list-group-item"><i class="mdi mdi-check-bold align-middle lh-1 me-2"></i><strong>Bank Account Name:</strong> {{env('BANK_ACCOUNT_NAME')}}</li>
+                                                                </ul>
+                                                                <br>
+                                                                <p>Please send proof of payment as an attachment to {{ env('ACCOUNT_EMAIL') }}, including your name, registration number, and purpose of payment. For any inquiries, you can also call {{ env('ACCOUNT_PHONE') }}.</p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="alert-content">
+                                                        <p class="mb-0">NOTE: PLEASE ENSURE TO VERIFY THE TRANSACTION DETAILS PROPERLY. TRANSFER ONLY TO THE ACCOUNT ABOVE. STUDENTS TAKE RESPONSIBILITY FOR ANY MISPLACEMENT OF FUNDS.</p>
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <button type="submit" id='submit-button' class="btn btn-primary">Make payment</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div><!-- /.modal-content -->
+                                </div><!-- /.modal-dialog -->
+                            </div><!-- /.modal -->
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div><!-- end card body -->
+        </div><!-- end card -->
+
+    </div>
+    <!--end col-->
+</div>
+<!--end row-->
+
 <div id="addTransaction" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
-    <div class="modal-dialog modal-xl modal-dialog-centered">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content border-0 overflow-hidden">
             <div class="modal-header p-3">
                 <h4 class="card-title mb-0">Create Payment</h4>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
 
-            <div class="modal-body">
+            <div class="modal-body border-top border-top-dashed">
                 <form action="{{ url('/admin/chargeStudent') }}" method="post" enctype="multipart/form-data">
                     @csrf
-                    <input type="hidden" name="user_id" value="{{ $applicant->id }}">
+                    <input type="hidden" id="studentId" name="student_id" value="{{ $student->id }}">
+                    <input type="hidden" id="programmeId" name="programme_id" value="{{ $student->programme_id }}">
                     <input type="hidden" name="paymentGateway" value="Manual/BankTransfer">
 
+
                     <div class="mb-3">
-                        <label for="paymentType" class="form-label">Select Payment Type<span class="text-danger">*</span></label>
-                        <select class="form-select" aria-label="paymentType" name="payment_id" required onchange="handlePaymentTypeChange(event)">
-                            <option value= "" selected>Select Payment Type</option>
-                            @foreach($programmePaymentTypes as $programmePaymentType)
-                            <option value="{{ $programmePaymentType->id }}"> {{ $programmePaymentType->title }}</option>
+                        <label for="academic_session" class="form-label">Select Academic Session</label>
+                        <select class="form-select" id="academicSession" aria-label="academic_session" name="academic_session" required>
+                            <option selected value= "">Select Select Academic Session </option>
+                            @foreach($sessions as $session)
+                            <option value="{{ $session->year }}">{{ $session->year }}</option>
                             @endforeach
                         </select>
                     </div>
+
+                    <div class="mb-3">
+                        <label for="level" class="form-label">Select Level </label>
+                        <select class="form-select" id="level" aria-label="level" name="level">
+                            <option selected value= "">Select Level </option>
+                            @foreach($levels as $level)
+                                @if($level->id <= $student->level_id)
+                                <option value="{{ $level->id }}">{{ $level->level }} Level</option>
+                                @endif
+                            @endforeach
+                        </select>
+                    </div>
+
+
+                    <div class="mb-3">
+                        <label for="type" class="form-label">Select Payment Type </label>
+                        <select class="form-select" aria-label="type" name="type" required onchange="handlePaymentTypeChange(event)">
+                            <option selected value= "">Select Type </option>
+                            <option value="Acceptance Fee">Acceptance Fee</option>
+                            <option value="School Fee">School Fee</option>
+                            <option value="General Fee">General Fee</option>
+                        </select>
+                    </div>
+
 
                     <div class="mb-3" id='payment-options-acceptance' style="display: none">
                         <label for="amount" class="form-label">Payment Amount<span class="text-danger">*</span></label>
-                        <select class="form-select" aria-label="amount" name="amountApplication">
+                        <select class="form-select" aria-label="amount" name="amountAcceptance">
                             <option value= "" selected>Select Amount</option>
-                            @foreach($programmePayments->where('type',  'Application Fee') as $programmePayment)
-                            <option value="{{ $programmePayment->structures->sum('amount') }}">₦{{ number_format($programmePayment->structures->sum('amount')/100, 2) }} - {{ $programmePayment->title }}</option>
-                            @endforeach
                         </select>
                     </div>
 
 
-                    <div class="mb-3" id='payment-options-tuition' style="display: none">
+                   <div class="mb-3" id='payment-options-tuition' style="display: none">
                         <label for="amount" class="form-label">Payment Amount<span class="text-danger">*</span></label>
                         <select class="form-select" aria-label="amount" name="amountTuition">
                             <option value= "" selected>Select Amount</option>
-                            <option value="{{ $programmeTuitionPayment->structures->sum('amount') }}">₦{{ number_format($programmeTuitionPayment->structures->sum('amount')/100, 2) }} - Tuition Fee - 100%</option>
-                            <option value="{{ $programmeTuitionPayment->structures->sum('amount')*0.7 }}">₦{{ number_format($programmeTuitionPayment->structures->sum('amount')*0.7/100, 2) }} - Tuition Fee - 70%</option>
-                            @if($passTuition && !$fullTuitionPayment)
-                            <option value="{{ $programmeTuitionPayment->structures->sum('amount')*0.3 }}">₦{{ number_format($programmeTuitionPayment->structures->sum('amount')*0.3/100, 2) }} - Tuition Fee - 30%</option>
-                            @endif
                         </select>
                     </div>
 
@@ -186,9 +316,10 @@
                         </select>
                     </div>
 
-                    
-                    <hr>
-                    <div class="text-end">
+                    <input type="hidden" id="paymentId" name="payment_id">
+
+                    <div class="text-end border-top border-top-dashed">
+                        <br>
                         <button type="submit" class="btn btn-primary">Create</button>
                     </div>
                 </form>
@@ -198,38 +329,103 @@
 </div><!-- /.modal -->
 @endif
 
+
+<div id="getStudent" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 overflow-hidden">
+            <div class="modal-header p-3">
+                <h4 class="card-title mb-0">Get Student</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body border-top border-top-dashed">
+                <form action="{{ url('/admin/getStudent') }}" method="post" enctype="multipart/form-data">
+                    @csrf
+                    <div class="mb-3">
+                        <label for="reg" class="form-label">Matric Number</label>
+                        <input type="text" class="form-control" name="reg_number" id="reg">
+                    </div>
+                    <div class="mb-3">
+                        <label for="type" class="form-label">Select  Type</label>
+                        <select class="form-select" aria-label="type" name="type" required>
+                            <option selected value= "">Select type </option>
+                            <option value="Student">Student</option>
+                            <option value="Applicant">Applicant</option>
+                        </select>
+                    </div>
+                    <div class="text-end border-top border-top-dashed">
+                        <br>
+                        <button type="submit" class="btn btn-primary">Get student</button>
+                    </div>
+                </form>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
 <script>
     function handlePaymentTypeChange(event) {
         const selectedPaymentType = event.target.value;
+        const academicSession = document.getElementById('academicSession').value;
+        const programmeId = document.getElementById('programmeId').value;
+        const paymentId = document.getElementById('paymentId');
+        const studentId = document.getElementById('studentId').value;
+        const level = document.getElementById('level').value;
+
         if(selectedPaymentType != ''){
-            axios.get("{{ url('/admin/paymentById')  }}/"+selectedPaymentType)
+            axios.post("{{ url('/admin/getPayment') }}", {
+                type: selectedPaymentType,
+                academic_session: academicSession,
+                programme_id: programmeId,
+                student_id: studentId,
+                level: level
+            })
             .then(response => {
                 const data = response.data;
-                const paymentType = data.type;
-                console.log(paymentType);
-                const amount = data.structures.reduce((total, structure) => total + parseInt(structure.amount), 0);                   
+                const amount = data.structures.reduce((total, structure) => total + parseInt(structure.amount), 0); 
+                
+                paymentId.value = data.id;
 
-                if (amount > 0) {
+                console.log(paymentId.value);
+
+
+                if (selectedPaymentType === 'School Fee') {
+                    document.getElementById('payment-options-acceptance').style.display = 'none';
+                    document.getElementById('payment-options-tuition').style.display = 'block';
                     document.getElementById('payment-options-general').style.display = 'none';
-                    if(paymentType == 'Application Fee') {
-                        document.getElementById('payment-options-acceptance').style.display = 'block';
-                    }else{
-                        document.getElementById('payment-options-acceptance').style.display = 'none';
+
+                    const selectElement = document.querySelector('[name="amountTuition"]');
+                    if (!data.passTuition) {
+                        selectElement.innerHTML += `<option value="${amount}">₦${(amount / 100).toFixed(2)} - 100%</option>`;
+                        selectElement.innerHTML += `<option value="${amount * 0.5}">₦${((amount * 0.5) / 100).toFixed(2)} - 50%</option>`;
+                    }
+                    if (data.passTuition && !data.fullTuitionPayment && !data.passEightyTuition) {
+                        selectElement.innerHTML += `<option value="${amount * 0.5}">₦${((amount * 0.5) / 100).toFixed(2)} - 50%</option>`;
+                        selectElement.innerHTML += `<option value="${amount * 0.3}">₦${((amount * 0.3) / 100).toFixed(2)} - 30%</option>`;
+                    }
+                    if (data.passTuition && !data.fullTuitionPayment && data.passEightyTuition) {
+                        selectElement.innerHTML += `<option value="${amount * 0.2}">₦${((amount * 0.2) / 100).toFixed(2)} - 20%</option>`;
                     }
 
-                    if(paymentType == 'School Fee') {
-                        document.getElementById('payment-options-tuition').style.display = 'block';
-                    }else{
-                        document.getElementById('payment-options-tuition').style.display = 'none';
-                    }
-                } else {
-                    // Hide the select dropdown and show the simple input field
+                }else if (selectedPaymentType === 'General Fee') {
+                    document.getElementById('payment-options-tuition').style.display = 'none';
+                    document.getElementById('payment-options-acceptance').style.display = 'none';
                     document.getElementById('payment-options-general').style.display = 'block';
+                } else {
+                    document.getElementById('payment-options-tuition').style.display = 'none';
+                    document.getElementById('payment-options-acceptance').style.display = 'block';
+                    document.getElementById('payment-options-general').style.display = 'none';
+                    
+                    const selectElement = document.querySelector('[name="amountAcceptance"]');
+                    selectElement.innerHTML = '<option value="">Select Amount</option>';
+
+                    const option = document.createElement('option');
+                    option.value = data.structures.reduce((total, structure) => total + structure.amount, 0);
+                    option.text = '₦' + (option.value / 100).toFixed(2) + ' - ' + data.title;
+                    selectElement.appendChild(option);
                 }
             })
-            .catch(error => {
-                console.error(error);
-            });
+            
         }
 
     }

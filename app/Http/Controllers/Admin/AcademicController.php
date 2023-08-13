@@ -544,6 +544,7 @@ class AcademicController extends Controller
     public function getStudent(Request $request){
         $validator = Validator::make($request->all(), [
             'reg_number' => 'required',
+            'type' => 'required',
         ]);
 
         if($validator->fails()) {
@@ -552,7 +553,13 @@ class AcademicController extends Controller
         }
 
         $studentIdCode = $request->reg_number;
-        return $this->getSingleStudent($studentIdCode, 'admin.demoteStudent');
+        if($request->type == 'Student'){
+            return $this->getSingleStudent($studentIdCode, 'admin.chargeStudent');
+        }
+
+        if($request->type == 'Applicant'){
+            return $this->getSingleApplicant($studentIdCode, 'admin.chargeStudent');
+        }
     }
 
     public function makeDemoteStudent(Request $request){

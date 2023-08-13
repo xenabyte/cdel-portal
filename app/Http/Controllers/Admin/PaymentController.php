@@ -174,9 +174,34 @@ class PaymentController extends Controller
         ]);
     }
 
-    public function paymentById($id) {
+    public function getPayment(Request $request) {
+        $type = $request->type;
+        $session = $request->academic_session;
+        $programmeId = $request->programme_id;
+        $studentId = $request->student_id;
+        $levelId  = $request->level;
+        
 
-        $payment = Payment::with(['structures'])->where('id', $id)->first();
+        $student = Student::find($studentId);
+        $paymentCheck = $this->checkSchoolFees($student, $session, $levelId);
+
+        $payment = Payment::with(['structures'])->where([
+            'type' => $type,
+            'academic_session' => $session,
+        ])->first();
+
+        if ($type == Payment::PAYMENT_TYPE_SCHOOL) {
+            $payment = Payment::with(['structures'])->where([
+                'type' => $type,
+                'academic_session' => $session,
+                'programme_id' => $programmeId
+            ])->first();
+
+            $payment->passTuition = $paymentCheck->passTuitionPayment;
+            $payment->fullTuitionPayment = $paymentCheck->fullTuitionPayment;
+            $payment->passEightyTuition = $paymentCheck->passEightyTuition;
+        }
+
         return $payment;
     }
 
@@ -296,8 +321,9 @@ class PaymentController extends Controller
     }
 
     public function chargeStudent(Request $request){
-        $applicant = Applicant::with('programme', 'olevels', 'guardian', 'student')->where('id', $request->user_id)->first();
+        $student = Student::with('programme', 'applicant')->where('id', $request->student_id)->first();
         $payment = Payment::find($request->payment_id);
+        $session = $request->academic_session;
 
         if($payment->type == 'Application Fee'){
             $validator = Validator::make($request->all(), [
@@ -321,11 +347,11 @@ class PaymentController extends Controller
 
         if($validator->fails()) {
             alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
-            return $this->getSingleStudent($applicant->user_id, 'admin.chargeStudent');
+            return $this->getSingleStudent($student->matric_number, 'admin.chargeStudent');
         }
 
-        if($payment->type == 'Application Fee'){
-            $amount = $request->amountApplication;
+        if($payment->type == 'Acceptance Fee'){
+            $amount = $request->amountAcceptance;
         }elseif($payment->type == 'School Fee'){
             $amount = $request->amountTuition;
         }else{
@@ -333,22 +359,22 @@ class PaymentController extends Controller
         }
 
 
-        $transactions = Transaction::where('user_id', $applicant->id)->get();
-        $programme = $applicant->programme;
+        $transactions = Transaction::where('student_id', $student->id)->get();
+        $programme = $student->programme;
 
         $reference = $this->generateRandomString(10);
         
         //Create new transaction
         $transaction = Transaction::create([
-            'user_id' => $request->user_id,
+            'student_id' => $request->student_id,
             'payment_id' => $request->payment_id,
             'amount_payed' => $amount,
             'payment_method' => $request->paymentGateway,
             'reference' => $reference,
-            'session' => $programme->sessionSetting->year,
+            'session' => $session,
             'status' => $request->paymentStatus == 1 ? 1 : null
         ]);
 
-        return $this->getSingleStudent($applicant->user_id, 'admin.chargeStudent');
+        return $this->getSingleStudent($student->matric_number, 'admin.chargeStudent');
     }
 }

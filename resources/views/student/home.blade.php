@@ -32,7 +32,7 @@ $studentRegistrations = $student->courseRegistrationDocument()->orderBy('created
         <div class="d-flex align-items-lg-center flex-lg-row flex-column">
             <div class="flex-grow-1">
                 <h4 class="fs-16 mb-1"><span id="greeting">Hello</span>, {{ $name }}!</h4>
-                <p class="text-muted mb-0">Here's what's happening with your student dashboard today.</p>
+                <p class="text-muted mb-0">Here's what's happening with your dashboard today.</p>
             </div>
             <div class="mt-3 mt-lg-0">
                 <form action="javascript:void(0);">

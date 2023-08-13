@@ -39,11 +39,12 @@ class AcademicController extends Controller
     public function courseRegistration(Request $request){
         $student = Auth::guard('student')->user();
         $studentId = $student->id;
+        $levelId = $student->level_id;
         $globalData = $request->input('global_data');
         $admissionSession = $globalData->sessionSetting['admission_session'];
         $academicSession = $globalData->sessionSetting['academic_session'];
 
-        $paymentCheck = $this->checkSchoolFees($student);
+        $paymentCheck = $this->checkSchoolFees($student, $academicSession, $levelId);
         if(!$paymentCheck->schoolPaymentTransaction){
             return view('student.schoolFee', [
                 'payment' => $paymentCheck->schoolPayment,
@@ -75,7 +76,7 @@ class AcademicController extends Controller
 
         $courseRegMgt = CourseRegistrationSetting::first();
 
-        $paymentCheck = $this->checkSchoolFees($student);
+        $paymentCheck = $this->checkSchoolFees($student, $academicSession, $levelId);
 
         return view('student.courseRegistration', [
             'courseRegMgt' => $courseRegMgt,
@@ -101,11 +102,12 @@ class AcademicController extends Controller
 
         $student = Auth::guard('student')->user();
         $studentId = $student->id;
+        $levelId = $student->level_id;
         $globalData = $request->input('global_data');
         $admissionSession = $globalData->sessionSetting['admission_session'];
         $academicSession = $globalData->sessionSetting['academic_session'];
 
-        $paymentCheck = $this->checkSchoolFees($student);
+        $paymentCheck = $this->checkSchoolFees($student, $academicSession, $levelId);
         if(!$paymentCheck->schoolPaymentTransaction){
             return view('student.schoolFee', [
                 'payment' => $paymentCheck->schoolPayment,
@@ -181,11 +183,12 @@ class AcademicController extends Controller
     {
         $student = Auth::guard('student')->user();
         $studentId = $student->id;
+        $levelId = $student->level_id;
         $globalData = $request->input('global_data');
         $admissionSession = $globalData->sessionSetting['admission_session'];
         $academicSession = $globalData->sessionSetting['academic_session'];
 
-        $paymentCheck = $this->checkSchoolFees($student);
+        $paymentCheck = $this->checkSchoolFees($student, $academicSession, $levelId);
         if(!$paymentCheck->schoolPaymentTransaction){
             return view('student.schoolFee', [
                 'payment' => $paymentCheck->schoolPayment,
@@ -208,6 +211,7 @@ class AcademicController extends Controller
     {
         $student = Auth::guard('student')->user();
         $studentId = $student->id;
+        $levelId = $student->level_id;
         $globalData = $request->input('global_data');
         $admissionSession = $globalData->sessionSetting['admission_session'];
         $academicSession = $globalData->sessionSetting['academic_session'];
@@ -216,7 +220,7 @@ class AcademicController extends Controller
             'student_id' => $studentId,
         ])->orderBy('id', 'DESC')->get();
 
-        $paymentCheck = $this->checkSchoolFees($student);
+        $paymentCheck = $this->checkSchoolFees($student, $academicSession, $levelId);
         if(!$paymentCheck->schoolPaymentTransaction){
             return view('student.schoolFee', [
                 'payment' => $paymentCheck->schoolPayment,
@@ -238,6 +242,7 @@ class AcademicController extends Controller
     {
         $student = Auth::guard('student')->user();
         $studentId = $student->id;
+        $levelId = $student->level_id;
         $globalData = $request->input('global_data');
         $admissionSession = $globalData->sessionSetting['admission_session'];
         $academicSession = $globalData->sessionSetting['academic_session'];
@@ -245,7 +250,7 @@ class AcademicController extends Controller
         $addOrRemoveTxId = $addOrRemoveTxPay->id;
         $addOrRemoveTxs = Transaction::where('student_id', $studentId)->where('payment_id', $addOrRemoveTxId)->where('status', 1)->orderBy('id', 'DESC')->get();
 
-        $paymentCheck = $this->checkSchoolFees($student);
+        $paymentCheck = $this->checkSchoolFees($student, $academicSession, $levelId);
         if(!$paymentCheck->schoolPaymentTransaction){
             return view('student.schoolFee', [
                 'payment' => $paymentCheck->schoolPayment,
@@ -273,7 +278,7 @@ class AcademicController extends Controller
         $semester  = $globalData->examSetting['semester'];
         $levelId = $student->level_id;
 
-        $paymentCheck = $this->checkSchoolFees($student);
+        $paymentCheck = $this->checkSchoolFees($student, $academicSession, $levelId);
         if(!$paymentCheck->schoolPaymentTransaction){
             return view('student.schoolFee', [
                 'payment' => $paymentCheck->schoolPayment,
@@ -395,6 +400,7 @@ class AcademicController extends Controller
     {
         $student = Auth::guard('student')->user();
         $studentId = $student->id;
+        $levelId = $student->level_id;
         $globalData = $request->input('global_data');
         $admissionSession = $globalData->sessionSetting['admission_session'];
         $academicSession = $globalData->sessionSetting['academic_session'];
@@ -403,7 +409,7 @@ class AcademicController extends Controller
             'student_id' => $studentId
         ])->get();
 
-        $paymentCheck = $this->checkSchoolFees($student);
+        $paymentCheck = $this->checkSchoolFees($student, $academicSession, $levelId);
         if(!$paymentCheck->schoolPaymentTransaction){
             return view('student.schoolFee', [
                 'payment' => $paymentCheck->schoolPayment,
@@ -422,10 +428,17 @@ class AcademicController extends Controller
     }
 
     public function examResult(Request $request){
+        $student = Auth::guard('student')->user();
+        $studentId = $student->id;
+        $levelId = $student->level_id;
+        $globalData = $request->input('global_data');
+        $admissionSession = $globalData->sessionSetting['admission_session'];
+        $academicSession = $globalData->sessionSetting['academic_session'];
+
         $sessions = Session::orderBy('id', 'DESC')->get();
         $academicLevels = AcademicLevel::get();
 
-        $paymentCheck = $this->checkSchoolFees($student);
+        $paymentCheck = $this->checkSchoolFees($student, $academicSession, $levelId);
         if(!$paymentCheck->schoolPaymentTransaction){
             return view('student.schoolFee', [
                 'payment' => $paymentCheck->schoolPayment,
