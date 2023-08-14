@@ -244,29 +244,13 @@
 
                         @if($staffDeanRole || $staffSubDeanRole)
                         <li class="nav-item">
-                            <a class="nav-link menu-link" href="#facultySettings" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="facultySettings">
+                            <a class="nav-link menu-link" href="#academicSettings" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="academicSettings">
                                 <i class="mdi mdi-view-carousel-outline"></i> <span  data-key="t-hot">Faculty Management</span>
                             </a>
-                            <div class="collapse menu-dropdown" id="facultySettings">
+                            <div class="collapse menu-dropdown" id="academicSettings">
                                 <ul class="nav nav-sm flex-column">
                                     <li class="nav-item">
                                         <a href="{{ url('/staff/faculties') }}" class="nav-link">Faculty</a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </li> <!-- end Dashboard Menu -->
-                        @endif
-
-
-                        @if($staffHODRole)
-                        <li class="nav-item">
-                            <a class="nav-link menu-link" href="#deptSettings" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="deptSettings">
-                                <i class="mdi mdi-view-carousel-outline"></i> <span  data-key="t-hot">Dept. Management</span>
-                            </a>
-                            <div class="collapse menu-dropdown" id="deptSettings">
-                                <ul class="nav nav-sm flex-column">
-                                    <li class="nav-item">
-                                        <a href="{{ url('/staff/departments') }}" class="nav-link">Department</a>
                                     </li>
                                 </ul>
                             </div>

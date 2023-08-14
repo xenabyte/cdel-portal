@@ -12,5 +12,6 @@ class Role extends Model
 
     protected $fillable = [
         'role',
+        'access_level',
     ];
 }

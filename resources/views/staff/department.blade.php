@@ -1,4 +1,4 @@
-@extends('admin.layout.dashboard')
+@extends('staff.layout.dashboard')
 
 @section('content')
 <div class="row">
@@ -98,7 +98,7 @@
                         </div>
                     </div><!-- end card header -->
                     <div class="card-body">
-                        <?php echo $department->description?>
+                        <?php echo $department->description ?>
                     </div><!-- end card body -->
                 </div><!-- end card -->
             </div><!-- end col -->
@@ -122,7 +122,7 @@
                                 <p class="fs-12 mb-0 text-muted">{{ $programme->programmeCategory->category }} Programme</p>
                             </div>
                             <div class="flex-shrink-0">
-                                <a href="{{url('/admin/programme/'.$programme->slug)}}" class="btn btn-primary"><i class= "mdi mdi-folder-eye"></i> View</a>
+                                <a href="{{url('/staff/programme/'.$programme->slug)}}" class="btn btn-primary"><i class= "mdi mdi-folder-eye"></i> View</a>
                             </div>
                         </div><!-- end -->
                         <br>
@@ -150,7 +150,7 @@
             </div><!-- end cardheader -->
             @if(!empty($department->hod))
             <div class="card-body pt-0">
-                <img class="card-img-top img-fluid" src="{{ env('APP_URL').'/'.$department->hod->image }}" alt="Card image cap">
+                <img class="card-img-top img-fluid" src="{{ $department->hod->image }}" alt="Card image cap">
                 <div class="card-body">
                     <p class="card-text text-center"><strong>{{ $department->hod->lastname.' '. $department->hod->othernames }}</strong> <br> HOD, {{ $department->hod->lastname.' '. $department->hod->othernames }}</p>
                 </div>

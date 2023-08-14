@@ -1,15 +1,15 @@
-@extends('admin.layout.dashboard')
+@extends('staff.layout.dashboard')
 
 @section('content')
 <div class="row">
     <div class="col-12">
         <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-            <h4 class="mb-sm-0">Department</h4>
+            <h4 class="mb-sm-0">Faculty</h4>
 
             <div class="page-title-right">
                 <ol class="breadcrumb m-0">
                     <li class="breadcrumb-item"><a href="javascript: void(0);">Pages</a></li>
-                    <li class="breadcrumb-item active">Department</li>
+                    <li class="breadcrumb-item active">Faculty</li>
                 </ol>
             </div>
 
@@ -33,7 +33,7 @@
                             <div class="flex-grow-1 overflow-hidden ms-3">
                                 <p class="text-uppercase fw-medium text-muted text-truncate mb-3">Staffs</p>
                                 <div class="d-flex align-items-center mb-3">
-                                    <h4 class="fs-4 flex-grow-1 mb-0"><span class="counter-value" data-target="{{ $department->staffs->count() }}">0</span></h4>
+                                    <h4 class="fs-4 flex-grow-1 mb-0"><span class="counter-value" data-target="{{$faculty->staffs? $faculty->staffs->count():0 }}">0</span></h4>
                                 </div>
                             </div>
                         </div>
@@ -51,9 +51,9 @@
                                 </span>
                             </div>
                             <div class="flex-grow-1 ms-3">
-                                <p class="text-uppercase fw-medium text-muted mb-3">Programmes</p>
+                                <p class="text-uppercase fw-medium text-muted mb-3">Departments</p>
                                 <div class="d-flex align-items-center mb-3">
-                                    <h4 class="fs-4 flex-grow-1 mb-0"><span class="counter-value" data-target="{{ $department->programmes->count() }}">0</span></h4>
+                                    <h4 class="fs-4 flex-grow-1 mb-0"><span class="counter-value" data-target="{{ $faculty->departments?$faculty->departments->count():0 }}">0</span></h4>
                                 </div>
                             </div>
                         </div>
@@ -63,10 +63,10 @@
         </div><!-- end row -->
 
         <div class="row">
-            <div class="col-xl-6">
+            <div class="col-xl-5">
                 <div class="card">
                     <div class="card-header border-0 align-items-center d-flex">
-                        <h4 class="card-title mb-0 flex-grow-1">Department Overview - {{ $department->name }}</h4>
+                        <h4 class="card-title mb-0 flex-grow-1">Faculty Overview - {{ $faculty->name }}</h4>
                     </div><!-- end card header -->
 
                     <div class="card-header p-0 border-0 bg-soft-light">
@@ -98,31 +98,32 @@
                         </div>
                     </div><!-- end card header -->
                     <div class="card-body">
-                        <?php echo $department->description?>
+                       
                     </div><!-- end card body -->
                 </div><!-- end card -->
             </div><!-- end col -->
-            <div class="col-xl-6">
+            <div class="col-xl-7">
                 <div class="card">
                     <div class="card-header border-0">
-                        <h4 class="card-title mb-0">Programmes</h4>
+                        <h4 class="card-title mb-0">Departments</h4>
                     </div><!-- end cardheader -->
                     <div class="card-body pt-0">
 
-                        <h6 class="text-uppercase fw-semibold mt-4 mb-3 text-muted">Available Programmes</h6>
-                        @foreach($department->programmes as $programme)
+                        <h6 class="text-uppercase fw-semibold mt-4 mb-3 text-muted">Available Departments</h6>
+                        @foreach($faculty->departments as $department)
                         <div class="mini-stats-wid d-flex align-items-center mt-3">
                             <div class="flex-shrink-0 avatar-sm">
                                 <span class="mini-stat-icon avatar-title rounded-circle text-primary bg-soft-primary fs-4">
-                                    <i class="mdi mdi-file-certificate"></i>
+                                    <i class="mdi mdi-certificate"></i>
                                 </span>
                             </div>
                             <div class="flex-grow-1 ms-3">
-                                <h6 class="mb-1">{{ $programme->name }}</h6>
-                                <p class="fs-12 mb-0 text-muted">{{ $programme->programmeCategory->category }} Programme</p>
+                                <h6 class="mb-1">{{ $department->name }}</h6>
                             </div>
                             <div class="flex-shrink-0">
-                                <a href="{{url('/admin/programme/'.$programme->slug)}}" class="btn btn-primary"><i class= "mdi mdi-folder-eye"></i> View</a>
+                                <div class="flex-shrink-0">
+                                    <a href="{{url('/staff/department/'.$department->slug)}}" class="btn btn-primary"> <i class= "mdi mdi-monitor-eye"></i> View</a>
+                                </div>
                             </div>
                         </div><!-- end -->
                         <br>
@@ -137,7 +138,6 @@
                                 </div>
                             </div>
                         </div><!-- end card header -->
-
                     </div><!-- end cardbody -->
                 </div><!-- end card -->
             </div>
@@ -146,13 +146,13 @@
     <div class="col-xxl-4">
         <div class="card">
             <div class="card-header border-0">
-                <h4 class="card-title mb-0">HOD's Profile</h4>
+                <h4 class="card-title mb-0">Dean's Profile</h4>
             </div><!-- end cardheader -->
-            @if(!empty($department->hod))
+            @if(!empty($faculty->dean))
             <div class="card-body pt-0">
-                <img class="card-img-top img-fluid" src="{{ env('APP_URL').'/'.$department->hod->image }}" alt="Card image cap">
+                <img class="card-img-top img-fluid" src="{{ $faculty->dean->image }}" alt="Card image cap">
                 <div class="card-body">
-                    <p class="card-text text-center"><strong>{{ $department->hod->lastname.' '. $department->hod->othernames }}</strong> <br> HOD, {{ $department->hod->lastname.' '. $department->hod->othernames }}</p>
+                    <p class="card-text text-center"><strong>{{ $faculty->dean->lastname.' '.$faculty->dean->othernames }}</strong> <br> Dean, {{ $faculty->name }}</p>
                 </div>
 
 
@@ -170,7 +170,6 @@
         </div><!-- end card -->
     </div><!-- end col -->
 </div><!-- end row -->
-
 
 <div class="row">
     <div class="col-lg-6">
@@ -190,7 +189,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($department->staffs as $staff)
+                            @foreach($faculty->staffs as $staff)
                             <tr>
                                 <td class="d-flex">
                                     <img src="{{ $staff->image }}" alt="" class="avatar-xs rounded-3 shadow me-2">
@@ -228,7 +227,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($department->students->where('level_id', 1) as $student)
+                            @foreach($faculty->students->where('level_id', 1) as $student)
                             <tr>
                                 <td class="d-flex">
                                     <img src="{{ env('APP_URL').'/'.$student->image }}" alt="" class="avatar-xs rounded-3 shadow me-2">

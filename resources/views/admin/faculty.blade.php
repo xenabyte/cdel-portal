@@ -150,7 +150,7 @@
             </div><!-- end cardheader -->
             @if(!empty($faculty->dean))
             <div class="card-body pt-0">
-                <img class="card-img-top img-fluid" src="{{ env('APP_URL').'/'.$faculty->dean->image }}" alt="Card image cap">
+                <img class="card-img-top img-fluid" src="{{ $faculty->dean->image }}" alt="Card image cap">
                 <div class="card-body">
                     <p class="card-text text-center"><strong>{{ $faculty->dean->lastname.' '.$faculty->dean->othernames }}</strong> <br> Dean, {{ $faculty->name }}</p>
                 </div>
@@ -172,7 +172,7 @@
 </div><!-- end row -->
 
 <div class="row">
-    <div class="col-xxl-4">
+    <div class="col-lg-6">
         <div class="card">
             <div class="card-header align-items-center d-flex">
                 <h4 class="card-title mb-0 flex-grow-1">Staff Members</h4>
@@ -180,8 +180,8 @@
 
             <div class="card-body">
 
-                <div class="table-responsive table-card">
-                    <table class="table table-borderless table-nowrap align-middle mb-0">
+                <div class="table-responsive p-3">
+                    <table id="buttons-datatables" class="table table-borderless table-nowrap align-middle mb-3">
                         <thead class="table-light text-muted">
                             <tr>
                                 <th scope="col">Staff</th>
@@ -211,15 +211,15 @@
         </div><!-- end card -->
     </div><!-- end col -->
 
-    <div class="col-xxl-4 col-lg-6">
+    <div class="col-lg-6">
         <div class="card card-height-100">
             <div class="card-header align-items-center d-flex">
                 <h4 class="card-title mb-0 flex-grow-1">Fresh Student ({{ $pageGlobalData->sessionSetting->academic_session }})</h4>
             </div><!-- end card header -->
 
             <div class="card-body">
-                <div class="table-responsive table-card">
-                    <table class="table table-borderless table-nowrap align-middle mb-0">
+                <div class="table-responsive p-3">
+                    <table id="buttons-datatables" class="table table-borderless table-nowrap align-middle mb-0">
                         <thead class="table-light text-muted">
                             <tr>
                                 <th scope="col">Student</th>
@@ -245,18 +245,6 @@
                         </tbody><!-- end tbody -->
                     </table><!-- end table -->
                 </div>
-
-            </div><!-- end cardbody -->
-        </div><!-- end card -->
-    </div><!-- end col -->
-
-    <div class="col-xxl-4 col-lg-6">
-        <div class="card card-height-100">
-            <div class="card-header align-items-center d-flex">
-                <h4 class="card-title mb-0 flex-grow-1">Projects Status</h4>
-            </div><!-- end card header -->
-
-            <div class="card-body">
 
             </div><!-- end cardbody -->
         </div><!-- end card -->

@@ -60,6 +60,7 @@ class StaffController extends Controller
     public function addRole(Request $request){
         $validator = Validator::make($request->all(), [
             'role' => 'required|string|unique:roles',
+            'access_level' => 'required',
         ]);
 
         if($validator->fails()) {
@@ -69,6 +70,7 @@ class StaffController extends Controller
 
         $newRole = [
             'role' => $request->role,
+            'access_level' => $request->access_level
         ];
         
         if(Role::create($newRole)){
@@ -96,6 +98,7 @@ class StaffController extends Controller
         }
 
         $role->role = $request->role;
+        $role->access_level = $request->access_level;
 
         if($role->save()){
             alert()->success('Changes Saved', '')->persistent('Close');
@@ -281,6 +284,7 @@ class StaffController extends Controller
         alert()->error('Oops!', 'Something went wrong')->persistent('Close');
         return redirect()->back(); 
     }
+    
     public function assignSubDeanToFaculty(Request $request){
         $validator = Validator::make($request->all(), [
             'staff_id' => 'required',

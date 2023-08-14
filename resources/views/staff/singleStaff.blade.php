@@ -9,8 +9,18 @@
     $staffHRRole = false;
     $staffLevelAdvicerRole = false;
     $staffExamOfficerRole = false;
-    
-    
+
+    // staffAccessLevel
+    $staffAccessLevel = null;
+
+    foreach ($staff->staffRoles as $staffRole) {
+        $accessLevel = $staffRole['role']['access_level'];
+
+        if ($staffAccessLevel == null || $accessLevel < $minimumAccessLevel) {
+            $staffAccessLevel = $accessLevel;
+        }
+    }
+        
     foreach ($staff->staffRoles as $staffRole) {
         if (strtolower($staffRole->role->role) == 'dean') {
             $staffDeanRole = true;
@@ -58,34 +68,43 @@
                                     <div>
                                         <h4 class="fw-bold">{{ $singleStaff->title.' '.$singleStaff->lastname .' '. $singleStaff->othernames }}</h4>
                                         <div class="hstack gap-3 flex-wrap">
-                                            <div><i class="ri-building-line align-bottom me-1"></i> {{ !empty($singleStaff->staffRoles->first()) ? $singleStaff->staffRoles->first()->role->role : $singleStaff->current_position }}</div>
+                                            <div><i class="ri-building-line align-bottom me-1"></i> {{  $singleStaff->current_position }}</div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
+                        @if(!empty($staffAccessLevel) && $staffAccessLevel < 6)
                         <div class="col-md-auto">
                             <div class="hstack gap-1 flex-wrap">
                                 <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#assignRole">Assign Role</button>
-                                @if(empty($singleStaff->deleted_at))
-                                <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#disableStaff">Disable Staff</button>
-                                @else
-                                <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#enableStaff">Enable Staff</button>
+                                @if(!empty($staffAccessLevel) && $staffAccessLevel < 3)
+                                    @if(empty($singleStaff->deleted_at))
+                                    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#disableStaff">Disable Staff</button>
+                                    @else
+                                    <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#enableStaff">Enable Staff</button>
+                                    @endif
                                 @endif
 
-                                @if(!empty($singleStaff->staffRoles->first()) && strtolower($singleStaff->staffRoles->first()->role->role) == 'dean' && ($singleStaff->id != $singleStaff->faculty->dean_id))
-                                <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#assignDeanToFaculty"> Assign Dean To Faculty</button>
+                                @if(!empty($singleStaff->faculty))
+                                    @if(!empty($staffAccessLevel) && $staffAccessLevel < 2 && ($singleStaff->id != $singleStaff->faculty->dean_id))
+                                        <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#assignDeanToFaculty"> Assign Dean To Faculty</button>
+                                    @endif
                                 @endif
-                                @if(!empty($singleStaff->staffRoles->first()) && strtolower($singleStaff->staffRoles->first()->role->role) == 'sub-dean' && ($singleStaff->id != $singleStaff->faculty->sub_dean_id))
-                                <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#assignSubDeanToFaculty"> Assign Sub Dean To Faculty</button>
+                                @if(!empty($singleStaff->faculty))
+                                    @if(!empty($staffAccessLevel) && $staffAccessLevel < 3 && ($singleStaff->id != $singleStaff->faculty->sub_dean_id) && ($singleStaff->id != $singleStaff->faculty->dean_id))
+                                    <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#assignSubDeanToFaculty"> Assign Sub Dean To Faculty</button>
+                                    @endif
                                 @endif
-                                @if(!empty($singleStaff->staffRoles->first()) && strtolower($singleStaff->staffRoles->first()->role->role) == 'hod')
-                                <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#assignHodToDepartment"> Assign HOD To Department</button>
+                                @if(!empty($singleStaff->department))
+                                    @if(!empty($staffAccessLevel) &&  $staffAccessLevel < 4 && ($singleStaff->id != $singleStaff->department->hod_id))
+                                    <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#assignHodToDepartment"> Assign HOD To Department</button>
+                                    @endif
                                 @endif
 
-                                
                             </div>
                         </div>
+                        @endif
                     </div>
 
                     <ul class="nav nav-tabs-custom border-bottom-0" role="tablist">
@@ -240,9 +259,10 @@
 </div>
 <!-- end row -->
 
+@if(!empty($staffAccessLevel))
 <div id="assignRole" class="modal fade" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" style="display: none;">
     <!-- Fullscreen Modals -->
-    <div class="modal-dialog modal-md">
+    <div class="modal-dialog modal-md modal-dialog-centered">
         <div class="modal-content border-0 overflow-hidden">
             <div class="modal-header p-3">
                 <h4 class="card-title mb-0">Add Staff Role</h4>
@@ -259,7 +279,9 @@
                         <select class="form-select" aria-label="role" name="role_id" required>
                             <option selected value= "">Select Role </option>
                             @foreach($roles as $role)
-                            <option value="{{ $role->id }}">{{ $role->role }}</option>
+                                @if($staffAccessLevel < $role->access_level)
+                                    <option value="{{ $role->id }}">{{ $role->role }}</option>
+                                @endif
                             @endforeach
                         </select>
                     </div>
@@ -273,107 +295,114 @@
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
-
-@if(!empty($singleStaff->staffRoles->first()) && strtolower($singleStaff->staffRoles->first()->role->role) == 'dean' && ($singleStaff->id != $singleStaff->faculty->dean_id))
-    <div id="assignDeanToFaculty" class="modal fade" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" style="display: none;">
-        <!-- Fullscreen Modals -->
-        <div class="modal-dialog modal-md">
-            <div class="modal-content border-0 overflow-hidden">
-                <div class="modal-header p-3">
-                    <h4 class="card-title mb-0">Assign Dean To Faculty</h4>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <hr>
-                <div class="modal-body">
-                    <form action="{{ url('/admin/assignDeanToFaculty') }}" method="post" enctype="multipart/form-data">
-                        @csrf
-                        <input type="hidden" name="staff_id" value="{{ $singleStaff->id }}">
-
-                        <div class="mb-3">
-                            <label for="role" class="form-label">Select Faculty</label>
-                            <select class="form-select" aria-label="role" name="faculty_id" required>
-                                <option selected value= "">Select Faculty </option>
-                                <option value="{{ $singleStaff->faculty->id }}">{{ $singleStaff->faculty->name }}</option>
-                            </select>
-                        </div>
-
-                        <hr>
-                        <div class="text-end">
-                            <button type="submit" class="btn btn-primary">Assign Dean To Faculty</button>
-                        </div>
-                    </form>
-                </div>
-            </div><!-- /.modal-content -->
-        </div><!-- /.modal-dialog -->
-    </div><!-- /.modal -->
 @endif
 
-@if(!empty($singleStaff->staffRoles->first()) && strtolower($singleStaff->staffRoles->first()->role->role) == 'sub-dean' && ($singleStaff->id != $singleStaff->faculty->sub_dean_id))
-    <div id="assignSubDeanToFaculty" class="modal fade" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" style="display: none;">
-        <!-- Fullscreen Modals -->
-        <div class="modal-dialog modal-md">
-            <div class="modal-content border-0 overflow-hidden">
-                <div class="modal-header p-3">
-                    <h4 class="card-title mb-0">Assign Dean To Faculty</h4>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <hr>
-                <div class="modal-body">
-                    <form action="{{ url('/admin/assignSubDeanToFaculty') }}" method="post" enctype="multipart/form-data">
-                        @csrf
-                        <input type="hidden" name="staff_id" value="{{ $singleStaff->id }}">
-
-                        <div class="mb-3">
-                            <label for="role" class="form-label">Select Faculty</label>
-                            <select class="form-select" aria-label="role" name="faculty_id" required>
-                                <option selected value= "">Select Faculty </option>
-                                <option value="{{ $singleStaff->faculty->id }}">{{ $singleStaff->faculty->name }}</option>
-                            </select>
-                        </div>
-
-                        <hr>
-                        <div class="text-end">
-                            <button type="submit" class="btn btn-primary">Assign Dean To Faculty</button>
-                        </div>
-                    </form>
-                </div>
-            </div><!-- /.modal-content -->
-        </div><!-- /.modal-dialog -->
-    </div><!-- /.modal -->
-@endif
-
-@if(!empty($singleStaff->staffRoles->first()) && strtolower($singleStaff->staffRoles->first()->role->role) == 'hod')
-<div id="assignHodToDepartment" class="modal fade" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" style="display: none;">
-    <!-- Fullscreen Modals -->
-    <div class="modal-dialog modal-md">
-        <div class="modal-content border-0 overflow-hidden">
-            <div class="modal-header p-3">
-                <h4 class="card-title mb-0">Assign Dean To Faculty</h4>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <hr>
-            <div class="modal-body">
-                <form action="{{ url('/admin/assignHodToDepartment') }}" method="post" enctype="multipart/form-data">
-                    @csrf
-                    <input type="hidden" name="staff_id" value="{{ $singleStaff->id }}">
-
-                    <div class="mb-3">
-                        <label for="role" class="form-label">Select Department</label>
-                        <select class="form-select" aria-label="role" name="department_id" required>
-                            <option selected value= "">Select Department </option>
-                            @foreach($departments as $department)<option value="{{ $department->id }}">{{ $department->name }}</option>@endforeach
-                        </select>
+@if(!empty($singleStaff->faculty))
+    @if(!empty($staffAccessLevel) && $staffAccessLevel < 2 && ($singleStaff->id != $singleStaff->faculty->dean_id))    
+        <div id="assignDeanToFaculty" class="modal fade" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" style="display: none;">
+            <!-- Fullscreen Modals -->
+            <div class="modal-dialog modal-md modal-dialog-centered">
+                <div class="modal-content border-0 overflow-hidden">
+                    <div class="modal-header p-3">
+                        <h4 class="card-title mb-0">Assign Dean To Faculty</h4>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-
                     <hr>
-                    <div class="text-end">
-                        <button type="submit" class="btn btn-primary">Assign Dean To Faculty</button>
+                    <div class="modal-body">
+                        <form action="{{ url('/admin/assignDeanToFaculty') }}" method="post" enctype="multipart/form-data">
+                            @csrf
+                            <input type="hidden" name="staff_id" value="{{ $singleStaff->id }}">
+
+                            <div class="mb-3">
+                                <label for="role" class="form-label">Select Faculty</label>
+                                <select class="form-select" aria-label="role" name="faculty_id" required>
+                                    <option selected value= "">Select Faculty </option>
+                                    <option value="{{ $singleStaff->faculty->id }}">{{ $singleStaff->faculty->name }}</option>
+                                </select>
+                            </div>
+
+                            <hr>
+                            <div class="text-end">
+                                <button type="submit" class="btn btn-primary">Assign Dean To Faculty</button>
+                            </div>
+                        </form>
                     </div>
-                </form>
-            </div>
-        </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
+    @endif
+@endif
+
+@if(!empty($singleStaff->faculty))
+    @if(!empty($staffAccessLevel) && $staffAccessLevel < 3 && ($singleStaff->id != $singleStaff->faculty->sub_dean_id)) 
+        <div id="assignSubDeanToFaculty" class="modal fade" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" style="display: none;">
+            <!-- Fullscreen Modals -->
+            <div class="modal-dialog modal-md modal-dialog-centered">
+                <div class="modal-content border-0 overflow-hidden">
+                    <div class="modal-header p-3">
+                        <h4 class="card-title mb-0">Assign Sub Dean To Faculty</h4>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <hr>
+                    <div class="modal-body">
+                        <form action="{{ url('/admin/assignSubDeanToFaculty') }}" method="post" enctype="multipart/form-data">
+                            @csrf
+                            <input type="hidden" name="staff_id" value="{{ $singleStaff->id }}">
+
+                            <div class="mb-3">
+                                <label for="role" class="form-label">Select Faculty</label>
+                                <select class="form-select" aria-label="role" name="faculty_id" required>
+                                    <option selected value= "">Select Faculty </option>
+                                    <option value="{{ $singleStaff->faculty->id }}">{{ $singleStaff->faculty->name }}</option>
+                                </select>
+                            </div>
+
+                            <hr>
+                            <div class="text-end">
+                                <button type="submit" class="btn btn-primary">Assign Dean To Faculty</button>
+                            </div>
+                        </form>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
+    @endif
+@endif
+
+@if(!empty($singleStaff->department))
+    @if(!empty($staffAccessLevel) && $staffAccessLevel < 4 && ($singleStaff->id != $singleStaff->department->hod_id)) 
+        <div id="assignHodToDepartment" class="modal fade" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" style="display: none;">
+            <!-- Fullscreen Modals -->
+            <div class="modal-dialog modal-md modal-dialog-centered">
+                <div class="modal-content border-0 overflow-hidden">
+                    <div class="modal-header p-3">
+                        <h4 class="card-title mb-0">Assign Dean To Faculty</h4>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <hr>
+                    <div class="modal-body">
+                        <form action="{{ url('/admin/assignHodToDepartment') }}" method="post" enctype="multipart/form-data">
+                            @csrf
+                            <input type="hidden" name="staff_id" value="{{ $singleStaff->id }}">
+
+                            <div class="mb-3">
+                                <label for="role" class="form-label">Select Department</label>
+                                <select class="form-select" aria-label="role" name="department_id" required>
+                                    <option selected value= "">Select Department </option>
+                                    @foreach($departments as $department)<option value="{{ $department->id }}">{{ $department->name }}</option>@endforeach
+                                </select>
+                            </div>
+
+                            <hr>
+                            <div class="text-end">
+                                <button type="submit" class="btn btn-primary">Assign Dean To Faculty</button>
+                            </div>
+                        </form>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
+    @endif
 @endif
 
 <div id="disableStaff" class="modal fade" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" style="display: none;">
