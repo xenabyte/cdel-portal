@@ -248,21 +248,23 @@ class Controller extends BaseController
 
         $schoolPaymentId = $schoolPayment->id;
         $schoolAmount = $schoolPayment->structures->sum('amount');
-        $schoolPaymentTransaction = Transaction::where('student_id', $studentId)->where('payment_id', $schoolPaymentId)->where('session', $academicSession)->where('status', 1)->first();
+        $schoolPaymentTransaction = Transaction::where('student_id', $studentId)->where('payment_id', $schoolPaymentId)->where('session', $academicSession)->where('status', 1)->get();
+
+        $studentPendingTransactions = Transaction::with('payment')->where('student_id', $studentId)->where('payment_id', $schoolPaymentId)->where('status', null)->get();
 
         $passTuitionPayment = false;
         $fullTuitionPayment = false;
         $passEightyTuition = false;
-        if($schoolPaymentTransaction && $schoolPaymentTransaction->amount_payed > $schoolAmount * 0.4){
+        if($schoolPaymentTransaction && $schoolPaymentTransaction->sum('amount_payed') > $schoolAmount * 0.4){
             $passTuitionPayment = true;
         }
 
-        if($schoolPaymentTransaction && $schoolPaymentTransaction->amount_payed > $schoolAmount * 0.8){
+        if($schoolPaymentTransaction && $schoolPaymentTransaction->sum('amount_payed') > $schoolAmount * 0.8){
             $passTuitionPayment = true;
             $passEightyTuition = true;
         }
 
-        if($schoolPaymentTransaction && $schoolPaymentTransaction->amount_payed >= $schoolAmount){
+        if($schoolPaymentTransaction && $schoolPaymentTransaction->sum('amount_payed') >= $schoolAmount){
             $passTuitionPayment = true;
             $passEightyTuition = true;
             $fullTuitionPayment = true;
@@ -274,6 +276,7 @@ class Controller extends BaseController
         $data->fullTuitionPayment = $fullTuitionPayment;
         $data->schoolPaymentTransaction = $schoolPaymentTransaction;
         $data->schoolPayment = $schoolPayment;
+        $data->studentPendingTransactions = $studentPendingTransactions;
 
         return $data;
     }

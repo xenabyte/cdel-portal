@@ -324,6 +324,8 @@ class PaymentController extends Controller
         $student = Student::with('programme', 'applicant')->where('id', $request->student_id)->first();
         $payment = Payment::find($request->payment_id);
         $session = $request->academic_session;
+        $studentId = $request->student_id;
+
 
         if($payment->type == 'Application Fee'){
             $validator = Validator::make($request->all(), [
@@ -358,9 +360,21 @@ class PaymentController extends Controller
             $amount = $request->amountGeneral * 100;
         }
 
+        if($payment->type != 'General Fee'){
+            $totalPayment = $payment->structures-sum('amount');
+            $paymentTransactions = Transaction::where('student_id', $studentId)
+            ->where('payment_id', $payment->id)
+            ->where('session', $session)
+            ->where('status', 1)
+            ->get();
 
-        $transactions = Transaction::where('student_id', $student->id)->get();
-        $programme = $student->programme;
+            $totatAmountPaid = $paymentTransactions->sum('amount_payed');
+            if(($amount+$totatAmountPaid) > $totalPayment){
+                alert()->error('Oops!!!', 'Amount to be paid seems to be an overpayment, student is not charged')->persistent('Close');
+                return redirect()->back();
+            }
+
+        }
 
         $reference = $this->generateRandomString(10);
         

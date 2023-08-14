@@ -47,12 +47,13 @@ class StudentController extends Controller
             ]);
         }
 
-        if(!$paymentCheck->schoolPaymentTransaction){
+        if(!$paymentCheck->passTuitionPayment){
             return view('student.schoolFee', [
                 'payment' => $paymentCheck->schoolPayment,
                 'passTuition' => $paymentCheck->passTuitionPayment,
                 'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
-                'passEightyTuition' => $paymentCheck->passEightyTuition
+                'passEightyTuition' => $paymentCheck->passEightyTuition,
+                'studentPendingTransactions' => $paymentCheck->studentPendingTransactions
             ]);
         }
 
@@ -126,12 +127,13 @@ class StudentController extends Controller
         $transactions = Transaction::where('student_id', $studentId)->orderBy('id', 'DESC')->get();
 
         $paymentCheck = $this->checkSchoolFees($student, $academicSession, $levelId);
-        if(!$paymentCheck->schoolPaymentTransaction){
+        if(!$paymentCheck->passTuitionPayment){
             return view('student.schoolFee', [
                 'payment' => $paymentCheck->schoolPayment,
                 'passTuition' => $paymentCheck->passTuitionPayment,
                 'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
-                'passEightyTuition' => $paymentCheck->passEightyTuition
+                'passEightyTuition' => $paymentCheck->passEightyTuition,
+                'studentPendingTransactions' => $paymentCheck->studentPendingTransactions
             ]);
         }
         
@@ -155,12 +157,13 @@ class StudentController extends Controller
 
         $mentorId  = $student->mentor_id;
         $paymentCheck = $this->checkSchoolFees($student, $academicSession, $levelId);
-        if(!$paymentCheck->schoolPaymentTransaction){
+        if(!$paymentCheck->passTuitionPayment){
             return view('student.schoolFee', [
                 'payment' => $paymentCheck->schoolPayment,
                 'passTuition' => $paymentCheck->passTuitionPayment,
                 'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
-                'passEightyTuition' => $paymentCheck->passEightyTuition
+                'passEightyTuition' => $paymentCheck->passEightyTuition,
+                'studentPendingTransactions' => $paymentCheck->studentPendingTransactions
             ]);
         }
 

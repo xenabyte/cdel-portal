@@ -526,6 +526,27 @@ class AcademicController extends Controller
         $students = $programme->students;
         $promotionOffset = 1;
         foreach ($students as $student) {
+
+            $checkStudentPayment = $this->checkSchoolFees($student, $student->academic_session, $student->level_id);
+
+            if(!$checkStudentPayment->fullTuitionPayment){
+                $amountPaid = $checkStudentPayment->schoolPaymentTransaction->sum('amount_payed');
+                $amountToPay = $checkStudentPayment->schoolPayment->structures->sum('amount');
+                $balance = $amountToPay - $amountPaid;
+
+                $reference = $this->generateRandomString(10);
+                //Create new transaction
+                Transaction::create([
+                    'student_id' => $student->id,
+                    'payment_id' => $schoolPayment->id,
+                    'amount_payed' => $balance,
+                    'payment_method' => 'Manual/BankTransfer',
+                    'reference' => $reference,
+                    'session' => $session,
+                    'status' => null
+                ]);
+            }
+
             $student->update([
                 'level_id' => $student->level_id + $promotionOffset,
                 'academic_session' => $academicSession,
