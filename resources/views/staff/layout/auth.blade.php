@@ -9,7 +9,7 @@
     <meta content="{{ env('APP_NAME')}} Dashboard" name="description" />
     <meta content="Aremu Adeola Abidemi(Codex)" name="author" />
     <!-- App favicon -->
-    <link rel="shortcut icon" href="{{asset('assets/images/favicon.ico')}}">
+    <link rel="shortcut icon" href="{{asset('favicon.png')}}">
 
     <!-- Layout config Js -->
     <script src="{{asset('assets/js/layout.js')}}"></script>

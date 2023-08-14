@@ -250,7 +250,7 @@ class Controller extends BaseController
         $schoolAmount = $schoolPayment->structures->sum('amount');
         $schoolPaymentTransaction = Transaction::where('student_id', $studentId)->where('payment_id', $schoolPaymentId)->where('session', $academicSession)->where('status', 1)->get();
 
-        $studentPendingTransactions = Transaction::with('payment')->where('student_id', $studentId)->where('payment_id', $schoolPaymentId)->where('status', null)->get();
+        $studentPendingTransactions = Transaction::with('paymentType')->where('student_id', $studentId)->where('payment_id', $schoolPaymentId)->where('status', null)->get();
 
         $passTuitionPayment = false;
         $fullTuitionPayment = false;

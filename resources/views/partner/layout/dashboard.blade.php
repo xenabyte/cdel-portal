@@ -14,7 +14,7 @@
     <meta content="{{ env('APP_NAME') }} Dashboard" name="description" />
     <meta content="Oladipo Damilare(KoderiaNG)" name="author" />
     <!-- App favicon -->
-    <link rel="shortcut icon" href="{{asset('assets/images/favicon.ico')}}">
+    <link rel="shortcut icon" href="{{asset('favicon.png')}}">
 
     <!--datatable css-->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css" />
