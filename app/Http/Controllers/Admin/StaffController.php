@@ -24,6 +24,7 @@ use App\Models\Role;
 use App\Models\StaffRole;
 use App\Models\Faculty;
 use App\Models\Department;
+use App\Models\LevelAdviser;
 
 use App\Mail\NotificationMail;
 
@@ -284,7 +285,7 @@ class StaffController extends Controller
         alert()->error('Oops!', 'Something went wrong')->persistent('Close');
         return redirect()->back(); 
     }
-    
+
     public function assignSubDeanToFaculty(Request $request){
         $validator = Validator::make($request->all(), [
             'staff_id' => 'required',
@@ -342,6 +343,141 @@ class StaffController extends Controller
 
         alert()->error('Oops!', 'Something went wrong')->persistent('Close');
         return redirect()->back(); 
+    }
+
+    public function addAdviser(Request $request){
+        $validator = Validator::make($request->all(), [
+            'staff_id' => 'required',
+            'programme_id' => 'required',
+        ]);
+
+        if($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+        if(!$staff = Staff::find($request->staff_id)){
+            alert()->error('Oops', 'Invalid Staff ')->persistent('Close');
+            return redirect()->back();
+        }
+
+        if(!$programme = Programme::find($request->programme_id)){
+            alert()->error('Oops', 'Invalid Programme ')->persistent('Close');
+            return redirect()->back();
+        }
+
+        $levelAdviser = LevelAdviser::where('programme_id', $request->programme_id)->where('level_id', $request->level_id)->first();
+
+        if ($levelAdviser) {
+            $levelAdviser->update([
+                $levelAdviser->staff_id => $staff->id
+            ]);
+        } else {
+            // Level Adviser does not exist, create a new one
+            LevelAdviser::create([
+                'staff_id' => $staff->id,
+                'programme_id' => $programme->id,
+                'level_id' => $request->level_id
+            ]);
+
+            if(!$staffRole = StaffRole::where('staff_id', $staff->id)->where('role_id', 1)->first()) {
+                StaffRole::create([
+                    'role_id' => 1, //level adviser role id
+                    'staff_id' => $request->staff_id,
+                ]);
+            }
+    
+            $staffDescription = "Congratulations, you have been assigned as Level Adviser ";
+            Notification::create([
+                'staff_id' =>  $request->staff_id,
+                'description' => $staffDescription,
+                'status' => 0
+            ]);
+        }
+
+        alert()->success('Level advicer assigned to programme and level', '')->persistent('Close');
+        return redirect()->back();
+    }
+
+    public function addExamOfficer(Request $request){
+        $validator = Validator::make($request->all(), [
+            'staff_id' => 'required',
+            'department_id' => 'required',
+        ]);
+
+        if($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+        if(!$staff = Staff::find($request->staff_id)){
+            alert()->error('Oops', 'Invalid Staff ')->persistent('Close');
+            return redirect()->back();
+        }
+
+        if(!$department = Department::find($request->department_id)){
+            alert()->error('Oops', 'Invalid Department ')->persistent('Close');
+            return redirect()->back();
+        }
+        $department->exam_officer_id = $staff->id;
+        if($department->save()){
+            if(!$staffRole = StaffRole::where('staff_id', $staff->id)->where('role_id', 1)->first()) {
+                StaffRole::create([
+                    'role_id' => 11, //Exam Officer role id
+                    'staff_id' => $request->staff_id,
+                ]);
+            }
+    
+            $staffDescription = "Congratulations, you have been assigned as Level Adviser ";
+            Notification::create([
+                'staff_id' =>  $request->staff_id,
+                'description' => $staffDescription,
+                'status' => 0
+            ]);
+
+            alert()->success('Exam officer assigned to department', '')->persistent('Close');
+            return redirect()->back();
+        }
+
+        alert()->error('Oops!', 'Something went wrong')->persistent('Close');
+        return redirect()->back(); 
+    }
+
+    public function getStudents(Request $request){
+        $validator = Validator::make($request->all(), [
+            'programme_id' => 'required',
+            'level_id' => 'required',
+            'department_id' => 'required',
+        ]);
+
+        if($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+
+        if(!$department = Department::find($request->department_id)){
+            alert()->error('Oops', 'Invalid Department ')->persistent('Close');
+            return redirect()->back();
+        }
+
+        $students = Student::
+            with(['applicant', 'programme', 'transactions', 'courseRegistrationDocument', 'registeredCourses', 'partner', 'academicLevel', 'department', 'faculty'])
+            ->where([
+                'is_active' => true,
+                'is_passed_out' => false,
+                'is_rusticated' => false,
+                'level_id' => $request->level_id,
+                'programme_id' => $request->programme_id,
+                'department_id' => $request->department_id,
+            ])
+            ->get();
+
+        $department = Department::with('programmes', 'programmes.students', 'programmes.academicAdvisers', 'programmes.academicAdvisers.staff', 'programmes.academicAdvisers.level')->where('slug', $department->slug)->first();
+        $levels = AcademicLevel::all();
+
+        return view('admin.department', [
+            'department' => $department,
+            'levels' => $levels,
+            'students' => $students,
+        ]);
     }
     
 }

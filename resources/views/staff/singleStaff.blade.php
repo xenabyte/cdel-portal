@@ -7,7 +7,7 @@
     $staffVCRole = false;
     $staffRegistrarRole = false;
     $staffHRRole = false;
-    $staffLevelAdvicerRole = false;
+    $staffLevelAdviserRole = false;
     $staffExamOfficerRole = false;
 
     // staffAccessLevel
@@ -41,7 +41,7 @@
             $staffHRRole = true;
         }
         if (strtolower($staffRole->role->role) == 'level adviser') {
-            $staffLevelAdvicerRole = true;
+            $staffLevelAdviserRole = true;
         }
         if (strtolower($staffRole->role->role) == 'exam officer') {
             $staffExamOfficerRole = true;
@@ -229,7 +229,7 @@
                                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                 </div>
                                     
-                                                <div class="modal-body">
+                                                <div class="modal-body border-top border-top-dashed">
                                                     <h4 class="mb-3 mt-4">Are you sure you want to delete <br/> {{ $singleStaffRole->role->role }} role from {{ $singleStaff->title.' '.$singleStaff->lastname.' '. $singleStaff->othernames}}?</h4>
                                                     <form action="{{ url('/admin/unAssignRole') }}" method="POST">
                                                         @csrf
@@ -269,7 +269,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <hr>
-            <div class="modal-body">
+            <div class="modal-body border-top border-top-dashed">
                 <form action="{{ url('/admin/assignRole') }}" method="post" enctype="multipart/form-data">
                     @csrf
                     <input type="hidden" name="staff_id" value="{{ $singleStaff->id }}">
@@ -286,8 +286,7 @@
                         </select>
                     </div>
 
-                    <hr>
-                    <div class="text-end">
+                    <div class="text-end border-top border-top-dashed p-3">
                         <button type="submit" class="btn btn-primary">Assign Role</button>
                     </div>
                 </form>
@@ -308,7 +307,7 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <hr>
-                    <div class="modal-body">
+                    <div class="modal-body border-top border-top-dashed">
                         <form action="{{ url('/admin/assignDeanToFaculty') }}" method="post" enctype="multipart/form-data">
                             @csrf
                             <input type="hidden" name="staff_id" value="{{ $singleStaff->id }}">
@@ -321,8 +320,7 @@
                                 </select>
                             </div>
 
-                            <hr>
-                            <div class="text-end">
+                            <div class="text-end border-top border-top-dashed p-3">
                                 <button type="submit" class="btn btn-primary">Assign Dean To Faculty</button>
                             </div>
                         </form>
@@ -344,7 +342,7 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <hr>
-                    <div class="modal-body">
+                    <div class="modal-body border-top border-top-dashed">
                         <form action="{{ url('/admin/assignSubDeanToFaculty') }}" method="post" enctype="multipart/form-data">
                             @csrf
                             <input type="hidden" name="staff_id" value="{{ $singleStaff->id }}">
@@ -357,8 +355,7 @@
                                 </select>
                             </div>
 
-                            <hr>
-                            <div class="text-end">
+                            <div class="text-end border-top border-top-dashed p-3">
                                 <button type="submit" class="btn btn-primary">Assign Dean To Faculty</button>
                             </div>
                         </form>
@@ -380,7 +377,7 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <hr>
-                    <div class="modal-body">
+                    <div class="modal-body border-top border-top-dashed">
                         <form action="{{ url('/admin/assignHodToDepartment') }}" method="post" enctype="multipart/form-data">
                             @csrf
                             <input type="hidden" name="staff_id" value="{{ $singleStaff->id }}">
@@ -393,8 +390,7 @@
                                 </select>
                             </div>
 
-                            <hr>
-                            <div class="text-end">
+                            <div class="text-end border-top border-top-dashed p-3">
                                 <button type="submit" class="btn btn-primary">Assign Dean To Faculty</button>
                             </div>
                         </form>

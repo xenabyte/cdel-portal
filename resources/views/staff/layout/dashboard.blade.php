@@ -9,7 +9,7 @@
     $staffVCRole = false;
     $staffRegistrarRole = false;
     $staffHRRole = false;
-    $staffLevelAdvicerRole = false;
+    $staffLevelAdviserRole = false;
     $staffExamOfficerRole = false;
     
     
@@ -33,7 +33,7 @@
             $staffHRRole = true;
         }
         if (strtolower($staffRole->role->role) == 'level adviser') {
-            $staffLevelAdvicerRole = true;
+            $staffLevelAdviserRole = true;
         }
         if (strtolower($staffRole->role->role) == 'exam officer') {
             $staffExamOfficerRole = true;

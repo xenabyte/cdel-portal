@@ -77,7 +77,7 @@
                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                     </div>
 
-                                    <div class="modal-body">
+                                    <div class="modal-body border-top border-top-dashed">
                                         <div class="mt-2 text-center">
                                         <lord-icon src="https://cdn.lordicon.com/ggihhudh.json" trigger="hover" style="width:150px;height:150px">
                                         </lord-icon>
@@ -153,7 +153,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
 
-            <div class="modal-body">
+            <div class="modal-body border-top border-top-dashed">
                 <form action="{{ url('/student/makePayment') }}" method="post" enctype="multipart/form-data">
                     @csrf
                     <input type="hidden" name='programme_id' value="{{ $student->programme->id }}">

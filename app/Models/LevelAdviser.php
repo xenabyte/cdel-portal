@@ -15,4 +15,34 @@ class LevelAdviser extends Model
         'level_id',
         'staff_id'
     ];
+
+    /**
+     * Get the staff that owns the LevelAdviser
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function staff()
+    {
+        return $this->belongsTo(Staff::class, 'staff_id');
+    }
+
+    /**
+     * Get the level that owns the LevelAdviser
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function level()
+    {
+        return $this->belongsTo(AcademicLevel::class, 'level_id');
+    }
+
+    /**
+     * Get the programme that owns the LevelAdviser
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function programme()
+    {
+        return $this->belongsTo(Programme::class, 'programme_id');
+    }
 }

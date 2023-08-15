@@ -75,7 +75,7 @@
                         <div class="text-center">
                             <div class="row justify-content-center">
                                 <div class="col-lg-9">
-                                    <h4 class="mt-4 fw-semibold">Examination Card</h4>
+                                    <h4 class="mt-4 fw-semibold">Examination Docket</h4>
                                     <p class="text-muted mt-3"></p>
                                     <div class="mt-4">
                                         Please be advised that generation of examination card(docket) has not yet begun. We will notify you as soon as the registration period becomes available.
@@ -152,7 +152,7 @@
                                                 <div class="flex-shrink-0 text-end ">
                                                     <form action="{{ url('/student/genExamDocket') }}" method="POST">
                                                         @csrf
-                                                        <button type="submit" class="btn btn-primary">Generate Examination Card</button>
+                                                        <button type="submit" class="btn btn-primary">Generate Examination Docket</button>
                                                     </form>
                                                 </div>
                                             </div><!-- end card header -->

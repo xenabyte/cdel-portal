@@ -117,10 +117,10 @@ $qrcode = 'https://chart.googleapis.com/chart?chs=300x300&cht=qr&chl='.env('APP_
     <table style="width: 100%;">
         <tbody>
             <tr>
-                <td style="width: 50%; border: none;">
+                <td style="width: 70%; border: none;">
                 </td>
-                <td style="width: 50%; border: none;">
-                    <img src="{{ $qrcode }}" style="float: right; border: 1px solid black;">
+                <td style="width: 30%; border: none;">
+                    <img src="{{ $qrcode }}" width="40%"  style="float: right; border: 1px solid black;">
                 </td>
             </tr>
         </tbody>

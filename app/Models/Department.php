@@ -14,6 +14,7 @@ class Department extends Model
         'name',
         'faculty_id',
         'hod_id',
+        'exam_officer_id',
         'web_id',
         'slug'
     ];
@@ -55,5 +56,25 @@ class Department extends Model
      */
     public function staffs(){
         return $this->hasMany(Staff::class, 'department_id'); 
+    }
+
+    /**
+     * Get the hod that owns the Department
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function hod()
+    {
+        return $this->belongsTo(Staff::class, 'hod_id');
+    }
+
+    /**
+     * Get the examOfficers that owns the Department
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function examOfficer()
+    {
+        return $this->belongsTo(Staff::class, 'exam_officer_id');
     }
 }

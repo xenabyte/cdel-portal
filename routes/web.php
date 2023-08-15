@@ -127,8 +127,6 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'admin'],
   Route::post('assignDeanToFaculty', [App\Http\Controllers\Admin\StaffController::class, 'assignDeanToFaculty'])->name('assignDeanToFaculty')->middleware(['auth:admin']);
   Route::post('assignHodToDepartment', [App\Http\Controllers\Admin\StaffController::class, 'assignHodToDepartment'])->name('assignHodToDepartment')->middleware(['auth:admin']);
   Route::post('assignSubDeanToFaculty', [App\Http\Controllers\Admin\StaffController::class, 'assignSubDeanToFaculty'])->name('assignSubDeanToFaculty')->middleware(['auth:admin']);
-  
-  
 
   Route::get('/examDocketMgt', [App\Http\Controllers\Admin\AcademicController::class, 'examDocketMgt'])->name('examDocketMgt')->middleware(['auth:admin']);
   Route::post('setExamSetting', [App\Http\Controllers\Admin\AcademicController::class, 'setExamSetting'])->name('setExamSetting')->middleware(['auth:admin']);
@@ -142,7 +140,10 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'admin'],
   Route::post('getStudent', [App\Http\Controllers\Admin\AcademicController::class, 'getStudent'])->name('getStudent')->middleware(['auth:admin']);
   Route::post('makeDemoteStudent', [App\Http\Controllers\Admin\AcademicController::class, 'makeDemoteStudent'])->name('makeDemoteStudent')->middleware(['auth:admin']);
 
-  
+  Route::post('/addAdviser', [App\Http\Controllers\Admin\StaffController::class, 'addAdviser'])->name('addAdviser')->middleware(['auth:admin']);
+  Route::post('/addExamOfficer', [App\Http\Controllers\Admin\StaffController::class, 'addExamOfficer'])->name('addExamOfficer')->middleware(['auth:admin']);
+  Route::post('/getStudents', [App\Http\Controllers\Admin\StaffController::class, 'getStudents'])->name('getStudents')->middleware(['auth:admin']);
+
 });
 
 Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'student'], function () {
@@ -240,6 +241,10 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'staff'],
   Route::get('programmes', [App\Http\Controllers\Staff\ProgrammeController::class, 'programmes'])->name('programmes')->middleware(['auth:staff']);
   Route::get('programme/{slug}', [App\Http\Controllers\Staff\ProgrammeController::class, 'programme'])->name('programme')->middleware(['auth:staff']);
   Route::post('saveProgramme', [App\Http\Controllers\Staff\ProgrammeController::class, 'saveProgramme'])->name('saveProgramme')->middleware(['auth:staff']);
+
+  Route::post('/addAdviser', [App\Http\Controllers\Staff\StaffController::class, 'addAdviser'])->name('addAdviser')->middleware(['auth:staff']);
+  Route::post('/addExamOfficer', [App\Http\Controllers\Staff\StaffController::class, 'addExamOfficer'])->name('addExamOfficer')->middleware(['auth:staff']);
+  Route::post('/getStudents', [App\Http\Controllers\Staff\StaffController::class, 'getStudents'])->name('getStudents')->middleware(['auth:staff']);
 
   
 });

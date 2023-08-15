@@ -166,7 +166,7 @@
                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                         </div>
     
-                                        <div class="modal-body">
+                                        <div class="modal-body border-top border-top-dashed">
                                             <div class="mt-2 text-center">
                                             <lord-icon src="https://cdn.lordicon.com/ggihhudh.json" trigger="hover" style="width:150px;height:150px">
                                             </lord-icon>
@@ -318,7 +318,7 @@
 
                     <input type="hidden" id="paymentId" name="payment_id">
 
-                    <div class="text-end border-top border-top-dashed">
+                    <div class="text-end border-top border-top-dashed p-3">
                         <br>
                         <button type="submit" class="btn btn-primary">Create</button>
                     </div>
@@ -353,7 +353,7 @@
                             <option value="Applicant">Applicant</option>
                         </select>
                     </div>
-                    <div class="text-end border-top border-top-dashed">
+                    <div class="text-end border-top border-top-dashed p-3">
                         <br>
                         <button type="submit" class="btn btn-primary">Get student</button>
                     </div>

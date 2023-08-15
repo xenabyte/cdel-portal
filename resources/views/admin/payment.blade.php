@@ -117,7 +117,7 @@
                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                         </div>
 
-                                        <div class="modal-body">
+                                        <div class="modal-body border-top border-top-dashed">
                                             <form action="{{ url('/admin/updateStructure') }}" method="post" enctype="multipart/form-data">
                                                 @csrf
                                                 <input type="hidden" name='structure_id' value="{{ $structure->id }}">
@@ -201,7 +201,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
 
-            <div class="modal-body">
+            <div class="modal-body border-top border-top-dashed">
                 <form action="{{ url('/admin/updatePayment') }}" method="post" enctype="multipart/form-data">
                     @csrf
                     <input type="hidden" name='payment_id' value="{{ $payment->id }}">
@@ -277,7 +277,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
 
-            <div class="modal-body">
+            <div class="modal-body border-top border-top-dashed">
 
                 <form action="{{ url('/admin/addStructure') }}" method="post" enctype="multipart/form-data">
                     @csrf

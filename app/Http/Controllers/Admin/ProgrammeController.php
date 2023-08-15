@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Validator;
 
 use App\Models\ProgrammeCategory;
 use App\Models\Programme;
+use App\Models\AcademicLevel;
 
 use SweetAlert;
 use Mail;
@@ -117,9 +118,11 @@ class ProgrammeController extends Controller
 
     public function programme($slug){
         $programme = Programme::with('students')->where('slug', $slug)->first();
+        $levels = AcademicLevel::all();
 
         return view('admin.programme', [
-            'programme' => $programme
+            'programme' => $programme,
+            'levels' => $levels
         ]);
     }
 

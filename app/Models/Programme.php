@@ -71,4 +71,14 @@ class Programme extends Model
     public function programmeCategory(){
         return $this->belongsTo(ProgrammeCategory::class, 'category_id');
     }
+
+    /**
+     * Get all of the academicAdvisers for the Programme
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function academicAdvisers()
+    {
+        return $this->hasMany(LevelAdviser::class, 'programme_id');
+    }
 }

@@ -345,14 +345,14 @@
                     </div>
 
                     <div class="mb-3">
-                    <label for="level" class="form-label">Select Academic Session</label>
-                    <select class="form-select" aria-label="level" name="academic_session">
-                        <option selected value= "">Select Select Academic Session </option>
-                        @foreach($sessions as $session)
-                        <option value="{{ $session->year }}">{{ $session->year }}</option>
-                        @endforeach
-                    </select>
-                </div>
+                        <label for="level" class="form-label">Select Academic Session</label>
+                        <select class="form-select" aria-label="level" name="academic_session">
+                            <option selected value= "">Select Select Academic Session </option>
+                            @foreach($sessions as $session)
+                            <option value="{{ $session->year }}">{{ $session->year }}</option>
+                            @endforeach
+                        </select>
+                    </div>
 
 
                     <div class="mb-3">

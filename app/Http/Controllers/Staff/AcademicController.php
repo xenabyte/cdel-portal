@@ -60,10 +60,12 @@ class AcademicController extends Controller
     }
 
     public function department(Request $request, $slug){
-        $department = Department::with('programmes', 'programmes.students')->where('slug', $slug)->first();
+        $department = Department::with('programmes', 'programmes.students', 'programmes.academicAdvisers', 'programmes.academicAdvisers.staff', 'programmes.academicAdvisers.level')->where('slug', $slug)->first();
+        $levels = AcademicLevel::all();
 
-        return view('staff.department', [
-            'department' => $department
+        return view('admin.department', [
+            'department' => $department,
+            'levels' => $levels
         ]);
     }
     

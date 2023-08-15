@@ -65,7 +65,7 @@ $studentPendingTransaction = $studentPendingTransactions->first();
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <hr>
-            <div class="modal-body">
+            <div class="modal-body border-top border-top-dashed">
                 <div class="tab-content">
                     <div class="tab-pane fade show active" id="pills-bill-info" role="tabpanel" aria-labelledby="pills-bill-info-tab">
                         
@@ -172,7 +172,7 @@ $studentPendingTransaction = $studentPendingTransactions->first();
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <hr>
-            <div class="modal-body">
+            <div class="modal-body border-top border-top-dashed">
                 <div class="tab-content">
                     <div class="tab-pane fade show active" id="pills-bill-info" role="tabpanel" aria-labelledby="pills-bill-info-tab">
                         

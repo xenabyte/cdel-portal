@@ -45,7 +45,7 @@
                         <tr>
                             <th scope="row">{{ $loop->iteration }}</th>
                             <td>{{ $studentExamCard->academic_session }}</td>
-                            <td>{{ $studentExamCard == '1'?'First' : 'Second' }} Semester</td>
+                            <td>{{ $studentExamCard->semester == '1' ? 'First' : 'Second' }} Semester</td>
                             <td><span class="badge badge-soft-{{ $studentExamCard->level_adviser_status == 1 ? 'success' : 'warning' }}">{{ $studentExamCard->level_adviser_status == 1 ? 'Approved' : 'Pending' }}</span></td>
                             <td><span class="badge badge-soft-{{ $studentExamCard->status == 1 ? 'success' : 'warning' }}">{{ $studentExamCard->hod_status == 1 ? 'Approved' : 'Pending' }}</span></td>
                             <td>
