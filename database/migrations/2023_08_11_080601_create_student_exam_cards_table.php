@@ -16,6 +16,7 @@ class CreateStudentExamCardsTable extends Migration
         Schema::create('student_exam_cards', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('student_id')->nullable();
+            $table->unsignedBigInteger('level_id')->nullable();
             $table->string('academic_session')->nullable();
             $table->string('file')->nullable();
             $table->string('semester')->nullable();

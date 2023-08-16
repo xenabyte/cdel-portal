@@ -16,6 +16,7 @@ class CreateStudentCourseRegistrationsTable extends Migration
         Schema::create('student_course_registrations', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('student_id')->nullable();
+            $table->unsignedBigInteger('level_id')->nullable();
             $table->string('academic_session')->nullable();
             $table->string('file')->nullable();
             $table->string('level_adviser_status')->nullable();

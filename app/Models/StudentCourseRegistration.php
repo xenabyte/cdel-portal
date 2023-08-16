@@ -13,6 +13,7 @@ class StudentCourseRegistration extends Model
 
     protected $fillable = [
         'student_id',
+        'level_id',
         'academic_session',
         'file',
         'level_adviser_status',

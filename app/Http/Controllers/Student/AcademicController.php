@@ -167,7 +167,8 @@ class AcademicController extends Controller
             $studentRegistration = StudentCourseRegistration::create([
                 'student_id' => $studentId,
                 'academic_session' => $academicSession,
-                'file' => $courseReg
+                'file' => $courseReg,
+                'level_id' => $student->level_id
             ]);
 
         
@@ -370,7 +371,8 @@ class AcademicController extends Controller
                 'student_id' => $studentId,
                 'academic_session' => $academicSession,
                 'semester' => $semester,
-                'file' => $examDocket
+                'file' => $examDocket,
+                'level_id' => $student->level_id
             ]);
 
             alert()->success('Good Job', 'Examination card generate successfully')->persistent('Close');

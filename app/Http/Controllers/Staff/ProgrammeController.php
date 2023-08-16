@@ -14,6 +14,9 @@ use Illuminate\Support\Facades\Validator;
 use App\Models\ProgrammeCategory;
 use App\Models\Programme;
 use App\Models\AcademicLevel;
+use App\Models\LevelAdviser;
+use App\Models\StudentCourseRegistration;
+use App\Models\Student;
 
 
 use SweetAlert;
@@ -121,7 +124,7 @@ class ProgrammeController extends Controller
         $programme = Programme::with('students')->where('slug', $slug)->first();
         $levels = AcademicLevel::all();
 
-        return view('admin.programme', [
+        return view('staff.programme', [
             'programme' => $programme,
             'levels' => $levels
         ]);
@@ -162,6 +165,38 @@ class ProgrammeController extends Controller
         alert()->error('Oops!', 'Something went wrong')->persistent('Close');
         return redirect()->back();
         
+    }
+
+    public function adviserProgrammes(Request $request){
+        $staff = Auth::guard('staff')->user();
+        $staffId = $staff->id;
+
+        $adviserProgrammes = LevelAdviser::with('programme', 'level')->where('staff_id', $staffId)->get();
+
+        return view('staff.adviserProgrammes', [
+            'adviserProgrammes' => $adviserProgrammes
+        ]);
+    }
+
+
+    Public function levelCourseReg($id){
+        $staff = Auth::guard('staff')->user();
+        $staffId = $staff->id;
+        if(!$adviserProgramme = LevelAdviser::with('programme', 'level')->where('id', $id)->where('staff_id', $staffId)->first()){
+            alert()->error('Oops!', 'Record not found')->persistent('Close');
+            return redirect()->back();
+        }
+        
+
+        $levelId = $adviserProgramme->level_id;
+        $studentIds = Student::where('level_id', $levelId)->pluck('id')->toArray();
+        Log::info("message:". json_encode($studentIds));
+    
+        $studentRegistrations = StudentCourseRegistration::with('student', 'student.applicant')->whereIn('student_id', $studentIds)->get();
+
+        return view('staff.levelCourseReg', [
+            'studentRegistrations' => $studentRegistrations
+        ]);
     }
 
 }

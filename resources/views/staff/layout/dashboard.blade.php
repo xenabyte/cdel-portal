@@ -273,6 +273,21 @@
                         </li> <!-- end Dashboard Menu -->
                         @endif
 
+                        @if($staffLevelAdviserRole)
+                        <li class="nav-item">
+                            <a class="nav-link menu-link" href="#courseSettings" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="courseSettings">
+                                <i class="mdi mdi-view-carousel-outline"></i> <span  data-key="t-hot">Programme Management</span>
+                            </a>
+                            <div class="collapse menu-dropdown" id="courseSettings">
+                                <ul class="nav nav-sm flex-column">
+                                    <li class="nav-item">
+                                        <a href="{{ url('/staff/adviserProgrammes') }}" class="nav-link">Programmes</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                        @endif
+
 
                         <li class="nav-item">
                             <a class="nav-link menu-link" href="{{ url('staff/profile') }}">
