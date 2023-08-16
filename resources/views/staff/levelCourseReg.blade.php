@@ -99,7 +99,7 @@
                             <td><span class="badge badge-soft-{{ $studentRegistration->level_adviser_status == 1 ? 'success' : 'warning' }}">{{ $studentRegistration->level_adviser_status == 1 ? 'Approved' : 'Pending' }}</span></td>
                             <td><span class="badge badge-soft-{{ $studentRegistration->hod_status == 1 ? 'success' : 'warning' }}">{{ $studentRegistration->hod_status == 1 ? 'Approved' : 'Pending' }}</span></td>
                             <td>
-                                <a href="{{ url('staff/studentInfo/'.$studentRegistration->student->slug) }}" class="btn btn-success m-1"><i class= "ri-user-6-fill"></i> View Student</a>
+                                <a href="{{ url('staff/studentProfile/'.$studentRegistration->student->slug) }}" class="btn btn-success m-1"><i class= "ri-user-6-fill"></i> View Student</a>
                                 <a href="{{ asset($studentRegistration->file) }}" target="_blank" style="margin: 5px" class="btn btn-primary">View Registration</a>
                                 @if((!$studentRegistration->level_adviser_status && $staffLevelAdviserRole) || (!$studentRegistration->hod_status && $staffHODRole))
                                 <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#approve{{$studentRegistration->id}}"> Approve</button>

@@ -21,6 +21,7 @@ Route::get('/', function () {
 Auth::routes(['register' => false, 'login' => false]);
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::post('/updateNotificationStatus', [App\Http\Controllers\HomeController::class, 'updateNotificationStatus'])->name('updateNotificationStatus');
 Route::get('/verifyPayment', [App\Http\Controllers\PaymentController::class, 'verifyPayment'])->name('verifyPayment');
 Route::post('/paystackWebhook', [App\Http\Controllers\PaymentController::class, 'paystackWebhook']);
 
@@ -193,6 +194,10 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'staff'],
   Route::get('/password/reset/{token}', [App\Http\Controllers\Staff\Auth\ResetPasswordController::class, 'showResetForm']);
 
   Route::get('/home', [App\Http\Controllers\Staff\StaffController::class, 'index'])->name('home')->middleware(['auth:staff']);
+  Route::get('/profile', [App\Http\Controllers\Staff\StaffController::class, 'profile'])->name('profile')->middleware(['auth:staff']);
+  Route::post('/saveBioData', [App\Http\Controllers\Staff\StaffController::class, 'saveBioData'])->name('saveBioData')->middleware(['auth:staff']);
+  Route::post('/updatePassword', [App\Http\Controllers\Staff\StaffController::class, 'updatePassword'])->name('updatePassword')->middleware(['auth:staff']);
+
   Route::get('/mentee', [App\Http\Controllers\Staff\StaffController::class, 'mentee'])->name('mentee')->middleware(['auth:staff']);
   Route::get('/reffs', [App\Http\Controllers\Staff\StaffController::class, 'reffs'])->name('reffs')->middleware(['auth:staff']);
   Route::get('/courses', [App\Http\Controllers\Staff\StaffController::class, 'courses'])->name('courses')->middleware(['auth:staff']);

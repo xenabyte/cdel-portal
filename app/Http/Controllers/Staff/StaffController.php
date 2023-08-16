@@ -57,6 +57,106 @@ class StaffController extends Controller
         ]);
     }
 
+    public function profile(Request $request){
+
+        return view('staff.profile');
+    }
+
+    public function saveBioData(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'dob' => 'required',
+            'religion' => 'required',
+            'gender' => 'required',
+            'marital_status' => 'required',
+            'nationality' => 'required',
+            'state' => 'required',
+            'lga' => 'required',
+        ]);
+
+        if($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+
+        $staff = Auth::guard('staff')->user();
+        $staffId = $staff->id;
+        
+        if(!empty($request->dob) && $request->dob != $staff->dob){
+            $staff->dob = $request->dob;
+        }
+
+        if(!empty($request->religion) && $request->religion != $staff->religion){
+            $staff->religion = $request->religion;
+        }
+
+        if(!empty($request->gender) && $request->gender != $staff->gender){
+            $staff->gender = $request->gender;
+        }
+
+        if(!empty($request->marital_status) && $request->marital_status != $staff->marital_status){
+            $staff->marital_status = $request->marital_status;
+        }
+
+        if(!empty($request->nationality) && $request->nationality != $staff->nationality){
+            $staff->nationality = $request->nationality;
+        }
+
+        if(!empty($request->state) && $request->state != $staff->state_of_origin){
+            $staff->state = $request->state;
+        }
+
+        if(!empty($request->lga) && $request->lga != $staff->lga){
+            $staff->lga = $request->lga;
+        }
+
+        if($staff->save()){
+            alert()->success('Changes Saved', 'Bio data saved successfully')->persistent('Close');
+            return redirect()->back();
+        }
+
+        alert()->error('Oops!', 'Something went wrong')->persistent('Close');
+        return redirect()->back();
+    }
+
+    public function updatePassword (Request $request) {
+
+        $validator = Validator::make($request->all(), [
+            'old_password' => 'required',
+            'password' => 'required',
+            'confirm_password' => 'required'
+        ]);
+
+
+        if($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+
+        $staff = Auth::guard('staff')->user();
+
+
+        if(\Hash::check($request->old_password, Auth::guard('staff')->user()->password)){
+            if($request->new_password == $request->confirm_password){
+                $staff->password = bcrypt($request->new_password);
+            }else{
+                alert()->error('Oops!', 'Password mismatch')->persistent('Close');
+                return redirect()->back();
+            }
+        }else{
+            alert()->error('Oops', 'Wrong old password, Try again with the right one')->persistent('Close');
+            return redirect()->back();
+        }
+
+        if($staff->update()) {
+            alert()->success('Success', 'Save Changes')->persistent('Close');
+            return redirect()->back();
+        }
+
+        alert()->error('Oops!', 'An Error Occurred')->persistent('Close');
+        return redirect()->back();
+    }
+
     public function mentee(Request $request){
 
         return view('staff.mentee');

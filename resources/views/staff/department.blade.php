@@ -225,7 +225,7 @@
                             <td>{{ $student->applicant->email }} </td>
                             <td>{{ $student->applicant->phone_number }} </td>
                             <td>
-                                <a href="{{ url('staff/studentInfo/'.$student->slug) }}" class="btn btn-primary m-1"><i class= "ri-user-6-fill"></i> View Student</a>
+                                <a href="{{ url('staff/studentProfile/'.$student->slug) }}" class="btn btn-primary m-1"><i class= "ri-user-6-fill"></i> View Student</a>
                             </td>
                         </tr>
                         @endforeach

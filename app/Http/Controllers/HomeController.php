@@ -19,6 +19,7 @@ use App\Models\Payment;
 use App\Models\Transaction;
 use App\Models\StudentExamCard;
 use App\Models\Student;
+use App\Models\Notification;
 
 
 use App\Libraries\Pdf\Pdf;
@@ -100,5 +101,20 @@ class HomeController extends Controller
             'passEightyTuition' => $passEightyTuition,
             'registeredCourses' => $registeredCourses
         ]);
+    }
+
+    public function updateNotificationStatus(Request $request){
+        $validator = Validator::make($request->all(), [
+            'notificationId' => 'required',
+        ]);
+
+        if($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+
+        Notification::where('id', $request->notificationId)->update(['status' => true]);
+
+        return true;
     }
 }

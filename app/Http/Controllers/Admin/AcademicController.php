@@ -463,7 +463,7 @@ class AcademicController extends Controller
         ]);
     }
 
-    public function studentInfo($slug){
+    public function studentProfile($slug){
 
         $student = Student::
             with(['applicant', 'programme', 'transactions', 'courseRegistrationDocument', 'registeredCourses', 'partner', 'academicLevel', 'department', 'faculty'])
@@ -473,7 +473,7 @@ class AcademicController extends Controller
             ->where('is_rusticated', false)
             ->first();
         
-        return view('admin.studentInfo', [
+        return view('admin.studentProfile', [
             'student' => $student
         ]);
     }

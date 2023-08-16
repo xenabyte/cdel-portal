@@ -52,7 +52,7 @@
                             <td>{{ $student->academicLevel->level }} </td>
                             <td>{{ $student->applicant->phone_number }} </td>
                             <td>
-                                <a href="{{ url('admin/studentInfo/'.$student->slug) }}" class="btn btn-primary m-1"><i class= "ri-user-6-fill"></i> View Student</a>
+                                <a href="{{ url('admin/studentProfile/'.$student->slug) }}" class="btn btn-primary m-1"><i class= "ri-user-6-fill"></i> View Student</a>
                             </td>
                         </tr>
                         @endforeach

@@ -11,6 +11,8 @@
     $staffHRRole = false;
     $staffLevelAdviserRole = false;
     $staffExamOfficerRole = false;
+
+    $notifications = $staff->notifications()->orderBy('created_at', 'desc')->get();
     
     
     foreach ($staff->staffRoles as $staffRole) {
@@ -134,6 +136,56 @@
                             </button>
                         </div>
 
+                        <div class="dropdown topbar-head-dropdown ms-1 header-item" id="notificationDropdown">
+                            <button type="button" class="btn btn-icon btn-topbar btn-ghost-secondary rounded-circle shadow-none" id="page-header-notifications-dropdown" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-haspopup="true" aria-expanded="false">
+                                <i class='bx bx-bell fs-22'></i>
+                                <span class="position-absolute topbar-badge fs-10 translate-middle badge rounded-pill bg-danger">{{ $notifications->where('status', 0)->count() }}<span class="visually-hidden">unread messages</span></span>
+                            </button>
+                            <div class="dropdown-menu dropdown-menu-lg dropdown-menu-end p-0" aria-labelledby="page-header-notifications-dropdown">
+
+                                <div class="dropdown-head bg-primary bg-pattern rounded-top">
+                                    <div class="p-3">
+                                        <div class="row align-items-center">
+                                            <div class="col">
+                                                <h6 class="m-0 fs-16 fw-semibold text-white"> Notifications </h6>
+                                            </div>
+                                            <div class="col-auto dropdown-tabs">
+                                                <span class="badge badge-soft-light fs-13"> {{ $notifications->where('status', 0)->count() }} New</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                  <div class="tab-pane fade show active py-2 ps-2" id="all-noti-tab" role="tabpanel">
+                                        <div data-simplebar style="max-height: 300px;" class="pe-2">
+
+                                            @foreach ($notifications as $notification)
+                                            <a href="#" data-notification-id="{{ $notification->id }}" onclick="updateNotificationStatus(event)">
+                                                <div class="text-reset notification-item d-block dropdown-item position-relative {{ $loop->iteration != 1 ? 'border-top border-top-dashed':null }} {{ $notification->status == 1 ? 'notification-read' : 'notification-unread' }}">
+                                                    <div class="d-flex">
+                                                        <div class="flex-1">
+                                                            <div class="fs-13 text-muted">
+                                                                <p class="mb-1">{{ $notification->description }}</p>
+                                                            </div>
+                                                            @php
+                                                                $createdAt = \Carbon\Carbon::parse($notification->created_at);
+                                                                $diff = $createdAt->diffForHumans();
+                                                            @endphp
+                                                            <p class="mb-0 fs-11 fw-medium text-uppercase text-muted">
+                                                                <span><i class="mdi mdi-clock-outline"></i> {{ $diff }}</span>
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                            @endforeach
+                                        </div>
+
+                                    </div>
+                            </div>
+                        </div>
+
                         <div class="dropdown ms-sm-3 header-item topbar-user">
                             <button type="button" class="btn shadow-none" id="page-header-user-dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <span class="d-flex align-items-center">
@@ -149,7 +201,7 @@
                                 <h6 class="dropdown-header">Welcome {{ $staff->title.' '. $staff->lastname .' '.$staff->othernames }}!</h6>
                                 <span class="dropdown-item"><i class="mdi mdi-account-child-circle text-muted fs-16 align-middle me-1"></i> <span class="align-middle">Referral Code: {{ $staff->referral_code }}</span></span>
                                 <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="pages-profile-settings.html"><span class="badge bg-soft-success text-success mt-1 float-end">New</span><i class="mdi mdi-cog-outline text-muted fs-16 align-middle me-1"></i> <span class="align-middle">Settings</span></a>
+                                <a class="dropdown-item" href="{{ url('/staff/profile') }}"><i class="mdi mdi-cog-outline text-muted fs-16 align-middle me-1"></i> <span class="align-middle">Settings</span></a>
                                 <a class="dropdown-item" href="{{ url('/staff/logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();"><i class="mdi mdi-logout text-muted fs-16 align-middle me-1"></i> <span class="align-middle" data-key="t-logout">Logout</span></a>
                                 <form id="logout-form" action="{{ url('/staff/logout') }}" method="POST" style="display: none;">@csrf</form>
                             </div>
@@ -261,7 +313,7 @@
                         @if($staffHODRole)
                         <li class="nav-item">
                             <a class="nav-link menu-link" href="#deptSettings" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="deptSettings">
-                                <i class="mdi mdi-view-carousel-outline"></i> <span  data-key="t-hot">Dept. Management</span>
+                                <i class="mdi mdi-cards-variant"></i> <span  data-key="t-hot">Dept. Management</span>
                             </a>
                             <div class="collapse menu-dropdown" id="deptSettings">
                                 <ul class="nav nav-sm flex-column">
@@ -273,10 +325,10 @@
                         </li> <!-- end Dashboard Menu -->
                         @endif
 
-                        @if($staffLevelAdviserRole)
+                        @if($staffLevelAdviserRole || $staffHODRole)
                         <li class="nav-item">
                             <a class="nav-link menu-link" href="#courseSettings" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="courseSettings">
-                                <i class="mdi mdi-view-carousel-outline"></i> <span  data-key="t-hot">Programme Management</span>
+                                <i class="mdi mdi-card"></i> <span  data-key="t-hot">Prog. Management</span>
                             </a>
                             <div class="collapse menu-dropdown" id="courseSettings">
                                 <ul class="nav nav-sm flex-column">
@@ -288,14 +340,12 @@
                         </li>
                         @endif
 
-
                         <li class="nav-item">
                             <a class="nav-link menu-link" href="{{ url('staff/profile') }}">
-                                <i class="mdi mdi-account-child-circle"></i> <span data-key="t-transaction">Profile</span>
+                                <i class="mdi mdi-account-child-circle"></i> <span data-key="t-profile">Profile</span>
                             </a>
                         </li>
 
-                        <li class="menu-title"><i class="ri-more-fill"></i> <span data-key="t-pages"></span></li>
                         <li class="nav-item">
                             <a class="nav-link menu-link" href="{{ url('staff/logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                                 <i class="mdi mdi-power"></i> <span data-key="t-logout">Logout</span>
@@ -419,6 +469,24 @@
 
         // Display the greeting
         greetingElement.innerHTML = greeting;
+    </script>
+
+    <script>
+        function updateNotificationStatus(event) {
+            event.preventDefault();
+            
+            const notificationId = event.currentTarget.getAttribute('data-notification-id');
+            
+            axios.post("{{ url('/updateNotificationStatus') }}", {
+                notificationId: notificationId
+            })
+            .then(response => {
+                event.currentTarget.classList.add('notification-read');
+            })
+            .catch(error => {
+                console.error(error);
+            });
+        }
     </script>
 
 </body>
