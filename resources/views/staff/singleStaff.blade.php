@@ -231,7 +231,7 @@
                                     
                                                 <div class="modal-body border-top border-top-dashed">
                                                     <h4 class="mb-3 mt-4">Are you sure you want to delete <br/> {{ $singleStaffRole->role->role }} role from {{ $singleStaff->title.' '.$singleStaff->lastname.' '. $singleStaff->othernames}}?</h4>
-                                                    <form action="{{ url('/admin/unAssignRole') }}" method="POST">
+                                                    <form action="{{ url('/staff/unAssignRole') }}" method="POST">
                                                         @csrf
                                                         <input name="staff_role_id" type="hidden" value="{{$singleStaffRole->id}}">
                                                         <hr>
@@ -270,7 +270,7 @@
             </div>
             <hr>
             <div class="modal-body border-top border-top-dashed">
-                <form action="{{ url('/admin/assignRole') }}" method="post" enctype="multipart/form-data">
+                <form action="{{ url('/staff/assignRole') }}" method="post" enctype="multipart/form-data">
                     @csrf
                     <input type="hidden" name="staff_id" value="{{ $singleStaff->id }}">
 
@@ -308,7 +308,7 @@
                     </div>
                     <hr>
                     <div class="modal-body border-top border-top-dashed">
-                        <form action="{{ url('/admin/assignDeanToFaculty') }}" method="post" enctype="multipart/form-data">
+                        <form action="{{ url('/staff/assignDeanToFaculty') }}" method="post" enctype="multipart/form-data">
                             @csrf
                             <input type="hidden" name="staff_id" value="{{ $singleStaff->id }}">
 
@@ -343,7 +343,7 @@
                     </div>
                     <hr>
                     <div class="modal-body border-top border-top-dashed">
-                        <form action="{{ url('/admin/assignSubDeanToFaculty') }}" method="post" enctype="multipart/form-data">
+                        <form action="{{ url('/staff/assignSubDeanToFaculty') }}" method="post" enctype="multipart/form-data">
                             @csrf
                             <input type="hidden" name="staff_id" value="{{ $singleStaff->id }}">
 
@@ -378,7 +378,7 @@
                     </div>
                     <hr>
                     <div class="modal-body border-top border-top-dashed">
-                        <form action="{{ url('/admin/assignHodToDepartment') }}" method="post" enctype="multipart/form-data">
+                        <form action="{{ url('/staff/assignHodToDepartment') }}" method="post" enctype="multipart/form-data">
                             @csrf
                             <input type="hidden" name="staff_id" value="{{ $singleStaff->id }}">
 
@@ -412,7 +412,7 @@
                     <lord-icon src="https://cdn.lordicon.com/wwneckwc.json" trigger="hover" style="width:150px;height:150px">
                     </lord-icon>
                     <h4 class="mb-3 mt-4">Are you sure you want to disable <br/> {{ $singleStaff->lastname.' '.$singleStaff->othernames }}?</h4>
-                    <form action="{{ url('/admin/disableStaff') }}" method="POST">
+                    <form action="{{ url('/staff/disableStaff') }}" method="POST">
                         @csrf
                         <input name="staff_id" type="hidden" value="{{$singleStaff->id}}">
                         <hr>
@@ -438,7 +438,7 @@
                     <lord-icon src="https://cdn.lordicon.com/tqywkdcz.json" trigger="hover" style="width:150px;height:150px">
                     </lord-icon>
                     <h4 class="mb-3 mt-4">Are you sure you want to enable <br/> {{ $singleStaff->lastname.' '.$singleStaff->othernames }}?</h4>
-                    <form action="{{ url('/admin/enableStaff') }}" method="POST">
+                    <form action="{{ url('/staff/enableStaff') }}" method="POST">
                         @csrf
                         <input name="staff_id" type="hidden" value="{{$singleStaff->id}}">
                         <hr>

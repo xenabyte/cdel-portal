@@ -44,8 +44,9 @@
                             <td>{{$adviserProgramme->programme->name}}</td>
                             <td>{{$adviserProgramme->level->level}} Level</td>
                             <td>
-                                <a href="{{ url('/staff/programme/'.$adviserProgramme->programme->slug) }}" class="btn btn-lg btn-primary">Programme Details</a>
-                                <a href="{{ url('/staff/levelCourseReg/'.$adviserProgramme->id) }}" class="btn btn-lg btn-primary">Course Registrations</a>
+                                <a href="{{ url('/staff/programme/'.$adviserProgramme->programme->slug) }}" class="btn btn-primary">Programme Details</a>
+                                <a href="{{ url('/staff/levelCourseReg/'.$adviserProgramme->id) }}" class="btn btn-info">Course Registrations</a>
+                                <a href="{{ url('/staff/levelStudents/'.$adviserProgramme->id) }}" class="btn btn-success">All Students</a>
                             </td>
                         </tr>
                         @endforeach

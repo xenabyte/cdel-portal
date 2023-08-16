@@ -63,7 +63,7 @@
                                     <div class="hstack gap-3 flex-wrap">
                                         <div><a href="#" class="text-primary d-block">Applied Programme: {{ $student->applicant->programme->name }}</a></div>
                                         <div class="vr"></div>
-                                        <div class="text-muted">Addmitted Programme : <span class="text-body fw-medium">{{ $student->programme->name }}</span></div>
+                                        <div class="text-muted">Admitted Programme : <span class="text-body fw-medium">{{ $student->programme->name }}</span></div>
                                         <div class="vr"></div>
                                         <div class="text-muted">Application ID : <span class="text-body fw-medium"> {{ $student->applicant->application_number }}</span></div>
                                         @if($student->applicant->application_type == 'UTME')

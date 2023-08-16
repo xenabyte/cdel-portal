@@ -777,7 +777,6 @@ class StaffController extends Controller
             'students' => $students,
         ]);
     }
-    
 
-    
+
 }

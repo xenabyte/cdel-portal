@@ -389,7 +389,7 @@ $studentRegistrations = $student->courseRegistrationDocument()->orderBy('created
                             <th scope="row">{{ $loop->iteration }}</th>
                             <td>{{ $studentRegistration->academic_session }}</td>
                             <td><span class="badge badge-soft-{{ $studentRegistration->level_adviser_status == 1 ? 'success' : 'warning' }}">{{ $studentRegistration->level_adviser_status == 1 ? 'Approved' : 'Pending' }}</span></td>
-                            <td><span class="badge badge-soft-{{ $studentRegistration->status == 1 ? 'success' : 'warning' }}">{{ $studentRegistration->hod_status == 1 ? 'Approved' : 'Pending' }}</span></td>
+                            <td><span class="badge badge-soft-{{ $studentRegistration->hod_status == 1 ? 'success' : 'warning' }}">{{ $studentRegistration->hod_status == 1 ? 'Approved' : 'Pending' }}</span></td>
                             <td>
                                 <a href="{{ asset($studentRegistration->file) }}" target="_blank" style="margin: 5px" class="btn btn-warning">Download Form</a>
                             </td>

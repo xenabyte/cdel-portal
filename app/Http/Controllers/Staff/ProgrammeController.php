@@ -16,8 +16,8 @@ use App\Models\Programme;
 use App\Models\AcademicLevel;
 use App\Models\LevelAdviser;
 use App\Models\StudentCourseRegistration;
+use App\Models\CourseRegistration;
 use App\Models\Student;
-
 
 use SweetAlert;
 use Mail;
@@ -179,9 +179,12 @@ class ProgrammeController extends Controller
     }
 
 
-    Public function levelCourseReg($id){
+    Public function levelCourseReg(Request $request, $id){
         $staff = Auth::guard('staff')->user();
         $staffId = $staff->id;
+        $globalData = $request->input('global_data');
+        $academicSession = $globalData->sessionSetting['academic_session'];
+
         if(!$adviserProgramme = LevelAdviser::with('programme', 'level')->where('id', $id)->where('staff_id', $staffId)->first()){
             alert()->error('Oops!', 'Record not found')->persistent('Close');
             return redirect()->back();
@@ -189,13 +192,81 @@ class ProgrammeController extends Controller
         
 
         $levelId = $adviserProgramme->level_id;
-        $studentIds = Student::where('level_id', $levelId)->pluck('id')->toArray();
-        Log::info("message:". json_encode($studentIds));
+        $programmeId = $adviserProgramme->programme_id;
+
+        $studentIds = Student::where('level_id', $levelId)->where('programme_id', $programmeId)->pluck('id')->toArray();
     
-        $studentRegistrations = StudentCourseRegistration::with('student', 'student.applicant')->whereIn('student_id', $studentIds)->get();
+        $studentRegistrations = StudentCourseRegistration::with('student', 'student.applicant')->whereIn('student_id', $studentIds)->where('level_id', $levelId)->where('academic_session', $academicSession)->get();
 
         return view('staff.levelCourseReg', [
             'studentRegistrations' => $studentRegistrations
+        ]);
+    }
+
+    public function approveReg(Request $request){
+        $validator = Validator::make($request->all(), [
+            'reg_id' => 'required',
+            'type' => 'required',
+        ]);
+
+        if($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+
+        if(!$studentCourseReg = StudentCourseRegistration::find($request->reg_id)){
+            alert()->error('Oops', 'Invalid Student Registration ')->persistent('Close');
+            return redirect()->back();
+        }
+        if($request->type == 'level_adviser' && !empty($studentCourseReg->level_adviser_status)){
+            alert()->info('Oops', 'Student registration already approved')->persistent('Close');
+            return redirect()->back();
+        }
+        
+        if($request->type != 'level_adviser' && !empty($studentCourseReg->hod_status)){
+            alert()->info('Oops', 'Student registration already approved')->persistent('Close');
+            return redirect()->back();
+        }
+        
+        if($request->type == 'level_adviser'){
+            $studentCourseReg->level_adviser_status = true;
+        }else{
+            $studentCourseReg->hod_status = true;
+        }
+
+        if($studentCourseReg->save()){
+            alert()->success('Registration Approved', '')->persistent('Close');
+            return redirect()->back();
+        }
+
+        alert()->error('Oops!', 'Something went wrong')->persistent('Close');
+        return redirect()->back();
+    }
+
+    public function levelStudents(Request $request, $id){
+        $staff = Auth::guard('staff')->user();
+        $staffId = $staff->id;
+        $globalData = $request->input('global_data');
+        $academicSession = $globalData->sessionSetting['academic_session'];
+
+        if(!$adviserProgramme = LevelAdviser::with('programme', 'level')->where('id', $id)->where('staff_id', $staffId)->first()){
+            alert()->error('Oops!', 'Record not found')->persistent('Close');
+            return redirect()->back();
+        }
+
+        $levelId = $adviserProgramme->level_id;
+        $programmeId = $adviserProgramme->programme_id;
+
+        $students = Student::
+        with(['applicant', 'programme', 'transactions', 'courseRegistrationDocument', 'registeredCourses', 'partner', 'academicLevel', 'department', 'faculty'])
+        ->where([
+            'level_id' => $levelId,
+            'programme_id' => $programmeId,
+        ])
+        ->get();
+
+        return view('staff.levelStudents', [
+            'students' => $students
         ]);
     }
 
