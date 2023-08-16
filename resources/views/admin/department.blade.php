@@ -295,8 +295,9 @@
                                     <td class="d-flex">
                                         <img src="{{ $academicAdviser->staff->image }}" alt="" class="avatar-xs rounded-3 shadow me-2">
                                         <div>
-                                            <h5 class="fs-13 mb-0">{{ $academicAdviser->staff->lastname.' '.$academicAdviser->staff->othernames }}</h5>
+                                            <h5 class="fs-13 mb-0">{{ $academicAdviser->staff->title.' '.$academicAdviser->staff->lastname.' '.$academicAdviser->staff->othernames }}</h5>
                                             <p class="fs-12 mb-0 text-muted"><strong>Programme:</strong> {{ $programmes->name }}</p>
+                                            <p class="fs-12 mb-0 text-muted"><strong>Level:</strong> {{ $academicAdviser->level->level }} Level</p>
                                         </div>
                                     </td>
                                 </tr><!-- end tr -->

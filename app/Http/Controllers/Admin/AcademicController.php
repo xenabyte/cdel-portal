@@ -22,6 +22,7 @@ use App\Models\ExaminationSetting;
 use App\Models\Programme;
 use App\Models\Student;
 use App\Models\StudentDemotion;
+use App\Models\StudentCourseRegistration;
 
 use SweetAlert;
 use Mail;
@@ -643,6 +644,50 @@ class AcademicController extends Controller
         alert()->success('Student Demoted Successfully', '')->persistent('Close');
         return $this->getSingleStudent($student->matric_number, 'admin.demoteStudent');
 
+    }
+
+
+    public function courseRegistrations (Request $request){
+        $globalData = $request->input('global_data');
+        $academicSession = $globalData->sessionSetting['academic_session'];
+
+
+        $studentRegistrations = StudentCourseRegistration::with('student')->where([
+            'academic_session' => $academicSession,
+        ])->orderBy('level_id', 'asc')->get();
+        
+        return view('admin.courseRegistrations', [
+            'studentRegistrations' => $studentRegistrations
+        ]);
+
+    }
+
+    public function approveReg(Request $request){
+        $validator = Validator::make($request->all(), [
+            'reg_id' => 'required',
+            'type' => 'required',
+        ]);
+
+        if($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+
+        if(!$studentCourseReg = StudentCourseRegistration::find($request->reg_id)){
+            alert()->error('Oops', 'Invalid Student Registration ')->persistent('Close');
+            return redirect()->back();
+        }
+        
+        $studentCourseReg->level_adviser_status = true;
+        $studentCourseReg->hod_status = true;
+
+        if($studentCourseReg->save()){
+            alert()->success('Registration Approved', '')->persistent('Close');
+            return redirect()->back();
+        }
+
+        alert()->error('Oops!', 'Something went wrong')->persistent('Close');
+        return redirect()->back();
     }
     
 }

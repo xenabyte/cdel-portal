@@ -10,7 +10,7 @@ class ResultApprovalStatus extends Model
 {
     use HasFactory, SoftDeletes;
 
-    const SENATE_APPROVED = 'Senate Approval';
+    const SENATE_APPROVED = 'Senate';
 
     protected $fillable = [
         'status',

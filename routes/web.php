@@ -145,6 +145,12 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'admin'],
   Route::post('/addExamOfficer', [App\Http\Controllers\Admin\StaffController::class, 'addExamOfficer'])->name('addExamOfficer')->middleware(['auth:admin']);
   Route::post('/getStudents', [App\Http\Controllers\Admin\StaffController::class, 'getStudents'])->name('getStudents')->middleware(['auth:admin']);
 
+  Route::get('/courseRegistrations', [App\Http\Controllers\Admin\AcademicController::class, 'courseRegistrations'])->name('courseRegistrations')->middleware(['auth:admin']);
+  Route::post('/approveReg', [App\Http\Controllers\Admin\AcademicController::class, 'approveReg'])->name('approveReg')->middleware(['auth:admin']);
+
+  Route::get('/studentProfile/{slug}', [App\Http\Controllers\Admin\AcademicController::class, 'studentProfile'])->name('studentProfile')->middleware(['auth:admin']);
+
+
 });
 
 Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'student'], function () {
@@ -164,6 +170,12 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'student'
 
   Route::get('/home', [App\Http\Controllers\Student\StudentController::class, 'index'])->name('home')->middleware(['auth:student']);
   Route::post('/makePayment', [App\Http\Controllers\Student\StudentController::class, 'makePayment'])->name('makePayment')->middleware(['auth:student']);
+  
+  Route::get('/profile', [App\Http\Controllers\Student\StudentController::class, 'profile'])->name('profile')->middleware(['auth:student']);
+  Route::post('/saveBioData', [App\Http\Controllers\Student\StudentController::class, 'saveBioData'])->name('saveBioData')->middleware(['auth:student']);
+  Route::post('/updatePassword', [App\Http\Controllers\Student\StudentController::class, 'updatePassword'])->name('updatePassword')->middleware(['auth:student']);
+  
+  
   Route::get('/transactions', [App\Http\Controllers\Student\StudentController::class, 'transactions'])->name('transactions')->middleware(['auth:student']);
   Route::get('/courseRegistration', [App\Http\Controllers\Student\AcademicController::class, 'courseRegistration'])->name('courseRegistration')->middleware(['auth:student']);
   Route::post('/registerCourses', [App\Http\Controllers\Student\AcademicController::class, 'registerCourses'])->name('registerCourses')->middleware(['auth:student']);
@@ -256,6 +268,7 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'staff'],
   Route::get('/levelStudents/{id}', [App\Http\Controllers\Staff\ProgrammeController::class, 'levelStudents'])->name('levelStudents')->middleware(['auth:staff']);
 
   Route::post('/approveReg', [App\Http\Controllers\Staff\ProgrammeController::class, 'approveReg'])->name('approveReg')->middleware(['auth:staff']);
+
   
 });
 

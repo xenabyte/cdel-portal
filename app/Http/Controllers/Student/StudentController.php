@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Validator;
 use App\Models\Payment;
 use App\Models\Transaction;
 use App\Models\Staff;
+use App\Models\User as Applicant;
 
 use SweetAlert;
 use Mail;
@@ -63,6 +64,128 @@ class StudentController extends Controller
             'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
             'passEightyTuition' => $paymentCheck->passEightyTuition
         ]);
+    }
+
+    public function profile(Request $request){
+        $student = Auth::guard('student')->user();
+        $studentId = $student->id;
+        $levelId = $student->level_id;
+        $globalData = $request->input('global_data');
+        $admissionSession = $globalData->sessionSetting['admission_session'];
+        $academicSession = $globalData->sessionSetting['academic_session'];
+
+        $paymentCheck = $this->checkSchoolFees($student, $academicSession, $levelId);
+        if(!$paymentCheck->passTuitionPayment){
+            return view('student.schoolFee', [
+                'payment' => $paymentCheck->schoolPayment,
+                'passTuition' => $paymentCheck->passTuitionPayment,
+                'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
+                'passEightyTuition' => $paymentCheck->passEightyTuition,
+                'studentPendingTransactions' => $paymentCheck->studentPendingTransactions
+            ]);
+        }
+
+        return view('student.profile', [
+            'payment' => $paymentCheck->schoolPayment,
+            'passTuition' => $paymentCheck->passTuitionPayment,
+            'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
+            'passEightyTuition' => $paymentCheck->passEightyTuition
+        ]);
+    }
+
+    public function saveBioData(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'dob' => 'required',
+            'religion' => 'required',
+            'gender' => 'required',
+            'marital_status' => 'required',
+            'nationality' => 'required',
+            'state' => 'required',
+            'lga' => 'required',
+        ]);
+
+        if($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+
+        $student = Auth::guard('student')->user();
+        $applicant = Applicant::find($student->user_id);
+
+        
+        if(!empty($request->dob) && $request->dob != $applicant->dob){
+            $applicant->dob = $request->dob;
+        }
+
+        if(!empty($request->religion) && $request->religion != $applicant->religion){
+            $applicant->religion = $request->religion;
+        }
+
+        if(!empty($request->gender) && $request->gender != $applicant->gender){
+            $applicant->gender = $request->gender;
+        }
+
+        if(!empty($request->marital_status) && $request->marital_status != $applicant->marital_status){
+            $applicant->marital_status = $request->marital_status;
+        }
+
+        if(!empty($request->nationality) && $request->nationality != $applicant->nationality){
+            $applicant->nationality = $request->nationality;
+        }
+
+        if(!empty($request->state) && $request->state != $applicant->state_of_origin){
+            $applicant->state = $request->state;
+        }
+
+        if(!empty($request->lga) && $request->lga != $applicant->lga){
+            $applicant->lga = $request->lga;
+        }
+
+        if($applicant->save()){
+            alert()->success('Changes Saved', 'Bio data saved successfully')->persistent('Close');
+            return redirect()->back();
+        }
+
+        alert()->error('Oops!', 'Something went wrong')->persistent('Close');
+        return redirect()->back();
+    }
+
+    public function updatePassword (Request $request) {
+
+        $validator = Validator::make($request->all(), [
+            'old_password' => 'required',
+            'password' => 'required',
+            'confirm_password' => 'required'
+        ]);
+
+
+        if($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+
+        $student = Auth::guard('student')->user();
+
+        if(\Hash::check($request->old_password, Auth::guard('student')->user()->password)){
+            if($request->new_password == $request->confirm_password){
+                $student->password = bcrypt($request->new_password);
+            }else{
+                alert()->error('Oops!', 'Password mismatch')->persistent('Close');
+                return redirect()->back();
+            }
+        }else{
+            alert()->error('Oops', 'Wrong old password, Try again with the right one')->persistent('Close');
+            return redirect()->back();
+        }
+
+        if($student->update()) {
+            alert()->success('Success', 'Save Changes')->persistent('Close');
+            return redirect()->back();
+        }
+
+        alert()->error('Oops!', 'An Error Occurred')->persistent('Close');
+        return redirect()->back();
     }
 
     public function makePayment(Request $request)

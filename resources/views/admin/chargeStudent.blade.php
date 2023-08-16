@@ -2,8 +2,6 @@
 
 @section('content')
 
-   
-
 <!-- start page title -->
 <div class="row">
     <div class="col-12">
@@ -329,6 +327,200 @@
 </div><!-- /.modal -->
 @endif
 
+@if(!empty($applicant))
+<div class="row">
+    <div class="col-xxl-4">
+        <div class="card">
+            <div class="card-body p-4">
+                <div>
+                    <div class="flex-shrink-0 avatar-md mx-auto">
+                        <div class="avatar-title bg-light rounded">
+                            <img src="{{empty($applicant->image)?asset('assets/images/users/user-dummy-img.jpg'):asset($applicant->image)}}" alt="" height="50" />
+                        </div>
+                    </div>
+                    <div class="mt-4 text-center">
+                        <h5 class="mb-1">{{$applicant->lastname.' '.$applicant->othernames}}</h5>
+                        <p class="text-muted">{{ $applicant->programme->name }} <br>
+                            <strong>Application Number:</strong> {{ $applicant->application_number }}<br>
+                            <strong>Jamb Reg. Number:</strong> {{ $applicant->jamb_reg_no }}
+                        </p>
+                    </div>
+                    <div class="table-responsive border-top border-top-dashed">
+                        <table class="table mb-0 table-borderless">
+                            <tbody>
+                                <tr>
+                                    <th><span class="fw-medium">Email:</span></th>
+                                    <td>{{ $applicant->email }}</td>
+                                </tr>
+                                <tr>
+                                    <th><span class="fw-medium">Contact No.:</span></th>
+                                    <td>{{ $applicant->phone_number }}</td>
+                                </tr>
+                                <tr>
+                                    <th><span class="fw-medium">Address:</span></th>
+                                    <td>{!! $applicant->address !!}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-body border-top border-top-dashed p-4">
+                <div>
+                    <h6 class="text-muted text-uppercase fw-semibold mb-4">Guardian Info</h6>
+                    <div class="table-responsive">
+                        <table class="table mb-0 table-borderless">
+                            <tbody>
+                                <tr>
+                                    <th><span class="fw-medium">Name</span></th>
+                                    <td>{{ $applicant->guardian->name }}</td>
+                                </tr>
+                                <tr>
+                                    <th><span class="fw-medium">Email</span></th>
+                                    <td>{{ $applicant->guardian->email }}</td>
+                                </tr>
+                                <tr>
+                                    <th><span class="fw-medium">Contact No.</span></th>
+                                    <td>{{ $applicant->guardian->phone_number }}</td>
+                                </tr>
+                                <tr>
+                                    <th><span class="fw-medium">Address</span></th>
+                                    <td>{!! $applicant->guardian->address !!}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--end card-->
+    
+    </div>
+    <!--end col-->
+
+    <div class="col-xxl-8">
+        <div class="card">
+            <div class="card-header border-0 align-items-center d-flex">
+                <h4 class="card-title mb-0 flex-grow-1">Transactions</h4>
+                <div class="text-end mb-5">
+                    <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#addTransaction" class="btn btn-primary">Charge Student</a>
+                </div>
+            </div><!-- end card header -->
+
+            <div class="card-body pb-2 border-top border-top-dashed">
+                <div class="table-responsive">
+                    <table id="buttons-datatables" class="display table table-stripped" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th scope="col">Id</th>
+                                <th scope="col">Reference</th>
+                                <th scope="col">Amount(₦)</th>
+                                <th scope="col">Payment For</th>
+                                <th scope="col">Session</th>
+                                <th scope="col">Payment Gateway</th>
+                                <th scope="col">Status</th>
+                                <th scope="col">Payment Date</th>
+                                <th scope="col"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($transactions as $transaction)
+                            <tr>
+                                <th scope="row">{{ $loop->iteration }}</th>
+                                <td>{{ $transaction->reference }}</td>
+                                <td>₦{{ number_format($transaction->amount_payed/100, 2) }} </td>
+                                <td>{{ $transaction->paymentType->type }} </td>
+                                <td>{{ $transaction->session }}</td>
+                                <td>{{ $transaction->payment_method }}</td>
+                                <td><span class="badge badge-soft-{{ $transaction->status == 1 ? 'success' : 'warning' }}">{{ $transaction->status == 1 ? 'Paid' : 'Pending' }}</span></td>
+                                <td>{{ $transaction->status == 1 ? $transaction->updated_at : null }} </td>
+                                <td>
+                                    @if($transaction->status == 0)
+                                        <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#payNow{{$transaction->id}}" style="margin: 5px" class="btn btn-warning">Pay Now</a>
+                                    @endif
+                                </td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div><!-- end card body -->
+        </div><!-- end card -->
+
+    </div>
+    <!--end col-->
+</div>
+<!--end row-->
+
+<div id="addTransaction" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content border-0 overflow-hidden">
+            <div class="modal-header p-3">
+                <h4 class="card-title mb-0">Create Payment</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body border-top border-top-dashed">
+                <form action="{{ url('/admin/chargeStudent') }}" method="post" enctype="multipart/form-data">
+                    @csrf
+                    <input type="hidden" id="studentId" name="user_id" value="{{ $applicant->id }}">
+                    <input type="hidden" id="programmeId" name="programme_id" value="{{ $applicant->programme_id }}">
+                    <input type="hidden" id="academicSession" name="academic_session" value="{{ $applicant->academic_session }}">
+                    <input type="hidden" id="level" name="level" value="0">
+                    <input type="hidden" name="paymentGateway" value="Manual/BankTransfer">
+
+                    <div class="mb-3">
+                        <label for="type" class="form-label">Select Payment Type </label>
+                        <select class="form-select" aria-label="type" name="type" required onchange="handlePaymentTypeChange(event)">
+                            <option selected value= "">Select Type </option>
+                            <option value="Application Fee">Application Fee</option>
+                        </select>
+                    </div>
+
+
+                    <div class="mb-3" id='payment-options-acceptance' style="display: none">
+                        <label for="amount" class="form-label">Payment Amount<span class="text-danger">*</span></label>
+                        <select class="form-select" aria-label="amount" name="amountAcceptance">
+                            <option value= "" selected>Select Amount</option>
+                        </select>
+                    </div>
+
+
+                   <div class="mb-3" id='payment-options-tuition' style="display: none">
+                        <label for="amount" class="form-label">Payment Amount<span class="text-danger">*</span></label>
+                        <select class="form-select" aria-label="amount" name="amountTuition">
+                            <option value= "" selected>Select Amount</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3" id='payment-options-general' style="display: none">
+                        <label for="amount" class="form-label">Payment Amount<span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" name="amount" id="amountGeneral">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="paymentStatus" class="form-label">Select Payment Status<span class="text-danger">*</span></label>
+                        <select class="form-select" aria-label="paymentStatus" name="paymentStatus" required>
+                            <option value= "" selected>Select Payment Status</option>
+                            <option value="1">Paid</option>
+                            <option value="0">Not Paid</option>
+                        </select>
+                    </div>
+
+                    <input type="hidden" id="paymentId" name="payment_id">
+
+                    <div class="text-end border-top border-top-dashed p-3">
+                        <br>
+                        <button type="submit" class="btn btn-primary">Create</button>
+                    </div>
+                </form>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+@endif
+
 
 <div id="getStudent" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
     <div class="modal-dialog modal-dialog-centered">
@@ -342,7 +534,7 @@
                 <form action="{{ url('/admin/getStudent') }}" method="post" enctype="multipart/form-data">
                     @csrf
                     <div class="mb-3">
-                        <label for="reg" class="form-label">Matric Number</label>
+                        <label for="reg" class="form-label">Application/Matric Number</label>
                         <input type="text" class="form-control" name="reg_number" id="reg">
                     </div>
                     <div class="mb-3">

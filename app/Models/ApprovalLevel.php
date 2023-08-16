@@ -10,6 +10,8 @@ class ApprovalLevel extends Model
 {
     use HasFactory, SoftDeletes;
 
+    const SENATE_APPROVED = 'Senate';
+
     protected $fillable = [
         'level',
     ];

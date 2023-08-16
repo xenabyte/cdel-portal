@@ -1,6 +1,6 @@
 
 <!doctype html>
-<html lang="en" data-layout="twocolumn" data-layout-style="default" data-layout-position="fixed" data-topbar="light" data-sidebar="dark" data-sidebar-size="lg" data-layout-width="fluid" data-preloader="disable">
+<html lang="en" data-layout="vertical" data-layout-style="default" data-layout-position="fixed" data-topbar="light" data-sidebar="dark" data-sidebar-size="lg" data-layout-width="fluid" data-preloader="disable">
 <?php 
     $admin = Auth::guard('admin')->user();
 ?>
@@ -290,9 +290,11 @@
                             </a>
                         </li>
                        
+                        <li class="menu-title"><i class="ri-more-fill"></i> <span data-key="t-portal">Portal Settings</span></li>
+
                         <li class="nav-item">
                             <a class="nav-link menu-link" href="#appSetting" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarApps">
-                                <i class="mdi mdi-application-settings"></i> <span data-key="t-apps">General App Setting</span>
+                                <i class="mdi mdi-application-settings"></i> <span data-key="t-portal">General App Setting</span>
                             </a>
                             <div class="collapse menu-dropdown" id="appSetting">
                                 <ul class="nav nav-sm flex-column">
@@ -340,6 +342,7 @@
                             </div>
                         </li> <!-- end Bursary Menu -->
 
+                        <li class="menu-title"><i class="ri-more-fill"></i> <span data-key="t-admission">Admission</span></li>
 
                         <li class="nav-item">
                             <a class="nav-link menu-link" href="#admission" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="admission">
@@ -358,11 +361,11 @@
                             </div>
                         </li> <!-- end Bursary Menu -->
 
-                        <li class="menu-title"><i class="ri-more-fill"></i> <span data-key="t-pages">Academics</span></li>
+                        <li class="menu-title"><i class="ri-more-fill"></i> <span data-key="t-academics">Academics</span></li>
 
                         <li class="nav-item">
                             <a class="nav-link menu-link" href="#academicSettings" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="academicSettings">
-                                <i class="mdi mdi-view-carousel-outline"></i> <span class="badge badge-pill bg-danger" data-key="t-hot">Academics</span>
+                                <i class="mdi mdi-view-carousel-outline"></i> <span data-key="t-academics">Academics</span>
                             </a>
                             <div class="collapse menu-dropdown" id="academicSettings">
                                 <ul class="nav nav-sm flex-column">
@@ -382,11 +385,11 @@
                             </div>
                         </li> <!-- end Dashboard Menu -->
 
-                        <li class="menu-title"><i class="ri-more-fill"></i> <span data-key="t-pages">Student Management</span></li>
+                        <li class="menu-title"><i class="ri-more-fill"></i> <span data-key="t-student">Student Management</span></li>
 
                         <li class="nav-item">
                             <a class="nav-link menu-link" href="#studentMgt" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="studentMgt">
-                                <i class="mdi mdi-account-tie"></i> <span class="badge badge-pill bg-danger" data-key="t-hot">Students</span>
+                                <i class="mdi mdi-account-tie"></i> <span data-key="t-student">Students</span>
                             </a>
                             <div class="collapse menu-dropdown" id="studentMgt">
                                 <ul class="nav nav-sm flex-column">
@@ -404,6 +407,9 @@
                                     </li>
                                     <li class="nav-item">
                                         <a href="{{ url('/admin/demoteStudentRecord') }}" class="nav-link">Demoted Student Record</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="{{ url('/admin/courseRegistrations') }}" class="nav-link">Course Registrations</a>
                                     </li>
                                 </ul>
                             </div>
