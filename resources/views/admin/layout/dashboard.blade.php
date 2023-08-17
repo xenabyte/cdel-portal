@@ -316,6 +316,12 @@
                                     <li class="nav-item">
                                         <a href="{{url('/admin/academicLevel')}}" class="nav-link" data-key="t-chat">Academic Levels </a>
                                     </li>
+                                    <li class="nav-item">
+                                        <a href="{{url('/admin/approvalLevel')}}" class="nav-link" data-key="t-chat">Memo Approval Levels </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="{{url('/admin/resultApprovalStatus')}}" class="nav-link" data-key="t-chat">Result Approval Status </a>
+                                    </li>
                                 </ul>
                             </div>
                         </li>
@@ -447,9 +453,6 @@
                                                 </li>
                                                 <li class="nav-item">
                                                     <a href="{{('/admin/staffRoles')}}" class="nav-link" data-key="t-cover"> Staff Roles </a>
-                                                </li>
-                                                <li class="nav-item">
-                                                    <a href="{{url('/admin/approvalLevel')}}" class="nav-link" data-key="t-chat">Approval Levels </a>
                                                 </li>
                                             </ul>
                                         </div>

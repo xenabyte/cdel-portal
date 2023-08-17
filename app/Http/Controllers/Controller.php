@@ -126,6 +126,7 @@ class Controller extends BaseController
 
     public function getSingleApplicant($studentIdCode, $path){
         $student = User::with('programme', 'programme.department', 'programme.department.faculty', 'transactions')->where('application_number', $studentIdCode)->first();
+        Log::info("message");
         if(!$student){
             alert()->info('Record not found', '')->persistent('Close');
             return redirect()->back();

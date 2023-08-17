@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Validator;
 
 use App\Models\AcademicLevel;
 use App\Models\ApprovalLevel;
+use App\Models\ResultApprovalStatus;
 use App\Models\Session;
 use App\Models\SessionSetting;
 use App\Models\Faculty;
@@ -690,4 +691,87 @@ class AcademicController extends Controller
         return redirect()->back();
     }
     
+
+    public function resultApprovalStatus(){
+
+        $resultApprovalStatuses = ResultApprovalStatus::get();
+        
+        return view('admin.resultApprovalStatus', [
+            'resultApprovalStatuses' => $resultApprovalStatuses
+        ]);
+    }
+    
+    public function addResultApprovalStatus(Request $request){
+        $validator = Validator::make($request->all(), [
+            'status' => 'required|string|unique:result_approval_statuses',
+        ]);
+
+        if($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+
+        $newStatus = [
+            'status' => $request->status,
+        ];
+        
+        if(ResultApprovalStatus::create($newStatus)){
+            alert()->success('Result Approval added successfully', '')->persistent('Close');
+            return redirect()->back();
+        }
+
+        alert()->error('Oops!', 'Something went wrong')->persistent('Close');
+        return redirect()->back();
+        
+    }
+
+    public function updateResultApprovalStatus(Request $request){
+        $validator = Validator::make($request->all(), [
+            'status_id' => 'required',
+        ]);
+
+        if($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+        if(!$status = ResultApprovalStatus::find($request->level_id)){
+            alert()->error('Oops', 'Invalid Status')->persistent('Close');
+            return redirect()->back();
+        }
+
+        $status->status = $request->status;
+
+        if($status->save()){
+            alert()->success('Changes Saved', '')->persistent('Close');
+            return redirect()->back();
+        }
+
+        alert()->error('Oops!', 'Something went wrong')->persistent('Close');
+        return redirect()->back();
+        
+    }
+
+    public function deleteResultApprovalStatus(Request $request){
+        $validator = Validator::make($request->all(), [
+            'status_id' => 'required',
+        ]);
+
+        if($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+        if(!$status = ResultApprovalStatus::find($request->level_id)){
+            alert()->error('Oops', 'Invalid Status ')->persistent('Close');
+            return redirect()->back();
+        }
+        
+        if($status->delete()){
+            alert()->success('Delete Successfully', '')->persistent('Close');
+            return redirect()->back();
+        }
+
+        alert()->error('Oops!', 'Something went wrong')->persistent('Close');
+        return redirect()->back();
+        
+    }
 }

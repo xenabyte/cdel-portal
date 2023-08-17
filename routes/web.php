@@ -58,6 +58,12 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'admin'],
   Route::post('/updateApprovalLevel', [App\Http\Controllers\Admin\AcademicController::class, 'updateApprovalLevel'])->name('updateApprovalLevel')->middleware(['auth:admin']);
   Route::post('/deleteApprovalLevel', [App\Http\Controllers\Admin\AcademicController::class, 'deleteApprovalLevel'])->name('deleteApprovalLevel')->middleware(['auth:admin']);
   
+  Route::get('/resultApprovalStatus', [App\Http\Controllers\Admin\AcademicController::class, 'resultApprovalStatus'])->name('resultApprovalStatus')->middleware(['auth:admin']);
+  Route::post('/addResultApprovalStatus', [App\Http\Controllers\Admin\AcademicController::class, 'addResultApprovalStatus'])->name('addResultApprovalStatus')->middleware(['auth:admin']);
+  Route::post('/updateResultApprovalStatus', [App\Http\Controllers\Admin\AcademicController::class, 'updateResultApprovalStatus'])->name('updateResultApprovalStatus')->middleware(['auth:admin']);
+  Route::post('/deleteResultApprovalStatus', [App\Http\Controllers\Admin\AcademicController::class, 'deleteResultApprovalStatus'])->name('deleteResultApprovalStatus')->middleware(['auth:admin']);
+  
+
   Route::get('/programmeCategory', [App\Http\Controllers\Admin\ProgrammeController::class, 'programmeCategory'])->name('programmeCategory')->middleware(['auth:admin']);
   Route::post('/addProgrammeCategory', [App\Http\Controllers\Admin\ProgrammeController::class, 'addProgrammeCategory'])->name('addProgrammeCategory')->middleware(['auth:admin']);
   Route::post('/updateProgrammeCategory', [App\Http\Controllers\Admin\ProgrammeController::class, 'updateProgrammeCategory'])->name('updateProgrammeCategory')->middleware(['auth:admin']);

@@ -326,8 +326,8 @@ class PaymentController extends Controller
             $studentId = $student->id;
         }
 
-        if(!empty($request->student_id)){
-            $applicant = Applicant::with('programme')->where('id', $request->student_id)->first();
+        if(!empty($request->user_id)){
+            $applicant = Applicant::with('programme')->where('id', $request->user_id)->first();
             $applicantId = $applicant->id;
         }
 
@@ -335,11 +335,11 @@ class PaymentController extends Controller
         $session = $request->academic_session;
 
 
-        if($payment->type == 'Application Fee'){
+        if($payment->type == 'Application Fee' || $payment->type == 'Acceptance Fee'){
             $validator = Validator::make($request->all(), [
-                'amountApplication' => 'required',
+                'amountAcceptance' => 'required',
             ],[
-                'amountApplication.required' => 'The amount field is required.',
+                'amountAcceptance.required' => 'The amount field is required.',
             ]);
         }elseif($payment->type == 'School Fee'){
             $validator = Validator::make($request->all(), [
@@ -399,26 +399,6 @@ class PaymentController extends Controller
             }
         }
 
-        if($payment->type != 'General Fee' && !empty($request->user_id)){
-            $totalPayment = $payment->structures-sum('amount');
-            $paymentTransactions = Transaction::where('user_id', $studentId)
-            ->where('payment_id', $payment->id)
-            ->where('session', $session)
-            ->where('status', 1)
-            ->get();
-
-            $totatAmountPaid = $paymentTransactions->sum('amount_payed');
-            if(($amount+$totatAmountPaid) > $totalPayment){
-                alert()->error('Oops!!!', 'Amount to be paid seems to be an overpayment, student is not charged')->persistent('Close');
-                if(!empty($request->student_id)){
-                    if($validator->fails()) {
-                        alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
-                        return $this->getSingleApplicant($applicant->application_number, 'admin.chargeStudent');
-                    }
-                }
-            }
-        }
-
         $reference = $this->generateRandomString(10);
         
         //Create new transaction
@@ -434,17 +414,13 @@ class PaymentController extends Controller
         ]);
 
         if(!empty($request->student_id)){
-            if($validator->fails()) {
-                alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
-                return $this->getSingleStudent($student->matric_number, 'admin.chargeStudent');
-            }
+            alert()->success('Good job', 'Student Charged')->persistent('Close');
+            return $this->getSingleStudent($student->matric_number, 'admin.chargeStudent');
         }
 
         if(!empty($request->user_id)){
-            if($validator->fails()) {
-                alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
-                return $this->getSingleApplicant($applicant->application_number, 'admin.chargeStudent');
-            }
+            alert()->success('Good Job', 'Applicant Charged')->persistent('Close');
+            return $this->getSingleApplicant($applicant->application_number, 'admin.chargeStudent');
         }
     }
 }
