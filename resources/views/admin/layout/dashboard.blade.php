@@ -327,27 +327,6 @@
                         </li>
 
 
-                        <li class="menu-title"><i class="ri-more-fill"></i> <span data-key="t-bursary">Bursary</span></li>
-
-                        <li class="nav-item">
-                            <a class="nav-link menu-link" href="#bursary" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="bursary">
-                                <i class="mdi mdi-bank-transfer"></i> <span data-key="t-bursary">Bursary</span>
-                            </a>
-                            <div class="collapse menu-dropdown" id="bursary">
-                                <ul class="nav nav-sm flex-column">
-                                    <li class="nav-item">
-                                        <a href="{{ url('/admin/payments') }}" class="nav-link"> Payments </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a href="{{('/admin/transactions')}}" class="nav-link"> Transactions </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a href="{{('/admin/chargeStudent')}}" class="nav-link">Charge 'a' Student </a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </li> <!-- end Bursary Menu -->
-
                         <li class="menu-title"><i class="ri-more-fill"></i> <span data-key="t-admission">Admission</span></li>
 
                         <li class="nav-item">
@@ -366,6 +345,7 @@
                                 </ul>
                             </div>
                         </li> <!-- end Bursary Menu -->
+
 
                         <li class="menu-title"><i class="ri-more-fill"></i> <span data-key="t-academics">Academics</span></li>
 
@@ -421,6 +401,22 @@
                             </div>
                         </li> <!-- end Dashboard Menu -->
 
+
+                        <li class="menu-title"><i class="ri-more-fill"></i> <span data-key="t-result">Result Management</span></li>
+
+                        <li class="nav-item">
+                            <a class="nav-link menu-link" href="#resultMgt" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="resultMgt">
+                                <i class="mdi mdi-credit-card-search-outline"></i> <span data-key="t-result">Result Management</span>
+                            </a>
+                            <div class="collapse menu-dropdown" id="resultMgt">
+                                <ul class="nav nav-sm flex-column">
+                                    <li class="nav-item">
+                                        <a href="{{ url('/admin/getStudentResults') }}" class="nav-link">Students Results</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li> <!-- end Dashboard Menu -->
+
                         <li class="menu-title"><i class="ri-more-fill"></i> <span data-key="t-staff">Staff Management</span></li>
 
                         <li class="nav-item">
@@ -460,6 +456,28 @@
                                 </ul>
                             </div>
                         </li>
+
+
+                        <li class="menu-title"><i class="ri-more-fill"></i> <span data-key="t-bursary">Bursary</span></li>
+
+                        <li class="nav-item">
+                            <a class="nav-link menu-link" href="#bursary" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="bursary">
+                                <i class="mdi mdi-bank-transfer"></i> <span data-key="t-bursary">Bursary</span>
+                            </a>
+                            <div class="collapse menu-dropdown" id="bursary">
+                                <ul class="nav nav-sm flex-column">
+                                    <li class="nav-item">
+                                        <a href="{{ url('/admin/payments') }}" class="nav-link"> Payments </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="{{('/admin/transactions')}}" class="nav-link"> Transactions </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="{{('/admin/chargeStudent')}}" class="nav-link">Charge 'a' Student </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li> <!-- end Bursary Menu -->
 
 
                         <li class="menu-title"><i class="ri-more-fill"></i> <span data-key="t-pages"></span></li>
@@ -563,25 +581,68 @@
 <script>
     function handleFacultyChange(event) {
         const selectedFaculty = event.target.value;
+        const departmentSelect = $('#department');
+
         if(selectedFaculty != ''){
-            axios.get("{{ url('/applicant/facultyById')  }}/"+selectedFaculty)
-            .then(response => {
-                const data = response.data;
-                const totalAmount = getTotalAmountForApplicationFee(data);
-                
-                // Set the total amount in the paragraph element
-                const amountParagraph = document.getElementById('amount');
-                amountParagraph.textContent = `Application Fee(Non Refundable): ₦${totalAmount.toFixed(2)}`;
-                document.getElementById('paymentInfo').style.display = 'block';
+            axios.get("{{ url('/admin/getDepartments') }}/"+selectedFaculty)
+            .then(function (response) {
+                departmentSelect.empty().append($('<option>', {
+                    value: '',
+                    text: '--Select--'
+                }));
+                $.each(response.data, function (index, department) {
+                    departmentSelect.append($('<option>', {
+                        value: department.id,
+                        text: department.name
+                    }));
+                });
             })
-            .catch(error => {
-                console.error(error);
+            .catch(function (error) {
+                console.error("Error fetching departments:", error);
             });
         }else{
-            document.getElementById('paymentInfo').style.display = 'none';
+            
+        }
+    }
+
+    function handleDepartmentChange(event) {
+        const selectedDepartment = event.target.value;
+        const programmeSelect = $('#programme');
+
+        if(selectedDepartment != ''){
+            axios.get("{{ url('/admin/getProgrammes') }}/"+selectedDepartment)
+            .then(function (response) {
+
+                programmeSelect.empty().append($('<option>', {
+                    value: '',
+                    text: '--Select--'
+                }));
+                $.each(response.data, function (index, programme) {
+                    programmeSelect.append($('<option>', {
+                        value: programme.id,
+                        text: programme.name
+                    }));
+                });
+            })
+            .catch(function (error) {
+                console.error("Error fetching departments:", error);
+            });
+        }else{
+            
         }
     }
 </script>
+<script>
+    $(document).ready(function() {
+        $('#myTable').DataTable({
+            dom: 'Bfrtip', // Show buttons
+            buttons: [
+                'csv', 'excel', 'print'
+            ]
+        });
+    });
+    </script>
+    
 <script>
     // Get the current time
     var currentTime = new Date();

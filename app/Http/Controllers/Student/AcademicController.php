@@ -155,6 +155,9 @@ class AcademicController extends Controller
                     $courseReg = CourseRegistration::create([
                         'student_id' => $studentId,
                         'course_id' => $courseId,
+                        'course_credit_unit' => $course->credit_unit,
+                        'course_code' => $course->code,
+                        'semester' => $course->semester,
                         'academic_session' => $academicSession,
                         'level_id' => $student->level_id,
                     ]);

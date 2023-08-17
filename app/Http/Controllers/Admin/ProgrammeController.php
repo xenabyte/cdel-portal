@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Validator;
 use App\Models\ProgrammeCategory;
 use App\Models\Programme;
 use App\Models\AcademicLevel;
+use App\Models\Department;
 
 use SweetAlert;
 use Mail;
@@ -162,5 +163,18 @@ class ProgrammeController extends Controller
         return redirect()->back();
         
     }
+
+    public function getDepartments($id){
+        $departments = Department::where('faculty_id', $id)->get();
+
+        return $departments;
+    }
+
+    public function getProgrammes($id){
+        $programmes = Programme::where('department_id', $id)->get();
+
+        return $programmes;
+    }
+    
 
 }

@@ -19,6 +19,9 @@ use App\Models\Guardian;
 use App\Models\NextOfKin;
 use App\Models\Payment;
 use App\Models\Utme;
+use App\Models\Faculty;
+use App\Models\Department;
+
 
 use App\Mail\ApplicationMail;
 use App\Mail\BankDetailsMail;

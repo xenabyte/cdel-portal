@@ -13,6 +13,9 @@ class CourseRegistration extends Model
     protected $fillable = [
         'student_id',
         'course_id',
+        'course_credit_unit',
+        'course_code',
+        'semester',
         'ca_score',
         'exam_score',
         'total',
