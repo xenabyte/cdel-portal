@@ -633,17 +633,6 @@
     }
 </script>
 <script>
-    $(document).ready(function() {
-        $('#myTable').DataTable({
-            dom: 'Bfrtip', // Show buttons
-            buttons: [
-                'csv', 'excel', 'print'
-            ]
-        });
-    });
-    </script>
-    
-<script>
     // Get the current time
     var currentTime = new Date();
     var currentHour = currentTime.getHours();

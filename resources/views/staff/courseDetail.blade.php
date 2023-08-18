@@ -55,21 +55,15 @@
             <div class="card-body">
 
                 <div class="px-2 py-2 mt-1">
-                    <p class="mb-1">A <span class="float-end">75%</span></p>
-                    <div class="progress mt-2 bg-soft-primary" style="height: 6px;">
-                        <div class="progress-bar progress-bar-striped bg-primary" role="progressbar" style="width: 75%" aria-valuenow="75" aria-valuemin="0" aria-valuemax="75">
+                    <p class="mb-1">Passed <span class="float-end">75%</span></p>
+                    <div class="progress mt-2 bg-soft-success" style="height: 6px;">
+                        <div class="progress-bar progress-bar-striped bg-success" role="progressbar" style="width: 75%" aria-valuenow="75" aria-valuemin="0" aria-valuemax="75">
                         </div>
                     </div>
 
-                    <p class="mt-3 mb-1">B <span class="float-end">47%</span></p>
-                    <div class="progress mt-2 bg-soft-primary" style="height: 6px;">
-                        <div class="progress-bar progress-bar-striped bg-primary" role="progressbar" style="width: 47%" aria-valuenow="47" aria-valuemin="0" aria-valuemax="47">
-                        </div>
-                    </div>
-
-                    <p class="mt-3 mb-1">C <span class="float-end">82%</span></p>
-                    <div class="progress mt-2 bg-soft-primary" style="height: 6px;">
-                        <div class="progress-bar progress-bar-striped bg-primary" role="progressbar" style="width: 82%" aria-valuenow="82" aria-valuemin="0" aria-valuemax="82">
+                    <p class="mt-3 mb-1">Failed <span class="float-end">47%</span></p>
+                    <div class="progress mt-2 bg-soft-danger" style="height: 6px;">
+                        <div class="progress-bar progress-bar-striped bg-danger" role="progressbar" style="width: 47%" aria-valuenow="47" aria-valuemin="0" aria-valuemax="47">
                         </div>
                     </div>
                 </div>

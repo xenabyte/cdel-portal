@@ -13,6 +13,8 @@ use App\Models\Course;
 use App\Models\CourseRegistration;
 use App\Models\Notification;
 use App\Models\GradeScale;
+use App\Models\ResultApprovalStatus;
+use App\Models\DegreeClass;
 
 
 
@@ -55,6 +57,29 @@ class Result
                 $studentRegistration->save();
             }
         }
+
+        return true;
+    }
+
+    public static function calculateCGPA($studentId){
+
+        $allRegisteredCourses = CourseRegistration::where([
+            'student_id' => $studentId,
+            'result_approval_id' => ResultApprovalStatus::getApprovalStatusId(ResultApprovalStatus::SENATE_APPROVED)
+        ])->where('grade', '!=', null)->get();
+
+        $allRegisteredCreditUnits =  $allRegisteredCourses->sum('course_credit_unit');
+        $allRegisteredGradePoints = $allRegisteredCourses->sum('points');
+        $CGPA = number_format($allRegisteredGradePoints / $allRegisteredCreditUnits, 2);
+        $classGrade = DegreeClass::computeClass($CGPA);
+        $class = $classGrade->degree_class;
+        $standing = $classGrade->id > 3? 'Not in Good Standing(NGS)' : 'Good Standing(GS)'; 
+
+        $student = Student::find($studentId);
+        $student->cgpa = $CGPA;
+        $student->degree_class = $class;
+        $student->standing = $standing;
+        $student->save();
 
         return true;
     }

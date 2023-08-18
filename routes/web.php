@@ -160,6 +160,8 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'admin'],
 
   Route::get('/getStudentResults', [App\Http\Controllers\Admin\ResultController::class, 'getStudentResults'])->name('getStudentResults')->middleware(['auth:admin']);
   Route::post('/generateStudentResults', [App\Http\Controllers\Admin\ResultController::class, 'generateStudentResults'])->name('generateStudentResults')->middleware(['auth:admin']);
+  Route::post('/approveResult', [App\Http\Controllers\Admin\ResultController::class, 'approveResult'])->name('approveResult')->middleware(['auth:admin']);
+
   
 });
 
@@ -278,6 +280,14 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'staff'],
   Route::get('/levelStudents/{id}', [App\Http\Controllers\Staff\ProgrammeController::class, 'levelStudents'])->name('levelStudents')->middleware(['auth:staff']);
 
   Route::post('/approveReg', [App\Http\Controllers\Staff\ProgrammeController::class, 'approveReg'])->name('approveReg')->middleware(['auth:staff']);
+
+  Route::get('/getDepartments/{id}', [App\Http\Controllers\Staff\ProgrammeController::class, 'getDepartments'])->name('getDepartments')->middleware(['auth:staff']);
+  Route::get('/getProgrammes/{id}', [App\Http\Controllers\Staff\ProgrammeController::class, 'getProgrammes'])->name('getProgrammes')->middleware(['auth:staff']);
+
+
+  Route::get('/getStudentResults', [App\Http\Controllers\Staff\ResultController::class, 'getStudentResults'])->name('getStudentResults')->middleware(['auth:staff']);
+  Route::post('/generateStudentResults', [App\Http\Controllers\Staff\ResultController::class, 'generateStudentResults'])->name('generateStudentResults')->middleware(['auth:staff']);
+  Route::post('/approveResult', [App\Http\Controllers\Staff\ResultController::class, 'approveResult'])->name('approveResult')->middleware(['auth:staff']);
 
   
 });

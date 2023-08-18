@@ -325,7 +325,7 @@
                         </li> <!-- end Dashboard Menu -->
                         @endif
 
-                        @if($staffLevelAdviserRole || $staffHODRole)
+                        @if($staffLevelAdviserRole || $staffHODRole || $staffVCRole || $staffDeanRole || $staffSubDeanRole)
                         <li class="nav-item">
                             <a class="nav-link menu-link" href="#courseSettings" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="courseSettings">
                                 <i class="mdi mdi-card"></i> <span  data-key="t-hot">Prog. Management</span>
@@ -335,9 +335,29 @@
                                     <li class="nav-item">
                                         <a href="{{ url('/staff/adviserProgrammes') }}" class="nav-link">Programmes</a>
                                     </li>
+
+                                    <li class="nav-item">
+                                        <a href="{{ url('/staff/courses') }}" class="nav-link">Courses</a>
+                                    </li>
                                 </ul>
                             </div>
                         </li>
+                        @endif
+
+
+                        @if($staffExamOfficerRole || $staffHODRole)
+                        <li class="nav-item">
+                            <a class="nav-link menu-link" href="#resultMgt" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="resultMgt">
+                                <i class="mdi mdi-credit-card-search-outline"></i> <span data-key="t-result">Result Management</span>
+                            </a>
+                            <div class="collapse menu-dropdown" id="resultMgt">
+                                <ul class="nav nav-sm flex-column">
+                                    <li class="nav-item">
+                                        <a href="{{ url('/staff/getStudentResults') }}" class="nav-link">Students Results</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li> <!-- end Dashboard Menu -->
                         @endif
 
                         <li class="nav-item">
@@ -470,7 +490,77 @@
         // Display the greeting
         greetingElement.innerHTML = greeting;
     </script>
+    <script>
+        function handleFacultyChange(event) {
+            const selectedFaculty = event.target.value;
+            const departmentSelect = $('#department');
 
+            if(selectedFaculty != ''){
+                axios.get("{{ url('/admin/getDepartments') }}/"+selectedFaculty)
+                .then(function (response) {
+                    departmentSelect.empty().append($('<option>', {
+                        value: '',
+                        text: '--Select--'
+                    }));
+
+                    var staffRoleVCRole = "<?php echo $staffVCRole ?>";
+                    var staffDepartmentId =  "<?php echo $staff->department_id ?>";
+                    
+                    $.each(response.data, function (index, department) {
+                        if (!staffRoleVCRole && staffDepartmentId == department.id) {
+                            departmentSelect.append($('<option>', {
+                                value: department.id,
+                                text: department.name
+                            }));
+                        }
+                    });
+
+                    if (staffRoleVCRole) {
+                        $.each(response.data, function (index, department) {
+                            departmentSelect.append($('<option>', {
+                                value: department.id,
+                                text: department.name
+                            }));
+                        });
+                    }
+
+                    
+                })
+                .catch(function (error) {
+                    console.error("Error fetching departments:", error);
+                });
+            }else{
+                
+            }
+        }
+
+        function handleDepartmentChange(event) {
+            const selectedDepartment = event.target.value;
+            const programmeSelect = $('#programme');
+
+            if(selectedDepartment != ''){
+                axios.get("{{ url('/admin/getProgrammes') }}/"+selectedDepartment)
+                .then(function (response) {
+
+                    programmeSelect.empty().append($('<option>', {
+                        value: '',
+                        text: '--Select--'
+                    }));
+                    $.each(response.data, function (index, programme) {
+                        programmeSelect.append($('<option>', {
+                            value: programme.id,
+                            text: programme.name
+                        }));
+                    });
+                })
+                .catch(function (error) {
+                    console.error("Error fetching departments:", error);
+                });
+            }else{
+                
+            }
+        }
+    </script>
     <script>
         function updateNotificationStatus(event) {
             event.preventDefault();

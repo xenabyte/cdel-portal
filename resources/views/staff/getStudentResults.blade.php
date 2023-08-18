@@ -1,5 +1,45 @@
-@extends('admin.layout.dashboard')
+@extends('staff.layout.dashboard')
+@php
+    $staff = Auth::guard('staff')->user();
+    $staffDeanRole = false;
+    $staffSubDeanRole = false;
+    $staffHODRole = false;
+    $staffVCRole = false;
+    $staffRegistrarRole = false;
+    $staffHRRole = false;
+    $staffLevelAdviserRole = false;
+    $staffExamOfficerRole = false;
 
+    $notifications = $staff->notifications()->orderBy('created_at', 'desc')->get();
+    
+    
+    foreach ($staff->staffRoles as $staffRole) {
+        if (strtolower($staffRole->role->role) == 'dean') {
+            $staffDeanRole = true;
+        }
+        if (strtolower($staffRole->role->role) == 'sub-dean') {
+            $staffSubDeanRole = true;
+        }
+        if (strtolower($staffRole->role->role) == 'hod') {
+            $staffHODRole = true;
+        }
+        if (strtolower($staffRole->role->role) == 'vice chancellor') {
+            $staffVCRole = true;
+        }
+        if (strtolower($staffRole->role->role) == 'registrar') {
+            $staffRegistrarRole = true;
+        }
+        if (strtolower($staffRole->role->role) == 'human resource') {
+            $staffHRRole = true;
+        }
+        if (strtolower($staffRole->role->role) == 'level adviser') {
+            $staffLevelAdviserRole = true;
+        }
+        if (strtolower($staffRole->role->role) == 'exam officer') {
+            $staffExamOfficerRole = true;
+        }
+    }
+@endphp
 @section('content')
 <div class="row">
     <div class="col-12">
@@ -28,16 +68,19 @@
                             <h4 class="mt-4 fw-semibold">Fetch Examination result</h4>
                             <p class="text-muted mt-3"></p>
                             <div class="mt-4">
-                                <form action="{{ url('/admin/generateStudentResults') }}" method="POST">
+                                <form action="{{ url('/staff/generateStudentResults') }}" method="POST">
                                     @csrf
                                     <div class="row g-3">
 
+                                        
                                         <div class="col-lg-12">
                                             <div class="form-floating">
                                                 <select class="form-select" id="faculty" name="faculty_id" aria-label="faculty" onchange="handleFacultyChange(event)">
                                                     <option value="" selected>--Select--</option>
                                                     @foreach($faculties as $faculty)
-                                                        <option value="{{ $faculty->id }}">{{ $faculty->name }}</option>
+                                                        @if(!$staffVCRole && $staff->faculty_id == $faculty->id)
+                                                            <option value="{{ $faculty->id }}">{{ $faculty->name }}</option>
+                                                        @endif
                                                     @endforeach
                                                 </select>
                                                 <label for="faculty">Faculty</label>
@@ -143,6 +186,18 @@
                                     <input type="hidden" name="department_id" value="{{ $department_id }}">
                                     <input type="hidden" name="faculty_id" value="{{ $faculty_id }}">
                                     <input type="hidden" name="session" value="{{ $academicSession }}">
+
+                                    @if($staffHODRole)
+                                    <input name="type" type="hidden" value="Department">
+                                    @endif
+                                    @if($staffDeanRole || $staffSubDeanRole)
+                                    <input name="type" type="hidden" value="Faculty">
+                                    @endif
+
+                                    @if($staffVCRole)
+                                    <input name="type" type="hidden" value="Senate">
+                                    @endif
+
                                     <hr>
                                     <button type="submit" class="btn btn-success w-100">Yes, Approve</button>
                                 </form>

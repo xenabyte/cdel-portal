@@ -39,6 +39,8 @@ class Student extends Authenticatable
         'admission_letter',
         'slug',
         'mentor_id',
+        'degree_class',
+        'standing',
         'cgpa'
     ];
 

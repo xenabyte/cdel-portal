@@ -270,4 +270,16 @@ class ProgrammeController extends Controller
         ]);
     }
 
+    public function getDepartments($id){
+        $departments = Department::where('faculty_id', $id)->get();
+
+        return $departments;
+    }
+
+    public function getProgrammes($id){
+        $programmes = Programme::where('department_id', $id)->get();
+
+        return $programmes;
+    }
+
 }

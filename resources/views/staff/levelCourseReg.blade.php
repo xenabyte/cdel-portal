@@ -11,15 +11,15 @@
     $staffExamOfficerRole = false;
 
     // staffAccessLevel
-    $staffAccessLevel = null;
+    // $staffAccessLevel = null;
 
-    foreach ($staff->staffRoles as $staffRole) {
-        $accessLevel = $staffRole['role']['access_level'];
+    // foreach ($staff->staffRoles as $staffRole) {
+    //     $accessLevel = $staffRole['role']['access_level'];
 
-        if ($staffAccessLevel == null || $accessLevel < $minimumAccessLevel) {
-            $staffAccessLevel = $accessLevel;
-        }
-    }
+    //     if ($staffAccessLevel == null || $accessLevel < $minimumAccessLevel) {
+    //         $staffAccessLevel = $accessLevel;
+    //     }
+    // }
         
     foreach ($staff->staffRoles as $staffRole) {
         if (strtolower($staffRole->role->role) == 'dean') {

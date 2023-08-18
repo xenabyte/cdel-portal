@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Staff;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -43,7 +43,7 @@ class ResultController extends Controller
         $academicSessions = Session::orderBy('id', 'desc')->get();
         $faculties = Faculty::get();
 
-        return view('admin.getStudentResults',[
+        return view('staff.getStudentResults',[
             'academicLevels' => $academicLevels,
             'academicSessions' => $academicSessions,
             'faculties' => $faculties
@@ -72,7 +72,7 @@ class ResultController extends Controller
             ])
             ->get();
 
-        return view('admin.getStudentResults',[
+        return view('staff.getStudentResults',[
             'students' => $students,
             'academicLevels' => $academicLevels,
             'academicSessions' => $academicSessions,
@@ -99,9 +99,7 @@ class ResultController extends Controller
                 'level_id' => $request->level_id,
                 'academic_session' => $request->session,
                 'semester' => $request->semester,
-            ])->where('grade', '!=', null)->update(['result_approval_id' => ResultApprovalStatus::getApprovalStatusId(ResultApprovalStatus::SENATE_APPROVED)]);
-
-            Result::calculateCGPA($student->id);
+            ])->where('grade', '!=', null)->where('result_approval_id', '!=', ResultApprovalStatus::getApprovalStatusId(ResultApprovalStatus::SENATE_APPROVED))->update(['result_approval_id' => ResultApprovalStatus::getApprovalStatusId($request->type)]);
         }
 
 
@@ -110,7 +108,7 @@ class ResultController extends Controller
         $faculties = Faculty::get();
 
         alert()->success('Result Approved', '')->persistent('Close');
-        return view('admin.getStudentResults',[
+        return view('staff.getStudentResults',[
             'academicLevels' => $academicLevels,
             'academicSessions' => $academicSessions,
             'faculties' => $faculties
