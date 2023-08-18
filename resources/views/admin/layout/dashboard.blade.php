@@ -361,11 +361,38 @@
                                     <li class="nav-item">
                                         <a href="{{ url('/admin/populateFaculty') }}" class="nav-link">Populate Faculty</a>
                                     </li>
+                                </ul>
+                            </div>
+                        </li> <!-- end Dashboard Menu -->
+
+                        <li class="menu-title"><i class="ri-more-fill"></i> <span data-key="t-courses">Course Management</span></li>
+                        <li class="nav-item">
+                            <a class="nav-link menu-link" href="#courseMgt" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="courseMgt">
+                                <i class="mdi mdi-bookshelf"></i> <span data-key="t-courses">Course Management</span>
+                            </a>
+                            <div class="collapse menu-dropdown" id="courseMgt">
+                                <ul class="nav nav-sm flex-column">
+                    
+                                    <li class="nav-item">
+                                        <a href="{{ url('/admin/studentCourses') }}" class="nav-link">Student Courses</a>
+                                    </li>
                                     <li class="nav-item">
                                         <a href="{{ url('/admin/populateCourse') }}" class="nav-link">Populate Course</a>
                                     </li>
+                                </ul>
+                            </div>
+                        </li> <!-- end Dashboard Menu -->
+
+                        <li class="menu-title"><i class="ri-more-fill"></i> <span data-key="t-result">Result Management</span></li>
+
+                        <li class="nav-item">
+                            <a class="nav-link menu-link" href="#resultMgt" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="resultMgt">
+                                <i class="mdi mdi-credit-card-search-outline"></i> <span data-key="t-result">Result Management</span>
+                            </a>
+                            <div class="collapse menu-dropdown" id="resultMgt">
+                                <ul class="nav nav-sm flex-column">
                                     <li class="nav-item">
-                                        <a href="{{ url('/admin/populateStaff') }}" class="nav-link">Populate Staff</a>
+                                        <a href="{{ url('/admin/getStudentResults') }}" class="nav-link">Students Results</a>
                                     </li>
                                 </ul>
                             </div>
@@ -401,22 +428,6 @@
                             </div>
                         </li> <!-- end Dashboard Menu -->
 
-
-                        <li class="menu-title"><i class="ri-more-fill"></i> <span data-key="t-result">Result Management</span></li>
-
-                        <li class="nav-item">
-                            <a class="nav-link menu-link" href="#resultMgt" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="resultMgt">
-                                <i class="mdi mdi-credit-card-search-outline"></i> <span data-key="t-result">Result Management</span>
-                            </a>
-                            <div class="collapse menu-dropdown" id="resultMgt">
-                                <ul class="nav nav-sm flex-column">
-                                    <li class="nav-item">
-                                        <a href="{{ url('/admin/getStudentResults') }}" class="nav-link">Students Results</a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </li> <!-- end Dashboard Menu -->
-
                         <li class="menu-title"><i class="ri-more-fill"></i> <span data-key="t-staff">Staff Management</span></li>
 
                         <li class="nav-item">
@@ -425,6 +436,9 @@
                             </a>
                             <div class="collapse menu-dropdown" id="staffMgt">
                                 <ul class="nav nav-sm flex-column">
+                                    <li class="nav-item">
+                                        <a href="{{ url('/admin/populateStaff') }}" class="nav-link">Populate Staff</a>
+                                    </li>
                                     <li class="nav-item">
                                         <a href="#staffApplicants" class="nav-link" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarSignIn" data-key="t-signin"> Staff Applicants
                                         </a>

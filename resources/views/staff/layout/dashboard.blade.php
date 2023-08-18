@@ -337,7 +337,7 @@
                                     </li>
 
                                     <li class="nav-item">
-                                        <a href="{{ url('/staff/courses') }}" class="nav-link">Courses</a>
+                                        <a href="{{ url('/staff/studentCourses') }}" class="nav-link">Student Courses</a>
                                     </li>
                                 </ul>
                             </div>

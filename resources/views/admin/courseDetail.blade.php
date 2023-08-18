@@ -1,7 +1,5 @@
-@extends('staff.layout.dashboard')
+@extends('admin.layout.dashboard')
 @php
-    $staff = Auth::guard('staff')->user();
-
     $totalStudent = $course->registeredStudents->count();
     $totalStudentPassed = $course->registeredStudents->where('grade', '!=', 'F')->count();
     $totalStudentFailed = $course->registeredStudents->where('grade', 'F')->count();
@@ -144,9 +142,10 @@
             </div>
             <hr>
             <div class="modal-body">
-                <form action="{{ url('/staff/sendMessage') }}" method="post" enctype="multipart/form-data">
+                <form action="{{ url('/admin/sendMessage') }}" method="post" enctype="multipart/form-data">
                     @csrf
                     <input type="hidden" name="course_id" value="{{ $course->id }}">
+                    <input type="hidden" name="staff_id" value="{{ $course->staff_id }}">
                     <div class="form-floating">
                         <textarea class="form-control" name="message"></textarea>
                         <label for="semester">Message</label>
@@ -171,9 +170,10 @@
             </div>
             <hr>
             <div class="modal-body">
-                <form action="{{ url('/staff/updateStudentResult') }}" method="post" enctype="multipart/form-data">
+                <form action="{{ url('/admin/updateStudentResult') }}" method="post" enctype="multipart/form-data">
                     @csrf
                     <input type="hidden" name="course_id" value="{{ $course->id }}">
+                    <input type="hidden" name="staff_id" value="{{ $course->staff_id }}">
                     <div class="form-floating mb-3">
                         <input type="text" name="matric_number" id="matric_number" class="form-control" required>
                         <label for="matric_number">Matric Number</label>
@@ -209,9 +209,10 @@
             </div>
             <hr>
             <div class="modal-body">
-                <form action="{{ url('/staff/staffUploadResult') }}" method="post" enctype="multipart/form-data">
+                <form action="{{ url('/admin/staffUploadResult') }}" method="post" enctype="multipart/form-data">
                     @csrf
                     <input type="hidden" name="course_id" value="{{ $course->id }}">
+                    <input type="hidden" name="staff_id" value="{{ $course->staff_id }}">
                     <div class="row">
                         <div class="col-lg-12">
                             <div>

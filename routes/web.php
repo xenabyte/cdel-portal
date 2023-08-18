@@ -162,6 +162,14 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'admin'],
   Route::post('/generateStudentResults', [App\Http\Controllers\Admin\ResultController::class, 'generateStudentResults'])->name('generateStudentResults')->middleware(['auth:admin']);
   Route::post('/approveResult', [App\Http\Controllers\Admin\ResultController::class, 'approveResult'])->name('approveResult')->middleware(['auth:admin']);
 
+  Route::get('/studentCourses', [App\Http\Controllers\Admin\ProgrammeController::class, 'studentCourses'])->name('studentCourses')->middleware(['auth:admin']);
+  Route::post('/getStudentCourses', [App\Http\Controllers\Admin\ProgrammeController::class, 'getStudentCourses'])->name('getStudentCourses')->middleware(['auth:admin']);
+  Route::get('/courseDetail/{id}', [App\Http\Controllers\Admin\ProgrammeController::class, 'courseDetail'])->name('courseDetail')->middleware(['auth:admin']);
+  Route::post('/sendMessage', [App\Http\Controllers\Admin\ProgrammeController::class, 'sendMessage'])->name('sendMessage')->middleware(['auth:admin']);
+
+  Route::post('/staffUploadResult', [App\Http\Controllers\Admin\ProgrammeController::class, 'staffUploadResult'])->name('staffUploadResult')->middleware(['auth:admin']);
+  Route::post('/updateStudentResult', [App\Http\Controllers\Admin\ProgrammeController::class, 'updateStudentResult'])->name('updateStudentResult')->middleware(['auth:admin']);
+
   
 });
 
@@ -234,10 +242,11 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'staff'],
 
   Route::post('/getCourses', [App\Http\Controllers\Staff\StaffController::class, 'getCourses'])->name('getCourses')->middleware(['auth:staff']);
   Route::post('/assignCourse', [App\Http\Controllers\Staff\StaffController::class, 'assignCourse'])->name('assignCourse')->middleware(['auth:staff']);
-
   Route::get('/courseDetail/{id}', [App\Http\Controllers\Staff\StaffController::class, 'courseDetail'])->name('courseDetail')->middleware(['auth:staff']);
   Route::post('/sendMessage', [App\Http\Controllers\Staff\StaffController::class, 'sendMessage'])->name('sendMessage')->middleware(['auth:staff']);
 
+  Route::get('/studentCourses', [App\Http\Controllers\Staff\StaffController::class, 'studentCourses'])->name('studentCourses')->middleware(['auth:staff']);
+  Route::post('/getStudentCourses', [App\Http\Controllers\Staff\StaffController::class, 'getStudentCourses'])->name('getStudentCourses')->middleware(['auth:staff']);
   Route::post('/staffUploadResult', [App\Http\Controllers\Staff\StaffController::class, 'staffUploadResult'])->name('staffUploadResult')->middleware(['auth:staff']);
   Route::post('/updateStudentResult', [App\Http\Controllers\Staff\StaffController::class, 'updateStudentResult'])->name('updateStudentResult')->middleware(['auth:staff']);
 
@@ -287,7 +296,7 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'staff'],
 
   Route::get('/getStudentResults', [App\Http\Controllers\Staff\ResultController::class, 'getStudentResults'])->name('getStudentResults')->middleware(['auth:staff']);
   Route::post('/generateStudentResults', [App\Http\Controllers\Staff\ResultController::class, 'generateStudentResults'])->name('generateStudentResults')->middleware(['auth:staff']);
-  Route::post('/approveResult', [App\Http\Controllers\Staff\ResultController::class, 'approveResult'])->name('approveResult')->middleware(['auth:staff']);
+  Route::post('/approveResult', [App\Http\Controllers\Staff\ResultController::class, 'approveResult'])->name('approveResult')->middleware(['auth:staff']); 
 
   
 });

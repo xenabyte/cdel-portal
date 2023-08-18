@@ -36,7 +36,6 @@
                             <th scope="col">Course Title</th>
                             <th scope="col">Course Unit</th>
                             <th scope="col">Status</th>
-                            <th scope="col">Enrolled Student Count</th>
                             <th scope="col">Level</th>
                             <th scope="col"></th>
                         </tr>
@@ -49,7 +48,6 @@
                             <td>{{$course->name }}</td>
                             <td>{{$course->credit_unit}} </td>
                             <td>{{$course->status}}</td>
-                            <td>{{$course->registrations_count  }}</td>
                             <td>{{$course->level->level}}</td>
                             <td>
                                 <a href="{{ url('/staff/courseDetail/'.$course->id) }}" class="btn btn-lg btn-primary">Course Details</a>

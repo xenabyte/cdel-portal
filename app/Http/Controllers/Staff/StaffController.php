@@ -167,10 +167,50 @@ class StaffController extends Controller
         $staff = Auth::guard('staff')->user();
         $staffId = $staff->id;
 
-        $courses = Course::withCount('registrations')->with('level')->where('staff_id', $staffId)->get();
+        $courses = Course::with('level')->where('staff_id', $staffId)->get();
 
         return view('staff.courses', [
             'courses' => $courses,
+        ]);
+    }
+
+    public function studentCourses(Request $request){
+
+        $programmes = Programme::get();
+        $academicLevels = AcademicLevel::get();
+
+        return view('staff.studentCourses',[
+            'programmes' => $programmes,
+            'academicLevels' => $academicLevels
+        ]);
+    }
+
+    public function getStudentCourses(Request $request){
+
+        $validator = Validator::make($request->all(), [
+            'programme_id' => 'required',
+            'level_id' => 'required',
+            'semester' => 'required',
+        ]);
+
+        if($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+
+        $courses = Course::with('staff')->where('programme_id', $request->programme_id)->where('level_id', $request->level_id)->where('semester', $request->semester)->get();
+        $programme = Programme::find($request->programme_id);
+        $academicLevel = AcademicLevel::find($request->level_id);
+
+        $programmes = Programme::get();
+        $academicLevels = AcademicLevel::get();
+
+        return view('staff.studentCourses',[
+            'programmes' => $programmes,
+            'academicLevels' => $academicLevels,
+            'courses' => $courses,
+            'academiclevel' => $academicLevel,
+            'programme' => $programme,
         ]);
     }
 
@@ -182,7 +222,7 @@ class StaffController extends Controller
         $academicSession = $globalData->sessionSetting['academic_session'];
         $applicationSession = $globalData->sessionSetting['application_session'];
 
-        $course = Course::with('level', 'registrations', 'registrations.student', 'registrations.student.applicant', 'registrations.student.programme')->where('staff_id', $staffId)->first();
+        $course = Course::with('level', 'registrations', 'registrations.student', 'registrations.student.applicant', 'registrations.student.programme')->where('id', $id)->first();
         $registeredStudents = $course->registrations->where('academic_session', $academicSession)->pluck('student');
         $course->registeredStudents = $registeredStudents;
 
@@ -819,7 +859,7 @@ class StaffController extends Controller
         if($department->save()){
             if(!$staffRole = StaffRole::where('staff_id', $staff->id)->where('role_id', 1)->first()) {
                 StaffRole::create([
-                    'role_id' => 11, //Exam Officer role id
+                    'role_id' => 11, 
                     'staff_id' => $request->staff_id,
                 ]);
             }

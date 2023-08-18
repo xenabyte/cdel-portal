@@ -56,7 +56,6 @@ class ResultController extends Controller
         $faculties = Faculty::get();
 
         $programme = Programme::find($request->programme_id);
-
         $academicLevel = AcademicLevel::find($request->level_id);
 
         $students = Student::
@@ -92,7 +91,6 @@ class ResultController extends Controller
         $students = Student::whereIn('id', $studentIds)->get();
 
         foreach ($students as $student) {
-            Log::info("message:". $student->Id);
             
             $studentRegistration = CourseRegistration::where([
                 'student_id' => $student->id,
