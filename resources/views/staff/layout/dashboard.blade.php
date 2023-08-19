@@ -11,6 +11,8 @@
     $staffHRRole = false;
     $staffLevelAdviserRole = false;
     $staffExamOfficerRole = false;
+    $sfaffPublicRelationRole = false;
+    $sfaffStudentCareRole = false;
 
     $notifications = $staff->notifications()->orderBy('created_at', 'desc')->get();
     
@@ -40,6 +42,13 @@
         if (strtolower($staffRole->role->role) == 'exam officer') {
             $staffExamOfficerRole = true;
         }
+        if (strtolower($staffRole->role->role) == 'public relation') {
+            $sfaffPublicRelationRole = true;
+        }
+        if (strtolower($staffRole->role->role) == 'student care') {
+            $sfaffStudentCareRole = true;
+        }
+        
     }
 @endphp
 

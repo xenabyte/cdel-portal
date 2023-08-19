@@ -9,18 +9,12 @@
     $staffHRRole = false;
     $staffLevelAdviserRole = false;
     $staffExamOfficerRole = false;
+    $sfaffPublicRelationRole = false;
+    $sfaffStudentCareRole = false;
 
-    // staffAccessLevel
-    // $staffAccessLevel = null;
-
-    // foreach ($staff->staffRoles as $staffRole) {
-    //     $accessLevel = $staffRole['role']['access_level'];
-
-    //     if ($staffAccessLevel == null || $accessLevel < $minimumAccessLevel) {
-    //         $staffAccessLevel = $accessLevel;
-    //     }
-    // }
-        
+    $notifications = $staff->notifications()->orderBy('created_at', 'desc')->get();
+    
+    
     foreach ($staff->staffRoles as $staffRole) {
         if (strtolower($staffRole->role->role) == 'dean') {
             $staffDeanRole = true;
@@ -46,6 +40,13 @@
         if (strtolower($staffRole->role->role) == 'exam officer') {
             $staffExamOfficerRole = true;
         }
+        if (strtolower($staffRole->role->role) == 'public relation') {
+            $sfaffPublicRelationRole = true;
+        }
+        if (strtolower($staffRole->role->role) == 'student care') {
+            $sfaffStudentCareRole = true;
+        }
+        
     }
 @endphp
 @section('content')

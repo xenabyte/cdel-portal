@@ -1,6 +1,7 @@
 @extends('staff.layout.dashboard')
 @php
-    $staff = Auth::guard('staff')->user();
+
+$staff = Auth::guard('staff')->user();
     $staffDeanRole = false;
     $staffSubDeanRole = false;
     $staffHODRole = false;
@@ -9,18 +10,10 @@
     $staffHRRole = false;
     $staffLevelAdviserRole = false;
     $staffExamOfficerRole = false;
+    $sfaffPublicRelationRole = false;
+    $sfaffStudentCareRole = false;
 
-    // // staffAccessLevel
-    // $staffAccessLevel = null;
-
-    // foreach ($staff->staffRoles as $staffRole) {
-    //     $accessLevel = $staffRole['role']['access_level'];
-
-    //     if ($staffAccessLevel == null || $accessLevel < $minimumAccessLevel) {
-    //         $staffAccessLevel = $accessLevel;
-    //     }
-    // }
-        
+    
     foreach ($staff->staffRoles as $staffRole) {
         if (strtolower($staffRole->role->role) == 'dean') {
             $staffDeanRole = true;
@@ -46,7 +39,29 @@
         if (strtolower($staffRole->role->role) == 'exam officer') {
             $staffExamOfficerRole = true;
         }
+        if (strtolower($staffRole->role->role) == 'public relation') {
+            $sfaffPublicRelationRole = true;
+        }
+        if (strtolower($staffRole->role->role) == 'student care') {
+            $sfaffStudentCareRole = true;
+        }
+        
     }
+    
+
+    // staffAccessLevel
+    $staffAccessLevel = null;
+    $minimumAccessLevel = 0;
+
+    foreach ($staff->staffRoles as $staffRole) {
+        $accessLevel = $staffRole['role']['access_level'];
+
+        if ($staffAccessLevel == null || $accessLevel < $minimumAccessLevel) {
+            $staffAccessLevel = $accessLevel;
+        }
+    }
+        
+    
 @endphp
 @section('content')
 <div class="row">

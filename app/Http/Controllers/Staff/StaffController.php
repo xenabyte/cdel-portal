@@ -16,6 +16,7 @@ use App\Models\User as Applicant;
 use App\Models\Student;
 use App\Models\Programme;
 use App\Models\AcademicLevel;
+use App\Models\Session;
 use App\Models\Course;
 use App\Models\Notification;
 use App\Models\GradeScale;
@@ -287,9 +288,13 @@ class StaffController extends Controller
 
     public function studentProfile(Request $request, $slug){
         $student = Student::with('applicant', 'applicant.utmes', 'programme', 'transactions')->where('slug', $slug)->first();
+        $academicLevels = AcademicLevel::orderBy('id', 'desc')->get();
+        $sessions = Session::orderBy('id', 'desc')->get();
 
         return view('staff.studentProfile', [
-            'student' => $student
+            'student' => $student,
+            'academicLevels' => $academicLevels,
+            'sessions' => $sessions
         ]);
     }
 
@@ -916,6 +921,101 @@ class StaffController extends Controller
             'levels' => $levels,
             'students' => $students,
         ]);
+    }
+
+    public function uploadStudentImage(Request $request){
+        $validator = Validator::make($request->all(), [
+            'student_id' => 'required',
+            'image' => 'required',
+        ]);
+
+        if($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+
+        $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-',$student->matric_number.$student->lastname.$student->othernames)));
+
+        $imageUrl = 'uploads/student/'.$slug.'.'.$request->file('image')->getClientOriginalExtension();
+        $image = $request->file('image')->move('uploads/student', $imageUrl);
+        $student->image = $imageUrl;
+
+        if($student->save()){
+            alert()->success('Image Uploaded successfully', '')->persistent('Close');
+            return redirect()->back();
+        }
+
+        alert()->error('Oops!', 'Something went wrong')->persistent('Close');
+        return redirect()->back();
+    }
+
+    public function changeStudentPassword (Request $request) {
+
+        $validator = Validator::make($request->all(), [
+            'student_id' => 'required',
+            'password' => 'required',
+            'confirm_password' => 'required'
+        ]);
+
+
+        if($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+
+        if($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+
+        if(!$student = Student::find($request->student_id)){
+            alert()->error('Oops', 'Invalid Student ')->persistent('Close');
+            return redirect()->back();
+        }
+
+        if($request->new_password == $request->confirm_password){
+            $student->password = bcrypt($request->new_password);
+        }else{
+            alert()->error('Oops!', 'Password mismatch')->persistent('Close');
+            return redirect()->back();
+        }
+
+        if($student->save()) {
+            alert()->success('Success', 'Save Changes')->persistent('Close');
+            return redirect()->back();
+        }
+
+        alert()->error('Oops!', 'An Error Occurred')->persistent('Close');
+        return redirect()->back();
+    }
+
+    public function changeStudentCreditLoad (Request $request) {
+
+        $validator = Validator::make($request->all(), [
+            'student_id' => 'required',
+            'credit_load' => 'required',
+        ]);
+
+
+        if($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+
+        if(!$student = Student::find($request->student_id)){
+            alert()->error('Oops', 'Invalid Student ')->persistent('Close');
+            return redirect()->back();
+        }
+
+        $student->credit_load = $request->credit_load;
+
+        if($student->save()) {
+            alert()->success('Success', 'Save Changes')->persistent('Close');
+            return redirect()->back();
+        }
+
+        alert()->error('Oops!', 'An Error Occurred')->persistent('Close');
+        return redirect()->back();
     }
 
 

@@ -188,7 +188,7 @@ class ApplicationController extends Controller
         }
 
         if(!empty($request->image)){
-            $imageUrl = 'uploads/applicant/'.$slug.'.'.$request->file('image')->getClientOriginalExtension();
+            $imageUrl = 'uploads/applicant/'.$user->application_number.$slug.'.'.$request->file('image')->getClientOriginalExtension();
             $image = $request->file('image')->move('uploads/applicant', $imageUrl);
 
             $user->image = $imageUrl;

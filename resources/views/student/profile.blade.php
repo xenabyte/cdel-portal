@@ -452,7 +452,7 @@
                     </div>
                     <!--end tab-pane-->
                     <div class="tab-pane" id="changePassword" role="tabpanel">
-                        <form action="{{ url('student/changePassword') }}">
+                        <form action="{{ url('student/changePassword') }}" method="POST">
                             @csrf
                             <div class="row g-2">
                                 <div class="col-lg-4">

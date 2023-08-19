@@ -1,5 +1,16 @@
 @extends('admin.layout.dashboard')
+@php
+    // Initialize the maximum access level with the minimum possible value
+    $maxAccessLevel = 0;
 
+    // Iterate through the data to find the maximum access level
+    foreach ($roles as $item) {
+        $accessLevel = $item["access_level"];
+        if ($accessLevel > $maxAccessLevel) {
+            $maxAccessLevel = $accessLevel;
+        }
+    }
+@endphp
 @section('content')
 <!-- start page title -->
 <div class="row">
@@ -36,6 +47,7 @@
                         <tr>
                             <th scope="col">Id</th>
                             <th scope="col">Name</th>
+                            <th scope="col">Access Level</th>
                             <th scope="col"></th>
                         </tr>
                     </thead>
@@ -44,6 +56,7 @@
                         <tr>
                             <th scope="row">{{ $loop->iteration }}</th>
                             <td>{{ $role->role }} </td>
+                            <td>{{ $role->access_level }} </td>
                             <td>
                                 <div class="hstack gap-3 fs-15">
                                     <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#delete{{$role->id}}" class="link-danger"><i class="ri-delete-bin-5-line"></i></a>
@@ -94,6 +107,11 @@
                                                             <input type="text" class="form-control" name="role" id="role" value="{{ $role->role }}">
                                                         </div>
 
+                                                        <div class="mb-3">
+                                                            <label for="access_level" class="form-label">Role Access Level</label>
+                                                            <input type="number" class="form-control" name="access_level"  id="access_level" value="{{ $role->access_level }}">
+                                                        </div>
+
                                                         <hr>
                                                         <div class="text-end">
                                                             <button type="submit" class="btn btn-primary">Save Changes</button>
@@ -118,7 +136,7 @@
 
 <div id="add" class="modal fade" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" style="display: none;">
     <!-- Fullscreen Modals -->
-    <div class="modal-dialog modal-xl">
+    <div class="modal-dialog modal-md modal-dialog-centered">
         <div class="modal-content border-0 overflow-hidden">
             <div class="modal-header p-3">
                 <h4 class="card-title mb-0">Add Role</h4>
@@ -131,6 +149,11 @@
                     <div class="mb-3">
                         <label for="role" class="form-label">Role</label>
                         <input type="text" class="form-control" name="role" id="role">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="access_level" class="form-label">Role Access Level</label>
+                        <input type="number" class="form-control" name="access_level"  id="access_level">
                     </div>
 
                     <hr>

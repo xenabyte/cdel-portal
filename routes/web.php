@@ -170,6 +170,11 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'admin'],
   Route::post('/staffUploadResult', [App\Http\Controllers\Admin\ProgrammeController::class, 'staffUploadResult'])->name('staffUploadResult')->middleware(['auth:admin']);
   Route::post('/updateStudentResult', [App\Http\Controllers\Admin\ProgrammeController::class, 'updateStudentResult'])->name('updateStudentResult')->middleware(['auth:admin']);
 
+  Route::post('/generateResult', [App\Http\Controllers\Admin\ResultController::class, 'generateResult'])->name('generateResult')->middleware(['auth:admin']);
+  Route::post('/uploadStudentImage', [App\Http\Controllers\Admin\StaffController::class, 'uploadStudentImage'])->name('uploadStudentImage')->middleware(['auth:admin']);
+  Route::post('/changeStudentPassword', [App\Http\Controllers\Admin\StaffController::class, 'changeStudentPassword'])->name('changeStudentPassword')->middleware(['auth:admin']);
+  Route::post('/changeStudentCreditLoad', [App\Http\Controllers\Admin\StaffController::class, 'changeStudentCreditLoad'])->name('changeStudentCreditLoad')->middleware(['auth:admin']);
+
   
 });
 
@@ -298,6 +303,11 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'staff'],
   Route::post('/generateStudentResults', [App\Http\Controllers\Staff\ResultController::class, 'generateStudentResults'])->name('generateStudentResults')->middleware(['auth:staff']);
   Route::post('/approveResult', [App\Http\Controllers\Staff\ResultController::class, 'approveResult'])->name('approveResult')->middleware(['auth:staff']); 
 
+  Route::post('/generateResult', [App\Http\Controllers\Staff\ResultController::class, 'generateResult'])->name('generateResult')->middleware(['auth:staff']);
+  Route::post('/uploadStudentImage', [App\Http\Controllers\Staff\StaffController::class, 'uploadStudentImage'])->name('uploadStudentImage')->middleware(['auth:staff']);
+  Route::post('/changeStudentPassword', [App\Http\Controllers\Staff\StaffController::class, 'changeStudentPassword'])->name('changeStudentPassword')->middleware(['auth:staff']);
+  Route::post('/changeStudentCreditLoad', [App\Http\Controllers\Staff\StaffController::class, 'changeStudentCreditLoad'])->name('changeStudentCreditLoad')->middleware(['auth:staff']);
+
   
 });
 
@@ -383,7 +393,6 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'applican
   Route::post('/deleteOlevel', [App\Http\Controllers\User\ApplicationController::class, 'deleteOlevel'])->middleware(['auth:user']);
   Route::post('/submitApplication', [App\Http\Controllers\User\ApplicationController::class, 'submitApplication'])->middleware(['auth:user']);
   Route::post('/nokBioData', [App\Http\Controllers\User\ApplicationController::class, 'nokBioData'])->middleware(['auth:user']);
-  
 
   Route::post('/saveDe', [App\Http\Controllers\User\ApplicationController::class, 'saveDe'])->middleware(['auth:user']);
   Route::post('/saveProgramme', [App\Http\Controllers\User\ApplicationController::class, 'saveProgramme'])->middleware(['auth:user']);

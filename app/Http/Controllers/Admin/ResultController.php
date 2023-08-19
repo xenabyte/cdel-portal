@@ -25,8 +25,12 @@ use App\Models\Student;
 use App\Models\StudentDemotion;
 use App\Models\StudentCourseRegistration;
 use App\Models\CourseRegistration;
+use App\Models\Transaction;
+use App\Models\Payment;
+
 
 use App\Libraries\Result\Result;
+use App\Libraries\Pdf\Pdf;
 
 use SweetAlert;
 use Mail;
@@ -113,5 +117,94 @@ class ResultController extends Controller
             'academicSessions' => $academicSessions,
             'faculties' => $faculties
         ]);
+    }
+
+    public function generateResult(Request $request){
+        $validator = Validator::make($request->all(), [
+            'semester' => 'required',
+            'session' => 'required',
+            'level_id' => 'required',
+            'student_id' => 'required',
+        ]);
+
+        if($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+
+        $studentId = $request->student_id;
+        $student = Student::find($studentId);
+        $globalData = $request->input('global_data');
+
+        $semester = $request->semester;
+        $academicSession = $request->session;
+        $levelId = $request->level_id;
+        $academicLevel = AcademicLevel::find($levelId);
+        $level = $academicLevel->level;
+
+        $courseRegs = CourseRegistration::with('course')
+        ->where('student_id', $studentId)
+        ->where('academic_session', $academicSession)
+        ->where('result_approval_id',  ResultApprovalStatus::getApprovalStatusId(ResultApprovalStatus::SENATE_APPROVED))
+        ->whereHas('course', function ($query) use ($semester) {
+            $query->where('semester', $semester);
+        })
+        ->get();
+
+        if(!$courseRegs->count() > 0) {
+            alert()->info('Oops!', 'Record not found')->persistent('Close');
+            return redirect()->back();
+        }
+
+        $schoolPayment = Payment::with('structures')
+            ->where('type', Payment::PAYMENT_TYPE_SCHOOL)
+            ->where('programme_id', $student->programme_id)
+            ->where('level_id', $levelId)
+            ->where('academic_session', $academicSession)
+            ->first();
+
+        if(!$schoolPayment){
+            alert()->info('Programme info missing, contact administrator', '')->persistent('Close');
+            return redirect()->back();
+        }
+
+        $schoolPaymentId = $schoolPayment->id;
+        $schoolAmount = $schoolPayment->structures->sum('amount');
+        // $schoolPaymentTransaction = Transaction::where('student_id', $studentId)
+        //     ->where('payment_id', $schoolPaymentId)
+        //     ->where('session', $academicSession)
+        //     ->where('status', 1)
+        //     ->get();
+
+        // $passTuitionPayment = false;
+        // $fullTuitionPayment = false;
+        // $passEightyTuition = false;
+        // if($schoolPaymentTransaction && $schoolPaymentTransaction->sum('amount_payed') > $schoolAmount * 0.4){
+        //     $passTuitionPayment = true;
+        // }
+
+        // if($schoolPaymentTransaction && $schoolPaymentTransaction->sum('amount_payed') > $schoolAmount * 0.7){
+        //     $passEightyTuition = true;
+        // }
+
+        // if($schoolPaymentTransaction && $schoolPaymentTransaction->sum('amount_payed') >= $schoolAmount){
+        //     $passEightyTuition = true;
+        //     $fullTuitionPayment = true;
+        // }
+
+        // if($semester == 1 && !$passTuitionPayment){
+        //     alert()->info('Oops!', 'Please be informed that in order to generate your examination results, it is necessary to clear 100% of school fees.')->persistent('Close');
+        //     return redirect()->back();
+        // }
+
+        // if($semester == 2 && !$fullTuitionPayment){
+        //     alert()->info('Oops!', 'Please be informed that in order to generate your examination results, it is necessary to clear 100% of school fees.')->persistent('Close');
+        //     return redirect()->back();
+        // }
+
+        $pdf = new Pdf();
+        $examResult = $pdf->generateExamResult($studentId, $academicSession, $semester, $level);
+
+        return redirect(asset($examResult));
     }
 }

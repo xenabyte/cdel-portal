@@ -1,4 +1,4 @@
-@extends('staff.layout.dashboard')
+@extends('admin.layout.dashboard')
 @php
 
 $qrcode = 'https://chart.googleapis.com/chart?chs=300x300&cht=qr&chl='.env('APP_URL').'/studentDetails/'.$student->slug;
@@ -6,54 +6,6 @@ $name = $student->applicant->lastname.' '.$student->applicant->othernames;
 $transactions = $student->transactions()->orderBy('created_at', 'desc')->get();
 $studentRegistrations = $student->courseRegistrationDocument()->orderBy('created_at', 'desc')->take(10)->get();
 
-    $staff = Auth::guard('staff')->user();
-    $staffDeanRole = false;
-    $staffSubDeanRole = false;
-    $staffHODRole = false;
-    $staffVCRole = false;
-    $staffRegistrarRole = false;
-    $staffHRRole = false;
-    $staffLevelAdviserRole = false;
-    $staffExamOfficerRole = false;
-    $sfaffPublicRelationRole = false;
-    $sfaffStudentCareRole = false;
-
-    $notifications = $staff->notifications()->orderBy('created_at', 'desc')->get();
-    
-    
-    foreach ($staff->staffRoles as $staffRole) {
-        if (strtolower($staffRole->role->role) == 'dean') {
-            $staffDeanRole = true;
-        }
-        if (strtolower($staffRole->role->role) == 'sub-dean') {
-            $staffSubDeanRole = true;
-        }
-        if (strtolower($staffRole->role->role) == 'hod') {
-            $staffHODRole = true;
-        }
-        if (strtolower($staffRole->role->role) == 'vice chancellor') {
-            $staffVCRole = true;
-        }
-        if (strtolower($staffRole->role->role) == 'registrar') {
-            $staffRegistrarRole = true;
-        }
-        if (strtolower($staffRole->role->role) == 'human resource') {
-            $staffHRRole = true;
-        }
-        if (strtolower($staffRole->role->role) == 'level adviser') {
-            $staffLevelAdviserRole = true;
-        }
-        if (strtolower($staffRole->role->role) == 'exam officer') {
-            $staffExamOfficerRole = true;
-        }
-        if (strtolower($staffRole->role->role) == 'public relation') {
-            $sfaffPublicRelationRole = true;
-        }
-        if (strtolower($staffRole->role->role) == 'student care') {
-            $sfaffStudentCareRole = true;
-        }
-        
-    }
 @endphp
 @section('content')
 <!-- start page title -->
@@ -102,9 +54,7 @@ $studentRegistrations = $student->courseRegistrationDocument()->orderBy('created
                             </div>
                         </div>
                         <div class="col-md-auto">
-                            <div class="hstack gap-1 flex-wrap">
-                                
-                            </div>
+                            
                         </div>
                     </div>
 
@@ -114,13 +64,12 @@ $studentRegistrations = $student->courseRegistrationDocument()->orderBy('created
                                 Overview
                             </a>
                         </li>
-                        @if($sfaffPublicRelationRole)
+                        
                         <li class="nav-item">
                             <a class="nav-link fw-semibold" data-bs-toggle="tab" href="#settings" role="tab">
                                 Settings
                             </a>
                         </li>
-                        @endif
                     </ul>
                 </div>
                 <!-- end card body -->
@@ -188,11 +137,9 @@ $studentRegistrations = $student->courseRegistrationDocument()->orderBy('created
                                         <div class="col-lg-9">
                                             <h4 class="mt-4 fw-semibold">Generate Examination result</h4>
                                             <p class="text-muted mt-3"></p>
+                                    
                                             <div class="mt-4">
-                                                Student must have paid 100% of academic session school fee
-                                            </div>
-                                            <div class="mt-4">
-                                                <form action="{{ url('/staff/generateResult') }}" method="POST">
+                                                <form action="{{ url('/admin/generateResult') }}" method="POST">
                                                     @csrf
                                                     <input type="hidden" name="examSetting_id" value="{{ !empty($pageGlobalData->examSetting)?$pageGlobalData->examSetting->id:null }}">
                                                     <input type="hidden" name="academic_session" value="{{ $pageGlobalData->sessionSetting->academic_session }}">
@@ -340,7 +287,6 @@ $studentRegistrations = $student->courseRegistrationDocument()->orderBy('created
             <div class="tab-pane fade" id="settings" role="tabpanel">
                 <!-- Accordions with Icons -->
                 <div class="accordion custom-accordionwithicon" id="accordionWithicon">
-                    @if($sfaffPublicRelationRole)
                     <div class="accordion-item shadow">
                         <h2 class="accordion-header" id="accordionwithiconExample1">
                             <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#accor_iconExamplecollapse1" aria-expanded="true" aria-controls="accor_iconExamplecollapse1">
@@ -350,7 +296,7 @@ $studentRegistrations = $student->courseRegistrationDocument()->orderBy('created
                         <div id="accor_iconExamplecollapse1" class="accordion-collapse collapse show" aria-labelledby="accordionwithiconExample1" data-bs-parent="#accordionWithicon">
                             <div class="accordion-body">
                                 <div class="mt-4">
-                                    <form action="{{ url('/staff/uploadStudentImage') }}" method="POST" enctype="multipart/form-data">
+                                    <form action="{{ url('/admin/uploadStudentImage') }}" method="POST" enctype="multipart/form-data">
                                         @csrf
                                         <input type="hidden" name="student_id" value="{{ $student->id }}">
 
@@ -381,7 +327,7 @@ $studentRegistrations = $student->courseRegistrationDocument()->orderBy('created
                             </div>
                         </div>
                     </div>
-                    @endif
+
                     <div class="accordion-item shadow">
                         <h2 class="accordion-header" id="accordionwithiconExample2">
                             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#accor_iconExamplecollapse2" aria-expanded="false" aria-controls="accor_iconExamplecollapse2">
@@ -390,9 +336,10 @@ $studentRegistrations = $student->courseRegistrationDocument()->orderBy('created
                         </h2>
                         <div id="accor_iconExamplecollapse2" class="accordion-collapse collapse" aria-labelledby="accordionwithiconExample2" data-bs-parent="#accordionWithicon">
                             <div class="accordion-body">
-                                <form action="{{ url('staff/changeStudentPassword') }}" method="POST">
+                                <form action="{{ url('admin/changeStudentPassword') }}" method="POST">
                                     @csrf
                                     <input type="hidden" name="student_id" value="{{ $student->id }}">
+
                                     <div class="row g-2">
                                         <div class="col-lg-4">
                                             <div>
@@ -431,7 +378,7 @@ $studentRegistrations = $student->courseRegistrationDocument()->orderBy('created
                         </h2>
                         <div id="accor_iconExamplecollapse3" class="accordion-collapse collapse" aria-labelledby="accordionwithiconExample2" data-bs-parent="#accordionWithicon">
                             <div class="accordion-body">
-                                <form action="{{ url('staff/changeStudentCreditLoad') }}" method="POST">
+                                <form action="{{ url('admin/changeStudentCreditLoad') }}" method="POST">
                                     @csrf
                                     <input type="hidden" name="student_id" value="{{ $student->id }}">
 

@@ -466,6 +466,8 @@ class AcademicController extends Controller
     }
 
     public function studentProfile($slug){
+        $academicLevels = AcademicLevel::orderBy('id', 'desc')->get();
+        $sessions = Session::orderBy('id', 'desc')->get();
 
         $student = Student::
             with(['applicant', 'programme', 'transactions', 'courseRegistrationDocument', 'registeredCourses', 'partner', 'academicLevel', 'department', 'faculty'])
@@ -476,7 +478,9 @@ class AcademicController extends Controller
             ->first();
         
         return view('admin.studentProfile', [
-            'student' => $student
+            'student' => $student,
+            'academicLevels' => $academicLevels,
+            'sessions' => $sessions
         ]);
     }
 
