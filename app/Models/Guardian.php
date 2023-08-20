@@ -44,4 +44,14 @@ class Guardian extends Authenticatable
     {
         $this->notify(new GuardianResetPassword($token));
     }
+
+    /**
+     * Get all of the students for the Guardian
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function applicants()
+    {
+        return $this->hasMany(User::class, 'guardian_id',);
+    }
 }

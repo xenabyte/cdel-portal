@@ -388,6 +388,8 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'guardian
   Route::get('/home', [App\Http\Controllers\Guardian\GuardianController::class, 'index'])->name('home')->middleware(['auth:guardian']);
   Route::get('/students', [App\Http\Controllers\Guardian\GuardianController::class, 'students'])->name('students')->middleware(['auth:guardian']);
   Route::get('/profile', [App\Http\Controllers\Guardian\GuardianController::class, 'profile'])->name('profile')->middleware(['auth:guardian']);
+
+  Route::get('/studentProfile/{slug}', [App\Http\Controllers\Guardian\GuardianController::class, 'studentProfile'])->name('studentProfile')->middleware(['auth:guardian']);
   
 });
 
