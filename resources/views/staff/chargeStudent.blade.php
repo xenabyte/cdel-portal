@@ -1,4 +1,4 @@
-@extends('admin.layout.dashboard')
+@extends('staff.layout.dashboard')
 
 @section('content')
 
@@ -244,7 +244,7 @@
             </div>
 
             <div class="modal-body border-top border-top-dashed">
-                <form action="{{ url('/admin/chargeStudent') }}" method="post" enctype="multipart/form-data">
+                <form action="{{ url('/staff/chargeStudent') }}" method="post" enctype="multipart/form-data">
                     @csrf
                     <input type="hidden" id="studentId" name="student_id" value="{{ $student->id }}">
                     <input type="hidden" id="programmeId" name="programme_id" value="{{ $student->programme_id }}">
@@ -462,7 +462,7 @@
             </div>
 
             <div class="modal-body border-top border-top-dashed">
-                <form action="{{ url('/admin/chargeStudent') }}" method="post" enctype="multipart/form-data">
+                <form action="{{ url('/staff/chargeStudent') }}" method="post" enctype="multipart/form-data">
                     @csrf
                     <input type="hidden" id="studentId" name="user_id" value="{{ $applicant->id }}">
                     <input type="hidden" id="programmeId" name="programme_id" value="{{ $applicant->programme_id }}">
@@ -531,7 +531,7 @@
             </div>
 
             <div class="modal-body border-top border-top-dashed">
-                <form action="{{ url('/admin/getStudent') }}" method="post" enctype="multipart/form-data">
+                <form action="{{ url('/staff/getStudent') }}" method="post" enctype="multipart/form-data">
                     @csrf
                     <div class="mb-3">
                         <label for="reg" class="form-label">Application/Matric Number</label>
@@ -565,7 +565,7 @@
         const level = document.getElementById('level').value;
 
         if(selectedPaymentType != ''){
-            axios.post("{{ url('/admin/getPayment') }}", {
+            axios.post("{{ url('/staff/getPayment') }}", {
                 type: selectedPaymentType,
                 academic_session: academicSession,
                 programme_id: programmeId,

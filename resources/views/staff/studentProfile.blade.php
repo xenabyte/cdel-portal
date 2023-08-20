@@ -15,8 +15,8 @@ $studentRegistrations = $student->courseRegistrationDocument()->orderBy('created
     $staffHRRole = false;
     $staffLevelAdviserRole = false;
     $staffExamOfficerRole = false;
-    $sfaffPublicRelationRole = false;
-    $sfaffStudentCareRole = false;
+    $staffPublicRelationRole = false;
+    $staffStudentCareRole = false;
 
     $notifications = $staff->notifications()->orderBy('created_at', 'desc')->get();
     
@@ -47,10 +47,10 @@ $studentRegistrations = $student->courseRegistrationDocument()->orderBy('created
             $staffExamOfficerRole = true;
         }
         if (strtolower($staffRole->role->role) == 'public relation') {
-            $sfaffPublicRelationRole = true;
+            $staffPublicRelationRole = true;
         }
         if (strtolower($staffRole->role->role) == 'student care') {
-            $sfaffStudentCareRole = true;
+            $staffStudentCareRole = true;
         }
         
     }
@@ -114,7 +114,7 @@ $studentRegistrations = $student->courseRegistrationDocument()->orderBy('created
                                 Overview
                             </a>
                         </li>
-                        @if($sfaffPublicRelationRole)
+                        @if($staffPublicRelationRole)
                         <li class="nav-item">
                             <a class="nav-link fw-semibold" data-bs-toggle="tab" href="#settings" role="tab">
                                 Settings
@@ -340,7 +340,7 @@ $studentRegistrations = $student->courseRegistrationDocument()->orderBy('created
             <div class="tab-pane fade" id="settings" role="tabpanel">
                 <!-- Accordions with Icons -->
                 <div class="accordion custom-accordionwithicon" id="accordionWithicon">
-                    @if($sfaffPublicRelationRole)
+                    @if($staffPublicRelationRole)
                     <div class="accordion-item shadow">
                         <h2 class="accordion-header" id="accordionwithiconExample1">
                             <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#accor_iconExamplecollapse1" aria-expanded="true" aria-controls="accor_iconExamplecollapse1">

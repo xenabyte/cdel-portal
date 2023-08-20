@@ -489,6 +489,9 @@
                                     <li class="nav-item">
                                         <a href="{{('/admin/chargeStudent')}}" class="nav-link">Charge 'a' Student </a>
                                     </li>
+                                    <li class="nav-item">
+                                        <a href="{{('/admin/transactionReport')}}" class="nav-link"> Transaction Report </a>
+                                    </li>
                                 </ul>
                             </div>
                         </li> <!-- end Bursary Menu -->

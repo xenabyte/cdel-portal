@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Staff;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -37,7 +37,7 @@ class PaymentController extends Controller
      * @return void
      */
     public function __construct(){
-        $this->middleware(['auth:admin']);
+        $this->middleware(['auth:staff']);
     }
 
     public function payments(Request $request) {
@@ -49,7 +49,7 @@ class PaymentController extends Controller
         $levels = Level::get();
         $sessions = Session::orderBy('id', 'DESC')->get();
 
-        return view('admin.payments', [
+        return view('staff.payments', [
             'payments' => $payments,
             'programmes' => $programmes,
             'levels' => $levels,
@@ -170,7 +170,7 @@ class PaymentController extends Controller
         $programmes = Programme::get();
         $levels = Level::get();
 
-        return view('admin.payment', [
+        return view('staff.payment', [
             'payment' => $payment,
             'programmes' => $programmes,
             'levels' => $levels
@@ -304,7 +304,7 @@ class PaymentController extends Controller
     {
         $transactions = Transaction::get();
 
-        return view('admin.transactions', [
+        return view('staff.transactions', [
             'transactions' => $transactions
         ]);
     }
@@ -320,7 +320,7 @@ class PaymentController extends Controller
         }
 
         $studentIdCode = $request->reg_number;
-        return $this->getSingleStudent($studentIdCode, 'admin.chargeStudent');
+        return $this->getSingleStudent($studentIdCode, 'staff.chargeStudent');
     }
 
     public function chargeStudent(Request $request){
@@ -361,14 +361,14 @@ class PaymentController extends Controller
         if(!empty($request->student_id)){
             if($validator->fails()) {
                 alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
-                return $this->getSingleStudent($student->matric_number, 'admin.chargeStudent');
+                return $this->getSingleStudent($student->matric_number, 'staff.chargeStudent');
             }
         }
 
         if(!empty($request->user_id)){
             if($validator->fails()) {
                 alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
-                return $this->getSingleApplicant($applicant->application_number, 'admin.chargeStudent');
+                return $this->getSingleApplicant($applicant->application_number, 'staff.chargeStudent');
             }
         }
 
@@ -396,7 +396,7 @@ class PaymentController extends Controller
                 if(!empty($request->student_id)){
                     if($validator->fails()) {
                         alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
-                        return $this->getSingleStudent($student->matric_number, 'admin.chargeStudent');
+                        return $this->getSingleStudent($student->matric_number, 'staff.chargeStudent');
                     }
                 }
             }
@@ -418,12 +418,12 @@ class PaymentController extends Controller
 
         if(!empty($request->student_id)){
             alert()->success('Good job', 'Student Charged')->persistent('Close');
-            return $this->getSingleStudent($student->matric_number, 'admin.chargeStudent');
+            return $this->getSingleStudent($student->matric_number, 'staff.chargeStudent');
         }
 
         if(!empty($request->user_id)){
             alert()->success('Good Job', 'Applicant Charged')->persistent('Close');
-            return $this->getSingleApplicant($applicant->application_number, 'admin.chargeStudent');
+            return $this->getSingleApplicant($applicant->application_number, 'staff.chargeStudent');
         }
     }
 
@@ -439,7 +439,7 @@ class PaymentController extends Controller
         $academicLevels = Level::get();
         $academicSessions = Session::orderBy('id', 'DESC')->get();
 
-        return view('admin.transactionReport', [
+        return view('staff.transactionReport', [
             'faculties' => $faculties,
             'academicLevels' => $academicLevels,
             'academicSessions' => $academicSessions
@@ -523,7 +523,7 @@ class PaymentController extends Controller
 
         $academicLevel = Level::find($levelId);
 
-        return view('admin.transactionReport', [
+        return view('staff.transactionReport', [
             'faculties' => $faculties,
             'academicLevels' => $academicLevels,
             'academicSessions' => $academicSessions,

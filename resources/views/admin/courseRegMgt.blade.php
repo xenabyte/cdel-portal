@@ -21,12 +21,13 @@
         <!-- end page title -->
 
         <div class="row">
-            <div class="col-lg-8 offset-md-2">
+            <div class="col-lg-10 offset-md-1">
                 <div class="card">
                     <div class="card-header align-items-center d-flex">
                         <h4 class="card-title mb-0 flex-grow-1">Course Registration Settings for {{ $pageGlobalData->sessionSetting->academic_session }} academic session</h4>
                         <div class="flex-shrink-0">
                             <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editSiteInfo">{{ empty($courseRegMgt) ? 'Add Course Registration Settings' : 'Update Course Registration Settings' }}</button>
+                            <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#resetCourses">Reset Courses</button>
                         </div>
                     </div><!-- end card header -->
                     @if(!empty($courseRegMgt))
@@ -43,6 +44,31 @@
             <!-- end col -->
         </div>
         <!-- end row -->
+
+        <div id="resetCourses" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-body text-center p-5">
+                        <div class="text-end">
+                            <button type="button" class="btn-close text-end" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="mt-2">
+                            <lord-icon src="https://cdn.lordicon.com/sxobuwft.json" trigger="hover" style="width:150px;height:150px">
+                            </lord-icon>
+                            <h4 class="mb-3 mt-4">Are you sure you want to reset courses?</h4>
+                            <form action="#" method="POST">
+                                @csrf
+                                <hr>
+                                <button type="submit" class="btn btn-danger w-100">Yes, Delete</button>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="modal-footer bg-light p-3 justify-content-center">
+
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
         
         <div id="editSiteInfo" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
             <div class="modal-dialog modal-lg modal-dialog-centered">

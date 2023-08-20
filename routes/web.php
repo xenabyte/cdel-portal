@@ -86,6 +86,11 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'admin'],
   Route::post('/updatePayment', [App\Http\Controllers\Admin\PaymentController::class, 'updatePayment'])->name('updatePayment')->middleware(['auth:admin']);
   Route::post('/deletePayment', [App\Http\Controllers\Admin\PaymentController::class, 'deletePayment'])->name('deletePayment')->middleware(['auth:admin']);
 
+
+  Route::get('/transactions', [App\Http\Controllers\Admin\PaymentController::class, 'transactions'])->name('transactions')->middleware(['auth:admin']);
+  Route::get('/transactionReport', [App\Http\Controllers\Admin\PaymentController::class, 'transactionReport'])->name('transactionReport')->middleware(['auth:admin']);
+  Route::post('/generateReport', [App\Http\Controllers\Admin\PaymentController::class, 'generateReport'])->name('generateReport')->middleware(['auth:admin']);
+
   Route::get('/payment/{slug}', [App\Http\Controllers\Admin\PaymentController::class, 'payment'])->name('payment')->middleware(['auth:admin']);
   Route::post('/getPayment', [App\Http\Controllers\Admin\PaymentController::class, 'getPayment'])->name('getPayment')->middleware(['auth:admin']);
   Route::post('/addStructure', [App\Http\Controllers\Admin\PaymentController::class, 'addStructure'])->name('addStructure')->middleware(['auth:admin']);
@@ -308,7 +313,25 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'staff'],
   Route::post('/changeStudentPassword', [App\Http\Controllers\Staff\StaffController::class, 'changeStudentPassword'])->name('changeStudentPassword')->middleware(['auth:staff']);
   Route::post('/changeStudentCreditLoad', [App\Http\Controllers\Staff\StaffController::class, 'changeStudentCreditLoad'])->name('changeStudentCreditLoad')->middleware(['auth:staff']);
 
-  
+  Route::get('/payments', [App\Http\Controllers\Staff\PaymentController::class, 'payments'])->name('payments')->middleware(['auth:staff']);
+  Route::post('/addPayment', [App\Http\Controllers\Staff\PaymentController::class, 'addPayment'])->name('addPayment')->middleware(['auth:staff']);
+  Route::post('/updatePayment', [App\Http\Controllers\Staff\PaymentController::class, 'updatePayment'])->name('updatePayment')->middleware(['auth:staff']);
+  Route::post('/deletePayment', [App\Http\Controllers\Staff\PaymentController::class, 'deletePayment'])->name('deletePayment')->middleware(['auth:staff']);
+
+  Route::get('/transactions', [App\Http\Controllers\Staff\PaymentController::class, 'transactions'])->name('transactions')->middleware(['auth:staff']);
+  Route::get('/transactionReport', [App\Http\Controllers\Staff\PaymentController::class, 'transactionReport'])->name('transactionReport')->middleware(['auth:staff']);
+  Route::post('/generateReport', [App\Http\Controllers\Staff\PaymentController::class, 'generateReport'])->name('generateReport')->middleware(['auth:staff']);
+
+  Route::get('/payment/{slug}', [App\Http\Controllers\Staff\PaymentController::class, 'payment'])->name('payment')->middleware(['auth:staff']);
+  Route::post('/getPayment', [App\Http\Controllers\Staff\PaymentController::class, 'getPayment'])->name('getPayment')->middleware(['auth:staff']);
+  Route::post('/addStructure', [App\Http\Controllers\Staff\PaymentController::class, 'addStructure'])->name('addStructure')->middleware(['auth:staff']);
+  Route::post('/updateStructure', [App\Http\Controllers\Staff\PaymentController::class, 'updateStructure'])->name('updateStructure')->middleware(['auth:staff']);
+  Route::post('/deleteStructure', [App\Http\Controllers\Staff\PaymentController::class, 'deleteStructure'])->name('deleteStructure')->middleware(['auth:staff']);
+
+  Route::post('/chargeStudent', [App\Http\Controllers\Staff\PaymentController::class, 'chargeStudent'])->name('chargeStudent')->middleware(['auth:staff']);
+  Route::get('/chargeStudent', [App\Http\Controllers\Staff\StaffController::class, 'chargeStudent'])->name('chargeStudent')->middleware(['auth:staff']);
+  Route::post('/getStudent', [App\Http\Controllers\Staff\StaffController::class, 'getStudent'])->name('getStudent')->middleware(['auth:staff']);
+
 });
 
 Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'bursary'], function () {

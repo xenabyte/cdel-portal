@@ -1018,5 +1018,29 @@ class StaffController extends Controller
         return redirect()->back();
     }
 
+    public function chargeStudent(){
+        return view('staff.chargeStudent');
+    }
+
+    public function getStudent(Request $request){
+        $validator = Validator::make($request->all(), [
+            'reg_number' => 'required',
+            'type' => 'required',
+        ]);
+
+        if($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+
+        $studentIdCode = $request->reg_number;
+        if($request->type == 'Student'){
+            return $this->getSingleStudent($studentIdCode, 'staff.chargeStudent');
+        }
+
+        if($request->type == 'Applicant'){
+            return $this->getSingleApplicant($studentIdCode, 'staff.chargeStudent');
+        }
+    }
 
 }

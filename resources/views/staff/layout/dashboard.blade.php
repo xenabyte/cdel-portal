@@ -11,8 +11,9 @@
     $staffHRRole = false;
     $staffLevelAdviserRole = false;
     $staffExamOfficerRole = false;
-    $sfaffPublicRelationRole = false;
-    $sfaffStudentCareRole = false;
+    $staffPublicRelationRole = false;
+    $staffStudentCareRole = false;
+    $staffBursaryRole = false;
 
     $notifications = $staff->notifications()->orderBy('created_at', 'desc')->get();
     
@@ -43,10 +44,13 @@
             $staffExamOfficerRole = true;
         }
         if (strtolower($staffRole->role->role) == 'public relation') {
-            $sfaffPublicRelationRole = true;
+            $staffPublicRelationRole = true;
         }
         if (strtolower($staffRole->role->role) == 'student care') {
-            $sfaffStudentCareRole = true;
+            $staffStudentCareRole = true;
+        }
+        if(strtolower($staffRole->role->role) == 'staffBursaryRole'){
+            $staffBursaryRole = true;
         }
         
     }
@@ -341,9 +345,11 @@
                             </a>
                             <div class="collapse menu-dropdown" id="courseSettings">
                                 <ul class="nav nav-sm flex-column">
+                                    @if($staffLevelAdviserRole)
                                     <li class="nav-item">
                                         <a href="{{ url('/staff/adviserProgrammes') }}" class="nav-link">Programmes</a>
                                     </li>
+                                    @endif
 
                                     <li class="nav-item">
                                         <a href="{{ url('/staff/studentCourses') }}" class="nav-link">Student Courses</a>
@@ -367,6 +373,32 @@
                                 </ul>
                             </div>
                         </li> <!-- end Dashboard Menu -->
+                        @endif
+
+                        @if($staffBursaryRole || $staffVCRole)
+                        <li class="nav-item">
+                            <a class="nav-link menu-link" href="#bursary" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="bursary">
+                                <i class="mdi mdi-bank-transfer"></i> <span data-key="t-bursary">Bursary</span>
+                            </a>
+                            <div class="collapse menu-dropdown" id="bursary">
+                                <ul class="nav nav-sm flex-column">
+                                    @if($staffBursaryRole)
+                                    <li class="nav-item">
+                                        <a href="{{ url('/staff/payments') }}" class="nav-link"> Payments </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="{{('/staff/transactions')}}" class="nav-link"> Transactions </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="{{('/staff/chargeStudent')}}" class="nav-link">Charge 'a' Student </a>
+                                    </li>
+                                    @endif
+                                    <li class="nav-item">
+                                        <a href="{{('/staff/transactionReport')}}" class="nav-link"> Transaction Report </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li> <!-- end Bursary Menu -->
                         @endif
 
                         <li class="nav-item">
@@ -505,7 +537,7 @@
             const departmentSelect = $('#department');
 
             if(selectedFaculty != ''){
-                axios.get("{{ url('/admin/getDepartments') }}/"+selectedFaculty)
+                axios.get("{{ url('/staff/getDepartments') }}/"+selectedFaculty)
                 .then(function (response) {
                     departmentSelect.empty().append($('<option>', {
                         value: '',

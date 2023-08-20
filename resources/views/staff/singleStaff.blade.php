@@ -10,8 +10,8 @@ $staff = Auth::guard('staff')->user();
     $staffHRRole = false;
     $staffLevelAdviserRole = false;
     $staffExamOfficerRole = false;
-    $sfaffPublicRelationRole = false;
-    $sfaffStudentCareRole = false;
+    $staffPublicRelationRole = false;
+    $staffStudentCareRole = false;
 
     
     foreach ($staff->staffRoles as $staffRole) {
@@ -40,10 +40,10 @@ $staff = Auth::guard('staff')->user();
             $staffExamOfficerRole = true;
         }
         if (strtolower($staffRole->role->role) == 'public relation') {
-            $sfaffPublicRelationRole = true;
+            $staffPublicRelationRole = true;
         }
         if (strtolower($staffRole->role->role) == 'student care') {
-            $sfaffStudentCareRole = true;
+            $staffStudentCareRole = true;
         }
         
     }
