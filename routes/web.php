@@ -180,6 +180,10 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'admin'],
   Route::post('/changeStudentPassword', [App\Http\Controllers\Admin\StaffController::class, 'changeStudentPassword'])->name('changeStudentPassword')->middleware(['auth:admin']);
   Route::post('/changeStudentCreditLoad', [App\Http\Controllers\Admin\StaffController::class, 'changeStudentCreditLoad'])->name('changeStudentCreditLoad')->middleware(['auth:admin']);
 
+  Route::get('/partners', [App\Http\Controllers\Admin\PartnerController::class, 'partners'])->name('partners')->middleware(['auth:admin']);
+  Route::get('/partnerApproval', [App\Http\Controllers\Admin\PartnerController::class, 'partnerApproval'])->name('partnerApproval')->middleware(['auth:admin']);
+
+  
   
 });
 

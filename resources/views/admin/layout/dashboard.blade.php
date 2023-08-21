@@ -440,15 +440,15 @@
                                         <a href="{{ url('/admin/populateStaff') }}" class="nav-link">Populate Staff</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a href="#staffApplicants" class="nav-link" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarSignIn" data-key="t-signin"> Staff Applicants
+                                        <a href="#staffApplicants" class="nav-link" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarSignIn" data-key="t-signin"> Staff Applicants (Coming Soon)
                                         </a>
                                         <div class="collapse menu-dropdown" id="staffApplicants">
                                             <ul class="nav nav-sm flex-column">
                                                 <li class="nav-item">
-                                                    <a href="auth-signin-basic.html" class="nav-link" data-key="t-basic"> Staff Applications </a>
+                                                    <a href="#l" class="nav-link" data-key="t-basic"> Staff Applications(coming soon) </a>
                                                 </li>
                                                 <li class="nav-item">
-                                                    <a href="auth-signin-cover.html" class="nav-link" data-key="t-cover"> Role Applications </a>
+                                                    <a href="#" class="nav-link" data-key="t-cover"> Role Applications(coming soon) </a>
                                                 </li>
                                             </ul>
                                         </div>
@@ -470,6 +470,28 @@
                                 </ul>
                             </div>
                         </li>
+
+
+                        <li class="menu-title"><i class="ri-more-fill"></i> <span data-key="t-Partner">Partners(Marketers)</span></li>
+
+                        <li class="nav-item">
+                            <a class="nav-link menu-link" href="#Partner" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="Partner">
+                                <i class="mdi mdi-access-point-network"></i> <span data-key="t-Partner">Partner Management</span>
+                            </a>
+                            <div class="collapse menu-dropdown" id="Partner">
+                                <ul class="nav nav-sm flex-column">
+                                    <li class="nav-item">
+                                        <a href="{{ url('/admin/partners') }}" class="nav-link"> Partners </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="{{('/admin/partnerApproval')}}" class="nav-link"> Partner Approval </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="{{('/admin/partnerWithdrawal')}}" class="nav-link">Partner Profit Withdrawal </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li> <!-- end Partner Menu -->
 
 
                         <li class="menu-title"><i class="ri-more-fill"></i> <span data-key="t-bursary">Bursary</span></li>

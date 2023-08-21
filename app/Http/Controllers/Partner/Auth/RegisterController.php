@@ -52,6 +52,8 @@ class RegisterController extends Controller
             'name' => 'required|max:255',
             'email' => 'required|email|max:255|unique:partners',
             'password' => 'required|min:6|confirmed',
+            'address' => 'required',
+            'phone_number' => 'required',
         ]);
     }
 
@@ -63,10 +65,16 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
+        $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $data['name'])));
+
         return Partner::create([
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => bcrypt($data['password']),
+            'address' => $data['address'],
+            'phone_number' => $data['phone_number'],
+            'slug' => $slug,
+            'status' => 0,
             'referral_code' => $this->generateReferralCode(),
         ]);
     }

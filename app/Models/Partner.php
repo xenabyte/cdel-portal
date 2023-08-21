@@ -21,7 +21,11 @@ class Partner extends Authenticatable
         'email', 
         'password',
         'referral_code',
-        'amount_balance'
+        'amount_balance',
+        'phone_number',
+        'address',
+        'slug',
+        'status'
     ];
 
     /**

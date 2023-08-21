@@ -1,9 +1,9 @@
 
 <!doctype html>
 <html lang="en" data-layout="vertical" data-layout-style="default" data-layout-position="fixed" data-topbar="light" data-sidebar="dark" data-sidebar-size="lg" data-layout-width="fluid" data-preloader="disable">
-<?php 
+@php
     $partner = Auth::guard('partner')->user();
-?>
+@endphp
 
 <head>
 
@@ -165,6 +165,7 @@
                             </a>
                         </li>
 
+                        @if($partner->status == 1)
                         <li class="nav-item">
                             <a class="nav-link menu-link" href="#admission" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="admission">
                                 <i class="mdi mdi-account-box-multiple"></i> <span data-key="t-admission">Manage Applicant & Student</span>
@@ -193,9 +194,8 @@
                                 <i class="mdi mdi-account-cog"></i> <span>Profile</span>
                             </a>
                         </li>
+                        @endif
                        
-
-                        <li class="menu-title"><i class="ri-more-fill"></i> <span data-key="t-pages"></span></li>
                         <li class="nav-item">
                             <a class="nav-link menu-link" href="{{ url('partner/logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                                 <i class="mdi mdi-power"></i> <span data-key="t-logout">Logout</span>

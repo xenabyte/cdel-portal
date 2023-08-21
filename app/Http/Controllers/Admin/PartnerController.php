@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Partner;
+namespace App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -23,14 +23,22 @@ class PartnerController extends Controller
 {
     //
 
-    public function index(Request $request){
-        $partner = Auth::guard('partner')->user();
+    public function partners(Request $request){
 
-        if(!$partner->status){
-            return view('partner.approval',);
-        }
+        $partners = Partner::where('status', 1)->get();
 
-        return view('partner.home');
+        return view('admin.partners',[
+            'partners' => $partners
+        ]);
+    }
+
+    public function partnerApproval(Request $request){
+
+        $partners = Partner::where('status', 0)->get();
+
+        return view('admin.partnerApproval',[
+            'partners' => $partners
+        ]);
     }
 
     public function transactions(Request $request){
