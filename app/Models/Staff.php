@@ -42,7 +42,8 @@ class Staff extends Authenticatable
         'url',
         'title',
         'category',
-        'referral_code'
+        'referral_code',
+        'signature',
     ];
 
     /**

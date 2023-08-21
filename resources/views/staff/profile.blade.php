@@ -97,6 +97,11 @@
                             <i class="far fa-user"></i> Change Password
                         </a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-bs-toggle="tab" href="#uploadSignature" role="tab">
+                            <i class="far fa-user"></i> Upload Signature
+                        </a>
+                    </li>
                 </ul>
             </div>
             <div class="card-body p-4">
@@ -539,6 +544,43 @@
                             </div>
                             <!--end row-->
                         </form>
+                    </div>
+
+                    <div class="tab-pane" id="uploadSignature" role="tabpanel">
+                        @if(!empty($staff->signature))
+                        <!-- Thumbnails Images -->
+                        <img class="img-thumbnail" alt="signature" width="200" src="{{ asset($staff->signature) }}">
+                        @else
+
+                        <form action="{{ url('staff/uploadSignature') }}" method="POST" enctype="multipart/form-data">
+                            @csrf
+                            <div class="row g-2">
+
+                                <div class="col-lg-12">
+                                    <div>
+                                        <label for="formSizeLarge" class="form-label">Signature</label>
+                                        <input name="image"  class="form-control form-control" id="formSizeLarge" type="file" required>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-12">
+                                    <div>
+                                        <label for="oldpasswordInput" class="form-label">Password<span class="text-danger">*</span></label>
+                                        <input type="password" name="old_password" class="form-control" id="oldpasswordInput" placeholder="Enter current password">
+                                    </div>
+                                </div>
+                                
+                                <!--end col-->
+                                <div class="col-lg-12 border-top border-top-dashed p-3">
+                                    <div class="text-end">
+                                        <button type="submit" class="btn btn-success">Upload Signature</button>
+                                    </div>
+                                </div>
+                                <!--end col-->
+                            </div>
+                            <!--end row-->
+                        </form>
+                        @endif
                     </div>
                 </div>
             </div>

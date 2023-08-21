@@ -158,6 +158,40 @@ class StaffController extends Controller
         return redirect()->back();
     }
 
+    public function uploadSignature (Request $request) {
+
+        $validator = Validator::make($request->all(), [
+            'image' => 'required',
+        ]);
+
+
+        if($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+
+        $staff = Auth::guard('staff')->user();
+
+        if(\Hash::check($request->old_password, Auth::guard('staff')->user()->password)){
+            $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-',$staff->title.$staff->lastname.$staff->othernames)));
+
+            $imageUrl = 'uploads/staff/'.$slug.'.'.$request->file('image')->getClientOriginalExtension();
+            $image = $request->file('image')->move('uploads/staff', $imageUrl);
+            $staff->signature = $imageUrl;
+        }else{
+            alert()->error('Oops', 'Wrong old password, Try again with the right one')->persistent('Close');
+            return redirect()->back();
+        }
+
+        if($staff->update()) {
+            alert()->success('Success', 'Save Changes')->persistent('Close');
+            return redirect()->back();
+        }
+
+        alert()->error('Oops!', 'An Error Occurred')->persistent('Close');
+        return redirect()->back();
+    }
+
     public function mentee(Request $request){
 
         return view('staff.mentee');
