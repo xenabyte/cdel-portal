@@ -158,7 +158,7 @@
             <div class="card-body">
                 <div class="d-flex justify-content-between">
                     <div>
-                        <p class="fw-medium text-muted mb-0 text-danger">Total Balance </p>
+                        <p class="fw-medium text-muted mb-0 text-danger">Total Funds To Be Paid </p>
                         <h2 class="mt-4 ff-secondary fw-semibold"><span class="text-danger">₦{{ number_format(($totalSchoolFeeExpected - $totalSchoolFeePaid)/100, 2) }}</span></h2>
                     </div>
                     <div>
@@ -179,7 +179,7 @@
     <div class="col-lg-12">
         <div class="card">
             <div class="card-header align-items-center d-flex">
-                <h4 class="card-title mb-0 flex-grow-1">Report(s) for {{ $academicSession }} Academic Session | <span class="text-danger">{{ $academicLevel->level.' Level' }}</span> | <span class="text-primary"> {{ !empty($faculty) ? 'Faculty of '.$faculty->name.' ' : null }} </span> |  <span class="text-info">{{ !empty($department) ? 'Department of '.$department->name.' ' : null }} </span> | <span class="text-warning"> {{ !empty($programme) ? $programme->name.' ' : null }}</span></h4>
+                <h4 class="card-title mb-0 flex-grow-1">Report(s) for {{ $academicSession }} Academic Session | <span class="text-danger">{{ $academicLevel->level.' Level |' }}</span> <span class="text-primary"> {{ !empty($faculty) ? 'Faculty of '.$faculty->name.' |' : null }} </span>  <span class="text-info">{{ !empty($department) ? 'Department of '.$department->name.' |' : null }} </span> <span class="text-warning"> {{ !empty($programme) ? $programme->name.' ' : null }}</span></h4>
             </div><!-- end card header -->
 
             <div class="card-body table-responsive">

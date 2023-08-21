@@ -226,7 +226,8 @@ class StudentController extends Controller
                     "payment_id" => $paymentId,
                     "payment_gateway" => $paymentGateway,
                     "reference" => null,
-                    "academic_session" => $admissionSession
+                    "academic_session" => $student->academic_session,
+                    "redirect_path" => 'student/transactions',
                 ),
             );
 

@@ -177,7 +177,6 @@
                             </a>
                         </li>
 
-                        <li class="menu-title"><i class="ri-more-fill"></i> <span data-key="t-pages"></span></li>
                         <li class="nav-item">
                             <a class="nav-link menu-link" href="{{ url('guardian/logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                                 <i class="mdi mdi-power"></i> <span data-key="t-logout">Logout</span>

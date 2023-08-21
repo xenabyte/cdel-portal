@@ -580,7 +580,7 @@
             const programmeSelect = $('#programme');
 
             if(selectedDepartment != ''){
-                axios.get("{{ url('/admin/getProgrammes') }}/"+selectedDepartment)
+                axios.get("{{ url('/staff/getProgrammes') }}/"+selectedDepartment)
                 .then(function (response) {
 
                     programmeSelect.empty().append($('<option>', {

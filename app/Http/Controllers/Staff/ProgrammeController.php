@@ -18,6 +18,7 @@ use App\Models\LevelAdviser;
 use App\Models\StudentCourseRegistration;
 use App\Models\CourseRegistration;
 use App\Models\Student;
+use App\Models\Department;
 
 use SweetAlert;
 use Mail;

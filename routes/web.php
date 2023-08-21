@@ -390,7 +390,10 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'guardian
   Route::get('/profile', [App\Http\Controllers\Guardian\GuardianController::class, 'profile'])->name('profile')->middleware(['auth:guardian']);
 
   Route::get('/studentProfile/{slug}', [App\Http\Controllers\Guardian\GuardianController::class, 'studentProfile'])->name('studentProfile')->middleware(['auth:guardian']);
-  
+  Route::post('/makePayment', [App\Http\Controllers\Guardian\GuardianController::class, 'makePayment'])->name('makePayment')->middleware(['auth:guardian']);
+  Route::post('/generateResult', [App\Http\Controllers\Guardian\GuardianController::class, 'generateResult'])->name('generateResult')->middleware(['auth:guardian']);
+
+
 });
 
 Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'applicant'], function () {

@@ -420,7 +420,8 @@ class ApplicationController extends Controller
                     "payment_id" => $paymentId,
                     'payment_gateway' => $paymentGateway,
                     'reference' => null,
-                    'academic_session' => $applicationSession
+                    'academic_session' => $applicationSession,
+                    'redirect_path' => 'user.auth.register'
                 ),
             );
 

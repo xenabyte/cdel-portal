@@ -52,6 +52,7 @@ class PaymentController extends Controller
             $paymentDetails = Paystack::getPaymentData();
             $paymentId = $paymentDetails['data']['metadata']['payment_id'];
             $studentId = $paymentDetails['data']['metadata']['student_id'];
+            $redirectPath = $paymentDetails['data']['metadata']['redirect_path'];
             $payment = Payment::where('id', $paymentId)->first();
             $paymentType = $payment->type;
             $student = Student::with('applicant')->where('id', $studentId)->first();
@@ -61,29 +62,29 @@ class PaymentController extends Controller
                 if($this->processPayment($paymentDetails)){
                     alert()->success('Good Job', 'Payment successful')->persistent('Close');
                     if($paymentType == Payment::PAYMENT_TYPE_APPLICATION){
-                        return view('user.auth.register', [
+                        return view($redirectPath, [
                             'programmes' => $this->programmes,
                             'payment' => $payment
                         ]);
                     }elseif($paymentType == Payment::PAYMENT_TYPE_ACCEPTANCE){
-                        return redirect('student/home');
+                        return redirect($redirectPath);
                     }elseif($paymentType == Payment::PAYMENT_TYPE_SCHOOL){
                         $this->generateMatricAndEmail($student);
-                        return redirect('student/transactions');
+                        return redirect($redirectPath);
                     }else{
-                        return redirect('student/transactions');
+                        return redirect($redirectPath);
                     }
                 }else{
                     alert()->info('oops!!!', 'Something happpened, contact administrator')->persistent('Close');
                     if($paymentType == Payment::PAYMENT_TYPE_APPLICATION){
-                        return view('user.auth.register', [
+                        return view($redirectPath, [
                             'programmes' => $this->programmes,
                             'payment' => $payment
                         ]);
                     }elseif($paymentType == Payment::PAYMENT_TYPE_ACCEPTANCE){
-                        return redirect('student/home');
+                        return redirect($redirectPath);
                     }else{
-                        return redirect('student/transactions');
+                        return redirect($redirectPath);
                     }
                 }
 
@@ -91,14 +92,14 @@ class PaymentController extends Controller
 
             alert()->error('Error', 'Payment not successful')->persistent('Close');
             if($paymentType == Payment::PAYMENT_TYPE_APPLICATION){
-                return view('user.auth.register', [
+                return view($redirectPath, [
                     'programmes' => $this->programmes,
                     'payment' => $payment
                 ]);
             }elseif($paymentType == Payment::PAYMENT_TYPE_ACCEPTANCE){
-                return redirect('student/home');
+                return redirect($redirectPath);
             }else{
-                return redirect('student/transactions');
+                return redirect($redirectPath);
             }
             
 

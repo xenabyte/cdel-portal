@@ -129,7 +129,7 @@ $applicants = $guardian->applicants->where('status', 'Admitted');
                             <td>{{ $applicant->student->programme->name }}</td>
                             <td>{{ $applicant->student->email }} </td>
                             <td>{{ $applicant->student->academicLevel->level }} </td>
-                            <td>{{ $applicant->student->phone_number }} </td>
+                            <td>{{ $applicant->phone_number }} </td>
                             <td>
                                 <a href="{{ url('guardian/studentProfile/'.$applicant->student->slug) }}" class="btn btn-primary m-1"><i class= "ri-user-6-fill"></i> View Student</a>
                             </td>
