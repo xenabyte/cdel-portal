@@ -41,24 +41,54 @@ class PartnerController extends Controller
         ]);
     }
 
-    public function transactions(Request $request){
+    public function approvePartner(Request $request){
+        $validator = Validator::make($request->all(), [
+            'partner_id' => 'required',
+        ]);
 
-        return view('partner.transactions');
+        if($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+        if(!$partner = Partner::find($request->partner_id)){
+            alert()->error('Oops', 'Invalid Partner ')->persistent('Close');
+            return redirect()->back();
+        }
+
+        $partner->status = true;
+        
+        if($partner->save()){
+            alert()->success('Approved Successfully', '')->persistent('Close');
+            return redirect()->back();
+        }
+
+        alert()->error('Oops!', 'Something went wrong')->persistent('Close');
+        return redirect()->back();
+        
     }
+    
+    
+    public function deletePartner(Request $request){
+        $validator = Validator::make($request->all(), [
+            'partner_id' => 'required',
+        ]);
 
-    public function students(Request $request){
+        if($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+        if(!$partner = Partner::find($request->partner_id)){
+            alert()->error('Oops', 'Invalid Partner ')->persistent('Close');
+            return redirect()->back();
+        }
+        
+        if($partner->delete()){
+            alert()->success('Delete Successfully', '')->persistent('Close');
+            return redirect()->back();
+        }
 
-        return view('partner.students');
+        alert()->error('Oops!', 'Something went wrong')->persistent('Close');
+        return redirect()->back();
+        
     }
-
-    public function applicants(Request $request){
-
-        return view('partner.applicants');
-    }
-
-    public function profile(Request $request){
-
-        return view('partner.profile');
-    }
-
 }

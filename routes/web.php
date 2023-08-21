@@ -182,8 +182,9 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'admin'],
 
   Route::get('/partners', [App\Http\Controllers\Admin\PartnerController::class, 'partners'])->name('partners')->middleware(['auth:admin']);
   Route::get('/partnerApproval', [App\Http\Controllers\Admin\PartnerController::class, 'partnerApproval'])->name('partnerApproval')->middleware(['auth:admin']);
+  Route::post('/approvePartner', [App\Http\Controllers\Admin\PartnerController::class, 'approvePartner'])->name('approvePartner')->middleware(['auth:admin']);
+  Route::post('/deletePartner', [App\Http\Controllers\Admin\PartnerController::class, 'deletePartner'])->name('deletePartner')->middleware(['auth:admin']);
 
-  
   
 });
 
@@ -376,6 +377,15 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'partner'
   Route::get('/transactions', [App\Http\Controllers\Partner\PartnerController::class, 'transactions'])->name('transactions')->middleware(['auth:partner']);
   Route::get('/profile', [App\Http\Controllers\Partner\PartnerController::class, 'profile'])->name('profile')->middleware(['auth:partner']);
 
+  Route::get('/applicant/{slug}', [App\Http\Controllers\Partner\PartnerController::class, 'applicant'])->name('applicant')->middleware(['auth:partner']);
+  Route::post('/applicantWithSession', [App\Http\Controllers\Partner\PartnerController::class, 'applicantWithSession'])->name('applicantWithSession')->middleware(['auth:partner']);
+
+  Route::get('/students', [App\Http\Controllers\Partner\PartnerController::class, 'students'])->name('students')->middleware(['auth:partner']);
+  Route::get('/student/{slug}', [App\Http\Controllers\Partner\PartnerController::class, 'student'])->name('student')->middleware(['auth:partner']);
+
+  Route::post('/updatePassword', [App\Http\Controllers\Partner\PartnerController::class, 'updatePassword'])->name('updatePassword')->middleware(['auth:partner']);
+
+
 });
 
 Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'guardian'], function () {
@@ -399,6 +409,8 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'guardian
   Route::get('/studentProfile/{slug}', [App\Http\Controllers\Guardian\GuardianController::class, 'studentProfile'])->name('studentProfile')->middleware(['auth:guardian']);
   Route::post('/makePayment', [App\Http\Controllers\Guardian\GuardianController::class, 'makePayment'])->name('makePayment')->middleware(['auth:guardian']);
   Route::post('/generateResult', [App\Http\Controllers\Guardian\GuardianController::class, 'generateResult'])->name('generateResult')->middleware(['auth:guardian']);
+
+  Route::post('/updatePassword', [App\Http\Controllers\Guardian\GuardianController::class, 'updatePassword'])->name('updatePassword')->middleware(['auth:guardian']);
 
 
 });

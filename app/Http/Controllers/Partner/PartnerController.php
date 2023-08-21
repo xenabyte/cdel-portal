@@ -12,6 +12,11 @@ use App\Http\Requests;
 use Illuminate\Support\Facades\Validator;
 
 use App\Models\Partner;
+use App\Models\User as Applicant;
+use App\Models\Programme;
+use App\Models\AcademicLevel;
+use App\Models\Student;
+
 
 use SweetAlert;
 use Mail;
@@ -38,19 +43,125 @@ class PartnerController extends Controller
         return view('partner.transactions');
     }
 
-    public function students(Request $request){
+    public function applicants(Request $request){
+        $globalData = $request->input('global_data');
+        $academicSession = $globalData->sessionSetting['application_session'];
+        $applicants = Applicant::where('academic_session', $academicSession)->get();
+        $partner = Auth::guard('partner')->user();
 
-        return view('partner.students');
+        if(!$partner->status){
+            return view('partner.approval',);
+        }
+
+        return view('partner.applicants', [
+            'applicants' => $applicants,
+        ]);
     }
 
-    public function applicants(Request $request){
+    public function applicantWithSession(Request $request){
+        $applicants = Applicant::with('programme', 'olevels', 'guardian')->where('academic_session', $request->session)->get();
+        $partner = Auth::guard('partner')->user();
 
-        return view('partner.applicants');
+        if(!$partner->status){
+            return view('partner.approval',);
+        }
+
+        return view('partner.applicants', [
+            'applicants' => $applicants
+        ]);
+    }
+
+    public function applicant(Request $request, $slug){
+        $applicant = Applicant::with('programme', 'olevels', 'guardian')->where('slug', $slug)->first();
+        $programmes = Programme::where('category_id', $applicant->programme->category_id)->get();
+        $levels = AcademicLevel::get();
+        $partner = Auth::guard('partner')->user();
+
+        if(!$partner->status){
+            return view('partner.approval',);
+        }
+        
+        return view('partner.applicant', [
+            'applicant' => $applicant,
+            'programmes' => $programmes,
+            'levels' => $levels
+        ]);
     }
 
     public function profile(Request $request){
+        $partner = Auth::guard('partner')->user();
+        if(!$partner->status){
+            return view('partner.approval',);
+        }
 
         return view('partner.profile');
+    }
+
+    public function students(Request $request){
+        $partner = Auth::guard('partner')->user();
+        $partnerId = $partner->id;
+        $globalData = $request->input('global_data');
+        $applicationSession = $globalData->sessionSetting['application_session'];
+        $admissionSession = $globalData->sessionSetting['admission_session'];
+
+
+        $students = Student::with('applicant', 'programme')
+        ->where('academic_session', $admissionSession)
+        ->whereHas('applicant', function ($query) use ($admissionSession, $partnerId) {
+            $query->where('academic_session', $admissionSession)
+                ->where('partner_id', $partnerId);
+        })
+        ->get();
+
+        return view('partner.students', [
+            'students' => $students
+        ]);
+    }
+
+    public function student(Request $request, $slug){
+        $student = Student::with('applicant', 'applicant.utmes', 'programme')->where('slug', $slug)->first();
+
+        return view('partner.student', [
+            'student' => $student
+        ]);
+    }
+
+    public function updatePassword (Request $request) {
+
+        $validator = Validator::make($request->all(), [
+            'old_password' => 'required',
+            'password' => 'required',
+            'confirm_password' => 'required'
+        ]);
+
+
+        if($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+
+        $staff = Auth::guard('staff')->user();
+
+
+        if(\Hash::check($request->old_password, Auth::guard('staff')->user()->password)){
+            if($request->new_password == $request->confirm_password){
+                $staff->password = bcrypt($request->new_password);
+            }else{
+                alert()->error('Oops!', 'Password mismatch')->persistent('Close');
+                return redirect()->back();
+            }
+        }else{
+            alert()->error('Oops', 'Wrong old password, Try again with the right one')->persistent('Close');
+            return redirect()->back();
+        }
+
+        if($staff->update()) {
+            alert()->success('Success', 'Save Changes')->persistent('Close');
+            return redirect()->back();
+        }
+
+        alert()->error('Oops!', 'An Error Occurred')->persistent('Close');
+        return redirect()->back();
     }
 
 }

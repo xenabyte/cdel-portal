@@ -137,7 +137,7 @@
 
                         <div class="mb-3">
                             <label for="referrer" class="form-label">Referrer Code </label>
-                            <input type="text" class="form-control" name="referrer" id="referrer" placeholder="Enter email referrer" required>
+                            <input type="text" class="form-control" name="referrer" id="referrer" value="{{  isset($_GET['ref']) ? $_GET["ref"] : null  }}" required>
                             <div class="invalid-feedback">
                                 Please enter referrer code
                             </div>

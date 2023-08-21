@@ -213,4 +213,43 @@ class GuardianController extends Controller
         return redirect(asset($examResult));
     }
 
+
+    public function updatePassword (Request $request) {
+
+        $validator = Validator::make($request->all(), [
+            'old_password' => 'required',
+            'password' => 'required',
+            'confirm_password' => 'required'
+        ]);
+
+
+        if($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+
+        $staff = Auth::guard('staff')->user();
+
+
+        if(\Hash::check($request->old_password, Auth::guard('staff')->user()->password)){
+            if($request->new_password == $request->confirm_password){
+                $staff->password = bcrypt($request->new_password);
+            }else{
+                alert()->error('Oops!', 'Password mismatch')->persistent('Close');
+                return redirect()->back();
+            }
+        }else{
+            alert()->error('Oops', 'Wrong old password, Try again with the right one')->persistent('Close');
+            return redirect()->back();
+        }
+
+        if($staff->update()) {
+            alert()->success('Success', 'Save Changes')->persistent('Close');
+            return redirect()->back();
+        }
+
+        alert()->error('Oops!', 'An Error Occurred')->persistent('Close');
+        return redirect()->back();
+    }
+
 }

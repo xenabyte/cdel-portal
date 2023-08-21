@@ -93,7 +93,7 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" data-bs-toggle="tab" href="#changePassword" role="tab">
+                        <a class="nav-link" data-bs-toggle="tab" href="#updatePassword" role="tab">
                             <i class="far fa-user"></i> Change Password
                         </a>
                     </li>
@@ -509,8 +509,8 @@
                         </form>
                     </div>
                     <!--end tab-pane-->
-                    <div class="tab-pane" id="changePassword" role="tabpanel">
-                        <form action="{{ url('staff/changePassword') }}" method="POST">
+                    <div class="tab-pane" id="updatePassword" role="tabpanel">
+                        <form action="{{ url('staff/updatePassword') }}" method="POST">
                             @csrf
                             <div class="row g-2">
                                 <div class="col-lg-4">

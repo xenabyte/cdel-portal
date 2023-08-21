@@ -50,7 +50,7 @@ $courses = $staff->courses;
 </div>
 
 <div class="row">
-    <div class="col-xl-3">
+    <div class="col-xl-5">
         <div class="card">
             <div class="card-header">
                 <div class="d-flex">
@@ -75,6 +75,10 @@ $courses = $staff->courses;
                     <div class="table-responsive border-top border-top-dashed">
                         <table class="table mb-0 table-borderless">
                             <tbody>
+                                <tr>
+                                    <th><span class="fw-medium">Link:</span></th>
+                                    <td><a href="{{env('ADMISSION_URL').'?ref='.$staff->referral_code}}" target="_blank" id="myLink">{{env('ADMISSION_URL').'?ref='.$staff->referral_code}}</a>  <button class="btn btn-sm btn-info" id="copyButton"><i class="ri-file-copy-fill"></i></button></td>
+                                </tr>
                                 @if(!empty($staff->department))
                                 <tr>
                                     <th><span class="fw-medium">Department:</span></th>
@@ -117,7 +121,7 @@ $courses = $staff->courses;
         <!--end card-->
     </div>
     <!--end col-->
-    <div class="col-xl-9">
+    <div class="col-xl-7">
         <div class="card">
             <div class="card-header align-items-center">
                 <h4 class="card-title mb-0 flex-grow-1">Course Allocated  for {{ $pageGlobalData->sessionSetting->academic_session }} academic session</h4>

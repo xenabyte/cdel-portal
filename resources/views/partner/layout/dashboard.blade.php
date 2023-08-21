@@ -295,6 +295,28 @@
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
 
+    <script>
+        document.getElementById('copyButton').addEventListener('click', function() {
+            // Select the link text
+            var link = document.getElementById('myLink');
+            var range = document.createRange();
+            range.selectNode(link);
+            window.getSelection().removeAllRanges();
+            window.getSelection().addRange(range);
+    
+            // Copy the selected text to the clipboard
+            try {
+                document.execCommand('copy');
+                alert('Link copied to clipboard');
+            } catch (err) {
+                console.error('Unable to copy link: ', err);
+            }
+    
+            // Deselect the text
+            window.getSelection().removeAllRanges();
+        });
+    </script>  
+    
 </body>
 
 </html>

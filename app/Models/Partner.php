@@ -47,4 +47,14 @@ class Partner extends Authenticatable
     {
         $this->notify(new PartnerResetPassword($token));
     }
+
+    /**
+     * Get all of the students for the Guardian
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function applicants()
+    {
+        return $this->hasMany(User::class, 'partner_id',);
+    }
 }

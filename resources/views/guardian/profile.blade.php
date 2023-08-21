@@ -51,7 +51,7 @@ $name = $guardian->name;
             <div class="card-header">
                 <ul class="nav nav-tabs-custom rounded card-header-tabs border-bottom-0" role="tablist">
                     <li class="nav-item">
-                        <a class="nav-link active" data-bs-toggle="tab" href="#changePassword" role="tab">
+                        <a class="nav-link active" data-bs-toggle="tab" href="#updatePassword" role="tab">
                             <i class="far fa-user"></i> Change Password
                         </a>
                     </li>
@@ -59,8 +59,8 @@ $name = $guardian->name;
             </div>
             <div class="card-body p-4">
                 <div class="tab-content">
-                    <div class="tab-pane active" id="changePassword" role="tabpanel">
-                        <form action="{{ url('guardian/changePassword') }}" method="POST">
+                    <div class="tab-pane active" id="updatePassword" role="tabpanel">
+                        <form action="{{ url('guardian/updatePassword') }}" method="POST">
                             @csrf
                             <div class="row g-2">
                                 <div class="col-lg-4">
