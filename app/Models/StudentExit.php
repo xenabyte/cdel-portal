@@ -25,4 +25,14 @@ class StudentExit extends Model
         'is_guardian_approved',
         'is_guardian_approved_date',
     ];
+
+    /**
+     * Get the student that owns the StudentExit
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function student()
+    {
+        return $this->belongsTo(Student::class, 'student_id');
+    }
 }

@@ -49,4 +49,17 @@
       Please remember to keep your password confidential and do not share it with anyone. If you have any concerns about the security of your password or encounter any technical difficulties during the application process, don't hesitate to reach out to our Admissions Office at {{ env('APP_EMAIL') }}
   </td>
 </tr>
+
+<tr style="font-family: 'Roboto', sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;">
+  <td class="content-block" itemprop="handler" itemscope="" itemtype="http://schema.org/HttpActionHandler" style="font-family: 'Roboto', sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; margin: 0; padding: 0 0 24px;" valign="top">
+      <a href="{{ env('ADMISSION_URL') }}/login" itemprop="url" style="font-family: 'Roboto', sans-serif; box-sizing: border-box; font-size: .8125rem;font-weight: 400; color: #FFF; text-decoration: none; text-align: center; cursor: pointer; display: inline-block; border-radius: .25rem; text-transform: capitalize; background-color: #3bad71; margin: 0; border-color: #3bad71; border-style: solid; border-width: 1px; padding: .5rem .9rem;box-shadow: 0 3px 3px rgba(56,65,74,0.1);" onmouseover="this.style.background='#099885'" onmouseout="this.style.background='#3bad71'">Complete Application →</a>
+  </td>
+</tr>
+
+<tr style="font-family: 'Roboto', sans-serif; box-sizing: border-box; font-size: 14px; margin: 0; border-top: 1px solid #e9ebec;">
+  <td class="content-block" style="font-family: 'Roboto', sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; margin: 0; padding: 0; padding-top: 15px" valign="top">
+      <div style="display: flex; align-items: center;">
+      </div>
+  </td>
+</tr>
 @endsection

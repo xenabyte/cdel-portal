@@ -330,6 +330,9 @@ class ApplicationController extends Controller
         $applicationSession = $globalData->sessionSetting['application_session'];
         $applicationPayment = Payment::with('structures')->where('type', 'Application Fee')->first();
         $paymentId = $applicationPayment->id;
+        $referralCode = $request->referrer;
+
+        Log::info($referralCode);
 
         if(!$request->has('user_id')){
             $validator = Validator::make($request->all(), [
@@ -386,6 +389,8 @@ class ApplicationController extends Controller
                 return redirect()->back();
             }
         }else{
+            $partnerId = $this->getReferralId($referralCode);
+
             $newApplicant = ([
                 'email' => $request->email,
                 'lastname' => $request->lastname,
@@ -395,7 +400,8 @@ class ApplicationController extends Controller
                 'password' => Hash::make($accessCode),
                 'passcode' => $accessCode,
                 'academic_session' => $applicationSession,
-                'referrer' => $request->referrer,
+                'partner_id' => $partnerId,
+                'referrer' => $referralCode,
             ]);
     
             $applicant = Applicant::create($newApplicant);
@@ -421,7 +427,7 @@ class ApplicationController extends Controller
                     'payment_gateway' => $paymentGateway,
                     'reference' => null,
                     'academic_session' => $applicationSession,
-                    'redirect_path' => 'user.auth.register'
+                    'redirect_path' => 'user.auth.login'
                 ),
             );
 

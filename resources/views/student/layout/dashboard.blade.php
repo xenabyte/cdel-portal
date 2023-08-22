@@ -273,7 +273,13 @@
                                     </li>
                                 </ul>
                             </div>
-                        </li> 
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link menu-link" href="{{ url('student/exits') }}">
+                                <i class="mdi mdi-arrow-top-right-bold-box"></i> <span data-key="t-transaction">Exit(s)</span>
+                            </a>
+                        </li>
                         @endif
                        
                         <li class="nav-item">

@@ -53,7 +53,7 @@ class User extends Authenticatable
         'application_type',
         'de_result',
         'de_school_attended',
-        'referral_code',
+        'referrer',
     ];
 
     /**

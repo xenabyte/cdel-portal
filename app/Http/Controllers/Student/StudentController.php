@@ -301,4 +301,33 @@ class StudentController extends Controller
             'passEightyTuition' => $paymentCheck->passEightyTuition
         ]);
     }
+
+    public function exits(Request $request){
+        $student = Auth::guard('student')->user();
+        $studentId = $student->id;
+        $levelId = $student->level_id;
+        $globalData = $request->input('global_data');
+        $admissionSession = $globalData->sessionSetting['admission_session'];
+        $academicSession = $globalData->sessionSetting['academic_session'];
+
+
+        $mentorId  = $student->mentor_id;
+        $paymentCheck = $this->checkSchoolFees($student, $academicSession, $levelId);
+        if(!$paymentCheck->passTuitionPayment){
+            return view('student.schoolFee', [
+                'payment' => $paymentCheck->schoolPayment,
+                'passTuition' => $paymentCheck->passTuitionPayment,
+                'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
+                'passEightyTuition' => $paymentCheck->passEightyTuition,
+                'studentPendingTransactions' => $paymentCheck->studentPendingTransactions
+            ]);
+        }
+
+        return view('student.exits', [
+            'passTuition' => $paymentCheck->passTuitionPayment,
+            'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
+            'passEightyTuition' => $paymentCheck->passEightyTuition,
+            'studentPendingTransactions' => $paymentCheck->studentPendingTransactions
+        ]);
+    }
 }

@@ -124,6 +124,20 @@ class Controller extends BaseController
         }           
     }
 
+    public function getReferralId($referralCode) {
+        $isExistStaff = Staff::where('referral_code', $referralCode)->first();
+        // if($isExistStaff){
+        //     return $isExistStaff->id;
+        // }else{
+        
+        $isExistPartner = Partner::where('referral_code', $referralCode)->first();
+        if($isExistPartner){
+            return $isExistPartner->id;
+        }
+        
+        return null;
+    }
+
     public function getSingleApplicant($studentIdCode, $path){
         $student = User::with('programme', 'programme.department', 'programme.department.faculty', 'transactions')->where('application_number', $studentIdCode)->first();
         Log::info("message");

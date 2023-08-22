@@ -173,4 +173,14 @@ class Student extends Authenticatable
     {
         return $this->belongsTo(Staff::class, 'mentor_id');
     }
+
+    /**
+     * Get all of the exitApplications for the Student
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function exitApplications()
+    {
+        return $this->hasMany(StudentExit::class, 'student_id');
+    }
 }

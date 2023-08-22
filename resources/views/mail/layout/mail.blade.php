@@ -26,6 +26,17 @@
                   </tbody>
               </table>
               <div style="text-align: center; margin: 0px auto;">
+                <ul style="list-style: none;display: flex; justify-content: space-evenly; padding-top: 25px;padding-left: 0px; margin-bottom: 20px; font-family: 'Roboto', sans-serif;">
+                    <li>
+                        <a href="{{ env('WEBSITE_URL') }}" style="color: #495057;">Website</a>
+                    </li>
+                    <li>
+                        <a href="tel:{{env('ADMISSION_CONTACT')}}" style="color: #495057;">Support 24/7</a>
+                    </li>
+                    <li>
+                        <a href="mailto:{{env('APP_EMAIL')}}" style="color: #495057;">Email</a>
+                    </li>
+                </ul>
                   <p style="font-family: 'Roboto', sans-serif; font-size: 14px;color: #98a6ad; margin: 0px;">{{ date('Y') }} {{ env('SCHOOL_NAME') }}</p>
               </div>
           </div>
