@@ -476,7 +476,7 @@
 
                         <li class="nav-item">
                             <a class="nav-link menu-link" href="#Partner" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="Partner">
-                                <i class="mdi mdi-access-point-network"></i> <span data-key="t-Partner">Partner Management</span>
+                                <i class="mdi mdi-account-network"></i> <span data-key="t-Partner">Partner Management</span>
                             </a>
                             <div class="collapse menu-dropdown" id="Partner">
                                 <ul class="nav nav-sm flex-column">

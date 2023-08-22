@@ -342,6 +342,15 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'staff'],
 
   Route::post('/uploadSignature', [App\Http\Controllers\Staff\StaffController::class, 'uploadSignature'])->name('uploadSignature')->middleware(['auth:staff']);
 
+  Route::get('/applicants', [App\Http\Controllers\Staff\AdmissionController::class, 'applicants'])->name('applicants')->middleware(['auth:staff']);
+  Route::get('/applicant/{slug}', [App\Http\Controllers\Staff\AdmissionController::class, 'applicant'])->name('applicant')->middleware(['auth:staff']);
+  Route::post('/applicantWithSession', [App\Http\Controllers\Staff\AdmissionController::class, 'applicantWithSession'])->name('applicantWithSession')->middleware(['auth:staff']);
+
+  Route::get('/students', [App\Http\Controllers\Staff\AdmissionController::class, 'students'])->name('students')->middleware(['auth:staff']);
+  Route::get('/student/{slug}', [App\Http\Controllers\Staff\AdmissionController::class, 'student'])->name('student')->middleware(['auth:staff']);
+  Route::get('/allStudents', [App\Http\Controllers\Staff\AdmissionController::class, 'allStudents'])->name('allStudents')->middleware(['auth:staff']);
+
+
   
 });
 

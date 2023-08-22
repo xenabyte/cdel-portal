@@ -14,6 +14,7 @@
     $staffPublicRelationRole = false;
     $staffStudentCareRole = false;
     $staffBursaryRole = false;
+    $staffAdmissionOfficerRole = false;
 
     $notifications = $staff->notifications()->orderBy('created_at', 'desc')->get();
     
@@ -49,9 +50,13 @@
         if (strtolower($staffRole->role->role) == 'student care') {
             $staffStudentCareRole = true;
         }
-        if(strtolower($staffRole->role->role) == 'staffBursaryRole'){
+        if(strtolower($staffRole->role->role) == 'busary'){
             $staffBursaryRole = true;
         }
+        if(strtolower($staffRole->role->role) == 'admission'){
+            $staffAdmissionOfficerRole = true;
+        }
+
         
     }
 @endphp
@@ -283,6 +288,31 @@
                             </a>
                         </li>
 
+                        <li class="nav-item">
+                            <a class="nav-link menu-link" href="{{ url('staff/allStudents') }}">
+                                <i class="mdi mdi-account-group"></i> <span data-key="t-transaction">All Student</span>
+                            </a>
+                        </li>
+
+                        @if($staffAdmissionOfficerRole || $staffRegistrarRole || $staffVCRole)
+                        <li class="nav-item">
+                            <a class="nav-link menu-link" href="#admission" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="admission">
+                                <i class="mdi mdi-account-box-multiple"></i> <span data-key="t-admission">Admission</span>
+                            </a>
+                            <div class="collapse menu-dropdown" id="admission">
+                                <ul class="nav nav-sm flex-column">
+                                    <li class="nav-item">
+                                        <a href="{{ url('/staff/applicants') }}" class="nav-link">Applicants</a>
+                                    </li>
+            
+                                    <li class="nav-item">
+                                        <a href="{{ url('/staff/students') }}" class="nav-link">Students</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li> 
+                        @endif
+
                         @if($staffDeanRole || $staffSubDeanRole || $staffHODRole || $staffRegistrarRole ||  $staffHRRole || $staffVCRole)
                         <li class="nav-item">
                             <a class="na<li class="nav-item">
@@ -303,7 +333,7 @@
                                         @endif
                                     </ul>
                                 </div>
-                            </li> <!-- end Bursary Menu -->
+                            </li>
                         </li>
                         @endif
 
@@ -319,7 +349,7 @@
                                     </li>
                                 </ul>
                             </div>
-                        </li> <!-- end Dashboard Menu -->
+                        </li> 
                         @endif
 
 
@@ -335,7 +365,7 @@
                                     </li>
                                 </ul>
                             </div>
-                        </li> <!-- end Dashboard Menu -->
+                        </li> 
                         @endif
 
                         @if($staffLevelAdviserRole || $staffHODRole || $staffVCRole || $staffDeanRole || $staffSubDeanRole)
