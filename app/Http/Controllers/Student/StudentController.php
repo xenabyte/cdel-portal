@@ -15,6 +15,7 @@ use App\Models\Payment;
 use App\Models\Transaction;
 use App\Models\Staff;
 use App\Models\User as Applicant;
+use App\Models\Student;
 
 use SweetAlert;
 use Mail;
@@ -26,6 +27,10 @@ use Paystack;
 
 class StudentController extends Controller
 {
+
+    public function onBoarding(Request $request){
+        return view('student.onBoarding');
+    }
     
     public function index(Request $request){
         $student = Auth::guard('student')->user();
@@ -329,5 +334,66 @@ class StudentController extends Controller
             'passEightyTuition' => $paymentCheck->passEightyTuition,
             'studentPendingTransactions' => $paymentCheck->studentPendingTransactions
         ]);
+    }
+
+    public function getStudent(Request $request) {
+        $matricNumber = $request->matric_number;
+
+        $student = Student::where('matric_number', $matricNumber)
+            ->where('is_active', true)
+            ->where('is_passed_out', false)
+            ->where('is_rusticated', false)
+            ->first();
+
+        if(!$student){
+            return response()->json(['status' => 'record_not_found']);
+
+        }
+
+        return response()->json(['status' => 'record_found', 'student' => $student]);
+    }
+
+    public function saveStudentDetails(Request $request){
+
+        $validator = Validator::make($request->all(), [
+            'student_id' => 'required',
+            'email' => 'required',
+            'lastname' => 'required',
+            'othernames' => 'required',
+            'password' => 'required',
+            'confirm_password' => 'required'
+        ]);
+
+
+        if($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+
+        
+        if(!$student = Student::with('applicant')->where('id', $request->student_id)->first()){
+            alert()->error('Oops!', 'An Error Occurred')->persistent('Close');
+            return redirect()->back();
+        }
+
+        $applicant = $student->applicant;
+        $applicant->lastname = $applicant->lastname;
+        $applicant->othernames = $applicant->othernames;
+        $applicant->save();
+
+        if($request->password == $request->confirm_password){
+            $student->password = bcrypt($request->password);
+        }else{
+            alert()->error('Oops!', 'Password mismatch')->persistent('Close');
+            return redirect()->back();
+        }
+
+        if($student->update()) {
+            alert()->success('Success', 'Save Changes')->persistent('Close');
+            return redirect()->back();
+        }
+
+        alert()->error('Oops!', 'An Error Occurred')->persistent('Close');
+        return redirect()->back();
     }
 }

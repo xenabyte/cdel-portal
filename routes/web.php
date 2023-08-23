@@ -26,6 +26,7 @@ Route::get('/verifyPayment', [App\Http\Controllers\PaymentController::class, 've
 Route::post('/paystackWebhook', [App\Http\Controllers\PaymentController::class, 'paystackWebhook']);
 
 Route::get('/examDocket/{slug}', [App\Http\Controllers\HomeController::class, 'getExamDocket']);
+Route::get('/studentDetails/{slug}', [App\Http\Controllers\HomeController::class, 'studentDetails']);
 
 
 
@@ -189,6 +190,10 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'admin'],
 });
 
 Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'student'], function () {
+  Route::get('/onBoarding', [App\Http\Controllers\Student\StudentController::class, 'onBoarding'])->name('onBoarding');
+  Route::post('/getStudent', [App\Http\Controllers\Student\StudentController::class, 'getStudent'])->name('getStudent');
+  Route::post('/saveStudentDetails', [App\Http\Controllers\Student\StudentController::class, 'saveStudentDetails'])->name('saveStudentDetails');
+
   Route::get('/', [App\Http\Controllers\Student\Auth\LoginController::class, 'showLoginForm'])->name('student.login');
   Route::get('/login', [App\Http\Controllers\Student\Auth\LoginController::class, 'showLoginForm'])->name('login');
   Route::post('/login', [App\Http\Controllers\Student\Auth\LoginController::class, 'login']);

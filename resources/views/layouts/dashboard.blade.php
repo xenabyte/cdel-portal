@@ -5,7 +5,7 @@
 <head>
 
     <meta charset="utf-8" />
-    <title>Examination Profile | {{ env('APP_NAME') }} </title>
+    <title>Student Onboarding | {{ env('APP_NAME') }} </title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta content="{{ env('APP_NAME') }} Dashboard" name="description" />
@@ -83,7 +83,6 @@
                     </div>
 
                     <div class="d-flex align-items-center">
-
                         <div class="ms-1 header-item d-none d-sm-flex">
                             <button type="button" class="btn btn-icon btn-topbar btn-ghost-secondary rounded-circle shadow-none" data-toggle="fullscreen">
                                 <i class='bx bx-fullscreen fs-22'></i>
@@ -96,6 +95,7 @@
                             </button>
                         </div>
 
+                        @if(!empty($student))
                         <div class="dropdown ms-sm-3 header-item topbar-user">
                             <button type="button" class="btn shadow-none" id="page-header-user-dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <span class="d-flex align-items-center">
@@ -107,6 +107,7 @@
                                 </span>
                             </button>
                         </div>
+                        @endif
                     </div>
                 </div>
             </div>
@@ -240,7 +241,56 @@
     <script src="{{asset('assets/js/pages/datatables.init.js')}}"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const validateButton = document.querySelector('.validate-button');
+            const hiddenFields = document.querySelector('.hidden-fields');
+            const studentIdInput = document.querySelector('#student_id');
+            const matricNumberInput = document.querySelector('#matricNumber');
+
+            hiddenFields.style.display = 'none';
+    
+            validateButton.addEventListener('click', function () {
+                const matricNumber = document.querySelector('#matricNumber').value;
+
+                if(matricNumber === '') {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Matric Number is required',
+                        text: 'Fill in your matric number',
+                    });
+
+                    return false;
+                }
+    
+                // Send a POST request to the Laravel route
+                axios.post('/student/getStudent', { matric_number: matricNumber })
+                    .then(function (response) {
+                        if (response.data.status === 'record_not_found') {
+                            // Show a SweetAlert for record not found
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Record Not Found',
+                                text: 'The student record was not found.',
+                            });
+                        } else {
+                            // Set the student ID and show the hidden fields
+                            studentIdInput.value = response.data.student.id;
+                            hiddenFields.style.display = 'flex';
+                            validateButton.style.display = 'none';
+                            matricNumberInput.setAttribute('disabled', 'disabled');
+                        }
+                    })
+                    .catch(function (error) {
+                        console.error(error);
+                    });
+            });
+        });
+    </script>
+    
 </body>
 
 </html>
