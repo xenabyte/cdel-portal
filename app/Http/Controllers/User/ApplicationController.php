@@ -332,8 +332,6 @@ class ApplicationController extends Controller
         $paymentId = $applicationPayment->id;
         $referralCode = $request->referrer;
 
-        Log::info($referralCode);
-
         if(!$request->has('user_id')){
             $validator = Validator::make($request->all(), [
                 'email' => 'required|string|email|max:255|unique:users,email,NULL,id,academic_session,' . $applicationSession,

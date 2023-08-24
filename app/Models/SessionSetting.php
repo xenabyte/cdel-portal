@@ -14,5 +14,8 @@ class SessionSetting extends Model
         'academic_session',
         'admission_session',
         'application_session',
+        'resumption_date',
+        'registrar_signature',
+        'registrar_name',
     ];
 }

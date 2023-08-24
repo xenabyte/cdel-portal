@@ -89,6 +89,45 @@ class AcademicController extends Controller
         return redirect()->back();
     }
 
+    public function setRegistrarSetting(Request $request){
+        $validator = Validator::make($request->all(), [
+            'registrar_name' => 'required',
+            'registrar_signature' => 'required',
+            'resumption_date' => 'required',
+        ]);
+
+
+        $sessionSetting = new SessionSetting;
+        if(!empty($request->sessionSetting_id) && !$sessionSetting = SessionSetting::find($request->sessionSetting_id)){
+            alert()->error('Oops', 'Invalid Session Setting Information')->persistent('Close');
+            return redirect()->back();
+        }
+
+        if(!empty($request->registrar_name) &&  $request->registrar_name != $sessionSetting->registrar_name){
+            $sessionSetting->registrar_name = $request->registrar_name;
+        }
+
+        if(!empty($request->resumption_date) &&  $request->resumption_date != $sessionSetting->resumption_date){
+            $sessionSetting->resumption_date = $request->resumption_date;
+        }
+
+        if(!empty($request->registrar_signature)){
+            $slug = 'registrar_signature'.time();
+            $imageUrl = 'uploads/'.$slug.'.'.$request->file('registrar_signature')->getClientOriginalExtension();
+            $image = $request->file('registrar_signature')->move('uploads', $imageUrl);
+
+            $sessionSetting->registrar_signature = $imageUrl;
+        }
+
+        if($sessionSetting->save()){
+            alert()->success('Changes Saved', 'Registrar changes saved successfully')->persistent('Close');
+            return redirect()->back();
+        }
+
+        alert()->error('Oops!', 'Something went wrong')->persistent('Close');
+        return redirect()->back();
+    }
+
     public function addSession(Request $request){
         $validator = Validator::make($request->all(), [
             'year' => 'required|string|unique:sessions',

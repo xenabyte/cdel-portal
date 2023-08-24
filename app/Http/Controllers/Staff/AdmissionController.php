@@ -23,6 +23,7 @@ use App\Models\Student;
 
 
 use App\Mail\ApplicationMail;
+use App\Mail\AdmissionMail;
 
 use App\Libraries\Pdf\Pdf;
 
@@ -136,11 +137,13 @@ class AdmissionController extends Controller
             $pdf = new Pdf();
             $admissionLetter = $pdf->generateAdmissionLetter($applicant->slug);
 
-            $student = Student::find($studentId);
+            $student = Student::with('programme', 'applicant')->where('id', $studentId)->first();
             $student->admission_letter = $admissionLetter;
             $student->save();
 
             //In the email, create and provide student portal login information
+            Mail::to($student->email)->send(new AdmissionMail($student));
+
         }
 
         $applicant->status = $status;

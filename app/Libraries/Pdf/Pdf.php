@@ -8,6 +8,7 @@ use App\Models\Student;
 use App\Models\GlobalSetting as Setting;
 use App\Models\CourseRegistration;
 use App\Models\ResultApprovalStatus;
+use App\Models\Payment;
 
 
 use Log;
@@ -24,6 +25,22 @@ Class Pdf {
         $student = Student::with('programme', 'faculty', 'department', 'applicant')->where('slug', $slug)->first();
         $setting = Setting::first();
 
+        $acceptancePayment = Payment::with('structures')->where('type', Payment::PAYMENT_TYPE_ACCEPTANCE)->where('academic_session', $student->academic_session)->first();
+        $schoolPayment = Payment::with('structures')
+            ->where('type', Payment::PAYMENT_TYPE_SCHOOL)
+            ->where('programme_id', $student->programme_id)
+            ->where('level_id', $student->level_id)
+            ->where('academic_session', $student->academic_session)
+            ->first();
+
+        if(!$schoolPayment){
+            log::error($student->programme->name .' school fee is not available');
+            return false;
+        }
+
+        $schoolAmount = $schoolPayment->structures->sum('amount');
+        $acceptanceAmount = $acceptancePayment->structures->sum('amount');
+
         $fileDirectory = 'uploads/files/admission/'.$slug.'.pdf';
 
         $studentData = [
@@ -36,6 +53,8 @@ Class Pdf {
             'student_name' => $student->applicant->lastname .' '. $student->applicant->othernames,
             'academic_session' => $student->academic_session,
             'application_type' => $student->application_type,
+            'acceptance_amount' => $acceptanceAmount,
+            'school_amount' => $schoolAmount,
             'logo' => asset($setting->logo)
         ];
 

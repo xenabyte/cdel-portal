@@ -18,6 +18,8 @@ use App\Models\Student;
 use App\Models\SessionSetting;
 
 use App\Mail\ApplicationPayment;
+use App\Mail\StudentActivated;
+
 
 use App\Libraries\Google\Google;
 
@@ -55,7 +57,7 @@ class PaymentController extends Controller
             $redirectPath = $paymentDetails['data']['metadata']['redirect_path'];
             $payment = Payment::where('id', $paymentId)->first();
             $paymentType = $payment->type;
-            $student = Student::with('applicant')->where('id', $studentId)->first();
+            $student = Student::with('applicant', 'programme')->where('id', $studentId)->first();
             
 
             if($paymentDetails['status'] == true){
@@ -135,6 +137,7 @@ class PaymentController extends Controller
             $code = $programme->code;
 
             $accessCode = $student->applicant->passcode;
+            $studentPreviousEmail = $student->email;
 
             $name = $student->applicant->lastname.' '.$student->applicant->othernames;
             $nameParts = explode(' ', $student->applicant->othernames);
@@ -154,6 +157,9 @@ class PaymentController extends Controller
 
             $programme->matric_last_number = $newMatric;
             $programme->save();
+
+            
+            Mail::to($studentPreviousEmail)->send(new StudentActivated($student));
 
             return true;
         }

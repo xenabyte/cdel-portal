@@ -169,11 +169,13 @@ class PaymentController extends Controller
         $payment = Payment::with(['structures'])->where('slug', $slug)->first();
         $programmes = Programme::get();
         $levels = Level::get();
+        $sessions = Session::orderBy('id', 'DESC')->get();
 
         return view('staff.payment', [
             'payment' => $payment,
             'programmes' => $programmes,
-            'levels' => $levels
+            'levels' => $levels,
+            'sessions' => $sessions
         ]);
     }
 

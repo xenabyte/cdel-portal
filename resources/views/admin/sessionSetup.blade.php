@@ -127,7 +127,7 @@
     <div class="col-lg-12">
         <div class="card">
             <div class="card-header align-items-center d-flex">
-                <h4 class="card-title mb-0 flex-grow-1">Session Setting</h4>
+                <h4 class="card-title mb-0 flex-grow-1">Session Settings</h4>
             </div><!-- end card header -->
 
             <div class="card-body">
@@ -171,6 +171,61 @@
                                             @foreach($sessions as $session)<option value="{{$session->year}}">{{ $session->year}}</option>@endforeach
                                         </select>
                                         <label for="application_session">Application Session</label>
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="col-lg-12">
+                                    <div class="text-end">
+                                        <button type="submit" class="btn btn-primary">Update Settings</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div><!-- end col -->
+                </div>
+            </div>
+        </div><!-- end card -->
+    </div>
+
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-header align-items-center d-flex">
+                <h4 class="card-title mb-0 flex-grow-1">Registrar Settings</h4>
+            </div><!-- end card header -->
+
+            <div class="card-body">
+                <div class="row mb-2">
+                    <div class="col-sm-6 col-xl-12">
+                        <form action="{{ url('/admin/setRegistrarSetting') }}" method="POST" enctype="multipart/form-data">
+                            @csrf
+                            <input type="hidden" name="sessionSetting_id" value="{{ !empty($pageGlobalData->sessionSetting)?$pageGlobalData->sessionSetting->id:null }}">
+                            <div class="row g-3">
+
+                                <div class="col-lg-4">
+                                    <h4 class="card-title mb-0 flex-grow-1">Registrar Name: {{ !empty($pageGlobalData->sessionSetting)?$pageGlobalData->sessionSetting->registrar_name:'Not Set' }}</h4>
+                                    <br>
+                                    <div class="form-floating">
+                                        <input type="text" class="form-control" id="registrar_name" name="registrar_name" placeholder="Enter your registrar name">
+                                        <label for="registrar_name">Registrar Name</label>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-4">
+                                    <h4 class="card-title mb-0 flex-grow-1">Registrar Signature:
+                                        <img class="img-thumbnail" alt="Registrar Signature" width="200" src="{{ !empty($pageGlobalData->sessionSetting)? asset($pageGlobalData->sessionSetting->registrar_signature):'Not Set' }}"></h4>
+                                    <br>
+                                    <div class="form-floating">
+                                        <input type="file" class="form-control" id="registrar_signature" name="registrar_signature">
+                                        <label for="registrar_signature"></label>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-4">
+                                    <h4 class="card-title mb-0 flex-grow-1">Resumption Date: {{ !empty($pageGlobalData->sessionSetting) ? date('l, jS F, Y', strtotime($pageGlobalData->sessionSetting->resumption_date)) :'Not Set' }}</h4>
+                                    <br>
+                                    <div class="form-floating">
+                                        <input type="date" class="form-control" id="resumption_date" name="resumption_date">
+                                        <label for="resumption_date">Resumption Date</label>
                                     </div>
                                 </div>
                                 <hr>
