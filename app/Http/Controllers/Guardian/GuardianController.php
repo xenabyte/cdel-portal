@@ -106,7 +106,7 @@ class GuardianController extends Controller
                 "metadata" => array(
                     "amount" => $amount,
                     "email" => $student->email,
-                    "application_id" => $studentId,
+                    "application_id" => null,
                     "student_id" => $studentId,
                     "payment_id" => $paymentId,
                     "payment_gateway" => $paymentGateway,

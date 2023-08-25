@@ -4,6 +4,7 @@ namespace App\Libraries\Google;
 
 use Google\Client as GoogleClient;
 use Google\Service\Directory;
+use Log;
 
 class Google
 {
@@ -12,9 +13,10 @@ class Google
 
     public function __construct()
     {
-        $path = 'public/google/tau-core-1970c12dcf83.json';
+        $path = base_path('public/google/tau-core-api-2551c52d28f8.json');
         $this->client = new GoogleClient();
         $this->client->setAuthConfig($path);
+        $this->client->setSubject(env('GOOGLE_CLIENT_SUBJECT'));
         $this->client->addScope('https://www.googleapis.com/auth/admin.directory.user');
         $this->service = new Directory($this->client);
     }
@@ -32,7 +34,9 @@ class Google
         try {
             $result = $this->service->users->insert($user);
             return $result;
-        } catch (\Google\Service\Exception $e) {
+        }catch (\Google\Service\Exception $e) {
+            // Log or print the error message for debugging
+            Log::info("Message: ". $e->getMessage());
             return false;
         }
     }

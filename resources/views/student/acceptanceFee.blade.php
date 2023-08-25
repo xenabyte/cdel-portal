@@ -29,7 +29,7 @@
                     <div class="row justify-content-center">
                         <div class="col-lg-9">
                             <h4 class="mt-4 fw-semibold">Acceptance Fee</h4>
-                            <p class="text-muted mt-3">Welcome! To secure your spot, kindly submit a non-refundable acceptance fee of ₦{{ number_format($payment->structures->sum('amount')/100, 2) }}. We're excited to have you join us!</p>
+                            <p class="text-muted mt-3">Welcome! To secure your spot, kindly pay a non-refundable acceptance fee of ₦{{ number_format($payment->structures->sum('amount')/100, 2) }}. We're excited to have you join us!</p>
                             <div class="mt-4">
                                 <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
                                     Click here to pay

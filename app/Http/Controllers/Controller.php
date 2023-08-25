@@ -225,8 +225,8 @@ class Controller extends BaseController
     }
 
     //generate clean strings
-    public function generateRandomString($length = 6) {
-        $characters = 'abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNOPQRSTUVWXYZ';
+    public function generateRandomString($length = 8) {
+        $characters = 'abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNOPQRSTUVWXYZ1234567890';
         $charactersLength = strlen($characters);
         $randomString = '';
         for ($i = 0; $i < $length; $i++) {

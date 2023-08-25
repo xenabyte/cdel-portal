@@ -100,7 +100,7 @@
                 <div class="row">
                     <div class="col-lg-12">
                         <div class="text-center text-light">
-                            <p class="mb-0 text-white">&copy;
+                            <p class="mb-0 text-dark">&copy;
                                 <script>document.write(new Date().getFullYear())</script> {{ env('APP_NAME') }}.
                             </p>
                         </div>

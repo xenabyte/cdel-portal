@@ -60,6 +60,17 @@ class AdmissionController extends Controller
         ]);
     }
 
+    public function matriculants(Request $request){
+        $globalData = $request->input('global_data');
+        $academicSession = $globalData->sessionSetting['application_session'];
+
+        $matriculants = Applicant::with('student')->where('academic_session', $academicSession)->where('status', 'Admitted')->get();
+
+        return view('admin.matriculants', [
+            'matriculants' => $matriculants,
+        ]);
+    }
+
     public function applicantWithSession(Request $request){
         $applicants = Applicant::with('programme', 'olevels', 'guardian')->where('academic_session', $request->session)->get();
         

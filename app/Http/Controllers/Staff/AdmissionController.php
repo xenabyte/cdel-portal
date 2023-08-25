@@ -80,6 +80,17 @@ class AdmissionController extends Controller
         ]);
     }
 
+    public function matriculants(Request $request){
+        $globalData = $request->input('global_data');
+        $academicSession = $globalData->sessionSetting['application_session'];
+
+        $matriculants = Applicant::with('student')->where('academic_session', $academicSession)->where('status', 'Admitted')->get();
+
+        return view('admin.matriculants', [
+            'matriculants' => $matriculants,
+        ]);
+    }
+
     public function manageAdmission(Request $request){
         $validator = Validator::make($request->all(), [
             'applicant_id' => 'required',

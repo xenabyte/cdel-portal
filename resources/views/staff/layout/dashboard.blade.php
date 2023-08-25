@@ -308,6 +308,10 @@
                                     <li class="nav-item">
                                         <a href="{{ url('/staff/students') }}" class="nav-link">Students</a>
                                     </li>
+
+                                    <li class="nav-item">
+                                        <a href="{{ url('/staff/matriculants') }}" class="nav-link">Matriculating List</a>
+                                    </li>
                                 </ul>
                             </div>
                         </li> 

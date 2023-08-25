@@ -342,6 +342,10 @@
                                     <li class="nav-item">
                                         <a href="{{ url('/admin/students') }}" class="nav-link">Students</a>
                                     </li>
+
+                                    <li class="nav-item">
+                                        <a href="{{ url('/admin/matriculants') }}" class="nav-link">Matriculating List</a>
+                                    </li>
                                 </ul>
                             </div>
                         </li> <!-- end Bursary Menu -->

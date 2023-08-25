@@ -126,6 +126,8 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'admin'],
   Route::get('/courseRegMgt', [App\Http\Controllers\Admin\AcademicController::class, 'courseRegMgt'])->name('courseRegMgt')->middleware(['auth:admin']);
   Route::post('/setCourseRegStatus', [App\Http\Controllers\Admin\AcademicController::class, 'setCourseRegStatus'])->name('setCourseRegStatus')->middleware(['auth:admin']);
   Route::get('/applicants', [App\Http\Controllers\Admin\AdmissionController::class, 'applicants'])->name('applicants')->middleware(['auth:admin']);
+  Route::get('/matriculants', [App\Http\Controllers\Admin\AdmissionController::class, 'matriculants'])->name('matriculants')->middleware(['auth:admin']);
+
 
   Route::get('/staff', [App\Http\Controllers\Admin\StaffController::class, 'staff'])->name('staff')->middleware(['auth:admin']);
   Route::get('/staff/{slug}', [App\Http\Controllers\Admin\StaffController::class, 'singleStaff'])->name('singleStaff')->middleware(['auth:admin']);
@@ -352,6 +354,7 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'staff'],
   Route::get('/applicants', [App\Http\Controllers\Staff\AdmissionController::class, 'applicants'])->name('applicants')->middleware(['auth:staff']);
   Route::get('/applicant/{slug}', [App\Http\Controllers\Staff\AdmissionController::class, 'applicant'])->name('applicant')->middleware(['auth:staff']);
   Route::post('/applicantWithSession', [App\Http\Controllers\Staff\AdmissionController::class, 'applicantWithSession'])->name('applicantWithSession')->middleware(['auth:staff']);
+  Route::get('/matriculants', [App\Http\Controllers\Staff\AdmissionController::class, 'matriculants'])->name('matriculants')->middleware(['auth:staff']);
 
   Route::get('/students', [App\Http\Controllers\Staff\AdmissionController::class, 'students'])->name('students')->middleware(['auth:staff']);
   Route::get('/student/{slug}', [App\Http\Controllers\Staff\AdmissionController::class, 'student'])->name('student')->middleware(['auth:staff']);

@@ -49,7 +49,11 @@ class StudentController extends Controller
 
         if(!$acceptanceTransaction){
             return view('student.acceptanceFee', [
-                'payment' => $acceptancePayment
+                'payment' => $acceptancePayment,
+                'passTuition' => $paymentCheck->passTuitionPayment,
+                'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
+                'passEightyTuition' => $paymentCheck->passEightyTuition,
+                'studentPendingTransactions' => $paymentCheck->studentPendingTransactions
             ]);
         }
 
@@ -226,7 +230,7 @@ class StudentController extends Controller
                 "metadata" => array(
                     "amount" => $amount,
                     "email" => $student->email,
-                    "application_id" => $studentId,
+                    "application_id" => null,
                     "student_id" => $studentId,
                     "payment_id" => $paymentId,
                     "payment_gateway" => $paymentGateway,

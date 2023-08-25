@@ -142,13 +142,13 @@ class PaymentController extends Controller
             $name = $student->applicant->lastname.' '.$student->applicant->othernames;
             $nameParts = explode(' ', $student->applicant->othernames);
             $firstName = $nameParts[0];
-            $studentEmail = strtolower($code.'.'.$student->applicant->lastname.'.'.$firstName.'@tau.edu.ng');
+            $studentEmail = strtolower($student->applicant->lastname.'.'.$firstName.'@st.tau.edu.ng');
 
             $newMatric = $programme->matric_last_number + 1;
             $matricNumber = substr($admissionSession, 2, 2).'/'.$codeNumber.$code.sprintf("%03d", $newMatric);
 
             $google = new Google();
-            $createStudentEmail = $google->createUser($studentEmail, $applicant->othernames, $applicant->lastname, $accessCode);
+            $createStudentEmail = $google->createUser($studentEmail, $student->applicant->othernames, $student->applicant->lastname, $accessCode);
 
             $student->email = $studentEmail;
             $student->matric_number = $matricNumber;
