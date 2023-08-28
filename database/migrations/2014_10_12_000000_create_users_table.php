@@ -24,14 +24,14 @@ class CreateUsersTable extends Migration
             $table->string('phone_number')->nullable();
             $table->string('image')->nullable();
             $table->unsignedBigInteger('programme_id')->nullable();
-            $table->date('dob')->nullable();
+            $table->datetime('dob')->default(now());
             $table->string('nationality')->nullable();
             $table->string('religion')->nullable();
             $table->string('marital_status')->nullable();
             $table->string('state')->nullable();
             $table->string('lga')->nullable();
             $table->string('gender')->nullable();
-            $table->string('address')->nullable();
+            $table->text('address')->nullable();
             $table->string('sitting_no')->nullable();
             $table->string('olevel_1')->nullable();
             $table->string('olevel_2')->nullable();

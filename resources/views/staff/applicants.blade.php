@@ -51,7 +51,7 @@
                         <tr>
                             <th scope="row">{{ $loop->iteration }}</th>
                             <td>{{ $applicant->lastname .' '. $applicant->othernames }}</td>
-                            <td>{{ $applicant->programme->name }}</td>
+                            <td>{{ !empty($applicant->programme)?$applicant->programme->name:null }}</td>
                             <td>{{ $applicant->application_type }}</td>
                             <td>{{ $applicant->email }} </td>
                             <td>{{ $applicant->passcode }} </td>

@@ -22,6 +22,7 @@ use Alert;
 use Log;
 use Carbon\Carbon;
 
+
 class CronController extends Controller
 {
 
@@ -131,11 +132,9 @@ class CronController extends Controller
                     $portalProgramme = Programme::where('web_id', $programmeId)->first();
                     if($portalProgramme){
                         foreach ($courseData as $course) {
+
                             $existingCourse = Course::where([
-                                'programme_id' => $portalProgramme->id,
-                                'code' => $course['course_code'],
-                                'semester' => $course['course_semester'],
-                                'level_id' => AcademicLevel::where('level', ($course['course_year'] * 100))->value('id'),
+                                'web_id' => $course['id'],
                             ])->first();
 
                             $courseNeededData = [
@@ -148,14 +147,14 @@ class CronController extends Controller
                                 'level_id' => AcademicLevel::where('level', ($course['course_year'] * 100))->value('id'),
                                 'status' => $course['status'],
                             ];
-                        
 
-                        
                             if ($existingCourse) {
+                                unset($courseNeededData['web_id']);
                                 $existingCourse->update($courseNeededData);
                             } else {
                                 Course::create($courseNeededData);
                             }
+                           
                             $courseWebID[] = $course['id'];
                         }
                     }

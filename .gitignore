@@ -1,4 +1,5 @@
 /node_modules
+/public/csvfiles
 /public/uploads
 /public/hot
 /public/storage

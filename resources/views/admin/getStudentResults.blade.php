@@ -189,13 +189,13 @@
                             $semesterRegisteredCourses = $student->registeredCourses->where('semester', $semester)->where('level_id', $academiclevel->id)->where('academic_session', $academicSession);
                             $currentRegisteredCreditUnits =  $semesterRegisteredCourses->sum('course_credit_unit');
                             $currentRegisteredGradePoints = $semesterRegisteredCourses->sum('points');
-                            $currentGPA = number_format($currentRegisteredGradePoints / $currentRegisteredCreditUnits, 2);
+                            $currentGPA = $currentRegisteredGradePoints > 0 ? number_format($currentRegisteredGradePoints / $currentRegisteredCreditUnits, 2) : 0;
                             $failedSemesterCourses = $semesterRegisteredCourses->where('grade', 'F');
 
                             $allRegisteredCourses = $student->registeredCourses->where('grade', '!=', null);
                             $allRegisteredCreditUnits =  $allRegisteredCourses->sum('course_credit_unit');
                             $allRegisteredGradePoints = $allRegisteredCourses->sum('points');
-                            $CGPA = number_format($allRegisteredGradePoints / $allRegisteredCreditUnits, 2);
+                            $CGPA = $allRegisteredGradePoints > 0 ? number_format($allRegisteredGradePoints / $allRegisteredCreditUnits, 2) : 0;
 
                             $prevRegisteredCourses = $student->registeredCourses->where('semester', '!=', $semester)->where('level_id', '!=', $academiclevel->id);
                             $prevRegisteredCreditUnits =  $prevRegisteredCourses->sum('course_credit_units');

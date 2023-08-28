@@ -55,25 +55,19 @@
                         <div class="navbar-brand-box horizontal-logo">
                             <a href="{{ env('WEBSITE_URL') }}" class="logo logo-dark">
                                 <span class="logo-sm">
-                                   <span class="logo-sm">
-                        <img src="{{ !empty($pageGlobalData->setting) ? asset($pageGlobalData->setting->logo) : null }}" alt="" width="50">
-                    </span>
+                                    <img src="{{ !empty($pageGlobalData->setting) ? asset($pageGlobalData->setting->logo) : null }}" alt="" width="50">
                                 </span>
                                 <span class="logo-lg">
-                                   <span class="logo-sm">
-                        <img src="{{ !empty($pageGlobalData->setting) ? asset($pageGlobalData->setting->logo) : null }}" alt="" width="200">
-                    </span>
+                                    <img src="{{ !empty($pageGlobalData->setting) ? asset($pageGlobalData->setting->logo) : null }}" alt="" width="200">
                                 </span>
                             </a>
 
                             <a href="{{ env('WEBSITE_URL') }}" class="logo logo-light">
                                 <span class="logo-sm">
-                                   <span class="logo-sm">
-                        <img src="{{ !empty($pageGlobalData->setting) ? asset($pageGlobalData->setting->logo) : null }}" alt="" width="50">
-                    </span>
+                                    <img src="{{ !empty($pageGlobalData->setting) ? asset($pageGlobalData->setting->logo) : null }}" alt="" width="50">
                                 </span>
                                 <span class="logo-lg">
-                                    <img src="{{asset('assets/images/logo-light.png')}}" alt="" height="17">
+                                    <img src="{{ !empty($pageGlobalData->setting) ? asset($pageGlobalData->setting->logo) : null }}" alt="" width="200">
                                 </span>
                             </a>
                         </div>
