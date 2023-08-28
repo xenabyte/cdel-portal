@@ -215,7 +215,8 @@
                         <label for="type" class="form-label">Select Payment Type</label>
                         <select class="form-select" aria-label="type" name="type">
                             <option selected value= "">Select type </option>
-                            <option value="Application Fee">Application Fee</option>
+                            <option value="General Application Fee">General Application Fee</option>
+                            <option value="Inter Transfer Application Fee">Inter Transfer Application Fee</option>
                             <option value="Acceptance Fee">Acceptance Fee</option>
                             <option value="School Fee">School Fee</option>
                             <option value="General Fee">General Fee</option>

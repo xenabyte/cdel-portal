@@ -314,7 +314,7 @@ $studentRegistrations = $student->courseRegistrationDocument()->orderBy('created
                                 </div>
                             </div>
                             <div class="flex-grow-1 overflow-hidden">
-                                <h5 class="fs-13 mb-1"><a href="#" class="text-body text-truncate d-block">Direct Entry Result</a></h5>
+                                <h5 class="fs-13 mb-1"><a href="#" class="text-body text-truncate d-block">Direct Entry/Prev Institution Result</a></h5>
                             </div>
                             <div class="flex-shrink-0 ms-2">
                                 <div class="d-flex gap-1">

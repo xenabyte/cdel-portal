@@ -36,6 +36,7 @@
                             <th scope="col">Id</th>
                             <th scope="col">Name</th>
                             <th scope="col">Programme</th>
+                            <th scope="col">Application Type</th>
                             <th scope="col">Email</th>
                             <th scope="col">Access Code</th>
                             <th scope="col">Phone Number</th>
@@ -51,6 +52,7 @@
                             <th scope="row">{{ $loop->iteration }}</th>
                             <td>{{ $applicant->lastname .' '. $applicant->othernames }}</td>
                             <td>{{ $applicant->programme->name }}</td>
+                            <td>{{ $applicant->application_type }}</td>
                             <td>{{ $applicant->email }} </td>
                             <td>{{ $applicant->passcode }} </td>
                             <td>{{ $applicant->phone_number }} </td>

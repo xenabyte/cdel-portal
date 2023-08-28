@@ -14,7 +14,7 @@
                               <tr style="font-family: 'Roboto', sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;">
                                 <td class="content-block" style="font-family: 'Roboto', sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; margin: 0; padding: 0 0 20px;" valign="top">
                                     <div style="margin-bottom: 15px;">
-                                        <img src="{{ !empty($pageGlobalData->setting) ? asset($pageGlobalData->setting->logo) : null }}" alt="" height="23">
+                                        <img src="{{env('SCHOOL_LOGO')}}" alt="" height="23">
                                     </div>
                                 </td>
                               </tr>

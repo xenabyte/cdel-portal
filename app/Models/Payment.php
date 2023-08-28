@@ -10,7 +10,8 @@ class Payment extends Model
 {
     use HasFactory, SoftDeletes;
 
-    const PAYMENT_TYPE_APPLICATION = 'Application Fee';
+    const PAYMENT_TYPE_GENERAl_APPLICATION = 'General Application Fee';
+    const PAYMENT_TYPE_INTER_TRANSFER_APPLICATION = 'Inter Transfer Application Fee';
     const PAYMENT_TYPE_ACCEPTANCE = 'Acceptance Fee';
     const PAYMENT_TYPE_SCHOOL = 'School Fee';
     const PAYMENT_TYPE_GENERAL = 'General Fee';

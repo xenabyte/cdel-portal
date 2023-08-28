@@ -63,7 +63,7 @@ class PaymentController extends Controller
             if($paymentDetails['status'] == true){
                 if($this->processPayment($paymentDetails)){
                     alert()->success('Good Job', 'Payment successful')->persistent('Close');
-                    if($paymentType == Payment::PAYMENT_TYPE_APPLICATION){
+                    if($paymentType == Payment::PAYMENT_TYPE_GENERAl_APPLICATION || $paymentType == Payment::PAYMENT_TYPE_INTER_TRANSFER_APPLICATION){
                         return view($redirectPath, [
                             'programmes' => $this->programmes,
                             'payment' => $payment
@@ -78,7 +78,7 @@ class PaymentController extends Controller
                     }
                 }else{
                     alert()->info('oops!!!', 'Something happpened, contact administrator')->persistent('Close');
-                    if($paymentType == Payment::PAYMENT_TYPE_APPLICATION){
+                    if($paymentType == Payment::PAYMENT_TYPE_GENERAl_APPLICATION || $paymentType == Payment::PAYMENT_TYPE_INTER_TRANSFER_APPLICATION){
                         return view($redirectPath, [
                             'programmes' => $this->programmes,
                             'payment' => $payment
@@ -93,7 +93,7 @@ class PaymentController extends Controller
             }
 
             alert()->error('Error', 'Payment not successful')->persistent('Close');
-            if($paymentType == Payment::PAYMENT_TYPE_APPLICATION){
+            if($paymentType == Payment::PAYMENT_TYPE_GENERAl_APPLICATION || $paymentType == Payment::PAYMENT_TYPE_INTER_TRANSFER_APPLICATION){
                 return view($redirectPath, [
                     'programmes' => $this->programmes,
                     'payment' => $payment

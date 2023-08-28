@@ -340,13 +340,13 @@ class PaymentController extends Controller
         $session = $request->academic_session;
 
 
-        if($payment->type == 'Application Fee' || $payment->type == 'Acceptance Fee'){
+        if($payment->type == Payment::PAYMENT_TYPE_GENERAl_APPLICATION || $payment->type == Payment::PAYMENT_TYPE_ACCEPTANCE || $payment->type == Payment::PAYMENT_TYPE_INTER_TRANSFER_APPLICATION){
             $validator = Validator::make($request->all(), [
                 'amountAcceptance' => 'required',
             ],[
                 'amountAcceptance.required' => 'The amount field is required.',
             ]);
-        }elseif($payment->type == 'School Fee'){
+        }elseif($payment->type == Payment::PAYMENT_TYPE_SCHOOL){
             $validator = Validator::make($request->all(), [
                 'amountTuition' => 'required',
             ],[
@@ -374,17 +374,19 @@ class PaymentController extends Controller
             }
         }
 
-        if($payment->type == 'Acceptance Fee'){
+        if($payment->type == Payment::PAYMENT_TYPE_ACCEPTANCE){
             $amount = $request->amountAcceptance;
-        }elseif($payment->type == 'Application Fee'){
+        }elseif($payment->type == Payment::PAYMENT_TYPE_GENERAl_APPLICATION){
             $amount = $request->amountAcceptance;
-        }elseif($payment->type == 'School Fee'){
+        }elseif($payment->type == Payment::PAYMENT_TYPE_INTER_TRANSFER_APPLICATION){
             $amount = $request->amountAcceptance;
+        }elseif($payment->type == Payment::PAYMENT_TYPE_SCHOOL){
+            $amount = $request->amountTuition;
         }else{
             $amount = $request->amountGeneral * 100;
         }
 
-        if($payment->type != 'General Fee' && !empty($request->student_id)){
+        if($payment->type != Payment::PAYMENT_TYPE_GENERAL && !empty($request->student_id)){
             $totalPayment = $payment->structures-sum('amount');
             $paymentTransactions = Transaction::where('student_id', $studentId)
             ->where('payment_id', $payment->id)

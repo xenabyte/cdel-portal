@@ -44,7 +44,7 @@
                                         <div class="position-relative h-100 d-flex flex-column">
                                             <div class="mb-4">
                                                 <a href="{{ env('WEBSITE_URL') }}" class="d-block">
-                                                    <img src="{{ !empty($pageGlobalData->setting) ? asset($pageGlobalData->setting->logo) : null }}" alt="" width="100">
+                                                    <img src="{{ !empty($pageGlobalData->setting) ? asset($pageGlobalData->setting->logo) : null }}" alt="" width="250">
                                                 </a>
                                             </div>
                                             <div class="mt-auto">

@@ -113,9 +113,9 @@
                                         </li>
                                         @endif
 
-                                        @if($applicant->application_type == 'DE')
+                                        @if($applicant->application_type != 'UTME')
                                         <li class="nav-item">
-                                            <a class="nav-link" id="nav-detail-tab" data-bs-toggle="tab" href="#de" role="tab" aria-controls="nav-detail" aria-selected="false">Direct Entry Result</a>
+                                            <a class="nav-link" id="nav-detail-tab" data-bs-toggle="tab" href="#de" role="tab" aria-controls="nav-detail" aria-selected="false">Direct Entry/Prev Institution Result</a>
                                         </li>
                                         @endif
                                     </ul>
@@ -257,7 +257,7 @@
                                         </div>
                                     </div>
                                     @endif
-                                    @if($applicant->application_type == 'DE')
+                                    @if($applicant->application_type != 'UTME')
                                     <div class="tab-pane fade" id="de" role="tabpanel" aria-labelledby="nav-detail-tab">
                                         <div>
                                             <h5 class="fs-14 mb-3"> Institution Attended</h5>
@@ -267,7 +267,7 @@
                                             <div class="row mb-2">
                                                 <div class="col-sm-6 col-xl-12">
                                                     <!-- Simple card -->
-                                                    <i class="bx bxs-file-jpg text-danger" style="font-size: 50px"></i><span style="font-size: 20px">Direct Entry Result</span>
+                                                    <i class="bx bxs-file-jpg text-danger" style="font-size: 50px"></i><span style="font-size: 20px">Direct Entry/Prev Institution/Prev Institution Result</span>
                                                     <div class="text-end">
                                                         <a href="{{ asset($applicant->de_result) }}"  target="blank" class="btn btn-success">View</a>
                                                     </div>

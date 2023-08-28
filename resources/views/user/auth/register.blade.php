@@ -2,8 +2,9 @@
 
 @section('content')
 <div class="col-lg-8">
+    @if(empty($applicant))
     <!-- Primary Alert -->
-    <div class="alert alert-primary alert-dismissible alert-additional fade show" role="alert">
+    <div class="alert alert-primary alert-dismissible alert-additional fade show" id="generalAlert" role="alert">
         <div class="alert-body">
             <div class="d-flex">
                 <div class="flex-shrink-0 me-3">
@@ -19,6 +20,24 @@
             </div>
         </div>
     </div>
+
+    <div class="alert alert-success alert-dismissible alert-additional fade show" id="interTransferAlert" role="alert" style="display: none;">
+        <div class="alert-body">
+            <div class="d-flex">
+                <div class="flex-shrink-0 me-3">
+                    <i class="fs-16 align-middle"></i>
+                </div>
+                <div class="flex-grow-1">
+                    <h5 class="alert-heading">Welcome to Application Portal</h5>
+                    <hr>
+                    <p class="mb-0">
+                        For Admission into Undergraduate Programme <strong> ({{ !empty($pageGlobalData->sessionSetting) ? $pageGlobalData->sessionSetting->application_session : null }} Academic Session) </strong>You are most welcome to study at {{ env('SCHOOL_NAME') }}. We offer candidates excellent and stable academic calendar, comfortable hall of residence, sound morals, entrepreneurial training, skill acquisition, serene and secure environment for learning. <strong> This application form will cost ₦{{ number_format($interPayment->structures->sum('amount')/100, 2) }}</strong>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    @endif
     @if(!empty($applicant))
         <div class="p-lg-5">
             <div>
@@ -42,6 +61,7 @@
                                 @csrf
                                 <input type="hidden" name="user_id" value="{{ $applicant->id }}">
                                 <input type="hidden" name="programme_id" value="{{ $applicant->programme_id }}">
+                                <input type="hidden" name="applicationType" value="{{ $applicant->application_type }}">
 
                                 <div class="mb-3">
                                     <label for="paymentGateway" class="form-label">Select Payment Gateway<span class="text-danger">*</span></label>
@@ -99,10 +119,21 @@
 
             <div>
                 <h5>Kindly fill the form below</h5>
+                <form class="needs-validation" method="POST" novalidate action="{{ url('applicant/register') }}">
+                    @csrf
+                    <div class="p-2 mt-4">
+                        <div class="mb-3 border-top border-top-dashed pt-3">
+                            <label for="applicationType" class="form-label">Select Application Type<span class="text-danger">*</span></label>
+                            <select class="form-select" aria-label="applicationType" name="applicationType" required onchange="handleApplicationTypeChange(event)">
+                                <option value= "" selected>Select Application Type</option>
+                                <option value="General Application">General Application(UTME & DE)</option>
+                                <option value="Inter Transfer Application">Inter Transfer Application</option>
+                            </select>
+                        </div>
+                    </div>
 
-                <div class="p-2 mt-4">
-                    <form class="needs-validation" method="POST" novalidate action="{{ url('applicant/register') }}">
-                        @csrf
+                    <div class="p-2 mt-4 border-top border-top-dashed pt-3" style="display: none" id="applicationForm">
+                    
                         <div class="mb-3">
                             <label for="lastname" class="form-label">Lastname(Surname) <span class="text-danger">*</span></label>
                             <input type="text" class="form-control" name="lastname" id="lastname" placeholder="Enter lastname " required>
@@ -112,7 +143,7 @@
                         </div>
 
                         <div class="mb-3">
-                            <label for="othernames" class="form-label">Other names <span class="text-danger">*</span></label>
+                            <label for="othernames" class="form-label">Othernames <span class="text-danger">*</span></label>
                             <input type="text" class="form-control" name="othernames" id="othernames" placeholder="Enter othernames" required>
                             <div class="invalid-feedback">
                                 Please enter othernames
@@ -171,7 +202,6 @@
                             </select>
                         </div>
 
-                        <hr>
                         <!-- Primary Alert -->
                         <div class="alert alert-primary alert-dismissible alert-additional fade show" role="alert" style="display: none" id="transferInfo">
                             <div class="alert-body">
@@ -198,7 +228,7 @@
                             </div>
                         </div>
 
-                        <div class="mt-4">
+                        <div class="mt-4 border-top border-top-dashed pt-3">
                             <button class="btn btn-success w-100" id='submit-button' disabled type="submit">Make Payment</button>
                         </div>
 
@@ -206,9 +236,8 @@
                             <p class="mb-0">Already paid for application ? <a href="{{url('/applicant/login')}}" class="fw-semibold text-primary text-decoration-underline"> Sign in to complete application</a> </p>
                         </div>
 
-                    </form>
-
-                </div>
+                    </div>
+                </form>
             </div>
             <!-- end card -->
 
@@ -229,6 +258,28 @@
             }
         }else{
             submitButton.disabled = true;
+        }
+    }
+
+    function handleApplicationTypeChange(event) {
+        const selectedValue = event.target.value;
+        const generalAlert = document.getElementById("generalAlert");
+        const interTransferAlert = document.getElementById("interTransferAlert");
+        const applicationForm = document.getElementById("applicationForm");
+
+        // Toggle visibility based on the selected value
+        if (selectedValue === "") {
+            applicationForm.style.display = "none";
+            generalAlert.style.display = "none";
+            interTransferAlert.style.display = "none";
+        } else if (selectedValue === "Inter Transfer Application") {
+            applicationForm.style.display = "block";
+            generalAlert.style.display = "none";
+            interTransferAlert.style.display = "block";
+        } else {
+            generalAlert.style.display = "block";
+            interTransferAlert.style.display = "none";
+            applicationForm.style.display = "block";
         }
     }
 

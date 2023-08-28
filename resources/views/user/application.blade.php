@@ -79,10 +79,10 @@
                                 <i class="ri-folder-4-line d-inline-block d-md-none"></i> <span class="d-none d-md-inline-block">Jamb Result</span>
                             </a>
                         </li>
-                        @elseif(!empty($applicant->application_type) && $applicant->application_type == 'DE')
+                        @elseif(!empty($applicant->application_type) && $applicant->application_type != 'UTME')
                         <li class="nav-item">
                             <a class="nav-link fs-14" data-bs-toggle="tab" href="#deresult" role="tab">
-                                <i class="ri-folder-4-line d-inline-block d-md-none"></i> <span class="d-none d-md-inline-block">Direct Result</span>
+                                <i class="ri-folder-4-line d-inline-block d-md-none"></i> <span class="d-none d-md-inline-block">Direct Entry/Previous Institution Result</span>
                             </a>
                         </li>
                         @endif
@@ -1169,12 +1169,12 @@
                                         @csrf
 
                                         <div class="col-md-12">
-                                            <label for="de_school_attended">Direct Entry Institution</label>
+                                            <label for="de_school_attended">Previous Institution(s)</label>
                                             <textarea id="de_school_attended" name="de_school_attended" >{!! $applicant->de_school_attended !!}</textarea>
                                         </div><!--end col-->
             
                                         <div class="col-md-12 mt-3">
-                                            <label for="de_result">Upload Direct Entry Result/Certificate</label>
+                                            <label for="de_result">Upload Result/Certificate</label>
                                             <input type="file" name="de_result" class="form-control" id="de_result">
                                         </div><!--end col-->
                                         <div class="row g-2">

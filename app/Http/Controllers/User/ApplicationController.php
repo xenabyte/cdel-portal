@@ -55,15 +55,19 @@ class ApplicationController extends Controller
         
         $applicant = Applicant::with('programme', 'olevels', 'guardian')->where('id', $userId)->first();
 
-        $applicationPayment = Payment::with('structures')->where('type', Payment::PAYMENT_TYPE_APPLICATION)->first();
+        $applicationPayment = Payment::with('structures')->where('type', Payment::PAYMENT_TYPE_GENERAl_APPLICATION)->first();
+        $interApplicationPayment = Payment::with('structures')->where('type', Payment::PAYMENT_TYPE_INTER_TRANSFER_APPLICATION)->first();
+
         $paymentId = $applicationPayment->id;
-        $transaction = Transaction::where('user_id', $applicant->id)->where('session', $applicationSession)->where('payment_id', $paymentId)->where('status', 1)->first();
+        $interPaymentId = $interApplicationPayment->id;
+        $transaction = Transaction::where('user_id', $applicant->id)->where('session', $applicationSession)->where('status', 1)->where('payment_id', $paymentId)->orWhere('payment_id', $interPaymentId)->first();
 
         if(!$transaction){
             return view('user.auth.register', [
                 'programmes' => $this->programmes,
                 'applicant' => $applicant,
-                'payment' => $applicationPayment
+                'payment' => $applicationPayment,
+                'interPayment' => $interApplicationPayment
             ]);
         }
 
@@ -97,7 +101,7 @@ class ApplicationController extends Controller
                 $percent = $percent + 1;
             }
             $total = $total + 2;
-        }elseif(!empty($applicant->application_type) && $applicant->application_type == 'DE'){
+        }elseif(!empty($applicant->application_type) && $applicant->application_type != 'UTME'){
             if(!empty($applicant->de_result)){
                 $percent = $percent + 1;
             }
@@ -120,11 +124,13 @@ class ApplicationController extends Controller
     //applicant
     public function showRegistrationForm(Request $request)
     {
-        $payment = Payment::with('structures')->where('type', 'Application Fee')->first();
+        $payment = Payment::with('structures')->where('type', Payment::PAYMENT_TYPE_GENERAl_APPLICATION)->first();
+        $interApplicationPayment = Payment::with('structures')->where('type', Payment::PAYMENT_TYPE_INTER_TRANSFER_APPLICATION)->first();
 
         return view('user.auth.register', [
             'programmes' => $this->programmes,
-            'payment' => $payment
+            'payment' => $payment,
+            'interPayment' => $interApplicationPayment
         ]);
     }
 
@@ -328,8 +334,17 @@ class ApplicationController extends Controller
         $userId = $request->user_id;
         $globalData = $request->input('global_data');
         $applicationSession = $globalData->sessionSetting['application_session'];
-        $applicationPayment = Payment::with('structures')->where('type', 'Application Fee')->first();
-        $paymentId = $applicationPayment->id;
+        $applicationType = $request->input('applicationType');
+
+        $applicationPayment = Payment::with('structures')->where('type', Payment::PAYMENT_TYPE_GENERAl_APPLICATION)->first();
+        $interApplicationPayment = Payment::with('structures')->where('type', Payment::PAYMENT_TYPE_INTER_TRANSFER_APPLICATION)->first();
+
+
+        $payment = $applicationPayment;
+        if($applicationType == 'Inter Transfer Application'){
+            $payment = $interApplicationPayment;
+        }
+
         $referralCode = $request->referrer;
 
         if(!$request->has('user_id')){
@@ -340,11 +355,13 @@ class ApplicationController extends Controller
                 'phone_number' => 'required',
                 'othernames' => 'required',
                 'paymentGateway' => 'required',
+                'applicationType' => 'required',
             ]);
         }else{
             $validator = Validator::make($request->all(), [
                 'programme_id' => 'required',
                 'paymentGateway' => 'required',
+                'applicationType' => 'required',
             ]);
         }
 
@@ -355,7 +372,8 @@ class ApplicationController extends Controller
                 return view('user.auth.register', [
                     'programmes' => $this->programmes,
                     'applicant' => $applicant,
-                    'payment' => $applicationPayment
+                    'payment' => $applicationPayment,
+                    'interPayment' => $interApplicationPayment
                 ]);
             }
         }
@@ -376,7 +394,7 @@ class ApplicationController extends Controller
         
 
         $accessCode = $this->generateAccessCode();
-        $amount = $applicationPayment->structures->sum('amount');
+        $amount = $payment->structures->sum('amount');
 
         if($request->has('user_id')) {
             //do something
@@ -390,16 +408,18 @@ class ApplicationController extends Controller
             $partnerId = $this->getReferralId($referralCode);
 
             $newApplicant = ([
+                'slug' => strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $request->lastname .' '. $request->othernames))),
                 'email' => $request->email,
-                'lastname' => $request->lastname,
+                'lastname' => ucwords($request->lastname),
                 'programme_id' => $programmeApplied->id,
                 'phone_number' => $request->phone_number,
-                'othernames' => $request->othernames,
+                'othernames' => ucwords($request->othernames),
                 'password' => Hash::make($accessCode),
                 'passcode' => $accessCode,
                 'academic_session' => $applicationSession,
                 'partner_id' => $partnerId,
                 'referrer' => $referralCode,
+                'application_type' => $applicationType == 'Inter Transfer Application'? $applicationType : null,
             ]);
     
             $applicant = Applicant::create($newApplicant);
@@ -421,7 +441,7 @@ class ApplicationController extends Controller
                     "email" => $applicant->email,
                     "application_id" => $applicant->id,
                     "student_id" => null,
-                    "payment_id" => $paymentId,
+                    "payment_id" => $payment->id,
                     'payment_gateway' => $paymentGateway,
                     'reference' => null,
                     'academic_session' => $applicationSession,
