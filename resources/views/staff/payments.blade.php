@@ -34,6 +34,7 @@
                     <div class="card-header align-items-center">
                         <h4 class="card-title mb-0 flex-grow-1">Other Payments</h4>
                     </div><!-- end card header -->
+                
                     @foreach($payments->where('type', '!=', 'School Fee') as $payment)
                     <div class="col-sm-6 col-xl-4">
                         <!-- Simple card -->
@@ -155,7 +156,7 @@
                             </div><!-- /.modal-dialog -->
                         </div><!-- /.modal -->
                     </div><!-- end col -->
-                @endforeach
+                    @endforeach
                 </div>
 
                 <div class="row">
@@ -272,7 +273,7 @@
                                                     <div class="mt-2">
                                                         <lord-icon src="https://cdn.lordicon.com/wwneckwc.json" trigger="hover" style="width:150px;height:150px">
                                                         </lord-icon>
-                                                        <h4 class="mb-3 mt-4">Are you sure you want to delete <br>{{ $payment->title }}?</h4>
+                                                        <h4 class="mb-3 mt-4">Are you sure you want to delete <br>{{ $schoolFeePayment->title }}?</h4>
                                                         <form action="{{ url('/staff/deletePayment') }}" method="POST">
                                                             @csrf
                                                             <input name="payment_id" type="hidden" value="{{$schoolFeePayment->id}}">

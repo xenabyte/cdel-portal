@@ -272,7 +272,7 @@
                                                     <div class="mt-2">
                                                         <lord-icon src="https://cdn.lordicon.com/wwneckwc.json" trigger="hover" style="width:150px;height:150px">
                                                         </lord-icon>
-                                                        <h4 class="mb-3 mt-4">Are you sure you want to delete <br>{{ $payment->title }}?</h4>
+                                                        <h4 class="mb-3 mt-4">Are you sure you want to delete <br>{{ $schoolFeePayment->title }}?</h4>
                                                         <form action="{{ url('/admin/deletePayment') }}" method="POST">
                                                             @csrf
                                                             <input name="payment_id" type="hidden" value="{{$schoolFeePayment->id}}">
