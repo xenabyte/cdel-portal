@@ -103,7 +103,13 @@ class ProcessStudentsCSV extends Command
                 $accessCode = $this->generateAccessCode();
                 if(!$applicant = Applicant::where('application_number', $applicationNumber)->first()) {
                     $this->info("Applicant '{$applicationNumber}' not found");
+                    continue;
                 }   
+
+                if($student = Student::where('user_id', $applicant->id)->first()) {
+                    $this->info("Student '{$applicant->lastname} {$applicant->othernames}' already exist");
+                    continue;
+                }
                 
                 $programmeId = null;
                 if (array_key_exists($programmeCode, $dataArray)) {

@@ -190,7 +190,7 @@ class ProcessPaymentCSV extends Command
 
                 if(!$payment = Payment::where('programme_id', $programme->id)->where('level_id', $level)->where('academic_session', $academicSession)->first()){
                     $description = $programme->name.' school fee for '.$level*100 .'Level';
-                    $slug= strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $description)));
+                    $slug= strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $description.$academicSession)));
 
                     $addPayment = ([            
                         'description' => $description,

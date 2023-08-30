@@ -44,6 +44,7 @@ Class Pdf {
         $fileDirectory = 'uploads/files/admission/'.$slug.'.pdf';
 
         $studentData = [
+            'levelId' => $student->level_id,
             'created_at' => $student->created_at,
             'jamb_reg_no' => $student->applicant->jamb_reg_no,
             'programme_name' => $student->programme->name,

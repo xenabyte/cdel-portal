@@ -21,7 +21,7 @@
 <p style="font-family:'Calibri',sans-serif; text-align:justify"> On behalf of Thomas Adewumi University, I am excited to offer you a Provisional Admission to the {{ $academic_session }} academic year. This admission recognizes you as an excellent prospect, admitted through the <strong>{{ $application_type }}</strong> option. Your provisional admission will soon be available for your acceptance on JAMB Caps. <br>
     
     <strong>Programme:</strong> {{ $programme_name }}<br>
-    <strong>Duration:</strong> {{ $duration }} Years<br>
+    <strong>Duration:</strong> {{ $duration + 1 - $levelId  }} Years<br>
 
     Kindly visit the university&rsquo;s portal <a data-fr-linked="true"  href="{{ env('STUDENT_URL')  }}">{{ env('STUDENT_URL')  }}</a> to:<br>
     <ul>

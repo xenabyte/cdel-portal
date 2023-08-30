@@ -70,7 +70,7 @@ class PaymentController extends Controller
             return redirect()->back();
         }
 
-        $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $request->title)));
+        $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $request->title.'-'.($request->level_id*100).'Level-'.$request->academic_session)));
 
         $addPayment = ([            
             'description' => $request->description,
@@ -108,7 +108,7 @@ class PaymentController extends Controller
 
         
         if(!empty($request->title) &&  $request->title != $payment->title){
-            $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $request->title)));
+            $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $request->title.'-'.($payment->level_id*100).'Level-'.$payment->academic_session)));
             $payment->slug = $slug;
             $payment->title = $request->title;
         }

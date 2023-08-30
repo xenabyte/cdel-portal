@@ -104,13 +104,13 @@ class ProcessApplicantRelationshipCSV extends Command
                     $parentPhoneNo = $row['PPhoneNo'];
                     $parentEmail = $row['PEmail'];
                     $parentAddress = $row['ContAddress'];
-                    $guardianId = $this->addGuardian($applicantId, $parentEmail, $parentFullname, $parentPhoneNo, $parentAddress, $accessCode);
+                    $guardianId = $this->addGuardian($parentEmail, $parentFullname, $parentPhoneNo, $parentAddress, $accessCode);
 
                     $nokName = $row['nokName'];
                     $nokPhone = $row['nokPhoneNo'];
                     $nokAddress = $row['nokContAddress'];
                     $nokRelationship = $row['nokRelationship'];
-                    $nokId = $this->addNok($applicantId, $parentEmail, $nokName, $nokPhone, $nokAddress, $nokRelationship);
+                    $nokId = $this->addNok($parentEmail, $nokName, $nokPhone, $nokAddress, $nokRelationship);
 
                     $entryMode = $row['ModeEntry'];
                     $programmeCode = $row['Degree'];
