@@ -33,10 +33,10 @@
                         <tr>
                             <th scope="col">Id</th>
                             <th scope="col">Name</th>
+                            <th scope="col">Level</th>
                             <th scope="col">Matric Number</th>
                             <th scope="col">Programme</th>
                             <th scope="col">Email</th>
-                            <th scope="col">Level</th>
                             <th scope="col">Phone Number</th>
                             <th scope="col"></th>
                         </tr>
@@ -46,10 +46,10 @@
                         <tr>
                             <th scope="row">{{ $loop->iteration }}</th>
                             <td>{{ $student->applicant->lastname .' '. $student->applicant->othernames }}</td>
+                            <td>{{ $student->academicLevel->level }} </td>
                             <td>{{ $student->matric_number }}</td>
                             <td>{{ $student->applicant->programme->name }}</td>
                             <td>{{ $student->applicant->email }} </td>
-                            <td>{{ $student->academicLevel->level }} </td>
                             <td>{{ $student->applicant->phone_number }} </td>
                             <td>
                                 <a href="{{ url('admin/studentProfile/'.$student->slug) }}" class="btn btn-primary m-1"><i class= "ri-user-6-fill"></i> View Student</a>

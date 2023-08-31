@@ -48,7 +48,6 @@
                         <p><strong>Programme Duration: </strong> {{ $programme->duration }} Years </p>
                         <p><strong>Programme Max Duration: </strong> {{ $programme->max_duration }} Years </p>
                         <p><strong>Programme Code: </strong> {{ $programme->code }} </p>
-                        <p><strong>Programme Code Number: </strong> {{ $programme->code_number }} </p>
                         <p><strong>Programme Last Matric Number: </strong> {{ $programme->matric_last_number }} </p>
                     </div><!-- end card body -->
                 </div><!-- end card -->
@@ -116,7 +115,7 @@
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content border-0 overflow-hidden">
             <div class="modal-header p-3">
-                <h4 class="card-title mb-0">Add Programme</h4>
+                <h4 class="card-title mb-0">Edit Programme</h4>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
 
@@ -127,11 +126,6 @@
                     <div class="mb-3">
                         <label for="name" class="form-label">Programme Name</label>
                         <input type="text" class="form-control" name="name" id="name" value="{{ $programme->name }}" disabled readonly>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="code_number" class="form-label">Programme Code Number</label>
-                        <input type="text" class="form-control" name="code_number" id="code_number" value="{{ $programme->code_number }}">
                     </div>
 
                     <div class="mb-3">

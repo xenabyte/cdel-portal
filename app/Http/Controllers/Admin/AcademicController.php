@@ -311,6 +311,64 @@ class AcademicController extends Controller
         ]);
     }
 
+    public function saveDepartment(Request $request){
+        $validator = Validator::make($request->all(), [
+            'department_id' => 'required',
+        ]);
+
+        if($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+
+        if(!$department = Department::find($request->programme_id)){
+            alert()->error('Oops', 'Invalid Department ')->persistent('Close');
+            return redirect()->back();
+        }
+
+        if(!empty($request->code) &&  $request->code != $department->code){
+            $department->code = strtoupper($request->code);
+        }
+
+        if($department->save()){
+            alert()->success('Changes Saved', '')->persistent('Close');
+            return redirect()->back();
+        }
+
+        alert()->error('Oops!', 'Something went wrong')->persistent('Close');
+        return redirect()->back();
+        
+    }
+
+    public function saveFaculty(Request $request){
+        $validator = Validator::make($request->all(), [
+            'faculty_id' => 'required',
+        ]);
+
+        if($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+
+        if(!$faculty = Faculty::find($request->faculty_id)){
+            alert()->error('Oops', 'Invalid Faculty ')->persistent('Close');
+            return redirect()->back();
+        }
+
+        if(!empty($request->code) &&  $request->code != $faculty->code){
+            $faculty->code = strtoupper($request->code);
+        }
+
+        if($faculty->save()){
+            alert()->success('Changes Saved', '')->persistent('Close');
+            return redirect()->back();
+        }
+
+        alert()->error('Oops!', 'Something went wrong')->persistent('Close');
+        return redirect()->back();
+        
+    }
+
     public function courseRegMgt(Request $request){
 
         $courseRegMgt = CourseRegistrationSetting::first();

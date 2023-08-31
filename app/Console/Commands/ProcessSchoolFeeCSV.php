@@ -130,12 +130,12 @@ class ProcessSchoolFeeCSV extends Command
                 ]);
             }
 
-            $this->info('Acceptance fee processed successfully!');
+            $this->info('School fee processed successfully!');
         } else {
             $this->error('File not found.');
         }
 
-        $this->info("Processing Acceptance fee CSV file: $file");
+        $this->info("Processing school fee CSV file: $file");
     }
 
     //generate clean strings

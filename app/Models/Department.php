@@ -16,6 +16,7 @@ class Department extends Model
         'hod_id',
         'exam_officer_id',
         'web_id',
+        'code',
         'slug'
     ];
 

@@ -44,9 +44,6 @@
                         <p><strong>Programme Name: </strong> {{ Str::title(strtolower($programme->name)) }} </p>
                         <p><strong>Programme Duration: </strong> {{ $programme->duration }} Years </p>
                         <p><strong>Programme Max Duration: </strong> {{ $programme->max_duration }} Years </p>
-                        <p><strong>Programme Code: </strong> {{ $programme->code }} </p>
-                        <p><strong>Programme Code Number: </strong> {{ $programme->code_number }} </p>
-                        <p><strong>Programme Last Matric Number: </strong> {{ $programme->matric_last_number }} </p>
                     </div><!-- end card body -->
                 </div><!-- end card -->
             </div><!-- end col -->

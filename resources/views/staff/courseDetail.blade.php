@@ -3,11 +3,16 @@
     $staff = Auth::guard('staff')->user();
 
     $totalStudent = $course->registeredStudents->count();
-    $totalStudentPassed = $course->registeredStudents->where('grade', '!=', 'F')->count();
-    $totalStudentFailed = $course->registeredStudents->where('grade', 'F')->count();
 
-    $passedPercent = number_format(($totalStudentPassed / $totalStudent) * 100, 2);
-    $failedPercent = number_format(($totalStudentFailed / $totalStudent) * 100, 2);
+    $passedPercent = 0;
+    $failedPercent = 0;
+    if($totalStudent){
+        $totalStudentPassed = $course->registeredStudents->where('grade', '!=', 'F')->count();
+        $totalStudentFailed = $course->registeredStudents->where('grade', 'F')->count();
+
+        $passedPercent = number_format(($totalStudentPassed / $totalStudent) * 100, 2);
+        $failedPercent = number_format(($totalStudentFailed / $totalStudent) * 100, 2);
+    }
 @endphp
 @section('content')
 <!-- start page title -->

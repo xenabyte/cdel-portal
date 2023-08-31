@@ -71,34 +71,21 @@
 
                     <div class="card-header p-0 border-0 bg-soft-light">
                         <div class="row g-0 text-center">
-                            <div class="col-6 col-sm-3">
+                            <div class="col-6 col-sm-12">
                                 <div class="p-3 border border-dashed border-start-0">
-
+                                    <strong>Faculty Code:</strong> {{ $faculty->code }}
                                 </div>
                             </div>
-                            <!--end col-->
-                            <div class="col-6 col-sm-3">
-                                <div class="p-3 border border-dashed border-start-0">
-
-                                </div>
-                            </div>
-                            <!--end col-->
-                            <div class="col-6 col-sm-3">
-                                <div class="p-3 border border-dashed border-start-0">
-
-                                </div>
-                            </div>
-                            <!--end col-->
-                            <div class="col-6 col-sm-3">
-                                <div class="p-3 border border-dashed border-start-0 border-end-0">
-
-                                </div>
-                            </div>
-                            <!--end col-->
                         </div>
                     </div><!-- end card header -->
                     <div class="card-body">
-                       
+                        <div class="align-items-center d-flex border-top border-top-dashed mt-3 pt-3">
+                            <p class="mb-0 flex-grow-1">Edit Faculty</p>
+                            <div class="flex-shrink-0">
+                                <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#editFaculty" class="btn btn-primary">Edit Faculty</a>
+                            </div>
+                        </div>
+
                     </div><!-- end card body -->
                 </div><!-- end card -->
             </div><!-- end col -->
@@ -250,5 +237,37 @@
         </div><!-- end card -->
     </div><!-- end col -->
 </div><!-- end row -->
+
+<div id="editFaculty" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 overflow-hidden">
+            <div class="modal-header p-3">
+                <h4 class="card-title mb-0">Edit Faculty</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body">
+                <form action="{{ url('/admin/saveFaculty') }}" method="post" enctype="multipart/form-data">
+                    @csrf
+                    <input type="hidden" name="faculty_id" value="{{ $faculty->id }}">
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Faculty Name</label>
+                        <input type="text" class="form-control" name="name" id="name" value="{{ $faculty->name }}" disabled readonly>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="code" class="form-label">Faculty Code</label>
+                        <input type="text" class="form-control" name="code" id="code" value="{{ $faculty->code }}">
+                    </div>
+
+                    <hr>
+                    <div class="text-end">
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                    </div>
+                </form>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
 
 @endsection

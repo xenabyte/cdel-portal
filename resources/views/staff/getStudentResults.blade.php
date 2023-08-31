@@ -277,7 +277,7 @@
                         @endphp
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
-                                <td>{{ $student->applicant->lastname.' '.$student->applicant->othernames }}</td>
+                                <td>{{ strtoupper($student->applicant->lastname).', '.$student->applicant->othernames }}</td>
                                 <td>{{ $student->matric_number }}</td>
                                 <td>{{$class}}</td>
                                 <td>{{ $standing }}</td>

@@ -116,9 +116,11 @@
     <div class="col-lg-12">
         <div class="card">
             <div class="card-header align-items-center d-flex">
-                <h4 class="card-title mb-0 flex-grow-1">Result(s) for {{ $academiclevel->level }} Level,  {{ $programme->name }} for {{ $academicSession }} Academic Session</h4>
+                <h4 class="card-title mb-0 flex-grow-1">Result(s) for {{ $academiclevel->level }} Level,  {{ !empty($programme)?$programme->name:null }} for {{ $academicSession }} Academic Session</h4>
                 <div class="flex-shrink-0">
+                    @if(!empty($programme))
                     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#approveResult">Approve Result(s)</button>
+                    @endif
                 </div>
             </div><!-- end card header -->
 
@@ -132,17 +134,19 @@
                             <div class="mt-2">
                                 <lord-icon src="https://cdn.lordicon.com/xxdqfhbi.json" trigger="hover" style="width:150px;height:150px">
                                 </lord-icon>
-                                <h4 class="mb-3 mt-4">Are you sure you want to approve result for <br>{{ $academiclevel->level }} level {{ $programme->name }}?</h4>
+                                <h4 class="mb-3 mt-4">Are you sure you want to approve result for <br>{{ $academiclevel->level }} level {{ !empty($programme)?$programme->name:null }}?</h4>
                                 <form action="{{ url('/admin/approveResult') }}" method="POST">
                                     @csrf
                                     @foreach ($students as $studentforIds)
                                     <input type="hidden" name="student_ids[]" value="{{ $studentforIds->id }}">
                                     @endforeach
+                                    @if(!empty($programme))
                                     <input type="hidden" name="level_id" value="{{ $academiclevel->id }}">
                                     <input type="hidden" name="programme_id" value="{{ $programme->id }}">
                                     <input type="hidden" name="department_id" value="{{ $department_id }}">
                                     <input type="hidden" name="faculty_id" value="{{ $faculty_id }}">
                                     <input type="hidden" name="session" value="{{ $academicSession }}">
+                                    @endif
                                     <hr>
                                     <button type="submit" class="btn btn-success w-100">Yes, Approve</button>
                                 </form>
@@ -213,7 +217,7 @@
                         @endphp
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
-                                <td>{{ $student->applicant->lastname.' '.$student->applicant->othernames }}</td>
+                                <td>{{ strtoupper($student->applicant->lastname).', '.$student->applicant->othernames }}</td>
                                 <td>{{ $student->matric_number }}</td>
                                 <td>{{$class}}</td>
                                 <td>{{ $standing }}</td>

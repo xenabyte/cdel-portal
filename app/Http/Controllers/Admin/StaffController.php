@@ -578,6 +578,100 @@ class StaffController extends Controller
 
 
 
+    public function courseAllocation(Request $request){
+        $staff = Auth::guard('staff')->user();
+        $staffId = $staff->id;
+        $staffDepartmentId = $staff->department_id;
+
+        $programmes = Programme::get();
+        $levels = AcademicLevel::get();
+
+        return view('admin.courseAllocation', [
+            'programmes' => $programmes,
+            'levels' => $levels
+        ]);
+    }
+
+    public function getCourses(Request $request){
+        $levelId = $request->level_id;
+        $semester = $request->semester;
+        $programmeId = $request->programme_id;
+
+        $courses = Course::with('staff')->where([
+            'programme_id' => $programmeId,
+            'semester' => $semester,
+            'level_id' => $levelId
+        ])->get();
+
+        $programme = Programme::find($programmeId);
+        $level = AcademicLevel::find($levelId);
+
+        
+        $programmes = Programme::get();
+        $levels = AcademicLevel::get();
+
+        return view('admin.courseAllocation', [
+            'programmes' => $programmes,
+            'levels' => $levels,
+            'courses' => $courses,
+            'mainProgramme' => $programme,
+            'mainLevel' => $level,
+        ]);
+    }
+
+    public function assignCourse(Request $request){
+
+        $levelId = $request->level_id;
+        $semester = $request->semester;
+        $programmeId = $request->programme_id;
+
+        $programme = Programme::find($programmeId);
+        $level = AcademicLevel::find($levelId);
+
+        $courses = Course::with('staff')->where([
+            'programme_id' => $programmeId,
+            'semester' => $semester,
+            'level_id' => $levelId
+        ])->get();
+        
+        $programmes = Programme::get();
+        $levels = AcademicLevel::get();
+
+        $tauStaffId = strtoupper($request->staff_id);
+
+        if(!$staff = Staff::where('staffId', $tauStaffId)->first()){
+            alert()->error('Oops', 'Invalid Staff ')->persistent('Close');
+
+            return view('admin.courseAllocation', [
+                'programmes' => $programmes,
+                'levels' => $levels,
+                'courses' => $courses,
+                'mainProgramme' => $programme,
+                'mainLevel' => $level,
+            ]);
+        }
+
+        $course = Course::find($request->course_id);
+        $course->staff_id = $staff->id;
+
+        if($course->save()){
+            alert()->success('Changes Saved', '')->persistent('Close');
+        }
+
+        $courses = Course::with('staff')->where([
+            'programme_id' => $programmeId,
+            'semester' => $semester,
+            'level_id' => $levelId
+        ])->get();
+
+        return view('admin.courseAllocation', [
+            'programmes' => $programmes,
+            'levels' => $levels,
+            'courses' => $courses,
+            'mainProgramme' => $programme,
+            'mainLevel' => $level,
+        ]);
+    }
 
     
 }

@@ -66,7 +66,7 @@ class AcademicController extends Controller
         $failedCourseIds = $failedCourses->pluck('course.id')->toArray();
         $carryOverCourses = Course::where('programme_id', $student->programme_id)->whereIn('id', $failedCourseIds)->get();
 
-        $addOrRemoveTxPay = Payment::with('structures')->where('type', Payment::PAYMENT_MODIFY_COURSE_REG)->first();
+        $addOrRemoveTxPay = Payment::with('structures')->where('type', Payment::PAYMENT_MODIFY_COURSE_REG)->where('academic_session', $academicSession)->first();
         $addOrRemoveTxId = $addOrRemoveTxPay->id;
         $addOrRemoveTxs = Transaction::where([
             'student_id' =>  $studentId,

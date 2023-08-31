@@ -580,7 +580,15 @@ class StaffController extends Controller
 
     public function staff(Request $request){
 
+        $staff = Auth::guard('staff')->user();
+        $facultyId = $staff->faculty_id;
+        $departmentId = $staff->department_id;
+
         $staff  = Staff::withTrashed()->with('faculty', 'acad_department')->get();
+
+        if(!empty($facultyId)){
+            $staff  = Staff::withTrashed()->with('faculty', 'acad_department')->where('faculty_id', $facultyId)->get();
+        }
 
         return view('staff.staff', [
             'staff' => $staff

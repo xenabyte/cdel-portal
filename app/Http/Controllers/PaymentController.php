@@ -132,9 +132,12 @@ class PaymentController extends Controller
             $sessionSetting = SessionSetting::first();
             $admissionSession = $sessionSetting->admission_session;
 
-            $programme = Programme::where('id', $student->programme_id)->first();
+            $programme = Programme::with('students', 'department', 'department.faculty')->where('id', $student->programme_id)->first();
             $codeNumber = $programme->code_number;
-            $code = $programme->code;
+            $deptCode = $programme->department->code;
+            $facultyCode = $programme->department->faculty->code;
+            $programmeCode = $programme->code;
+            $code = $deptCode.$programmeCode;
 
             $accessCode = $student->applicant->passcode;
             $studentPreviousEmail = $student->email;
@@ -144,8 +147,8 @@ class PaymentController extends Controller
             $firstName = $nameParts[0];
             $studentEmail = strtolower($student->applicant->lastname.'.'.$firstName.'@st.tau.edu.ng');
 
-            $newMatric = $programme->matric_last_number + 1;
-            $matricNumber = substr($admissionSession, 2, 2).'/'.$codeNumber.$code.sprintf("%03d", $newMatric);
+            $newMatric = empty($programme->matric_last_number)? ($programme->students->count() + 20) + 1 : $programme->matric_last_number + 1;
+            $matricNumber = substr($admissionSession, 2, 2).'/'.$facultyCode.$code.sprintf("%03d", $newMatric);
 
             $google = new Google();
             $createStudentEmail = $google->createUser($studentEmail, $student->applicant->othernames, $student->applicant->lastname, $accessCode);

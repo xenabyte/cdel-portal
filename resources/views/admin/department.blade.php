@@ -71,34 +71,23 @@
 
                     <div class="card-header p-0 border-0 bg-soft-light">
                         <div class="row g-0 text-center">
-                            <div class="col-6 col-sm-3">
+                            <div class="col-6 col-sm-12">
                                 <div class="p-3 border border-dashed border-start-0">
-
+                                    <strong>Dept Code:</strong> {{ $department->code }}
                                 </div>
                             </div>
-                            <!--end col-->
-                            <div class="col-6 col-sm-3">
-                                <div class="p-3 border border-dashed border-start-0">
-
-                                </div>
-                            </div>
-                            <!--end col-->
-                            <div class="col-6 col-sm-3">
-                                <div class="p-3 border border-dashed border-start-0">
-
-                                </div>
-                            </div>
-                            <!--end col-->
-                            <div class="col-6 col-sm-3">
-                                <div class="p-3 border border-dashed border-start-0 border-end-0">
-
-                                </div>
-                            </div>
-                            <!--end col-->
                         </div>
                     </div><!-- end card header -->
                     <div class="card-body">
-                        <div class="align-items-center d-flex">
+
+                        <div class="align-items-center d-flex border-top border-top-dashed mt-3 pt-3">
+                            <p class="mb-0 flex-grow-1">Edit Department</p>
+                            <div class="flex-shrink-0">
+                                <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#editDepartment" class="btn btn-primary">Edit Department</a>
+                            </div>
+                        </div>
+
+                        <div class="align-items-center d-flex border-top border-top-dashed mt-3 pt-3">
                             <p class="mb-0 flex-grow-1">Kindly Appoint Leave Adviser for levels </p>
                             <div class="flex-shrink-0">
                                 <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#addAdviser" class="btn btn-success">Assign Level Adviser</a>
@@ -534,6 +523,38 @@
 
                     <div class="text-end border-top border-top-dashed p-3 p-3">
                         <button type="submit" class="btn btn-primary">Add Exam Officer</button>
+                    </div>
+                </form>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<div id="editDepartment" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 overflow-hidden">
+            <div class="modal-header p-3">
+                <h4 class="card-title mb-0">Edit Department</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body">
+                <form action="{{ url('/admin/saveDepartment') }}" method="post" enctype="multipart/form-data">
+                    @csrf
+                    <input type="hidden" name="department_id" value="{{ $department->id }}">
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Department Name</label>
+                        <input type="text" class="form-control" name="name" id="name" value="{{ $department->name }}" disabled readonly>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="code" class="form-label">Department Code</label>
+                        <input type="text" class="form-control" name="code" id="code" value="{{ $department->code }}">
+                    </div>
+
+                    <hr>
+                    <div class="text-end">
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
                     </div>
                 </form>
             </div>

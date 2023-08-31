@@ -15,7 +15,8 @@ class Faculty extends Model
         'dean_id',
         'sub_dean_id',
         'web_id',
-        'slug'
+        'slug',
+        'code'
     ];
 
      /**
