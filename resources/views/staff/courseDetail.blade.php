@@ -1,18 +1,22 @@
 @extends('staff.layout.dashboard')
 @php
-    $staff = Auth::guard('staff')->user();
-
-    $totalStudent = $course->registeredStudents->count();
-
+    $totalStudent = $coursePerProgrammePerAcademicSession->registeredStudents->count();
     $passedPercent = 0;
     $failedPercent = 0;
     if($totalStudent){
-        $totalStudentPassed = $course->registeredStudents->where('grade', '!=', 'F')->count();
-        $totalStudentFailed = $course->registeredStudents->where('grade', 'F')->count();
+        $totalStudentPassed = $coursePerProgrammePerAcademicSession->registeredStudents->where('grade', '!=', 'F')->count();
+        $totalStudentFailed = $coursePerProgrammePerAcademicSession->registeredStudents->where('grade', 'F')->count();
+
 
         $passedPercent = number_format(($totalStudentPassed / $totalStudent) * 100, 2);
         $failedPercent = number_format(($totalStudentFailed / $totalStudent) * 100, 2);
     }
+
+    $courseManagement =  $coursePerProgrammePerAcademicSession->course->courseManagement->where('academic_session', $pageGlobalData->sessionSetting->academic_session);
+    $assignedCourse = $courseManagement->where('academic_session', $pageGlobalData->sessionSetting->academic_session)->first();
+    $staff = !empty($assignedCourse) ? $assignedCourse->staff : null;
+    $staffName = !empty($assignedCourse) ? $assignedCourse->staff->title.' '.$assignedCourse->staff->lastname.' '.$assignedCourse->staff->othernames :null;
+    $staffId = !empty($staff) ? $staff->id : null;
 @endphp
 @section('content')
 <!-- start page title -->
@@ -37,13 +41,13 @@
     <div class="col-lg-6">
         <div class="card">
             <div class="card-body">
-                <h5 class="fs-15 fw-semibold">Course code: {{ $course->code  }}</h5>
-                <p class="text-muted">{{ $course->name  }}</p>
-                <p class="text-muted">Credit Unit: {{ $course->credit_unit  }}</p>
+                <h5 class="fs-15 fw-semibold">Course code: {{ $coursePerProgrammePerAcademicSession->course->code  }}</h5>
+                <p class="text-muted">{{ $coursePerProgrammePerAcademicSession->course->name  }}</p>
+                <p class="text-muted">Credit Unit: {{ $coursePerProgrammePerAcademicSession->credit_unit  }}</p>
                 <hr>
                 <div class="d-flex flex-wrap justify-content-evenly">
-                    <p class="text-muted mb-0"><i class="mdi mdi-account-circle text-success fs-18 align-middle me-2 rounded-circle shadow"></i>{{ $course->registeredStudents->count() }} Student(s)</p>
-                    <p class="text-muted mb-0"><i class="mdi mdi-book-clock text-info fs-18 align-middle me-2 rounded-circle shadow"></i>{{ $course->semester == 1 ? 'First' : 'Second' }} Semester</p>
+                    <p class="text-muted mb-0"><i class="mdi mdi-account-circle text-success fs-18 align-middle me-2 rounded-circle shadow"></i>{{ $coursePerProgrammePerAcademicSession->registeredStudents->count() }} Student(s)</p>
+                    <p class="text-muted mb-0"><i class="mdi mdi-book-clock text-info fs-18 align-middle me-2 rounded-circle shadow"></i>{{ $coursePerProgrammePerAcademicSession->semester == 1 ? 'First' : 'Second' }} Semester</p>
                     <p class="text-muted mb-0"><i class="mdi mdi-clipboard-clock text-primary fs-18 align-middle me-2 rounded-circle shadow"></i>{{ $pageGlobalData->sessionSetting->academic_session }} Academic Session</p>
                 </div>
             </div>
@@ -118,7 +122,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($course->registrations as $registration)
+                            @foreach($coursePerProgrammePerAcademicSession->registrations as $registration)
                             <tr>
                                 <th scope="row">{{ $loop->iteration }}</th>
                                 <td>{{ $registration->student->applicant->lastname .' '. $registration->student->applicant->othernames }}</td>
@@ -151,7 +155,7 @@
             <div class="modal-body">
                 <form action="{{ url('/staff/sendMessage') }}" method="post" enctype="multipart/form-data">
                     @csrf
-                    <input type="hidden" name="course_id" value="{{ $course->id }}">
+                    <input type="hidden" name="course_id" value="{{ $coursePerProgrammePerAcademicSession->id }}">
                     <div class="form-floating">
                         <textarea class="form-control" name="message"></textarea>
                         <label for="semester">Message</label>
@@ -178,7 +182,7 @@
             <div class="modal-body">
                 <form action="{{ url('/staff/updateStudentResult') }}" method="post" enctype="multipart/form-data">
                     @csrf
-                    <input type="hidden" name="course_id" value="{{ $course->id }}">
+                    <input type="hidden" name="course_id" value="{{ $coursePerProgrammePerAcademicSession->id }}">
                     <div class="form-floating mb-3">
                         <input type="text" name="matric_number" id="matric_number" class="form-control" required>
                         <label for="matric_number">Matric Number</label>
@@ -216,7 +220,7 @@
             <div class="modal-body">
                 <form action="{{ url('/staff/staffUploadResult') }}" method="post" enctype="multipart/form-data">
                     @csrf
-                    <input type="hidden" name="course_id" value="{{ $course->id }}">
+                    <input type="hidden" name="course_id" value="{{ $coursePerProgrammePerAcademicSession->id }}">
                     <div class="row">
                         <div class="col-lg-12">
                             <div>

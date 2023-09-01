@@ -24,6 +24,7 @@
     <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.2.9/css/responsive.bootstrap.min.css" />
 
     <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.2.2/css/buttons.dataTables.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet">
 
     <!-- Layout config Js -->
     <script src="{{asset('assets/js/layout.js')}}"></script>
@@ -382,7 +383,9 @@
                             </a>
                             <div class="collapse menu-dropdown" id="courseMgt">
                                 <ul class="nav nav-sm flex-column">
-                    
+                                    <li class="nav-item">
+                                        <a href="{{ url('/admin/departmentForCourses') }}" class="nav-link">All Courses</a>
+                                    </li>
                                     <li class="nav-item">
                                         <a href="{{ url('/admin/studentCourses') }}" class="nav-link">Student Courses</a>
                                     </li>
@@ -629,6 +632,9 @@
     <script src="{{asset('assets/js/pages/datatables.init.js')}}"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.32/vfs_fonts.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
 
 <script>
     function handleFacultyChange(event) {
@@ -710,6 +716,13 @@
     // Display the greeting
     greetingElement.innerHTML = greeting;
 </script>
+<script>
+    $(document).ready(function() {
+        // Initialize Select2
+        $('#selectWithSearch').select2();
+    });
+</script>
+
 </body>
 
 </html>

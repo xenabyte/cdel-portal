@@ -8,7 +8,7 @@
 <head>
 
     <meta charset="utf-8" />
-    <title>Partner Dashboard | {{ env('APP_NAME') }} </title>
+    <title>{{ env('APP_NAME') }} || Partner Dashboard </title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta content="{{ env('APP_NAME') }} Dashboard" name="description" />
@@ -294,6 +294,9 @@
     <script src="{{asset('assets/js/pages/datatables.init.js')}}"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.32/vfs_fonts.js"></script>
+
 
     <script>
         document.getElementById('copyButton').addEventListener('click', function() {

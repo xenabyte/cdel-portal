@@ -11,15 +11,9 @@ class Course extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'programme_id',
         'code',
         'name',
-        'semester',
-        'credit_unit',
-        'level_id',
-        'staff_id',
-        'status',
-        'web_id'
+        'department_id',
     ];
 
     /**
@@ -27,38 +21,28 @@ class Course extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function staff()
+    public function department()
     {
-        return $this->belongsTo(Staff::class, 'staff_id');
+        return $this->belongsTo(Department::class, 'department_id');
     }
 
     /**
-     * Get all of the students for the Course
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough
-     */
-    public function students()
-    {
-        return $this->hasManyThrough(Student::class, CourseRegistration::class);
-    }
-
-    /**
-     * Get the level that owns the Course
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function level()
-    {
-        return $this->belongsTo(AcademicLevel::class, 'level_id');
-    }
-
-    /**
-     * Get all of the registrations for the Course
+     * Get all of the courseManagement for the CourseManagement
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function registrations()
+    public function courseManagement()
     {
-        return $this->hasMany(CourseRegistration::class, 'course_id');
+        return $this->hasMany(CourseManagement::class, 'course_id');
+    }
+
+    /**
+     * Get all of the CoursePerProgrammePerAcademicSession for the Course
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function coursePerProgrammePerAcademicSession()
+    {
+        return $this->hasMany(CoursePerProgrammePerAcademicSession::class, 'course_id');
     }
 }

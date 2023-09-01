@@ -21,6 +21,7 @@ use App\Models\StudentExamCard;
 use App\Models\Session;
 use App\Models\AcademicLevel;
 use App\Models\ResultApprovalStatus;
+use App\Models\CoursePerProgrammePerAcademicSession;
 
 use App\Libraries\Pdf\Pdf;
 
@@ -55,7 +56,7 @@ class AcademicController extends Controller
             ]);
         }
 
-        $courses = Course::where('programme_id', $student->programme_id)->where('level_id', $student->level_id)->get();
+        $coursePerProgrammePerAcademicSession = CoursePerProgrammePerAcademicSession::where('programme_id', $student->programme_id)->where('level_id', $student->level_id)->where('academic_session', $academicSession)->get();
         $existingRegistration = CourseRegistration::where([
             'student_id' => $studentId,
             'academic_session' => $academicSession
@@ -64,7 +65,7 @@ class AcademicController extends Controller
         //carryover courses
         $failedCourses = CourseRegistration::with('course')->where('student_id', $studentId)->where('grade', 'F')->get();
         $failedCourseIds = $failedCourses->pluck('course.id')->toArray();
-        $carryOverCourses = Course::where('programme_id', $student->programme_id)->whereIn('id', $failedCourseIds)->get();
+        $carryOverCourses = CoursePerProgrammePerAcademicSession::where('programme_id', $student->programme_id)->whereIn('course_id', $failedCourseIds)->get();
 
         $addOrRemoveTxPay = Payment::with('structures')->where('type', Payment::PAYMENT_MODIFY_COURSE_REG)->where('academic_session', $academicSession)->first();
         $addOrRemoveTxId = $addOrRemoveTxPay->id;
@@ -81,7 +82,7 @@ class AcademicController extends Controller
 
         return view('student.courseRegistration', [
             'courseRegMgt' => $courseRegMgt,
-            'courses' => $courses,
+            'courses' => $coursePerProgrammePerAcademicSession,
             'existingRegistration' => $existingRegistration,
             'carryOverCourses' => $carryOverCourses,
             'addOrRemoveTxs' => $addOrRemoveTxs,

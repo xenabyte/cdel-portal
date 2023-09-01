@@ -17,6 +17,7 @@ class CreateCourseRegistrationsTable extends Migration
             $table->id();
             $table->unsignedBigInteger('student_id');
             $table->unsignedBigInteger('course_id');
+            $table->unsignedBigInteger('programme_course_id');
             $table->unsignedBigInteger('course_credit_unit');
             $table->unsignedBigInteger('semester');
             $table->string('course_code')->nullable();

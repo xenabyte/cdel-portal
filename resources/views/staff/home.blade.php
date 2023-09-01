@@ -2,7 +2,7 @@
 @php
 $staff = Auth::guard('staff')->user();
 $name = $staff->title.' '.$staff->lastname.' '.$staff->othernames;
-$courses = $staff->courses;
+$staffCourses = $staff->staffCourses;
 @endphp
 @section('content')
 
@@ -142,17 +142,21 @@ $courses = $staff->courses;
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($courses as $course)
+                        @foreach($staffCourses as $staffCourse)
+                        @php
+                            $courseData = $staffCourse->course->coursePerProgrammePerAcademicSession->where('academic_session', $pageGlobalData->sessionSetting->academic_session)->first();
+                        @endphp
                         <tr>
                             <td scope="row"> {{ $loop->iteration }}</td>
-                            <td>{{$course->code}}</td>
-                            <td>{{$course->name }}</td>
-                            <td>{{$course->credit_unit}} </td>
-                            <td>{{$course->status}}</td>
-                            <td>{{$course->registrations_count  }}</td>
-                            <td>{{$course->level->level}}</td>
+                            <td>{{$staffCourse->course->code}}</td>
+                            <td>{{$staffCourse->course->name }}</td>
+                            <td>{{ $courseData->credit_unit}}</td>
+                            <td>{{ $courseData->status}}</td>
+                            <td>{{ $courseData->registrations->where('academic_session', $pageGlobalData->sessionSetting->academic_session)->count()}}</td>
+                            <td>{{ $courseData->level->level}}</td>
+                            <td></td>
                             <td>
-                                <a href="{{ url('/staff/courseDetail/'.$course->id) }}" class="btn btn-lg btn-primary">Course Details</a>
+                                <a href="{{ url('/staff/courseDetail/'.$courseData->id) }}" class="btn btn-lg btn-primary">Course Details</a>
                             </td>
                         </tr>
                         @endforeach

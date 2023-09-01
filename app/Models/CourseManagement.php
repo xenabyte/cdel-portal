@@ -11,8 +11,31 @@ class CourseManagement extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'student_id',
-        'transaction_id',
+        'course_id',
+        'staff_id',
+        'academic_session',
         'status'
     ];
+
+
+    /**
+     * Get the course that owns the CourseManagement
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function course()
+    {
+        return $this->belongsTo(Course::class, 'course_id');
+    }
+
+    /**
+     * Get the staff that owns the CourseManagement
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function staff()
+    {
+        return $this->belongsTo(Staff::class, 'staff_id');
+    }
+
 }

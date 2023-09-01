@@ -91,9 +91,9 @@ class Staff extends Authenticatable
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function courses()
+    public function staffCourses()
     {
-        return $this->hasMany(Course::class, 'staff_id');
+        return $this->hasMany(CourseManagement::class, 'staff_id');
     }
 
     /**

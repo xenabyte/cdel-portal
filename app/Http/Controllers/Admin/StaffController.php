@@ -25,6 +25,7 @@ use App\Models\StaffRole;
 use App\Models\Faculty;
 use App\Models\Department;
 use App\Models\LevelAdviser;
+use App\Models\CourseManagement;
 
 use App\Mail\NotificationMail;
 
@@ -576,8 +577,6 @@ class StaffController extends Controller
         return redirect()->back();
     }
 
-
-
     public function courseAllocation(Request $request){
         $staff = Auth::guard('staff')->user();
         $staffId = $staff->id;
@@ -620,57 +619,70 @@ class StaffController extends Controller
     }
 
     public function assignCourse(Request $request){
-
-        $levelId = $request->level_id;
-        $semester = $request->semester;
-        $programmeId = $request->programme_id;
-
-        $programme = Programme::find($programmeId);
-        $level = AcademicLevel::find($levelId);
-
-        $courses = Course::with('staff')->where([
-            'programme_id' => $programmeId,
-            'semester' => $semester,
-            'level_id' => $levelId
-        ])->get();
-        
-        $programmes = Programme::get();
-        $levels = AcademicLevel::get();
-
-        $tauStaffId = strtoupper($request->staff_id);
-
-        if(!$staff = Staff::where('staffId', $tauStaffId)->first()){
-            alert()->error('Oops', 'Invalid Staff ')->persistent('Close');
-
-            return view('admin.courseAllocation', [
-                'programmes' => $programmes,
-                'levels' => $levels,
-                'courses' => $courses,
-                'mainProgramme' => $programme,
-                'mainLevel' => $level,
-            ]);
-        }
-
-        $course = Course::find($request->course_id);
-        $course->staff_id = $staff->id;
-
-        if($course->save()){
-            alert()->success('Changes Saved', '')->persistent('Close');
-        }
-
-        $courses = Course::with('staff')->where([
-            'programme_id' => $programmeId,
-            'semester' => $semester,
-            'level_id' => $levelId
-        ])->get();
-
-        return view('admin.courseAllocation', [
-            'programmes' => $programmes,
-            'levels' => $levels,
-            'courses' => $courses,
-            'mainProgramme' => $programme,
-            'mainLevel' => $level,
+        $validator = Validator::make($request->all(), [
+            'staff_id' => 'required',
+            'course_id' => 'required',
         ]);
+
+        if($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+
+        $globalData = $request->input('global_data');
+        $academicSession = $globalData->sessionSetting['academic_session'];
+
+        $exist = CourseManagement::where([
+            'course_id' => $request->course_id,
+            'staff_id' => $request->staff_id,
+            'academic_session' => $academicSession
+        ])->first();
+
+        if($exist){
+            alert()->error('Oops!', 'Course already assigned to staff')->persistent('Close');
+            return redirect()->back();
+        }
+
+        $courseAssign = CourseManagement::create([
+            'course_id' => $request->course_id,
+            'staff_id' => $request->staff_id,
+            'academic_session' => $academicSession
+        ]);
+        
+        if($courseAssign) {
+            alert()->success('Success', 'Staff assigned successfully')->persistent('Close');
+            return redirect()->back();
+        }
+
+        alert()->error('Oops!', 'An Error Occurred')->persistent('Close');
+        return redirect()->back();
+    }
+
+    public function unsetStaff(Request $request){
+        $validator = Validator::make($request->all(), [
+            'course_id' => 'required',
+        ]);
+
+        if($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+
+        $globalData = $request->input('global_data');
+        $academicSession = $globalData->sessionSetting['academic_session'];
+
+        $unset = CourseManagement::where([
+            'course_id' => $request->course_id,
+            'academic_session' => $academicSession
+        ])->delete();
+        
+        if($unset) {
+            alert()->success('Success', 'Staff assigned successfully')->persistent('Close');
+            return redirect()->back();
+        }
+
+        alert()->error('Oops!', 'An Error Occurred')->persistent('Close');
+        return redirect()->back();
     }
 
     

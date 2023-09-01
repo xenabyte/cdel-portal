@@ -78,4 +78,14 @@ class Department extends Model
     {
         return $this->belongsTo(Staff::class, 'exam_officer_id');
     }
+
+    /**
+     * Get all of the courses for the Department
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function courses()
+    {
+        return $this->hasMany(Course::class, 'department_id');
+    }
 }

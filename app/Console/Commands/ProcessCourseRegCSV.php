@@ -5,9 +5,13 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use App\Models\Payment;
 use App\Models\Programme;
-use App\Models\PaymentStructure as Structure;
+use App\Models\CourseRegistration;
+use App\Models\Course;
+use App\Models\ResultApprovalStatus;
+use App\Models\Student;
 use League\Csv\Reader;
 
+use Log;
 class ProcessCourseRegCSV extends Command
 {
     /**
@@ -89,9 +93,14 @@ class ProcessCourseRegCSV extends Command
                 $semester = $row['Semester'] == '1ST SEMESTER' ? 1 : 2;
                 $programmeCode = $row['ProgrammeCode'];
                 $academicSession = $row['AcademicSession'];
-                $courseCode = $row['CourseCode'];
+                $courseCode = strtoupper(trim(str_replace("--", "", $row['CourseCode'])));
+                $courseCreditUnit = $row['Unit'];
 
-                $level = $this->calculateLevel($academicSession, $studentLevel);
+                $student = Student::with('applicant')->where('matric_number', $matricNumber)->first();
+                if(!$student) {
+                    $this->info("Student '{$matricNumber}' dosent exist");
+                    continue;
+                }
                 
                 $programmeId = null;
                 if (array_key_exists($programmeCode, $programmeArray)) {
@@ -103,40 +112,59 @@ class ProcessCourseRegCSV extends Command
                     continue;
                 }
 
+                $levelId = $this->calculateLevel($academicSession, $student->level_id);
+                // Log::info("message.". $levelId);
                 
 
-                if(!$payment = Payment::where('programme_id', $programme->id)->where('level_id', $level)->where('academic_session', $academicSession)->first()){
-                    $description = $programme->name.' school fee for '.$level*100 .'Level';
-                    $slug= strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $description.$academicSession)));
-
-                    $addPayment = ([            
-                        'description' => $description,
-                        'title' => $description,
-                        'programme_id' => $programme->id,
-                        'level_id' => $level,
-                        'type' => 'School Fee',
-                        'slug' => $slug,
-                        'academic_session' => $academicSession
-                    ]);
-            
-                    $payment = Payment::create($addPayment);
+                $programme = Programme::with('department')->where('id', $programmeId)->first();
+                if(!$programme) {
+                    $this->info("Student '{$student->applicant->lastname} {$student->applicant->othernames}'  programme not found in database");
+                    continue;
                 }
 
-                $payemntId = $payment->id;
+                $course = Course::where([
+                    'programme_id' => $programmeId,
+                    'code' => $courseCode,
+                    // 'level_id' => intval($levelId)
+                ])->first();
 
-                Structure::create([            
-                    'payment_id' => $payemntId,
-                    'title' => $structureTitle,
-                    'amount' => $amount * 100
-                ]);                
+                Log::info("course: ". $course);
+                $level = $levelId*100;
+
+                if(!$course){
+                    $this->info("Course '{$courseCode}' for '{$programme->name}' and '{$level} Level' not found in the database");
+                    continue;
+                }
+
+
+                $resultApprovalId = ResultApprovalStatus::getApprovalStatusId(ResultApprovalStatus::SENATE_APPROVED);
+                // Check if the student is already registered for this course
+                $existingRegistration = CourseRegistration::where([
+                    'student_id' => $student->id,
+                    'course_id' => $course->id,
+                    'academic_session' => $academicSession,
+                    'level_id' => $levelId
+                ])->first();
+
+                if(!$existingRegistration){
+                    $courseReg = CourseRegistration::create([
+                        'student_id' => $student->id,
+                        'course_id' => $course->id,
+                        'course_credit_unit' => $course->credit_unit,
+                        'course_code' => $course->code,
+                        'semester' => $course->semester,
+                        'academic_session' => $academicSession,
+                        'level_id' => $levelId,
+                    ]);
+                }              
             }
 
-            $this->info('Payment processed successfully!');
+            $this->info('Course Reg processed successfully!');
         } else {
             $this->error('File not found.');
         }
 
-        $this->info("Processing Payment CSV file: $file");
+        $this->info("Course Reg CSV file: $file");
     }
 
     public function calculateLevel($academicSession, $studentLevel) {

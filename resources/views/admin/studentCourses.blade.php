@@ -88,8 +88,10 @@
     <div class="col-lg-12">
         <div class="card">
             <div class="card-header align-items-center d-flex">
-                <h4 class="card-title mb-0 flex-grow-1">Course(s) for {{ $academiclevel->level }} Level,  {{ $programme->name }}</h4>
+                <h4 class="card-title mb-0 flex-grow-1">{{ $semester == 1? 'First':'Second'}} Semester Course(s) for {{ $academiclevel->level }} Level,  {{ $programme->name }}</h4>
             </div><!-- end card header -->
+        </div>
+    </div>
 
             {{-- <div id="approveResult" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
                 <div class="modal-dialog modal-dialog-centered">
@@ -123,7 +125,70 @@
                     </div><!-- /.modal-content -->
                 </div><!-- /.modal-dialog -->
             </div><!-- /.modal --> --}}
-
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-body">
+                <div class="accordion" id="default-accordion-example">
+                    <div class="accordion-item shadow">
+                        <h2 class="accordion-header" id="headingTwo">
+                            <button class="accordion-button collapsed bg-info" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                Add Course to be registered by student
+                            </button>
+                        </h2>
+                        <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#default-accordion-example">
+                            <div class="accordion-body">
+                                <form action="{{ url('/admin/addCourseForStudent') }}" method="post" enctype="multipart/form-data">
+                                    @csrf
+                                    <input type="hidden" name="level_id" value="{{ $academiclevel->id }}">
+                                    <input type="hidden" name="programme_id" value="{{ $programme->id }}">
+                                    <input type="hidden" name="semester" value="{{$semester}}">
+                                    <input type="hidden" name="programme" value="{{$programme}}">
+                                    <input type="hidden" name="academiclevel" value="{{$academiclevel}}">
+                                    <input type="hidden" name="courses" value="{{$courses}}">
+                                    <input type="hidden" name="allCourses" value="{{$allCourses}}">
+                                    <div class="row g-3">
+                
+                                        <div class="col-lg-12">
+                                            <div class="">
+                                                <label>Select Course</label>
+                                                <select class="form-select select2" id="selectWithSearch" name="course_id" aria-label="cstatus">
+                                                     <option value="" selected>--Select--</option>
+                                                    @foreach($allCourses as $allCourse)<option value="{{$allCourse->id}}">{{$allCourse->code}}</option>@endforeach
+                                                </select>
+                                            </div>
+                                        </div>
+                
+                                        <div class="col-lg-12">
+                                            <div class="form-floating">
+                                                <select class="form-select" id="cstatus" name="status" aria-label="cstatus">
+                                                    <option value="" selected>--Select--</option>
+                                                    <option value="Required">Required</option>
+                                                    <option value="Core">Core</option>
+                                                    <option value="Elective">Elective</option>
+                                                </select>
+                                                <label for="cstatus">Status</label>
+                                            </div>
+                                        </div>
+                
+                                        <div class="col-lg-12">
+                                            <div class="form-floating">
+                                                <input type="text" class="form-control" max="6" name="credit_unit" id="credit_unit">
+                                                <label for="semester">Credit Unit</label>
+                                            </div>
+                                        </div>
+                
+                                        <button type="submit" class="btn btn-primary">Add Course</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-12">
+        <div class="card">
             <div class="card-body table-responsive">
                 <!-- Bordered Tables -->
                 <table class="table table-stripped table-bordered table-nowrap">
@@ -141,11 +206,16 @@
                     </thead>
                     <tbody>
                         @foreach($courses as $course)
+                        @php
+                            $courseManagement =  $course->course->courseManagement->where('academic_session', $pageGlobalData->sessionSetting->academic_session);
+                            $assignedCourse = $courseManagement->where('academic_session', $pageGlobalData->sessionSetting->academic_session)->first();
+                            $staff = !empty($assignedCourse) ? $assignedCourse->staff->title.' '.$assignedCourse->staff->lastname.' '.$assignedCourse->staff->othernames :null;
+                        @endphp
                         <tr>
                             <td scope="row"> {{ $loop->iteration }}</td>
-                            <td>{{!empty($course->staff)? $course->staff->title.'  '.$course->staff->lastname.'  '.$course->staff->othernames : null }}</td>
-                            <td>{{$course->code}}</td>
-                            <td>{{$course->name }}</td>
+                            <td>{{!empty($staff)? $staff : null }}</td>
+                            <td>{{$course->course->code}}</td>
+                            <td>{{$course->course->name }}</td>
                             <td>{{$course->credit_unit}} </td>
                             <td>{{$course->status}}</td>
                             <td>{{$course->level->level}}</td>
