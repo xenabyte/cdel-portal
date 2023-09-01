@@ -14,6 +14,7 @@ class CourseRegistration extends Model
         'student_id',
         'course_id',
         'course_credit_unit',
+        'course_status',
         'course_code',
         'semester',
         'ca_score',
@@ -24,6 +25,7 @@ class CourseRegistration extends Model
         'academic_session',
         'level_id',
         'result_approval_id',
+        'programme_course_id',
         'status'
     ];
 

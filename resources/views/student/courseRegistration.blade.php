@@ -141,8 +141,8 @@
                                     @foreach($carryOverCourses->where('semester', 1) as $failedCourse)
                                         <tr>
                                             <td>{{ $firstSemester++ }}</td>
-                                            <td>{{ $failedCourse->code }}</td>
-                                            <td>{{ $failedCourse->name }}</td>
+                                            <td>{{ $failedCourse->course->code }}</td>
+                                            <td>{{ $failedCourse->course->name }}</td>
                                             <td>{{ $failedCourse->credit_unit }}</td>
                                             <td>{{ $failedCourse->status }}</td>
                                             <td>
@@ -154,8 +154,8 @@
                                     @foreach($courses->where('semester', 1) as $course11)
                                     <tr>
                                         <td>{{ $firstSemester++ }}</td>
-                                        <td>{{ $course11->code }}</td>
-                                        <td>{{ $course11->name }}</td>
+                                        <td>{{ $course11->course->code }}</td>
+                                        <td>{{ $course11->course->name }}</td>
                                         <td>{{ $course11->credit_unit }}</td>
                                         <td>{{ $course11->status }}</td>
                                         <td>
@@ -195,8 +195,8 @@
                                     @foreach($carryOverCourses->where('semester', 2) as $failedCourse2)
                                         <tr>
                                             <td>{{ $secondSemester++ }}</td>
-                                            <td>{{ $failedCourse2->code }}</td>
-                                            <td>{{ $failedCourse2->name }}</td>
+                                            <td>{{ $failedCourse2->course->code }}</td>
+                                            <td>{{ $failedCourse2->course->name }}</td>
                                             <td>{{ $failedCourse2->credit_unit }}</td>
                                             <td>{{ $failedCourse2->status }}</td>
                                             <td>
@@ -208,8 +208,8 @@
                                     @foreach($courses->where('semester', 2) as $course12)
                                     <tr>
                                         <td>{{ $secondSemester++ }}</td>
-                                        <td>{{ $course12->code }}</td>
-                                        <td>{{ $course12->name }}</td>
+                                        <td>{{ $course12->course->code }}</td>
+                                        <td>{{ $course12->course->name }}</td>
                                         <td>{{ $course12->credit_unit }}</td>
                                         <td>{{ $course12->status }}</td>
                                         <td>

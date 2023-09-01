@@ -80,6 +80,8 @@ Class Pdf {
         $fileDirectory = 'uploads/files/course_registration/'.$slug.'.pdf';
         $courseReg = CourseRegistration::with('course')->where('student_id', $studentId)->where('academic_session', $academicSession)->get();
 
+        Log::info("courses: ". $courseReg);
+
         $data = ['info'=>$student, 'registeredCourses' => $courseReg];
 
         $pdf = PDFDocument::loadView('pdf.courseRegistration', $data)

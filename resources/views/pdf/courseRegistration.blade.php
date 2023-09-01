@@ -102,13 +102,13 @@
                             $secondSemester = 1;
                         @endphp
                         @foreach($registeredCourses as $firstSemsRegisteredCourse)
-                            @if($firstSemsRegisteredCourse->course->semester == 1)
+                            @if($firstSemsRegisteredCourse->semester == 1)
                                 <tr>
                                     <td>{{ $firstSemester++ }}</td>
                                     <td>{{ $firstSemsRegisteredCourse->course->code }}</td>
                                     <td>{{ $firstSemsRegisteredCourse->course->name }}</td>
-                                    <td>{{ $firstSemsRegisteredCourse->course->credit_unit }}</td>
-                                    <td>{{ strtoupper(substr($firstSemsRegisteredCourse->course->status, 0, 1)) }}</td>
+                                    <td>{{ $firstSemsRegisteredCourse->course_credit_unit }}</td>
+                                    <td>{{ strtoupper(substr($firstSemsRegisteredCourse->course_status, 0, 1)) }}</td>
                                 </tr>
                             @endif
                         @endforeach
@@ -136,13 +136,13 @@
                     </thead>
                     <tbody>
                         @foreach($registeredCourses as $secondSemsRegisteredCourse)
-                            @if($secondSemsRegisteredCourse->course->semester == 2)
+                            @if($secondSemsRegisteredCourse->semester == 2)
                                 <tr>
                                     <td>{{ $secondSemester++ }}</td>
                                     <td>{{ $secondSemsRegisteredCourse->course->code }}</td>
                                     <td>{{ $secondSemsRegisteredCourse->course->name }}</td>
-                                    <td>{{ $secondSemsRegisteredCourse->course->credit_unit }}</td>
-                                    <td>{{ strtoupper(substr($secondSemsRegisteredCourse->course->status, 0, 1)) }}</td>
+                                    <td>{{ $secondSemsRegisteredCourse->course_credit_unit }}</td>
+                                    <td>{{ strtoupper(substr($secondSemsRegisteredCourse->course_status, 0, 1)) }}</td>
                                 </tr>
                             @endif
                         @endforeach
@@ -153,7 +153,7 @@
     </div>
     <div class="row text-justify">
         <p>By signing this CourseForm, I undertake that as a .......... Level student of ....................... (Department) in the 2022/2023 session, I shall remain in good standing, and maintain the minimum CGPA required by the laws and regulations of the Department/Faculty. If I do not meet the minimum required CGPA, I will be held solely responsible, and the department/Faculty shall take the required measures against me, as the case may be, in accordance with the University&apos;s Rules and regulations.</p>
-        <p>STUDENT'S SIGNATURE: -------------------------------------------- DATE: ------------------------------<br>LEVEL ADVISER'S SIGNATURE: ----------------------------------- DATE: ------------------------------<br>HOD'S SIGNATURE: --------------------------------------------------- DATE: ------------------------------<br>DEAN'S SIGNATURE: ------------------------------------------------- DATE: ------------------------------</p>
+        <p>STUDENT'S SIGNATURE: -------------------------------------------- DATE: ------------------------------<br><br> LEVEL ADVISER'S SIGNATURE: ----------------------------------- DATE: ------------------------------<br><br> HOD'S SIGNATURE: --------------------------------------------------- DATE: ------------------------------<br><br> DEAN'S SIGNATURE: ------------------------------------------------- DATE: ------------------------------</p>
     </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

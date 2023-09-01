@@ -142,7 +142,8 @@ class AcademicController extends Controller
         
         try {
             foreach ($selectedCourses as $courseId) {
-                $course = Course::findOrFail($courseId);
+                $coursePerProgrammeAndLevel = CoursePerProgrammePerAcademicSession::with('course')->findOrFail($courseId);
+                $course = $coursePerProgrammeAndLevel->course;
 
                 // Check if the student is already registered for this course
                 $existingRegistration = CourseRegistration::where([
@@ -155,12 +156,14 @@ class AcademicController extends Controller
                 if (!$existingRegistration) {
                     $courseReg = CourseRegistration::create([
                         'student_id' => $studentId,
-                        'course_id' => $courseId,
-                        'course_credit_unit' => $course->credit_unit,
+                        'course_id' => $course->id,
+                        'course_credit_unit' => $coursePerProgrammeAndLevel->credit_unit,
                         'course_code' => $course->code,
-                        'semester' => $course->semester,
+                        'semester' => $coursePerProgrammeAndLevel->semester,
                         'academic_session' => $academicSession,
                         'level_id' => $student->level_id,
+                        'programme_course_id' => $courseId,
+                        'course_status' => $coursePerProgrammeAndLevel->status
                     ]);
                 }
             }
@@ -211,6 +214,18 @@ class AcademicController extends Controller
             'student_id' => $studentId,
             'academic_session' => $academicSession,
         ])->first();
+
+        if(empty($studentRegistration)){
+            $pdf = new Pdf();
+            $courseReg = $pdf->generateCourseRegistration($studentId, $academicSession);
+
+            $studentRegistration = StudentCourseRegistration::create([
+                'student_id' => $studentId,
+                'academic_session' => $academicSession,
+                'file' => $courseReg,
+                'level_id' => $student->level_id
+            ]);
+        }
 
         return redirect(asset($studentRegistration->file));
     }
