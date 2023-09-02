@@ -17,7 +17,11 @@ class StudentCourseRegistration extends Model
         'academic_session',
         'file',
         'level_adviser_status',
-        'hod_status'
+        'hod_status',
+        'level_adviser_id',
+        'hod_id',
+        'level_adviser_approved_date',
+        'hod_approved_date',
     ];
 
     /**
@@ -28,5 +32,25 @@ class StudentCourseRegistration extends Model
     public function student()
     {
         return $this->belongsTo(Student::class, 'student_id');
+    }
+
+    /**
+     * Get the LevelAdviser that owns the StudentCourseRegistration
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function levelAdviser()
+    {
+        return $this->belongsTo(Staff::class, 'level_adviser_id', 'id');
+    }
+
+    /**
+     * Get the hod that owns the StudentCourseRegistration
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function hod()
+    {
+        return $this->belongsTo(Staff::class, 'hod_id', 'id');
     }
 }

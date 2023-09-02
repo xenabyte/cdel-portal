@@ -32,8 +32,8 @@
                         @foreach($programme->courses->where('level_id', 5)->where('semester', 1) as $course51)
                         <tr>
                             <td scope="row"> {{ $loop->iteration }}</td>
-                            <td>{{$course51->code}}</td>
-                            <td>{{$course51->name }}</td>
+                            <td>{{$course51->course->code}}</td>
+                            <td>{{$course51->course->name }}</td>
                             <td>{{$course51->credit_unit}}</td>
                             <td>{{$course51->status}}</td>
                         </tr>
@@ -58,8 +58,8 @@
                             @foreach($programme->courses->where('level_id', 5)->where('semester', 2) as $course52)
                             <tr>
                                 <td scope="row"> {{ $loop->iteration }}</td>
-                                <td>{{$course52->code}}</td>
-                                <td>{{$course52->name }}</td>
+                                <td>{{$course52->course->code}}</td>
+                                <td>{{$course52->course->name }}</td>
                                 <td>{{$course52->credit_unit}}</td>
                                 <td>{{$course52->status}}</td>
                             </tr>

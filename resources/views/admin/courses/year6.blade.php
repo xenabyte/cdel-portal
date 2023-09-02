@@ -32,13 +32,13 @@
                         @foreach($programme->courses->where('level_id', 6)->where('semester', 1) as $course61)
                         <tr>
                             <td scope="row"> {{ $loop->iteration }}</td>
-                            <td>{{$course61->code}}</td>
-                            <td>{{$course61->name }}</td>
+                            <td>{{$course61->course->code}}</td>
+                            <td>{{$course61->course->name }}</td>
                             <td>{{$course61->credit_unit}}</td>
                             <td>{{$course61->status}}</td>
                         </tr>
 
-                        <div id="editCourse{{$course61->id}}" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
+                        {{-- <div id="editCourse{{$course61->id}}" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
                             <div class="modal-dialog modal-dialog-centered">
                                 <div class="modal-content border-0 overflow-hidden">
                                     <div class="modal-header p-3">
@@ -141,7 +141,7 @@
                                     </div>
                                 </div><!-- /.modal-content -->
                             </div><!-- /.modal-dialog -->
-                        </div><!-- /.modal -->
+                        </div><!-- /.modal --> --}}
                         @endforeach
                     </tbody>
                 </table>
@@ -163,13 +163,13 @@
                             @foreach($programme->courses->where('level_id', 6)->where('semester', 2) as $course62)
                             <tr>
                                 <td scope="row"> {{ $loop->iteration }}</td>
-                                <td>{{$course62->code}}</td>
-                                <td>{{$course62->title }} <hr> <?php echo $course62->course_outline ?></td>
+                                <td>{{$course62->course->code}}</td>
+                                <td>{{$course62->course->name }}</td>
                                 <td>{{$course62->credit_unit}}</td>
                                 <td>{{$course62->status}}</td>
                             </tr>
 
-                            <div id="editCourse{{$course62->id}}" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
+                            {{-- <div id="editCourse{{$course62->id}}" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
                                 <div class="modal-dialog modal-dialog-centered">
                                     <div class="modal-content border-0 overflow-hidden">
                                         <div class="modal-header p-3">
@@ -272,7 +272,7 @@
                                         </div>
                                     </div><!-- /.modal-content -->
                                 </div><!-- /.modal-dialog -->
-                            </div><!-- /.modal -->
+                            </div><!-- /.modal --> --}}
                             @endforeach
                         </tbody>
                     </table>

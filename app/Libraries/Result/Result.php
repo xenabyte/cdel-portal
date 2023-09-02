@@ -70,6 +70,9 @@ class Result
 
         $allRegisteredCreditUnits =  $allRegisteredCourses->sum('course_credit_unit');
         $allRegisteredGradePoints = $allRegisteredCourses->sum('points');
+        if(!$allRegisteredCreditUnits > 0) {
+            return false;
+        }
         $CGPA = number_format($allRegisteredGradePoints / $allRegisteredCreditUnits, 2);
         $classGrade = DegreeClass::computeClass($CGPA);
         $class = $classGrade->degree_class;

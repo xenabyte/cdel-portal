@@ -63,17 +63,20 @@ class ResultController extends Controller
         $academicLevel = AcademicLevel::find($request->level_id);
 
         $students = Student::
-            with(['applicant', 'programme', 'transactions', 'courseRegistrationDocument', 'registeredCourses', 'registeredCourses.course', 'partner', 'academicLevel', 'department', 'faculty'])
-            ->where([
-                'is_active' => true,
-                'is_passed_out' => false,
-                'is_rusticated' => false,
-                'level_id' => $request->level_id,
-                'programme_id' => $request->programme_id,
-                'department_id' => $request->department_id,
-                'faculty_id' => $request->faculty_id,
-            ])
-            ->get();
+        with(['applicant', 'programme', 'transactions', 'courseRegistrationDocument', 'registeredCourses', 'registeredCourses.course', 'partner', 'academicLevel', 'department', 'faculty'])
+        ->where([
+            'is_active' => true,
+            'is_passed_out' => false,
+            'is_rusticated' => false,
+            'programme_id' => $request->programme_id,
+            'department_id' => $request->department_id,
+            'faculty_id' => $request->faculty_id,
+        ])
+        ->whereHas('registeredCourses', function ($query) use ($request) {
+            $query->where('level_id', $request->level_id)
+                  ->where('academic_session', $request->session);
+        })
+        ->get();    
 
         return view('admin.getStudentResults',[
             'students' => $students,

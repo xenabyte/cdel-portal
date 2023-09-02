@@ -20,6 +20,8 @@ use App\Models\CourseRegistration;
 use App\Models\Student;
 use App\Models\Department;
 
+use App\Libraries\Pdf\Pdf;
+
 use SweetAlert;
 use Mail;
 use Alert;
@@ -214,6 +216,8 @@ class ProgrammeController extends Controller
             alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
             return redirect()->back();
         }
+        $studentId = $request->student_id;
+        $staffId = $request->staff_id;
 
         if(!$studentCourseReg = StudentCourseRegistration::find($request->reg_id)){
             alert()->error('Oops', 'Invalid Student Registration ')->persistent('Close');
@@ -231,11 +235,21 @@ class ProgrammeController extends Controller
         
         if($request->type == 'level_adviser'){
             $studentCourseReg->level_adviser_status = true;
+            $type = 'Level Adviser';
         }else{
             $studentCourseReg->hod_status = true;
+            $type = 'Hod';
         }
 
-        if($studentCourseReg->save()){
+        $academicSession = $studentCourseReg->academic_session;
+        $otherData = new \stdClass();
+        $otherData->staffId = $staffId;
+        $otherData->courseRegId = $request->reg_id;
+        $otherData->type = $request->type;
+
+        $pdf = new Pdf();
+        $courseReg = $pdf->generateCourseRegistration($studentId, $academicSession, $otherData);
+        if(!empty($courseReg)){
             alert()->success('Registration Approved', '')->persistent('Close');
             return redirect()->back();
         }

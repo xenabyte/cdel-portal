@@ -330,7 +330,7 @@
                                                                         <td>{{ $loop->iteration }}</td>
                                                                         <td>{{ $registeredCourse->course->code }}</td>
                                                                         <td>{{ $registeredCourse->course->name }}</td>
-                                                                        <td>{{ $registeredCourse->course->credit_unit }}</td>
+                                                                        <td>{{ $registeredCourse->course_credit_unit }}</td>
                                                                         <td>{{ $registeredCourse->total }}</td>
                                                                         <td>{{ $registeredCourse->grade }}</td>
                                                                         <td>{{ $registeredCourse->points }}</td>

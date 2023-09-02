@@ -172,8 +172,8 @@
                                         <td>{{ $loop->iteration }}</td>
                                         <td>{{ $courseReg->course->code }}</td>
                                         <td>{{ $courseReg->course->name }}</td>
-                                        <td>{{ $courseReg->course->credit_unit }}</td>
-                                        <td>{{ $courseReg->course->status }}</td>
+                                        <td>{{ $courseReg->course_credit_unit }}</td>
+                                        <td>{{ $courseReg->course_status }}</td>
                                     </tr>
                                     @endforeach
                                 </tbody>

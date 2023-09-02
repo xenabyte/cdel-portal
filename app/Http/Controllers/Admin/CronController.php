@@ -13,6 +13,9 @@ use App\Models\Course;
 use App\Models\AcademicLevel;
 use App\Models\Staff;
 use App\Models\SessionSetting;
+use App\Models\Student;
+
+use App\Libraries\Result\Result;
 
 use Illuminate\Support\Facades\Http;
 
@@ -271,6 +274,18 @@ class CronController extends Controller
             alert()->error('Oops!', 'Something went wrong')->persistent('Close');
             return redirect()->back();
         }
+    }
+
+    public function calculateStudentCGPA(){
+        $students = Student::get();
+
+        foreach($students as $student){
+            Result::calculateCGPA($student->id);
+        }
+
+        
+        
+        return $students;
     }
 
 }

@@ -1,4 +1,21 @@
 @extends('admin.layout.dashboard')
+@php
+$allStaffRoles = $singleStaff->staffRoles;
+
+$singleStaffRoles = json_decode($allStaffRoles);
+
+$deanRole = array_filter($singleStaffRoles, function ($staffRole) {
+    return strtolower($staffRole->role->role) === 'dean';
+});
+
+$subDeanRole = array_filter($singleStaffRoles, function ($staffRole) {
+    return strtolower($staffRole->role->role) === 'sub-dean';
+});
+
+$hodRole = array_filter($singleStaffRoles, function ($staffRole) {
+    return strtolower($staffRole->role->role) === 'hod';
+});
+@endphp
 
 @section('content')
 <div class="row">
@@ -34,14 +51,13 @@
                                 @else
                                 <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#enableStaff">Enable Staff</button>
                                 @endif
-
-                                @if(!empty($singleStaff->staffRoles->first()) && strtolower($singleStaff->staffRoles->first()->role->role) == 'dean' && ($singleStaff->id != $singleStaff->faculty->dean_id))
+                                @if(!empty($deanRole) && ($singleStaff->id != $singleStaff->faculty->dean_id))
                                 <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#assignDeanToFaculty"> Assign Dean To Faculty</button>
                                 @endif
-                                @if(!empty($singleStaff->staffRoles->first()) && strtolower($singleStaff->staffRoles->first()->role->role) == 'sub-dean' && ($singleStaff->id != $singleStaff->faculty->sub_dean_id))
+                                @if(!empty($subDeanRole) && ($singleStaff->id != $singleStaff->faculty->sub_dean_id))
                                 <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#assignSubDeanToFaculty"> Assign Sub Dean To Faculty</button>
                                 @endif
-                                @if(!empty($singleStaff->staffRoles->first()) && strtolower($singleStaff->staffRoles->first()->role->role) == 'hod')
+                                @if(!empty($hodRole))
                                 <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#assignHodToDepartment"> Assign HOD To Department</button>
                                 @endif
 
@@ -239,7 +255,7 @@
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
 
-@if(!empty($singleStaff->staffRoles->first()) && strtolower($singleStaff->staffRoles->first()->role->role) == 'dean' && ($singleStaff->id != $singleStaff->faculty->dean_id))
+@if(!empty($deanRole) && ($singleStaff->id != $singleStaff->faculty->dean_id))
     <div id="assignDeanToFaculty" class="modal fade" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" style="display: none;">
         <!-- Fullscreen Modals -->
         <div class="modal-dialog modal-md">
@@ -273,7 +289,7 @@
     </div><!-- /.modal -->
 @endif
 
-@if(!empty($singleStaff->staffRoles->first()) && strtolower($singleStaff->staffRoles->first()->role->role) == 'sub-dean' && ($singleStaff->id != $singleStaff->faculty->sub_dean_id))
+@if(!empty($subDeanRole) && ($singleStaff->id != $singleStaff->faculty->sub_dean_id))
     <div id="assignSubDeanToFaculty" class="modal fade" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" style="display: none;">
         <!-- Fullscreen Modals -->
         <div class="modal-dialog modal-md">
@@ -307,7 +323,7 @@
     </div><!-- /.modal -->
 @endif
 
-@if(!empty($singleStaff->staffRoles->first()) && strtolower($singleStaff->staffRoles->first()->role->role) == 'hod')
+@if(!empty($hodRole))
 <div id="assignHodToDepartment" class="modal fade" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" style="display: none;">
     <!-- Fullscreen Modals -->
     <div class="modal-dialog modal-md">

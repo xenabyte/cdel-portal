@@ -68,6 +68,6 @@ class CoursePerProgrammePerAcademicSession extends Model
      */
     public function registrations()
     {
-        return $this->hasMany(CourseRegistration::class, 'course_id');
+        return $this->hasMany(CourseRegistration::class, 'programme_course_id', 'id');
     }
 }

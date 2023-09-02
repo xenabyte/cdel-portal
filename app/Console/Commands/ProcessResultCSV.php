@@ -10,30 +10,25 @@ use App\Models\Course;
 use App\Models\ResultApprovalStatus;
 use App\Models\Student;
 use App\Models\CoursePerProgrammePerAcademicSession;
-use App\Models\GradeScale;
-use App\Models\DegreeClass;
 
 use League\Csv\Reader;
 
 
-
-use Log;
-class ProcessCourseRegCSV extends Command
+class ProcessResultCSV extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'csv:processCourseRegCSV {file}';
+    protected $signature = 'csv:processResultCSV {file}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Process Course Reg CSV file';
-
+    protected $description = 'Process Result CSV file';
     /**
      * Create a new command instance.
      *
@@ -62,8 +57,6 @@ class ProcessCourseRegCSV extends Command
         if (file_exists($file)) {
             $csv = Reader::createFromPath($file);
             $csv->setHeaderOffset(0);
-
-            $records = $csv->getRecords();
 
             $programmeArray = [
                 1001 => 3,
@@ -94,52 +87,21 @@ class ProcessCourseRegCSV extends Command
                 1028 => 22
             ];
 
-            $departmentArray = [
-                'PWE' => 1,
-                'PHY' => 1,
-                'MTH' => 2,
-                'CHM' => 3,
-                'BIO' => 4,
-                'MCM' => 5,
-                'SWE' => 2,
-                'CSC' => 2,
-                'NSC' => 12,
-                'PHS' => 10,
-                'STA' => 2,
-                'MMP' => 4,
-                'BCH' => 4,
-                'ANA' => 13,
-                'BCM' => 4,
-                'MCB' => 4,
-                'ECN' => 6,
-                'CSS' => 7,
-                'BUS' => 8,
-                'ACT' => 9,
-                'GNS' => 0,
-                'GST' => 0,
-                'MAT' => 2,
-                'PHM' => 12,
-                'MLS' => 11,
-                'HEM' => 11,
-                'CPY' => 11,
-                'PHT' => 10,
-                'HST' => 11,
-                'MMB' => 4,
-                'SEN' => 0,
-                'PST' => 10,
-            ];
+            $records = $csv->getRecords();
 
             foreach ($records as $row) {
                 $matricNumber = $row['MatricNo'];
                 $semester = $row['Semester'] == '1ST SEMESTER' ? 1 : 2;
-                $programmeCode = $row['ProgrammeCode'];
+                $caScore = $row['CA'];
                 $academicSession = $row['AcademicSession'];
                 $courseCode = strtoupper(trim(str_replace("--", "", $row['CourseCode'])));
-                $courseName = $row['CourseTitle'];
-                $courseCreditUnit = $row['Unit'];
-                $courseType = $row['CourseType'];
-
-                $status = ($courseType == "R") ? "Required" : (($courseType == "E") ? "Elective" : (($courseType == "C") ? "Core" : "Core"));
+                $programmeCode = $row['ProgrammeCode'];
+                $examScore = $row['Exam'];
+                $totalScore = $row['Total'];
+                $grade = $row['Grade'];
+                $gradePoint = $row['Point'];
+                $level = $row['LevelCode'];
+                $courseCreditUnit = $row['CourseUnit'];
 
                 $student = Student::with('applicant')->where('matric_number', $matricNumber)->first();
                 if(!$student) {
@@ -154,53 +116,41 @@ class ProcessCourseRegCSV extends Command
                     $this->info("Programme with '{$programmeCode}' not found in programme array");
                     continue;
                 }
-
-                $code = $extractedText = substr($courseCode, 0, 3);
-                $departmentId = null;
-                if (array_key_exists($code, $departmentArray)) {
-                    $departmentId = $departmentArray[$code];
-                }else{
-                    $this->info("Department with course code '{$courseCode}' not found in department array");
-                    continue;
-                }
-
-                $levelId = $this->calculateLevel($academicSession, $student->level_id);
                 
-                $programme = Programme::with('department')->where('id', $programmeId)->first();
-                if(!$programme) {
-                    $this->info("Student '{$student->applicant->lastname} {$student->applicant->othernames}'  programme not found in database");
-                    continue;
-                }
 
+                $resultApprovalId = ResultApprovalStatus::getApprovalStatusId(ResultApprovalStatus::SENATE_APPROVED);
 
                 $course = Course::where([
                     'code' => $courseCode,
                 ])->first();
 
-                // $level = $levelId*100;
+                if(!$course){
 
-                // if(!$course){
-                //     $course = Course::create([
-                //         'name' => $courseName,
-                //         'code' => $courseCode,
-                //         'department_id' => $departmentId
-                //     ]);
-                // }
-
-                $programmeCourse = CoursePerProgrammePerAcademicSession::where([
-                    'course_id' => $course->id,
-                    'level_id' => $levelId,
-                    'programme_id' => $programmeId,
-                    'semester' => $semester,
-                    'credit_unit' => $courseCreditUnit,
-                    'academic_session' => $academicSession,
-                ])->first();
-        
-                if(!$programmeCourse){
-                    $this->info("CoursePerProgrammePerAcademicSession not found in database");
+                    $this->info("Course with '{$courseCode}' not found in the db ");
                     continue;
+                    // $course = Course::create([
+                    //     'name' => $courseName,
+                    //     'code' => $courseCode,
+                    //     'department_id' => $departmentId
+                    // ]);
                 }
                 
+                // $levelId = $this->calculateLevel($academicSession, $student->level_id);
+
+                // $programmeCourse = CoursePerProgrammePerAcademicSession::where([
+                //     'course_id' => $course->id,
+                //     'level_id' => $levelId,
+                //     'programme_id' => $programmeId,
+                //     'semester' => $semester,
+                //     'credit_unit' => $courseCreditUnit,
+                //     'academic_session' => $academicSession,
+                // ])->first();
+        
+                // if(!$programmeCourse){
+                //     $this->info("CoursePerProgrammePerAcademicSession not found in database");
+                //     continue;
+                // }
+
                 // CoursePerProgrammePerAcademicSession::create([
                 //     'course_id' => $course->id,
                 //     'level_id' => $levelId,
@@ -208,40 +158,63 @@ class ProcessCourseRegCSV extends Command
                 //     'semester' => $semester,
                 //     'credit_unit' => $courseCreditUnit,
                 //     'academic_session' => $academicSession,
-                //     'status' => $status,
+                //     'status' => 'Required',
                 // ]);
 
+                $levelId = ($level === '1000') ? 1 : (
+                    ($level === '1001') ? 2 : (
+                    ($level === '1002') ? 3 : null));
 
-                // $resultApprovalId = ResultApprovalStatus::getApprovalStatusId(ResultApprovalStatus::SENATE_APPROVED);
-                // Check if the student is already registered for this course
-                $existingRegistration = CourseRegistration::where([
+                // $existingRegistration = CourseRegistration::where([
+                //     'student_id' => $student->id,
+                //     'course_id' => $course->id,
+                //     'academic_session' => $academicSession,
+                //     'level_id' => $levelId,
+                // ])->first();
+
+                // if(!$existingRegistration){
+                //     $courseReg = CourseRegistration::create([
+                //         'student_id' => $student->id,
+                //         'course_id' => $programmeCourse->course_id,
+                //         'course_credit_unit' => $programmeCourse->credit_unit,
+                //         'course_code' => $courseCode,
+                //         'course_status' => $programmeCourse->status,
+                //         'semester' => $programmeCourse->semester,
+                //         'academic_session' => $academicSession,
+                //         'level_id' => $levelId,
+                //         'programme_course_id' => $programmeCourse->id
+                //     ]);
+                // }
+
+                $studentCourseReg = CourseRegistration::where([
                     'student_id' => $student->id,
-                    'course_id' => $course->id,
+                    'course_code' => $courseCode,
                     'academic_session' => $academicSession,
                     'level_id' => $levelId,
                 ])->first();
 
-                if(!$existingRegistration){
-                    $courseReg = CourseRegistration::create([
-                        'student_id' => $student->id,
-                        'course_id' => $programmeCourse->course_id,
-                        'course_credit_unit' => $programmeCourse->credit_unit,
-                        'course_code' => $courseCode,
-                        'course_status' => $programmeCourse->status,
-                        'semester' => $programmeCourse->semester,
-                        'academic_session' => $academicSession,
-                        'level_id' => $levelId,
-                        'programme_course_id' => $programmeCourse->id
-                    ]);
-                }              
+                if(!$studentCourseReg){
+                    $this->info("Course Reg not found for  with '{$student->applicant->lastname}' '{$student->applicant->othernames}' with course '{$courseCode}'");
+                    continue;
+                }    
+                
+                $studentCourseReg->ca_score = !empty($caScore)? $caScore:0;
+                $studentCourseReg->exam_score = $examScore;
+                $studentCourseReg->total = $totalScore;
+                $studentCourseReg->grade = $grade;
+                $studentCourseReg->points = $gradePoint*$studentCourseReg->course_credit_unit;
+                $studentCourseReg->result_approval_id = $resultApprovalId;
+                $studentCourseReg->status = 'Completed';
+                $studentCourseReg->save();
+                
             }
 
-            $this->info('Course Reg processed successfully!');
+            $this->info('Result processed successfully!');
         } else {
             $this->error('File not found.');
         }
 
-        $this->info("Course Reg CSV file: $file");
+        $this->info("Result CSV file: $file");
     }
 
     public function calculateLevel($academicSession, $studentLevel) {

@@ -21,6 +21,10 @@ class CreateStudentCourseRegistrationsTable extends Migration
             $table->string('file')->nullable();
             $table->string('level_adviser_status')->nullable();
             $table->string('hod_status')->nullable();
+            $table->unsignedBigInteger('level_adviser_id')->nullable();
+            $table->unsignedBigInteger('hod_id')->nullable();
+            $table->date('level_adviser_approved_date')->nullable();
+            $table->date('hod_approved_date')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

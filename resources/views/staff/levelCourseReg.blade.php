@@ -122,6 +122,8 @@
                                             <form action="{{ url('/staff/approveReg') }}" method="POST">
                                                 @csrf
                                                 <input name="reg_id" type="hidden" value="{{$studentRegistration->id}}">
+                                                <input name="staff_id" type="hidden" value="{{$staff->id}}">
+                                                <input name="student_id" type="hidden" value="{{$studentRegistration->student_id}}">
                                                 @if($staffLevelAdviserRole)
                                                 <input name="type" type="hidden" value="level_adviser">
                                                 @endif

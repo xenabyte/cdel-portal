@@ -152,9 +152,14 @@
         </div>
     </div>
     <div class="row text-justify">
-        <p>By signing this CourseForm, I undertake that as a .......... Level student of ....................... (Department) in the 2022/2023 session, I shall remain in good standing, and maintain the minimum CGPA required by the laws and regulations of the Department/Faculty. If I do not meet the minimum required CGPA, I will be held solely responsible, and the department/Faculty shall take the required measures against me, as the case may be, in accordance with the University&apos;s Rules and regulations.</p>
-        <p>STUDENT'S SIGNATURE: -------------------------------------------- DATE: ------------------------------<br><br> LEVEL ADVISER'S SIGNATURE: ----------------------------------- DATE: ------------------------------<br><br> HOD'S SIGNATURE: --------------------------------------------------- DATE: ------------------------------<br><br> DEAN'S SIGNATURE: ------------------------------------------------- DATE: ------------------------------</p>
+        <p>By this CourseForm, I undertake that as a {{ $info->academicLevel->level }} Level student of {{ $info->department->name }} (Department) in the {{ $info->academic_session }} session, I shall remain in good standing, and maintain the minimum CGPA required by the laws and regulations of the Department/Faculty. If I do not meet the minimum required CGPA, I will be held solely responsible, and the department/Faculty shall take the required measures against me, as the case may be, in accordance with the University&apos;s Rules and regulations.</p>
+        @if(!empty($staffData))
+            <p>@if(!empty($staffData->studentCourseReg->level_adviser_id)) LEVEL ADVISER'S SIGNATURE: <img src="{{ asset($staffData->studentCourseReg->levelAdviser->signature ) }}" width="10%"> DATE: {{ date('F j, Y \a\t g:i A', strtotime($staffData->studentCourseReg->level_adviser_approved_date)) }}<br><br>@endif
+                @if(!empty($staffData->studentCourseReg->hod_id)) HOD'S SIGNATURE: <img src="{{ asset($staffData->studentCourseReg->hod->signature ) }}" width="10%"> DATE: {{ date('F j, Y \a\t g:i A', strtotime($staffData->studentCourseReg->hod_approved_date)) }}<br><br> @endif
+            </p>
+        @endif
     </div>
+    
 </div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>

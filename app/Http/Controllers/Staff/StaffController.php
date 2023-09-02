@@ -203,12 +203,12 @@ class StaffController extends Controller
 
         $staff = Auth::guard('staff')->user();
         $staffId = $staff->id;
+        $globalData = $request->input('global_data');
+        $academicSession = $globalData->sessionSetting['academic_session'];
 
-        $courses = Course::with('level')->where('staff_id', $staffId)->get();
+        // $courses = CoursePerProgrammePerAcademicSession::with('course', 'course.courseManagement', 'course.courseManagement.staff',  'level',  'registrations', 'registrations.student', 'registrations.student.applicant', 'registrations.student.programme')->where('academic_session', $academicSession)->where('staff_id', $staffId)->first();
 
-        return view('staff.courses', [
-            'courses' => $courses,
-        ]);
+        return view('staff.courses');
     }
 
     public function studentCourses(Request $request){
@@ -421,6 +421,33 @@ class StaffController extends Controller
         alert()->error('Oops!', 'An Error Occurred')->persistent('Close');
         return redirect()->back();
 
+    }
+
+    public function unsetStaff(Request $request){
+        $validator = Validator::make($request->all(), [
+            'course_id' => 'required',
+        ]);
+
+        if($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+
+        $globalData = $request->input('global_data');
+        $academicSession = $globalData->sessionSetting['academic_session'];
+
+        $unset = CourseManagement::where([
+            'course_id' => $request->course_id,
+            'academic_session' => $academicSession
+        ])->delete();
+        
+        if($unset) {
+            alert()->success('Success', 'Staff assigned successfully')->persistent('Close');
+            return redirect()->back();
+        }
+
+        alert()->error('Oops!', 'An Error Occurred')->persistent('Close');
+        return redirect()->back();
     }
 
     public function sendMessage(Request $request){

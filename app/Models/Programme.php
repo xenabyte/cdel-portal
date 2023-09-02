@@ -32,7 +32,7 @@ class Programme extends Model
      */
     public function courses()
     {
-        return $this->hasMany(Course::class, 'programme_id');
+        return $this->hasMany(CoursePerProgrammePerAcademicSession::class, 'programme_id');
     }
 
     public function firstSemesterCourses(){

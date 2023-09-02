@@ -202,7 +202,7 @@
                             $CGPA = $allRegisteredGradePoints > 0 ? number_format($allRegisteredGradePoints / $allRegisteredCreditUnits, 2) : 0;
 
                             $prevRegisteredCourses = $student->registeredCourses->where('semester', '!=', $semester)->where('level_id', '!=', $academiclevel->id);
-                            $prevRegisteredCreditUnits =  $prevRegisteredCourses->sum('course_credit_units');
+                            $prevRegisteredCreditUnits =  $prevRegisteredCourses->sum('course_credit_unit');
                             $prevRegisteredGradePoints = $prevRegisteredCourses->sum('points');
                             if ($prevRegisteredCreditUnits != 0) {
                                 $prevCGPA = number_format($prevRegisteredGradePoints / $prevRegisteredCreditUnits, 2);
@@ -234,7 +234,7 @@
                                 </td>
                                 <td>{{ $prevRegisteredCreditUnits }}</td>
                                 <td>{{ $prevRegisteredGradePoints }}</td>
-                                <td>{{ $prevRegisteredGradePoints }}</td>
+                                <td>{{ $prevCGPA }}</td>
                                 <td class="bg bg-soft-primary">{{ $currentRegisteredCreditUnits }}</td>
                                 <td class="bg bg-soft-primary">{{ $currentRegisteredGradePoints }}</td>
                                 <td class="bg bg-soft-primary">{{ $currentGPA }}</td>
@@ -270,7 +270,7 @@
                                                                         <td>{{ $loop->iteration }}</td>
                                                                         <td>{{ $registeredCourse->course->code }}</td>
                                                                         <td>{{ $registeredCourse->course->name }}</td>
-                                                                        <td>{{ $registeredCourse->course->credit_unit }}</td>
+                                                                        <td>{{ $registeredCourse->course_credit_unit }}</td>
                                                                         <td>{{ $registeredCourse->total }}</td>
                                                                         <td>{{ $registeredCourse->grade }}</td>
                                                                         <td>{{ $registeredCourse->points }}</td>

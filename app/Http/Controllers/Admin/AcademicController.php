@@ -891,7 +891,7 @@ class AcademicController extends Controller
         $academicSession = $globalData->sessionSetting['academic_session'];
 
         $department = Department::with('courses', 'courses.courseManagement', 'courses.courseManagement.staff', 'programmes', 'programmes.students', 'programmes.academicAdvisers', 'programmes.academicAdvisers.staff', 'programmes.academicAdvisers.level')->where('slug', $slug)->first();
-        
+
         return view('admin.departmentForCourse', [
             'department' => $department,
         ]);

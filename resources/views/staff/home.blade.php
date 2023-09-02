@@ -146,6 +146,7 @@ $staffCourses = $staff->staffCourses;
                         @php
                             $courseData = $staffCourse->course->coursePerProgrammePerAcademicSession->where('academic_session', $pageGlobalData->sessionSetting->academic_session)->first();
                         @endphp
+                        @if(!empty($courseData))
                         <tr>
                             <td scope="row"> {{ $loop->iteration }}</td>
                             <td>{{$staffCourse->course->code}}</td>
@@ -159,6 +160,7 @@ $staffCourses = $staff->staffCourses;
                                 <a href="{{ url('/staff/courseDetail/'.$courseData->id) }}" class="btn btn-lg btn-primary">Course Details</a>
                             </td>
                         </tr>
+                        @endif
                         @endforeach
                     </tbody>
                 </table>

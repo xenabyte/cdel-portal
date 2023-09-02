@@ -326,11 +326,6 @@
                                 </a>
                                 <div class="collapse menu-dropdown" id="staffManagement">
                                     <ul class="nav nav-sm flex-column">
-                                        @if($staffHODRole)
-                                        <li class="nav-item">
-                                            <a href="{{ url('/staff/courseAllocation') }}" class="nav-link">Course-to-Staff Allocation</a>
-                                        </li>
-                                        @endif
                                         @if($staffDeanRole || $staffSubDeanRole || $staffHODRole || $staffRegistrarRole || $staffHRRole || $staffVCRole)
                                         <li class="nav-item">
                                             <a href="{{ url('/staff/staff') }}" class="nav-link" data-key="t-basic"> All Staff </a>
@@ -380,11 +375,15 @@
                             </a>
                             <div class="collapse menu-dropdown" id="courseSettings">
                                 <ul class="nav nav-sm flex-column">
-                                    @if($staffLevelAdviserRole)
+                                    @if($staffLevelAdviserRole || $staffHODRole)
                                     <li class="nav-item">
                                         <a href="{{ url('/staff/adviserProgrammes') }}" class="nav-link">Programmes</a>
                                     </li>
                                     @endif
+
+                                    <li class="nav-item">
+                                        <a href="{{ url('/staff/departmentForCourses') }}" class="nav-link">All Courses</a>
+                                    </li>
 
                                     <li class="nav-item">
                                         <a href="{{ url('/staff/studentCourses') }}" class="nav-link">Student Courses</a>
@@ -584,10 +583,11 @@
                     }));
 
                     var staffRoleVCRole = "<?php echo $staffVCRole ?>";
+                    var staffBursaryRole = "<?php echo $staffBursaryRole ?>";
                     var staffDepartmentId =  "<?php echo $staff->department_id ?>";
                     
                     $.each(response.data, function (index, department) {
-                        if (!staffRoleVCRole && staffDepartmentId == department.id) {
+                        if (!staffRoleVCRole && !staffBursaryRole && staffDepartmentId == department.id) {
                             departmentSelect.append($('<option>', {
                                 value: department.id,
                                 text: department.name
@@ -595,7 +595,7 @@
                         }
                     });
 
-                    if (staffRoleVCRole) {
+                    if (staffRoleVCRole || staffBursaryRole) {
                         $.each(response.data, function (index, department) {
                             departmentSelect.append($('<option>', {
                                 value: department.id,
@@ -640,8 +640,7 @@
                 
             }
         }
-    </script>
-    <script>
+    
         function updateNotificationStatus(event) {
             event.preventDefault();
             

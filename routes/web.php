@@ -27,6 +27,8 @@ Route::post('/paystackWebhook', [App\Http\Controllers\PaymentController::class, 
 
 Route::get('/examDocket/{slug}', [App\Http\Controllers\HomeController::class, 'getExamDocket']);
 Route::get('/studentDetails/{slug}', [App\Http\Controllers\HomeController::class, 'studentDetails']);
+Route::get('/calculateStudentCGPA', [App\Http\Controllers\Admin\CronController::class, 'calculateStudentCGPA']);
+
 
 
 
@@ -287,6 +289,8 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'staff'],
   Route::post('/assignCourse', [App\Http\Controllers\Staff\StaffController::class, 'assignCourse'])->name('assignCourse')->middleware(['auth:staff']);
   Route::get('/courseDetail/{id}', [App\Http\Controllers\Staff\StaffController::class, 'courseDetail'])->name('courseDetail')->middleware(['auth:staff']);
   Route::post('/sendMessage', [App\Http\Controllers\Staff\StaffController::class, 'sendMessage'])->name('sendMessage')->middleware(['auth:staff']);
+  Route::post('/unsetStaff', [App\Http\Controllers\Staff\StaffController::class, 'unsetStaff'])->name('unsetStaff')->middleware(['auth:staff']);
+
 
   Route::get('/studentCourses', [App\Http\Controllers\Staff\StaffController::class, 'studentCourses'])->name('studentCourses')->middleware(['auth:staff']);
   Route::post('/getStudentCourses', [App\Http\Controllers\Staff\StaffController::class, 'getStudentCourses'])->name('getStudentCourses')->middleware(['auth:staff']);
@@ -376,6 +380,12 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'staff'],
   Route::get('/student/{slug}', [App\Http\Controllers\Staff\AdmissionController::class, 'student'])->name('student')->middleware(['auth:staff']);
   Route::get('/allStudents', [App\Http\Controllers\Staff\AdmissionController::class, 'allStudents'])->name('allStudents')->middleware(['auth:staff']);
 
+  Route::get('/departmentForCourses', [App\Http\Controllers\Staff\AcademicController::class, 'departmentForCourses'])->name('departmentForCourses')->middleware(['auth:staff']);
+  Route::get('/departmentCourse/{slug}', [App\Http\Controllers\Staff\AcademicController::class, 'departmentForCourse'])->name('departmentForCourse')->middleware(['auth:staff']);
+  Route::post('/addCourse', [App\Http\Controllers\Staff\AcademicController::class, 'addCourse'])->name('addCourse')->middleware(['auth:staff']);
+  Route::post('/updateCourse', [App\Http\Controllers\Staff\AcademicController::class, 'updateCourse'])->name('updateCourse')->middleware(['auth:staff']);
+  
+  Route::post('/addCourseForStudent', [App\Http\Controllers\Admin\ProgrammeController::class, 'addCourseForStudent'])->name('addCourseForStudent')->middleware(['auth:staff']);
 
   
 });

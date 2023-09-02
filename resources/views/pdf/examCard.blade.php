@@ -104,8 +104,8 @@ $qrcode = 'https://chart.googleapis.com/chart?chs=300x300&cht=qr&chl='.env('APP_
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{ $registeredCourse->course->code }}</td>
                                 <td>{{ $registeredCourse->course->name }}</td>
-                                <td>{{ $registeredCourse->course->credit_unit }}</td>
-                                <td>{{ strtoupper(substr($registeredCourse->course->status, 0, 1)) }}</td>
+                                <td>{{ $registeredCourse->course_credit_unit }}</td>
+                                <td>{{ strtoupper(substr($registeredCourse->course_status, 0, 1)) }}</td>
                             </tr>
                         @endforeach
                     </tbody>

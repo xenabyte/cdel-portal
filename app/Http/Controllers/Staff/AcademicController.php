@@ -29,6 +29,7 @@ use Alert;
 use Log;
 use Carbon\Carbon;
 
+use App\Libraries\Pdf\Pdf;
 
 class AcademicController extends Controller
 {
@@ -67,6 +68,86 @@ class AcademicController extends Controller
             'department' => $department,
             'levels' => $levels
         ]);
+    }
+
+    public function departmentForCourses(){
+        $staff = Auth::guard('staff')->user();
+        $staffId = $staff->id;
+        $department = Department::with('courses')->where('id', $staff->department_id)->orderBy('id', 'DESC')->get();
+        
+        return view('staff.departmentForCourses', [
+            'departments' => $department
+        ]);
+    }
+
+    public function departmentForCourse(Request $request, $slug){
+        $globalData = $request->input('global_data');
+        $academicSession = $globalData->sessionSetting['academic_session'];
+
+        $department = Department::with('courses', 'courses.courseManagement', 'courses.courseManagement.staff', 'programmes', 'programmes.students', 'programmes.academicAdvisers', 'programmes.academicAdvisers.staff', 'programmes.academicAdvisers.level')->where('slug', $slug)->first();
+        
+        return view('staff.departmentForCourse', [
+            'department' => $department,
+        ]);
+    }
+
+    public function addCourse(Request $request){
+        $validator = Validator::make($request->all(), [
+            'code' => 'required|string|unique:courses',
+            'name' => 'required|string',
+        ]);
+
+        if($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+
+        $newCourses = [
+            'name' => $request->name,
+            'code' => strtoupper($request->code),
+            'department_id' => $request->department_id,
+        ];
+        
+        if(Course::create($newCourses)){
+            alert()->success('Course added successfully', '')->persistent('Close');
+            return redirect()->back();
+        }
+
+        alert()->error('Oops!', 'Something went wrong')->persistent('Close');
+        return redirect()->back();
+        
+    }
+
+    public function updateCourse(Request $request){
+        $validator = Validator::make($request->all(), [
+            'course_id' => 'required',
+        ]);
+
+        if($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+
+        if(!$course = Course::find($request->course_id)){
+            alert()->error('Oops', 'Invalid Level ')->persistent('Close');
+            return redirect()->back();
+        }
+
+        if(!empty($request->name) &&  $request->name != $course->name){
+            $course->name = $request->name;
+        }
+
+        if(!empty($request->code) &&  $request->code != $course->code){
+            $course->code = $request->code;
+        }
+
+        if($course->save()){
+            alert()->success('Changes Saved', '')->persistent('Close');
+            return redirect()->back();
+        }
+
+        alert()->error('Oops!', 'Something went wrong')->persistent('Close');
+        return redirect()->back();
     }
     
 }

@@ -9,8 +9,10 @@ use App\Models\GlobalSetting as Setting;
 use App\Models\CourseRegistration;
 use App\Models\ResultApprovalStatus;
 use App\Models\Payment;
+use App\Models\Staff;
+use App\Models\StudentCourseRegistration;
 
-
+use Carbon\Carbon;
 use Log;
 
 Class Pdf {
@@ -66,12 +68,17 @@ Class Pdf {
         return $fileDirectory;
     }
 
-    public function generateCourseRegistration($studentId, $academicSession){
+    public function generateCourseRegistration($studentId, $academicSession, $otherData = null){
         $options = [
             'isRemoteEnabled' => true,
             'encryption' => '128',
             'no_modify' => true,
         ];
+
+        $staff = null;
+        if(!empty($otherData->staffId)){
+            $staff = Staff::find($otherData->staffId);
+        }
 
         $student = Student::with('applicant', 'academicLevel', 'faculty', 'department', 'programme')->where('id', $studentId)->first();
         $name = $student->applicant->lastname.' '.$student->applicant->othernames;
@@ -79,10 +86,34 @@ Class Pdf {
 
         $fileDirectory = 'uploads/files/course_registration/'.$slug.'.pdf';
         $courseReg = CourseRegistration::with('course')->where('student_id', $studentId)->where('academic_session', $academicSession)->get();
+        
+        $studentCourseReg = null;
+        if(!empty($otherData->courseRegId)){
+            $studentCourseReg = StudentCourseRegistration::find($otherData->courseRegId);
+        }
 
-        Log::info("courses: ". $courseReg);
+        $staffData = null;
+        if(!empty($staff)){
+            $staffData = new \stdClass();
+            $staffData->staff = $staff;
 
-        $data = ['info'=>$student, 'registeredCourses' => $courseReg];
+            if($otherData->type == 'level_adviser'){
+                $studentCourseReg->level_adviser_status = true;
+                $studentCourseReg->level_adviser_id = $staff->id;
+                $studentCourseReg->level_adviser_approved_date = Carbon::now();
+            }else{
+                $studentCourseReg->hod_status = true;
+                $studentCourseReg->hod_id = $staff->id;
+                $studentCourseReg->hod_approved_date = Carbon::now();
+            }
+
+            $studentCourseReg->save();
+            $studentCourseRegNew = StudentCourseRegistration::with('hod', 'levelAdviser')->where('id', $otherData->courseRegId)->first();
+
+            $staffData->studentCourseReg = $studentCourseRegNew;
+        }
+
+        $data = ['info'=>$student, 'registeredCourses' => $courseReg, 'staffData' => $staffData];
 
         $pdf = PDFDocument::loadView('pdf.courseRegistration', $data)
         ->setOptions($options)

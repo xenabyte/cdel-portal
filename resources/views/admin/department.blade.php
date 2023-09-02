@@ -88,7 +88,7 @@
                         </div>
 
                         <div class="align-items-center d-flex border-top border-top-dashed mt-3 pt-3">
-                            <p class="mb-0 flex-grow-1">Kindly Appoint Leave Adviser for levels </p>
+                            <p class="mb-0 flex-grow-1">Kindly Appoint Level Adviser for levels </p>
                             <div class="flex-shrink-0">
                                 <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#addAdviser" class="btn btn-success">Assign Level Adviser</a>
                             </div>
