@@ -357,11 +357,9 @@ class AcademicController extends Controller
             ->where('student_id', $studentId)
             ->where('academic_session', $academicSession)
             ->where('total', null)
-            ->whereHas('course', function ($query) use ($semester) {
-                $query->where('semester', $semester);
-            })
+            ->where('semester', $semester)
+            ->where('status', 'approved')
             ->get();
-
 
         return view('student.examDocket', [
             'courseRegs' => $courseRegs,
@@ -380,6 +378,19 @@ class AcademicController extends Controller
         $admissionSession = $globalData->sessionSetting['admission_session'];
         $academicSession = $globalData->sessionSetting['academic_session'];
         $semester  = $globalData->examSetting['semester'];
+
+        $courseRegs = CourseRegistration::with('course')
+            ->where('student_id', $studentId)
+            ->where('academic_session', $academicSession)
+            ->where('total', null)
+            ->where('semester', $semester)
+            ->where('status', 'approved')
+            ->get();
+
+        if(empty($courseRegs)){
+            alert()->error('Oops!', 'No approved course registration for this semester and session.')->persistent('Close');
+            return redirect()->back();
+        }
 
         try {
 

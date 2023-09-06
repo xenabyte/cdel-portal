@@ -101,13 +101,16 @@ Class Pdf {
                 $studentCourseReg->level_adviser_status = true;
                 $studentCourseReg->level_adviser_id = $staff->id;
                 $studentCourseReg->level_adviser_approved_date = Carbon::now();
+                $courseReg->status = 'level_adviser_approved';
             }else{
                 $studentCourseReg->hod_status = true;
                 $studentCourseReg->hod_id = $staff->id;
                 $studentCourseReg->hod_approved_date = Carbon::now();
+                $courseReg->status = 'approved';
             }
 
             $studentCourseReg->save();
+            $courseReg->save();
             $studentCourseRegNew = StudentCourseRegistration::with('hod', 'levelAdviser')->where('id', $otherData->courseRegId)->first();
 
             $staffData->studentCourseReg = $studentCourseRegNew;
@@ -137,9 +140,8 @@ Class Pdf {
             ->where('student_id', $studentId)
             ->where('academic_session', $academicSession)
             ->where('total', null)
-            ->whereHas('course', function ($query) use ($semester) {
-                $query->where('semester', $semester);
-            })
+            ->where('semester', $semester)
+            ->where('status', 'approved')
             ->get();
 
 

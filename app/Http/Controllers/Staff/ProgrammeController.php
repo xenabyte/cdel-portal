@@ -173,14 +173,20 @@ class ProgrammeController extends Controller
     public function adviserProgrammes(Request $request){
         $staff = Auth::guard('staff')->user();
         $staffId = $staff->id;
-
-        $adviserProgrammes = LevelAdviser::with('programme', 'level')->where('staff_id', $staffId)->get();
+        $staffDepartmentId = $staff->department_id;
+        
+        $adviserProgrammes = LevelAdviser::with('programme', 'level')
+        ->where(function ($query) use ($staff) {
+            $query->whereHas('programme', function ($query) use ($staff) {
+                $query->where('department_id', $staff->department_id);
+            })->orWhere('staff_id', $staff->id);
+        })
+        ->get();
 
         return view('staff.adviserProgrammes', [
             'adviserProgrammes' => $adviserProgrammes
         ]);
     }
-
 
     Public function levelCourseReg(Request $request, $id){
         $staff = Auth::guard('staff')->user();
