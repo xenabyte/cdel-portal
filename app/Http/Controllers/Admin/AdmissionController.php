@@ -75,7 +75,8 @@ class AdmissionController extends Controller
         $applicants = Applicant::with('programme', 'olevels', 'guardian')->where('academic_session', $request->session)->get();
         
         return view('admin.applicants', [
-            'applicants' => $applicants
+            'applicants' => $applicants,
+            'session' => $request->session
         ]);
     }
 

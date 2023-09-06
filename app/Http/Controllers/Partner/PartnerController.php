@@ -67,7 +67,8 @@ class PartnerController extends Controller
         }
 
         return view('partner.applicants', [
-            'applicants' => $applicants
+            'applicants' => $applicants,
+            'session' => $request->session
         ]);
     }
 

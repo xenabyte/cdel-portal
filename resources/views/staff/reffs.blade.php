@@ -6,7 +6,7 @@
 <div class="row">
     <div class="col-12">
         <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-            <h4 class="mb-sm-0">Referred Student(s)</h4>
+            <h4 class="mb-sm-0">Referred Student(s) {{ $pageGlobalData->sessionSetting->application_session }} application session</h4>
 
             <div class="page-title-right">
                 <ol class="breadcrumb m-0">
@@ -24,10 +24,7 @@
     <div class="col-lg-12">
         <div class="card">
             <div class="card-header align-items-center d-flex">
-                <h4 class="card-title mb-0 flex-grow-1">Referred Student(s) </h4>
-                <div class="flex-shrink-0">
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#searchApplicant">Filter Applicants</button>
-                </div>
+                <h4 class="card-title mb-0 flex-grow-1">Referred Student(s) for {{ $pageGlobalData->sessionSetting->application_session }} application session </h4>
             </div><!-- end card header -->
 
             <div class="card-body table-responsive">

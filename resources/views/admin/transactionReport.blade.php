@@ -84,7 +84,7 @@
                                             </div>
                                         </div>
 
-                                        <button type="submit" class="btn btn-fill btn-primary btn-lg btn-block mb-5">Get Results</button>
+                                        <button type="submit" class="btn btn-fill btn-primary btn-lg btn-block mb-5">Get Report</button>
                                     </div>
                                 </form>
                             </div>

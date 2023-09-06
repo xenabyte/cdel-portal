@@ -66,7 +66,7 @@
                                                                 <h4 class="mb-3 mt-4">Are you sure you want to delete <br/> {{ $session->year }}?</h4>
                                                                 <form action="{{ url('/admin/deleteSession') }}" method="POST">
                                                                     @csrf
-                                                                    <input name="year_id" type="hidden" value="{{$session->id}}">
+                                                                    <input name="session_id" type="hidden" value="{{$session->id}}">
                                                                     <hr>
                                                                     <button type="submit" class="btn btn-danger w-100">Yes, Delete</button>
                                                                 </form>

@@ -454,6 +454,7 @@ class PaymentController extends Controller
 
         $validator = Validator::make($request->all(), [
             'session' => 'required',
+            'level_id' => 'required',
         ]);
 
         if($validator->fails()) {
@@ -471,29 +472,39 @@ class PaymentController extends Controller
         $department = null;
         $programme = null;
 
-        $students = Student::with('transactions', 'applicant', 'academicLevel')
-        ->whereHas('transactions', function ($query) use ($academicSession) {
-            $query->where('academic_session', $academicSession);
+        $students = Student::with('transactions', 'transactions.paymentType', 'applicant', 'academicLevel')
+        ->whereHas('transactions', function ($query) use ($academicSession, $levelId) {
+            $query->where('academic_session', $academicSession)
+                ->whereHas('paymentType', function ($subquery) use ($levelId) {
+                    $subquery->where('level_id', $levelId);
+                });
         })
         ->get();
 
         if(!empty($facultyId)){
-            $students = Student::with('transactions', 'applicant', 'academicLevel')
+            $students = Student::with('transactions', 'transactions.paymentType', 'applicant', 'academicLevel')
             ->where('faculty_id', $facultyId)
-            ->whereHas('transactions', function ($query) use ($academicSession) {
-                $query->where('academic_session', $academicSession);
+            ->whereHas('transactions', function ($query) use ($academicSession, $levelId) {
+                $query->where('academic_session', $academicSession)
+                    ->whereHas('paymentType', function ($subquery) use ($levelId) {
+                        $subquery->where('level_id', $levelId);
+                    });
             })
             ->get();
-
+            
             $faculty = Faculty::find($facultyId);
         }
 
         if(!empty($facultyId) && !empty($departmentId)){
-            $students = Student::with('transactions', 'applicant', 'academicLevel')
+            $students = Student::with('transactions', 'transactions.paymentType', 'applicant', 'academicLevel')
             ->where('faculty_id', $facultyId)
             ->where('department_id', $departmentId)
-            ->whereHas('transactions', function ($query) use ($academicSession) {
-                $query->where('academic_session', $academicSession);
+            ->where('level_id', $levelId)
+            ->whereHas('transactions', function ($query) use ($academicSession, $levelId) {
+                $query->where('academic_session', $academicSession)
+                    ->whereHas('paymentType', function ($subquery) use ($levelId) {
+                        $subquery->where('level_id', $levelId);
+                    });
             })
             ->get();
 
@@ -502,12 +513,16 @@ class PaymentController extends Controller
         }
 
         if(!empty($facultyId) && !empty($departmentId) && !empty($programmeId)){
-            $students = Student::with('transactions', 'applicant', 'academicLevel')
+            $students = Student::with('transactions', 'transactions.paymentType', 'applicant', 'academicLevel')
             ->where('faculty_id', $facultyId)
             ->where('department_id', $departmentId)
             ->where('programme_id', $programmeId)
-            ->whereHas('transactions', function ($query) use ($academicSession) {
-                $query->where('academic_session', $academicSession);
+            ->where('level_id', $levelId)
+            ->whereHas('transactions', function ($query) use ($academicSession, $levelId) {
+                $query->where('academic_session', $academicSession)
+                    ->whereHas('paymentType', function ($subquery) use ($levelId) {
+                        $subquery->where('level_id', $levelId);
+                    });
             })
             ->get();
 

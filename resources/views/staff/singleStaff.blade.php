@@ -294,7 +294,7 @@ $staff = Auth::guard('staff')->user();
                         <select class="form-select" aria-label="role" name="role_id" required>
                             <option selected value= "">Select Role </option>
                             @foreach($roles as $role)
-                                @if($staffAccessLevel < $role->access_level)
+                                @if($staffAccessLevel < $role->access_level && $role->access_level < 6)
                                     <option value="{{ $role->id }}">{{ $role->role }}</option>
                                 @endif
                             @endforeach

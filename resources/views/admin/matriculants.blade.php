@@ -1,10 +1,10 @@
-@extends('admin.layout.dashboard')
+@extends('staff.layout.dashboard')
 
 @section('content')
 <div class="row">
     <div class="col-12">
         <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-            <h4 class="mb-sm-0">Matriculants</h4>
+            <h4 class="mb-sm-0">Matriculants for {{ $pageGlobalData->sessionSetting->admission_session }} admission session</h4>
 
             <div class="page-title-right">
                 <ol class="breadcrumb m-0">
@@ -22,7 +22,7 @@
     <div class="col-lg-12">
         <div class="card">
             <div class="card-header align-items-center d-flex">
-                <h4 class="card-title mb-0 flex-grow-1">Matriculants </h4>
+                <h4 class="card-title mb-0 flex-grow-1">Matriculants for {{ $pageGlobalData->sessionSetting->admission_session }} admission session</h4>
 
             </div><!-- end card header -->
 
@@ -55,7 +55,7 @@
                                 <td>{{ $matriculant->academic_session }} </td>
                                 <td>{{ $matriculant->created_at }} </td>
                                 <td>
-                                    <a href="{{ url('admin/studentProfile/'.$matriculant->student->slug) }}" class="btn btn-primary m-1"><i class= "ri-user-6-fill"></i> View matriculant</a>
+                                    <a href="{{ url('staff/studentProfile/'.$matriculant->student->slug) }}" class="btn btn-primary m-1"><i class= "ri-user-6-fill"></i> View matriculant</a>
                                 </td>
                             </tr>
                             @endif

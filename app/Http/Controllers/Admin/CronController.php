@@ -105,7 +105,7 @@ class CronController extends Controller
 
                 // Delete any missing faculties, departments, or programmes
                 Faculty::whereNotIn('name', $facultyNames)->delete();
-                Department::whereNotIn('name', $departmentNames)->delete();
+                Department::whereNotIn('name', $departmentNames)->where('id', '!=', 25)->delete();
                 Programme::whereNotIn('name', $programmeNames)->delete();
             }
         

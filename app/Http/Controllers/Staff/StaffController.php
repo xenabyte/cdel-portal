@@ -235,6 +235,9 @@ class StaffController extends Controller
             return redirect()->back();
         }
 
+        $globalData = $request->input('global_data');
+        $academicSession = $globalData->sessionSetting['academic_session'];
+
         $courses = CoursePerProgrammePerAcademicSession::with('course')->where('programme_id', $request->programme_id)->where('level_id', $request->level_id)->where('academic_session', $academicSession)->where('semester', $request->semester)->get();
         $programme = Programme::find($request->programme_id);
         $academicLevel = AcademicLevel::find($request->level_id);

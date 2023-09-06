@@ -1,4 +1,16 @@
 @extends('staff.layout.dashboard')
+@php
+    $staff = Auth::guard('staff')->user();
+    $staffRoleGSTCordinator = false; 
+    $deptCount = 1;  
+    
+    foreach ($staff->staffRoles as $staffRole) {
+        if (strtolower($staffRole->role->role) == 'gst coordinator') {
+            $staffRoleGSTCordinator = true;
+        }
+        
+    }
+@endphp
 
 @section('content')
 <div class="row">
@@ -38,14 +50,16 @@
                     </thead>
                     <tbody>
                         @foreach($departments as $department)
-                        <tr>
-                            <th scope="row">{{ $loop->iteration }}</th>
-                            <td>{{ $department->name }}</td>
-                            <td>{{ $department->courses->count() }} </td>
-                            <td>
-                                <a href="{{ url('staff/departmentCourse/'.$department->slug) }}" class="btn btn-primary m-1"><i class= "mdi mdi-database-eye"></i> View department</a>
-                            </td>
-                        </tr>
+                            @if (($staffRoleGSTCordinator && $department->faculty_id == 0) || $department->faculty_id != 0)
+                                <tr>
+                                    <th scope="row">{{ $deptCount++ }}</th>
+                                    <td>{{ $department->name }}</td>
+                                    <td>{{ $department->courses->count() }} </td>
+                                    <td>
+                                        <a href="{{ url('staff/departmentCourse/'.$department->slug) }}" class="btn btn-primary m-1"><i class= "mdi mdi-database-eye"></i> View department</a>
+                                    </td>
+                                </tr>
+                            @endif
                         @endforeach
                     </tbody>
                 </table>

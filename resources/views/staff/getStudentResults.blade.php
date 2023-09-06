@@ -87,7 +87,9 @@
                                                 <select class="form-select" id="faculty" name="faculty_id" aria-label="faculty" onchange="handleFacultyChange(event)">
                                                     <option value="" selected>--Select--</option>
                                                     @foreach($faculties as $faculty)
-                                                        @if(!$staffVCRole && $staff->faculty_id == $faculty->id)
+                                                        @if(!$staffVCRole && !$staffStudentCareRole && $staff->faculty_id == $faculty->id)
+                                                            <option value="{{ $faculty->id }}">{{ $faculty->name }}</option>
+                                                        @else
                                                             <option value="{{ $faculty->id }}">{{ $faculty->name }}</option>
                                                         @endif
                                                     @endforeach
@@ -262,7 +264,7 @@
                             $CGPA = $allRegisteredGradePoints > 0 ? number_format($allRegisteredGradePoints / $allRegisteredCreditUnits, 2) : 0;
 
                             $prevRegisteredCourses = $student->registeredCourses->where('semester', '!=', $semester)->where('level_id', '!=', $academiclevel->id);
-                            $prevRegisteredCreditUnits =  $prevRegisteredCourses->sum('course_credit_units');
+                            $prevRegisteredCreditUnits =  $prevRegisteredCourses->sum('course_credit_unit');
                             $prevRegisteredGradePoints = $prevRegisteredCourses->sum('points');
                             if ($prevRegisteredCreditUnits != 0) {
                                 $prevCGPA = number_format($prevRegisteredGradePoints / $prevRegisteredCreditUnits, 2);
@@ -294,7 +296,7 @@
                                 </td>
                                 <td>{{ $prevRegisteredCreditUnits }}</td>
                                 <td>{{ $prevRegisteredGradePoints }}</td>
-                                <td>{{ $prevRegisteredGradePoints }}</td>
+                                <td>{{ $prevCGPA }}</td>
                                 <td class="bg bg-soft-primary">{{ $currentRegisteredCreditUnits }}</td>
                                 <td class="bg bg-soft-primary">{{ $currentRegisteredGradePoints }}</td>
                                 <td class="bg bg-soft-primary">{{ $currentGPA }}</td>

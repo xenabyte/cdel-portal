@@ -4,7 +4,7 @@
 <div class="row">
     <div class="col-12">
         <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-            <h4 class="mb-sm-0">Student Course(s)</h4>
+            <h4 class="mb-sm-0">Student Course(s) for {{ $pageGlobalData->sessionSetting->academic_session }} academic session</h4>
 
             <div class="page-title-right">
                 <ol class="breadcrumb m-0">
@@ -25,7 +25,7 @@
                 <div class="text-center">
                     <div class="row justify-content-center">
                         <div class="col-lg-9">
-                            <h4 class="mt-4 fw-semibold">Fetch Student Course(s)</h4>
+                            <h4 class="mt-4 fw-semibold">Fetch Student Course(s) for {{ $pageGlobalData->sessionSetting->academic_session }} academic session</h4>
                             <p class="text-muted mt-3"></p>
                             <div class="mt-4">
                                 <form action="{{ url('/staff/getStudentCourses') }}" method="POST">
@@ -141,16 +141,21 @@
                     </thead>
                     <tbody>
                         @foreach($courses as $course)
+                        @php
+                            $courseManagement =  $course->course->courseManagement->where('academic_session', $pageGlobalData->sessionSetting->academic_session);
+                            $assignedCourse = $courseManagement->where('academic_session', $pageGlobalData->sessionSetting->academic_session)->first();
+                            $staff = !empty($assignedCourse) ? $assignedCourse->staff->title.' '.$assignedCourse->staff->lastname.' '.$assignedCourse->staff->othernames :null;
+                        @endphp
                         <tr>
                             <td scope="row"> {{ $loop->iteration }}</td>
-                            <td>{{!empty($course->staff)? $course->staff->title.'  '.$course->staff->lastname.'  '.$course->staff->othernames : null }}</td>
-                            <td>{{$course->code}}</td>
-                            <td>{{$course->name }}</td>
+                            <td>{{!empty($staff)? $staff : null }}</td>
+                            <td>{{$course->course->code}}</td>
+                            <td>{{$course->course->name }}</td>
                             <td>{{$course->credit_unit}} </td>
                             <td>{{$course->status}}</td>
                             <td>{{$course->level->level}}</td>
                             <td>
-                                <a href="{{ url('/staff/courseDetail/'.$course->id) }}" class="btn btn-lg btn-primary">Course Details</a>
+                                <a href="{{ url('/admin/courseDetail/'.$course->id) }}" class="btn btn-lg btn-primary">Course Details</a>
                             </td>
                         </tr>
                         @endforeach

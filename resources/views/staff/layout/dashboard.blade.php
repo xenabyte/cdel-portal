@@ -307,7 +307,7 @@
                                     </li>
             
                                     <li class="nav-item">
-                                        <a href="{{ url('/staff/students') }}" class="nav-link">Students</a>
+                                        <a href="{{ url('/staff/students') }}" class="nav-link">Admitted Students</a>
                                     </li>
 
                                     <li class="nav-item">
@@ -368,7 +368,7 @@
                         </li> 
                         @endif
 
-                        @if($staffLevelAdviserRole || $staffHODRole || $staffVCRole || $staffDeanRole || $staffSubDeanRole)
+                        @if($staffLevelAdviserRole || $staffHODRole || $staffDeanRole || $staffSubDeanRole)
                         <li class="nav-item">
                             <a class="nav-link menu-link" href="#courseSettings" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="courseSettings">
                                 <i class="mdi mdi-card"></i> <span  data-key="t-hot">Prog. Management</span>
@@ -379,11 +379,11 @@
                                     <li class="nav-item">
                                         <a href="{{ url('/staff/adviserProgrammes') }}" class="nav-link">Programmes</a>
                                     </li>
-                                    @endif
 
                                     <li class="nav-item">
                                         <a href="{{ url('/staff/departmentForCourses') }}" class="nav-link">All Courses</a>
                                     </li>
+                                    @endif
 
                                     <li class="nav-item">
                                         <a href="{{ url('/staff/studentCourses') }}" class="nav-link">Student Courses</a>
@@ -394,7 +394,7 @@
                         @endif
 
 
-                        @if($staffExamOfficerRole || $staffHODRole)
+                        @if($staffExamOfficerRole || $staffHODRole || $staffStudentCareRole || $staffDeanRole || $staffSubDeanRole)
                         <li class="nav-item">
                             <a class="nav-link menu-link" href="#resultMgt" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="resultMgt">
                                 <i class="mdi mdi-credit-card-search-outline"></i> <span data-key="t-result">Result Management</span>
@@ -585,6 +585,7 @@
                     var staffRoleVCRole = "<?php echo $staffVCRole ?>";
                     var staffBursaryRole = "<?php echo $staffBursaryRole ?>";
                     var staffDepartmentId =  "<?php echo $staff->department_id ?>";
+                    var staffStudentCareRole = "<?php echo $staffStudentCareRole ?>";
                     
                     $.each(response.data, function (index, department) {
                         if (!staffRoleVCRole && !staffBursaryRole && staffDepartmentId == department.id) {
@@ -595,7 +596,7 @@
                         }
                     });
 
-                    if (staffRoleVCRole || staffBursaryRole) {
+                    if (staffRoleVCRole || staffBursaryRole || staffStudentCareRole) {
                         $.each(response.data, function (index, department) {
                             departmentSelect.append($('<option>', {
                                 value: department.id,
