@@ -1,5 +1,14 @@
 @extends('staff.layout.dashboard')
-
+@php
+    $staff = Auth::guard('staff')->user();
+    $staffLevelAdviserRole = false;    
+    
+    foreach ($staff->staffRoles as $staffRole) {
+        if (strtolower($staffRole->role->role) == 'level adviser') {
+            $staffLevelAdviserRole = true;
+        }
+    }
+@endphp
 @section('content')
 <div class="row">
     <div class="col-12">
@@ -82,8 +91,71 @@
     <!--end col-->
 </div>
 @endif
-
 @if(!empty($courses))
+@if($staffLevelAdviserRole)
+<div class="col-lg-12">
+    <div class="card">
+        <div class="card-body">
+            <div class="accordion" id="default-accordion-example">
+                <div class="accordion-item shadow">
+                    <h2 class="accordion-header" id="headingTwo">
+                        <button class="accordion-button collapsed bg-info" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                            Add Course to be registered by student
+                        </button>
+                    </h2>
+                    <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#default-accordion-example">
+                        <div class="accordion-body">
+                            <form action="{{ url('/staff/addCourseForStudent') }}" method="post" enctype="multipart/form-data">
+                                @csrf
+                                <input type="hidden" name="level_id" value="{{ $academiclevel->id }}">
+                                <input type="hidden" name="programme_id" value="{{ $programme->id }}">
+                                <input type="hidden" name="semester" value="{{$semester}}">
+                                <input type="hidden" name="programme" value="{{$programme}}">
+                                <input type="hidden" name="academiclevel" value="{{$academiclevel}}">
+                                <input type="hidden" name="courses" value="{{$courses}}">
+                                <input type="hidden" name="allCourses" value="{{$allCourses}}">
+                                <div class="row g-3">
+            
+                                    <div class="col-lg-12">
+                                        <div class="">
+                                            <label>Select Course</label>
+                                            <select class="form-select select2" id="selectWithSearch" name="course_id" aria-label="cstatus">
+                                                    <option value="" selected>--Select--</option>
+                                                @foreach($allCourses as $allCourse)<option value="{{$allCourse->id}}">{{$allCourse->code}}</option>@endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+            
+                                    <div class="col-lg-12">
+                                        <div class="form-floating">
+                                            <select class="form-select" id="cstatus" name="status" aria-label="cstatus">
+                                                <option value="" selected>--Select--</option>
+                                                <option value="Required">Required</option>
+                                                <option value="Core">Core</option>
+                                                <option value="Elective">Elective</option>
+                                            </select>
+                                            <label for="cstatus">Status</label>
+                                        </div>
+                                    </div>
+            
+                                    <div class="col-lg-12">
+                                        <div class="form-floating">
+                                            <input type="text" class="form-control" max="6" name="credit_unit" id="credit_unit">
+                                            <label for="semester">Credit Unit</label>
+                                        </div>
+                                    </div>
+            
+                                    <button type="submit" class="btn btn-primary">Add Course</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@endif
 <div class="row">
     <div class="col-lg-12">
         <div class="card">
