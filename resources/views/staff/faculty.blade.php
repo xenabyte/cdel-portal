@@ -181,7 +181,7 @@
             <div class="card-body">
 
                 <div class="table-responsive p-3">
-                    <table id="buttons-datatables" class="table table-borderless table-nowrap align-middle mb-3">
+                    <table id="buttons-datatables1" class="table table-borderless table-nowrap align-middle mb-3">
                         <thead class="table-light text-muted">
                             <tr>
                                 <th scope="col">Staff</th>
@@ -219,7 +219,7 @@
 
             <div class="card-body">
                 <div class="table-responsive p-3">
-                    <table id="buttons-datatables" class="table table-borderless table-nowrap align-middle mb-0">
+                    <table id="buttons-datatables2" class="table table-borderless table-nowrap align-middle mb-0">
                         <thead class="table-light text-muted">
                             <tr>
                                 <th scope="col">Student</th>

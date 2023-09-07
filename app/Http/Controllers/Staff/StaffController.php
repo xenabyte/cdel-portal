@@ -212,9 +212,24 @@ class StaffController extends Controller
     }
 
     public function studentCourses(Request $request){
+        $staff = Auth::guard('staff')->user();
+        $staffId = $staff->id;
+        $programmes = Programme::with('department', 'department.faculty')->where('department_id', $staff->department_id)->get();
 
-        $programmes = Programme::get();
+        $staffHod = false;
+        if($staff->id == $staff->acad_department->hod_id){
+            $staffHod = true;
+        }
+
+        if($staffHod){
+            $departmentId = $staff->department_id;
+            $programmesIDs= Programme::where('department_id', $departmentId)->pluck('id')->toArray();
+
+            $programmes = Programme::with('department', 'department.faculty')->whereIn('id', $programmesIDs)->get();
+        }
+        
         $academicLevels = AcademicLevel::get();
+
 
         return view('staff.studentCourses',[
             'programmes' => $programmes,
@@ -267,7 +282,9 @@ class StaffController extends Controller
 
         $coursePerProgrammePerAcademicSession = CoursePerProgrammePerAcademicSession::with('course', 'course.courseManagement', 'course.courseManagement.staff',  'level',  'registrations', 'registrations.student', 'registrations.student.applicant', 'registrations.student.programme')->where('id', $id)->first();
         $registeredStudents = $coursePerProgrammePerAcademicSession->registrations->where('academic_session', $academicSession)->pluck('student');
+        $studentGrades = $coursePerProgrammePerAcademicSession->registrations->where('academic_session', $academicSession);
         $coursePerProgrammePerAcademicSession->registeredStudents = $registeredStudents;
+        $coursePerProgrammePerAcademicSession->studentGrades = $studentGrades;
 
         return view('staff.courseDetail', [
             'coursePerProgrammePerAcademicSession' => $coursePerProgrammePerAcademicSession,

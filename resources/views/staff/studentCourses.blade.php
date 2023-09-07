@@ -155,7 +155,7 @@
                             <td>{{$course->status}}</td>
                             <td>{{$course->level->level}}</td>
                             <td>
-                                <a href="{{ url('/admin/courseDetail/'.$course->id) }}" class="btn btn-lg btn-primary">Course Details</a>
+                                <a href="{{ url('/staff/courseDetail/'.$course->id) }}" class="btn btn-lg btn-primary">Course Details</a>
                             </td>
                         </tr>
                         @endforeach

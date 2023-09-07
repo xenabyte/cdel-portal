@@ -4,8 +4,8 @@
     $passedPercent = 0;
     $failedPercent = 0;
     if($totalStudent){
-        $totalStudentPassed = $coursePerProgrammePerAcademicSession->registeredStudents->where('grade', '!=', 'F')->count();
-        $totalStudentFailed = $coursePerProgrammePerAcademicSession->registeredStudents->where('grade', 'F')->count();
+        $totalStudentPassed = $coursePerProgrammePerAcademicSession->studentGrades->where('grade', '!=', 'F')->count();
+        $totalStudentFailed = $coursePerProgrammePerAcademicSession->studentGrades->where('grade', 'F')->count();
 
 
         $passedPercent = number_format(($totalStudentPassed / $totalStudent) * 100, 2);

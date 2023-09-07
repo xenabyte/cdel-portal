@@ -174,7 +174,12 @@ class ProgrammeController extends Controller
         $staff = Auth::guard('staff')->user();
         $staffId = $staff->id;
         $staffDepartmentId = $staff->department_id;
-        
+
+        // $staffHod = false;
+        // if($staff->id == $staff->acad_department->hod_id){
+        //     $staffHod = true;
+        // }
+
         $adviserProgrammes = LevelAdviser::with('programme', 'level')
         ->where(function ($query) use ($staff) {
             $query->whereHas('programme', function ($query) use ($staff) {
@@ -182,6 +187,15 @@ class ProgrammeController extends Controller
             })->orWhere('staff_id', $staff->id);
         })
         ->get();
+
+        // if($staffHod){
+        //     $departmentId = $staff->department_id;
+        //     $programmesIDs= Programme::where('department_id', $departmentId)->pluck('id')->toArray();
+
+        //     $adviserProgrammes = LevelAdviser::with('programme', 'level')
+        //     ->whereIn('programme_id', $programmesIDs)
+        //     ->get();
+        // }
 
         return view('staff.adviserProgrammes', [
             'adviserProgrammes' => $adviserProgrammes
@@ -198,7 +212,6 @@ class ProgrammeController extends Controller
             alert()->error('Oops!', 'Record not found')->persistent('Close');
             return redirect()->back();
         }
-        
 
         $levelId = $adviserProgramme->level_id;
         $programmeId = $adviserProgramme->programme_id;
@@ -270,7 +283,15 @@ class ProgrammeController extends Controller
         $globalData = $request->input('global_data');
         $academicSession = $globalData->sessionSetting['academic_session'];
 
-        if(!$adviserProgramme = LevelAdviser::with('programme', 'level')->where('id', $id)->where('staff_id', $staffId)->first()){
+        $adviserProgramme = LevelAdviser::with('programme', 'level')
+        ->where(function ($query) use ($staff) {
+            $query->whereHas('programme', function ($query) use ($staff) {
+                $query->where('department_id', $staff->department_id);
+            })->orWhere('staff_id', $staff->id);
+        })
+        ->first();
+
+        if(!$adviserProgramme){
             alert()->error('Oops!', 'Record not found')->persistent('Close');
             return redirect()->back();
         }

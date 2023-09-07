@@ -319,7 +319,9 @@ class ProgrammeController extends Controller
 
         $coursePerProgrammePerAcademicSession = CoursePerProgrammePerAcademicSession::with('course', 'course.courseManagement', 'course.courseManagement.staff',  'level',  'registrations', 'registrations.student', 'registrations.student.applicant', 'registrations.student.programme')->where('id', $id)->first();
         $registeredStudents = $coursePerProgrammePerAcademicSession->registrations->where('academic_session', $academicSession)->pluck('student');
+        $studentGrades = $coursePerProgrammePerAcademicSession->registrations->where('academic_session', $academicSession);
         $coursePerProgrammePerAcademicSession->registeredStudents = $registeredStudents;
+        $coursePerProgrammePerAcademicSession->studentGrades = $studentGrades;
 
         return view('admin.courseDetail', [
             'coursePerProgrammePerAcademicSession' => $coursePerProgrammePerAcademicSession,

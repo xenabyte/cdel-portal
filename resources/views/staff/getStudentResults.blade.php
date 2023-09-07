@@ -89,8 +89,8 @@
                                                     @foreach($faculties as $faculty)
                                                         @if(!$staffVCRole && !$staffStudentCareRole && $staff->faculty_id == $faculty->id)
                                                             <option value="{{ $faculty->id }}">{{ $faculty->name }}</option>
-                                                        @else
-                                                            <option value="{{ $faculty->id }}">{{ $faculty->name }}</option>
+                                                        {{-- @else
+                                                            <option value="{{ $faculty->id }}">{{ $faculty->name }}</option> --}}
                                                         @endif
                                                     @endforeach
                                                 </select>

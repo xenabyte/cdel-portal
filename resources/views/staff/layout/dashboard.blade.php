@@ -586,9 +586,16 @@
                     var staffBursaryRole = "<?php echo $staffBursaryRole ?>";
                     var staffDepartmentId =  "<?php echo $staff->department_id ?>";
                     var staffStudentCareRole = "<?php echo $staffStudentCareRole ?>";
+                    var staffDeanRole = "<?php echo $staffDeanRole ?>";
+                    var staffSubDeanRole = "<?php echo $staffSubDeanRole ?>";
                     
                     $.each(response.data, function (index, department) {
-                        if (!staffRoleVCRole && !staffBursaryRole && staffDepartmentId == department.id) {
+                        if (!staffRoleVCRole && 
+                        !staffBursaryRole && 
+                        !staffStudentCareRole && 
+                        !staffDeanRole && 
+                        !staffSubDeanRole &&
+                        staffDepartmentId == department.id) {
                             departmentSelect.append($('<option>', {
                                 value: department.id,
                                 text: department.name
@@ -596,7 +603,7 @@
                         }
                     });
 
-                    if (staffRoleVCRole || staffBursaryRole || staffStudentCareRole) {
+                    if (staffRoleVCRole || staffBursaryRole || staffStudentCareRole || staffDeanRole || staffSubDeanRole) {
                         $.each(response.data, function (index, department) {
                             departmentSelect.append($('<option>', {
                                 value: department.id,
@@ -683,6 +690,37 @@
         $(document).ready(function() {
             // Initialize Select2
             $('#selectWithSearch').select2();
+        });
+    </script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('#buttons-datatables1').DataTable({
+                dom: 'Bfrtip',
+                buttons: [
+                    'copy', 'csv', 'excel', 'pdf', 'print'
+                ]
+            });
+    
+            $('#buttons-datatables2').DataTable({
+                dom: 'Bfrtip',
+                buttons: [
+                    'copy', 'csv', 'excel', 'pdf', 'print'
+                ]
+            });
+    
+            $('#buttons-datatables3').DataTable({
+                dom: 'Bfrtip',
+                buttons: [
+                    'copy', 'csv', 'excel', 'pdf', 'print'
+                ]
+            });
+    
+            $('#buttons-datatables4').DataTable({
+                dom: 'Bfrtip',
+                buttons: [
+                    'copy', 'csv', 'excel', 'pdf', 'print'
+                ]
+            });
         });
     </script>
 </body>

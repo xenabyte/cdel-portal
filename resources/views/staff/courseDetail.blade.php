@@ -4,8 +4,8 @@
     $passedPercent = 0;
     $failedPercent = 0;
     if($totalStudent){
-        $totalStudentPassed = $coursePerProgrammePerAcademicSession->registeredStudents->where('grade', '!=', 'F')->count();
-        $totalStudentFailed = $coursePerProgrammePerAcademicSession->registeredStudents->where('grade', 'F')->count();
+        $totalStudentPassed = $coursePerProgrammePerAcademicSession->studentGrades->where('grade', '!=', 'F')->count();
+        $totalStudentFailed = $coursePerProgrammePerAcademicSession->studentGrades->where('grade', 'F')->count();
 
 
         $passedPercent = number_format(($totalStudentPassed / $totalStudent) * 100, 2);
@@ -94,7 +94,7 @@
         <div class="card">
             <div class="card-body">
                 <div class="card-header align-items-center d-flex">
-                    <h4 class="card-title mb-0 flex-grow-1">Registered Student(s) </h4>
+                    <h4 class="card-title mb-0 flex-grow-1">Registered Student(s)</h4>
                     <div class="flex-shrink-0">
                         <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#messageStudents">Message All Students</button>
                         <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#uploadResult">Bulk upload result</button>
