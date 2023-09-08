@@ -74,7 +74,7 @@ class PartnerController extends Controller
 
     public function applicant(Request $request, $slug){
         $applicant = Applicant::with('programme', 'olevels', 'guardian')->where('slug', $slug)->first();
-        $programmes = Programme::where('category_id', $applicant->programme->category_id)->get();
+        $programmes = Programme::get(); //Programme::where('category_id', $applicant->programme->category_id)->get();
         $levels = AcademicLevel::get();
         $partner = Auth::guard('partner')->user();
 

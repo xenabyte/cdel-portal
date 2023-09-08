@@ -32,7 +32,10 @@ class AdmissionMail extends Mailable
             ->view('mail.admission.offer');
 
         if(!empty($this->applicationData->admission_letter)){
-            $message->attach($this->applicationData->admission_letter);
+            if(env('SEND_ADMISSION_LETTER')){
+                $message->attach($this->applicationData->admission_letter);
+            }
+            $message->attach('public/HallResident.pdf');
         }
         
         return $message;

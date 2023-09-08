@@ -28,12 +28,13 @@
                 </div>
             </div><!-- end card header -->
 
-            <div class="card-body">
+            <div class="card-body table-responsive">
                 <!-- Bordered Tables -->
                 <table id="buttons-datatables" class="display table table-bordered" style="width:100%">
                     <thead>
                         <tr>
                             <th scope="col">Id</th>
+                            <th scope="col">Application Number</th>
                             <th scope="col">Name</th>
                             <th scope="col">Gender</th>
                             <th scope="col">Programme</th>
@@ -51,6 +52,7 @@
                         @foreach($applicants->where('status', '!=', 'Admitted') as $applicant)
                         <tr>
                             <th scope="row">{{ $loop->iteration }}</th>
+                            <td>{{ $applicant->application_number }}</td>
                             <td>{{ $applicant->lastname .' '. $applicant->othernames }}</td>
                             <td>{{ $applicant->gender }}</td>
                             <td>{{ !empty($applicant->programme)?$applicant->programme->name:null }}</td>
@@ -62,7 +64,7 @@
                             <td>{{ ucwords($applicant->status) }} </td>
                             <td>{{ $applicant->created_at }} </td>
                             <td>
-                                <a href="{{ url('admin/applicant/'.$applicant->slug) }}" class="btn btn-primary m-1"><i class= "ri-user-6-fill"></i> View Applicant</a>
+                                @if(!empty($applicant->programme_id))<a href="{{ url('admin/applicant/'.$applicant->slug) }}" class="btn btn-primary m-1"><i class= "ri-user-6-fill"></i> View Applicant</a>@endif
                             </td>
                         </tr>
                         @endforeach

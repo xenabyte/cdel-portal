@@ -29,7 +29,7 @@
                             <div class="swiper product-thumbnail-slider p-2 rounded bg-light">
                                 <div class="swiper-wrapper">
                                     <div class="swiper-slide">
-                                        <img src="{{asset($applicant->image)}}" alt="" class="img-fluid d-block" />
+                                        <img src="{{empty($applicant->image)?asset('assets/images/users/user-dummy-img.jpg'): $applicant->image}}" alt="" class="img-fluid d-block" />
                                     </div>
                                 </div>
                             </div>
@@ -143,7 +143,7 @@
                                                     </tr>
                                                     <tr>
                                                         <th scope="row">Date of Birth</th>
-                                                        <td>{{ $applicant->dob }}</td>
+                                                        <td>{{date('F j, Y', strtotime($applicant->dob))}}</td>
                                                     </tr>
                                                     <tr>
                                                         <th scope="row">Religion</th>

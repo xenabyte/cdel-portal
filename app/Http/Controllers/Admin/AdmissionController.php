@@ -82,7 +82,7 @@ class AdmissionController extends Controller
 
     public function applicant(Request $request, $slug){
         $applicant = Applicant::with('programme', 'olevels', 'guardian')->where('slug', $slug)->first();
-        $programmes = Programme::where('category_id', $applicant->programme->category_id)->get();
+        $programmes = Programme::get(); //where('category_id', $applicant->programme->category_id)->
         $levels = AcademicLevel::get();
         
         return view('admin.applicant', [
