@@ -208,7 +208,7 @@ class ProgrammeController extends Controller
         $globalData = $request->input('global_data');
         $academicSession = $globalData->sessionSetting['academic_session'];
 
-        if(!$adviserProgramme = LevelAdviser::with('programme', 'level')->where('id', $id)->where('staff_id', $staffId)->first()){
+        if(!$adviserProgramme = LevelAdviser::with('programme', 'level')->where('id', $id)->first()){
             alert()->error('Oops!', 'Record not found')->persistent('Close');
             return redirect()->back();
         }
@@ -284,11 +284,7 @@ class ProgrammeController extends Controller
         $academicSession = $globalData->sessionSetting['academic_session'];
 
         $adviserProgramme = LevelAdviser::with('programme', 'level')
-        ->where(function ($query) use ($staff) {
-            $query->whereHas('programme', function ($query) use ($staff) {
-                $query->where('department_id', $staff->department_id);
-            })->orWhere('staff_id', $staff->id);
-        })
+        ->where('id', $id)
         ->first();
 
         if(!$adviserProgramme){

@@ -48,8 +48,8 @@
                             <td>{{ $student->applicant->lastname .' '. $student->applicant->othernames }}</td>
                             <td>{{ $student->academicLevel->level }} </td>
                             <td>{{ $student->matric_number }}</td>
-                            <td>{{ $student->applicant->programme->name }}</td>
-                            <td>{{ $student->applicant->email }} </td>
+                            <td>{{ $student->programme->name }}</td>
+                            <td>{{ $student->email }} </td>
                             <td>{{ $student->applicant->phone_number }} </td>
                             <td>
                                 <a href="{{ url('admin/studentProfile/'.$student->slug) }}" class="btn btn-primary m-1"><i class= "ri-user-6-fill"></i> View Student</a>

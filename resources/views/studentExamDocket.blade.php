@@ -19,10 +19,10 @@
             <div class="col">
                 <div class="p-2">
                     <h3 class="text-white mb-1">{{ $student->applicant->lastname.' '. $student->applicant->othernames}}</h3>
-                    <p class="text-white-75">{{ $student->applicant->matric_number }}</p>
+                    <p class="text-white-75">{{ $student->matric_number }}</p>
                     <div class="hstack text-white-50 gap-1">
                         <div class="me-2">
-                            <i class="ri-building-4-fill me-1 text-white-75 fs-16 align-middle"></i> @if(!empty($student->applicant->programme)){{ $student->applicant->programme->name }}@endif
+                            <i class="ri-building-4-fill me-1 text-white-75 fs-16 align-middle"></i> @if(!empty($student->programme)){{ $student->programme->name }}@endif
                         </div>
                         <div class="me-2">
                             <i class="ri-mail-fill me-1 text-white-75 fs-16 align-middle"></i> {{ $student->email }}

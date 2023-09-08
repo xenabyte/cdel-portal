@@ -135,21 +135,24 @@ class ProcessResultCSV extends Command
                     // ]);
                 }
                 
-                // $levelId = $this->calculateLevel($academicSession, $student->level_id);
+                $levelId = $this->calculateLevel($academicSession, $student->level_id);
+                if($levelId == null){
+                    continue;
+                }
 
-                // $programmeCourse = CoursePerProgrammePerAcademicSession::where([
-                //     'course_id' => $course->id,
-                //     'level_id' => $levelId,
-                //     'programme_id' => $programmeId,
-                //     'semester' => $semester,
-                //     'credit_unit' => $courseCreditUnit,
-                //     'academic_session' => $academicSession,
-                // ])->first();
+                $programmeCourse = CoursePerProgrammePerAcademicSession::where([
+                    'course_id' => $course->id,
+                    'level_id' => $levelId,
+                    'programme_id' => $programmeId,
+                    'semester' => $semester,
+                    'credit_unit' => $courseCreditUnit,
+                    'academic_session' => $academicSession,
+                ])->first();
         
-                // if(!$programmeCourse){
-                //     $this->info("CoursePerProgrammePerAcademicSession not found in database");
-                //     continue;
-                // }
+                if(!$programmeCourse){
+                    $this->info("CoursePerProgrammePerAcademicSession not found in database");
+                    continue;
+                }
 
                 // CoursePerProgrammePerAcademicSession::create([
                 //     'course_id' => $course->id,

@@ -289,11 +289,13 @@
                             </a>
                         </li>
 
+                        @if($staff->staffRoles->count() > 0)
                         <li class="nav-item">
                             <a class="nav-link menu-link" href="{{ url('staff/allStudents') }}">
                                 <i class="mdi mdi-account-group"></i> <span data-key="t-transaction">All Student</span>
                             </a>
                         </li>
+                        @endif
 
                         @if($staffAdmissionOfficerRole || $staffRegistrarRole || $staffVCRole)
                         <li class="nav-item">

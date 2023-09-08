@@ -93,6 +93,8 @@ class ProcessAcceptanceFeeCSV extends Command
                     'session' => $sessionName,
                     'status' => 1
                 ]);
+
+                $this->info("Acceptance fee processed successfully!- '{$transaction}'");
             }
 
             $this->info('Acceptance fee processed successfully!');

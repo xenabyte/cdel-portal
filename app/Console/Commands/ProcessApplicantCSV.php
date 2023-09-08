@@ -75,14 +75,24 @@ class ProcessApplicantCSV extends Command
                 $lastname = preg_replace('/[^A-Za-z0-9\s]+/', '-', $lastname);
 
                 $name = $lastname .' '. $middleName.' '. $firstname;
-
                 $accessCode = $this->generateAccessCode();
                 if($existingApplicant = Applicant::where('email', $email)->first()) {
                     $this->info("Applicant '{$name}' already exists");
-                }               
+                    continue;
+                }  
+                
+                if($existingApplicant = Applicant::where('application_number', $applicationNumber)->first()) {
+                    $this->info("Applicant '{$name}' already exists");
+                    continue;
+                }
+
+                $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $lastname .' '. $firstname.' '. $middleName)));
+                if($existingApplicant = Applicant::where('slug', $slug)->first()) {
+                    $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $lastname .' '. $firstname.' '. $middleName.' '. $accessCode)));
+                }
 
                 $newApplicant = ([
-                    'slug' => strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $lastname .' '. $firstname.' '. $middleName))),
+                    'slug' => $slug,
                     'email' => $email,
                     'lastname' => ucwords(strtolower($lastname)),
                     'phone_number' => $phoneNo,

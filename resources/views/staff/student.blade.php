@@ -61,7 +61,7 @@
                                 <div class="flex-grow-1">
                                     <h4>{{ $student->applicant->lastname .' '. $student->applicant->othernames }}</h4>
                                     <div class="hstack gap-3 flex-wrap">
-                                        <div><a href="#" class="text-primary d-block">Applied Programme: {{ $student->applicant->programme->name }}</a></div>
+                                        <div><a href="#" class="text-primary d-block">Applied Programme: {{ $student->programme->name }}</a></div>
                                         <div class="vr"></div>
                                         <div class="text-muted">Admitted Programme : <span class="text-body fw-medium">{{ $student->programme->name }}</span></div>
                                         <div class="vr"></div>

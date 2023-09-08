@@ -282,8 +282,6 @@ class CronController extends Controller
         foreach($students as $student){
             Result::calculateCGPA($student->id);
         }
-
-        
         
         return $students;
     }
