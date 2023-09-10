@@ -407,8 +407,13 @@ class ApplicationController extends Controller
         }else{
             $partnerId = $this->getReferralId($referralCode);
 
+            $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $lastname .' '. $firstname.' '. $middleName)));
+            if($existingApplicant = Applicant::where('slug', $slug)->first()) {
+                $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $lastname .' '. $firstname.' '. $middleName.' '. $accessCode)));
+            }
+            
             $newApplicant = ([
-                'slug' => strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $request->lastname .' '. $request->othernames))),
+                'slug' => $slug,
                 'email' => $request->email,
                 'lastname' => ucwords($request->lastname),
                 'programme_id' => $programmeApplied->id,
