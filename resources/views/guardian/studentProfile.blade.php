@@ -154,9 +154,9 @@ $studentRegistrations = $student->courseRegistrationDocument()->orderBy('created
                                                                             <select class="form-select" aria-label="paymentGateway" name="paymentGateway" required onchange="handlePaymentMethodChange(event)">
                                                                                 <option value= "" selected>Select Payment Gateway</option>
                                                                                 <option value="Paystack">Paystack</option>
-                                                                                <option value="Remita">Remita</option>
+                                                                                {{-- <option value="Remita">Remita</option>
                                                                                 <option value="Zenith">Zenith Pay</option>
-                                                                                <option value="BankTransfer">Transfer</option>
+                                                                                <option value="BankTransfer">Transfer</option> --}}
                                                                             </select>
                                                                         </div>
                             
@@ -407,9 +407,9 @@ $studentRegistrations = $student->courseRegistrationDocument()->orderBy('created
                         <select class="form-select" aria-label="paymentGateway" name="paymentGateway" required onchange="handlePaymentMainMethodChange(event)">
                             <option value= "" selected>Select Payment Gateway</option>
                             <option value="Paystack">Paystack</option>
-                            <option value="Remita">Remita</option>
+                            {{-- <option value="Remita">Remita</option>
                             <option value="Zenith">Zenith Pay</option>
-                            <option value="BankTransfer">Transfer</option>
+                            <option value="BankTransfer">Transfer</option> --}}
                         </select>
                     </div>
 
