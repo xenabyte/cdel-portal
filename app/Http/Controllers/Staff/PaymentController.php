@@ -70,6 +70,11 @@ class PaymentController extends Controller
             return redirect()->back();
         }
 
+        if(strtolower($request->type) == 'school fee' && empty($request->programme_id)){
+            alert()->error('Oops!', 'programme is required for school fees')->persistent('Close');
+            return redirect()->back();
+        }
+
         $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $request->title)));
 
         $addPayment = ([            
@@ -421,6 +426,11 @@ class PaymentController extends Controller
         ]);
 
         if(!empty($request->student_id)){
+            $student = Student::find($request->student_id);
+
+            if(!empty($student) && $payment->type == Payment::PAYMENT_TYPE_SCHOOL && $request->paymentStatus == 1){
+                $this->generateMatricAndEmail($student);
+            }
             alert()->success('Good job', 'Student Charged')->persistent('Close');
             return $this->getSingleStudent($student->matric_number, 'staff.chargeStudent');
         }

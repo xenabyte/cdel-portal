@@ -99,8 +99,8 @@
                                                                                     <tr>
                                                                                         <th scope="row">{{ $loop->iteration }}</th>
                                                                                         <td>{{ $student->applicant->lastname .' '. $student->applicant->othernames }}</td>
-                                                                                        <td>{{ $student->applicant->programme->name }}</td>
-                                                                                        <td>{{ $student->applicant->email }} </td>
+                                                                                        <td>{{ $student->programme->name }}</td>
+                                                                                        <td>{{ $student->email }} </td>
                                                                                         <td>{{ $student->academicLevel->level }} </td>
                                                                                         <td>{{ $student->applicant->phone_number }} </td>
                                                                                     </tr>

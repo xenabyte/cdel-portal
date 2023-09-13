@@ -25,6 +25,7 @@ use App\Models\Student;
 use App\Models\StudentDemotion;
 use App\Models\StudentCourseRegistration;
 use App\Models\Course;
+use App\Models\Transaction;
 
 use SweetAlert;
 use Mail;
@@ -644,11 +645,11 @@ class AcademicController extends Controller
                 //Create new transaction
                 Transaction::create([
                     'student_id' => $student->id,
-                    'payment_id' => $schoolPayment->id,
+                    'payment_id' => $checkStudentPayment->schoolPayment->id,
                     'amount_payed' => $balance,
                     'payment_method' => 'Manual/BankTransfer',
                     'reference' => $reference,
-                    'session' => $session,
+                    'session' => $student->academic_session,
                     'status' => null
                 ]);
             }

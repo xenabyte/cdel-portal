@@ -127,45 +127,45 @@ class PaymentController extends Controller
         }
     }
 
-    private function generateMatricAndEmail($student){
-        if(!$student->is_active && empty($student->matric_number)){
-            $sessionSetting = SessionSetting::first();
-            $admissionSession = $sessionSetting->admission_session;
+    // private function generateMatricAndEmail($student){
+    //     if(!$student->is_active && empty($student->matric_number)){
+    //         $sessionSetting = SessionSetting::first();
+    //         $admissionSession = $sessionSetting->admission_session;
 
-            $programme = Programme::with('students', 'department', 'department.faculty')->where('id', $student->programme_id)->first();
-            $codeNumber = $programme->code_number;
-            $deptCode = $programme->department->code;
-            $facultyCode = $programme->department->faculty->code;
-            $programmeCode = $programme->code;
-            $code = $deptCode.$programmeCode;
+    //         $programme = Programme::with('students', 'department', 'department.faculty')->where('id', $student->programme_id)->first();
+    //         $codeNumber = $programme->code_number;
+    //         $deptCode = $programme->department->code;
+    //         $facultyCode = $programme->department->faculty->code;
+    //         $programmeCode = $programme->code;
+    //         $code = $deptCode.$programmeCode;
 
-            $accessCode = $student->applicant->passcode;
-            $studentPreviousEmail = $student->email;
+    //         $accessCode = $student->applicant->passcode;
+    //         $studentPreviousEmail = $student->email;
 
-            $name = $student->applicant->lastname.' '.$student->applicant->othernames;
-            $nameParts = explode(' ', $student->applicant->othernames);
-            $firstName = $nameParts[0];
-            $studentEmail = strtolower($student->applicant->lastname.'.'.$firstName.'@st.tau.edu.ng');
+    //         $name = $student->applicant->lastname.' '.$student->applicant->othernames;
+    //         $nameParts = explode(' ', $student->applicant->othernames);
+    //         $firstName = $nameParts[0];
+    //         $studentEmail = strtolower($student->applicant->lastname.'.'.$firstName.'@st.tau.edu.ng');
 
-            $newMatric = empty($programme->matric_last_number)? ($programme->students->count() + 20) + 1 : $programme->matric_last_number + 1;
-            $matricNumber = substr($admissionSession, 2, 2).'/'.$facultyCode.$code.sprintf("%03d", $newMatric);
+    //         $newMatric = empty($programme->matric_last_number)? ($programme->students->count() + 20) + 1 : $programme->matric_last_number + 1;
+    //         $matricNumber = substr($admissionSession, 2, 2).'/'.$facultyCode.$code.sprintf("%03d", $newMatric);
 
-            $google = new Google();
-            $createStudentEmail = $google->createUser($studentEmail, $student->applicant->othernames, $student->applicant->lastname, $accessCode);
+    //         $google = new Google();
+    //         $createStudentEmail = $google->createUser($studentEmail, $student->applicant->othernames, $student->applicant->lastname, $accessCode);
 
-            $student->email = $studentEmail;
-            $student->matric_number = $matricNumber;
-            $student->is_active = true;
-            $student->save();
+    //         $student->email = $studentEmail;
+    //         $student->matric_number = $matricNumber;
+    //         $student->is_active = true;
+    //         $student->save();
 
-            $programme->matric_last_number = $newMatric;
-            $programme->save();
+    //         $programme->matric_last_number = $newMatric;
+    //         $programme->save();
 
             
-            Mail::to($studentPreviousEmail)->send(new StudentActivated($student));
+    //         Mail::to($studentPreviousEmail)->send(new StudentActivated($student));
 
-            return true;
-        }
-    }
+    //         return true;
+    //     }
+    // }
 
 }

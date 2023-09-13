@@ -45,7 +45,7 @@
 
                 <form action="{{ url('/admin/getStudent') }}" method="post" enctype="multipart/form-data">
                     @csrf
-
+                    <input type="hidden" name="type" value="Student">
                     <div class="mb-3">
                         <label for="reg" class="form-label">Matric Number</label>
                         <input type="text" class="form-control" name="reg_number" id="reg">
