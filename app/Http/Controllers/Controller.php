@@ -102,7 +102,7 @@ class Controller extends BaseController
     }
 
     public function getPaystackAmount($amount){
-        $paystackAmount =  (((1.5/100) * $amount)+5);
+        $paystackAmount =  (((1.5/100) * $amount)+10500);
         
         if(($paystackAmount) > 200000){
             $paymentAmount = $amount + 200000 + 5000;
@@ -111,6 +111,8 @@ class Controller extends BaseController
         }else{
             $paymentAmount = $amount + $paystackAmount + 5000;
         }
+
+        $paymentAmount = $amount + 50000;
 
         return $paymentAmount;
     }
