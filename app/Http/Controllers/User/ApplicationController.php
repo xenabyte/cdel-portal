@@ -32,6 +32,7 @@ use Alert;
 use Log;
 use Carbon\Carbon;
 use Paystack;
+use KingFlamez\Rave\Facades\Rave as Flutterwave;
 
 class ApplicationController extends Controller
 {
@@ -384,7 +385,7 @@ class ApplicationController extends Controller
         }
 
         $paymentGateway = $request->paymentGateway;
-        if(strtolower($paymentGateway) != 'paystack' && strtolower($paymentGateway) != 'banktransfer') {
+        if((strtolower($paymentGateway) != 'paystack') &&  strtolower($paymentGateway) != 'rave' && strtolower($paymentGateway) != 'banktransfer') {
             alert()->error('Oops', 'Gateway not available')->persistent('Close');
             return redirect()->back();
         }
@@ -407,9 +408,9 @@ class ApplicationController extends Controller
         }else{
             $partnerId = $this->getReferralId($referralCode);
 
-            $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $lastname .' '. $firstname.' '. $middleName)));
+            $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $request->lastname .' '. $request->othernames)));
             if($existingApplicant = Applicant::where('slug', $slug)->first()) {
-                $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $lastname .' '. $firstname.' '. $middleName.' '. $accessCode)));
+                $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $existingApplicant->lastname .' '. $existingApplicant->othernames.' '. $accessCode)));
             }
             
             $newApplicant = ([
@@ -429,7 +430,7 @@ class ApplicationController extends Controller
     
             $applicant = Applicant::create($newApplicant);
             $code = $programmeApplied->code;
-            $applicationNumber = substr($applicationSession, 2, 2).'/'.$code.'/'.sprintf("%03d", $applicant->id);
+            $applicationNumber = 'TAU/'.substr($applicationSession, 0, 4).sprintf("%03d", ($applicant->id+2000));
             $applicant->application_number = $applicationNumber;
             $applicant->save();
 
@@ -455,6 +456,49 @@ class ApplicationController extends Controller
             );
 
             return Paystack::getAuthorizationUrl($data)->redirectNow();
+        }
+
+        if(strtolower($paymentGateway) == 'rave') {
+            $reference = Flutterwave::generateReference();
+
+            $data = array(
+                "payment_options" => "card,banktransfer",
+                "amount" => round($this->getRaveAmount($amount)),
+                "tx_ref" => $reference,
+                "redirect_url" => env("FLW_REDIRECT_URL"),
+                "email" => $applicant->email,
+                "currency" => "NGN",
+                "customer" => [
+                    "email" => $applicant->email,
+                    "phone_number" => $applicant->phone_number,
+                    "name" => $applicant->lastname.' '.$applicant->othernames,
+                ],
+                "meta" => array(
+                    "amount" => $amount,
+                    "email" => $applicant->email,
+                    "application_id" => $applicant->id,
+                    "student_id" => null,
+                    "payment_id" => $payment->id,
+                    "payment_gateway" => $paymentGateway,
+                    "reference" => $reference,
+                    "academic_session" => $applicationSession,
+                    "redirect_path" => 'user.auth.login',
+                ),
+                "customizations" => array(
+                    "title" => env('SCHOOL_NAME'),
+                    "logo" => env('SCHOOL_LOGO'),
+                ),
+            );
+
+            $payment = Flutterwave::initializePayment($data);
+
+            if ($payment['status'] !== 'success') {
+                $message = 'Flutterwave Gateway is down, try again.';
+                alert()->info('Opps!', $message)->persistent('Close');
+                return redirect()->back();
+            }
+
+            return redirect($payment['data']['link']);
         }
 
         if(strtolower($paymentGateway) == 'banktransfer'){

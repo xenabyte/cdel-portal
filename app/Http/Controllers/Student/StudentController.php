@@ -23,6 +23,7 @@ use Alert;
 use Log;
 use Carbon\Carbon;
 use Paystack;
+use KingFlamez\Rave\Facades\Rave as Flutterwave;
 
 
 class StudentController extends Controller
@@ -211,7 +212,7 @@ class StudentController extends Controller
         }
 
         $paymentGateway = $request->paymentGateway;
-        if(strtolower($paymentGateway) != 'paystack' && strtolower($paymentGateway) != 'banktransfer') {
+        if((strtolower($paymentGateway) != 'paystack') &&  strtolower($paymentGateway) != 'rave' && strtolower($paymentGateway) != 'banktransfer') {
             alert()->error('Oops', 'Gateway not available')->persistent('Close');
             return redirect()->back();
         }
@@ -243,8 +244,51 @@ class StudentController extends Controller
             return Paystack::getAuthorizationUrl($data)->redirectNow();
         }
 
+        if(strtolower($paymentGateway) == 'rave') {
+            $reference = Flutterwave::generateReference();
+
+            $data = array(
+                "payment_options" => "card,banktransfer",
+                "amount" => round($this->getRaveAmount($amount)),
+                "tx_ref" => $reference,
+                "redirect_url" => env("FLW_REDIRECT_URL"),
+                "email" => $student->email,
+                "currency" => "NGN",
+                "customer" => [
+                    "email" => $student->email,
+                    "phone_number" => $student->applicant->phone_number,
+                    "name" => $student->applicant->lastname.' '.$student->applicant->othernames,
+                ],
+                "meta" => array(
+                    "amount" => $amount,
+                    "email" => $student->email,
+                    "application_id" => null,
+                    "student_id" => $studentId,
+                    "payment_id" => $paymentId,
+                    "payment_gateway" => $paymentGateway,
+                    "reference" => $reference,
+                    "academic_session" => $student->academic_session,
+                    "redirect_path" => 'student/transactions',
+                ),
+                "customizations" => array(
+                    "title" => env('SCHOOL_NAME'),
+                    "logo" => env('SCHOOL_LOGO'),
+                ),
+            );
+
+            $payment = Flutterwave::initializePayment($data);
+
+            if ($payment['status'] !== 'success') {
+                $message = 'Flutterwave Gateway is down, try again.';
+                alert()->info('Opps!', $message)->persistent('Close');
+                return redirect()->back();
+            }
+
+            return redirect($payment['data']['link']);
+        }
+
         $message = 'Invalid Payment Gateway';
-        alert()->info('Nice Work!', $message)->persistent('Close');
+        alert()->info('Opps!', $message)->persistent('Close');
         return redirect()->back();
     }
 

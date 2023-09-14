@@ -163,6 +163,7 @@ return [
         Illuminate\View\ViewServiceProvider::class,
         Unicodeveloper\Paystack\PaystackServiceProvider::class,
         Barryvdh\DomPDF\ServiceProvider::class,
+        KingFlamez\Rave\RaveServiceProvider::class,
 
         /*
          * Package Service Providers...
@@ -233,6 +234,7 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
         'PDF' => Barryvdh\DomPDF\Facade::class,
+        'Rave' => KingFlamez\Rave\Facades\Rave::class,
 
     ],
 

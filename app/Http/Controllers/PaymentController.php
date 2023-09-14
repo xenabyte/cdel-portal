@@ -30,6 +30,8 @@ use Alert;
 use Log;
 use Carbon\Carbon;
 
+use KingFlamez\Rave\Facades\Rave as Flutterwave;
+
 class PaymentController extends Controller
 {
     //
@@ -49,7 +51,7 @@ class PaymentController extends Controller
     //verify payment with card
     public function verifyPayment()
     {
-        Log::info("**********************Verifying Payment**********************");
+        Log::info("**********************Paystack Verifying Payment**********************");
         try{
             $paymentDetails = Paystack::getPaymentData();
             $paymentId = $paymentDetails['data']['metadata']['payment_id'];
@@ -61,7 +63,75 @@ class PaymentController extends Controller
             
 
             if($paymentDetails['status'] == true){
-                if($this->processPayment($paymentDetails)){
+                if($this->processPaystackPayment($paymentDetails)){
+                    alert()->success('Good Job', 'Payment successful')->persistent('Close');
+                    if($paymentType == Payment::PAYMENT_TYPE_GENERAl_APPLICATION || $paymentType == Payment::PAYMENT_TYPE_INTER_TRANSFER_APPLICATION){
+                        return view($redirectPath, [
+                            'programmes' => $this->programmes,
+                            'payment' => $payment
+                        ]);
+                    }elseif($paymentType == Payment::PAYMENT_TYPE_ACCEPTANCE){
+                        return redirect($redirectPath);
+                    }elseif($paymentType == Payment::PAYMENT_TYPE_SCHOOL){
+                        $this->generateMatricAndEmail($student);
+                        return redirect($redirectPath);
+                    }else{
+                        return redirect($redirectPath);
+                    }
+                }else{
+                    alert()->info('oops!!!', 'Something happpened, contact administrator')->persistent('Close');
+                    if($paymentType == Payment::PAYMENT_TYPE_GENERAl_APPLICATION || $paymentType == Payment::PAYMENT_TYPE_INTER_TRANSFER_APPLICATION){
+                        return view($redirectPath, [
+                            'programmes' => $this->programmes,
+                            'payment' => $payment
+                        ]);
+                    }elseif($paymentType == Payment::PAYMENT_TYPE_ACCEPTANCE){
+                        return redirect($redirectPath);
+                    }else{
+                        return redirect($redirectPath);
+                    }
+                }
+
+            }
+
+            alert()->error('Error', 'Payment not successful')->persistent('Close');
+            if($paymentType == Payment::PAYMENT_TYPE_GENERAl_APPLICATION || $paymentType == Payment::PAYMENT_TYPE_INTER_TRANSFER_APPLICATION){
+                return view($redirectPath, [
+                    'programmes' => $this->programmes,
+                    'payment' => $payment
+                ]);
+            }elseif($paymentType == Payment::PAYMENT_TYPE_ACCEPTANCE){
+                return redirect($redirectPath);
+            }else{
+                return redirect($redirectPath);
+            }
+            
+
+        }catch(\Exception $e) {
+            Log::error($e);
+        }
+    }
+
+    public function raveVerifyPayment()
+    {
+        Log::info("**********************Flutterwave Verifying Payment**********************");
+
+        try{
+            $status = request()->status;
+
+            $transactionID = Flutterwave::getTransactionIDFromCallback();
+            $paymentDetails = Flutterwave::verifyTransaction($transactionID);
+            // dd($paymentDetails);
+
+            $paymentId = $paymentDetails['data']['meta']['payment_id'];
+            $studentId = !empty($paymentDetails['data']['meta']['student_id'])?$paymentDetails['data']['meta']['student_id']:null;
+            $redirectPath = $paymentDetails['data']['meta']['redirect_path'];
+            $payment = Payment::where('id', $paymentId)->first();
+            $paymentType = $payment->type;
+            $student = Student::with('applicant', 'programme')->where('id', $studentId)->first();
+            
+            if($paymentDetails['status'] == 'success'){
+                if($this->processRavePayment($paymentDetails)){
                     alert()->success('Good Job', 'Payment successful')->persistent('Close');
                     if($paymentType == Payment::PAYMENT_TYPE_GENERAl_APPLICATION || $paymentType == Payment::PAYMENT_TYPE_INTER_TRANSFER_APPLICATION){
                         return view($redirectPath, [

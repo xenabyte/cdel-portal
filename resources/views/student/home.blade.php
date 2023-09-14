@@ -145,6 +145,154 @@ $studentRegistrations = $student->courseRegistrationDocument()->orderBy('created
     <div class="col-xxl-8">
         <div class="card">
             <div class="card-header border-0 align-items-center d-flex">
+                <h4 class="card-title mb-0 flex-grow-1">Documents</h4>
+            </div><!-- end card header -->
+
+            <div class="card-body border-top border-top-dashed">
+                <div class="vstack gap-2">
+                    <div class="border rounded border-dashed p-2">
+                        <div class="d-flex align-items-center">
+                            <div class="flex-shrink-0 me-3">
+                                <div class="avatar-sm">
+                                    <div class="avatar-title bg-light text-secondary rounded fs-24 shadow">
+                                        <i class="ri-file-pdf-fill"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex-grow-1 overflow-hidden">
+                                <h5 class="fs-13 mb-1"><a href="{{ asset($student->admission_letter) }}" class="text-body text-truncate d-block">Admission Letter</a></h5>
+                            </div>
+                            <div class="flex-shrink-0 ms-2">
+                                <div class="d-flex gap-1">
+                                    <a href="{{ asset($student->admission_letter) }}"  class="btn btn-icon text-muted btn-sm fs-18 shadow-none"><i class="ri-download-2-line"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    @if(strtolower($student->applicant->application_type) == 'utme')
+                    <div class="border rounded border-dashed p-2">
+                        <div class="d-flex align-items-center">
+                            <div class="flex-shrink-0 me-3">
+                                <div class="avatar-sm">
+                                    <div class="avatar-title bg-light text-secondary rounded fs-24 shadow">
+                                        <i class="ri-image-fill"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex-grow-1 overflow-hidden">
+                                <h5 class="fs-13 mb-1"><a href="{{ asset($student->applicant->utme) }}" class="text-body text-truncate d-block">Jamb Result</a></h5>
+                            </div>
+                            <div class="flex-shrink-0 ms-2">
+                                <div class="d-flex gap-1">
+                                    <a href="{{ asset($student->applicant->utme) }}"  class="btn btn-icon text-muted btn-sm fs-18 shadow-none"><i class="ri-download-2-line"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    @else
+                    <div class="border rounded border-dashed p-2">
+                        <div class="d-flex align-items-center">
+                            <div class="flex-shrink-0 me-3">
+                                <div class="avatar-sm">
+                                    <div class="avatar-title bg-light text-secondary rounded fs-24 shadow">
+                                        <i class="ri-image-fill"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex-grow-1 overflow-hidden">
+                                <h5 class="fs-13 mb-1"><a href="{{ asset($student->applicant->de_result) }}" class="text-body text-truncate d-block">Direct Entry/Prev Institution Result</a></h5>
+                            </div>
+                            <div class="flex-shrink-0 ms-2">
+                                <div class="d-flex gap-1">
+                                    <a href="{{ asset($student->applicant->de_result) }}"  class="btn btn-icon text-muted btn-sm fs-18 shadow-none"><i class="ri-download-2-line"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    @endif
+
+                    <div class="border rounded border-dashed p-2">
+                        <div class="d-flex align-items-center">
+                            <div class="flex-shrink-0 me-3">
+                                <div class="avatar-sm">
+                                    <div class="avatar-title bg-light text-secondary rounded fs-24 shadow">
+                                        <i class="ri-image-fill"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex-grow-1 overflow-hidden">
+                                <h5 class="fs-13 mb-1"><a href="{{ asset($student->applicant->olevel_1) }}" class="text-body text-truncate d-block">Olevel Result</a></h5>
+                            </div>
+                            <div class="flex-shrink-0 ms-2">
+                                <div class="d-flex gap-1">
+                                    <a href="{{ asset($student->applicant->olevel_1) }}"  class="btn btn-icon text-muted btn-sm fs-18 shadow-none"><i class="ri-download-2-line"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    @if(!empty($student->applicant->olevel_2))
+                    <div class="border rounded border-dashed p-2">
+                        <div class="d-flex align-items-center">
+                            <div class="flex-shrink-0 me-3">
+                                <div class="avatar-sm">
+                                    <div class="avatar-title bg-light text-secondary rounded fs-24 shadow">
+                                        <i class="ri-image-fill"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex-grow-1 overflow-hidden">
+                                <h5 class="fs-13 mb-1"><a href="{{ asset($student->applicant->olevel_2) }}" class="text-body text-truncate d-block">Olevel Result(Second Sitting)</a></h5>
+                            </div>
+                            <div class="flex-shrink-0 ms-2">
+                                <div class="d-flex gap-1">
+                                    <a href="{{ asset($student->applicant->olevel_2) }}"  class="btn btn-icon text-muted btn-sm fs-18 shadow-none"><i class="ri-download-2-line"></i></a> 
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    @endif
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header align-items-center d-flex">
+                <h4 class="card-title mb-0 flex-grow-1">Course Registration </h4>
+            </div><!-- end card header -->
+
+            <div class="card-body border-top border-top-dashed table-responsive">
+                <!-- Bordered Tables -->
+                <table class="display table table-stripped" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th scope="col">Id</th>
+                            <th scope="col">Academic Session</th>
+                            <th scope="col">Level Adviser Status</th>
+                            <th scope="col">HOD Status</th>
+                            <th scope="col"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($studentRegistrations as $studentRegistration)
+                        <tr>
+                            <th scope="row">{{ $loop->iteration }}</th>
+                            <td>{{ $studentRegistration->academic_session }}</td>
+                            <td><span class="badge badge-soft-{{ $studentRegistration->level_adviser_status == 1 ? 'success' : 'warning' }}">{{ $studentRegistration->level_adviser_status == 1 ? 'Approved' : 'Pending' }}</span></td>
+                            <td><span class="badge badge-soft-{{ $studentRegistration->hod_status == 1 ? 'success' : 'warning' }}">{{ $studentRegistration->hod_status == 1 ? 'Approved' : 'Pending' }}</span></td>
+                            <td>
+                                <a href="{{ asset($studentRegistration->file) }}" target="_blank" style="margin: 5px" class="btn btn-warning">Download Form</a>
+                            </td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+        </div><!-- end card -->
+
+        <div class="card">
+            <div class="card-header border-0 align-items-center d-flex">
                 <h4 class="card-title mb-0 flex-grow-1">Transactions</h4>
             </div><!-- end card header -->
 
@@ -153,7 +301,7 @@ $studentRegistrations = $student->courseRegistrationDocument()->orderBy('created
                     <table id="buttons-datatables" class="display table table-stripped" style="width:100%">
                         <thead>
                             <tr>
-                                <th scope="col">Id</th>
+                                <th scope="col">Id</th>bhm
                                 <th scope="col">Reference</th>
                                 <th scope="col">Amount(₦)</th>
                                 <th scope="col">Payment For</th>
@@ -208,8 +356,9 @@ $studentRegistrations = $student->courseRegistrationDocument()->orderBy('created
                                                     <label for="paymentGateway" class="form-label">Select Payment Gateway<span class="text-danger">*</span></label>
                                                     <select class="form-select" aria-label="paymentGateway" name="paymentGateway" required onchange="handlePaymentMethodChange(event)">
                                                         <option value= "" selected>Select Payment Gateway</option>
-                                                        <option value="Paystack">Paystack</option>
-                                                        {{-- <option value="Remita">Remita</option>
+                                                        <option value="Rave">Fluterwave</option>
+                                                        {{-- <option value="Paystack">Paystack</option>
+                                                        <option value="Remita">Remita</option>
                                                         <option value="Zenith">Zenith Pay</option>
                                                         <option value="BankTransfer">Transfer</option> --}}
                                                     </select>
@@ -254,155 +403,6 @@ $studentRegistrations = $student->courseRegistrationDocument()->orderBy('created
                     </table>
                 </div>
             </div><!-- end card body -->
-        </div><!-- end card -->
-
-        <div class="card">
-            <div class="card-header border-0 align-items-center d-flex">
-                <h4 class="card-title mb-0 flex-grow-1">Documents</h4>
-            </div><!-- end card header -->
-
-            <div class="card-body border-top border-top-dashed">
-                <div class="vstack gap-2">
-                    <div class="border rounded border-dashed p-2">
-                        <div class="d-flex align-items-center">
-                            <div class="flex-shrink-0 me-3">
-                                <div class="avatar-sm">
-                                    <div class="avatar-title bg-light text-secondary rounded fs-24 shadow">
-                                        <i class="ri-file-pdf-fill"></i>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flex-grow-1 overflow-hidden">
-                                <h5 class="fs-13 mb-1"><a href="#" class="text-body text-truncate d-block">Admission Letter</a></h5>
-                            </div>
-                            <div class="flex-shrink-0 ms-2">
-                                <div class="d-flex gap-1">
-                                    <a href="{{ asset($student->admission_letter) }}"  class="btn btn-icon text-muted btn-sm fs-18 shadow-none"><i class="ri-download-2-line"></i></a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    @if(strtolower($student->applicant->application_type) == 'utme')
-                    <div class="border rounded border-dashed p-2">
-                        <div class="d-flex align-items-center">
-                            <div class="flex-shrink-0 me-3">
-                                <div class="avatar-sm">
-                                    <div class="avatar-title bg-light text-secondary rounded fs-24 shadow">
-                                        <i class="ri-image-fill"></i>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flex-grow-1 overflow-hidden">
-                                <h5 class="fs-13 mb-1"><a href="#" class="text-body text-truncate d-block">Jamb Result</a></h5>
-                            </div>
-                            <div class="flex-shrink-0 ms-2">
-                                <div class="d-flex gap-1">
-                                    <a href="{{ asset($student->applicant->utme) }}"  class="btn btn-icon text-muted btn-sm fs-18 shadow-none"><i class="ri-download-2-line"></i></a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    @else
-                    <div class="border rounded border-dashed p-2">
-                        <div class="d-flex align-items-center">
-                            <div class="flex-shrink-0 me-3">
-                                <div class="avatar-sm">
-                                    <div class="avatar-title bg-light text-secondary rounded fs-24 shadow">
-                                        <i class="ri-image-fill"></i>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flex-grow-1 overflow-hidden">
-                                <h5 class="fs-13 mb-1"><a href="#" class="text-body text-truncate d-block">Direct Entry/Prev Institution Result</a></h5>
-                            </div>
-                            <div class="flex-shrink-0 ms-2">
-                                <div class="d-flex gap-1">
-                                    <a href="{{ asset($student->applicant->de_result) }}"  class="btn btn-icon text-muted btn-sm fs-18 shadow-none"><i class="ri-download-2-line"></i></a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    @endif
-
-                    <div class="border rounded border-dashed p-2">
-                        <div class="d-flex align-items-center">
-                            <div class="flex-shrink-0 me-3">
-                                <div class="avatar-sm">
-                                    <div class="avatar-title bg-light text-secondary rounded fs-24 shadow">
-                                        <i class="ri-image-fill"></i>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flex-grow-1 overflow-hidden">
-                                <h5 class="fs-13 mb-1"><a href="#" class="text-body text-truncate d-block">Olevel Result</a></h5>
-                            </div>
-                            <div class="flex-shrink-0 ms-2">
-                                <div class="d-flex gap-1">
-                                    <a href="{{ asset($student->applicant->olevel_1) }}"  class="btn btn-icon text-muted btn-sm fs-18 shadow-none"><i class="ri-download-2-line"></i></a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    @if(!empty($student->applicant->olevel_2))
-                    <div class="border rounded border-dashed p-2">
-                        <div class="d-flex align-items-center">
-                            <div class="flex-shrink-0 me-3">
-                                <div class="avatar-sm">
-                                    <div class="avatar-title bg-light text-secondary rounded fs-24 shadow">
-                                        <i class="ri-image-fill"></i>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flex-grow-1 overflow-hidden">
-                                <h5 class="fs-13 mb-1"><a href="#" class="text-body text-truncate d-block">Olevel Result(Second Sitting)</a></h5>
-                            </div>
-                            <div class="flex-shrink-0 ms-2">
-                                <div class="d-flex gap-1">
-                                    <a href="{{ asset($student->applicant->olevel_2) }}"  class="btn btn-icon text-muted btn-sm fs-18 shadow-none"><i class="ri-download-2-line"></i></a> 
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    @endif
-                </div>
-            </div>
-        </div>
-
-
-        <div class="card">
-            <div class="card-header align-items-center d-flex">
-                <h4 class="card-title mb-0 flex-grow-1">Course Registration </h4>
-            </div><!-- end card header -->
-
-            <div class="card-body border-top border-top-dashed table-responsive">
-                <!-- Bordered Tables -->
-                <table class="display table table-stripped" style="width:100%">
-                    <thead>
-                        <tr>
-                            <th scope="col">Id</th>
-                            <th scope="col">Academic Session</th>
-                            <th scope="col">Level Adviser Status</th>
-                            <th scope="col">HOD Status</th>
-                            <th scope="col"></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach($studentRegistrations as $studentRegistration)
-                        <tr>
-                            <th scope="row">{{ $loop->iteration }}</th>
-                            <td>{{ $studentRegistration->academic_session }}</td>
-                            <td><span class="badge badge-soft-{{ $studentRegistration->level_adviser_status == 1 ? 'success' : 'warning' }}">{{ $studentRegistration->level_adviser_status == 1 ? 'Approved' : 'Pending' }}</span></td>
-                            <td><span class="badge badge-soft-{{ $studentRegistration->hod_status == 1 ? 'success' : 'warning' }}">{{ $studentRegistration->hod_status == 1 ? 'Approved' : 'Pending' }}</span></td>
-                            <td>
-                                <a href="{{ asset($studentRegistration->file) }}" target="_blank" style="margin: 5px" class="btn btn-warning">Download Form</a>
-                            </td>
-                        </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
         </div><!-- end card -->
 
     </div>

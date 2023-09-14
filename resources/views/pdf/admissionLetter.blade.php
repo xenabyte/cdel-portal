@@ -1,7 +1,7 @@
 <table style="width: 40%;">
     <tbody>
         <tr>
-            <td><img src="{{env('SCHOOL_LOGO')}}" width="40%"></td>
+            <td><img style="text-align:center;" src="{{env('SCHOOL_LOGO')}}" width="40%"></td>
         </tr>
     </tbody>
 </table>

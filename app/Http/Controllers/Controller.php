@@ -36,7 +36,7 @@ class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
     
-    public function processPayment($paymentDetails){
+    public function processPaystackPayment($paymentDetails){
         $sessionSetting = SessionSetting::first();
         $academicSession = $sessionSetting['academic_session'];
         $applicationSession = $sessionSetting['application_session'];
@@ -89,6 +89,60 @@ class Controller extends BaseController
        return true;
     }
 
+    public function processRavePayment($paymentDetails){
+        $sessionSetting = SessionSetting::first();
+        $academicSession = $sessionSetting['academic_session'];
+        $applicationSession = $sessionSetting['application_session'];
+        $admissionSession = $sessionSetting['admission_session'];
+
+
+        log::info("Processing payment:" . json_encode($paymentDetails));
+        //get active editions
+        $email = $paymentDetails['data']['meta']['email'];
+        $applicationId = !empty($paymentDetails['data']['meta']['application_id'])?$paymentDetails['data']['meta']['application_id']:null;
+        $studentId = !empty($paymentDetails['data']['meta']['student_id'])?$paymentDetails['data']['meta']['student_id']:null;
+        $paymentId = $paymentDetails['data']['meta']['payment_id'];
+        $paymentGateway = $paymentDetails['data']['meta']['payment_gateway'];
+        $amount = $paymentDetails['data']['meta']['amount'];
+        $txRef = $paymentDetails['data']['meta']['reference'];
+        $reference = $paymentDetails['data']['meta']['reference'];
+        $session = $paymentDetails['data']['meta']['academic_session'];
+
+
+        if(!empty($txRef)){
+            if($existTx = Transaction::where('reference', $txRef)->where('status',  null)->first()){
+                $existTx->reference = $reference;
+                $existTx->status = 1;
+                $existTx->payment_method = $paymentGateway;
+                $existTx->save();
+                
+                return true;
+            }
+        }
+
+        //check if payment have been added
+        if(Transaction::where('reference', $reference)->where('status', 1)->first()){
+            return true;
+        }
+
+       $payment = Payment::with('programme')->where('id', $paymentId)->first();
+
+       //Create new transaction
+       $transaction = Transaction::create([
+            'user_id' => !empty($applicationId)?$applicationId:null,
+            'student_id' => !empty($studentId)?$studentId:null,
+            'payment_id' => $paymentId,
+            'amount_payed' => $amount,
+            'payment_method' => $paymentGateway,
+            'reference' => $reference,
+            'session' => $session,
+            'status' => 1
+        ]);
+
+       return true;
+    }
+
+
     public function generateAccessCode () {
         $applicationAccessCode = "";
         $current = $this->generateRandomString();
@@ -115,6 +169,14 @@ class Controller extends BaseController
         $paymentAmount = $amount + 50000;
 
         return $paymentAmount;
+    }
+    
+    public function getRaveAmount($amount){
+        $paystackAmount =  (((1.4/100) * $amount)+5000);
+
+        $paymentAmount = $amount + $paystackAmount + 5000;
+
+        return $paymentAmount/100;
     }
 
     public function generateReferralCode() {

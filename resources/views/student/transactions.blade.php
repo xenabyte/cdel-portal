@@ -95,8 +95,9 @@
                                                 <label for="paymentGateway" class="form-label">Select Payment Gateway<span class="text-danger">*</span></label>
                                                 <select class="form-select" aria-label="paymentGateway" name="paymentGateway" required onchange="handlePaymentMethodChange(event)">
                                                     <option value= "" selected>Select Payment Gateway</option>
-                                                    <option value="Paystack">Paystack</option>
-                                                    {{-- <option value="Remita">Remita</option>
+                                                    <option value="Rave">Fluterwave</option>
+                                                    {{-- <option value="Paystack">Paystack</option>
+                                                    <option value="Remita">Remita</option>
                                                     <option value="Zenith">Zenith Pay</option>
                                                     <option value="BankTransfer">Transfer</option> --}}
                                                 </select>
@@ -181,8 +182,9 @@
                         <label for="paymentGateway" class="form-label">Select Payment Gateway<span class="text-danger">*</span></label>
                         <select class="form-select" aria-label="paymentGateway" name="paymentGateway" required onchange="handlePaymentMainMethodChange(event)">
                             <option value= "" selected>Select Payment Gateway</option>
-                            <option value="Paystack">Paystack</option>
-                            {{-- <option value="Remita">Remita</option>
+                            <option value="Rave">Fluterwave</option>
+                            {{-- <option value="Paystack">Paystack</option>
+                            <option value="Remita">Remita</option>
                             <option value="Zenith">Zenith Pay</option>
                             <option value="BankTransfer">Transfer</option> --}}
                         </select>
