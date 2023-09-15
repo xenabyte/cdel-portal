@@ -140,8 +140,8 @@ class StaffController extends Controller
 
 
         if(\Hash::check($request->old_password, Auth::guard('staff')->user()->password)){
-            if($request->new_password == $request->confirm_password){
-                $staff->password = bcrypt($request->new_password);
+            if($request->password == $request->confirm_password){
+                $staff->password = bcrypt($request->password);
             }else{
                 alert()->error('Oops!', 'Password mismatch')->persistent('Close');
                 return redirect()->back();
@@ -1131,8 +1131,8 @@ class StaffController extends Controller
             return redirect()->back();
         }
 
-        if($request->new_password == $request->confirm_password){
-            $student->password = bcrypt($request->new_password);
+        if($request->password == $request->confirm_password){
+            $student->password = bcrypt($request->password);
         }else{
             alert()->error('Oops!', 'Password mismatch')->persistent('Close');
             return redirect()->back();

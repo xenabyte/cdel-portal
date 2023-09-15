@@ -178,8 +178,8 @@ class StudentController extends Controller
         $student = Auth::guard('student')->user();
 
         if(\Hash::check($request->old_password, Auth::guard('student')->user()->password)){
-            if($request->new_password == $request->confirm_password){
-                $student->password = bcrypt($request->new_password);
+            if($request->password == $request->confirm_password){
+                $student->password = bcrypt($request->password);
             }else{
                 alert()->error('Oops!', 'Password mismatch')->persistent('Close');
                 return redirect()->back();
