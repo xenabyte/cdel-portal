@@ -444,13 +444,12 @@
                                     <i class="mdi mdi-account-child-circle"></i> <span data-key="t-profile">Profile</span>
                                 </a>
                             </li>
-
-                            <li class="nav-item">
-                                <a class="nav-link menu-link" href="{{ url('staff/logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                                    <i class="mdi mdi-power"></i> <span data-key="t-logout">Logout</span>
-                                </a>
-                            </li> <!-- end Logout Menu -->
                         @endif
+                        <li class="nav-item">
+                            <a class="nav-link menu-link" href="{{ url('staff/logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                <i class="mdi mdi-power"></i> <span data-key="t-logout">Logout</span>
+                            </a>
+                        </li> <!-- end Logout Menu -->
                     </ul>
                 </div>
                 <!-- Sidebar -->
