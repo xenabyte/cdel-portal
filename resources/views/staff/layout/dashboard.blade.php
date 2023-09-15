@@ -271,184 +271,186 @@
                             </a>
                         </li>
 
-                        <li class="nav-item">
-                            <a class="nav-link menu-link" href="{{ url('staff/mentee') }}">
-                                <i class="mdi mdi-account-child-circle"></i> <span data-key="t-transaction">Mentee(s)</span>
-                            </a>
-                        </li>
-
-                        <li class="nav-item">
-                            <a class="nav-link menu-link" href="{{ url('staff/reffs') }}">
-                                <i class="mdi mdi-account-network-outline"></i> <span data-key="t-transaction">Referred Student(s)</span>
-                            </a>
-                        </li>
-
-                        <li class="nav-item">
-                            <a class="nav-link menu-link" href="{{ url('staff/courses') }}">
-                                <i class="mdi mdi-book-education-outline"></i> <span data-key="t-transaction">Course(s)</span>
-                            </a>
-                        </li>
-
-                        @if($staff->staffRoles->count() > 0)
-                        <li class="nav-item">
-                            <a class="nav-link menu-link" href="{{ url('staff/allStudents') }}">
-                                <i class="mdi mdi-account-group"></i> <span data-key="t-transaction">All Student</span>
-                            </a>
-                        </li>
-                        @endif
-
-                        @if($staffAdmissionOfficerRole || $staffPublicRelationRole || $staffRegistrarRole || $staffVCRole)
-                        <li class="nav-item">
-                            <a class="nav-link menu-link" href="#admission" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="admission">
-                                <i class="mdi mdi-account-box-multiple"></i> <span data-key="t-admission">Admission</span>
-                            </a>
-                            <div class="collapse menu-dropdown" id="admission">
-                                <ul class="nav nav-sm flex-column">
-                                    <li class="nav-item">
-                                        <a href="{{ url('/staff/applicants') }}" class="nav-link">Applicants</a>
-                                    </li>
-            
-
-                                    <li class="nav-item">
-                                        <a href="{{ url('/staff/students') }}" class="nav-link">Admitted Students</a>
-                                    </li>
-
-                                    <li class="nav-item">
-                                        <a href="{{ url('/staff/matriculants') }}" class="nav-link">Matriculating List</a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </li> 
-                        @endif
-
-                        @if($staffDeanRole || $staffSubDeanRole || $staffHODRole || $staffRegistrarRole ||  $staffHRRole || $staffVCRole)
-                        <li class="nav-item">
-                            <a class="na<li class="nav-item">
-                                <a class="nav-link menu-link" href="#staffManagement" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="staffManagement">
-                                    <i class="mdi mdi-account-supervisor"></i> <span data-key="t-staffManagement">Staff Management</span>
+                        @if(!empty($staff->change_password))
+                            <li class="nav-item">
+                                <a class="nav-link menu-link" href="{{ url('staff/mentee') }}">
+                                    <i class="mdi mdi-account-child-circle"></i> <span data-key="t-transaction">Mentee(s)</span>
                                 </a>
-                                <div class="collapse menu-dropdown" id="staffManagement">
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link menu-link" href="{{ url('staff/reffs') }}">
+                                    <i class="mdi mdi-account-network-outline"></i> <span data-key="t-transaction">Referred Student(s)</span>
+                                </a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link menu-link" href="{{ url('staff/courses') }}">
+                                    <i class="mdi mdi-book-education-outline"></i> <span data-key="t-transaction">Course(s)</span>
+                                </a>
+                            </li>
+
+                            @if($staff->staffRoles->count() > 0)
+                            <li class="nav-item">
+                                <a class="nav-link menu-link" href="{{ url('staff/allStudents') }}">
+                                    <i class="mdi mdi-account-group"></i> <span data-key="t-transaction">All Student</span>
+                                </a>
+                            </li>
+                            @endif
+
+                            @if($staffAdmissionOfficerRole || $staffPublicRelationRole || $staffRegistrarRole || $staffVCRole)
+                            <li class="nav-item">
+                                <a class="nav-link menu-link" href="#admission" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="admission">
+                                    <i class="mdi mdi-account-box-multiple"></i> <span data-key="t-admission">Admission</span>
+                                </a>
+                                <div class="collapse menu-dropdown" id="admission">
                                     <ul class="nav nav-sm flex-column">
-                                        @if($staffDeanRole || $staffSubDeanRole || $staffHODRole || $staffRegistrarRole || $staffHRRole || $staffVCRole)
                                         <li class="nav-item">
-                                            <a href="{{ url('/staff/staff') }}" class="nav-link" data-key="t-basic"> All Staff </a>
+                                            <a href="{{ url('/staff/applicants') }}" class="nav-link">Applicants</a>
+                                        </li>
+                
+
+                                        <li class="nav-item">
+                                            <a href="{{ url('/staff/students') }}" class="nav-link">Admitted Students</a>
+                                        </li>
+
+                                        <li class="nav-item">
+                                            <a href="{{ url('/staff/matriculants') }}" class="nav-link">Matriculating List</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li> 
+                            @endif
+
+                            @if($staffDeanRole || $staffSubDeanRole || $staffHODRole || $staffRegistrarRole ||  $staffHRRole || $staffVCRole)
+                            <li class="nav-item">
+                                <a class="na<li class="nav-item">
+                                    <a class="nav-link menu-link" href="#staffManagement" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="staffManagement">
+                                        <i class="mdi mdi-account-supervisor"></i> <span data-key="t-staffManagement">Staff Management</span>
+                                    </a>
+                                    <div class="collapse menu-dropdown" id="staffManagement">
+                                        <ul class="nav nav-sm flex-column">
+                                            @if($staffDeanRole || $staffSubDeanRole || $staffHODRole || $staffRegistrarRole || $staffHRRole || $staffVCRole)
+                                            <li class="nav-item">
+                                                <a href="{{ url('/staff/staff') }}" class="nav-link" data-key="t-basic"> All Staff </a>
+                                            </li>
+                                            @endif
+                                        </ul>
+                                    </div>
+                                </li>
+                            </li>
+                            @endif
+
+                            @if($staffDeanRole || $staffSubDeanRole)
+                            <li class="nav-item">
+                                <a class="nav-link menu-link" href="#facultySettings" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="facultySettings">
+                                    <i class="mdi mdi-view-carousel-outline"></i> <span  data-key="t-hot">Faculty Management</span>
+                                </a>
+                                <div class="collapse menu-dropdown" id="facultySettings">
+                                    <ul class="nav nav-sm flex-column">
+                                        <li class="nav-item">
+                                            <a href="{{ url('/staff/faculties') }}" class="nav-link">Faculty</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li> 
+                            @endif
+
+
+                            @if($staffHODRole)
+                            <li class="nav-item">
+                                <a class="nav-link menu-link" href="#deptSettings" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="deptSettings">
+                                    <i class="mdi mdi-cards-variant"></i> <span  data-key="t-hot">Dept. Management</span>
+                                </a>
+                                <div class="collapse menu-dropdown" id="deptSettings">
+                                    <ul class="nav nav-sm flex-column">
+                                        <li class="nav-item">
+                                            <a href="{{ url('/staff/departments') }}" class="nav-link">Department</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li> 
+                            @endif
+
+                            @if($staffLevelAdviserRole || $staffHODRole || $staffDeanRole || $staffSubDeanRole)
+                            <li class="nav-item">
+                                <a class="nav-link menu-link" href="#courseSettings" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="courseSettings">
+                                    <i class="mdi mdi-card"></i> <span  data-key="t-hot">Prog. Management</span>
+                                </a>
+                                <div class="collapse menu-dropdown" id="courseSettings">
+                                    <ul class="nav nav-sm flex-column">
+                                        @if($staffLevelAdviserRole || $staffHODRole)
+                                        <li class="nav-item">
+                                            <a href="{{ url('/staff/adviserProgrammes') }}" class="nav-link">Programmes</a>
+                                        </li>
+
+                                        <li class="nav-item">
+                                            <a href="{{ url('/staff/departmentForCourses') }}" class="nav-link">All Courses</a>
                                         </li>
                                         @endif
+
+                                        <li class="nav-item">
+                                            <a href="{{ url('/staff/studentCourses') }}" class="nav-link">Student Courses</a>
+                                        </li>
                                     </ul>
                                 </div>
                             </li>
-                        </li>
+                            @endif
+
+
+                            @if($staffExamOfficerRole || $staffHODRole || $staffStudentCareRole || $staffDeanRole || $staffSubDeanRole)
+                            <li class="nav-item">
+                                <a class="nav-link menu-link" href="#resultMgt" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="resultMgt">
+                                    <i class="mdi mdi-credit-card-search-outline"></i> <span data-key="t-result">Result Management</span>
+                                </a>
+                                <div class="collapse menu-dropdown" id="resultMgt">
+                                    <ul class="nav nav-sm flex-column">
+                                        <li class="nav-item">
+                                            <a href="{{ url('/staff/getStudentResults') }}" class="nav-link">Students Results</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li> <!-- end Dashboard Menu -->
+                            @endif
+
+                            @if($staffBursaryRole || $staffVCRole)
+                            <li class="nav-item">
+                                <a class="nav-link menu-link" href="#bursary" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="bursary">
+                                    <i class="mdi mdi-bank-transfer"></i> <span data-key="t-bursary">Bursary</span>
+                                </a>
+                                <div class="collapse menu-dropdown" id="bursary">
+                                    <ul class="nav nav-sm flex-column">
+                                        @if($staffBursaryRole)
+                                        <li class="nav-item">
+                                            <a href="{{ url('/staff/payments') }}" class="nav-link"> Payments </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a href="{{('/staff/transactions')}}" class="nav-link"> Transactions </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a href="{{('/staff/chargeStudent')}}" class="nav-link">Charge 'a' Student </a>
+                                        </li>
+                                        @endif
+                                        <li class="nav-item">
+                                            <a href="{{('/staff/transactionReport')}}" class="nav-link"> Transaction Report </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li> <!-- end Bursary Menu -->
+                            @endif
+
+                            <li class="nav-item">
+                                <a class="nav-link menu-link" href="{{ url('staff/profile') }}">
+                                    <i class="mdi mdi-account-child-circle"></i> <span data-key="t-profile">Profile</span>
+                                </a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link menu-link" href="{{ url('staff/logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                    <i class="mdi mdi-power"></i> <span data-key="t-logout">Logout</span>
+                                </a>
+                            </li> <!-- end Logout Menu -->
                         @endif
-
-                        @if($staffDeanRole || $staffSubDeanRole)
-                        <li class="nav-item">
-                            <a class="nav-link menu-link" href="#facultySettings" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="facultySettings">
-                                <i class="mdi mdi-view-carousel-outline"></i> <span  data-key="t-hot">Faculty Management</span>
-                            </a>
-                            <div class="collapse menu-dropdown" id="facultySettings">
-                                <ul class="nav nav-sm flex-column">
-                                    <li class="nav-item">
-                                        <a href="{{ url('/staff/faculties') }}" class="nav-link">Faculty</a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </li> 
-                        @endif
-
-
-                        @if($staffHODRole)
-                        <li class="nav-item">
-                            <a class="nav-link menu-link" href="#deptSettings" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="deptSettings">
-                                <i class="mdi mdi-cards-variant"></i> <span  data-key="t-hot">Dept. Management</span>
-                            </a>
-                            <div class="collapse menu-dropdown" id="deptSettings">
-                                <ul class="nav nav-sm flex-column">
-                                    <li class="nav-item">
-                                        <a href="{{ url('/staff/departments') }}" class="nav-link">Department</a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </li> 
-                        @endif
-
-                        @if($staffLevelAdviserRole || $staffHODRole || $staffDeanRole || $staffSubDeanRole)
-                        <li class="nav-item">
-                            <a class="nav-link menu-link" href="#courseSettings" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="courseSettings">
-                                <i class="mdi mdi-card"></i> <span  data-key="t-hot">Prog. Management</span>
-                            </a>
-                            <div class="collapse menu-dropdown" id="courseSettings">
-                                <ul class="nav nav-sm flex-column">
-                                    @if($staffLevelAdviserRole || $staffHODRole)
-                                    <li class="nav-item">
-                                        <a href="{{ url('/staff/adviserProgrammes') }}" class="nav-link">Programmes</a>
-                                    </li>
-
-                                    <li class="nav-item">
-                                        <a href="{{ url('/staff/departmentForCourses') }}" class="nav-link">All Courses</a>
-                                    </li>
-                                    @endif
-
-                                    <li class="nav-item">
-                                        <a href="{{ url('/staff/studentCourses') }}" class="nav-link">Student Courses</a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </li>
-                        @endif
-
-
-                        @if($staffExamOfficerRole || $staffHODRole || $staffStudentCareRole || $staffDeanRole || $staffSubDeanRole)
-                        <li class="nav-item">
-                            <a class="nav-link menu-link" href="#resultMgt" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="resultMgt">
-                                <i class="mdi mdi-credit-card-search-outline"></i> <span data-key="t-result">Result Management</span>
-                            </a>
-                            <div class="collapse menu-dropdown" id="resultMgt">
-                                <ul class="nav nav-sm flex-column">
-                                    <li class="nav-item">
-                                        <a href="{{ url('/staff/getStudentResults') }}" class="nav-link">Students Results</a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </li> <!-- end Dashboard Menu -->
-                        @endif
-
-                        @if($staffBursaryRole || $staffVCRole)
-                        <li class="nav-item">
-                            <a class="nav-link menu-link" href="#bursary" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="bursary">
-                                <i class="mdi mdi-bank-transfer"></i> <span data-key="t-bursary">Bursary</span>
-                            </a>
-                            <div class="collapse menu-dropdown" id="bursary">
-                                <ul class="nav nav-sm flex-column">
-                                    @if($staffBursaryRole)
-                                    <li class="nav-item">
-                                        <a href="{{ url('/staff/payments') }}" class="nav-link"> Payments </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a href="{{('/staff/transactions')}}" class="nav-link"> Transactions </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a href="{{('/staff/chargeStudent')}}" class="nav-link">Charge 'a' Student </a>
-                                    </li>
-                                    @endif
-                                    <li class="nav-item">
-                                        <a href="{{('/staff/transactionReport')}}" class="nav-link"> Transaction Report </a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </li> <!-- end Bursary Menu -->
-                        @endif
-
-                        <li class="nav-item">
-                            <a class="nav-link menu-link" href="{{ url('staff/profile') }}">
-                                <i class="mdi mdi-account-child-circle"></i> <span data-key="t-profile">Profile</span>
-                            </a>
-                        </li>
-
-                        <li class="nav-item">
-                            <a class="nav-link menu-link" href="{{ url('staff/logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                                <i class="mdi mdi-power"></i> <span data-key="t-logout">Logout</span>
-                            </a>
-                        </li> <!-- end Logout Menu -->
                     </ul>
                 </div>
                 <!-- Sidebar -->
