@@ -477,70 +477,62 @@ class PaymentController extends Controller
         $programmeId = $request->programme_id;
         $academicSession = $request->session;
         $levelId = $request->level_id;
+        $paymentType = Payment::PAYMENT_TYPE_SCHOOL;
+
+        $payments = Payment::where('type', $paymentType)->where('level_id', $levelId)->where('academic_session', $academicSession);
+        $paymentIds = $payments->pluck('id')->toArray();
+        $programmeIds = [];
 
         $faculty = null;
         $department = null;
         $programme = null;
 
-        $students = Student::with('transactions', 'transactions.paymentType', 'applicant', 'academicLevel')
-        ->whereHas('transactions', function ($query) use ($academicSession, $levelId) {
-            $query->where('academic_session', $academicSession)
-                ->whereHas('paymentType', function ($subquery) use ($levelId) {
-                    $subquery->where('level_id', $levelId);
-                });
+        $students = Student::with('applicant', 'academicLevel', 'transactions')
+        ->whereHas('transactions', function ($query) use ($paymentIds) {
+            $query->whereIn('payment_id', $paymentIds);
         })
         ->get();
 
         if(!empty($facultyId)){
-            $students = Student::with('transactions', 'transactions.paymentType', 'applicant', 'academicLevel')
-            ->where('faculty_id', $facultyId)
-            ->whereHas('transactions', function ($query) use ($academicSession, $levelId) {
-                $query->where('academic_session', $academicSession)
-                    ->whereHas('paymentType', function ($subquery) use ($levelId) {
-                        $subquery->where('level_id', $levelId);
-                    });
+            $faculty = Faculty::find($facultyId);
+
+            $programmeIds = $faculty->departments->flatMap->programmes->pluck('id')->toArray();
+            $paymentIds = $payments->whereIn('programme_id', $programmeIds)->pluck('id')->toArray();
+            $students = Student::with('applicant', 'academicLevel', 'transactions')
+            ->whereHas('transactions', function ($query) use ($paymentIds) {
+                $query->whereIn('payment_id', $paymentIds);
             })
             ->get();
-
-            $faculty = Faculty::find($facultyId);
         }
 
         if(!empty($facultyId) && !empty($departmentId)){
-            $students = Student::with('transactions', 'transactions.paymentType', 'applicant', 'academicLevel')
-            ->where('faculty_id', $facultyId)
-            ->where('department_id', $departmentId)
-            ->where('level_id', $levelId)
-            ->whereHas('transactions', function ($query) use ($academicSession, $levelId) {
-                $query->where('academic_session', $academicSession)
-                    ->whereHas('paymentType', function ($subquery) use ($levelId) {
-                        $subquery->where('level_id', $levelId);
-                    });
+            $faculty = Faculty::find($facultyId);
+            $department = Department::find($departmentId);
+
+            $programmeIds = $department->programmes->pluck('id')->toArray();
+            $paymentIds = $payments->whereIn('programme_id', $programmeIds)->pluck('id')->toArray();
+            $students = Student::with('applicant', 'academicLevel', 'transactions')
+            ->whereHas('transactions', function ($query) use ($paymentIds) {
+                $query->whereIn('payment_id', $paymentIds);
             })
             ->get();
 
-            $faculty = Faculty::find($facultyId);
-            $department = Department::find($departmentId);
         }
 
         if(!empty($facultyId) && !empty($departmentId) && !empty($programmeId)){
-            $students = Student::with('transactions', 'transactions.paymentType', 'applicant', 'academicLevel')
-            ->where('faculty_id', $facultyId)
-            ->where('department_id', $departmentId)
-            ->where('programme_id', $programmeId)
-            ->where('level_id', $levelId)
-            ->whereHas('transactions', function ($query) use ($academicSession, $levelId) {
-                $query->where('academic_session', $academicSession)
-                    ->whereHas('paymentType', function ($subquery) use ($levelId) {
-                        $subquery->where('level_id', $levelId);
-                    });
-            })
-            ->get();
-
             $faculty = Faculty::find($facultyId);
             $department = Department::find($departmentId);
             $programme = Programme::find($programmeId);
-        }
 
+            $programmeIds = Programme::where('id', $programmeId)->pluck('id')->toArray();
+            $paymentIds = $payments->whereIn('programme_id', $programmeIds)->pluck('id')->toArray();
+            $students = Student::with('applicant', 'academicLevel', 'transactions')
+            ->whereHas('transactions', function ($query) use ($paymentIds) {
+                $query->whereIn('payment_id', $paymentIds);
+            })
+            ->get();
+        }
+        
         foreach ($students as $student) {
             $student->schoolFeeDetails = $this->checkSchoolFees($student, $academicSession, $levelId);
         }
