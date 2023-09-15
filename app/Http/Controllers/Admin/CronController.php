@@ -220,7 +220,6 @@ class CronController extends Controller
 
                         $existingStaff->update([
                             'email' => $email,
-                            'password' => $password,
                             'lastname' => $lastname,
                             'othernames' => $othernames,
                             'phone_number' => $phoneNumber,

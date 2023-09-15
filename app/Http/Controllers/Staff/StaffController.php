@@ -53,6 +53,10 @@ class StaffController extends Controller
         $academicSession = $globalData->sessionSetting['academic_session'];
         $applicationSession = $globalData->sessionSetting['application_session'];
 
+        if(empty($staff->change_password)){
+            return view('staff.changePassword');
+        }
+
         $applicants = Applicant::with('student')->where('referrer', $referalCode)->where('academic_session', $applicationSession)->get();
 
         return view('staff.home', [
@@ -125,11 +129,9 @@ class StaffController extends Controller
     public function updatePassword (Request $request) {
 
         $validator = Validator::make($request->all(), [
-            'old_password' => 'required',
             'password' => 'required',
             'confirm_password' => 'required'
         ]);
-
 
         if($validator->fails()) {
             alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
@@ -138,17 +140,30 @@ class StaffController extends Controller
 
         $staff = Auth::guard('staff')->user();
 
-
-        if(\Hash::check($request->old_password, Auth::guard('staff')->user()->password)){
+        if($request->has('case')){
             if($request->password == $request->confirm_password){
                 $staff->password = bcrypt($request->password);
             }else{
                 alert()->error('Oops!', 'Password mismatch')->persistent('Close');
                 return redirect()->back();
             }
+            $staff->change_password = true;
         }else{
-            alert()->error('Oops', 'Wrong old password, Try again with the right one')->persistent('Close');
-            return redirect()->back();
+            if(!empty($request->old_password)){
+                alert()->error('Oops!', 'Old password is required')->persistent('Close');
+                return redirect()->back();
+            }
+            if(\Hash::check($request->old_password, Auth::guard('staff')->user()->password)){
+                if($request->password == $request->confirm_password){
+                    $staff->password = bcrypt($request->password);
+                }else{
+                    alert()->error('Oops!', 'Password mismatch')->persistent('Close');
+                    return redirect()->back();
+                }
+            }else{
+                alert()->error('Oops', 'Wrong old password, Try again with the right one')->persistent('Close');
+                return redirect()->back();
+            }
         }
 
         if($staff->update()) {

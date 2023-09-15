@@ -44,6 +44,7 @@ class Staff extends Authenticatable
         'category',
         'referral_code',
         'signature',
+        'change_password'
     ];
 
     /**
