@@ -35,7 +35,7 @@ class AdmissionMail extends Mailable
             if(env('SEND_ADMISSION_LETTER')){
                 $message->attach($this->applicationData->admission_letter);
             }
-            $message->attach('public/HallResident.pdf');
+            // $message->attach('public/HallResident.pdf');
         }
         
         return $message;
