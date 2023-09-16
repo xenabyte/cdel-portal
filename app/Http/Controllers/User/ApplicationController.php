@@ -337,8 +337,8 @@ class ApplicationController extends Controller
         $applicationSession = $globalData->sessionSetting['application_session'];
         $applicationType = $request->input('applicationType');
 
-        $applicationPayment = Payment::with('structures')->where('type', Payment::PAYMENT_TYPE_GENERAl_APPLICATION)->first();
-        $interApplicationPayment = Payment::with('structures')->where('type', Payment::PAYMENT_TYPE_INTER_TRANSFER_APPLICATION)->first();
+        $applicationPayment = Payment::with('structures')->where('academic_session', $applicationSession)->where('type', Payment::PAYMENT_TYPE_GENERAl_APPLICATION)->first();
+        $interApplicationPayment = Payment::with('structures')->where('academic_session', $applicationSession)->where('type', Payment::PAYMENT_TYPE_INTER_TRANSFER_APPLICATION)->first();
 
 
         $payment = $applicationPayment;
