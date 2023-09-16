@@ -38,7 +38,7 @@
                         <h4 class="mt-3 alert alert-info">Admission Status: {{ empty($applicant->status)? 'Processing' : ucwords($applicant->status) }}</h4>
                         <br>
                         @if($applicant->status == 'submitted')
-                        <form action="{{ url('admin/manageAdmission') }}" method="POST">
+                        <form action="{{ url('staff/manageAdmission') }}" method="POST">
                             @csrf
                             <input type="hidden" name="applicant_id" value="{{ $applicant->id }}">
                             <div class="mb-3">
