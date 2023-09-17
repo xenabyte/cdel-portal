@@ -357,7 +357,7 @@ class PaymentController extends Controller
         if(!empty($request->user_id)){
             $applicant = Applicant::with('programme', 'student')->where('id', $request->user_id)->first();
             $applicantId = $applicant->id;
-            if(empty($applicant->student)){
+            if(!empty($applicant->student)){
                 $studentId = $applicant->student->id;
             }
         }
