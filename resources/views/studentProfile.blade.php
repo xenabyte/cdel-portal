@@ -117,9 +117,13 @@ $name = $student->applicant->lastname.' '.$student->applicant->othernames;
                                                     <th><span class="fw-medium">Contact No.:</span></th>
                                                     <td>{{ $student->applicant->phone_number }}</td>
                                                 </tr>
-                                                <tr>
+                                                {{-- <tr>
                                                     <th><span class="fw-medium">Address:</span></th>
                                                     <td>{!! $student->applicant->address !!}</td>
+                                                </tr> --}}
+                                                <tr>
+                                                    <th><span class="fw-medium">Address:</span></th>
+                                                    <td>Student care office, {{ env('SCHOOL_NAME') }}</td>
                                                 </tr>
                                             </tbody>
                                         </table>
