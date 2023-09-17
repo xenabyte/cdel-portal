@@ -201,7 +201,7 @@ class PaymentController extends Controller
 
         if(!empty($studentId)){
             $student = Student::find($studentId);
-            $paymentCheck = $this->checkSchoolFees($student, $session, $student->id);
+            $paymentCheck = $this->checkSchoolFees($student, $session, $student->level_id);
             
             
             $payment = Payment::with(['structures'])->where([
