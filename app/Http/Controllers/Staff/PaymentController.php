@@ -214,7 +214,7 @@ class PaymentController extends Controller
                     ->where('type', Payment::PAYMENT_TYPE_SCHOOL)
                     ->where('programme_id', $student->programme_id)
                     ->where('level_id', $levelId)
-                    ->where('academic_session', $academicSession)
+                    ->where('academic_session', $session)
                     ->first();
 
                 $payment->passTuition = $paymentCheck->passTuitionPayment;
