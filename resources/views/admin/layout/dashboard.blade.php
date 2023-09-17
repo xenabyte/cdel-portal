@@ -776,6 +776,27 @@
                 'copy', 'csv', 'excel', 'pdf', 'print'
             ]
         });
+
+        $('#buttons-datatables5').DataTable({
+            dom: 'Bfrtip',
+            buttons: [
+                'copy', 'csv', 'excel', 'pdf', 'print'
+            ]
+        });
+
+        $('#buttons-datatables6').DataTable({
+            dom: 'Bfrtip',
+            buttons: [
+                'copy', 'csv', 'excel', 'pdf', 'print'
+            ]
+        });
+
+        $('#buttons-datatables7').DataTable({
+            dom: 'Bfrtip',
+            buttons: [
+                'copy', 'csv', 'excel', 'pdf', 'print'
+            ]
+        });
     });
 </script>
 
