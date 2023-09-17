@@ -16,6 +16,12 @@ use Illuminate\Support\Facades\Hash;
 use App\Http\Requests;
 
 use Log;
+use SweetAlert;
+use Mail;
+use Alert;
+use Log;
+use Carbon\Carbon;
+use Paystack;
 use App\Libraries\Google\Google;
 
 use App\Mail\ApplicationPayment;
@@ -388,8 +394,8 @@ class Controller extends BaseController
             $newMatric = empty($programme->matric_last_number)? ($programme->students->count() + 20) + 1 : $programme->matric_last_number + 1;
             $matricNumber = substr($admissionSession, 2, 2).'/'.$facultyCode.$code.sprintf("%03d", $newMatric);
 
-            $google = new Google();
-            $createStudentEmail = $google->createUser($studentEmail, $student->applicant->othernames, $student->applicant->lastname, $accessCode);
+            // $google = new Google();
+            // $createStudentEmail = $google->createUser($studentEmail, $student->applicant->othernames, $student->applicant->lastname, $accessCode);
 
             $student->email = $studentEmail;
             $student->matric_number = $matricNumber;
