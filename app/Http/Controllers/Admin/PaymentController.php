@@ -213,7 +213,7 @@ class PaymentController extends Controller
                 $payment = Payment::with('structures')
                 ->where('type', Payment::PAYMENT_TYPE_SCHOOL)
                 ->where('programme_id', $student->programme_id)
-                ->where('level_id', $levelId)
+                ->where('level_id', $student->level_id)
                 ->where('academic_session', $session)
                 ->first();
 
