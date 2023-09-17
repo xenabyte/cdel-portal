@@ -123,19 +123,19 @@ $name = $student->applicant->lastname.' '.$student->applicant->othernames;
                                                 </tr> --}}
                                                 <tr>
                                                     <th><span class="fw-medium">Address:</span></th>
-                                                    <td>Student care office, {{ env('SCHOOL_NAME') }}</td>
+                                                    <td>Student Care Office, {{ env('SCHOOL_NAME') }}</td>
                                                 </tr>
                                             </tbody>
                                         </table>
                                     </div>
                                 </div>
                             </div>
-                            <!--end card-body-->
+                            {{-- <!--end card-body-->
                             <div class="card-body p-4 border-top border-top-dashed">
                                 <div class="avatar-title bg-light rounded">
                                     <img src="{{ $qrcode }}" style="border: 1px solid black;">
                                 </div>
-                            </div>
+                            </div> --}}
                 
                             <div class="card-body border-top border-top-dashed p-4">
                                 <div>
