@@ -388,13 +388,14 @@ class Controller extends BaseController
             $name = $student->applicant->lastname.' '.$student->applicant->othernames;
             $nameParts = explode(' ', $student->applicant->othernames);
             $firstName = $nameParts[0];
-            $studentEmail = strtolower($student->applicant->lastname.'.'.$firstName.'@st.tau.edu.ng');
+            $studentEmail = strtolower(str_replace(' ', '', $student->applicant->lastname.'.'.$firstName.'@st.tau.edu.ng'));
+
 
             $newMatric = empty($programme->matric_last_number)? ($programme->students->count() + 20) + 1 : $programme->matric_last_number + 1;
             $matricNumber = substr($admissionSession, 2, 2).'/'.$facultyCode.$code.sprintf("%03d", $newMatric);
 
-            // $google = new Google();
-            // $createStudentEmail = $google->createUser($studentEmail, $student->applicant->othernames, $student->applicant->lastname, $accessCode);
+            $google = new Google();
+            $createStudentEmail = $google->createUser($studentEmail, $student->applicant->othernames, $student->applicant->lastname, $accessCode);
 
             $student->email = $studentEmail;
             $student->matric_number = $matricNumber;
