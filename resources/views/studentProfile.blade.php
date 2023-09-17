@@ -93,7 +93,7 @@ $name = $student->applicant->lastname.' '.$student->applicant->othernames;
                                             <strong>Matric Number:</strong> {{ $student->matric_number }}<br>
                                             <strong>Jamb Reg. Number:</strong> {{ $student->applicant->jamb_reg_no }}
                                         </p>
-                                        <p class="text-muted border-top border-top-dashed"><strong>CGPA:</strong> {{ $student->cgpa }} <br>
+                                        <p class="text-muted border-top border-top-dashed">
                                             <strong>Class:</strong> {{ $student->degree_class }}<br>
                                             <strong>Standing:</strong> {{ $student->standing }}<br>
                                         </p>
@@ -143,18 +143,18 @@ $name = $student->applicant->lastname.' '.$student->applicant->othernames;
                                                     <th><span class="fw-medium">Name</span></th>
                                                     <td>{{ $student->applicant->guardian->name }}</td>
                                                 </tr>
-                                                <tr>
+                                                {{-- <tr>
                                                     <th><span class="fw-medium">Email</span></th>
                                                     <td>{{ $student->applicant->guardian->email }}</td>
-                                                </tr>
+                                                </tr> --}}
                                                 <tr>
                                                     <th><span class="fw-medium">Contact No.</span></th>
                                                     <td>{{ $student->applicant->guardian->phone_number }}</td>
                                                 </tr>
-                                                <tr>
+                                                {{-- <tr>
                                                     <th><span class="fw-medium">Address</span></th>
                                                     <td>{!! $student->applicant->guardian->address !!}</td>
-                                                </tr>
+                                                </tr> --}}
                                             </tbody>
                                         </table>
                                     </div>
