@@ -19,7 +19,6 @@ use Log;
 use SweetAlert;
 use Mail;
 use Alert;
-use Log;
 use Carbon\Carbon;
 use Paystack;
 use App\Libraries\Google\Google;
