@@ -225,6 +225,15 @@ class PaymentController extends Controller
             return $payment;
         }
 
+        if ($type == Payment::PAYMENT_TYPE_GENERAL) {
+            $payment = Payment::with(['structures'])->where([
+                'type' => $type,
+                'academic_session' => $session,
+            ])->get();
+
+            return $payment;
+        }
+
         $payment = Payment::with(['structures'])->where([
             'type' => $type,
             'academic_session' => $session,

@@ -481,6 +481,16 @@
                             <option value="Inter Transfer Application Fee">Inter Transfer Application Fee</option>
                             <option value="Acceptance Fee">Acceptance Fee</option>
                             <option value="School Fee">School Fee</option>
+                            <option value="General Fee">General Fee</option>
+                        </select>
+                    </div>
+
+                    <input type="hidden" id="paymentId" name="payment_id">
+
+                    <div class="mb-3" id='payment-for' style="display: none">
+                        <label for="payment_for" class="form-label">Payment For<span class="text-danger">*</span></label>
+                        <select class="form-select" aria-label="payment_for" name="payment_id">
+                            <option value= "" selected>Select Payment</option>
                         </select>
                     </div>
 
@@ -492,17 +502,23 @@
                         </select>
                     </div>
 
-
-                   <div class="mb-3" id='payment-options-tuition' style="display: none">
+                    @if(env('PAYMENT_TYPE') == 'Percentage')
+                    <div class="mb-3" id='payment-options-tuition' style="display: none">
                         <label for="amount" class="form-label">Payment Amount<span class="text-danger">*</span></label>
                         <select class="form-select" aria-label="amount" name="amountTuition">
                             <option value= "" selected>Select Amount</option>
                         </select>
                     </div>
+                    @else
+                    <div class="mb-3" id='payment-options-tuition' style="display: none">
+                        <label for="amount" class="form-label">Payment Amount<span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" name="amountTuition">
+                    </div>
+                    @endif
 
                     <div class="mb-3" id='payment-options-general' style="display: none">
                         <label for="amount" class="form-label">Payment Amount<span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" name="amount" id="amountGeneral">
+                        <input type="text" class="form-control" name="amountGeneral" id="amountGeneral">
                     </div>
 
                     <div class="mb-3">
@@ -514,7 +530,6 @@
                         </select>
                     </div>
 
-                    <input type="hidden" id="paymentId" name="payment_id">
 
                     <div class="text-end border-top border-top-dashed p-3">
                         <br>
@@ -582,39 +597,63 @@
             })
             .then(response => {
                 const data = response.data;
-                const amount = data.structures.reduce((total, structure) => total + parseInt(structure.amount), 0); 
-                
-                paymentId.value = data.id;
-
-                console.log(paymentId.value);
-
 
                 if (selectedPaymentType === 'School Fee') {
+                    const amount = data.structures.reduce((total, structure) => total + parseInt(structure.amount), 0); 
+                    paymentId.value = data.id;
+                    console.log(paymentId.value);
+
                     document.getElementById('payment-options-acceptance').style.display = 'none';
                     document.getElementById('payment-options-tuition').style.display = 'block';
                     document.getElementById('payment-options-general').style.display = 'none';
+                    document.getElementById('payment-for').style.display = 'none';
+
 
                     const selectElement = document.querySelector('[name="amountTuition"]');
                     if (!data.passTuition) {
                         selectElement.innerHTML += `<option value="${amount}">₦${(amount / 100).toFixed(2)} - 100%</option>`;
+                        selectElement.innerHTML += `<option value="${amount * 0.9}">₦${((amount * 0.9) / 100).toFixed(2)} - 90%</option>`;
+                        selectElement.innerHTML += `<option value="${amount * 0.8}">₦${((amount * 0.8) / 100).toFixed(2)} - 80%</option>`;
+                        selectElement.innerHTML += `<option value="${amount * 0.7}">₦${((amount * 0.7) / 100).toFixed(2)} - 70%</option>`;
+                        selectElement.innerHTML += `<option value="${amount * 0.6}">₦${((amount * 0.6) / 100).toFixed(2)} - 60%</option>`;
                         selectElement.innerHTML += `<option value="${amount * 0.5}">₦${((amount * 0.5) / 100).toFixed(2)} - 50%</option>`;
                     }
                     if (data.passTuition && !data.fullTuitionPayment && !data.passEightyTuition) {
                         selectElement.innerHTML += `<option value="${amount * 0.5}">₦${((amount * 0.5) / 100).toFixed(2)} - 50%</option>`;
+                        selectElement.innerHTML += `<option value="${amount * 0.4}">₦${((amount * 0.4) / 100).toFixed(2)} - 40%</option>`;
                         selectElement.innerHTML += `<option value="${amount * 0.3}">₦${((amount * 0.3) / 100).toFixed(2)} - 30%</option>`;
+                        selectElement.innerHTML += `<option value="${amount * 0.2}">₦${((amount * 0.2) / 100).toFixed(2)} - 20%</option>`;
+                        selectElement.innerHTML += `<option value="${amount * 0.1}">₦${((amount * 0.1) / 100).toFixed(2)} - 10%</option>`;
                     }
                     if (data.passTuition && !data.fullTuitionPayment && data.passEightyTuition) {
                         selectElement.innerHTML += `<option value="${amount * 0.2}">₦${((amount * 0.2) / 100).toFixed(2)} - 20%</option>`;
+                        selectElement.innerHTML += `<option value="${amount * 0.1}">₦${((amount * 0.1) / 100).toFixed(2)} - 10%</option>`;
                     }
 
                 }else if (selectedPaymentType === 'General Fee') {
                     document.getElementById('payment-options-tuition').style.display = 'none';
                     document.getElementById('payment-options-acceptance').style.display = 'none';
                     document.getElementById('payment-options-general').style.display = 'block';
+                    document.getElementById('payment-for').style.display = 'block';
+
+                    const selectElement = document.querySelector('select[name="payment_id"]');
+
+                    data.forEach(item => {
+                        const option = document.createElement('option');
+                        option.value = item.id; 
+                        option.textContent = item.title;
+                        selectElement.appendChild(option);
+                    });
+
                 } else {
+                    paymentId.value = data.id;
+                    console.log(paymentId.value);
+
                     document.getElementById('payment-options-tuition').style.display = 'none';
                     document.getElementById('payment-options-acceptance').style.display = 'block';
                     document.getElementById('payment-options-general').style.display = 'none';
+                    document.getElementById('payment-for').style.display = 'none';
+
                     
                     const selectElement = document.querySelector('[name="amountAcceptance"]');
                     selectElement.innerHTML = '<option value="">Select Amount</option>';

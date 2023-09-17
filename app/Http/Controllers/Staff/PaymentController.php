@@ -222,6 +222,15 @@ class PaymentController extends Controller
                 $payment->passEightyTuition = $paymentCheck->passEightyTuition;
             }
 
+            if ($type == Payment::PAYMENT_TYPE_GENERAL) {
+                $payment = Payment::with(['structures'])->where([
+                    'type' => $type,
+                    'academic_session' => $session,
+                ])->get();
+    
+                return $payment;
+            }
+
             return $payment;
         }
 
