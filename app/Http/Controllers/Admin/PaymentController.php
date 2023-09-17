@@ -432,9 +432,10 @@ class PaymentController extends Controller
 
         $reference = $this->generateRandomString(10);
         
+        
         //Create new transaction
         $transaction = Transaction::create([
-            'student_id' => $request->student_id,
+            'student_id' => $studentId
             'user_id' => $request->user_id,
             'payment_id' => $request->payment_id,
             'amount_payed' => $amount,
@@ -444,8 +445,8 @@ class PaymentController extends Controller
             'status' => $request->paymentStatus == 1 ? 1 : null
         ]);
 
-        if(!empty($request->student_id)){
-            $student = Student::find($request->student_id);
+        if(!empty($studentId)){
+            $student = Student::find($studentId);
 
             if(!empty($student) && $payment->type == Payment::PAYMENT_TYPE_SCHOOL && $request->paymentStatus == 1){
                 $this->generateMatricAndEmail($student);

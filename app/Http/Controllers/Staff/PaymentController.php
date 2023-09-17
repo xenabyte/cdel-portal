@@ -445,8 +445,8 @@ class PaymentController extends Controller
             'status' => $request->paymentStatus == 1 ? 1 : null
         ]);
 
-        if(!empty($request->student_id)){
-            $student = Student::find($request->student_id);
+        if(!empty($studentId)){
+            $student = Student::find($studentId);
 
             if(!empty($student) && $payment->type == Payment::PAYMENT_TYPE_SCHOOL && $request->paymentStatus == 1){
                 $this->generateMatricAndEmail($student);
