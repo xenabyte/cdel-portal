@@ -250,6 +250,7 @@
                     <input type="hidden" id="studentId" name="student_id" value="{{ $student->id }}">
                     <input type="hidden" id="programmeId" name="programme_id" value="{{ $student->programme_id }}">
                     <input type="hidden" name="paymentGateway" value="Manual/BankTransfer">
+                    <input type="hidden" id="userType" name="userType" value="student">
 
 
                     <div class="mb-3">
@@ -470,6 +471,7 @@
                     <input type="hidden" id="academicSession" name="academic_session" value="{{ $applicant->academic_session }}">
                     <input type="hidden" id="level" name="level" value="0">
                     <input type="hidden" name="paymentGateway" value="Manual/BankTransfer">
+                    <input type="hidden" id="userType" name="userType" value="applicant">
 
                     <div class="mb-3">
                         <label for="type" class="form-label">Select Payment Type </label>
@@ -478,6 +480,7 @@
                             <option value="General Application Fee">General Application Fee</option>
                             <option value="Inter Transfer Application Fee">Inter Transfer Application Fee</option>
                             <option value="Acceptance Fee">Acceptance Fee</option>
+                            <option value="School Fee">School Fee</option>
                         </select>
                     </div>
 
@@ -566,6 +569,7 @@
         const paymentId = document.getElementById('paymentId');
         const studentId = document.getElementById('studentId').value;
         const level = document.getElementById('level').value;
+        const userType = document.getElementById('userType').value;
 
         if(selectedPaymentType != ''){
             axios.post("{{ url('/staff/getPayment') }}", {
@@ -573,7 +577,8 @@
                 academic_session: academicSession,
                 programme_id: programmeId,
                 student_id: studentId,
-                level: level
+                level: level,
+                userType: userType
             })
             .then(response => {
                 const data = response.data;

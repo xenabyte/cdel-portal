@@ -188,30 +188,47 @@ class PaymentController extends Controller
         $type = $request->type;
         $session = $request->academic_session;
         $programmeId = $request->programme_id;
-        $studentId = $request->student_id;
         $levelId  = $request->level;
+        $userType = $request->userType;
+        if($userType == 'applicant') {
+            $applicant = Applicant::with('programme', 'student')->where('id', $request->student_id)->first();
+            $applicantId = $applicant->id;
+            if($empty($applicant->student)){
+                $studentId = $applicant->student->id;
+            }
+        }
+        
         
 
-        $student = Student::find($studentId);
-        $paymentCheck = $this->checkSchoolFees($student, $session, $levelId);
+        if(!empty($studentId)){
+            $student = Student::find($studentId);
+            $paymentCheck = $this->checkSchoolFees($student, $session, $levelId);
+            
+            $payment = Payment::with(['structures'])->where([
+                'type' => $type,
+                'academic_session' => $session,
+            ])->first();
+
+            if ($type == Payment::PAYMENT_TYPE_SCHOOL) {
+                $payment = Payment::with(['structures'])->where([
+                    'type' => $type,
+                    'academic_session' => $session,
+                    'programme_id' => $programmeId
+                ])->first();
+
+                $payment->passTuition = $paymentCheck->passTuitionPayment;
+                $payment->fullTuitionPayment = $paymentCheck->fullTuitionPayment;
+                $payment->passEightyTuition = $paymentCheck->passEightyTuition;
+            }
+
+            return $payment;
+        }
 
         $payment = Payment::with(['structures'])->where([
             'type' => $type,
             'academic_session' => $session,
         ])->first();
-
-        if ($type == Payment::PAYMENT_TYPE_SCHOOL) {
-            $payment = Payment::with(['structures'])->where([
-                'type' => $type,
-                'academic_session' => $session,
-                'programme_id' => $programmeId
-            ])->first();
-
-            $payment->passTuition = $paymentCheck->passTuitionPayment;
-            $payment->fullTuitionPayment = $paymentCheck->fullTuitionPayment;
-            $payment->passEightyTuition = $paymentCheck->passEightyTuition;
-        }
-
+        
         return $payment;
     }
 
@@ -337,8 +354,11 @@ class PaymentController extends Controller
         }
 
         if(!empty($request->user_id)){
-            $applicant = Applicant::with('programme')->where('id', $request->user_id)->first();
+            $applicant = Applicant::with('programme', 'student')->where('id', $request->user_id)->first();
             $applicantId = $applicant->id;
+            if($empty($applicant->student)){
+                $studentId = $applicant->student->id;
+            }
         }
 
         $payment = Payment::find($request->payment_id);
