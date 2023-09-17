@@ -50,7 +50,7 @@
         if (strtolower($staffRole->role->role) == 'student care') {
             $staffStudentCareRole = true;
         }
-        if(strtolower($staffRole->role->role) == 'busary'){
+        if(strtolower($staffRole->role->role) == 'bursary'){
             $staffBursaryRole = true;
         }
         if(strtolower($staffRole->role->role) == 'admission'){
