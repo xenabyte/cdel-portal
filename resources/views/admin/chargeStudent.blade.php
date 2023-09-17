@@ -477,6 +477,7 @@
                             <option selected value= "">Select Type </option>
                             <option value="General Application Fee">General Application Fee</option>
                             <option value="Inter Transfer Application Fee">Inter Transfer Application Fee</option>
+                            <option value="Acceptance Fee">Acceptance Fee</option>
                         </select>
                     </div>
 
