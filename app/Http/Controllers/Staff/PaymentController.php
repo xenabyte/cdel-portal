@@ -210,11 +210,12 @@ class PaymentController extends Controller
             ])->first();
 
             if ($type == Payment::PAYMENT_TYPE_SCHOOL) {
-                $payment = Payment::with(['structures'])->where([
-                    'type' => $type,
-                    'academic_session' => $session,
-                    'programme_id' => $programmeId
-                ])->first();
+                $payment = Payment::with('structures')
+                    ->where('type', Payment::PAYMENT_TYPE_SCHOOL)
+                    ->where('programme_id', $student->programme_id)
+                    ->where('level_id', $levelId)
+                    ->where('academic_session', $academicSession)
+                    ->first();
 
                 $payment->passTuition = $paymentCheck->passTuitionPayment;
                 $payment->fullTuitionPayment = $paymentCheck->fullTuitionPayment;
