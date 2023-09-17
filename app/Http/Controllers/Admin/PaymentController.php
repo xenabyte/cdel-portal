@@ -350,6 +350,7 @@ class PaymentController extends Controller
         if(!empty($request->student_id)){
             $student = Student::with('programme', 'applicant')->where('id', $request->student_id)->first();
             $studentId = $student->id;
+            $applicantId = Student->applicant->id;
         }
 
         if(!empty($request->user_id)){
@@ -436,7 +437,7 @@ class PaymentController extends Controller
         //Create new transaction
         $transaction = Transaction::create([
             'student_id' => $studentId
-            'user_id' => $request->user_id,
+            'user_id' => $applicantId,
             'payment_id' => $request->payment_id,
             'amount_payed' => $amount,
             'payment_method' => $request->paymentGateway,
