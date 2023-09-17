@@ -91,6 +91,7 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'admin'],
   Route::post('/addPayment', [App\Http\Controllers\Admin\PaymentController::class, 'addPayment'])->name('addPayment')->middleware(['auth:admin']);
   Route::post('/updatePayment', [App\Http\Controllers\Admin\PaymentController::class, 'updatePayment'])->name('updatePayment')->middleware(['auth:admin']);
   Route::post('/deletePayment', [App\Http\Controllers\Admin\PaymentController::class, 'deletePayment'])->name('deletePayment')->middleware(['auth:admin']);
+  Route::post('/uploadBulkPayment', [App\Http\Controllers\Admin\PaymentController::class, 'uploadBulkPayment'])->name('uploadBulkPayment')->middleware(['auth:admin']);
 
 
   Route::get('/transactions', [App\Http\Controllers\Admin\PaymentController::class, 'transactions'])->name('transactions')->middleware(['auth:admin']);
@@ -365,6 +366,7 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'staff'],
   Route::post('/addStructure', [App\Http\Controllers\Staff\PaymentController::class, 'addStructure'])->name('addStructure')->middleware(['auth:staff']);
   Route::post('/updateStructure', [App\Http\Controllers\Staff\PaymentController::class, 'updateStructure'])->name('updateStructure')->middleware(['auth:staff']);
   Route::post('/deleteStructure', [App\Http\Controllers\Staff\PaymentController::class, 'deleteStructure'])->name('deleteStructure')->middleware(['auth:staff']);
+  Route::post('/uploadBulkPayment', [App\Http\Controllers\Staff\PaymentController::class, 'uploadBulkPayment'])->name('uploadBulkPayment')->middleware(['auth:staff']);;
 
   Route::post('/chargeStudent', [App\Http\Controllers\Staff\PaymentController::class, 'chargeStudent'])->name('chargeStudent')->middleware(['auth:staff']);
   Route::get('/chargeStudent', [App\Http\Controllers\Staff\StaffController::class, 'chargeStudent'])->name('chargeStudent')->middleware(['auth:staff']);

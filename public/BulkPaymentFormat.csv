@@ -1,0 +1,22 @@
+payment_name,programme,level,payment_type,payment_amount,empty_space_1,Payment Type format,empty_space_2,programme id,Programme name
+Application Fee,,,General Application Fee,2000,,General Application Fee,,1,Bachelor of Science in Physics with Electronics
+Inter Transfer Application Fee,,,Inter Transfer Application Fee,10000,,Inter Transfer Application Fee,,2,Bachelor of Science in Computer Science
+Acceptance Fee,,,Acceptance Fee,50000,,Acceptance Fee,,3,Bachelor of Science in Software Engineering
+Modify Course Reg,,,Course Reg,10000,,School Fee,,4,Bachelor of Science in Mathematics
+Bachelor of Nursing Science school fee for 100 Level,15,1,School Fee,700000,,DE School Fee,,5,Bachelor of Science in Chemistry
+,,,,,,General Fee,,6,Bachelor of Science in Biochemistry
+,,,,,,Course Reg,,7,Bachelor of Science in Microbiology
+,,,,,,,,8,Bachelor of Science in Mass Communication
+,,,,,,,,9,Bachelor of Science in Economics
+,,,,,,,,10,Bachelor of Science in Criminology and Security Studies
+,,,,,,,,11,Bachelor of Science in Business Administration
+,,,,,,,,12,Bachelor of Science in Accounting and Finance
+,,,,,,,,13,Doctor of Physiotherapy
+,,,,,,,,14,Bachelor of Science in Medical Laboratory Science
+,,,,,,,,15,Bachelor of Nursing Science
+,,,,,,,,16,Bachelor of Science in Anatomy
+,,,,,,,,17,Bachelor of Science in Physiology
+,,,,,,,,18,Bachelor of Science in Public Health
+,,,,,,,,19,Bachelor of Science in Environmental Health Science
+,,,,,,,,20,Bachelor of Art in English and Literary Studies
+,,,,,,,,21,Bachelor Engineering in Computer Engineering

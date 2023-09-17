@@ -26,6 +26,8 @@
                 <h4 class="card-title mb-0 flex-grow-1">Payments</h4>
                 <div class="flex-shrink-0">
                     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addPayment">Create a Payment</button>
+                    <a href="{{ asset('BulkPaymentFormat.csv') }}" class="btn btn-info" download>Download Format</a>
+                    <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#uploadBulkPayment">Bulk upload Payments</button>
                 </div>
             </div><!-- end card header -->
 
@@ -79,6 +81,7 @@
                                                     <option value="Inter Transfer Application Fee">Inter Transfer Application Fee</option>
                                                     <option value="Acceptance Fee">Acceptance Fee</option>
                                                     <option value="School Fee">School Fee</option>
+                                                    <option value="DE School Fee">Direct Entry School Fee</option>
                                                     <option value="General Fee">General Fee</option>
                                                 </select>
                                             </div>
@@ -187,7 +190,9 @@
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    @foreach($payments->where('type', 'School Fee') as $schoolFeePayment)
+                                                    @foreach($payments->filter(function($payment) {
+                                                        return $payment->type === 'School Fee' || $payment->type === 'DE School Fee';
+                                                    }) as $schoolFeePayment)
                                                         @if($schoolFeePayment->level->id == $level->id)
                                                             <tr>
                                                                 <th scope="row">{{ $loop->iteration }}</th>
@@ -226,6 +231,7 @@
                                                                                                 <option value="Inter Transfer Application Fee">Inter Transfer Application Fee</option>
                                                                                                 <option value="Acceptance Fee">Acceptance Fee</option>
                                                                                                 <option value="School Fee">School Fee</option>
+                                                                                                <option value="DE School Fee">Direct Entry School Fee</option>
                                                                                                 <option value="General Fee">General Fee</option>
                                                                                                 <option value="Course Reg">Modify Course Reg Fee</option>
                                                                                             </select>
@@ -352,6 +358,7 @@
                             <option value="Inter Transfer Application Fee">Inter Transfer Application Fee</option>
                             <option value="Acceptance Fee">Acceptance Fee</option>
                             <option value="School Fee">School Fee</option>
+                            <option value="DE School Fee">Direct Entry School Fee</option>
                             <option value="General Fee">General Fee</option>
                             <option value="Course Reg">Modify Course Reg Fee</option>
                         </select>
@@ -391,6 +398,33 @@
                     <hr>
                     <div class="text-end">
                         <button type="submit" class="btn btn-primary">Create Payment</button>
+                    </div>
+                </form>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<div id="uploadBulkPayment" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 overflow-hidden">
+            <div class="modal-header p-3">
+                <h4 class="card-title mb-0">Upload Bulk Payment</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body">
+                <form action="{{ url('/staff/uploadBulkPayment') }}" method="post" enctype="multipart/form-data">
+                    @csrf
+                    <input type="hidden" name="academic_session" value="{{ $pageGlobalData->sessionSetting->application_session}}">
+                    <div class="mb-3">
+                        <label for="file" class="form-label">File(CSV)</label>
+                        <input type="file" class="form-control" name="file" id="type">
+                    </div>
+
+                    <hr>
+                    <div class="text-end">
+                        <button type="submit" class="btn btn-primary">Upload Payment</button>
                     </div>
                 </form>
             </div>

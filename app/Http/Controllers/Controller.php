@@ -179,7 +179,8 @@ class Controller extends BaseController
     public function getRaveAmount($amount){
         $paystackAmount =  (((1.4/100) * $amount)+5000);
 
-        $paymentAmount = $amount + $paystackAmount + 5000;
+        // $paymentAmount = $amount + $paystackAmount + 5000;
+        $paymentAmount = $amount + 50000;
 
         return $paymentAmount/100;
     }
@@ -322,8 +323,14 @@ class Controller extends BaseController
     {
         $studentId = $student->id;
 
+        $type = Payment::PAYMENT_TYPE_SCHOOL;
+
+        if(!$student->is_active && empty($student->matric_number) && $student->level_id == 2){
+            $type = Payment::PAYMENT_TYPE_SCHOOL_DE;
+        }
+
         $schoolPayment = Payment::with('structures')
-            ->where('type', Payment::PAYMENT_TYPE_SCHOOL)
+            ->where('type', $type)
             ->where('programme_id', $student->programme_id)
             ->where('level_id', $levelId)
             ->where('academic_session', $academicSession)

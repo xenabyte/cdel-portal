@@ -391,14 +391,22 @@ $studentRegistrations = $student->courseRegistrationDocument()->orderBy('created
                             <option value= "" selected>Select Amount</option>
                             @if(!$student->schoolFeeDetails->passTuitionPayment)
                             <option value="{{ $student->schoolFeeDetails->schoolPayment->structures->sum('amount') }}">₦{{ number_format($student->schoolFeeDetails->schoolPayment->structures->sum('amount')/100, 2) }} - 100%</option>
+                            <option value="{{ $student->schoolFeeDetails->schoolPayment->structures->sum('amount')*0.9 }}">₦{{ number_format($student->schoolFeeDetails->schoolPayment->structures->sum('amount')*0.9/100, 2) }} - 90%</option>
+                            <option value="{{ $student->schoolFeeDetails->schoolPayment->structures->sum('amount')*0.8 }}">₦{{ number_format($student->schoolFeeDetails->schoolPayment->structures->sum('amount')*0.8/100, 2) }} - 80%</option>
+                            <option value="{{ $student->schoolFeeDetails->schoolPayment->structures->sum('amount')*0.7 }}">₦{{ number_format($student->schoolFeeDetails->schoolPayment->structures->sum('amount')*0.7/100, 2) }} - 70%</option>
+                            <option value="{{ $student->schoolFeeDetails->schoolPayment->structures->sum('amount')*0.6 }}">₦{{ number_format($student->schoolFeeDetails->schoolPayment->structures->sum('amount')*0.6/100, 2) }} - 60%</option>
                             <option value="{{ $student->schoolFeeDetails->schoolPayment->structures->sum('amount')*0.5 }}">₦{{ number_format($student->schoolFeeDetails->schoolPayment->structures->sum('amount')*0.5/100, 2) }} - 50%</option>
                             @endif
                             @if($student->schoolFeeDetails->passTuitionPayment && !$student->schoolFeeDetails->fullTuitionPayment && !$student->schoolFeeDetails->passEightyTuition)
                             <option value="{{ $student->schoolFeeDetails->schoolPayment->structures->sum('amount')*0.5 }}">₦{{ number_format($student->schoolFeeDetails->schoolPayment->structures->sum('amount')*0.5/100, 2) }} - 50%</option>
+                            <option value="{{ $student->schoolFeeDetails->schoolPayment->structures->sum('amount')*0.4 }}">₦{{ number_format($student->schoolFeeDetails->schoolPayment->structures->sum('amount')*0.4/100, 2) }} - 40%</option>
                             <option value="{{ $student->schoolFeeDetails->schoolPayment->structures->sum('amount')*0.3 }}">₦{{ number_format($student->schoolFeeDetails->schoolPayment->structures->sum('amount')*0.3/100, 2) }} - 30%</option>
+                            <option value="{{ $student->schoolFeeDetails->schoolPayment->structures->sum('amount')*0.2 }}">₦{{ number_format($student->schoolFeeDetails->schoolPayment->structures->sum('amount')*0.2/100, 2) }} - 20%</option>
+                            <option value="{{ $student->schoolFeeDetails->schoolPayment->structures->sum('amount')*0.1 }}">₦{{ number_format($student->schoolFeeDetails->schoolPayment->structures->sum('amount')*0.1/100, 2) }} - 10%</option>
                             @endif
                             @if($student->schoolFeeDetails->passTuitionPayment && !$student->schoolFeeDetails->fullTuitionPayment && $student->schoolFeeDetails->passEightyTuition)
                             <option value="{{ $student->schoolFeeDetails->schoolPayment->structures->sum('amount')*0.2 }}">₦{{ number_format($student->schoolFeeDetails->schoolPayment->structures->sum('amount')*0.2/100, 2) }} - 20%</option>
+                            <option value="{{ $student->schoolFeeDetails->schoolPayment->structures->sum('amount')*0.1 }}">₦{{ number_format($student->schoolFeeDetails->schoolPayment->structures->sum('amount')*0.1/100, 2) }} - 10%</option>
                             @endif
                         </select>
                     </div>

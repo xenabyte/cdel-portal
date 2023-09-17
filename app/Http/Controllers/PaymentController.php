@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Requests;
 use Illuminate\Support\Facades\Validator;
+use League\Csv\Reader;
 
 use App\Models\Programme;
 use App\Models\Transaction;
@@ -72,7 +73,7 @@ class PaymentController extends Controller
                         ]);
                     }elseif($paymentType == Payment::PAYMENT_TYPE_ACCEPTANCE){
                         return redirect($redirectPath);
-                    }elseif($paymentType == Payment::PAYMENT_TYPE_SCHOOL){
+                    }elseif($paymentType == Payment::PAYMENT_TYPE_SCHOOL || $paymentType == Payment::PAYMENT_TYPE_SCHOOL_DE){
                         $this->generateMatricAndEmail($student);
                         return redirect($redirectPath);
                     }else{
@@ -140,7 +141,7 @@ class PaymentController extends Controller
                         ]);
                     }elseif($paymentType == Payment::PAYMENT_TYPE_ACCEPTANCE){
                         return redirect($redirectPath);
-                    }elseif($paymentType == Payment::PAYMENT_TYPE_SCHOOL){
+                    }elseif($paymentType == Payment::PAYMENT_TYPE_SCHOOL || $paymentType == Payment::PAYMENT_TYPE_SCHOOL_DE){
                         $this->generateMatricAndEmail($student);
                         return redirect($redirectPath);
                     }else{

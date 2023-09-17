@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Requests;
 use Illuminate\Support\Facades\Validator;
+use League\Csv\Reader;
 
 use App\Models\Payment;
 use App\Models\PaymentStructure as Structure;
@@ -326,6 +327,85 @@ class PaymentController extends Controller
 
         alert()->error('Oops!', 'Something went wrong')->persistent('Close');
         return redirect()->back();
+    }
+
+    public function uploadBulkPayment(Request $request){
+        try {
+
+            $validator = Validator::make($request->all(), [
+                'file' => 'required',
+                'academic_session' => 'required',
+            ]);
+    
+            if($validator->fails()) {
+                alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+                return redirect()->back();
+            }
+    
+            if ($request->hasFile('file')) {
+                $file = $request->file('file');
+    
+                // Create a CSV reader instance
+                $csv = Reader::createFromPath($file->getPathname());
+    
+                // Set the header offset (skip the first row)
+                $csv->setHeaderOffset(0);
+    
+                // Get all records from the CSV file
+                $records = $csv->getRecords();
+    
+                foreach ($records as $row) {
+                    $level = !empty($row['level'])?$row['level']:null;
+                    $academicSession = $request->academic_session;
+                    $title = $row['payment_name'];
+                    $amount = !empty($row['payment_amount']) ? $row['payment_amount'] :null;
+                    $type = !empty($row['payment_type'])?$row['payment_type']: null;
+                    $programmeId = !empty($row['programme'])?$row['programme']: null;
+
+                    if(!empty($title) && !empty($type)){
+                        $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $title.'-'.($level*100).'Level-'.$academicSession)));
+                        $paymentData = ([
+                            'title' => $title,
+                            'description' => $title,
+                            'programme_id' => $programmeId,
+                            'level_id' => $level,
+                            'type' => $type,
+                            'academic_session' => $academicSession,
+                            'slug' => $slug
+                        ]);
+
+                        //check existing
+                        $existingPayment = Payment::where([
+                            'programme_id' => $programmeId,
+                            'level_id' => $level,
+                            'type' => $type,
+                            'academic_session' => $academicSession,
+                        ])->first();
+
+                        if(empty($existingPayment)){
+                            $newPayment = Payment::create($paymentData);
+
+                            if(!empty($amount) && !empty($newPayment)){
+                                $addStructure = ([            
+                                    'payment_id' => $newPayment->id,
+                                    'title' => $title,
+                                    'amount' => $amount * 100
+                                ]);
+                        
+                                Structure::create($addStructure); 
+                            }
+                        }
+                    }
+                }
+    
+                alert()->success('Changes Saved', 'Payments uploaded successfully')->persistent('Close');
+                return redirect()->back();
+            }
+        } catch (QueryException $e) {
+            $errorMessage = 'Something went wrong';
+            alert()->error('Oops!', $errorMessage)->persistent('Close');
+            return redirect()->back();
+        }
     }
 
 

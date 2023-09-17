@@ -219,6 +219,7 @@
                             <option value="Inter Transfer Application Fee">Inter Transfer Application Fee</option>
                             <option value="Acceptance Fee">Acceptance Fee</option>
                             <option value="School Fee">School Fee</option>
+                            <option value="DE School Fee">Direct Entry School Fee</option>
                             <option value="General Fee">General Fee</option>
                             <option value="Course Reg">Modify Course Reg Fee</option>
                         </select>
