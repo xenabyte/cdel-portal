@@ -437,7 +437,7 @@ class PaymentController extends Controller
         //Create new transaction
         $transaction = Transaction::create([
             'student_id' => $studentId,
-            'user_id' => $applicantId
+            'user_id' => $applicantId,
             'payment_id' => $request->payment_id,
             'amount_payed' => $amount,
             'payment_method' => $request->paymentGateway,
