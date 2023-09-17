@@ -448,7 +448,7 @@ class PaymentController extends Controller
             'status' => $request->paymentStatus == 1 ? 1 : null
         ]);
 
-        if(!empty($studentId)){
+        if(!empty($studentId) && $payment->type == Payment::PAYMENT_TYPE_SCHOOL){
             $student = Student::find($studentId);
 
             if(!empty($student) && $payment->type == Payment::PAYMENT_TYPE_SCHOOL && $request->paymentStatus == 1){
