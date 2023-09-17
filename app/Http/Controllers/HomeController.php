@@ -35,6 +35,19 @@ class HomeController extends Controller
 {
     
 
+    public function studentDetails(Request $request, $slug){
+        $globalData = $request->input('global_data');
+        $admissionSession = $globalData->sessionSetting['admission_session'];
+        $academicSession = $globalData->sessionSetting['academic_session'];
+
+        $student = Student::with(['applicant', 'programme', 'partner', 'academicLevel', 'department', 'faculty'])
+        ->where('slug', $slug)->first();
+
+        return view('studentProfile', [
+            'student' => $student,
+        ]);
+    }
+
     /**
      * Show the application dashboard.
      *
