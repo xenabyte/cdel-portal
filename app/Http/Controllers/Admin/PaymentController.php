@@ -412,7 +412,7 @@ class PaymentController extends Controller
         }
 
         if($payment->type != Payment::PAYMENT_TYPE_GENERAL && !empty($request->student_id)){
-            $totalPayment = $payment->structures-sum('amount');
+            $totalPayment = $payment->structures->sum('amount');
             $paymentTransactions = Transaction::where('student_id', $studentId)
             ->where('payment_id', $payment->id)
             ->where('session', $session)
