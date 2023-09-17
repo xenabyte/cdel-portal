@@ -1,4 +1,4 @@
-@extends('staff.layout.dashboard')
+@extends('layouts.dashboard')
 @php
 
 $qrcode = 'https://chart.googleapis.com/chart?chs=300x300&cht=qr&chl='.env('APP_URL').'/studentDetails/'.$student->slug;
