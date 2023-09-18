@@ -455,6 +455,11 @@ class PaymentController extends Controller
         $payment = Payment::find($request->payment_id);
         $session = $request->academic_session;
 
+        if($payment->type == Payment::PAYMENT_TYPE_SCHOOL && empty($studentId)){
+            alert()->error('Oops', 'The applicant does not have admission yet.')->persistent('Close');
+            return redirect()->back();
+        }
+
 
         if($payment->type == Payment::PAYMENT_TYPE_GENERAl_APPLICATION || $payment->type == Payment::PAYMENT_TYPE_ACCEPTANCE || $payment->type == Payment::PAYMENT_TYPE_INTER_TRANSFER_APPLICATION){
             $validator = Validator::make($request->all(), [

@@ -454,6 +454,11 @@ class PaymentController extends Controller
             }
         }
 
+        if($payment->type == Payment::PAYMENT_TYPE_SCHOOL && empty($studentId)){
+            alert()->error('Oops', 'The applicant does not have admission yet.')->persistent('Close');
+            return redirect()->back();
+        }
+        
         $payment = Payment::find($request->payment_id);
         $session = $request->academic_session;
 
