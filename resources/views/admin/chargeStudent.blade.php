@@ -526,7 +526,7 @@
                     @else
                     <div class="mb-3" id='payment-options-tuition' style="display: none">
                         <label for="amount" class="form-label">Payment Amount<span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" name="amountTuition">
+                        <input type="number" class="form-control" name="amountTuition">
                     </div>
                     @endif
 

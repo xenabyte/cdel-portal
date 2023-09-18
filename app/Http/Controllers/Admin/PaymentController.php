@@ -467,7 +467,7 @@ class PaymentController extends Controller
             ],[
                 'amountAcceptance.required' => 'The amount field is required.',
             ]);
-        }elseif($payment->type == Payment::PAYMENT_TYPE_SCHOOL){
+        }elseif($payment->type == Payment::PAYMENT_TYPE_SCHOOL || $payment->type == Payment::PAYMENT_TYPE_SCHOOL_DE){
             $validator = Validator::make($request->all(), [
                 'amountTuition' => 'required',
             ],[
@@ -501,7 +501,7 @@ class PaymentController extends Controller
             $amount = $request->amountAcceptance;
         }elseif($payment->type == Payment::PAYMENT_TYPE_INTER_TRANSFER_APPLICATION){
             $amount = $request->amountAcceptance;
-        }elseif($payment->type == Payment::PAYMENT_TYPE_SCHOOL){
+        }elseif($payment->type == Payment::PAYMENT_TYPE_SCHOOL || $payment->type == Payment::PAYMENT_TYPE_SCHOOL_DE){
             $amount = env('PAYMENT_TYPE')=='Percentage'?$request->amountTuition:$request->amountTuition*100;
         }else{
             $amount = $request->amountGeneral * 100;
@@ -542,10 +542,10 @@ class PaymentController extends Controller
             'status' => $request->paymentStatus == 1 ? 1 : null
         ]);
 
-        if(!empty($studentId) && $payment->type == Payment::PAYMENT_TYPE_SCHOOL){
+        if(!empty($studentId) && ($payment->type == Payment::PAYMENT_TYPE_SCHOOL || $payment->type == Payment::PAYMENT_TYPE_SCHOOL_DE)){
             $student = Student::find($studentId);
 
-            if(!empty($student) && $payment->type == Payment::PAYMENT_TYPE_SCHOOL && $request->paymentStatus == 1){
+            if(!empty($student) && ($payment->type == Payment::PAYMENT_TYPE_SCHOOL || $payment->type == Payment::PAYMENT_TYPE_SCHOOL_DE) && $request->paymentStatus == 1){
                 $this->generateMatricAndEmail($student);
             }
             alert()->success('Good job', 'Student Charged')->persistent('Close');
