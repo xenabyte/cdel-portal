@@ -497,7 +497,7 @@
                         </select>
                     </div>
                     
-                    <input type="text" id="paymentId" name="payment_id">
+                    <input type="hidden" id="paymentId" name="payment_id">
 
                     <div class="mb-3" id='payment-for' style="display: none">
                         <label for="payment_for" class="form-label">Payment For<span class="text-danger">*</span></label>
