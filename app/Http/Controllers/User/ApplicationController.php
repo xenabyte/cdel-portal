@@ -56,8 +56,8 @@ class ApplicationController extends Controller
         
         $applicant = Applicant::with('programme', 'olevels', 'guardian')->where('id', $userId)->first();
 
-        $applicationPayment = Payment::with('structures')->where('type', Payment::PAYMENT_TYPE_GENERAl_APPLICATION)->where('academic_session', $academicSession)->first();
-        $interApplicationPayment = Payment::with('structures')->where('type', Payment::PAYMENT_TYPE_INTER_TRANSFER_APPLICATION)->where('academic_session', $academicSession)->first();
+        $applicationPayment = Payment::with('structures')->where('type', Payment::PAYMENT_TYPE_GENERAl_APPLICATION)->where('academic_session', $applicationSession)->first();
+        $interApplicationPayment = Payment::with('structures')->where('type', Payment::PAYMENT_TYPE_INTER_TRANSFER_APPLICATION)->where('academic_session', $applicationSession)->first();
 
         $paymentId = $applicationPayment->id;
         $interPaymentId = $interApplicationPayment->id;
