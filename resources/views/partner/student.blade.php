@@ -175,6 +175,7 @@ $studentRegistrations = $student->courseRegistrationDocument()->orderBy('created
                                 </div>
                             </div>
                             <!--end card-body-->
+                            @if(!empty($student->applicant->guardian))
                             <div class="card-body border-top border-top-dashed p-4">
                                 <div>
                                     <h6 class="text-muted text-uppercase fw-semibold mb-4">Guardian Info</h6>
@@ -202,6 +203,7 @@ $studentRegistrations = $student->courseRegistrationDocument()->orderBy('created
                                     </div>
                                 </div>
                             </div>
+                            @endif
                         </div>
                         <!-- end card -->
                     </div>

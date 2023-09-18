@@ -1196,6 +1196,7 @@
 
 
                     <div class="tab-pane fade" id="guardian" role="tabpanel">
+                        @if(!empty($student->applicant->guardian))
                         <div class="card">
                             <div class="card-body">
                                 <h5 class="card-title mb-3">Guardian Information</h5>
@@ -1247,6 +1248,7 @@
                                 </form>
                             </div>
                         </div>
+                        @endif
                     </div>
 
                     <div class="tab-pane fade" id="nok" role="tabpanel">
