@@ -233,11 +233,10 @@
                         <div class="mt-4 border-top border-top-dashed pt-3">
                             <button class="btn btn-success w-100" id='submit-button' disabled type="submit">Make Payment</button>
                         </div>
+                    </div>
 
-                        <div class="mt-5 text-center">
-                            <p class="mb-0">Already paid for application ? <a href="{{url('/applicant/login')}}" class="fw-semibold text-primary text-decoration-underline"> Sign in to complete application</a> </p>
-                        </div>
-
+                    <div class="mt-5 text-center">
+                        <p class="mb-0">Already paid for application ? <a href="{{url('/applicant/login')}}" class="fw-semibold text-primary text-decoration-underline"> Sign in to complete application</a> </p>
                     </div>
                 </form>
             </div>
