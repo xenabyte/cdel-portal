@@ -499,7 +499,7 @@ class PaymentController extends Controller
         }elseif($payment->type == Payment::PAYMENT_TYPE_INTER_TRANSFER_APPLICATION){
             $amount = $request->amountAcceptance;
         }elseif($payment->type == Payment::PAYMENT_TYPE_SCHOOL){
-            $amount = $request->amountTuition;
+            $amount = env('PAYMENT_TYPE')=='Percentage'?$request->amountTuition:$request->amountTuition*100;
         }else{
             $amount = $request->amountGeneral * 100;
         }
