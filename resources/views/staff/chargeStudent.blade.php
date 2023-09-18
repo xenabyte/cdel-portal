@@ -607,7 +607,7 @@
             .then(response => {
                 const data = response.data;
 
-                if (selectedPaymentType === 'School Fee') {
+                if (selectedPaymentType === 'School Fee' || selectedPaymentType === 'DE School Fee') {
                     const amount = data.structures.reduce((total, structure) => total + parseInt(structure.amount), 0); 
                     paymentId.value = data.id;
                     console.log(paymentId.value);
