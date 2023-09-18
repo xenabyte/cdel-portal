@@ -196,8 +196,8 @@
                                                         @if($schoolFeePayment->level->id == $level->id)
                                                             <tr>
                                                                 <th scope="row">{{ $loop->iteration }}</th>
-                                                                <td>{{ $schoolFeePayment->type  }} </td>
                                                                 <td>{{ $schoolFeePayment->programme->name  }} </td>
+                                                                <td>{{ $schoolFeePayment->type  }} </td>
                                                                 <td>₦{{ number_format($schoolFeePayment->structures->sum('amount')/100, 2) }}</td>
                                                                 <td>{{ $schoolFeePayment->level->level }}</td>
                                                                 <td>
