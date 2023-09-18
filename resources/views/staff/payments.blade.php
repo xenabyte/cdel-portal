@@ -183,6 +183,7 @@
                                                     <tr>
                                                         <th scope="col">Id</th>
                                                         <th scope="col">Programme</th>
+                                                        <th scope="col">Type</th>
                                                         <th scope="col">Total Amount</th>
                                                         <th scope="col">Level</th>
                                                         <th scope="col"></th>
@@ -195,6 +196,7 @@
                                                         @if($schoolFeePayment->level->id == $level->id)
                                                             <tr>
                                                                 <th scope="row">{{ $loop->iteration }}</th>
+                                                                <td>{{ $schoolFeePayment->type  }} </td>
                                                                 <td>{{ $schoolFeePayment->programme->name  }} </td>
                                                                 <td>₦{{ number_format($schoolFeePayment->structures->sum('amount')/100, 2) }}</td>
                                                                 <td>{{ $schoolFeePayment->level->level }}</td>
