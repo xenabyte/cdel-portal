@@ -35,9 +35,8 @@
                 <div class="row">
                     <div class="card-header align-items-center">
                         <h4 class="card-title mb-0 flex-grow-1">Other Payments</h4>
-                    </div><!-- end card header -->
-                
-                    @foreach($payments->where('type', '!=', 'School Fee') as $payment)
+                    </div><!-- end card header -->             
+                    @foreach($payments->where('type', '!=', 'School Fee')->where('type', '!=', 'DE School Fee') as $payment)
                     <div class="col-sm-6 col-xl-4">
                         <!-- Simple card -->
                         <div class="card">
