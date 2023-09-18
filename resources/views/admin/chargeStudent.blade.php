@@ -497,7 +497,7 @@
                         </select>
                     </div>
                     
-                    <input type="hidden" id="paymentId" name="payment_id">
+                    <input type="text" id="paymentId" name="payment_id">
 
                     <div class="mb-3" id='payment-for' style="display: none">
                         <label for="payment_for" class="form-label">Payment For<span class="text-danger">*</span></label>
@@ -598,6 +598,10 @@
         const level = document.getElementById('level').value;
         const userType = document.getElementById('userType').value;
 
+        const paymentSelect = document.querySelector('select[name="payment_id"]');
+        const paymentHidden = document.querySelector('input[name="payment_id"]');
+
+
         if(selectedPaymentType != ''){
             axios.post("{{ url('/admin/getPayment') }}", {
                 type: selectedPaymentType,
@@ -619,6 +623,8 @@
                     document.getElementById('payment-options-tuition').style.display = 'block';
                     document.getElementById('payment-options-general').style.display = 'none';
                     document.getElementById('payment-for').style.display = 'none';
+                    paymentSelect.disabled = true;
+                    paymentHidden.disabled = false;
 
 
                     const selectElement = document.querySelector('[name="amountTuition"]');
@@ -648,6 +654,9 @@
                     document.getElementById('payment-options-general').style.display = 'block';
                     document.getElementById('payment-for').style.display = 'block';
 
+                    paymentSelect.disabled = false;
+                    paymentHidden.disabled = true; 
+
                     const selectElement = document.querySelector('select[name="payment_id"]');
 
                     data.forEach(item => {
@@ -665,6 +674,9 @@
                     document.getElementById('payment-options-acceptance').style.display = 'block';
                     document.getElementById('payment-options-general').style.display = 'none';
                     document.getElementById('payment-for').style.display = 'none';
+
+                    paymentSelect.disabled = true;
+                    paymentHidden.disabled = false;
 
                     
                     const selectElement = document.querySelector('[name="amountAcceptance"]');

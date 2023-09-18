@@ -438,6 +438,8 @@ class PaymentController extends Controller
     }
 
     public function chargeStudent(Request $request){
+        $studentId = null;
+        $applicantId = null;
         if(!empty($request->student_id)){
             $student = Student::with('programme', 'applicant')->where('id', $request->student_id)->first();
             $studentId = $student->id;
