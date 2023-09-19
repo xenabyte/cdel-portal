@@ -155,7 +155,7 @@ class ApplicationController extends Controller
         }
 
         $user = Auth::guard('user')->user();
-        $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $user->lastname .' '. $user->othernames)));
+        $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $user->application_number.$user->lastname .' '. $user->othernames)));
         if(!empty($user->slug)){
             $slug = $user->slug;
         }else{
@@ -195,7 +195,7 @@ class ApplicationController extends Controller
         }
 
         if(!empty($request->image)){
-            $imageUrl = 'uploads/applicant/'.$user->application_number.$slug.'.'.$request->file('image')->getClientOriginalExtension();
+            $imageUrl = 'uploads/applicant/'.$slug.'.'.$request->file('image')->getClientOriginalExtension();
             $image = $request->file('image')->move('uploads/applicant', $imageUrl);
 
             $user->image = $imageUrl;
