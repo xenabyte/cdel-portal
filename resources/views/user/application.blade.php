@@ -163,7 +163,7 @@
                                 </div>
                                 @endif
 
-                                @if($percent == 100 && empty($applicant->status))
+                                @if($percent >= 100 && empty($applicant->status))
                                 <div class="card">
                                     <div class="card-body">
                                         <div class="d-flex align-items-center mb-1">
@@ -247,7 +247,11 @@
                                             <div class="row">
                                                 <div class="col-lg-12 text-center">
                                                     <div class="profile-user position-relative d-inline-block mx-auto mb-2">
-                                                        <img src="{{asset(empty($applicant->image)?'assets/images/users/user-dummy-img.jpg':$applicant->image)}}" class="rounded-circle avatar-lg img-thumbnail user-profile-image" alt="user-profile-image">
+                                                        @if(empty($applicant->image))
+                                                        <img src="{{asset('assets/images/users/user-dummy-img.jpg')}}" class="rounded-circle avatar-lg img-thumbnail user-profile-image" alt="user-profile-image">
+                                                        @else
+                                                        <img src="{{asset($applicant->image)}}" class="rounded-circle avatar-lg img-thumbnail user-profile-image" alt="user-profile-image">
+                                                        @endif
                                                         <div class="avatar-xs p-0 rounded-circle profile-photo-edit">
                                                             <input id="profile-img-file-input" type="file" class="profile-img-file-input" accept="image/png, image/jpeg" name="image" required>
                                                             <label for="profile-img-file-input" class="profile-photo-edit avatar-xs">
