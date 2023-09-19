@@ -78,7 +78,7 @@ class ApplicationController extends Controller
         // }
 
         $percent = 1;
-        $total = 7;
+        $total = 5;
         if(!empty($applicant->lastname)){
             $percent = $percent + 1;
         }
