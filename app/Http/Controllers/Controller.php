@@ -180,7 +180,7 @@ class Controller extends BaseController
         $paystackAmount =  (((1.4/100) * $amount)+5000);
 
         // $paymentAmount = $amount + $paystackAmount + 5000;
-        $paymentAmount = $amount + 50000;
+        $paymentAmount = $amount + 5000;
 
         return $paymentAmount/100;
     }
