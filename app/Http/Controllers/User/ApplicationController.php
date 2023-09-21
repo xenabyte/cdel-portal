@@ -318,7 +318,8 @@ class ApplicationController extends Controller
             $guardian->address = $request->address;
         }
 
-        if($gua = $guardian->save()){
+        if($guardian->save()){
+            $gua = Guardian::where('email', $request->email)->first();
             $user->guardian_id = $gua->id;
             $user->save();
 
@@ -640,7 +641,8 @@ class ApplicationController extends Controller
             $nextOfKin->address = $request->address;
         }
 
-        if($nok = $nextOfKin->save()){
+        if($nextOfKin->save()){
+            $nok = NextOfKin::where('email', $request->email)->first();
             $user->next_of_kin_id = $nok->id;
             $user->save();
             
