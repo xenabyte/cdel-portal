@@ -422,7 +422,7 @@
                                     <ul class="nav nav-sm flex-column">
                                         @if($staffBursaryRole)
                                         <li class="nav-item">
-                                            <a href="{{ url('/staff/payments') }}" class="nav-link"> Payments </a>
+                                            <a href="{{ url('/staff/payments') }}" class="nav-link"> Bills </a>
                                         </li>
                                         <li class="nav-item">
                                             <a href="{{('/staff/transactions')}}" class="nav-link"> Transactions </a>

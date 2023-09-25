@@ -7,12 +7,12 @@
 <div class="row">
     <div class="col-12">
         <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-            <h4 class="mb-sm-0">Payment</h4>
+            <h4 class="mb-sm-0">Bill</h4>
 
             <div class="page-title-right">
                 <ol class="breadcrumb m-0">
                     <li class="breadcrumb-item"><a href="javascript: void(0);">Pages</a></li>
-                    <li class="breadcrumb-item active">Payments</li>
+                    <li class="breadcrumb-item active">Bill</li>
                 </ol>
             </div>
 
@@ -27,9 +27,9 @@
             <div class="col-xl-7">
                 <div class="card card-height-100">
                     <div class="card-header border-0 align-items-center d-flex">
-                        <h4 class="card-title mb-0 flex-grow-1">Payment Overview - {{ $payment->title }}</h4>
+                        <h4 class="card-title mb-0 flex-grow-1">Bill Overview - {{ $payment->title }}</h4>
                         <div class="flex-shrink-0">
-                            <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#editPayment{{$payment->id}}" style="margin: 5px" class="btn btn-success">Edit Payment</a>
+                            <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#editPayment{{$payment->id}}" style="margin: 5px" class="btn btn-success">Edit Bill</a>
                         </div>
                     </div><!-- end card header -->
 
@@ -62,11 +62,11 @@
                         </div>
                     </div><!-- end card header -->
                     <div class="card-body">
-                        <p class="text-muted">Payment Type: {{ $payment->type }} </p>
+                        <p class="text-muted">Bill Type: {{ $payment->type }} </p>
                         <hr>
                         <p class="text-muted">Level : {{ !empty($payment->level)? $payment->level->level : null }} </p>
                         <hr>
-                        <p class="text-muted">Payment Academic Session: {{ $payment->academic_session }} </p>
+                        <p class="text-muted">Bill Academic Session: {{ $payment->academic_session }} </p>
                         <hr>
                         {!! $payment->description !!}
                     </div><!-- end card body -->
@@ -75,9 +75,9 @@
             <div class="col-xl-5">
                 <div class="card card-height-100">
                     <div class="card-header border-0 align-items-center d-flex">
-                        <h4 class="card-title mb-0 flex-grow-1">Payment Structure</h4>
+                        <h4 class="card-title mb-0 flex-grow-1">Bill Structure</h4>
                         <div class="flex-shrink-0">
-                            <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#addStructure" style="margin: 5px" class="btn btn-primary">Add Payment Structure</a>
+                            <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#addStructure" style="margin: 5px" class="btn btn-primary">Add Bill Structure</a>
                         </div>
                     </div><!-- end card header -->
                     <div class="card-body pt-0">
@@ -197,7 +197,7 @@
     <div class="modal-dialog modal-xl modal-dialog-centered">
         <div class="modal-content border-0 overflow-hidden">
             <div class="modal-header p-3">
-                <h4 class="card-title mb-0">Update Payment</h4>
+                <h4 class="card-title mb-0">Update Bill</h4>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
 
@@ -207,12 +207,12 @@
                     <input type="hidden" name='payment_id' value="{{ $payment->id }}">
                     
                     <div class="mb-3">
-                        <label for="paymentTitle" class="form-label">Payment Name</label>
+                        <label for="paymentTitle" class="form-label">Bill Name</label>
                         <input type="text" class="form-control" name="title" id="paymentTitle" value="{{ $payment->title }}">
                     </div>
 
                     <div class="mb-3">
-                        <label for="type" class="form-label">Select Payment Type</label>
+                        <label for="type" class="form-label">Select Bill Type</label>
                         <select class="form-select" aria-label="type" name="type">
                             <option selected value= "">Select type </option>
                             <option value="Application Fee">Application Fee</option>
@@ -274,7 +274,7 @@
     <div class="modal-dialog modal-xl modal-dialog-centered">
         <div class="modal-content border-0 overflow-hidden">
             <div class="modal-header p-3">
-                <h4 class="card-title mb-0">Add Payment</h4>
+                <h4 class="card-title mb-0">Add Bill Structure</h4>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
 
@@ -296,7 +296,7 @@
 
                     <hr>
                     <div class="text-end">
-                        <button type="submit" class="btn btn-primary">Create Payment</button>
+                        <button type="submit" class="btn btn-primary">Add Bill Structure</button>
                     </div>
                 </form>
             </div>

@@ -26,6 +26,7 @@ class CourseRegistration extends Model
         'level_id',
         'result_approval_id',
         'programme_course_id',
+        're_reg',
         'status'
     ];
 

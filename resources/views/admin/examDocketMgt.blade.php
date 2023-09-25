@@ -38,7 +38,7 @@
                             <div class="row g-3">
 
                                 <div class="col-lg-4">
-                                    <h4 class="card-title mb-0 flex-grow-1">Semester: {{ !empty($pageGlobalData->examSetting) ? ($pageGlobalData->examSetting->semester == 1 ? ' First Semester' : ' Second Semester') : 'Not Set' }}</h4>
+                                    <h4 class="card-title mb-0 flex-grow-1">Semester: {{ !empty($pageGlobalData->examSetting) ? ($pageGlobalData->examSetting->semester == 1 ? env('FIRST_SEMESTER') : env('SECOND_SEMESTER')) : 'Not Set' }}</h4>
                                     <br>
                                     <div class="form-floating">
                                         <select class="form-select" id="semester" name="semester" aria-label="semester">

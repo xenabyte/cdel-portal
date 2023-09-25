@@ -56,7 +56,7 @@
     </table>
     <div class="row" style="margin-top: 2%;">
         <div class="text-center">
-            <h1>Examination Result</h1>
+            <h1>{{ $info->resultSemester == 1? env('FIRST_SEMESTER') : env('SECOND_SEMESTER') }}  Examination Result</h1>
             <br>
         </div>
     </div>

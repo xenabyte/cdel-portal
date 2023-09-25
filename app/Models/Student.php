@@ -41,7 +41,8 @@ class Student extends Authenticatable
         'mentor_id',
         'degree_class',
         'standing',
-        'cgpa'
+        'cgpa',
+        'onboard_status'
     ];
 
     /**

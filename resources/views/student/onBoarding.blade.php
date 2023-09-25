@@ -19,7 +19,7 @@
                             </p>
                             <div class="mt-4">
                                 <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                                   Onboard
+                                   Click here to onboard
                                 </button>
                             </div>
                         </div>

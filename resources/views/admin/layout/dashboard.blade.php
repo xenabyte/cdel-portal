@@ -519,7 +519,7 @@
                             <div class="collapse menu-dropdown" id="bursary">
                                 <ul class="nav nav-sm flex-column">
                                     <li class="nav-item">
-                                        <a href="{{ url('/admin/payments') }}" class="nav-link"> Payments </a>
+                                        <a href="{{ url('/admin/payments') }}" class="nav-link"> Bills </a>
                                     </li>
                                     <li class="nav-item">
                                         <a href="{{('/admin/transactions')}}" class="nav-link"> Transactions </a>

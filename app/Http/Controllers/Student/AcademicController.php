@@ -62,10 +62,24 @@ class AcademicController extends Controller
             'academic_session' => $academicSession
         ])->get();
 
-        //carryover courses
-        $failedCourses = CourseRegistration::with('course')->where('student_id', $studentId)->where('grade', 'F')->get();
+        $allRequiredCourses = CoursePerProgrammePerAcademicSession::where('programme_id', $student->programme_id)->where('status', '!=', 'Elective')->get();
+        if($student->applicant->application_type != 'UTME'){
+            $allRequiredCourses = CoursePerProgrammePerAcademicSession::where('programme_id', $student->programme_id)->where('status', '!=', 'Elective')->where('level_id', '!=', 1)->get();
+        }
+
+        $allRequiredCoursesIds = $allCourses->pluck('course.id')->toArray();
+        // Get the IDs of courses that the student has registered for
+        $registeredCourseIds = CourseRegistration::where('student_id', $student->id)
+        ->pluck('course_id')
+        ->toArray();
+
+        // Use array_diff to find the required courses that are not in CourseRegistration
+        $unregisteredRequiredCoursesIds = array_diff($allRequiredCourseIds, $registeredCourseIds);
+
+        $failedCourses = CourseRegistration::with('course')->where('student_id', $studentId)->where('grade', 'F')->where('re_reg', null)->get();
         $failedCourseIds = $failedCourses->pluck('course.id')->toArray();
         $carryOverCourses = CoursePerProgrammePerAcademicSession::where('programme_id', $student->programme_id)->whereIn('course_id', $failedCourseIds)->get();
+        $unregisteredRequiredCourses = CoursePerProgrammePerAcademicSession::where('programme_id', $student->programme_id)->whereIn('course_id', $unregisteredRequiredCoursesIds)->get();
 
         $addOrRemoveTxPay = Payment::with('structures')->where('type', Payment::PAYMENT_MODIFY_COURSE_REG)->where('academic_session', $academicSession)->first();
         $addOrRemoveTxId = $addOrRemoveTxPay->id;
@@ -85,6 +99,7 @@ class AcademicController extends Controller
             'courses' => $coursePerProgrammePerAcademicSession,
             'existingRegistration' => $existingRegistration,
             'carryOverCourses' => $carryOverCourses,
+            'unregisteredRequiredCourses' => $unregisteredRequiredCourses,
             'addOrRemoveTxs' => $addOrRemoveTxs,
             'passTuition' => $paymentCheck->passTuitionPayment,
             'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
@@ -154,6 +169,17 @@ class AcademicController extends Controller
                 ])->first();
 
                 if (!$existingRegistration) {
+                    $checkCarryOver = CourseRegistration::where([
+                        'student_id' => $student->id,
+                        'course_id' => $course->id,
+                        'grade' => 'F',
+                    ])->first();
+
+                    if(!empty($checkCarryOver)){
+                        $checkCarryOver->re_reg = true;
+                        $checkCarryOver->save();
+                    }
+                    
                     $courseReg = CourseRegistration::create([
                         'student_id' => $studentId,
                         'course_id' => $course->id,

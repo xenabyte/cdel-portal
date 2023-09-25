@@ -322,10 +322,13 @@ class Controller extends BaseController
     public function checkSchoolFees($student, $academicSession, $levelId)
     {
         $studentId = $student->id;
+        $applicantId = $student->user_id;
+        $applicant = Applicant::find(applicantId);
+        $applicationType = $applicant->application_type;
 
         $type = Payment::PAYMENT_TYPE_SCHOOL;
 
-        if(!$student->is_active && empty($student->matric_number) && $student->level_id == 2){
+        if($applicationType != 'UTME' && ($student->level_id == 2|| $student->level_id == 3)){
             $type = Payment::PAYMENT_TYPE_SCHOOL_DE;
         }
 

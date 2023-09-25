@@ -9,7 +9,9 @@ use App\Models\CourseRegistration;
 use App\Models\Course;
 use App\Models\ResultApprovalStatus;
 use App\Models\Student;
+use App\Models\User as Applicant;
 use App\Models\CoursePerProgrammePerAcademicSession;
+use App\Models\GradeScale;
 
 use League\Csv\Reader;
 
@@ -95,123 +97,143 @@ class ProcessResultCSV extends Command
                 $caScore = $row['CA'];
                 $academicSession = $row['AcademicSession'];
                 $courseCode = strtoupper(trim(str_replace("--", "", $row['CourseCode'])));
-                $programmeCode = $row['ProgrammeCode'];
+                $programmeId = $row['ProgrammeId'];
                 $examScore = $row['Exam'];
                 $totalScore = $row['Total'];
-                $grade = $row['Grade'];
-                $gradePoint = $row['Point'];
-                $level = $row['LevelCode'];
+                $courseStatus = $row['CourseStatus'];
+                // $grade = $row['Grade'];
+                // $gradePoint = $row['Point'];
+                $levelId = $row['LevelCode'];
                 $courseCreditUnit = $row['CourseUnit'];
+                $carryOver = $row['CarryOver'];
 
-                $student = Student::with('applicant')->where('matric_number', $matricNumber)->first();
-                if(!$student) {
-                    $this->info("Student '{$matricNumber}' dosent exist");
-                    continue;
-                }
+                if($matricNumber != 'TAU/20232966' && $matricNumber != 'TAU/20222772' && $matricNumber != 'TAU/20222775' && $matricNumber != 'TAU/20233419'){
+                    if(!empty($totalScore)) {
+                        if (strpos($matricNumber, 'TAU') !== false) {
+                            $applicantId = Applicant::where('application_number', $matricNumber)->value('id');
+                            $student = Student::with('applicant')->where('user_id', $applicantId)->first();
+                        } else {
+                            $student = Student::with('applicant')->where('matric_number', $matricNumber)->first();
+                        }
+
+                        if(!$student) {
+                            $this->info("Student '{$matricNumber}' dosent exist");
+                            continue;
+                        }
+                    
+
+                        $resultApprovalId = ResultApprovalStatus::getApprovalStatusId(ResultApprovalStatus::SENATE_APPROVED);
+
+                        //step 1: get course
+                        $course = Course::where([
+                            'code' => $courseCode,
+                        ])->first();
+
+                        if(!$course){
+                            $this->info("Course with '{$courseCode}' not found in the db ");
+                            continue;
+                        }
+
+                        // step 2: get level adviser course information
+                        $programmeCourse = CoursePerProgrammePerAcademicSession::where([
+                            'course_id' => $course->id,
+                            'level_id' => $levelId,
+                            'programme_id' => $programmeId,
+                            'semester' => $semester,
+                            'credit_unit' => $courseCreditUnit,
+                            'academic_session' => $academicSession,
+                        ])->first();
                 
-                $programmeId = null;
-                if (array_key_exists($programmeCode, $programmeArray)) {
-                    $programmeId = $programmeArray[$programmeCode];
-                }else{
-                    $this->info("Programme with '{$programmeCode}' not found in programme array");
-                    continue;
+                        //creat level adviser course information
+                        if(empty($carryOver)){
+                            if(!$programmeCourse){
+                                if(!empty($courseStatus)){
+                                    CoursePerProgrammePerAcademicSession::create([
+                                        'course_id' => $course->id,
+                                        'level_id' => $levelId,
+                                        'programme_id' => $programmeId,
+                                        'semester' => $semester,
+                                        'credit_unit' => $courseCreditUnit,
+                                        'academic_session' => $academicSession,
+                                        'status' => $courseStatus
+                                    ]);
+                                }
+                            }
+                        }else{
+                            $programmeCourse = CoursePerProgrammePerAcademicSession::where([
+                                // 'level_id' => $levelId,
+                                'course_id' => $course->id,
+                                'programme_id' => $programmeId,
+                                'semester' => $semester,
+                                'credit_unit' => $courseCreditUnit,
+                            ])->first();
+                        }
+                        
+
+                        // step 3: create student course registrations
+                        if(!$programmeCourse){
+                            $this->info("CoursePerProgrammePerAcademicSession not found in database - '{$courseCode}' - '{$matricNumber}'");
+                            continue;
+                        }
+
+                        $existingRegistration = CourseRegistration::where([
+                            'student_id' => $student->id,
+                            'course_id' => $course->id,
+                            'academic_session' => $academicSession,
+                            'level_id' => $levelId,
+                        ])->first();
+
+                        if(!$existingRegistration){
+                            $courseReg = CourseRegistration::create([
+                                'student_id' => $student->id,
+                                'course_id' => $programmeCourse->course_id,
+                                'course_credit_unit' => $programmeCourse->credit_unit,
+                                'course_code' => $courseCode,
+                                'course_status' => $programmeCourse->status,
+                                'semester' => $programmeCourse->semester,
+                                'academic_session' => $academicSession,
+                                'level_id' => $levelId,
+                                'programme_course_id' => $programmeCourse->id
+                            ]);
+                        }
+
+                        // step 4: add results
+                        $studentCourseReg = CourseRegistration::where([
+                            'student_id' => $student->id,
+                            'course_code' => $courseCode,
+                            'academic_session' => $academicSession,
+                            'level_id' => $levelId,
+                        ])->first();
+
+                        $checkCarryOver = CourseRegistration::where([
+                            'student_id' => $student->id,
+                            'course_id' => $course->id,
+                            'grade' => 'F',
+                        ])->first();
+
+                        if(!empty($checkCarryOver)){
+                            $checkCarryOver->re_reg = true;
+                            $checkCarryOver->save();
+                        }
+
+                        if(!$studentCourseReg){
+                            $this->info("Course Reg not found for  with '{$student->applicant->lastname}' '{$student->applicant->othernames}' with course '{$courseCode}'");
+                            continue;
+                        }    
+                        $grading = GradeScale::computeGrade($totalScore);
+                        $grade = $grading->grade;
+                        $points = $grading->point;
+
+                        $studentCourseReg->total = $totalScore;
+                        $studentCourseReg->grade = $grade;
+                        $studentCourseReg->points = $points*$studentCourseReg->course_credit_unit;
+                        $studentCourseReg->result_approval_id = $resultApprovalId;
+                        $studentCourseReg->status = 'Completed';
+                        $studentCourseReg->save();
+                        
+                    }
                 }
-                
-
-                $resultApprovalId = ResultApprovalStatus::getApprovalStatusId(ResultApprovalStatus::SENATE_APPROVED);
-
-                $course = Course::where([
-                    'code' => $courseCode,
-                ])->first();
-
-                if(!$course){
-
-                    $this->info("Course with '{$courseCode}' not found in the db ");
-                    continue;
-                    // $course = Course::create([
-                    //     'name' => $courseName,
-                    //     'code' => $courseCode,
-                    //     'department_id' => $departmentId
-                    // ]);
-                }
-                
-                $levelId = $this->calculateLevel($academicSession, $student->level_id);
-                if($levelId == null){
-                    continue;
-                }
-
-                $programmeCourse = CoursePerProgrammePerAcademicSession::where([
-                    'course_id' => $course->id,
-                    'level_id' => $levelId,
-                    'programme_id' => $programmeId,
-                    'semester' => $semester,
-                    'credit_unit' => $courseCreditUnit,
-                    'academic_session' => $academicSession,
-                ])->first();
-        
-                if(!$programmeCourse){
-                    $this->info("CoursePerProgrammePerAcademicSession not found in database");
-                    continue;
-                }
-
-                // CoursePerProgrammePerAcademicSession::create([
-                //     'course_id' => $course->id,
-                //     'level_id' => $levelId,
-                //     'programme_id' => $programmeId,
-                //     'semester' => $semester,
-                //     'credit_unit' => $courseCreditUnit,
-                //     'academic_session' => $academicSession,
-                //     'status' => 'Required',
-                // ]);
-
-                $levelId = ($level === '1000') ? 1 : (
-                    ($level === '1001') ? 2 : (
-                    ($level === '1002') ? 3 : null));
-
-                // $existingRegistration = CourseRegistration::where([
-                //     'student_id' => $student->id,
-                //     'course_id' => $course->id,
-                //     'academic_session' => $academicSession,
-                //     'level_id' => $levelId,
-                // ])->first();
-
-                // if(!$existingRegistration){
-                //     $courseReg = CourseRegistration::create([
-                //         'student_id' => $student->id,
-                //         'course_id' => $programmeCourse->course_id,
-                //         'course_credit_unit' => $programmeCourse->credit_unit,
-                //         'course_code' => $courseCode,
-                //         'course_status' => $programmeCourse->status,
-                //         'semester' => $programmeCourse->semester,
-                //         'academic_session' => $academicSession,
-                //         'level_id' => $levelId,
-                //         'programme_course_id' => $programmeCourse->id
-                //     ]);
-                // }
-
-                $studentCourseReg = CourseRegistration::where([
-                    'student_id' => $student->id,
-                    'course_code' => $courseCode,
-                    'academic_session' => $academicSession,
-                    'level_id' => $levelId,
-                ])->first();
-
-                if(!$studentCourseReg){
-                    $this->info("Course Reg not found for  with '{$student->applicant->lastname}' '{$student->applicant->othernames}' with course '{$courseCode}'");
-                    continue;
-                }    
-                
-                $studentCourseReg->ca_score = !empty($caScore)? $caScore:0;
-                $studentCourseReg->exam_score = $examScore;
-                $studentCourseReg->total = $totalScore;
-                $studentCourseReg->grade = $grade;
-                $studentCourseReg->points = $gradePoint*$studentCourseReg->course_credit_unit;
-                $studentCourseReg->result_approval_id = $resultApprovalId;
-                $studentCourseReg->status = 'Completed';
-                $studentCourseReg->save();
-                
             }
-
             $this->info('Result processed successfully!');
         } else {
             $this->error('File not found.');

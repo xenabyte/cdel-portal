@@ -151,17 +151,29 @@
                                             </td>
                                         </tr>
                                     @endforeach
+                                    @foreach($unregisteredRequiredCourses->where('semester', 1) as $unregisteredCourse)
+                                        <tr>
+                                            <td>{{ $firstSemester++ }}</td>
+                                            <td>{{ $unregisteredCourse->course->code }}</td>
+                                            <td>{{ $unregisteredCourse->course->name }}</td>
+                                            <td>{{ $unregisteredCourse->credit_unit }}</td>
+                                            <td>{{ $unregisteredCourse->status }}</td>
+                                            <td>
+                                                <input type="checkbox" name="selected_courses[]" value="{{ $unregisteredCourse->id }}">
+                                            </td>
+                                        </tr>
+                                    @endforeach
                                     @foreach($courses->where('semester', 1) as $course11)
-                                    <tr>
-                                        <td>{{ $firstSemester++ }}</td>
-                                        <td>{{ $course11->course->code }}</td>
-                                        <td>{{ $course11->course->name }}</td>
-                                        <td>{{ $course11->credit_unit }}</td>
-                                        <td>{{ $course11->status }}</td>
-                                        <td>
-                                            <input type="checkbox" name="selected_courses[]" value="{{ $course11->id }}">
-                                        </td>
-                                    </tr>
+                                        <tr>
+                                            <td>{{ $firstSemester++ }}</td>
+                                            <td>{{ $course11->course->code }}</td>
+                                            <td>{{ $course11->course->name }}</td>
+                                            <td>{{ $course11->credit_unit }}</td>
+                                            <td>{{ $course11->status }}</td>
+                                            <td>
+                                                <input type="checkbox" name="selected_courses[]" value="{{ $course11->id }}">
+                                            </td>
+                                        </tr>
                                     @endforeach
                                 </tbody>
                                 <tbody>
@@ -205,17 +217,29 @@
                                             </td>
                                         </tr>
                                     @endforeach
+                                    @foreach($unregisteredRequiredCourses->where('semester', 2) as $unregisteredCourse2)
+                                        <tr>
+                                            <td>{{ $firstSemester++ }}</td>
+                                            <td>{{ $unregisteredCourse2->course->code }}</td>
+                                            <td>{{ $unregisteredCourse2->course->name }}</td>
+                                            <td>{{ $unregisteredCourse2->credit_unit }}</td>
+                                            <td>{{ $unregisteredCourse2->status }}</td>
+                                            <td>
+                                                <input type="checkbox" name="selected_courses[]" value="{{ $unregisteredCourse2->id }}">
+                                            </td>
+                                        </tr>
+                                    @endforeach
                                     @foreach($courses->where('semester', 2) as $course12)
-                                    <tr>
-                                        <td>{{ $secondSemester++ }}</td>
-                                        <td>{{ $course12->course->code }}</td>
-                                        <td>{{ $course12->course->name }}</td>
-                                        <td>{{ $course12->credit_unit }}</td>
-                                        <td>{{ $course12->status }}</td>
-                                        <td>
-                                            <input type="checkbox" name="selected_courses[]" value="{{ $course12->id }}">
-                                        </td>
-                                    </tr>
+                                        <tr>
+                                            <td>{{ $secondSemester++ }}</td>
+                                            <td>{{ $course12->course->code }}</td>
+                                            <td>{{ $course12->course->name }}</td>
+                                            <td>{{ $course12->credit_unit }}</td>
+                                            <td>{{ $course12->status }}</td>
+                                            <td>
+                                                <input type="checkbox" name="selected_courses[]" value="{{ $course12->id }}">
+                                            </td>
+                                        </tr>
                                     @endforeach
                                 </tbody>
                                 <tbody>

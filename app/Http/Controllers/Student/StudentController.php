@@ -424,6 +424,11 @@ class StudentController extends Controller
             return redirect()->back();
         }
 
+        if($student->onboard_status){
+            alert()->info('Oops!', 'You have been onboarded successfully, kindly login to your portal with your details')->persistent('Close');
+            return redirect()->back();
+        }
+
         $applicant = $student->applicant;
         $applicant->lastname = $applicant->lastname;
         $applicant->othernames = $applicant->othernames;
@@ -435,6 +440,8 @@ class StudentController extends Controller
             alert()->error('Oops!', 'Password mismatch')->persistent('Close');
             return redirect()->back();
         }
+
+        $student->onboard_status = true;
 
         if($student->update()) {
             alert()->success('Success', 'Save Changes')->persistent('Close');

@@ -5,12 +5,12 @@
 <div class="row">
     <div class="col-12">
         <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-            <h4 class="mb-sm-0">Payments Setup for {{ $pageGlobalData->sessionSetting->academic_session }} Academic Session</h4>
+            <h4 class="mb-sm-0">Bills Setup for {{ $pageGlobalData->sessionSetting->academic_session }} Academic Session</h4>
 
             <div class="page-title-right">
                 <ol class="breadcrumb m-0">
                     <li class="breadcrumb-item"><a href="javascript: void(0);">Pages</a></li>
-                    <li class="breadcrumb-item active">Payments</li>
+                    <li class="breadcrumb-item active">Bills</li>
                 </ol>
             </div>
 
@@ -23,18 +23,18 @@
     <div class="col-lg-12">
         <div class="card">
             <div class="card-header align-items-center d-flex">
-                <h4 class="card-title mb-0 flex-grow-1">Payments</h4>
+                <h4 class="card-title mb-0 flex-grow-1">Bills</h4>
                 <div class="flex-shrink-0">
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addPayment">Create a Payment</button>
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addPayment">Create a Bill</button>
                     <a href="{{ asset('BulkPaymentFormat.csv') }}" class="btn btn-info" download>Download Format</a>
-                    <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#uploadBulkPayment">Bulk upload Payments</button>
+                    <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#uploadBulkPayment">Bulk upload Bills</button>
                 </div>
             </div><!-- end card header -->
 
             <div class="card-body">
                 <div class="row">
                     <div class="card-header align-items-center">
-                        <h4 class="card-title mb-0 flex-grow-1">Other Payments</h4>
+                        <h4 class="card-title mb-0 flex-grow-1">Other Bills</h4>
                     </div><!-- end card header -->
                     @foreach($payments->where('type', '!=', 'School Fee')->where('type', '!=', 'DE School Fee') as $payment)
                     <div class="col-sm-6 col-xl-4">
@@ -43,8 +43,8 @@
                             <div class="card-body">
                                 <h4 class="card-title mb-2">{{ $payment->title }}</h4>
                                 <p class="card-text">Programme: {{ $payment->programme ? $payment->programme->name : null }}</p>
-                                <p class="text-muted">Payment Type: {{ $payment->type }} </p>
-                                <p class="text-muted">Payment Academic Session: {{ $payment->academic_session }}  Academic Session</p>
+                                <p class="text-muted">Bill Type: {{ $payment->type }} </p>
+                                <p class="text-muted">Bill Academic Session: {{ $payment->academic_session }}  Academic Session</p>
                                 <p class="text-muted">Total Amount: ₦{{ number_format($payment->structures->sum('amount')/100, 2) }} </p>
                                 <hr>
                                 <div class="text-start">
@@ -58,7 +58,7 @@
                             <div class="modal-dialog modal-xl modal-dialog-centered">
                                 <div class="modal-content border-0 overflow-hidden">
                                     <div class="modal-header p-3">
-                                        <h4 class="card-title mb-0">Update Payment</h4>
+                                        <h4 class="card-title mb-0">Update Bill</h4>
                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                     </div>
                                     <hr>
@@ -68,12 +68,12 @@
                                             <input type="hidden" name='payment_id' value="{{ $payment->id }}">
                                             
                                             <div class="mb-3">
-                                                <label for="paymentTitle" class="form-label">Payment Name</label>
+                                                <label for="paymentTitle" class="form-label">Bill Name</label>
                                                 <input type="text" class="form-control" name="title" id="paymentTitle" value="{{ $payment->title }}">
                                             </div>
 
                                             <div class="mb-3">
-                                                <label for="type" class="form-label">Select Payment Type</label>
+                                                <label for="type" class="form-label">Select Bill Type</label>
                                                 <select class="form-select" aria-label="type" name="type">
                                                     <option selected value= "">Select type </option>
                                                     <option value="General Application Fee">General Application Fee</option>
@@ -163,7 +163,7 @@
 
                 <div class="row">
                     <div class="card-header align-items-center">
-                        <h4 class="card-title mb-0 flex-grow-1">School Fee Payment</h4>
+                        <h4 class="card-title mb-0 flex-grow-1">School Fee Bill</h4>
                     </div><!-- end card header -->
                     <hr>
                     <!-- Accordions with Plus Icon -->
@@ -211,7 +211,7 @@
                                                                         <div class="modal-dialog modal-xl modal-dialog-centered">
                                                                             <div class="modal-content border-0 overflow-hidden">
                                                                                 <div class="modal-header p-3">
-                                                                                    <h4 class="card-title mb-0">Update Payment</h4>
+                                                                                    <h4 class="card-title mb-0">Update Bill</h4>
                                                                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                                                 </div>
                                                                                 <hr>
@@ -221,12 +221,12 @@
                                                                                         <input type="hidden" name='payment_id' value="{{ $schoolFeePayment->id }}">
                                                                                         
                                                                                         <div class="mb-3">
-                                                                                            <label for="paymentTitle" class="form-label">Payment Name</label>
+                                                                                            <label for="paymentTitle" class="form-label">Bill Name</label>
                                                                                             <input type="text" class="form-control" name="title" id="paymentTitle" value="{{ $schoolFeePayment->title }}">
                                                                                         </div>
                                             
                                                                                         <div class="mb-3">
-                                                                                            <label for="type" class="form-label">Select Payment Type</label>
+                                                                                            <label for="type" class="form-label">Select Bill Type</label>
                                                                                             <select class="form-select" aria-label="type" name="type">
                                                                                                 <option selected value= "">Select type </option>
                                                                                                 <option value="General Application Fee">General Application Fee</option>
@@ -335,7 +335,7 @@
     <div class="modal-dialog modal-xl modal-dialog-centered">
         <div class="modal-content border-0 overflow-hidden">
             <div class="modal-header p-3">
-                <h4 class="card-title mb-0">Add Payment</h4>
+                <h4 class="card-title mb-0">Add Bill</h4>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
 
@@ -343,7 +343,7 @@
                 <form action="{{ url('/admin/addPayment') }}" method="post" enctype="multipart/form-data">
                     @csrf
                     <div class="mb-3">
-                        <label for="paymentTitle" class="form-label">Payment Name</label>
+                        <label for="paymentTitle" class="form-label">Bill Name</label>
                         <input type="text" class="form-control" name="title" id="paymentTitle">
                     </div>
 
@@ -353,7 +353,7 @@
                     </div>
 
                     <div class="mb-3">
-                        <label for="type" class="form-label">Select Payment Type</label>
+                        <label for="type" class="form-label">Select Bill Type</label>
                         <select class="form-select" aria-label="type" name="type">
                             <option selected value= "">Select type </option>
                             <option value="General Application Fee">General Application Fee</option>
@@ -399,7 +399,7 @@
 
                     <hr>
                     <div class="text-end">
-                        <button type="submit" class="btn btn-primary">Create Payment</button>
+                        <button type="submit" class="btn btn-primary">Create Bill</button>
                     </div>
                 </form>
             </div>
@@ -411,7 +411,7 @@
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content border-0 overflow-hidden">
             <div class="modal-header p-3">
-                <h4 class="card-title mb-0">Upload Bulk Payment</h4>
+                <h4 class="card-title mb-0">Upload Bulk Bills</h4>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
 
@@ -426,7 +426,7 @@
 
                     <hr>
                     <div class="text-end">
-                        <button type="submit" class="btn btn-primary">Upload Payment</button>
+                        <button type="submit" class="btn btn-primary">Upload Bills</button>
                     </div>
                 </form>
             </div>

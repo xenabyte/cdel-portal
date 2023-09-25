@@ -53,7 +53,7 @@ class AdmissionController extends Controller
     public function applicants(Request $request){
         $globalData = $request->input('global_data');
         $academicSession = $globalData->sessionSetting['application_session'];
-        $applicants = Applicant::where('academic_session', $academicSession)->get();
+        $applicants = Applicant::where('academic_session', $academicSession)->orderBy('status', 'DESC')->get();
 
         return view('admin.applicants', [
             'applicants' => $applicants,
@@ -72,7 +72,7 @@ class AdmissionController extends Controller
     }
 
     public function applicantWithSession(Request $request){
-        $applicants = Applicant::with('programme', 'olevels', 'guardian')->where('academic_session', $request->session)->get();
+        $applicants = Applicant::with('programme', 'olevels', 'guardian')->where('academic_session', $request->session)->orderBy('status', 'DESC')->get();
         
         return view('admin.applicants', [
             'applicants' => $applicants,

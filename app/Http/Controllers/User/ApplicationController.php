@@ -416,7 +416,7 @@ class ApplicationController extends Controller
             
             $newApplicant = ([
                 'slug' => $slug,
-                'email' => $request->email,
+                'email' => strtolower($request->email),
                 'lastname' => ucwords($request->lastname),
                 'programme_id' => $programmeApplied->id,
                 'phone_number' => $request->phone_number,
