@@ -43,10 +43,13 @@
                         </tr>
                     </thead>
                     <tbody>
+                        @php
+                            $matriculantId = 1;
+                        @endphp
                         @foreach($matriculants as $matriculant)
                             @if($matriculant->student->is_active)
                             <tr>
-                                <th scope="row">{{ $loop->iteration }}</th>
+                                <th scope="row">{{ $matriculantId++ }}</th>
                                 <td>{{ $matriculant->lastname .' '. $matriculant->othernames }}</td>
                                 <td>{{ $matriculant->student->matric_number }}</td>
                                 <td>{{ $matriculant->student->programme->name }}</td>

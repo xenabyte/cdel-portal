@@ -424,6 +424,11 @@ class StudentController extends Controller
             return redirect()->back();
         }
 
+        if(empty(strpos($request->email, 'tau.edu.ng'))) {
+            alert()->error('Error', 'Invalid student email, your student email must contain @tau.edu.ng or @st.tau.edu.ng')->persistent('Close');
+            return redirect()->back();
+        }
+
         if($student->onboard_status){
             alert()->info('Oops!', 'You have been onboarded successfully, kindly login to your portal with your details')->persistent('Close');
             return redirect()->back();
