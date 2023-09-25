@@ -266,7 +266,7 @@
                                 </ul>
                             </div>
                         </li> 
-
+                        @endif
 
                         <li class="nav-item">
                             <a class="nav-link menu-link" href="#resultManagement" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="resultManagement">
@@ -286,7 +286,6 @@
                                 <i class="mdi mdi-arrow-top-right-bold-box"></i> <span data-key="t-transaction">Exit(s)</span>
                             </a>
                         </li>
-                        @endif
                        
                         <li class="nav-item">
                             <a class="nav-link menu-link" href="{{ url('user/logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
