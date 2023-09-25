@@ -87,7 +87,7 @@ class AdmissionController extends Controller
 
         $matriculants = Applicant::with('student')->where('academic_session', $academicSession)->where('status', 'Admitted')->get();
 
-        return view('admin.matriculants', [
+        return view('staff.matriculants', [
             'matriculants' => $matriculants,
         ]);
     }
