@@ -323,7 +323,7 @@ class Controller extends BaseController
     {
         $studentId = $student->id;
         $applicantId = $student->user_id;
-        $applicant = User::find(applicantId);
+        $applicant = User::find($applicantId);
         $applicationType = $applicant->application_type;
 
         $type = Payment::PAYMENT_TYPE_SCHOOL;
