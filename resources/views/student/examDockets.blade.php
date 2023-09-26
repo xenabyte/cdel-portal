@@ -35,8 +35,8 @@
                             <th scope="col">Id</th>
                             <th scope="col">Academic Session</th>
                             <th scope="col">Semester</th>
-                            <th scope="col">Level Adviser Status</th>
-                            <th scope="col">HOD Status</th>
+                            {{-- <th scope="col">Level Adviser Status</th>
+                            <th scope="col">HOD Status</th> --}}
                             <th scope="col"></th>
                         </tr>
                     </thead>
@@ -46,8 +46,8 @@
                             <th scope="row">{{ $loop->iteration }}</th>
                             <td>{{ $studentExamCard->academic_session }}</td>
                             <td>{{ $studentExamCard->semester == '1' ? 'First' : 'Second' }} Semester</td>
-                            <td><span class="badge badge-soft-{{ $studentExamCard->level_adviser_status == 1 ? 'success' : 'warning' }}">{{ $studentExamCard->level_adviser_status == 1 ? 'Approved' : 'Pending' }}</span></td>
-                            <td><span class="badge badge-soft-{{ $studentExamCard->status == 1 ? 'success' : 'warning' }}">{{ $studentExamCard->hod_status == 1 ? 'Approved' : 'Pending' }}</span></td>
+                            {{-- <td><span class="badge badge-soft-{{ $studentExamCard->level_adviser_status == 1 ? 'success' : 'warning' }}">{{ $studentExamCard->level_adviser_status == 1 ? 'Approved' : 'Pending' }}</span></td>
+                            <td><span class="badge badge-soft-{{ $studentExamCard->status == 1 ? 'success' : 'warning' }}">{{ $studentExamCard->hod_status == 1 ? 'Approved' : 'Pending' }}</span></td> --}}
                             <td>
                                 <a href="{{ asset($studentExamCard->file) }}" target="_blank" style="margin: 5px" class="btn btn-warning">Download Form</a>
                             </td>
