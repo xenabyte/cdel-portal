@@ -168,7 +168,7 @@
                             <div class="dropdown-menu dropdown-menu-end">
                                 <!-- item-->
                                 <h6 class="dropdown-header">Welcome {{ $name }}!</h6>
-                                <h6 class="dropdown-header">Support Code: <span class="text-danger">ST{{ sprintf("%03d", $student->id) }}</span></h6>
+                                <h6 class="dropdown-header">Support Code: <span class="text-danger">ST{{ sprintf("%06d", $student->id) }}</span></h6>
                                 <div class="dropdown-divider"></div>
                                 <a class="dropdown-item" href="{{ url('/student/profile') }}"><i class="mdi mdi-cog-outline text-muted fs-16 align-middle me-1"></i> <span class="align-middle">Settings</span></a>
                                 <a class="dropdown-item" href="{{ url('/student/logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();"><i class="mdi mdi-logout text-muted fs-16 align-middle me-1"></i> <span class="align-middle" data-key="t-logout">Logout</span></a>
