@@ -357,21 +357,7 @@ class AcademicController extends Controller
         $schoolAmount = $schoolPayment->structures->sum('amount');
         $schoolPaymentTransaction = Transaction::where('student_id', $studentId)->where('payment_id', $schoolPaymentId)->where('session', $student->academic_session)->where('status', 1)->get();
 
-        $passTuitionPayment = false;
-        $fullTuitionPayment = false;
-        $passEightyTuition = false;
-        if($schoolPaymentTransaction && $schoolPaymentTransaction->sum('amount_payed') > $schoolAmount * 0.4){
-            $passTuitionPayment = true;
-        }
-
-        if($schoolPaymentTransaction && $schoolPaymentTransaction->sum('amount_payed') > $schoolAmount * 0.7){
-            $passEightyTuition = true;
-        }
-
-        if($schoolPaymentTransaction && $schoolPaymentTransaction->sum('amount_payed') >= $schoolAmount){
-            $passEightyTuition = true;
-            $fullTuitionPayment = true;
-        }
+        
 
         $studentExamCards = StudentExamCard::where([
             'student_id' => $studentId,
@@ -390,9 +376,9 @@ class AcademicController extends Controller
         return view('student.examDocket', [
             'courseRegs' => $courseRegs,
             'payment' => $schoolPaymentTransaction,
-            'passTuition' => $passTuitionPayment,
-            'fullTuitionPayment' => $fullTuitionPayment,
-            'passEightyTuition' => $passEightyTuition,
+            'passTuition' => $paymentCheck->passTuitionPayment,
+            'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
+            'passEightyTuition' => $paymentCheck->passEightyTuition,
             'studentExamCards' => $studentExamCards
         ]);
     }
