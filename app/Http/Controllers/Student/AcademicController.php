@@ -74,7 +74,7 @@ class AcademicController extends Controller
         ->toArray();
 
         // Use array_diff to find the required courses that are not in CourseRegistration
-        $unregisteredRequiredCoursesIds = array_diff($allRequiredCourseIds, $registeredCourseIds);
+        $unregisteredRequiredCoursesIds = array_diff($allRequiredCoursesIds, $registeredCourseIds);
 
         $failedCourses = CourseRegistration::with('course')->where('student_id', $studentId)->where('grade', 'F')->where('re_reg', null)->get();
         $failedCourseIds = $failedCourses->pluck('course.id')->toArray();
