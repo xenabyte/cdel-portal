@@ -131,8 +131,74 @@
                                 <p class="fs-12 mb-0 text-muted">{{ $programme->programmeCategory->category }} Programme</p>
                             </div>
                             <div class="flex-shrink-0">
-                                <a href="{{url('/admin/programme/'.$programme->slug)}}" class="btn btn-primary"><i class= "mdi mdi-folder-eye"></i> View</a>
+                                <a href="{{url('/admin/programme/'.$programme->slug)}}" class="btn btn-primary"><i class= "mdi mdi-folder-eye"></i></a>
+                                <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#editProgramme{{$programme->id}}" class="btn btn-info"><i class= "mdi mdi-application-edit"></i></a>
+                                <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#delete{{$programme->id}}" class="btn btn-danger"><i class= "mdi mdi-trash-can"></i></a>
                             </div>
+                            <div id="editProgramme{{$programme->id}}" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content border-0 overflow-hidden">
+                                        <div class="modal-header p-3">
+                                            <h4 class="card-title mb-0">Update Programme</h4>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+    
+                                        <div class="modal-body">
+                                            <form action="{{ url('/admin/updateProgramme') }}" method="post" enctype="multipart/form-data">
+                                                @csrf
+                                                <input type="hidden" name='programme_id' value="{{ $programme->id }}">
+                                                <div class="mb-3">
+                                                    <label for="name" class="form-label">Programme Name</label>
+                                                    <input type="text" class="form-control" name="name" id="name" value="{{$programme->name}}">
+                                                </div>
+                            
+                                                <div class="mb-3">
+                                                    <label for="category" class="form-label">Select Programme Category</label>
+                                                    <select class="form-select" aria-label="category" name="category">
+                                                        @foreach($categories as $category)
+                                                        <option @if($programme->category_id == $category->id) selected @endif value="{{ $category->id }}">{{ $category->category }}</option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                            
+                                                <div class="mb-3">
+                                                    <label for="duration" class="form-label">Programme Duration(Years)</label>
+                                                    <input type="text" class="form-control" name="duration" id="duration" value="{{$programme->duration}}">
+                                                </div>
+                                                <hr>
+                                                <div class="text-end">
+                                                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div><!-- /.modal-content -->
+                                </div><!-- /.modal-dialog -->
+                            </div><!-- /.modal -->
+                            <div id="delete{{$programme->id}}" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
+                                        <div class="modal-body text-center p-5">
+                                            <div class="text-end">
+                                                <button type="button" class="btn-close text-end" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="mt-2">
+                                                <lord-icon src="https://cdn.lordicon.com/wwneckwc.json" trigger="hover" style="width:150px;height:150px">
+                                                </lord-icon>
+                                                <h4 class="mb-3 mt-4">Are you sure you want to delete <br/> {{ $programme->name }}?</h4>
+                                                <form action="{{ url('/admin/deleteProgramme') }}" method="POST">
+                                                    @csrf
+                                                    <input type="hidden" name='programme_id' value="{{ $programme->id }}">
+                                                    <hr>
+                                                    <button type="submit" class="btn btn-danger w-100">Yes, Delete</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer bg-light p-3 justify-content-center">
+    
+                                        </div>
+                                    </div><!-- /.modal-content -->
+                                </div><!-- /.modal-dialog -->
+                            </div><!-- /.modal -->
                         </div><!-- end -->
                         <br>
                         @endforeach
@@ -146,6 +212,10 @@
                                 </div>
                             </div>
                         </div><!-- end card header -->
+                        <div class="mt-3 text-center">
+                            <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#addProgramme" class="btn btn-primary">
+                                Add Programme</a>
+                        </div>
 
                     </div><!-- end cardbody -->
                 </div><!-- end card -->
@@ -555,6 +625,48 @@
                     <hr>
                     <div class="text-end">
                         <button type="submit" class="btn btn-primary">Save Changes</button>
+                    </div>
+                </form>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<div id="addProgramme" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 overflow-hidden">
+            <div class="modal-header p-3">
+                <h4 class="card-title mb-0">Add Programme</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body">
+                <form action="{{ url('/admin/addProgramme') }}" method="post" enctype="multipart/form-data">
+                    @csrf
+                    <input type="hidden" name="department_id" value="{{ $department->id }}">
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Programme Name</label>
+                        <input type="text" class="form-control" name="name" id="name" placeholder="Enter Programme Name">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="category" class="form-label">Select Programme Category</label>
+                        <select class="form-select" aria-label="category" name="category">
+                            <option value= "" selected>Select Category</option>
+                            @foreach($categories as $category)
+                            <option value="{{ $category->id }}">{{ $category->category }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="duration" class="form-label">Programme Duration(Years)</label>
+                        <input type="text" class="form-control" name="duration" id="duration" placeholder="Enter Programme Duration">
+                    </div>
+
+                    <hr>
+                    <div class="text-end">
+                        <button type="submit" class="btn btn-primary">Add Programme</button>
                     </div>
                 </form>
             </div>

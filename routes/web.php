@@ -76,8 +76,20 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'admin'],
   Route::get('/populateCourse', [App\Http\Controllers\Admin\CronController::class, 'populateCourse'])->name('populateCourse')->middleware(['auth:admin']);
   Route::get('/populateStaff', [App\Http\Controllers\Admin\CronController::class, 'populateStaff'])->name('populateStaff')->middleware(['auth:admin']);
 
+  Route::post('/addFaculty', [App\Http\Controllers\Admin\AcademicController::class, 'addFaculty'])->name('addFaculty')->middleware(['auth:admin']);
+  Route::post('/updateFaculty', [App\Http\Controllers\Admin\AcademicController::class, 'updateFaculty'])->name('updateFaculty')->middleware(['auth:admin']);
+  Route::post('/deleteFaculty', [App\Http\Controllers\Admin\AcademicController::class, 'deleteFaculty'])->name('deleteFaculty')->middleware(['auth:admin']);
+
+  Route::post('/addDepartment', [App\Http\Controllers\Admin\AcademicController::class, 'addDepartment'])->name('addDepartment')->middleware(['auth:admin']);
+  Route::post('/updateDepartment', [App\Http\Controllers\Admin\AcademicController::class, 'updateDepartment'])->name('updateDepartment')->middleware(['auth:admin']);
+  Route::post('/deleteDepartment', [App\Http\Controllers\Admin\AcademicController::class, 'deleteDepartment'])->name('deleteDepartment')->middleware(['auth:admin']);
+
   Route::get('/getDepartments/{id}', [App\Http\Controllers\Admin\ProgrammeController::class, 'getDepartments'])->name('getDepartments')->middleware(['auth:admin']);
   Route::get('/getProgrammes/{id}', [App\Http\Controllers\Admin\ProgrammeController::class, 'getProgrammes'])->name('getProgrammes')->middleware(['auth:admin']);
+
+  Route::post('/addProgramme', [App\Http\Controllers\Admin\AcademicController::class, 'addProgramme'])->name('addProgramme')->middleware(['auth:admin']);
+  Route::post('/updateProgramme', [App\Http\Controllers\Admin\AcademicController::class, 'updateProgramme'])->name('updateProgramme')->middleware(['auth:admin']);
+  Route::post('/deleteProgramme', [App\Http\Controllers\Admin\AcademicController::class, 'deleteProgramme'])->name('deleteProgramme')->middleware(['auth:admin']);
 
   Route::get('/sessionSetup', [App\Http\Controllers\Admin\AcademicController::class, 'sessionSetup'])->name('sessionSetup')->middleware(['auth:admin']);
   Route::post('/setSession', [App\Http\Controllers\Admin\AcademicController::class, 'setSession'])->name('setSession')->middleware(['auth:admin']);

@@ -109,10 +109,63 @@
                             </div>
                             <div class="flex-shrink-0">
                                 <div class="flex-shrink-0">
-                                    <a href="{{url('/admin/department/'.$department->slug)}}" class="btn btn-primary"> <i class= "mdi mdi-monitor-eye"></i> View</a>
+                                    <a href="{{url('/admin/department/'.$department->slug)}}" class="btn btn-primary"> <i class= "mdi mdi-monitor-eye"></i></a>
+                                    <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#editDepartment{{$department->id}}" class="btn btn-info"><i class= "mdi mdi-application-edit"></i></a>
+                                    <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#delete{{$department->id}}" class="btn btn-danger"><i class= "mdi mdi-trash-can"></i></a>
                                 </div>
                             </div>
                         </div><!-- end -->
+                        <div id="editDepartment{{$faculty->id}}" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content border-0 overflow-hidden">
+                                    <div class="modal-header p-3">
+                                        <h4 class="card-title mb-0">Update Department</h4>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+
+                                    <div class="modal-body">
+                                        <form action="{{ url('/admin/updateDepartment') }}" method="post" enctype="multipart/form-data">
+                                            @csrf
+                                            <input type="hidden" name='department_id' value="{{ $department->id }}">
+                                            <div class="mb-3">
+                                                <label for="name" class="form-label">Department Name</label>
+                                                <input type="text" class="form-control" name="name" id="name" value="{{ $department->name }}">
+                                            </div>
+
+                                            <hr>
+                                            <div class="text-end">
+                                                <button type="submit" class="btn btn-primary">Save Changes</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div><!-- /.modal-content -->
+                            </div><!-- /.modal-dialog -->
+                        </div><!-- /.modal -->
+                        <div id="delete{{$department->id}}" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content">
+                                    <div class="modal-body text-center p-5">
+                                        <div class="text-end">
+                                            <button type="button" class="btn-close text-end" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="mt-2">
+                                            <lord-icon src="https://cdn.lordicon.com/wwneckwc.json" trigger="hover" style="width:150px;height:150px">
+                                            </lord-icon>
+                                            <h4 class="mb-3 mt-4">Are you sure you want to delete <br/> {{ $department->name }}?</h4>
+                                            <form action="{{ url('/admin/deleteDepartment') }}" method="POST">
+                                                @csrf
+                                                <input type="hidden" name='department_id' value="{{ $department->id }}">
+                                                <hr>
+                                                <button type="submit" class="btn btn-danger w-100">Yes, Delete</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer bg-light p-3 justify-content-center">
+
+                                    </div>
+                                </div><!-- /.modal-content -->
+                            </div><!-- /.modal-dialog -->
+                        </div><!-- /.modal -->
                         <br>
                         @endforeach
 
@@ -125,6 +178,10 @@
                                 </div>
                             </div>
                         </div><!-- end card header -->
+                        <div class="mt-3 text-center">
+                            <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#addDepartment" class="btn btn-primary">
+                                Add Department</a>
+                        </div>
                     </div><!-- end cardbody -->
                 </div><!-- end card -->
             </div>
@@ -263,6 +320,32 @@
                     <hr>
                     <div class="text-end">
                         <button type="submit" class="btn btn-primary">Save Changes</button>
+                    </div>
+                </form>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<div id="addDepartment" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 overflow-hidden">
+            <div class="modal-header p-3">
+                <h4 class="card-title mb-0">Add Department</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body">
+                <form action="{{ url('/admin/addDepartment') }}" method="post" enctype="multipart/form-data">
+                    @csrf
+                    <input type="hidden" name="faculty_id" value="{{ $faculty->id }}">
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Department Name</label>
+                        <input type="text" class="form-control" name="name" id="name" placeholder="Enter Department Name">
+                    </div>
+                    <hr>
+                    <div class="text-end">
+                        <button type="submit" class="btn btn-primary">Add Department</button>
                     </div>
                 </form>
             </div>

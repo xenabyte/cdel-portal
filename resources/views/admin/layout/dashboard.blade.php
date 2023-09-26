@@ -369,9 +369,11 @@
                                     <li class="nav-item">
                                         <a href="{{ url('/admin/faculties') }}" class="nav-link">Faculties</a>
                                     </li>
+                                    @if(env('POPULATE_DATA'))
                                     <li class="nav-item">
                                         <a href="{{ url('/admin/populateFaculty') }}" class="nav-link">Populate Faculty</a>
                                     </li>
+                                    @endif
                                 </ul>
                             </div>
                         </li> <!-- end Dashboard Menu -->
@@ -392,9 +394,11 @@
                                     {{-- <li class="nav-item">
                                         <a href="{{ url('/admin/courseAllocation') }}" class="nav-link">Course-to-Staff Allocation</a>
                                     </li> --}}
-                                    {{-- <li class="nav-item">
+                                    @if(env('POPULATE_DATA'))
+                                    <li class="nav-item">
                                         <a href="{{ url('/admin/populateCourse') }}" class="nav-link">Populate Course</a>
-                                    </li> --}}
+                                    </li>
+                                    @endif
                                 </ul>
                             </div>
                         </li> <!-- end Dashboard Menu -->
@@ -452,9 +456,11 @@
                             </a>
                             <div class="collapse menu-dropdown" id="staffMgt">
                                 <ul class="nav nav-sm flex-column">
+                                    @if(env('POPULATE_DATA'))
                                     <li class="nav-item">
                                         <a href="{{ url('/admin/populateStaff') }}" class="nav-link">Populate Staff</a>
                                     </li>
+                                    @endif
                                     <li class="nav-item">
                                         <a href="#staffApplicants" class="nav-link" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarSignIn" data-key="t-signin"> Staff Applicants (Coming Soon)
                                         </a>

@@ -21,6 +21,7 @@ use App\Models\Department;
 use App\Models\CourseRegistrationSetting;
 use App\Models\ExaminationSetting;
 use App\Models\Programme;
+use App\Models\ProgrammeCategory as Category;
 use App\Models\Student;
 use App\Models\StudentDemotion;
 use App\Models\StudentCourseRegistration;
@@ -286,6 +287,96 @@ class AcademicController extends Controller
         ]);
     }
 
+    /**
+     * Add a new Faculty
+     *
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function addFaculty(Request $request){
+        $validator = Validator::make($request->all(), [
+            'name' => 'required',
+            'description' => 'required',
+        ]);
+
+        if($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+
+        $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $request->name)));
+
+        $newAddFaculty = ([
+            'name' => $request->name,
+            'slug' => $slug,
+        ]);
+
+        if(Faculty::create($newAddFaculty)){
+            alert()->success('Faculty added', 'A new faculty have been added')->persistent('Close');
+            return redirect()->back();
+        }
+
+        alert()->error('Oops!', 'Something went wrong')->persistent('Close');
+        return redirect()->back();
+    }
+
+    /**
+     * Edit Faculty
+     *
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function updateFaculty(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'faculty_id' => 'required|min:1',
+        ]);
+
+        if($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+
+        if(!$faculty = Faculty::find($request->faculty_id)){
+            alert()->error('Oops', 'Invalid Faculty Information')->persistent('Close');
+            return redirect()->back();
+        }
+
+        $faculty->name = $request->name;
+
+        if($faculty->save()){
+            alert()->success('Changes Saved', 'Faculty changes saved successfully')->persistent('Close');
+            return redirect()->back();
+        }
+
+        alert()->error('Oops!', 'Something went wrong')->persistent('Close');
+        return redirect()->back();
+    }
+
+    public function deleteFaculty(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'faculty_id' => 'required|min:1',
+        ]);
+
+        if($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+
+        if(!$faculty = Faculty::find($request->faculty_id)){
+            alert()->error('Oops', 'Invalid Faculty Information')->persistent('Close');
+            return redirect()->back();
+        }
+
+
+        if($faculty->delete()){
+            alert()->success('Good Job', 'Faculty deleted successfully')->persistent('Close');
+            return redirect()->back();
+        }
+
+        alert()->error('Oops!', 'Something went wrong')->persistent('Close');
+        return redirect()->back();
+    }
+
     public function faculty($slug){
         $faculty = Faculty::with('departments', 'departments.programmes', 'students', 'students.programme', 'students.programme.department')
         ->where('slug', $slug)->first();
@@ -293,6 +384,189 @@ class AcademicController extends Controller
         return view('admin.faculty', [
             'faculty' => $faculty
         ]);
+    }
+
+       /**
+     * Add a new Department
+     *
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function addDepartment(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'faculty_id' => 'required',
+            'name' => 'required',
+        ]);
+
+        if($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+
+        $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $request->name)));
+
+        $newAddDepartment = ([
+            'faculty_id' => $request->faculty_id,
+            'name' => $request->name,
+            'slug' => $slug,
+        ]);
+
+        if(Department::create($newAddDepartment)){
+            alert()->success('Department added', 'A new department have been added')->persistent('Close');
+            return redirect()->back();
+        }
+
+        alert()->error('Oops!', 'Something went wrong')->persistent('Close');
+        return redirect()->back();
+    }
+
+    public function updateDepartment(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'department_id' => 'required|min:1',
+        ]);
+
+        if($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+
+        if(!$department = Department::find($request->department_id)){
+            alert()->error('Oops', 'Invalid Department Information')->persistent('Close');
+            return redirect()->back();
+        }
+
+        $department->name = $request->name;
+        if(!empty($request->faculty_id) && $request->faculty_id != $department->faculty_id){
+            $department->faculty_id = $request->faculty_id;
+        }
+
+        if($department->save()){
+            alert()->success('Changes Saved', 'Department changes saved successfully')->persistent('Close');
+            return redirect()->back();
+        }
+
+        alert()->error('Oops!', 'Something went wrong')->persistent('Close');
+        return redirect()->back();
+    }
+
+    public function deleteDepartment(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'department_id' => 'required|min:1',
+        ]);
+
+        if($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+
+        if(!$department = Department::find($request->department_id)){
+            alert()->error('Oops', 'Invalid Department Information')->persistent('Close');
+            return redirect()->back();
+        }
+
+
+        if($department->delete()){
+            alert()->success('Good Job', 'Department deleted successfully')->persistent('Close');
+            return redirect()->back();
+        }
+
+        alert()->error('Oops!', 'Something went wrong')->persistent('Close');
+        return redirect()->back();
+    }
+
+    public function addProgramme(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'faculty_id' => 'required',
+            'department_id' => 'required',
+            'duration' => 'required',
+            'category' => 'required',
+            'name' => 'required',
+        ]);
+
+        if($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+
+        $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $request->name)));
+
+        $newAddProgramme= ([
+            'faculty_id' => $request->faculty_id,
+            'department_id' => $request->department_id,
+            'slug' => $slug,
+            'duration' => $request->duration,
+            'name' => $request->name,
+            'category' => $request->category,
+        ]);
+
+        if(Programme::create($newAddProgramme)){
+            alert()->success('Programme added', 'A new programme have been added')->persistent('Close');
+            return redirect()->back();
+        }
+
+        alert()->error('Oops!', 'Something went wrong')->persistent('Close');
+        return redirect()->back();
+    }
+
+    public function updateProgramme(Request $request){
+        $validator = Validator::make($request->all(), [
+            'programme_id' => 'required',
+        ]);
+
+        if($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+
+        if(!$programme = Programme::find($request->programme_id)){
+            alert()->info('Oops!!', 'Programme not found')->persistent('Close');
+            return redirect()->back();
+        }
+
+        $programme->name = $request->name;
+        if(!empty($request->category) && $programme->category_id != $request->category){
+            $programme->category = $request->category;
+        }
+        if(!empty($request->duration) && $programme->duration != $request->duration){
+            $programme->duration = $request->duration;
+        }
+
+        if($programme->update()){
+            alert()->success('Good job!!', 'Programme changes saved successfully')->persistent('Close');
+            return redirect()->back();  
+        }
+
+        alert()->info('Oops!', 'Something went wrong')->persistent('Close');
+        return redirect()->back();
+    }
+
+
+    public function deleteProgramme(Request $request){
+        $validator = Validator::make($request->all(), [
+            'programme_id' => 'required',
+        ]);
+
+        if($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+
+        if(!$programme = Programme::find($request->programme_id)){
+            alert()->info('Oops!!', 'Programme not found')->persistent('Close');
+            return redirect()->back();
+        }
+
+        if($programme->delete()){
+            alert()->success('Good job!!', 'Programme deleted successfully')->persistent('Close');
+            return redirect()->back();  
+        }
+
+        alert()->info('Oops!', 'Something went wrong')->persistent('Close');
+        return redirect()->back();
+
     }
 
     public function departments(){
@@ -306,10 +580,12 @@ class AcademicController extends Controller
     public function department($slug){
         $department = Department::with('programmes', 'programmes.students', 'programmes.academicAdvisers', 'programmes.academicAdvisers.staff', 'programmes.academicAdvisers.level')->where('slug', $slug)->first();
         $levels = AcademicLevel::all();
+        $categories = Category::all();
 
         return view('admin.department', [
             'department' => $department,
-            'levels' => $levels
+            'levels' => $levels,
+            'categories' => $categories
         ]);
     }
 

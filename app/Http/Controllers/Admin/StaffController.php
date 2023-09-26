@@ -44,10 +44,143 @@ class StaffController extends Controller
     public function staff(Request $request){
 
         $staff  = Staff::withTrashed()->with('faculty', 'acad_department')->get();
+        $departments = Department::all();
+        $faculties = Faculty::all();
 
         return view('admin.staff', [
-            'staff' => $staff
+            'staff' => $staff,
+            'departments' => $departments,
+            'faculties' => $faculties,
         ]);
+    }
+
+    public function addStaff(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'staffId' => 'required|unique:staffs',
+            'lastname' => 'required',
+            'othernames' => 'required',
+            'description' => 'required',
+            'email' => 'required|unique:staffs',
+            'phone_number' => 'required',
+            'image' => 'required',
+            'password' => 'required',
+            'confirm_password' => 'required'
+        ]);
+
+        if($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+
+        if($request->password == $request->confirm_password){
+            $password = bcrypt($request->password);
+        }else{
+            alert()->error('Oops!', 'Password mismatch')->persistent('Close');
+            return redirect()->back();
+        }
+
+        $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $request->name)));
+        $imageUrl = null;
+        if($request->has('image')) {
+            $imageUrl = 'uploads/staff/'.$slug.'.'.$request->file('image')->getClientOriginalExtension();
+            $image = $request->file('image')->move('uploads/staff', $imageUrl);
+        }
+
+        $newAddStaff = ([
+            'staffId' => $request->staffId,
+            'lastname' => $request->lastname,
+            'othernames' => $request->othernames,
+            'faculty_id' => $request->faculty_id,
+            'department_id' => $request->department_id,
+            'email' => $request->email,
+            'password' => $password,
+            'phone_number' => $request->phone_number,
+            'description' => $request->description,
+            'slug' => $slug,
+            'image' => env('APP_URL').'/public/'.$imageUrl,
+        ]);
+
+        if(Staff::create($newAddStaff)){
+            alert()->success('Staff added', 'A staff have been added')->persistent('Close');
+            return redirect()->back();
+        }
+
+        alert()->error('Oops!', 'Something went wrong')->persistent('Close');
+        return redirect()->back();
+    }
+
+    public function updateStaff(Request $request)
+    {
+        if(!empty($request->staff_id) && !$staff = Staff::find($request->staff_id)){
+            alert()->error('Oops', 'Invalid Staff Information')->persistent('Close');
+            return redirect()->back();
+        }
+
+        $slug = $staff->slug;
+        if(!empty($request->lastname) &&  $request->name != $staff->name){
+            $staff->name = $request->name;
+            $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $request->name)));
+            $staff->slug = $slug;
+        }
+
+        if(!empty($request->tau_staff_id) && $request->tau_staff_id != $staff->tau_staff_id){
+            $staff->tau_staff_id = $request->tau_staff_id;
+        }
+
+        if(!empty($request->qualifications) && $request->qualifications != $staff->qualifications){
+            $staff->qualifications = $request->qualifications;
+        }
+
+        if(!empty($request->faculty_id) && $request->faculty_id != $staff->faculty_id){
+            $staff->faculty_id = $request->faculty_id;
+        }
+
+        if(!empty($request->department_id) && $request->department_id != $staff->department_id){
+            $staff->department_id = $request->department_id;
+        }
+
+        if(!empty($request->phone_number) && $request->phone_number != $staff->phone_number){
+            $staff->phone_number = $request->phone_number;
+        }
+
+
+        if(!empty($request->email) && $request->email != $staff->email){
+            $staff->email = $request->email;
+        }
+
+        if(!empty($request->biography) && $request->biography != $staff->biography){
+            $staff->biography = $request->biography;
+        }
+
+        if(!empty($request->office) && $request->office != $staff->office){
+            $staff->office = $request->office;
+        }
+
+        if(!empty($request->research_interest) && $request->research_interest != $staff->research_interest){
+            $staff->research_interest = $request->research_interest;
+        }
+
+        if(!empty($request->publications) && $request->publications != $staff->publications){
+            $staff->publications = $request->publications;
+        }
+
+        if(!empty($request->awards) && $request->awards != $staff->awards){
+            $staff->awards = $request->awards;
+        }
+
+        if(!empty($request->image)){
+            $imageUrl = 'uploads/staff/'.$slug.'.'.$request->file('image')->getClientOriginalExtension();
+            $image = $request->file('image')->move('uploads/staff', $imageUrl);
+
+            $staff->image = $imageUrl;
+        }
+
+
+        if($staff->save()){
+            alert()->success('Changes Saved', 'Changes saved successfully')->persistent('Close');
+            return redirect()->back();
+        }
     }
 
     public function roles(Request $request){

@@ -24,6 +24,9 @@
         <div class="card">
             <div class="card-header align-items-center d-flex">
                 <h4 class="card-title mb-0 flex-grow-1">Staff </h4>
+                <div class="flex-shrink-0">
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addStaff"><i class="mdi mdi-account-multiple-plus"></i> Add Staff</button>
+                </div>
             </div><!-- end card header -->
 
             <div class="card-body table-responsive">
@@ -69,6 +72,125 @@
     </div>
     <!-- end col -->
 </div>
-<!-- end row -
+<!-- end row -->
+
+<div id="addStaff" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content border-0 overflow-hidden">
+            <div class="modal-header p-3">
+                <h4 class="card-title mb-0">Add Staff</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body">
+                <form action="{{ url('/admin/addStaff') }}" method="post" enctype="multipart/form-data">
+                    @csrf
+
+                    <div class="mb-3">
+                        <label for="image" class="form-label">Image</label>
+                        <input type="file" class="form-control" name='image' id="emailInput">
+                    </div>
+
+                    <div class="row mt-3 g-3">
+                        <span class="text-muted"> Bio Data</span><br>
+                        <div class="col-lg-6">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="lastname" name="lastname" placeholder="Enter lastname">
+                                <label for="lastname">Lastname(Surname)</label>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-6">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="othernames" name="othernames" placeholder="Enter othernames">
+                                <label for="othernames">Othernames</label>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-6">
+                            <div class="form-floating">
+                                <input type="email" class="form-control" id="email" name="email" placeholder="Enter email">
+                                <label for="email">Staff Email</label>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-6">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="staffId" name="staffId" placeholder="Enter Staff Id">
+                                <label for="staffId">Staff ID</label>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-12">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="phone_number" name="phone_number" placeholder="Enter Staff Phone Number">
+                                <label for="phone_number">Staff Mobile Number</label>
+                            </div>
+                        </div>
+
+                        <span class="text-muted"> Authentication</span><br>
+                        <div class="col-lg-6">
+                            <div class="form-floating">
+                                <input type="password" class="form-control" id="password" name="password" placeholder="Enter your Passowrd">
+                                <label for="password">Password</label>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-6">
+                            <div class="form-floating">
+                                <input type="password" class="form-control" id="confirm-password" name="confirm_password" placeholder="Enter your email">
+                                <label for="confirm-password">Confirm Password</label>
+                            </div>
+                        </div>
+
+                        <span class="text-muted"> Academic Information</span><br>
+                        <div class="mb-3">
+                            <label for="office" class="form-label">Select Staff Category</label>
+                            <select class="form-select" aria-label="office" name="office">
+                                <option value= "" selected>Select Staff Category </option>
+                                <option value="Academic">Academic</option>
+                                <option value="Non Academic">Vice Academic</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="faculty" class="form-label">Select Staff Faculty</label>
+                            <select class="form-select" aria-label="faculty" name="faculty_id">
+                                <option value= "" selected>Select Staff Faculty </option>
+                                @foreach($faculties as $faculty)
+                                <option value="{{ $faculty->id }}">{{ $faculty->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+    
+                        <div class="mb-3">
+                            <label for="department" class="form-label">Select Staff Department</label>
+                            <select class="form-select" aria-label="department" name="department_id">
+                                <option value= "" selected>Select Staff Department </option>
+                                @foreach($departments as $department)
+                                <option value="{{ $department->id }}">{{ $department->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Staff Qualifications</label>
+                            <textarea type="text" class="form-control" name="description" id="description"></textarea>
+                        </div>
+
+                        <!--end col-->
+                        <div class="col-lg-12 border-top border-top-dashed">
+                            <div class="d-flex align-items-start gap-3 mt-3">
+                                <button type="submit" class="btn btn-primary btn-label right ms-auto nexttab" data-nexttab="pills-bill-address-tab"><i class="ri-arrow-right-line label-icon align-middle fs-16 ms-2"></i> Submit</button>
+                            </div>
+                        </div>
+                        <!--end col-->
+                    </div>    
+                </form>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+    
 
 @endsection
