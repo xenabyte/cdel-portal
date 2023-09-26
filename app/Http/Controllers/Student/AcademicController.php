@@ -67,7 +67,7 @@ class AcademicController extends Controller
             $allRequiredCourses = CoursePerProgrammePerAcademicSession::where('programme_id', $student->programme_id)->where('status', '!=', 'Elective')->where('level_id', '!=', 1)->get();
         }
 
-        $allRequiredCoursesIds = $allCourses->pluck('course.id')->toArray();
+        $allRequiredCoursesIds = $allRequiredCourses->pluck('course.id')->toArray();
         // Get the IDs of courses that the student has registered for
         $registeredCourseIds = CourseRegistration::where('student_id', $student->id)
         ->pluck('course_id')
