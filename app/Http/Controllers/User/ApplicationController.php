@@ -363,7 +363,6 @@ class ApplicationController extends Controller
             $validator = Validator::make($request->all(), [
                 'programme_id' => 'required',
                 'paymentGateway' => 'required',
-                'applicationType' => 'required',
             ]);
         }
 
