@@ -23,7 +23,7 @@ class ProcessResultCSV extends Command
      *
      * @var string
      */
-    protected $signature = 'csv:processResultCSV {file}';
+    protected $signature = 'csv:processResultCSV {file} {step}';
 
     /**
      * The console command description.
@@ -49,6 +49,8 @@ class ProcessResultCSV extends Command
     public function handle()
     {
         $file = $this->argument('file');
+        $step = $this->argument('step');
+
         if (!file_exists($file)) {
             $this->error("File not found: $file");
             return 1; 
@@ -90,6 +92,7 @@ class ProcessResultCSV extends Command
             ];
 
             $records = $csv->getRecords();
+            $this->info("Step: '{$step}' ");
 
             foreach ($records as $row) {
                 $matricNumber = $row['MatricNo'];
@@ -134,92 +137,103 @@ class ProcessResultCSV extends Command
                             continue;
                         }
 
-                        // step 2: get level adviser course information
-                        $programmeCourse = CoursePerProgrammePerAcademicSession::where([
-                            'course_id' => $course->id,
-                            'level_id' => $levelId,
-                            'programme_id' => $programmeId,
-                            'semester' => $semester,
-                            'credit_unit' => $courseCreditUnit,
-                            'academic_session' => $academicSession,
-                        ])->first();
-                
-                        //creat level adviser course information
-                        if(empty($carryOver)){
-                            if(!$programmeCourse){
-                                if(!empty($courseStatus)){
-                                    CoursePerProgrammePerAcademicSession::create([
-                                        'course_id' => $course->id,
-                                        'level_id' => $levelId,
-                                        'programme_id' => $programmeId,
-                                        'semester' => $semester,
-                                        'credit_unit' => $courseCreditUnit,
-                                        'academic_session' => $academicSession,
-                                        'status' => $courseStatus
-                                    ]);
-                                }
-                            }
-                        }else{
+                        if($step > 1){
+                            // step 2: get level adviser course information
                             $programmeCourse = CoursePerProgrammePerAcademicSession::where([
-                                // 'level_id' => $levelId,
                                 'course_id' => $course->id,
+                                'level_id' => $levelId,
                                 'programme_id' => $programmeId,
                                 'semester' => $semester,
                                 'credit_unit' => $courseCreditUnit,
+                                'academic_session' => $academicSession,
                             ])->first();
+                    
+                            //creat level adviser course information
+                            if(empty($carryOver)){
+                                if(!$programmeCourse){
+                                    if(!empty($courseStatus)){
+                                        CoursePerProgrammePerAcademicSession::create([
+                                            'course_id' => $course->id,
+                                            'level_id' => $levelId,
+                                            'programme_id' => $programmeId,
+                                            'semester' => $semester,
+                                            'credit_unit' => $courseCreditUnit,
+                                            'academic_session' => $academicSession,
+                                            'status' => $courseStatus
+                                        ]);
+                                    }
+                                }
+                            }else{
+                                $programmeCourse = CoursePerProgrammePerAcademicSession::where([
+                                    // 'level_id' => $levelId,
+                                    'course_id' => $course->id,
+                                    'programme_id' => $programmeId,
+                                    'semester' => $semester,
+                                    'credit_unit' => $courseCreditUnit,
+                                ])->first();
+                            }
                         }
-                        
 
-                        // step 3: create student course registrations
-                        if(!$programmeCourse){
-                            $this->info("CoursePerProgrammePerAcademicSession not found in database - '{$courseCode}' - '{$matricNumber}'");
-                            continue;
+                        if($step > 2){
+                            // step 3: create student course registrations
+                            if(!$programmeCourse){
+                                $this->info("CoursePerProgrammePerAcademicSession not found in database - '{$courseCode}' - '{$matricNumber}'");
+                                continue;
+                            }
+
                         }
-
-                        $existingRegistration = CourseRegistration::where([
-                            'student_id' => $student->id,
-                            'course_id' => $course->id,
-                            'academic_session' => $academicSession,
-                            'level_id' => $levelId,
-                        ])->first();
-
-                        if(!$existingRegistration){
-                            $courseReg = CourseRegistration::create([
+                    
+                        if($step > 3){
+                            $existingRegistration = CourseRegistration::where([
                                 'student_id' => $student->id,
-                                'course_id' => $programmeCourse->course_id,
-                                'course_credit_unit' => $programmeCourse->credit_unit,
-                                'course_code' => $courseCode,
-                                'course_status' => $programmeCourse->status,
-                                'semester' => $programmeCourse->semester,
+                                'course_id' => $course->id,
                                 'academic_session' => $academicSession,
                                 'level_id' => $levelId,
-                                'programme_course_id' => $programmeCourse->id
-                            ]);
+                            ])->first();
+
+                            if(!$existingRegistration){
+                                $courseReg = CourseRegistration::create([
+                                    'student_id' => $student->id,
+                                    'course_id' => $programmeCourse->course_id,
+                                    'course_credit_unit' => $programmeCourse->credit_unit,
+                                    'course_code' => $courseCode,
+                                    'course_status' => $programmeCourse->status,
+                                    'semester' => $programmeCourse->semester,
+                                    'academic_session' => $academicSession,
+                                    'level_id' => $levelId,
+                                    'programme_course_id' => $programmeCourse->id
+                                ]);
+                            }
                         }
 
-                        // step 4: add results
-                        $studentCourseReg = CourseRegistration::where([
-                            'student_id' => $student->id,
-                            'course_code' => $courseCode,
-                            'academic_session' => $academicSession,
-                            'level_id' => $levelId,
-                        ])->first();
+                        if($step > 4){
+                            // step 4: add results
+                            $studentCourseReg = CourseRegistration::where([
+                                'student_id' => $student->id,
+                                'course_code' => $courseCode,
+                                'academic_session' => $academicSession,
+                                'level_id' => $levelId,
+                            ])->first();
 
-                        $checkCarryOver = CourseRegistration::where([
-                            'student_id' => $student->id,
-                            'course_id' => $course->id,
-                            'grade' => 'F',
-                        ])->first();
+                            $checkCarryOver = CourseRegistration::where([
+                                'student_id' => $student->id,
+                                'course_id' => $course->id,
+                                'grade' => 'F',
+                            ])->first();
 
-                        if(!empty($checkCarryOver)){
-                            $checkCarryOver->re_reg = true;
-                            $checkCarryOver->save();
+                            if(!empty($checkCarryOver)){
+                                $checkCarryOver->re_reg = true;
+                                $checkCarryOver->save();
+                            }
+
+                            if(!$studentCourseReg){
+                                $this->info("Course Reg not found for  with '{$student->applicant->lastname}' '{$student->applicant->othernames}' with course '{$courseCode}'");
+                                continue;
+                            } 
                         }
-
-                        if(!$studentCourseReg){
-                            $this->info("Course Reg not found for  with '{$student->applicant->lastname}' '{$student->applicant->othernames}' with course '{$courseCode}'");
-                            continue;
-                        }    
+                        
+                        if($step > 5){
+                        // step 5: upoload result
                         $grading = GradeScale::computeGrade($totalScore);
                         $grade = $grading->grade;
                         $points = $grading->point;
@@ -230,7 +244,7 @@ class ProcessResultCSV extends Command
                         $studentCourseReg->result_approval_id = $resultApprovalId;
                         $studentCourseReg->status = 'Completed';
                         $studentCourseReg->save();
-                        
+                        }
                     }
                 }
             }

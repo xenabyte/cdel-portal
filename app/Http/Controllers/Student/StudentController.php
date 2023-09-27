@@ -446,6 +446,7 @@ class StudentController extends Controller
             return redirect()->back();
         }
 
+        $student->email = $request->email;
         $student->onboard_status = true;
 
         if($student->update()) {
