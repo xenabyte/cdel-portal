@@ -33,6 +33,7 @@
                         <tr>
                             <th scope="col">Id</th>
                             <th scope="col">Name</th>
+                            <th scope="col">Applicantion Number</th>
                             <th scope="col">Matric Number</th>
                             <th scope="col">Programme</th>
                             <th scope="col">Email</th>
@@ -51,6 +52,7 @@
                         <tr>
                             <th scope="row">{{ $matriculantId++ }}</th>
                             <td>{{ $matriculant->lastname .' '. $matriculant->othernames }}</td>
+                            <td>{{ $matriculant->application_number }}</td>
                             <td>{{ $matriculant->student->matric_number }}</td>
                             <td>{{ $matriculant->student->programme->name }}</td>
                             <td>{{ $matriculant->student->email }} </td>

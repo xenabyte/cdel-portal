@@ -430,7 +430,7 @@ class ApplicationController extends Controller
     
             $applicant = Applicant::create($newApplicant);
             $code = $programmeApplied->code;
-            $applicationNumber = 'TAU/'.substr($applicationSession, 0, 4).sprintf("%03d", ($applicant->id+2000));
+            $applicationNumber = env('SCHOOL_CODE').'/'.substr($applicationSession, 0, 4).sprintf("%03d", ($applicant->id+2000));
             $applicant->application_number = $applicationNumber;
             $applicant->save();
 
