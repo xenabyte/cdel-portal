@@ -435,7 +435,7 @@ class StudentController extends Controller
         }
 
         $applicantId = $student->user_id;
-        if($applicant = Applicant::find($applicantId)){
+        if(!$applicant = Applicant::find($applicantId)){
             alert()->error('Oops!', 'Student application data mismatch')->persistent('Close');
             return redirect()->back();
         }
