@@ -420,7 +420,7 @@ class StudentController extends Controller
 
         
         if(!$student = Student::with('applicant')->where('id', $request->student_id)->first()){
-            alert()->error('Oops!', 'An Error Occurred')->persistent('Close');
+            alert()->error('Oops!', 'Record not found')->persistent('Close');
             return redirect()->back();
         }
 
@@ -434,7 +434,12 @@ class StudentController extends Controller
             return redirect()->back();
         }
 
-        $applicant = $student->applicant;
+        $applicantId = $student->user_id;
+        if($applicant = User::find($applicantId)){
+            alert()->error('Oops!', 'Student application data mismatch')->persistent('Close');
+            return redirect()->back();
+        }
+        
         $applicant->lastname = $applicant->lastname;
         $applicant->othernames = $applicant->othernames;
         $applicant->update();
