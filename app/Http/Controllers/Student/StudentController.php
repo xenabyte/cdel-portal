@@ -437,7 +437,7 @@ class StudentController extends Controller
         $applicant = $student->applicant;
         $applicant->lastname = $applicant->lastname;
         $applicant->othernames = $applicant->othernames;
-        $applicant->save();
+        $applicant->update();
 
         if($request->password == $request->confirm_password){
             $student->password = bcrypt($request->password);
