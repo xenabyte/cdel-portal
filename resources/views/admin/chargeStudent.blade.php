@@ -690,7 +690,6 @@
             })
             
         }
-
     }
 </script>
 @endsection

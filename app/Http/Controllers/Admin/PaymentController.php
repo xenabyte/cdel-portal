@@ -196,6 +196,8 @@ class PaymentController extends Controller
             if(!empty($applicant->student)){
                 $studentId = $applicant->student->id;
             }
+        }else{
+            $studentId = $request->student_id;
         }
         
         
