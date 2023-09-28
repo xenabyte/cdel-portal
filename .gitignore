@@ -1,6 +1,7 @@
 /node_modules
 /public/csvfiles
 /public/uploads
+/public/auth_images
 /public/hot
 /public/storage
 /storage/*.key

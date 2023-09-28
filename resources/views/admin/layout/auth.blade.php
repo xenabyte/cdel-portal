@@ -31,7 +31,7 @@
     
     <div class="auth-page-wrapper pt-5">
         <!-- auth page bg -->
-        <div class="auth-one-bg-position auth-one-bg" id="auth-particles">
+        <div class="auth-one-bg-position auth-one-bg" style="background-image:url({{asset('auth_images/auth-one-bg.jpg')}})" id="auth-particles">
             <div class="bg-overlay"></div>
 
             <div class="shape">
