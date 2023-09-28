@@ -911,6 +911,10 @@ class AcademicController extends Controller
         foreach ($students as $student) {
 
             $checkStudentPayment = $this->checkSchoolFees($student, $student->academic_session, $student->level_id);
+            if($checkStudentPayment->status != 'success'){
+                alert()->error('Oops!', 'Something went wrong with School fees')->persistent('Close');
+                return redirect()->back();
+            }
 
             if(!$checkStudentPayment->fullTuitionPayment){
                 $amountPaid = $checkStudentPayment->schoolPaymentTransaction->sum('amount_payed');
@@ -936,6 +940,7 @@ class AcademicController extends Controller
                 'credit_load' => null
             ]);
         }
+        
         if($programme->save()){
             alert()->success('Student Promoted Successfully', '')->persistent('Close');
             return redirect()->back();

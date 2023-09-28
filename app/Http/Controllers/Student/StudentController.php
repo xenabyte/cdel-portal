@@ -395,7 +395,6 @@ class StudentController extends Controller
 
         if(!$student){
             return response()->json(['status' => 'record_not_found']);
-
         }
 
         return response()->json(['status' => 'record_found', 'student' => $student]);

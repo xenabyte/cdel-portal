@@ -326,6 +326,7 @@ class Controller extends BaseController
         $applicant = User::find($applicantId);
         $applicationType = $applicant->application_type;
 
+        log::info("levels: " . $levelId);
         $type = Payment::PAYMENT_TYPE_SCHOOL;
 
         if($applicationType != 'UTME' && ($student->level_id == 2|| $student->level_id == 3)){
@@ -340,8 +341,10 @@ class Controller extends BaseController
             ->first();
 
         if(!$schoolPayment){
-            alert()->info('Programme info missing, contact administrator', '')->persistent('Close');
-            return redirect()->back();
+            $data = new \stdClass();
+            $data->status = 'record_not_found';
+
+            return $data;
         }
 
         $schoolPaymentId = $schoolPayment->id;
@@ -369,6 +372,7 @@ class Controller extends BaseController
         }
 
         $data = new \stdClass();
+        $data->status = 'success';
         $data->passTuitionPayment = $passTuitionPayment;
         $data->passEightyTuition = $passEightyTuition;
         $data->fullTuitionPayment = $fullTuitionPayment;

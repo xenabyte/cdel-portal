@@ -280,10 +280,21 @@
                         <label for="type" class="form-label">Select Payment Type </label>
                         <select class="form-select" aria-label="type" name="type" required onchange="handlePaymentTypeChange(event)">
                             <option selected value= "">Select Type </option>
+                            <option value="General Application Fee">General Application Fee</option>
+                            <option value="Inter Transfer Application Fee">Inter Transfer Application Fee</option>
                             <option value="Acceptance Fee">Acceptance Fee</option>
                             <option value="School Fee">School Fee</option>
                             <option value="DE School Fee">Direct Entry School Fee</option>
                             <option value="General Fee">General Fee</option>
+                        </select>
+                    </div>
+
+                    <input type="hidden" id="paymentId" name="payment_id">
+
+                    <div class="mb-3" id='payment-for' style="display: none">
+                        <label for="payment_for" class="form-label">Payment For<span class="text-danger">*</span></label>
+                        <select class="form-select" aria-label="payment_for" name="payment_id">
+                            <option value= "" selected>Select Payment</option>
                         </select>
                     </div>
 
@@ -295,29 +306,24 @@
                         </select>
                     </div>
 
-
-                   <div class="mb-3" id='payment-options-tuition' style="display: none">
+                    @if(env('PAYMENT_TYPE') == 'Percentage')
+                    <div class="mb-3" id='payment-options-tuition' style="display: none">
                         <label for="amount" class="form-label">Payment Amount<span class="text-danger">*</span></label>
                         <select class="form-select" aria-label="amount" name="amountTuition">
                             <option value= "" selected>Select Amount</option>
                         </select>
                     </div>
+                    @else
+                    <div class="mb-3" id='payment-options-tuition' style="display: none">
+                        <label for="amount" class="form-label">Payment Amount<span class="text-danger">*</span></label>
+                        <input type="number" class="form-control" name="amountTuition">
+                    </div>
+                    @endif
 
                     <div class="mb-3" id='payment-options-general' style="display: none">
                         <label for="amount" class="form-label">Payment Amount<span class="text-danger">*</span></label>
                         <input type="text" class="form-control" name="amountGeneral" id="amountGeneral">
                     </div>
-
-                    <div class="mb-3">
-                        <label for="paymentStatus" class="form-label">Select Payment Status<span class="text-danger">*</span></label>
-                        <select class="form-select" aria-label="paymentStatus" name="paymentStatus" required>
-                            <option value= "" selected>Select Payment Status</option>
-                            <option value="1">Paid</option>
-                            <option value="0">Not Paid</option>
-                        </select>
-                    </div>
-
-                    <input type="hidden" id="paymentId" name="payment_id">
 
                     <div class="text-end border-top border-top-dashed p-3">
                         <br>

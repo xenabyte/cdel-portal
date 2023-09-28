@@ -197,50 +197,66 @@ class PaymentController extends Controller
             if(!empty($applicant->student)){
                 $studentId = $applicant->student->id;
             }
+        }else{
+            $studentId = $request->student_id;
         }
         
         
 
         if(!empty($studentId)){
             $student = Student::find($studentId);
-            $paymentCheck = $this->checkSchoolFees($student, $session, $student->level_id);
             
             $payment = Payment::with(['structures'])->where([
                 'type' => $type,
                 'academic_session' => $session,
             ])->first();
 
-            if ($type == Payment::PAYMENT_TYPE_SCHOOL) {
+            if(!$payment){
+                return response()->json(['status' =>  'Payment type: '.$type.' doesnt exist']);
+            }
+
+            if ($type == Payment::PAYMENT_TYPE_SCHOOL || $type == Payment::PAYMENT_TYPE_SCHOOL_DE) {
+                $paymentCheck = $this->checkSchoolFees($student, $session, $student->level_id);
+                if($paymentCheck->status != 'success'){
+                    return response()->json(['status' => 'School fee not setup for the section and programme']);
+                }
+
                 $payment = Payment::with('structures')
-                    ->where('type', Payment::PAYMENT_TYPE_SCHOOL)
-                    ->where('programme_id', $student->programme_id)
-                    ->where('level_id', $student->level_id)
-                    ->where('academic_session', $session)
-                    ->first();
+                ->where('type', $type)
+                ->where('programme_id', $student->programme_id)
+                ->where('level_id', $student->level_id)
+                ->where('academic_session', $session)
+                ->first();
+
+                if(!$payment){
+                    return response()->json(['status' =>  'Payment type: '.$type.' doesnt exist']);
+                }
 
                 $payment->passTuition = $paymentCheck->passTuitionPayment;
                 $payment->fullTuitionPayment = $paymentCheck->fullTuitionPayment;
                 $payment->passEightyTuition = $paymentCheck->passEightyTuition;
             }
-
-            if ($type == Payment::PAYMENT_TYPE_GENERAL) {
-                $payment = Payment::with(['structures'])->where([
-                    'type' => $type,
-                    'academic_session' => $session,
-                ])->get();
-    
-                return $payment;
-            }
-
-            return $payment;
+            
+            return response()->json([
+                'status' => 'success',
+                'data' => $payment
+            ]);
         }
 
         $payment = Payment::with(['structures'])->where([
             'type' => $type,
             'academic_session' => $session,
         ])->first();
+
+        if(!$payment){
+            return response()->json(['status' =>  'Payment type: '.$type.' doesnt exist']);
+        }
         
-        return $payment;
+        return response()->json([
+            'status' => 'success',
+            'data' => $payment
+        ]);
+
     }
 
     
