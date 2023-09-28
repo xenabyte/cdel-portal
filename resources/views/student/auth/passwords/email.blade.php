@@ -8,6 +8,12 @@
             <h5 class="text-primary">Welcome Back !</h5>
         </div>
 
+        <div class="mt-2 text-center">
+            <lord-icon
+                src="https://cdn.lordicon.com/rhvddzym.json" trigger="loop" colors="primary:#0ab39c" class="avatar-xl">
+            </lord-icon>
+        </div>
+
         <div class="mt-4">
             <form method="POST" action="{{ url('/student/password/email') }}">
                 @csrf
