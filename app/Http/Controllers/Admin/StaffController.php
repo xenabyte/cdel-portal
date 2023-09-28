@@ -65,11 +65,17 @@ class StaffController extends Controller
             'phone_number' => 'required',
             'image' => 'required',
             'password' => 'required',
-            'confirm_password' => 'required'
+            'confirm_password' => 'required',
+            'title' => 'required',
         ]);
 
         if($validator->fails()) {
             alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+
+        if(empty(strpos($request->email, env('SCHOOL_DOMAIN')))) {
+            alert()->error('Error', 'Invalid email, your email must contain @'.env('SCHOOL_DOMAIN'))->persistent('Close');
             return redirect()->back();
         }
 
@@ -80,7 +86,7 @@ class StaffController extends Controller
             return redirect()->back();
         }
 
-        $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $request->name)));
+        $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $request->lastname.'-'.$request->othernames)));
         $imageUrl = null;
         if($request->has('image')) {
             $imageUrl = 'uploads/staff/'.$slug.'.'.$request->file('image')->getClientOriginalExtension();
@@ -88,11 +94,13 @@ class StaffController extends Controller
         }
 
         $newAddStaff = ([
+            'title' => $request->title,
             'staffId' => $request->staffId,
             'lastname' => $request->lastname,
             'othernames' => $request->othernames,
             'faculty_id' => $request->faculty_id,
             'department_id' => $request->department_id,
+            'category' => $request->category,
             'email' => $request->email,
             'password' => $password,
             'phone_number' => $request->phone_number,
@@ -118,18 +126,15 @@ class StaffController extends Controller
         }
 
         $slug = $staff->slug;
-        if(!empty($request->lastname) &&  $request->name != $staff->name){
-            $staff->name = $request->name;
-            $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $request->name)));
+        if(!empty($request->lastname) && $request->lastname != $staff->lastname){
+            $staff->lastname = $request->lastname;
+            $staff->othernames = $request->othernames;
+            $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $request->lastname.'-', $request->othernames)));
             $staff->slug = $slug;
         }
 
-        if(!empty($request->tau_staff_id) && $request->tau_staff_id != $staff->tau_staff_id){
-            $staff->tau_staff_id = $request->tau_staff_id;
-        }
-
-        if(!empty($request->qualifications) && $request->qualifications != $staff->qualifications){
-            $staff->qualifications = $request->qualifications;
+        if(!empty($request->staffId) && $request->staffId != $staff->staffId){
+            $staff->staffId = $request->staffId;
         }
 
         if(!empty($request->faculty_id) && $request->faculty_id != $staff->faculty_id){
@@ -144,36 +149,37 @@ class StaffController extends Controller
             $staff->phone_number = $request->phone_number;
         }
 
+        if(!empty($request->title) && $request->title != $staff->title){
+            $staff->title = $request->title;
+        }
 
         if(!empty($request->email) && $request->email != $staff->email){
             $staff->email = $request->email;
         }
 
-        if(!empty($request->biography) && $request->biography != $staff->biography){
-            $staff->biography = $request->biography;
+        if($request->has('password') && !empty($request->password)){
+            if($request->password == $request->confirm_password){
+                $password = bcrypt($request->password);
+            }else{
+                alert()->error('Oops!', 'Password mismatch')->persistent('Close');
+                return redirect()->back();
+            }
+            $staff->password = $password;
         }
 
-        if(!empty($request->office) && $request->office != $staff->office){
-            $staff->office = $request->office;
+        if(!empty($request->category) && $request->category != $staff->category){
+            $staff->category = $request->category;
         }
 
-        if(!empty($request->research_interest) && $request->research_interest != $staff->research_interest){
-            $staff->research_interest = $request->research_interest;
-        }
-
-        if(!empty($request->publications) && $request->publications != $staff->publications){
-            $staff->publications = $request->publications;
-        }
-
-        if(!empty($request->awards) && $request->awards != $staff->awards){
-            $staff->awards = $request->awards;
+        if(!empty($request->description) && $request->description != $staff->description){
+            $staff->description = $request->description;
         }
 
         if(!empty($request->image)){
             $imageUrl = 'uploads/staff/'.$slug.'.'.$request->file('image')->getClientOriginalExtension();
             $image = $request->file('image')->move('uploads/staff', $imageUrl);
 
-            $staff->image = $imageUrl;
+            $staff->image = env('APP_URL').'/public/'.$imageUrl;
         }
 
 

@@ -132,6 +132,10 @@ $hodRole = array_filter($singleStaffRoles, function ($staffRole) {
                                                 <th class="ps-0" scope="row">Faculty: </th>
                                                 <td class="text-muted">{{ !empty($singleStaff->faculty) ? $singleStaff->faculty->name : null }}</td>
                                             </tr>
+                                            <tr>
+                                                <th class="ps-0" scope="row">Department: </th>
+                                                <td class="text-muted">{{ !empty($singleStaff->acad_department)?$singleStaff->acad_department->name:null }}</td>
+                                            </tr>
                                         </tbody>
                                     </table>
                                 </div>

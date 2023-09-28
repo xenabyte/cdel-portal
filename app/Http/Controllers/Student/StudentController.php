@@ -424,8 +424,8 @@ class StudentController extends Controller
             return redirect()->back();
         }
 
-        if(empty(strpos($request->email, 'tau.edu.ng'))) {
-            alert()->error('Error', 'Invalid student email, your student email must contain @tau.edu.ng or @st.tau.edu.ng')->persistent('Close');
+        if(empty(strpos($request->email, env('SCHOOL_DOMAIN')))) {
+            alert()->error('Error', 'Invalid student email, your student email must contain @'.env('SCHOOL_DOMAIN'))->persistent('Close');
             return redirect()->back();
         }
 
