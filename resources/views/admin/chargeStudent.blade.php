@@ -154,7 +154,7 @@
                                     <td>{{ $filteredTransaction['session'] }}</td>
                                     <td class="bg bg-soft-primary">₦{{ number_format($paymentAmount/100, 2) }}</td>
                                     <td class="bg bg-soft-success">₦{{ number_format($filteredTransaction['totalPaid']/100, 2) }}</td>
-                                    <td class="bg bg-soft-danger">₦{{ number_format(($filteredTransaction['totalPaid']-$paymentAmount)/100, 2) }}</td>
+                                    <td class="bg bg-soft-danger">₦{{ number_format(($paymentAmount-$filteredTransaction['totalPaid'])/100, 2) }}</td>
                                     <td>
                                         <form action="{{ url('/admin/generateInvoice') }}" method="post" enctype="multipart/form-data">
                                             @csrf
@@ -405,7 +405,7 @@
                                     <td>{{ $filteredTransaction['session'] }}</td>
                                     <td class="bg bg-soft-primary">₦{{ number_format($paymentAmount/100, 2) }}</td>
                                     <td class="bg bg-soft-success">₦{{ number_format($filteredTransaction['totalPaid']/100, 2) }}</td>
-                                    <td class="bg bg-soft-danger">₦{{ number_format(($filteredTransaction['totalPaid']-$paymentAmount)/100, 2) }}</td>
+                                    <td class="bg bg-soft-danger">₦{{ number_format(($paymentAmount-$filteredTransaction['totalPaid'])/100, 2) }}</td>
                                     <td>
                                         <form action="{{ url('/admin/generateInvoice') }}" method="post" enctype="multipart/form-data">
                                             @csrf
