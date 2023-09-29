@@ -20,7 +20,8 @@ class Transaction extends Model
         'reference',
         'payment_method',
         'status',
-        'session'
+        'session',
+        'narration'
     ];
 
     /**

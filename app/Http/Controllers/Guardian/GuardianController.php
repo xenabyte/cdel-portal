@@ -33,7 +33,6 @@ use App\Models\Transaction;
 use Paystack;
 use KingFlamez\Rave\Facades\Rave as Flutterwave;
 
-
 use App\Libraries\Result\Result;
 use App\Libraries\Pdf\Pdf;
 
@@ -297,4 +296,25 @@ class GuardianController extends Controller
         return redirect()->back();
     }
 
+    public function generateInvoice (Request $request){
+        $validator = Validator::make($request->all(), [
+            'session' => 'required',
+            'student_id' => 'required',
+            'payment_id' => 'required',
+        ]);
+
+        if($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+        $session = $request->session;
+        $studentId = $request->student_id;
+        $paymentId = $request->payment_id;
+
+        $pdf = new Pdf();
+        $invoice = $pdf->generateTransactionInvoice($session, $studentId, $paymentId);
+
+        return redirect(asset($invoice));
+
+    }
 }

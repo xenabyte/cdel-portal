@@ -23,6 +23,8 @@ use App\Models\Session;
 use App\Models\Faculty;
 use App\Models\Department;
 
+use App\Libraries\Pdf\Pdf;
+use App\Mail\TransactionMail;
 
 use SweetAlert;
 use Mail;
@@ -556,6 +558,7 @@ class PaymentController extends Controller
             'payment_method' => $request->paymentGateway,
             'reference' => $reference,
             'session' => $session,
+            'narration' => $request->narration,
             'status' => $request->paymentStatus == 1 ? 1 : null
         ]);
 
@@ -567,6 +570,21 @@ class PaymentController extends Controller
             }
             alert()->success('Good job', 'Student Charged')->persistent('Close');
             return $this->getSingleStudent($student->matric_number, 'staff.chargeStudent');
+        }
+
+        if(!empty($studentId)){
+            $pdf = new Pdf();
+            $invoice = $pdf->generateTransactionInvoice($session, $studentId, $payment->id, 'single');
+
+            $student = Student::with('applicant')->where('id', $studentId)->first();
+                    
+            $data = new \stdClass();
+            $data->lastname = $student->applicant->lastname;
+            $data->othernames = $student->applicant->othernames;
+            $data->amount = $amount;
+            $data->invoice = $invoice;
+            
+            Mail::to($student->email)->send(new TransactionMail($data));
         }
 
         if(!empty($request->user_id)){
@@ -689,5 +707,27 @@ class PaymentController extends Controller
             'department' => $department,
             'programme' => $programme
         ]);
+    }
+
+    public function generateInvoice (Request $request){
+        $validator = Validator::make($request->all(), [
+            'session' => 'required',
+            'student_id' => 'required',
+            'payment_id' => 'required',
+        ]);
+
+        if($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+        $session = $request->session;
+        $studentId = $request->student_id;
+        $paymentId = $request->payment_id;
+
+        $pdf = new Pdf();
+        $invoice = $pdf->generateTransactionInvoice($session, $studentId, $paymentId);
+
+        return redirect(asset($invoice));
+
     }
 }

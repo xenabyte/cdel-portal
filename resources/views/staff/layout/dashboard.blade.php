@@ -428,7 +428,7 @@
                                             <a href="{{('/staff/transactions')}}" class="nav-link"> Transactions </a>
                                         </li>
                                         <li class="nav-item">
-                                            <a href="{{('/staff/chargeStudent')}}" class="nav-link">Charge 'a' Student </a>
+                                            <a href="{{('/staff/chargeStudent')}}" class="nav-link">Payment/Charge </a>
                                         </li>
                                         @endif
                                         <li class="nav-item">

@@ -11,6 +11,7 @@ use App\Models\ResultApprovalStatus;
 use App\Models\Payment;
 use App\Models\Staff;
 use App\Models\StudentCourseRegistration;
+use App\Models\Transaction;
 
 use Carbon\Carbon;
 use Log;
@@ -184,6 +185,50 @@ Class Pdf {
         $data = ['info'=>$student, 'registeredCourses' => $courseRegs];
 
         $pdf = PDFDocument::loadView('pdf.resultCard', $data)
+        ->setOptions($options)
+        ->save($fileDirectory);
+
+        return $fileDirectory;
+    }
+
+    public function generateTransactionInvoice($session, $studentId, $paymentId, $type='all'){
+        $options = [
+            'isRemoteEnabled' => true,
+            'encryption' => '128',
+            'no_modify' => true,
+        ];
+
+        $payment = Payment::with('structures')->where('id', $paymentId)->first();
+        $amountBilled = $payment->structures->sum('amount');
+
+        $student = Student::with('applicant', 'academicLevel', 'faculty', 'department', 'programme')->where('id', $studentId)->first();
+        $name = $student->applicant->lastname.' '.$student->applicant->othernames;
+        $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $name .' transaction invoice '. $session)));
+
+        $transactions = Transaction::where([
+            'session' => $session,
+            'student_id' => $studentId,
+            'payment_id' => $paymentId,
+            'status' => 1
+        ])->latest();
+
+        if($type == 'all'){
+            $transactions = Transaction::where([
+                'session' => $session,
+                'student_id' => $studentId,
+                'payment_id' => $paymentId,
+                'status' => 1
+            ])->get();
+        }
+
+        $student->session = $session;
+        $student->paymentType = $payment->type;
+        $student->amountBilled = $amountBilled;
+
+        $fileDirectory = 'uploads/files/invoice/'.$slug.'.pdf';
+        $data = ['info'=>$student, 'transactions' => $transactions];
+
+        $pdf = PDFDocument::loadView('pdf.invoice', $data)
         ->setOptions($options)
         ->save($fileDirectory);
 

@@ -104,6 +104,9 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'admin'],
   Route::post('/updatePayment', [App\Http\Controllers\Admin\PaymentController::class, 'updatePayment'])->name('updatePayment')->middleware(['auth:admin']);
   Route::post('/deletePayment', [App\Http\Controllers\Admin\PaymentController::class, 'deletePayment'])->name('deletePayment')->middleware(['auth:admin']);
   Route::post('/uploadBulkPayment', [App\Http\Controllers\Admin\PaymentController::class, 'uploadBulkPayment'])->name('uploadBulkPayment')->middleware(['auth:admin']);
+  Route::post('/generateInvoice', [App\Http\Controllers\Admin\PaymentController::class, 'generateInvoice'])->name('generateInvoice')->middleware(['auth:admin']);
+
+  
 
 
   Route::get('/transactions', [App\Http\Controllers\Admin\PaymentController::class, 'transactions'])->name('transactions')->middleware(['auth:admin']);
@@ -267,6 +270,9 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'student'
   Route::get('/examResult', [App\Http\Controllers\Student\AcademicController::class, 'examResult'])->name('examResult')->middleware(['auth:student']);
   Route::post('/generateResult', [App\Http\Controllers\Student\AcademicController::class, 'generateResult'])->name('generateResult')->middleware(['auth:student']);
 
+  Route::post('/generateInvoice', [App\Http\Controllers\Student\StudentController::class, 'generateInvoice'])->name('generateInvoice')->middleware(['auth:student']);
+
+
   Route::get('/mentor', [App\Http\Controllers\Student\StudentController::class, 'mentor'])->name('mentor')->middleware(['auth:student']);
   Route::get('/exits', [App\Http\Controllers\Student\StudentController::class, 'exits'])->name('exits')->middleware(['auth:student']);
 
@@ -378,7 +384,9 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'staff'],
   Route::post('/addStructure', [App\Http\Controllers\Staff\PaymentController::class, 'addStructure'])->name('addStructure')->middleware(['auth:staff']);
   Route::post('/updateStructure', [App\Http\Controllers\Staff\PaymentController::class, 'updateStructure'])->name('updateStructure')->middleware(['auth:staff']);
   Route::post('/deleteStructure', [App\Http\Controllers\Staff\PaymentController::class, 'deleteStructure'])->name('deleteStructure')->middleware(['auth:staff']);
-  Route::post('/uploadBulkPayment', [App\Http\Controllers\Staff\PaymentController::class, 'uploadBulkPayment'])->name('uploadBulkPayment')->middleware(['auth:staff']);;
+  Route::post('/uploadBulkPayment', [App\Http\Controllers\Staff\PaymentController::class, 'uploadBulkPayment'])->name('uploadBulkPayment')->middleware(['auth:staff']);
+  Route::post('/generateInvoice', [App\Http\Controllers\Staff\PaymentController::class, 'generateInvoice'])->name('generateInvoice')->middleware(['auth:staff']);
+
 
   Route::post('/chargeStudent', [App\Http\Controllers\Staff\PaymentController::class, 'chargeStudent'])->name('chargeStudent')->middleware(['auth:staff']);
   Route::get('/chargeStudent', [App\Http\Controllers\Staff\StaffController::class, 'chargeStudent'])->name('chargeStudent')->middleware(['auth:staff']);
@@ -473,6 +481,7 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'guardian
   Route::get('/studentProfile/{slug}', [App\Http\Controllers\Guardian\GuardianController::class, 'studentProfile'])->name('studentProfile')->middleware(['auth:guardian']);
   Route::post('/makePayment', [App\Http\Controllers\Guardian\GuardianController::class, 'makePayment'])->name('makePayment')->middleware(['auth:guardian']);
   Route::post('/generateResult', [App\Http\Controllers\Guardian\GuardianController::class, 'generateResult'])->name('generateResult')->middleware(['auth:guardian']);
+  Route::post('/generateInvoice', [App\Http\Controllers\Guardian\GuardianController::class, 'generateInvoice'])->name('generateInvoice')->middleware(['auth:guardian']);
 
   Route::post('/updatePassword', [App\Http\Controllers\Guardian\GuardianController::class, 'updatePassword'])->name('updatePassword')->middleware(['auth:guardian']);
 

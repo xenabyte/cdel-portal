@@ -120,7 +120,7 @@
             <div class="card-header border-0 align-items-center d-flex">
                 <h4 class="card-title mb-0 flex-grow-1">Transactions</h4>
                 <div class="text-end mb-5">
-                    <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#addTransaction" class="btn btn-primary">Charge Student</a>
+                    <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#addTransaction" class="btn btn-primary">Create Payment</a>
                 </div>
             </div><!-- end card header -->
 
@@ -130,100 +130,42 @@
                         <thead>
                             <tr>
                                 <th scope="col">Id</th>
-                                <th scope="col">Reference</th>
-                                <th scope="col">Amount(₦)</th>
                                 <th scope="col">Payment For</th>
                                 <th scope="col">Session</th>
-                                <th scope="col">Payment Gateway</th>
-                                <th scope="col">Status</th>
-                                <th scope="col">Payment Date</th>
+                                <th class="bg bg-primary text-light" scope="col">Amount Billed(₦)</th>
+                                <th class="bg bg-success text-light" scope="col">Amount Paid(₦)</th>
+                                <th class="bg bg-danger text-light" scope="col">Balance(₦)</th>
                                 <th scope="col"></th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($transactions as $transaction)
-                            <tr>
-                                <th scope="row">{{ $loop->iteration }}</th>
-                                <td>{{ $transaction->reference }}</td>
-                                <td>₦{{ number_format($transaction->amount_payed/100, 2) }} </td>
-                                <td>{{ $transaction->paymentType->type }} </td>
-                                <td>{{ $transaction->session }}</td>
-                                <td>{{ $transaction->payment_method }}</td>
-                                <td><span class="badge badge-soft-{{ $transaction->status == 1 ? 'success' : 'warning' }}">{{ $transaction->status == 1 ? 'Paid' : 'Pending' }}</span></td>
-                                <td>{{ $transaction->status == 1 ? $transaction->updated_at : null }} </td>
-                                <td>
-                                    @if($transaction->status == 0)
-                                        <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#payNow{{$transaction->id}}" style="margin: 5px" class="btn btn-warning">Pay Now</a>
-                                    @endif
-                                </td>
-                            </tr>
-    
-                            <div id="payNow{{$transaction->id}}" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
-                                <div class="modal-dialog modal-lg modal-dialog-centered">
-                                    <div class="modal-content border-0 overflow-hidden">
-                                        <div class="modal-header p-3">
-                                            <h4 class="card-title mb-0">Pay Now</h4>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                        </div>
-    
-                                        <div class="modal-body border-top border-top-dashed">
-                                            <div class="mt-2 text-center">
-                                            <lord-icon src="https://cdn.lordicon.com/ggihhudh.json" trigger="hover" style="width:150px;height:150px">
-                                            </lord-icon>
-                                            </div>
-                                            <form action="{{ url('/student/makePayment') }}" method="post" enctype="multipart/form-data">
-                                                @csrf
-                                                <input type="hidden" name='programme_id' value="{{ $student->programme->id }}">
-                                                <input type="hidden" name="student_id" value="{{ $student->id }}">
-                                                <input type="hidden" name="transaction_id" value="{{ $transaction->id }}">
-                                                <input type="hidden" name="payment_id" value="{{ $transaction->paymentType->id }}">
-                                                <input type="hidden" name="reference" value="{{ $transaction->reference }}">
-                                                <input type="hidden" name="amount" value="{{ $transaction->amount_payed }}">
-                                                
-                                                <div class="mb-3">
-                                                    <label for="paymentGateway" class="form-label">Select Payment Gateway<span class="text-danger">*</span></label>
-                                                    <select class="form-select" aria-label="paymentGateway" name="paymentGateway" required onchange="handlePaymentTypeChange(event)">
-                                                       <option value= "" selected>Select Payment Gateway</option>
-                                                        @if(env('FLUTTERWAVE_STATUS'))<option value="Rave">Fluterwave</option>@endif
-                                                        @if(env('PAYSTACK_STATUS'))<option value="Paystack">Paystack</option>@endif
-                                                        @if(env('BANK_TRANSFER_STATUS'))<option value="BankTransfer">Transfer</option>@endif
-                                                    </select>
-                                                </div>
-    
-                                                <hr>
-                                                <!-- Primary Alert -->
-                                                <div class="alert alert-primary alert-dismissible alert-additional fade show" role="alert" style="display: none" id="transferInfo">
-                                                    <div class="alert-body">
-                                                        <div class="d-flex">
-                                                            <div class="flex-shrink-0 me-3">
-                                                                <i class="fs-16 align-middle"></i>
-                                                            </div>
-                                                            <div class="flex-grow-1">
-                                                                <h5 class="alert-heading">Well done !</h5>
-                                                                <p class="mb-0">Kindly make transfer to the below transaction </p>
-                                                                <br>
-                                                                <ul class="list-group">
-                                                                    <li class="list-group-item"><i class="mdi mdi-check-bold align-middle lh-1 me-2"></i><strong>Bank Name:</strong> {{env('BANK_NAME')}}</li>
-                                                                    <li class="list-group-item"><i class="mdi mdi-check-bold align-middle lh-1 me-2"></i><strong>Bank Account Number:</strong> {{env('BANK_ACCOUNT_NUMBER')}}</li>
-                                                                    <li class="list-group-item"><i class="mdi mdi-check-bold align-middle lh-1 me-2"></i><strong>Bank Account Name:</strong> {{env('BANK_ACCOUNT_NAME')}}</li>
-                                                                </ul>
-                                                                <br>
-                                                                <p>Please send proof of payment as an attachment to {{ env('ACCOUNT_EMAIL') }}, including your name, registration number, and purpose of payment. For any inquiries, you can also call {{ env('ACCOUNT_PHONE') }}.</p>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="alert-content">
-                                                        <p class="mb-0">NOTE: PLEASE ENSURE TO VERIFY THE TRANSACTION DETAILS PROPERLY. TRANSFER ONLY TO THE ACCOUNT ABOVE. STUDENTS TAKE RESPONSIBILITY FOR ANY MISPLACEMENT OF FUNDS.</p>
-                                                    </div>
-                                                </div>
-                                                <div>
-                                                    <button type="submit" id='submit-button' class="btn btn-primary">Make payment</button>
-                                                </div>
-                                            </form>
-                                        </div>
-                                    </div><!-- /.modal-content -->
-                                </div><!-- /.modal-dialog -->
-                            </div><!-- /.modal -->
+                            @php
+                                $id = 1;
+                            @endphp
+                            @foreach($transactions as $paymentType)
+                            @foreach($paymentType as $filteredTransaction)
+                            @php
+                                $payment = new \App\Models\Payment;
+                                $paymentAmount = $payment->getTotalStructureAmount($filteredTransaction['id']);
+                            @endphp
+                                <tr>
+                                    <td>{{ $id++ }}</td>
+                                    <td>{{ $filteredTransaction['paymentType'] }}</td>
+                                    <td>{{ $filteredTransaction['session'] }}</td>
+                                    <td class="bg bg-soft-primary">₦{{ number_format($paymentAmount/100, 2) }}</td>
+                                    <td class="bg bg-soft-success">₦{{ number_format($filteredTransaction['totalPaid']/100, 2) }}</td>
+                                    <td class="bg bg-soft-danger">₦{{ number_format(($filteredTransaction['totalPaid']-$paymentAmount)/100, 2) }}</td>
+                                    <td>
+                                        <form action="{{ url('/admin/generateInvoice') }}" method="post" enctype="multipart/form-data">
+                                            @csrf
+                                            <input name="payment_id" type="hidden" value="{{$filteredTransaction['id']}}">
+                                            <input name="student_id" type="hidden" value="{{$student->id}}">
+                                            <input name="session" type="hidden" value="{{ $filteredTransaction['session'] }}">
+                                            <button type="submit" class="btn btn-primary"><i class="mdi mdi-printer"></i></button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            @endforeach
                             @endforeach
                         </tbody>
                     </table>
@@ -325,10 +267,23 @@
                         <input type="text" class="form-control" name="amountGeneral" id="amountGeneral">
                     </div>
 
+                    <div class="mb-3">
+                        <label for="paymentStatus" class="form-label">Select Payment Status<span class="text-danger">*</span></label>
+                        <select class="form-select" aria-label="paymentStatus" name="paymentStatus" required>
+                            <option value= "" selected>Select Payment Status</option>
+                            <option value="1">Paid</option>
+                            <option value="0">Not Paid</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="narration" class="form-label">Payment Narration</label>
+                        <input type="text" class="form-control" name="narration" maxlength="200" id="narration">
+                    </div>
 
                     <div class="text-end border-top border-top-dashed p-3">
                         <br>
-                        <button type="submit" class="btn btn-primary">Create</button>
+                        <button type="submit" class="btn btn-primary">Pay/Charge</button>
                     </div>
                 </form>
             </div>
@@ -426,33 +381,42 @@
                         <thead>
                             <tr>
                                 <th scope="col">Id</th>
-                                <th scope="col">Reference</th>
-                                <th scope="col">Amount(₦)</th>
                                 <th scope="col">Payment For</th>
                                 <th scope="col">Session</th>
-                                <th scope="col">Payment Gateway</th>
-                                <th scope="col">Status</th>
-                                <th scope="col">Payment Date</th>
+                                <th class="bg bg-primary text-light" scope="col">Amount Billed(₦)</th>
+                                <th class="bg bg-success text-light" scope="col">Amount Paid(₦)</th>
+                                <th class="bg bg-danger text-light" scope="col">Balance(₦)</th>
                                 <th scope="col"></th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($transactions as $transaction)
-                            <tr>
-                                <th scope="row">{{ $loop->iteration }}</th>
-                                <td>{{ $transaction->reference }}</td>
-                                <td>₦{{ number_format($transaction->amount_payed/100, 2) }} </td>
-                                <td>{{ $transaction->paymentType->type }} </td>
-                                <td>{{ $transaction->session }}</td>
-                                <td>{{ $transaction->payment_method }}</td>
-                                <td><span class="badge badge-soft-{{ $transaction->status == 1 ? 'success' : 'warning' }}">{{ $transaction->status == 1 ? 'Paid' : 'Pending' }}</span></td>
-                                <td>{{ $transaction->status == 1 ? $transaction->updated_at : null }} </td>
-                                <td>
-                                    @if($transaction->status == 0)
-                                        <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#payNow{{$transaction->id}}" style="margin: 5px" class="btn btn-warning">Pay Now</a>
-                                    @endif
-                                </td>
-                            </tr>
+                            @php
+                                $id = 1;
+                            @endphp
+                            @foreach($transactions as $paymentType)
+                            @foreach($paymentType as $filteredTransaction)
+                            @php
+                                $payment = new \App\Models\Payment;
+                                $paymentAmount = $payment->getTotalStructureAmount($filteredTransaction['id']);
+                            @endphp
+                                <tr>
+                                    <td>{{ $id++ }}</td>
+                                    <td>{{ $filteredTransaction['paymentType'] }}</td>
+                                    <td>{{ $filteredTransaction['session'] }}</td>
+                                    <td class="bg bg-soft-primary">₦{{ number_format($paymentAmount/100, 2) }}</td>
+                                    <td class="bg bg-soft-success">₦{{ number_format($filteredTransaction['totalPaid']/100, 2) }}</td>
+                                    <td class="bg bg-soft-danger">₦{{ number_format(($filteredTransaction['totalPaid']-$paymentAmount)/100, 2) }}</td>
+                                    <td>
+                                        <form action="{{ url('/admin/generateInvoice') }}" method="post" enctype="multipart/form-data">
+                                            @csrf
+                                            <input name="payment_id" type="hidden" value="{{$filteredTransaction['id']}}">
+                                            <input name="student_id" type="hidden" value="{{$student->id}}">
+                                            <input name="session" type="hidden" value="{{ $filteredTransaction['session'] }}">
+                                            <button type="submit" class="btn btn-primary"><i class="mdi mdi-printer"></i></button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            @endforeach
                             @endforeach
                         </tbody>
                     </table>
@@ -541,10 +505,14 @@
                         </select>
                     </div>
 
+                    <div class="mb-3">
+                        <label for="narration" class="form-label">Payment Narration</label>
+                        <input type="text" class="form-control" name="narration" maxlength="200" id="narration">
+                    </div>
 
                     <div class="text-end border-top border-top-dashed p-3">
                         <br>
-                        <button type="submit" class="btn btn-primary">Create</button>
+                        <button type="submit" class="btn btn-primary">Pay/Charge</button>
                     </div>
                 </form>
             </div>
@@ -652,7 +620,7 @@
                             selectElement.innerHTML += `<option value="${amount * 0.2}">₦${((amount * 0.2) / 100).toFixed(2)} - 20%</option>`;
                             selectElement.innerHTML += `<option value="${amount * 0.1}">₦${((amount * 0.1) / 100).toFixed(2)} - 10%</option>`;
                         }
-
+z
                     }else if (selectedPaymentType === 'General Fee') {
                         document.getElementById('payment-options-tuition').style.display = 'none';
                         document.getElementById('payment-options-acceptance').style.display = 'none';

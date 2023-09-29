@@ -531,7 +531,7 @@
                                         <a href="{{('/admin/transactions')}}" class="nav-link"> Transactions </a>
                                     </li>
                                     <li class="nav-item">
-                                        <a href="{{('/admin/chargeStudent')}}" class="nav-link">Charge 'a' Student </a>
+                                        <a href="{{('/admin/chargeStudent')}}" class="nav-link">Payment/Charge </a>
                                     </li>
                                     <li class="nav-item">
                                         <a href="{{('/admin/transactionReport')}}" class="nav-link"> Transaction Report </a>

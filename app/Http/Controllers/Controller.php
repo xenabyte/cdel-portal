@@ -247,11 +247,35 @@ class Controller extends BaseController
         $studentId = $student->id;
         $levelId = $student->level_id;
 
-        $levels = AcademicLevel::get();
+        $levels = AcademicLevel::orderBy('id', 'DESC')->get();
         $programmes = Programme::get();
         $sessions = Session::orderBy('id', 'DESC')->get();
 
-        $transactions = Transaction::where('student_id', $studentId)->orderBy('id', 'DESC')->get();
+        $transactions = Transaction::with('paymentType')->where('student_id', $studentId)->where('status', 1)->orderBy('id', 'DESC')->get();
+
+        $filteredTransactions = [];
+        foreach ($transactions as $transaction) {
+            $paymentType = $transaction->paymentType->type;
+            $session = $transaction->session;
+            $totalPaid = $transaction->amount_payed;
+            $paymentId = $transaction->payment_id;
+        
+            if(isset($filteredTransactions[$paymentType][$session])) {
+                $filteredTransactions[$paymentType][$session]['totalPaid'] += $totalPaid;
+            } else {
+                $filteredTransactions[$paymentType][$session] = [
+                    'id' => $paymentId,
+                    'paymentType' => $paymentType,
+                    'totalPaid' => $totalPaid,
+                    'session' => $session,
+                ];
+            }
+        }
+        
+        // foreach ($filteredTransactions as &$paymentType) {
+        //     usort($paymentType, 'sortBySession');
+        // }
+        
 
         $schoolPayment = Payment::with('structures')
             ->where('type', Payment::PAYMENT_TYPE_SCHOOL)
@@ -285,7 +309,7 @@ class Controller extends BaseController
         }
 
         return view($path, [
-            'transactions' => $transactions,
+            'transactions' => $filteredTransactions,
             'payment' => $schoolPayment,
             'passTuition' => $passTuitionPayment,
             'fullTuitionPayment' => $fullTuitionPayment,
@@ -326,7 +350,6 @@ class Controller extends BaseController
         $applicant = User::find($applicantId);
         $applicationType = $applicant->application_type;
 
-        log::info("levels: " . $levelId);
         $type = Payment::PAYMENT_TYPE_SCHOOL;
 
         if($applicationType != 'UTME' && ($student->level_id == 2|| $student->level_id == 3)){
@@ -424,5 +447,9 @@ class Controller extends BaseController
 
             return true;
         }
+    }
+
+    public  function sortBySession($a, $b) {
+        return strcmp($a['session'], $b['session']);
     }
 }

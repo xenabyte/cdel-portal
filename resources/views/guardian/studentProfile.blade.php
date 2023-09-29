@@ -107,6 +107,7 @@ $studentRegistrations = $student->courseRegistrationDocument()->orderBy('created
                                                         <th scope="col">Payment Gateway</th>
                                                         <th scope="col">Status</th>
                                                         <th scope="col">Payment Date</th>
+                                                        <th></th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -121,6 +122,15 @@ $studentRegistrations = $student->courseRegistrationDocument()->orderBy('created
                                                         <td><span class="badge badge-soft-{{ $transaction->status == 1 ? 'success' : 'warning' }}">{{ $transaction->status == 1 ? 'Paid' : 'Pending' }}</span></td>
                                                         <td>{{ $transaction->status == 1 ? $transaction->updated_at : null }} </td>
                                                         <td>
+                                                            @if($transaction->status == 1)
+                                                                <form action="{{ url('/guardian/generateInvoice') }}" method="post" enctype="multipart/form-data">
+                                                                    @csrf
+                                                                    <input name="payment_id" type="hidden" value="{{$transaction->paymentType->id}}">
+                                                                    <input name="student_id" type="hidden" value="{{$transaction->student_id}}">
+                                                                    <input name="session" type="hidden" value="{{ $transaction->session }}">
+                                                                    <button type="submit" class="btn btn-primary"><i class="mdi mdi-printer"></i></button>
+                                                                </form>
+                                                            @endif
                                                             @if($transaction->status == 0)
                                                                 <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#payNow{{$transaction->id}}" style="margin: 5px" class="btn btn-warning">Pay Now</a>
                                                             @endif
@@ -140,7 +150,7 @@ $studentRegistrations = $student->courseRegistrationDocument()->orderBy('created
                                                                     <lord-icon src="https://cdn.lordicon.com/ggihhudh.json" trigger="hover" style="width:150px;height:150px">
                                                                     </lord-icon>
                                                                     </div>
-                                                                    <form action="{{ url('/student/makePayment') }}" method="post" enctype="multipart/form-data">
+                                                                    <form action="{{ url('/guardian/makePayment') }}" method="post" enctype="multipart/form-data">
                                                                         @csrf
                                                                         <input type="hidden" name='programme_id' value="{{ $student->programme->id }}">
                                                                         <input type="hidden" name="student_id" value="{{ $student->id }}">

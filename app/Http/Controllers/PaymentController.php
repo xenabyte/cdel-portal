@@ -20,9 +20,11 @@ use App\Models\SessionSetting;
 
 use App\Mail\ApplicationPayment;
 use App\Mail\StudentActivated;
-
+use App\Mail\TransactionMail;
 
 use App\Libraries\Google\Google;
+use App\Libraries\Pdf\Pdf;
+
 
 use Paystack;
 use SweetAlert;
@@ -61,10 +63,24 @@ class PaymentController extends Controller
             $payment = Payment::where('id', $paymentId)->first();
             $paymentType = $payment->type;
             $student = Student::with('applicant', 'programme')->where('id', $studentId)->first();
-            
+            $session = $paymentDetails['data']['metadata']['academic_session'];
+            $amount = $paymentDetails['data']['metadata']['amount'];
 
             if($paymentDetails['status'] == true){
                 if($this->processPaystackPayment($paymentDetails)){
+                    if($student && !empty($studentId)){
+                        $pdf = new Pdf();
+                        $invoice = $pdf->generateTransactionInvoice($session, $studentId, $paymentId, 'single');
+                                
+                        $data = new \stdClass();
+                        $data->lastname = $student->applicant->lastname;
+                        $data->othernames = $student->applicant->othernames;
+                        $data->amount = $amount;
+                        $data->invoice = $invoice;
+                        
+                        Mail::to($student->email)->send(new TransactionMail($data));
+                    }
+
                     alert()->success('Good Job', 'Payment successful')->persistent('Close');
                     if($paymentType == Payment::PAYMENT_TYPE_GENERAl_APPLICATION || $paymentType == Payment::PAYMENT_TYPE_INTER_TRANSFER_APPLICATION){
                         return view($redirectPath, [
@@ -130,9 +146,25 @@ class PaymentController extends Controller
             $payment = Payment::where('id', $paymentId)->first();
             $paymentType = $payment->type;
             $student = Student::with('applicant', 'programme')->where('id', $studentId)->first();
+            $amount = $paymentDetails['data']['meta']['amount'];
+            $session = $paymentDetails['data']['meta']['academic_session'];
             
             if($paymentDetails['status'] == 'success'){
                 if($this->processRavePayment($paymentDetails)){
+
+                    if($student && !empty($studentId)){
+                        $pdf = new Pdf();
+                        $invoice = $pdf->generateTransactionInvoice($session, $studentId, $paymentId, 'single');
+                                
+                        $data = new \stdClass();
+                        $data->lastname = $student->applicant->lastname;
+                        $data->othernames = $student->applicant->othernames;
+                        $data->amount = $amount;
+                        $data->invoice = $invoice;
+                        
+                        Mail::to($student->email)->send(new TransactionMail($data));
+                    }
+
                     alert()->success('Good Job', 'Payment successful')->persistent('Close');
                     if($paymentType == Payment::PAYMENT_TYPE_GENERAl_APPLICATION || $paymentType == Payment::PAYMENT_TYPE_INTER_TRANSFER_APPLICATION){
                         return view($redirectPath, [
@@ -189,7 +221,7 @@ class PaymentController extends Controller
             sleep(300);
             return false;
             if($event == "charge.success"){
-                return $this->processPayment($webhookData);
+                return $this->verifyPayment($webhookData);
             }
           
         }

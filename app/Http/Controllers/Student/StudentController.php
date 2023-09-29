@@ -17,6 +17,8 @@ use App\Models\Staff;
 use App\Models\User as Applicant;
 use App\Models\Student;
 
+use App\Libraries\Pdf\Pdf;
+
 use SweetAlert;
 use Mail;
 use Alert;
@@ -460,5 +462,27 @@ class StudentController extends Controller
 
         alert()->error('Oops!', 'An Error Occurred')->persistent('Close');
         return redirect()->back();
+    }
+
+    public function generateInvoice (Request $request){
+        $validator = Validator::make($request->all(), [
+            'session' => 'required',
+            'student_id' => 'required',
+            'payment_id' => 'required',
+        ]);
+
+        if($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+        $session = $request->session;
+        $studentId = $request->student_id;
+        $paymentId = $request->payment_id;
+
+        $pdf = new Pdf();
+        $invoice = $pdf->generateTransactionInvoice($session, $studentId, $paymentId);
+
+        return redirect(asset($invoice));
+
     }
 }

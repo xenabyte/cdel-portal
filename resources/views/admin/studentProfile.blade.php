@@ -106,6 +106,7 @@ $studentRegistrations = $student->courseRegistrationDocument()->orderBy('created
                                                         <th scope="col">Payment Gateway</th>
                                                         <th scope="col">Status</th>
                                                         <th scope="col">Payment Date</th>
+                                                        <th scope="col"></th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -119,6 +120,17 @@ $studentRegistrations = $student->courseRegistrationDocument()->orderBy('created
                                                         <td>{{ $transaction->payment_method }}</td>
                                                         <td><span class="badge badge-soft-{{ $transaction->status == 1 ? 'success' : 'warning' }}">{{ $transaction->status == 1 ? 'Paid' : 'Pending' }}</span></td>
                                                         <td>{{ $transaction->status == 1 ? $transaction->updated_at : null }} </td>
+                                                        <td>
+                                                            @if($transaction->status == 1)
+                                                            <form action="{{ url('/admin/generateInvoice') }}" method="post" enctype="multipart/form-data">
+                                                                @csrf
+                                                                <input name="payment_id" type="hidden" value="{{$transaction->paymentType->id}}">
+                                                                <input name="student_id" type="hidden" value="{{$transaction->student_id}}">
+                                                                <input name="session" type="hidden" value="{{ $transaction->session }}">
+                                                                <button type="submit" class="btn btn-primary"><i class="mdi mdi-printer"></i></button>
+                                                            </form>
+                                                            @endif
+                                                        </td>
                                                     </tr>
                                                     @endforeach
                                                 </tbody>

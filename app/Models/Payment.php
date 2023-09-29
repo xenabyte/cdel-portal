@@ -58,4 +58,15 @@ class Payment extends Model
     {
         return $this->belongsTo(AcademicLevel::class, 'level_id');
     }
+
+    public static function getTotalStructureAmount($id)
+    {
+        $payment = Payment::find($id);
+
+        if ($payment) {
+            $totalAmount = $payment->structures->sum('amount');
+            return $totalAmount;
+        } 
+        return 0;
+    }
 }
