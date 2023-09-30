@@ -11,6 +11,7 @@
     <meta content="Kolawole Olanrewaju" name="author" />
     <!-- App favicon -->
     <link rel="shortcut icon" href="{{asset('favicon.png')}}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
     <!-- Layout config Js -->
     <script src="{{asset('assets/js/layout.js')}}"></script>
@@ -22,7 +23,7 @@
     <link href="{{asset('assets/css/app.min.css')}}" rel="stylesheet" type="text/css" />
     <!-- custom Css-->
     <link href="{{asset('assets/css/custom.min.css')}}" rel="stylesheet" type="text/css" />
-
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 </head>
 
 <body>
@@ -120,6 +121,22 @@
 
     <!-- password-addon init -->
     <script src="{{asset('assets/js/pages/password-addon.init.js')}}"></script>
+    <script>
+        $(document).ready(function() {
+          $("#submit-button").click(function() {
+            // Disable the button
+            $(this.form).submit();
+    
+            $(this).prop("disabled", true);
+        
+            // Remove the text
+            $(this).text("");
+        
+            // Replace the text with a spinner
+            $(this).html("<i class='fa fa-spinner fa-spin'></i>");
+          });
+        });
+    </script>
 </body>
 
 </html>

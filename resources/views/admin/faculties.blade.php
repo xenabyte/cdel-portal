@@ -69,7 +69,7 @@
 
                                                 <hr>
                                                 <div class="text-end">
-                                                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                                                    <button type="submit" id="submit-button" class="btn btn-primary">Save Changes</button>
                                                 </div>
                                             </form>
                                         </div>
@@ -91,7 +91,7 @@
                                                     @csrf
                                                     <input type="hidden" name='faculty_id' value="{{ $faculty->id }}">
                                                     <hr>
-                                                    <button type="submit" class="btn btn-danger w-100">Yes, Delete</button>
+                                                    <button type="submit" id="submit-button" class="btn btn-danger w-100">Yes, Delete</button>
                                                 </form>
                                             </div>
                                         </div>
@@ -130,7 +130,7 @@
 
                     <hr>
                     <div class="text-end">
-                        <button type="submit" class="btn btn-primary">Add Faculty</button>
+                        <button type="submit" id="submit-button" class="btn btn-primary">Add Faculty</button>
                     </div>
                 </form>
             </div>

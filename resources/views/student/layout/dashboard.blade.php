@@ -16,6 +16,7 @@
     <meta content="Olanrewaju kolawole" name="author" />
     <!-- App favicon -->
     <link rel="shortcut icon" href="{{asset('favicon.png')}}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
     <!--datatable css-->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css" />
@@ -42,7 +43,7 @@
           toolbar_mode: 'floating',
         });
     </script>
-
+<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 </head>
 
 <body>
@@ -168,8 +169,9 @@
                             <div class="dropdown-menu dropdown-menu-end">
                                 <!-- item-->
                                 <h6 class="dropdown-header">Welcome {{ $name }}!</h6>
-                                <h6 class="dropdown-header">Support Code: <span class="text-danger">ST{{ sprintf("%06d", $student->id) }}</span></h6>
                                 <div class="dropdown-divider"></div>
+                                <h6 class="dropdown-header">Support Code: <span class="text-danger">ST{{ sprintf("%06d", $student->id) }}</span></h6>
+                                @if(env('WALLET_STATUS'))<a class="dropdown-item" href=#"><i class="mdi mdi-wallet text-muted fs-16 align-middle me-1"></i> <span class="align-middle">Balance : <b>₦{{ number_format($student->amount_balance/100, 2) }}</b></span></a>@endif
                                 <a class="dropdown-item" href="{{ url('/student/profile') }}"><i class="mdi mdi-cog-outline text-muted fs-16 align-middle me-1"></i> <span class="align-middle">Settings</span></a>
                                 <a class="dropdown-item" href="{{ url('/student/logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();"><i class="mdi mdi-logout text-muted fs-16 align-middle me-1"></i> <span class="align-middle" data-key="t-logout">Logout</span></a>
                                 <form id="logout-form" action="{{ url('/student/logout') }}" method="POST" style="display: none;">@csrf</form>
@@ -214,13 +216,21 @@
                     <div id="two-column-menu">
                     </div>
                     <ul class="navbar-nav" id="navbar-nav">
+                        @if(env('WALLET_STATUS'))
+                        <hr class="text-light">
+                        <li class="nav-item">
+                            <a class="nav-link menu-link" href=#"><i class="mdi mdi-wallet fs-16 align-middle me-1"></i> <span class="align-middle">Balance: <b>₦{{ number_format($student->amount_balance/100, 2) }}</b></span></a>
+                        </li>
+                        <hr class="text-light">
+                        @endif
                         <li class="menu-title"><span data-key="t-menu">Menu</span></li>
+
                         <li class="nav-item">
                             <a class="nav-link menu-link" href="{{ url('/student/home') }}">
                                 <i class="mdi mdi-view-dashboard"></i> <span>Dashboard</span>
                             </a>
                         </li>
-
+                        
                         @if($passTuition)
                         <li class="nav-item">
                             <a class="nav-link menu-link" href="{{ url('student/mentor') }}">
@@ -229,10 +239,22 @@
                         </li>
 
                         <li class="nav-item">
-                            <a class="nav-link menu-link" href="{{ url('student/transactions') }}">
+                            <a class="nav-link menu-link" href="#transaction" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="transaction">
                                 <i class="mdi mdi-bank-transfer"></i> <span data-key="t-transaction">Transaction</span>
                             </a>
-                        </li>
+                            <div class="collapse menu-dropdown" id="transaction">
+                                <ul class="nav nav-sm flex-column">
+                                    <li class="nav-item">
+                                        <a href="{{ url('/student/transactions') }}" class="nav-link">School Transactions</a>
+                                    </li>
+                                    @if(env('WALLET_STATUS'))
+                                    <li class="nav-item">
+                                        <a href="{{ url('/student/walletTransactions') }}" class="nav-link">Wallet Transactions</a>
+                                    </li>
+                                    @endif
+                                </ul>
+                            </div>
+                        </li> 
 
                         <li class="nav-item">
                             <a class="nav-link menu-link" href="#courseManagement" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="courseManagement">
@@ -268,7 +290,6 @@
                                 </ul>
                             </div>
                         </li> 
-                        @endif
 
                         <li class="nav-item">
                             <a class="nav-link menu-link" href="#resultManagement" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="resultManagement">
@@ -288,6 +309,7 @@
                                 <i class="mdi mdi-arrow-top-right-bold-box"></i> <span data-key="t-transaction">Exit(s)</span>
                             </a>
                         </li>
+                        @endif
                        
                         <li class="nav-item">
                             <a class="nav-link menu-link" href="{{ url('user/logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
@@ -507,6 +529,39 @@
                 console.error(error);
             });
         }
+    </script>
+    <script>
+        $(document).ready(function() {
+          $("#submit-button-main").click(function() {
+            // Disable the button
+            $(this.form).submit();
+    
+            $(this).prop("disabled", true);
+        
+            // Remove the text
+            $(this).text("");
+        
+            // Replace the text with a spinner
+            $(this).html("<i class='fa fa-spinner fa-spin'></i>");
+          });
+        });
+    </script>
+
+    <script>
+        $(document).ready(function() {
+        $("#submit-button").click(function() {
+            // Disable the button
+            $(this.form).submit();
+
+            $(this).prop("disabled", true);
+        
+            // Remove the text
+            $(this).text("");
+        
+            // Replace the text with a spinner
+            $(this).html("<i class='fa fa-spinner fa-spin'></i>");
+        });
+        });
     </script>
 </body>
 

@@ -78,7 +78,7 @@
 
                     <hr>
                     <div class="text-end">
-                        <button type="submit" class="btn btn-primary">Upload Handbook</button>
+                        <button type="submit" id="submit-button" class="btn btn-primary">Upload Handbook</button>
                     </div>
                 </form>
             </div><!-- end cardbody -->
@@ -140,7 +140,7 @@
 
                     <hr>
                     <div class="text-end">
-                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                        <button type="submit" id="submit-button" class="btn btn-primary">Save Changes</button>
                     </div>
                 </form>
             </div>

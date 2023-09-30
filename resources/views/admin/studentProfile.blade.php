@@ -115,7 +115,7 @@ $studentRegistrations = $student->courseRegistrationDocument()->orderBy('created
                                                         <th scope="row">{{ $loop->iteration }}</th>
                                                         <td>{{ $transaction->reference }}</td>
                                                         <td>₦{{ number_format($transaction->amount_payed/100, 2) }} </td>
-                                                        <td>{{ $transaction->paymentType->type }} </td>
+                                                        <td>{{ !empty($transaction->paymentType)? $transaction->paymentType->type : 'Wallet Deposit' }} </td>
                                                         <td>{{ $transaction->session }}</td>
                                                         <td>{{ $transaction->payment_method }}</td>
                                                         <td><span class="badge badge-soft-{{ $transaction->status == 1 ? 'success' : 'warning' }}">{{ $transaction->status == 1 ? 'Paid' : 'Pending' }}</span></td>
@@ -124,10 +124,10 @@ $studentRegistrations = $student->courseRegistrationDocument()->orderBy('created
                                                             @if($transaction->status == 1)
                                                             <form action="{{ url('/admin/generateInvoice') }}" method="post" enctype="multipart/form-data">
                                                                 @csrf
-                                                                <input name="payment_id" type="hidden" value="{{$transaction->paymentType->id}}">
+                                                                <input name="payment_id" type="hidden" value="{{!empty($transaction->paymentType)?$transaction->paymentType->id:0}}">
                                                                 <input name="student_id" type="hidden" value="{{$transaction->student_id}}">
                                                                 <input name="session" type="hidden" value="{{ $transaction->session }}">
-                                                                <button type="submit" class="btn btn-primary"><i class="mdi mdi-printer"></i></button>
+                                                                <button type="submit" id="submit-button" class="btn btn-primary"><i class="mdi mdi-printer"></i></button>
                                                             </form>
                                                             @endif
                                                         </td>
@@ -197,7 +197,7 @@ $studentRegistrations = $student->courseRegistrationDocument()->orderBy('created
                                                             </div>
                                                         </div>
                 
-                                                        <button type="submit" class="btn btn-fill btn-primary btn-lg btn-block mb-5">Generate Result</button>
+                                                        <button type="submit" id="submit-button" class="btn btn-fill btn-primary btn-lg btn-block mb-5">Generate Result</button>
                                                     </div>
                                                 </form>
                                             </div>
@@ -337,7 +337,7 @@ $studentRegistrations = $student->courseRegistrationDocument()->orderBy('created
                                                 <hr>
                                             </div>
     
-                                            <button type="submit" class="btn btn-fill btn-primary btn-lg mb-5">Upload Image</button>
+                                            <button type="submit" id="submit-button" class="btn btn-fill btn-primary btn-lg mb-5">Upload Image</button>
                                         </div>
                                     </form>
                                 </div>
@@ -376,7 +376,7 @@ $studentRegistrations = $student->courseRegistrationDocument()->orderBy('created
                                         <div class="col-lg-4">
                                             <div class="text-end">
                                                 <br>
-                                                <button type="submit" class="btn btn-primary btn-lg">Change Password</button>
+                                                <button type="submit" id="submit-button" class="btn btn-primary btn-lg">Change Password</button>
                                             </div>
                                         </div>
                                         <!--end col-->
@@ -411,7 +411,7 @@ $studentRegistrations = $student->courseRegistrationDocument()->orderBy('created
                                         <div class="col-lg-12">
                                             <div class="text-end">
                                                 <br>
-                                                <button type="submit" class="btn btn-primary btn-lg">Save Changes</button>
+                                                <button type="submit" id="submit-button" class="btn btn-primary btn-lg">Save Changes</button>
                                             </div>
                                         </div>
                                         <!--end col-->

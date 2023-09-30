@@ -107,7 +107,7 @@
 
                                             <hr>
                                             <div class="text-end">
-                                                <button type="submit" class="btn btn-primary">Update Course</button>
+                                                <button type="submit" id="submit-button" class="btn btn-primary">Update Course</button>
                                             </div>
                                         </form>
                                     </div>
@@ -132,7 +132,7 @@
                                                 <input name="course_id" type="hidden" value="{{$course61->id}}">
 
                                                 <hr>
-                                                <button type="submit" class="btn btn-danger w-100">Yes, Delete</button>
+                                                <button type="submit" id="submit-button" class="btn btn-danger w-100">Yes, Delete</button>
                                             </form>
                                         </div>
                                     </div>
@@ -238,7 +238,7 @@
 
                                                 <hr>
                                                 <div class="text-end">
-                                                    <button type="submit" class="btn btn-primary">Update Course</button>
+                                                    <button type="submit" id="submit-button" class="btn btn-primary">Update Course</button>
                                                 </div>
                                             </form>
                                         </div>
@@ -263,7 +263,7 @@
                                                     <input name="course_id" type="hidden" value="{{$course62->id}}">
 
                                                     <hr>
-                                                    <button type="submit" class="btn btn-danger w-100">Yes, Delete</button>
+                                                    <button type="submit" id="submit-button" class="btn btn-danger w-100">Yes, Delete</button>
                                                 </form>
                                             </div>
                                         </div>

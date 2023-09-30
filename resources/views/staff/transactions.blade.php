@@ -51,7 +51,7 @@
                             <td>{{ !empty($transaction->student_id)? 'Student' : 'Applicant' }}</td>
                             <td>{{ $transaction->reference }}</td>
                             <td>₦{{ number_format($transaction->amount_payed/100, 2) }} </td>
-                            <td>{{ $transaction->paymentType->type }} </td>
+                            <td>{{ !empty($transaction->paymentType)? $transaction->paymentType->type : 'Wallet Deposit' }} </td>
                             <td>{{ $transaction->session }}</td>
                             <td>{{ $transaction->payment_method }}</td>
                             <td><span class="badge badge-soft-{{ $transaction->status == 1 ? 'success' : 'warning' }}">{{ $transaction->status == 1 ? 'Paid' : 'Pending' }}</span></td>
@@ -76,7 +76,7 @@
                                             <input type="hidden" name='programme_id' value="{{ $student->programme->id }}">
                                             <input type="hidden" name="student_id" value="{{ $student->id }}">
                                             <input type="hidden" name="transaction_id" value="{{ $transaction->id }}">
-                                            <input type="hidden" name="payment_id" value="{{ $transaction->paymentType->id }}">
+                                            <input type="hidden" name="payment_id" value="{{ !empty($transaction->paymentType)? $transaction->paymentType->id : 0 }}">
                                             <input type="hidden" name="reference" value="{{ $transaction->reference }}">
                                             <input type="hidden" name="amount" value="{{ $transaction->amount_payed }}">
                                             
@@ -84,9 +84,10 @@
                                                 <label for="paymentGateway" class="form-label">Select Payment Gateway<span class="text-danger">*</span></label>
                                                 <select class="form-select" aria-label="paymentGateway" name="paymentGateway" required onchange="handlePaymentMethodChange(event)">
                                                     <option value= "" selected>Select Payment Gateway</option>
-                                                     @if(env('FLUTTERWAVE_STATUS'))<option value="Rave">Fluterwave</option>@endif
+                                                    @if(env('FLUTTERWAVE_STATUS'))<option value="Rave">Flutterwave</option>@endif
                                                     @if(env('PAYSTACK_STATUS'))<option value="Paystack">Paystack</option>@endif
                                                     @if(env('BANK_TRANSFER_STATUS'))<option value="BankTransfer">Transfer</option>@endif
+                                                    @if(env('WALLET_STATUS'))<option value="Wallet">Wallet</option>@endif
                                                 </select>
                                             </div>
 
@@ -117,7 +118,7 @@
                                                 </div>
                                             </div>
                                             <div>
-                                                <button type="submit" id='submit-button' class="btn btn-primary">Make payment</button>
+                                                <button type="submit" id="submit-button" id='submit-button' class="btn btn-primary">Make payment</button>
                                             </div>
                                         </form>
                                     </div>
@@ -169,9 +170,10 @@
                         <label for="paymentGateway" class="form-label">Select Payment Gateway<span class="text-danger">*</span></label>
                         <select class="form-select" aria-label="paymentGateway" name="paymentGateway" required onchange="handlePaymentMainMethodChange(event)">
                             <option value= "" selected>Select Payment Gateway</option>
-                                @if(env('FLUTTERWAVE_STATUS'))<option value="Rave">Fluterwave</option>@endif
+                                @if(env('FLUTTERWAVE_STATUS'))<option value="Rave">Flutterwave</option>@endif
                                 @if(env('PAYSTACK_STATUS'))<option value="Paystack">Paystack</option>@endif
                                 @if(env('BANK_TRANSFER_STATUS'))<option value="BankTransfer">Transfer</option>@endif
+                                @if(env('WALLET_STATUS'))<option value="Wallet">Wallet</option>@endif
                         </select>
                     </div>
 
@@ -202,7 +204,7 @@
                     </div>
 
                     <div>
-                        <button type="submit" id='submit-button-main' class="btn btn-primary">Make payment</button>
+                        <button type="submit" id="submit-button" id='submit-button-main' class="btn btn-primary">Make payment</button>
                     </div>
                 </form>
             </div>

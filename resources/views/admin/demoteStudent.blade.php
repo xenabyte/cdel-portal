@@ -53,7 +53,7 @@
 
                     <hr>
                     <div class="text-end">
-                        <button type="submit" class="btn btn-primary">Get student</button>
+                        <button type="submit" id="submit-button" class="btn btn-primary">Get student</button>
                     </div>
                 </form>
             </div>
@@ -155,7 +155,7 @@
 
                     <hr>
                     <div class="text-end">
-                        <button type="submit" class="btn btn-primary">Demote student</button>
+                        <button type="submit" id="submit-button" class="btn btn-primary">Demote student</button>
                     </div>
                 </form>
             </div>

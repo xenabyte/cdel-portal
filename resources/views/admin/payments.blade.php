@@ -123,7 +123,7 @@
                                             </div>
             
                                             <div class="text-end">
-                                                <button type="submit" class="btn btn-primary">Save Changes</button>
+                                                <button type="submit" id="submit-button" class="btn btn-primary">Save Changes</button>
                                             </div>
                                         </form>
                                     </div>
@@ -147,7 +147,7 @@
                                                 <input name="payment_id" type="hidden" value="{{$payment->id}}">
 
                                                 <hr>
-                                                <button type="submit" class="btn btn-danger w-100">Yes, Delete</button>
+                                                <button type="submit" id="submit-button" class="btn btn-danger w-100">Yes, Delete</button>
                                             </form>
                                         </div>
                                     </div>
@@ -275,7 +275,7 @@
                                                                                         </div>
                                                         
                                                                                         <div class="text-end">
-                                                                                            <button type="submit" class="btn btn-primary">Save Changes</button>
+                                                                                            <button type="submit" id="submit-button" class="btn btn-primary">Save Changes</button>
                                                                                         </div>
                                                                                     </form>
                                                                                 </div>
@@ -299,7 +299,7 @@
                                                                                             <input name="payment_id" type="hidden" value="{{$schoolFeePayment->id}}">
                                             
                                                                                             <hr>
-                                                                                            <button type="submit" class="btn btn-danger w-100">Yes, Delete</button>
+                                                                                            <button type="submit" id="submit-button" class="btn btn-danger w-100">Yes, Delete</button>
                                                                                         </form>
                                                                                     </div>
                                                                                 </div>
@@ -399,7 +399,7 @@
 
                     <hr>
                     <div class="text-end">
-                        <button type="submit" class="btn btn-primary">Create Bill</button>
+                        <button type="submit" id="submit-button" class="btn btn-primary">Create Bill</button>
                     </div>
                 </form>
             </div>
@@ -426,7 +426,7 @@
 
                     <hr>
                     <div class="text-end">
-                        <button type="submit" class="btn btn-primary">Upload Bills</button>
+                        <button type="submit" id="submit-button" class="btn btn-primary">Upload Bills</button>
                     </div>
                 </form>
             </div>

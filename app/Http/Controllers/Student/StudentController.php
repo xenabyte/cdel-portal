@@ -207,25 +207,26 @@ class StudentController extends Controller
         $globalData = $request->input('global_data');
         $admissionSession = $globalData->sessionSetting['admission_session'];
         $paymentId = $request->payment_id;
+        $redirectLocation = 'student/walletTransactions';
+        $amount = $request->amount * 100;
 
-        if(!$payment = Payment::with('structures')->where('id', $paymentId)->first()){
-            alert()->error('Oops', 'Invalid Payment Initialization, contact ICT')->persistent('Close');
-            return redirect()->back();
+        if($paymentId > 0){
+            if(!$payment = Payment::with('structures')->where('id', $paymentId)->first()){
+                alert()->error('Oops', 'Invalid Payment Initialization, contact ICT')->persistent('Close');
+                return redirect()->back();
+            }
+            $redirectLocation = 'student/transactions';
+            $amount = $request->amount;
         }
+        
 
         $paymentGateway = $request->paymentGateway;
-        if((strtolower($paymentGateway) != 'paystack') &&  strtolower($paymentGateway) != 'rave' && strtolower($paymentGateway) != 'banktransfer') {
-            alert()->error('Oops', 'Gateway not available')->persistent('Close');
-            return redirect()->back();
-        }
 
-
-        $accessCode = $this->generateAccessCode();
-        $amount = $request->amount;
-
-        Log::info(" Amount ****************: ". round($this->getPaystackAmount($amount)));
+        $reference = $this->generateAccessCode();
 
         if(strtolower($paymentGateway) == 'paystack') {
+            Log::info("Paystack Amount ****************: ". round($this->getPaystackAmount($amount)));
+
             $data = array(
                 "amount" => round($this->getPaystackAmount($amount)),
                 "email" => $student->email,
@@ -239,7 +240,7 @@ class StudentController extends Controller
                     "payment_gateway" => $paymentGateway,
                     "reference" => null,
                     "academic_session" => $student->academic_session,
-                    "redirect_path" => 'student/transactions',
+                    "redirect_path" => $redirectLocation,
                 ),
             );
 
@@ -247,6 +248,8 @@ class StudentController extends Controller
         }
 
         if(strtolower($paymentGateway) == 'rave') {
+            Log::info("Flutterwave Amount ****************: ". round($this->getRaveAmount($amount)));
+
             $reference = Flutterwave::generateReference();
 
             $data = array(
@@ -270,7 +273,7 @@ class StudentController extends Controller
                     "payment_gateway" => $paymentGateway,
                     "reference" => $reference,
                     "academic_session" => $student->academic_session,
-                    "redirect_path" => 'student/transactions',
+                    "redirect_path" => $redirectLocation,
                 ),
                 "customizations" => array(
                     "title" => env('SCHOOL_NAME'),
@@ -289,11 +292,33 @@ class StudentController extends Controller
             return redirect($payment['data']['link']);
         }
 
+        if(strtolower($paymentGateway) == 'wallet') {
+            Log::info("Wallet Amount ****************: ". round($amount));
+
+            $studentBalance = $student->amount_balance;
+            if($studentBalance < ($amount +20000)){
+                $message = 'Insufficient funds, please top up your wallet or use another payment method.';
+                alert()->info('Opps!', $message)->persistent('Close');
+                return redirect()->back();
+            }
+            $transactionData = new \stdClass();
+            $transactionData->amount = $amount;
+            $transactionData->email = $student->email;
+            $transactionData->payment_id = $paymentId;
+            $transactionData->student_id = $studentId;
+            $transactionData->reference = $reference;
+            $transactionData->academic_session = $student->academic_session;
+            $transactionData->redirect_path = $redirectLocation;
+            $transactionData->payment_gateway = $paymentGateway;
+
+            return $this->billStudent($transactionData);
+        }
+
         $message = 'Invalid Payment Gateway';
         alert()->info('Opps!', $message)->persistent('Close');
         return redirect()->back();
     }
-
+    
     public function transactions(Request $request)
     {
         $student = Auth::guard('student')->user();
@@ -303,7 +328,7 @@ class StudentController extends Controller
         $admissionSession = $globalData->sessionSetting['admission_session'];
         $academicSession = $globalData->sessionSetting['academic_session'];
 
-        $transactions = Transaction::where('student_id', $studentId)->orderBy('id', 'DESC')->get();
+        $transactions = Transaction::where('student_id', $studentId)->where('payment_id', '!=', 0)->orderBy('id', 'DESC')->get();
 
         $paymentCheck = $this->checkSchoolFees($student, $academicSession, $levelId);
         if(!$paymentCheck->passTuitionPayment){
@@ -317,6 +342,37 @@ class StudentController extends Controller
         }
         
         return view('student.transactions', [
+            'transactions' => $transactions,
+            'payment' => $paymentCheck->schoolPayment,
+            'passTuition' => $paymentCheck->passTuitionPayment,
+            'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
+            'passEightyTuition' => $paymentCheck->passEightyTuition
+        ]);
+    }
+
+    public function walletTransactions(Request $request)
+    {
+        $student = Auth::guard('student')->user();
+        $studentId = $student->id;
+        $levelId = $student->level_id;
+        $globalData = $request->input('global_data');
+        $admissionSession = $globalData->sessionSetting['admission_session'];
+        $academicSession = $globalData->sessionSetting['academic_session'];
+
+        $transactions = Transaction::where('student_id', $studentId)->where('payment_id', 0)->orWhere('payment_method', 'Wallet')->orderBy('id', 'DESC')->get();
+
+        $paymentCheck = $this->checkSchoolFees($student, $academicSession, $levelId);
+        if(!$paymentCheck->passTuitionPayment){
+            return view('student.schoolFee', [
+                'payment' => $paymentCheck->schoolPayment,
+                'passTuition' => $paymentCheck->passTuitionPayment,
+                'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
+                'passEightyTuition' => $paymentCheck->passEightyTuition,
+                'studentPendingTransactions' => $paymentCheck->studentPendingTransactions
+            ]);
+        }
+        
+        return view('student.walletTransactions', [
             'transactions' => $transactions,
             'payment' => $paymentCheck->schoolPayment,
             'passTuition' => $paymentCheck->passTuitionPayment,

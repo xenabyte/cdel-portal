@@ -147,6 +147,7 @@
                             @php
                                 $payment = new \App\Models\Payment;
                                 $paymentAmount = $payment->getTotalStructureAmount($filteredTransaction['id']);
+                                $balance = $filteredTransaction['paymentType'] == 'Wallet Deposit'? 0 : $paymentAmount-$filteredTransaction['totalPaid'];
                             @endphp
                                 <tr>
                                     <td>{{ $id++ }}</td>
@@ -154,14 +155,14 @@
                                     <td>{{ $filteredTransaction['session'] }}</td>
                                     <td class="bg bg-soft-primary">₦{{ number_format($paymentAmount/100, 2) }}</td>
                                     <td class="bg bg-soft-success">₦{{ number_format($filteredTransaction['totalPaid']/100, 2) }}</td>
-                                    <td class="bg bg-soft-danger">₦{{ number_format(($paymentAmount-$filteredTransaction['totalPaid'])/100, 2) }}</td>
+                                    <td class="bg bg-soft-danger">₦{{ number_format($balance/100, 2) }}</td>
                                     <td>
                                         <form action="{{ url('/admin/generateInvoice') }}" method="post" enctype="multipart/form-data">
                                             @csrf
                                             <input name="payment_id" type="hidden" value="{{$filteredTransaction['id']}}">
                                             <input name="student_id" type="hidden" value="{{$student->id}}">
                                             <input name="session" type="hidden" value="{{ $filteredTransaction['session'] }}">
-                                            <button type="submit" class="btn btn-primary"><i class="mdi mdi-printer"></i></button>
+                                            <button type="submit" id="submit-button" class="btn btn-primary"><i class="mdi mdi-printer"></i></button>
                                         </form>
                                     </td>
                                 </tr>
@@ -283,7 +284,7 @@
 
                     <div class="text-end border-top border-top-dashed p-3">
                         <br>
-                        <button type="submit" class="btn btn-primary">Pay/Charge</button>
+                        <button type="submit" id="submit-button" class="btn btn-primary">Pay/Charge</button>
                     </div>
                 </form>
             </div>
@@ -398,6 +399,7 @@
                             @php
                                 $payment = new \App\Models\Payment;
                                 $paymentAmount = $payment->getTotalStructureAmount($filteredTransaction['id']);
+                                $balance = $filteredTransaction['paymentType'] == 'Wallet Deposit'? 0 : $paymentAmount-$filteredTransaction['totalPaid'];
                             @endphp
                                 <tr>
                                     <td>{{ $id++ }}</td>
@@ -405,14 +407,14 @@
                                     <td>{{ $filteredTransaction['session'] }}</td>
                                     <td class="bg bg-soft-primary">₦{{ number_format($paymentAmount/100, 2) }}</td>
                                     <td class="bg bg-soft-success">₦{{ number_format($filteredTransaction['totalPaid']/100, 2) }}</td>
-                                    <td class="bg bg-soft-danger">₦{{ number_format(($paymentAmount-$filteredTransaction['totalPaid'])/100, 2) }}</td>
+                                    <td class="bg bg-soft-danger">₦{{ number_format($balance/100, 2) }}</td>
                                     <td>
                                         <form action="{{ url('/admin/generateInvoice') }}" method="post" enctype="multipart/form-data">
                                             @csrf
                                             <input name="payment_id" type="hidden" value="{{$filteredTransaction['id']}}">
                                             <input name="student_id" type="hidden" value="{{$student->id}}">
                                             <input name="session" type="hidden" value="{{ $filteredTransaction['session'] }}">
-                                            <button type="submit" class="btn btn-primary"><i class="mdi mdi-printer"></i></button>
+                                            <button type="submit" id="submit-button" class="btn btn-primary"><i class="mdi mdi-printer"></i></button>
                                         </form>
                                     </td>
                                 </tr>
@@ -512,7 +514,7 @@
 
                     <div class="text-end border-top border-top-dashed p-3">
                         <br>
-                        <button type="submit" class="btn btn-primary">Pay/Charge</button>
+                        <button type="submit" id="submit-button" class="btn btn-primary">Pay/Charge</button>
                     </div>
                 </form>
             </div>
@@ -547,7 +549,7 @@
                     </div>
                     <div class="text-end border-top border-top-dashed p-3">
                         <br>
-                        <button type="submit" class="btn btn-primary">Get student</button>
+                        <button type="submit" id="submit-button" class="btn btn-primary">Get student</button>
                     </div>
                 </form>
             </div>

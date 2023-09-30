@@ -76,7 +76,7 @@
                                             </div>
                                         </div>
 
-                                        <button type="submit" class="btn btn-fill btn-primary btn-lg btn-block mb-5">Generate Result</button>
+                                        <button type="submit" id="submit-button" class="btn btn-fill btn-primary btn-lg btn-block mb-5">Generate Result</button>
                                     </div>
                                 </form>
                             </div>

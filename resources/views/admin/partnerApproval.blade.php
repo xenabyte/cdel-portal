@@ -67,7 +67,7 @@
                                                             @csrf
                                                             <input name="partner_id" type="hidden" value="{{$partner->id}}">
                                                             <hr>
-                                                            <button type="submit" class="btn btn-danger w-100">Yes, Delete</button>
+                                                            <button type="submit" id="submit-button" class="btn btn-danger w-100">Yes, Delete</button>
                                                         </form>
                                                     </div>
                                                 </div>
@@ -93,7 +93,7 @@
                                                             @csrf
                                                             <input name="partner_id" type="hidden" value="{{$partner->id}}">
                                                             <hr>
-                                                            <button type="submit" class="btn btn-success w-100">Yes, Approve</button>
+                                                            <button type="submit" id="submit-button" class="btn btn-success w-100">Yes, Approve</button>
                                                         </form>
                                                     </div>
                                                 </div>

@@ -96,7 +96,7 @@
                                             </div>
                                         </div>
 
-                                        <button type="submit" class="btn btn-fill btn-primary btn-lg btn-block mb-5">Get Results</button>
+                                        <button type="submit" id="submit-button" class="btn btn-fill btn-primary btn-lg btn-block mb-5">Get Results</button>
                                     </div>
                                 </form>
                             </div>
@@ -148,7 +148,7 @@
                                     <input type="hidden" name="session" value="{{ $academicSession }}">
                                     @endif
                                     <hr>
-                                    <button type="submit" class="btn btn-success w-100">Yes, Approve</button>
+                                    <button type="submit" id="submit-button" class="btn btn-success w-100">Yes, Approve</button>
                                 </form>
                             </div>
                         </div>

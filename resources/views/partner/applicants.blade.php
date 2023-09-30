@@ -88,7 +88,7 @@
                     </div>
 
                     <div class="text-end">
-                        <button type="submit" class="btn btn-primary">Filter</button>
+                        <button type="submit" id="submit-button" class="btn btn-primary">Filter</button>
                     </div>
                 </form>
             </div>

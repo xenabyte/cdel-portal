@@ -67,7 +67,7 @@
                                                                     @csrf
                                                                     <input name="status_id" type="hidden" value="{{$approvalStatus->id}}">
                                                                     <hr>
-                                                                    <button type="submit" class="btn btn-danger w-100">Yes, Delete</button>
+                                                                    <button type="submit" id="submit-button" class="btn btn-danger w-100">Yes, Delete</button>
                                                                 </form>
                                                             </div>
                                                         </div>
@@ -98,7 +98,7 @@
 
                                                                 <hr>
                                                                 <div class="text-end">
-                                                                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                                                                    <button type="submit" id="submit-button" class="btn btn-primary">Save Changes</button>
                                                                 </div>
                                                             </form>
                                                         </div>
@@ -138,7 +138,7 @@
 
                     <hr>
                     <div class="text-end">
-                        <button type="submit" class="btn btn-primary">Create a Status</button>
+                        <button type="submit" id="submit-button" class="btn btn-primary">Create a Status</button>
                     </div>
                 </form>
             </div>

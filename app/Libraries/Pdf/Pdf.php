@@ -198,8 +198,15 @@ Class Pdf {
             'no_modify' => true,
         ];
 
-        $payment = Payment::with('structures')->where('id', $paymentId)->first();
-        $amountBilled = $payment->structures->sum('amount');
+        $amountBilled = 0;
+        $paymentType = Payment::PAYMENT_TYPE_WALLET_DEPOSIT;
+
+        if($paymentId > 0){
+            $payment = Payment::with('structures')->where('id', $paymentId)->first();
+            $amountBilled = $payment->structures->sum('amount');
+
+            $paymentType = $payment->type;
+        }
 
         $student = Student::with('applicant', 'academicLevel', 'faculty', 'department', 'programme')->where('id', $studentId)->first();
         $name = $student->applicant->lastname.' '.$student->applicant->othernames;
@@ -210,7 +217,13 @@ Class Pdf {
             'student_id' => $studentId,
             'payment_id' => $paymentId,
             'status' => 1
-        ])->latest();
+        ])->latest()->get();
+
+        Log::info("message".json_encode($transactions));
+
+        if(!$paymentId > 0){
+            $amountBilled = $transactions->sum('amount_payed');
+        }
 
         if($type == 'all'){
             $transactions = Transaction::where([
@@ -222,7 +235,7 @@ Class Pdf {
         }
 
         $student->session = $session;
-        $student->paymentType = $payment->type;
+        $student->paymentType = $paymentType;
         $student->amountBilled = $amountBilled;
 
         $fileDirectory = 'uploads/files/invoice/'.$slug.'.pdf';

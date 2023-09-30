@@ -186,7 +186,7 @@
                                                         </div>
 
                                                         <div class="text-end border-top border-top-dashed p-3">
-                                                            <button type="submit" class="btn btn-primary">Save Changes</button>
+                                                            <button type="submit" id="submit-button" class="btn btn-primary">Save Changes</button>
                                                         </div>
                                                     </form>
                                                 </div>
@@ -219,7 +219,7 @@
                                                         </div>
 
                                                         <div class="text-end border-top border-top-dashed p-3">
-                                                            <button type="submit" class="btn btn-primary">Assign </button>
+                                                            <button type="submit" id="submit-button" class="btn btn-primary">Assign </button>
                                                         </div>
                                                     </form>
                                                 </div>
@@ -242,7 +242,7 @@
                                                             @csrf
                                                             <input name="course_id" type="hidden" value="{{$course->id}}">
                                                             <hr>
-                                                            <button type="submit" class="btn btn-danger w-100">Yes, Unset Assign</button>
+                                                            <button type="submit" id="submit-button" class="btn btn-danger w-100">Yes, Unset Assign</button>
                                                         </form>
                                                     </div>
                                                 </div>
@@ -289,7 +289,7 @@
                     </div>
 
                     <div class="text-end border-top border-top-dashed p-3 p-3">
-                        <button type="submit" class="btn btn-primary">Add Course</button>
+                        <button type="submit" id="submit-button" class="btn btn-primary">Add Course</button>
                     </div>
                 </form>
             </div>

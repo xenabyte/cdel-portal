@@ -165,7 +165,7 @@
 
                     <hr>
                     <div class="text-end">
-                        <button type="submit" class="btn btn-primary">Send Message</button>
+                        <button type="submit" id="submit-button" class="btn btn-primary">Send Message</button>
                     </div>
                 </form>
             </div>
@@ -203,7 +203,7 @@
 
                     <hr>
                     <div class="text-end">
-                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                        <button type="submit" id="submit-button" class="btn btn-primary">Save Changes</button>
                     </div>
                 </form>
             </div>
@@ -236,7 +236,7 @@
 
                     <hr>
                     <div class="text-end">
-                        <button type="submit" class="btn btn-primary">Upload Result</button>
+                        <button type="submit" id="submit-button" class="btn btn-primary">Upload Result</button>
                     </div>
                 </form>
             </div>

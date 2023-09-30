@@ -46,7 +46,7 @@
                             <div class="mt-4">
                                 <form action="{{ url('/student/printExamCard') }}" method="post" enctype="multipart/form-data">
                                     @csrf
-                                    <button type="submit" class="btn btn-info">
+                                    <button type="submit" id="submit-button" class="btn btn-info">
                                         Click here to download
                                     </button>
                                 </form>
@@ -152,7 +152,7 @@
                                                 <div class="flex-shrink-0 text-end ">
                                                     <form action="{{ url('/student/genExamDocket') }}" method="POST">
                                                         @csrf
-                                                        <button type="submit" class="btn btn-primary">Generate Examination Docket</button>
+                                                        <button type="submit" id="submit-button" class="btn btn-primary">Generate Examination Docket</button>
                                                     </form>
                                                 </div>
                                             </div><!-- end card header -->

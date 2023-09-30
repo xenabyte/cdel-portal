@@ -456,7 +456,7 @@
                     </div>
 
                     <div class="text-end border-top border-top-dashed p-3 p-3">
-                        <button type="submit" class="btn btn-primary">Add Adviser</button>
+                        <button type="submit" id="submit-button" class="btn btn-primary">Add Adviser</button>
                     </div>
                 </form>
             </div>
@@ -500,7 +500,7 @@
                     </div>
 
                     <div class="text-end border-top border-top-dashed p-3 p-3">
-                        <button type="submit" class="btn btn-primary">Get Students</button>
+                        <button type="submit" id="submit-button" class="btn btn-primary">Get Students</button>
                     </div>
                 </form>
             </div>
@@ -533,7 +533,7 @@
                     </div>
 
                     <div class="text-end border-top border-top-dashed p-3 p-3">
-                        <button type="submit" class="btn btn-primary">Add Exam Officer</button>
+                        <button type="submit" id="submit-button" class="btn btn-primary">Add Exam Officer</button>
                     </div>
                 </form>
             </div>

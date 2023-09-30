@@ -77,7 +77,7 @@
                                         </div>
         
 
-                                        <button type="submit" class="btn btn-fill btn-primary btn-lg btn-block mb-5">Get Courses</button>
+                                        <button type="submit" id="submit-button" class="btn btn-fill btn-primary btn-lg btn-block mb-5">Get Courses</button>
                                     </div>
                                 </form>
                             </div>
@@ -145,7 +145,7 @@
                                         </div>
                                     </div>
             
-                                    <button type="submit" class="btn btn-primary">Add Course</button>
+                                    <button type="submit" id="submit-button" class="btn btn-primary">Add Course</button>
                                 </div>
                             </form>
                         </div>
@@ -185,7 +185,7 @@
                                     <input type="hidden" name="faculty_id" value="{{ $faculty_id }}">
                                     <input type="hidden" name="session" value="{{ $academicSession }}">
                                     <hr>
-                                    <button type="submit" class="btn btn-success w-100">Yes, Approve</button>
+                                    <button type="submit" id="submit-button" class="btn btn-success w-100">Yes, Approve</button>
                                 </form>
                             </div>
                         </div>
