@@ -311,7 +311,7 @@ class StudentController extends Controller
             $transactionData->redirect_path = $redirectLocation;
             $transactionData->payment_gateway = $paymentGateway;
 
-            return $this->chargeStudent($transactionData);
+            return $this->billStudent($transactionData);
         }
 
         $message = 'Invalid Payment Gateway';

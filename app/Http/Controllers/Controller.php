@@ -258,7 +258,7 @@ class Controller extends BaseController
 
         $filteredTransactions = [];
         foreach ($transactions as $transaction) {
-            $paymentType = $transaction->paymentType->type;
+            $paymentType = !empty($transaction->paymentType)?$transaction->paymentType->type:Payment::PAYMENT_TYPE_WALLET_DEPOSIT;
             $session = $transaction->session;
             $totalPaid = $transaction->amount_payed;
             $paymentId = $transaction->payment_id;
@@ -469,7 +469,7 @@ class Controller extends BaseController
         return false;
     }
 
-    public function chargeStudent($transactionData){
+    public function billStudent($transactionData){
 
         $student = Student::with('applicant')->where('id', $transactionData->student_id)->first();
 
