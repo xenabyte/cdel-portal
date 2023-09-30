@@ -21,10 +21,13 @@ use Mail;
 use Alert;
 use Carbon\Carbon;
 use Paystack;
+
 use App\Libraries\Google\Google;
+use App\Libraries\Pdf\Pdf;
 
 use App\Mail\ApplicationPayment;
 use App\Mail\StudentActivated;
+use App\Mail\TransactionMail;
 
 use App\Models\Transaction;
 use App\Models\User;
@@ -451,5 +454,55 @@ class Controller extends BaseController
 
     public  function sortBySession($a, $b) {
         return strcmp($a['session'], $b['session']);
+    }
+
+    public function creditStudentWallet($studentId, $amount){
+        $student = Student::find($studentId);
+
+        $studentBalance = $student->amount_balance;
+        $studentNewBalance = $studentBalance + $amount;
+        $student->amount_balance = $studentNewBalance;
+
+        if($student->update()){
+            return true;
+        }
+        return false;
+    }
+
+    public function chargeStudent($transactionData){
+
+        $student = Student::with('applicant')->where('id', $transactionData->student_id)->first();
+
+       //Create new transaction
+        $transaction = Transaction::create([
+            'student_id' => $transactionData->student_id,
+            'payment_id' => $transactionData->payment_id,
+            'amount_payed' => $transactionData->amount,
+            'payment_method' => $transactionData->payment_gateway,
+            'reference' => $transactionData->reference,
+            'session' => $transactionData->academic_session,
+            'status' => 1
+        ]);
+
+        $studentBalance = $student->amount_balance;
+        $studentNewBalance = $studentBalance - $transactionData->amount;
+        $student->amount_balance = $studentNewBalance;
+        $student->update();
+
+        if($student && !empty($transactionData->student_id)){
+            $pdf = new Pdf();
+            $invoice = $pdf->generateTransactionInvoice($transactionData->academic_session, $transactionData->student_id, $transactionData->payment_id, 'single');
+                    
+            $data = new \stdClass();
+            $data->lastname = $student->applicant->lastname;
+            $data->othernames = $student->applicant->othernames;
+            $data->amount = $transactionData->amount;
+            $data->invoice = $invoice;
+            
+            Mail::to($student->email)->send(new TransactionMail($data));   
+        }
+
+        alert()->success('Good Job', 'Payment successful')->persistent('Close');
+        return redirect($transactionData->redirect_path);
     }
 }

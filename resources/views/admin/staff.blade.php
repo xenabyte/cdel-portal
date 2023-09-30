@@ -183,7 +183,7 @@
                                                     <!--end col-->
                                                     <div class="col-lg-12 border-top border-top-dashed">
                                                         <div class="d-flex align-items-start gap-3 mt-3">
-                                                            <button type="submit" class="btn btn-primary btn-label right ms-auto nexttab" data-nexttab="pills-bill-address-tab"><i class="ri-arrow-right-line label-icon align-middle fs-16 ms-2"></i> Submit</button>
+                                                            <button type="submit" id="submit-button" class="btn btn-primary btn-label right ms-auto nexttab" data-nexttab="pills-bill-address-tab"><i class="ri-arrow-right-line label-icon align-middle fs-16 ms-2"></i> Submit</button>
                                                         </div>
                                                     </div>
                                                     <!--end col-->
@@ -318,7 +318,7 @@
                         <!--end col-->
                         <div class="col-lg-12 border-top border-top-dashed">
                             <div class="d-flex align-items-start gap-3 mt-3">
-                                <button type="submit" class="btn btn-primary btn-label right ms-auto nexttab" data-nexttab="pills-bill-address-tab"><i class="ri-arrow-right-line label-icon align-middle fs-16 ms-2"></i> Submit</button>
+                                <button type="submit" id="submit-button" class="btn btn-primary btn-label right ms-auto nexttab" data-nexttab="pills-bill-address-tab"><i class="ri-arrow-right-line label-icon align-middle fs-16 ms-2"></i> Submit</button>
                             </div>
                         </div>
                         <!--end col-->

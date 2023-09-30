@@ -8,12 +8,12 @@
 <div class="row">
     <div class="col-12">
         <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-            <h4 class="mb-sm-0">Payments</h4>
+            <h4 class="mb-sm-0">School Transactions</h4>
 
             <div class="page-title-right">
                 <ol class="breadcrumb m-0">
                     <li class="breadcrumb-item"><a href="javascript: void(0);">Pages</a></li>
-                    <li class="breadcrumb-item active">Payments</li>
+                    <li class="breadcrumb-item active">School Transactions</li>
                 </ol>
             </div>
 
@@ -26,7 +26,7 @@
     <div class="col-lg-12">
         <div class="card">
             <div class="card-header align-items-center d-flex">
-                <h4 class="card-title mb-0 flex-grow-1">Payments </h4>
+                <h4 class="card-title mb-0 flex-grow-1">School Transactions </h4>
                 <div class="flex-shrink-0">
                     @if(!$fullTuitionPayment)
                     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addTransaction">Pay Tuition Fee</button>
@@ -57,7 +57,7 @@
                             <th scope="row">{{ $loop->iteration }}</th>
                             <td>{{ $transaction->reference }}</td>
                             <td>₦{{ number_format($transaction->amount_payed/100, 2) }} </td>
-                            <td>{{ $transaction->paymentType->type }} </td>
+                            <td>{{ !empty($transaction->paymentType)? $transaction->paymentType->type : 'Wallet Deposit' }} </td>
                             <td>{{ $transaction->session }}</td>
                             <td>{{ $transaction->payment_method }}</td>
                             <td><span class="badge badge-soft-{{ $transaction->status == 1 ? 'success' : 'warning' }}">{{ $transaction->status == 1 ? 'Paid' : 'Pending' }}</span></td>
@@ -87,7 +87,7 @@
                                             <input type="hidden" name='programme_id' value="{{ $student->programme->id }}">
                                             <input type="hidden" name="student_id" value="{{ $student->id }}">
                                             <input type="hidden" name="transaction_id" value="{{ $transaction->id }}">
-                                            <input type="hidden" name="payment_id" value="{{ $transaction->paymentType->id }}">
+                                            <input type="hidden" name="payment_id" value="{{ !empty($transaction->paymentType)? $transaction->paymentType->id : 0 }}">
                                             <input type="hidden" name="reference" value="{{ $transaction->reference }}">
                                             <input type="hidden" name="amount" value="{{ $transaction->amount_payed }}">
                                             
@@ -95,9 +95,10 @@
                                                 <label for="paymentGateway" class="form-label">Select Payment Gateway<span class="text-danger">*</span></label>
                                                 <select class="form-select" aria-label="paymentGateway" name="paymentGateway" required onchange="handlePaymentMethodChange(event)">
                                                     <option value= "" selected>Select Payment Gateway</option>
-                                                    @if(env('FLUTTERWAVE_STATUS'))<option value="Rave">Fluterwave</option>@endif
+                                                    @if(env('FLUTTERWAVE_STATUS'))<option value="Rave">Flutterwave</option>@endif
                                                     @if(env('PAYSTACK_STATUS'))<option value="Paystack">Paystack</option>@endif
                                                     @if(env('BANK_TRANSFER_STATUS'))<option value="BankTransfer">Transfer</option>@endif
+                                                    @if(env('WALLET_STATUS'))<option value="Wallet">Wallet</option>@endif
                                                 </select>
                                             </div>
 
@@ -128,7 +129,7 @@
                                                 </div>
                                             </div>
                                             <div>
-                                                <button type="submit" id='submit-button' class="btn btn-primary">Make payment</button>
+                                                <button type="submit" id="submit-button" id='submit-button' class="btn btn-primary">Make payment</button>
                                             </div>
                                         </form>
                                     </div>
@@ -172,7 +173,8 @@
                             <option value="{{ $payment->structures->sum('amount')*0.5 }}">₦{{ number_format($payment->structures->sum('amount')*0.5/100, 2) }} - 50%</option>
                             @endif
                             @if($passTuition && !$fullTuitionPayment && !$passEightyTuition)
-                            <<option value="{{ $payment->structures->sum('amount')*0.4 }}">₦{{ number_format($payment->structures->sum('amount')*0.4/100, 2) }} - 40%</option>
+                            <option value="{{ $payment->structures->sum('amount')*0.5 }}">₦{{ number_format($payment->structures->sum('amount')*0.5/100, 2) }} - 50%</option>
+                            <option value="{{ $payment->structures->sum('amount')*0.4 }}">₦{{ number_format($payment->structures->sum('amount')*0.4/100, 2) }} - 40%</option>
                             <option value="{{ $payment->structures->sum('amount')*0.3 }}">₦{{ number_format($payment->structures->sum('amount')*0.3/100, 2) }} - 30%</option>
                             <option value="{{ $payment->structures->sum('amount')*0.2 }}">₦{{ number_format($payment->structures->sum('amount')*0.2/100, 2) }} - 20%</option>
                             <option value="{{ $payment->structures->sum('amount')*0.1 }}">₦{{ number_format($payment->structures->sum('amount')*0.1/100, 2) }} - 10%</option>
@@ -188,9 +190,10 @@
                         <label for="paymentGateway" class="form-label">Select Payment Gateway<span class="text-danger">*</span></label>
                         <select class="form-select" aria-label="paymentGateway" name="paymentGateway" required onchange="handlePaymentMainMethodChange(event)">
                             <option value= "" selected>Select Payment Gateway</option>
-                            @if(env('FLUTTERWAVE_STATUS'))<option value="Rave">Fluterwave</option>@endif
+                            @if(env('FLUTTERWAVE_STATUS'))<option value="Rave">Flutterwave</option>@endif
                             @if(env('PAYSTACK_STATUS'))<option value="Paystack">Paystack</option>@endif
                             @if(env('BANK_TRANSFER_STATUS'))<option value="BankTransfer">Transfer</option>@endif
+                            @if(env('WALLET_STATUS'))<option value="Wallet">Wallet</option>@endif
                         </select>
                     </div>
 

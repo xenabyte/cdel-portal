@@ -66,7 +66,7 @@
                             </div>
 
                             <br>
-                            <button type="submit" class="btn btn-lg btn-primary"> Submit</button>
+                            <button type="submit" id="submit-button" class="btn btn-lg btn-primary"> Submit</button>
                         </form>
                         
                         @endif

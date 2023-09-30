@@ -79,27 +79,29 @@ class GuardianController extends Controller
     {
         $studentId = $request->student_id;
         $student = Student::with('applicant')->where('id', $studentId)->first();
+
         $globalData = $request->input('global_data');
         $paymentId = $request->payment_id;
-
-        if(!$payment = Payment::with('structures')->where('id', $paymentId)->first()){
-            alert()->error('Oops', 'Invalid Payment Initialization, contact ICT')->persistent('Close');
-            return redirect()->back();
+        $amount = $request->amount*100;
+        $redirectLocation = 'guardian/home';
+        
+        if($paymentId > 0){
+            if(!$payment = Payment::with('structures')->where('id', $paymentId)->first()){
+                alert()->error('Oops', 'Invalid Payment Initialization, contact ICT')->persistent('Close');
+                return redirect()->back();
+            }
+            $redirectLocation = 'student/transactions';
+            $amount = $request->amount;
         }
+        
 
         $paymentGateway = $request->paymentGateway;
-        if((strtolower($paymentGateway) != 'paystack') &&  strtolower($paymentGateway) != 'rave' && strtolower($paymentGateway) != 'banktransfer') {
-            alert()->error('Oops', 'Gateway not available')->persistent('Close');
-            return redirect()->back();
-        }
 
-
-        $accessCode = $this->generateAccessCode();
-        $amount = $request->amount;
-
-        Log::info(" Amount ****************: ". round($this->getPaystackAmount($amount)));
+        $reference = $this->generateAccessCode();
 
         if(strtolower($paymentGateway) == 'paystack') {
+            Log::info("Paystack Amount ****************: ". round($this->getPaystackAmount($amount)));
+
             $data = array(
                 "amount" => round($this->getPaystackAmount($amount)),
                 "email" => $student->email,
@@ -113,7 +115,7 @@ class GuardianController extends Controller
                     "payment_gateway" => $paymentGateway,
                     "reference" => null,
                     "academic_session" => $student->academic_session,
-                    "redirect_path" => 'guardian/home',
+                    "redirect_path" => $redirectLocation,
                 ),
             );
 
@@ -121,6 +123,8 @@ class GuardianController extends Controller
         }
 
         if(strtolower($paymentGateway) == 'rave') {
+            Log::info("Flutterwave Amount ****************: ". round($this->getRaveAmount($amount)));
+
             $reference = Flutterwave::generateReference();
 
             $data = array(
@@ -144,7 +148,7 @@ class GuardianController extends Controller
                     "payment_gateway" => $paymentGateway,
                     "reference" => $reference,
                     "academic_session" => $student->academic_session,
-                    "redirect_path" => 'guardian/home',
+                    "redirect_path" => $redirectLocation,
                 ),
                 "customizations" => array(
                     "title" => env('SCHOOL_NAME'),
@@ -164,7 +168,7 @@ class GuardianController extends Controller
         }
 
         $message = 'Invalid Payment Gateway';
-        alert()->info('Nice Work!', $message)->persistent('Close');
+        alert()->info('Opps!', $message)->persistent('Close');
         return redirect()->back();
     }
 

@@ -144,6 +144,64 @@ $studentRegistrations = $student->courseRegistrationDocument()->orderBy('created
     <!--end col-->
 
     <div class="col-xxl-8">
+        @if(env('WALLET_STATUS'))
+        <div class="row">
+            <div class="col-lg-4 col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <div class="avatar-sm flex-shrink-0">
+                                <span class="avatar-title bg-light text-primary rounded-circle shadow fs-3">
+                                    <i class="ri-money-dollar-circle-fill align-middle"></i>
+                                </span>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <p class="text-uppercase fw-semibold fs-12 text-muted mb-1">
+                                    Total Deposit</p>
+                                <h4 class=" mb-0">₦<span class="counter-value" data-target="2390.68">0</span></h4>
+                            </div>
+                        </div>
+                    </div><!-- end card body -->
+                </div><!-- end card -->
+            </div><!-- end col -->
+            <div class="col-lg-4 col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <div class="avatar-sm flex-shrink-0">
+                                <span class="avatar-title bg-light text-primary rounded-circle shadow fs-3">
+                                    <i class="ri-money-dollar-circle-fill align-middle"></i>
+                                </span>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <p class="text-uppercase fw-semibold fs-12 text-muted mb-1">
+                                    Total Expenditure</p>
+                                <h4 class=" mb-0">₦<span class="counter-value" data-target="19523.25">0</span></h4>
+                            </div>
+                        </div>
+                    </div><!-- end card body -->
+                </div><!-- end card -->
+            </div><!-- end col -->
+            <div class="col-lg-4 col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <div class="avatar-sm flex-shrink-0">
+                                <span class="avatar-title bg-light text-primary rounded-circle shadow fs-3">
+                                    <i class="ri-money-dollar-circle-fill align-middle"></i>
+                                </span>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <p class="text-uppercase fw-semibold fs-12 text-muted mb-1">Wallet Balance</p>
+                                <h4 class=" mb-0">₦<span class="counter-value" data-target="{{$student->amount_balance/100 }}">0</span></h4>
+                            </div>
+                        </div>
+                    </div><!-- end card body -->
+                </div><!-- end card -->
+            </div><!-- end col -->
+        </div><!-- end row -->
+        @endif
+
         <div class="card">
             <div class="card-header border-0 align-items-center d-flex">
                 <h4 class="card-title mb-0 flex-grow-1">Documents</h4>
@@ -319,7 +377,7 @@ $studentRegistrations = $student->courseRegistrationDocument()->orderBy('created
                                 <th scope="row">{{ $loop->iteration }}</th>
                                 <td>{{ $transaction->reference }}</td>
                                 <td>₦{{ number_format($transaction->amount_payed/100, 2) }} </td>
-                                <td>{{ $transaction->paymentType->type }} </td>
+                                <td>{{ !empty($transaction->paymentType)? $transaction->paymentType->type : 'Wallet Deposit' }} </td>
                                 <td>{{ $transaction->session }}</td>
                                 <td>{{ $transaction->payment_method }}</td>
                                 <td><span class="badge badge-soft-{{ $transaction->status == 1 ? 'success' : 'warning' }}">{{ $transaction->status == 1 ? 'Paid' : 'Pending' }}</span></td>
@@ -349,7 +407,7 @@ $studentRegistrations = $student->courseRegistrationDocument()->orderBy('created
                                                 <input type="hidden" name='programme_id' value="{{ $student->programme->id }}">
                                                 <input type="hidden" name="student_id" value="{{ $student->id }}">
                                                 <input type="hidden" name="transaction_id" value="{{ $transaction->id }}">
-                                                <input type="hidden" name="payment_id" value="{{ $transaction->paymentType->id }}">
+                                                <input type="hidden" name="payment_id" value="{{ !empty($transaction->paymentType)? $transaction->paymentType->id : 0 }}">
                                                 <input type="hidden" name="reference" value="{{ $transaction->reference }}">
                                                 <input type="hidden" name="amount" value="{{ $transaction->amount_payed }}">
                                                 
@@ -357,9 +415,10 @@ $studentRegistrations = $student->courseRegistrationDocument()->orderBy('created
                                                     <label for="paymentGateway" class="form-label">Select Payment Gateway<span class="text-danger">*</span></label>
                                                     <select class="form-select" aria-label="paymentGateway" name="paymentGateway" required onchange="handlePaymentMethodChange(event)">
                                                         <option value= "" selected>Select Payment Gateway</option>
-                                                        @if(env('FLUTTERWAVE_STATUS'))<option value="Rave">Fluterwave</option>@endif
+                                                        @if(env('FLUTTERWAVE_STATUS'))<option value="Rave">Flutterwave</option>@endif
                                                         @if(env('PAYSTACK_STATUS'))<option value="Paystack">Paystack</option>@endif
                                                         @if(env('BANK_TRANSFER_STATUS'))<option value="BankTransfer">Transfer</option>@endif
+                                                        @if(env('WALLET_STATUS'))<option value="Wallet">Wallet</option>@endif
                                                     </select>
                                                 </div>
     
@@ -390,7 +449,7 @@ $studentRegistrations = $student->courseRegistrationDocument()->orderBy('created
                                                     </div>
                                                 </div>
                                                 <div>
-                                                    <button type="submit" id='submit-button' class="btn btn-primary">Make payment</button>
+                                                    <button type="submit" id="submit-button" id='submit-button' class="btn btn-primary">Make payment</button>
                                                 </div>
                                             </form>
                                         </div>

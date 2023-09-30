@@ -60,8 +60,13 @@ class PaymentController extends Controller
             $paymentId = $paymentDetails['data']['metadata']['payment_id'];
             $studentId = $paymentDetails['data']['metadata']['student_id'];
             $redirectPath = $paymentDetails['data']['metadata']['redirect_path'];
-            $payment = Payment::where('id', $paymentId)->first();
-            $paymentType = $payment->type;
+
+            $paymentType = Payment::PAYMENT_TYPE_WALLET_DEPOSIT;
+            if($paymentId > 0){
+                $payment = Payment::where('id', $paymentId)->first();
+                $paymentType = $payment->type;
+            }
+
             $student = Student::with('applicant', 'programme')->where('id', $studentId)->first();
             $session = $paymentDetails['data']['metadata']['academic_session'];
             $amount = $paymentDetails['data']['metadata']['amount'];
@@ -79,6 +84,12 @@ class PaymentController extends Controller
                         $data->invoice = $invoice;
                         
                         Mail::to($student->email)->send(new TransactionMail($data));
+                        if($paymentType == Payment::PAYMENT_TYPE_WALLET_DEPOSIT){
+                            $creditStudent = $this->creditStudentWallet($studentId, $amount);
+                            if(!$creditStudent){
+                                Log::info("**********************Unable to credit student**********************: ". $amount .' - '.$student);
+                            }
+                        }
                     }
 
                     alert()->success('Good Job', 'Payment successful')->persistent('Close');
@@ -143,8 +154,13 @@ class PaymentController extends Controller
             $paymentId = $paymentDetails['data']['meta']['payment_id'];
             $studentId = !empty($paymentDetails['data']['meta']['student_id'])?$paymentDetails['data']['meta']['student_id']:null;
             $redirectPath = $paymentDetails['data']['meta']['redirect_path'];
-            $payment = Payment::where('id', $paymentId)->first();
-            $paymentType = $payment->type;
+
+            $paymentType = Payment::PAYMENT_TYPE_WALLET_DEPOSIT;
+            if($paymentId > 0){
+                $payment = Payment::where('id', $paymentId)->first();
+                $paymentType = $payment->type;
+            }
+
             $student = Student::with('applicant', 'programme')->where('id', $studentId)->first();
             $amount = $paymentDetails['data']['meta']['amount'];
             $session = $paymentDetails['data']['meta']['academic_session'];
@@ -163,6 +179,13 @@ class PaymentController extends Controller
                         $data->invoice = $invoice;
                         
                         Mail::to($student->email)->send(new TransactionMail($data));
+
+                        if($paymentType == Payment::PAYMENT_TYPE_WALLET_DEPOSIT){
+                            $creditStudent = $this->creditStudentWallet($studentId, $amount);
+                            if(!$creditStudent){
+                                Log::info("**********************Unable to credit student**********************: ". $amount .' - '.$student);
+                            }
+                        }     
                     }
 
                     alert()->success('Good Job', 'Payment successful')->persistent('Close');

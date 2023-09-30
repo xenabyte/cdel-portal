@@ -79,7 +79,7 @@
                                 <hr>
                                 <div class="col-lg-12">
                                     <div class="text-end">
-                                        <button type="submit" class="btn btn-primary">Update Settings</button>
+                                        <button type="submit" id="submit-button" class="btn btn-primary">Update Settings</button>
                                     </div>
                                 </div>
                             </div>

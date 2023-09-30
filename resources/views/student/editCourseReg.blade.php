@@ -94,9 +94,10 @@
                                                 <label for="paymentGateway" class="form-label">Select Payment Gateway<span class="text-danger">*</span></label>
                                                 <select class="form-select" aria-label="paymentGateway" name="paymentGateway" required onchange="handlePaymentMethodChange(event)">
                                                     <option value= "" selected>Select Payment Gateway</option>
-                                                    @if(env('FLUTTERWAVE_STATUS'))<option value="Rave">Fluterwave</option>@endif
+                                                    @if(env('FLUTTERWAVE_STATUS'))<option value="Rave">Flutterwave</option>@endif
                                                     @if(env('PAYSTACK_STATUS'))<option value="Paystack">Paystack</option>@endif
                                                     @if(env('BANK_TRANSFER_STATUS'))<option value="BankTransfer">Transfer</option>@endif
+                                                    @if(env('WALLET_STATUS'))<option value="Wallet">Wallet</option>@endif
                                                 </select>
                                             </div>
 
@@ -127,7 +128,7 @@
                                                 </div>
                                             </div>
                                             <div>
-                                                <button type="submit" id='submit-button' class="btn btn-primary">Make payment</button>
+                                                <button type="submit" id="submit-button" id='submit-button' class="btn btn-primary">Make payment</button>
                                             </div>
                                         </form>
                                     </div>
@@ -167,9 +168,10 @@
                         <label for="paymentGateway" class="form-label">Select Payment Gateway<span class="text-danger">*</span></label>
                         <select class="form-select" aria-label="paymentGateway" name="paymentGateway" required onchange="handlePaymentMethodChange(event)">
                             <option value= "" selected>Select Payment Gateway</option>
-                            @if(env('FLUTTERWAVE_STATUS'))<option value="Rave">Fluterwave</option>@endif
+                            @if(env('FLUTTERWAVE_STATUS'))<option value="Rave">Flutterwave</option>@endif
                             @if(env('PAYSTACK_STATUS'))<option value="Paystack">Paystack</option>@endif
                             @if(env('BANK_TRANSFER_STATUS'))<option value="BankTransfer">Transfer</option>@endif
+                            @if(env('WALLET_STATUS'))<option value="Wallet">Wallet</option>@endif
                         </select>
                     </div>
 
@@ -200,7 +202,7 @@
                     </div>
 
                     <div>
-                        <button type="submit" id='submit-button' class="btn btn-primary">Make payment</button>
+                        <button type="submit" id="submit-button" id='submit-button' class="btn btn-primary">Make payment</button>
                     </div>
                 </form>
             </div>

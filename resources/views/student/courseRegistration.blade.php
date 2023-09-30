@@ -47,7 +47,7 @@
                             <div class="mt-4">
                                 <form action="{{ url('/student/printCourseReg') }}" method="post" enctype="multipart/form-data">
                                     @csrf
-                                    <button type="submit" class="btn btn-info">
+                                    <button type="submit" id="submit-button" class="btn btn-info">
                                         Click here to download
                                     </button>
                                 </form>
@@ -254,7 +254,7 @@
                                 </tbody>
                             </table>
                             <hr>
-                            <button type="submit" class="btn btn-primary">Register Selected Courses</button>
+                            <button type="submit" id="submit-button" class="btn btn-primary">Register Selected Courses</button>
                         </form>                
                     </div>
                 </div><!-- end card -->

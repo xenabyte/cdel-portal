@@ -16,6 +16,7 @@
     <meta content="Jolayemi Olugbenga David(sky-hackeR)" name="author" />
     <!-- App favicon -->
     <link rel="shortcut icon" href="{{asset('favicon.png')}}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
     <!--datatable css-->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css" />
@@ -42,6 +43,7 @@
           toolbar_mode: 'floating',
         });
     </script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 
 </head>
 
@@ -311,5 +313,85 @@
 
 
 </body>
+<script>
+    function handlePaymentMethodChange(event) {
+        const selectedPaymentMethod = event.target.value;
+        console.log(selectedPaymentMethod);
+        const submitButton = document.getElementById('submit-button');
+        if(selectedPaymentMethod != ''){
+            if(selectedPaymentMethod == 'Remita' || selectedPaymentMethod == 'Zenith') {
+                submitButton.disabled = true;
+            }else{
+                submitButton.disabled = false;
+            }
 
+            if(selectedPaymentMethod == 'BankTransfer'){
+                document.getElementById('transferInfo').style.display = 'block';
+                document.getElementById('submit-button').style.display = 'none';
+            }else{
+                document.getElementById('transferInfo').style.display = 'none';
+                document.getElementById('submit-button').style.display = 'block';
+            }
+           
+        }else{
+            submitButton.disabled = true;
+        }
+    }
+
+    function handlePaymentMainMethodChange(event) {
+        const selectedPaymentMethod = event.target.value;
+        console.log(selectedPaymentMethod);
+        const submitButton = document.getElementById('submit-button-main');
+        if(selectedPaymentMethod != ''){
+            if(selectedPaymentMethod == 'Remita' || selectedPaymentMethod == 'Zenith') {
+                submitButton.disabled = true;
+            }else{
+                submitButton.disabled = false;
+            }
+
+            if(selectedPaymentMethod == 'BankTransfer'){
+                document.getElementById('transferInfoMain').style.display = 'block';
+                document.getElementById('submit-button-main').style.display = 'none';
+            }else{
+                document.getElementById('transferInfoMain').style.display = 'none';
+                document.getElementById('submit-button-main').style.display = 'block';
+            }
+           
+        }else{
+            submitButton.disabled = true;
+        }
+    }
+</script>
+<script>
+    $(document).ready(function() {
+      $("#submit-button").click(function() {
+        // Disable the button
+        $(this.form).submit();
+
+        $(this).prop("disabled", true);
+    
+        // Remove the text
+        $(this).text("");
+    
+        // Replace the text with a spinner
+        $(this).html("<i class='fa fa-spinner fa-spin'></i>");
+      });
+    });
+</script>
+<script>
+    $(document).ready(function() {
+      $("#submit-button-main").click(function() {
+        // Disable the button
+        $(this.form).submit();
+
+        $(this).prop("disabled", true);
+    
+        // Remove the text
+        $(this).text("");
+    
+        // Replace the text with a spinner
+        $(this).html("<i class='fa fa-spinner fa-spin'></i>");
+      });
+    });
+</script>
 </html>

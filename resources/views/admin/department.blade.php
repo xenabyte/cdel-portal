@@ -167,7 +167,7 @@
                                                 </div>
                                                 <hr>
                                                 <div class="text-end">
-                                                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                                                    <button type="submit" id="submit-button" class="btn btn-primary">Save Changes</button>
                                                 </div>
                                             </form>
                                         </div>
@@ -189,7 +189,7 @@
                                                     @csrf
                                                     <input type="hidden" name='programme_id' value="{{ $programme->id }}">
                                                     <hr>
-                                                    <button type="submit" class="btn btn-danger w-100">Yes, Delete</button>
+                                                    <button type="submit" id="submit-button" class="btn btn-danger w-100">Yes, Delete</button>
                                                 </form>
                                             </div>
                                         </div>
@@ -515,7 +515,7 @@
                     </div>
 
                     <div class="text-end border-top border-top-dashed p-3 p-3">
-                        <button type="submit" class="btn btn-primary">Add Adviser</button>
+                        <button type="submit" id="submit-button" class="btn btn-primary">Add Adviser</button>
                     </div>
                 </form>
             </div>
@@ -559,7 +559,7 @@
                     </div>
 
                     <div class="text-end border-top border-top-dashed p-3 p-3">
-                        <button type="submit" class="btn btn-primary">Get Students</button>
+                        <button type="submit" id="submit-button" class="btn btn-primary">Get Students</button>
                     </div>
                 </form>
             </div>
@@ -592,7 +592,7 @@
                     </div>
 
                     <div class="text-end border-top border-top-dashed p-3 p-3">
-                        <button type="submit" class="btn btn-primary">Add Exam Officer</button>
+                        <button type="submit" id="submit-button" class="btn btn-primary">Add Exam Officer</button>
                     </div>
                 </form>
             </div>
@@ -624,7 +624,7 @@
 
                     <hr>
                     <div class="text-end">
-                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                        <button type="submit" id="submit-button" class="btn btn-primary">Save Changes</button>
                     </div>
                 </form>
             </div>
@@ -666,7 +666,7 @@
 
                     <hr>
                     <div class="text-end">
-                        <button type="submit" class="btn btn-primary">Add Programme</button>
+                        <button type="submit" id="submit-button" class="btn btn-primary">Add Programme</button>
                     </div>
                 </form>
             </div>

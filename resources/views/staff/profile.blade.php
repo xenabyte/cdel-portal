@@ -500,7 +500,7 @@
                                 <!--end col-->
                                 <div class="col-lg-12">
                                     <div class="hstack gap-2 justify-content-end">
-                                        <button type="submit" class="btn btn-primary">Update</button>
+                                        <button type="submit" id="submit-button" class="btn btn-primary">Update</button>
                                     </div>
                                 </div>
                                 <!--end col-->
@@ -537,7 +537,7 @@
                                 <!--end col-->
                                 <div class="col-lg-12">
                                     <div class="text-end">
-                                        <button type="submit" class="btn btn-success">Change Password</button>
+                                        <button type="submit" id="submit-button" class="btn btn-success">Change Password</button>
                                     </div>
                                 </div>
                                 <!--end col-->
@@ -573,7 +573,7 @@
                                 <!--end col-->
                                 <div class="col-lg-12 border-top border-top-dashed p-3">
                                     <div class="text-end">
-                                        <button type="submit" class="btn btn-success">Upload Signature</button>
+                                        <button type="submit" id="submit-button" class="btn btn-success">Upload Signature</button>
                                     </div>
                                 </div>
                                 <!--end col-->

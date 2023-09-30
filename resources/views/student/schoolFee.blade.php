@@ -85,9 +85,10 @@ $studentPendingTransaction = $studentPendingTransactions->first();
                                 <label for="paymentGateway" class="form-label">Select Payment Gateway<span class="text-danger">*</span></label>
                                 <select class="form-select" aria-label="paymentGateway" name="paymentGateway" required onchange="handlePaymentMethodChange(event)">
                                     <option value= "" selected>Select Payment Gateway</option>
-                                    @if(env('FLUTTERWAVE_STATUS'))<option value="Rave">Fluterwave</option>@endif
+                                    @if(env('FLUTTERWAVE_STATUS'))<option value="Rave">Flutterwave</option>@endif
                                     @if(env('PAYSTACK_STATUS'))<option value="Paystack">Paystack</option>@endif
                                     @if(env('BANK_TRANSFER_STATUS'))<option value="BankTransfer">Transfer</option>@endif
+                                    @if(env('WALLET_STATUS'))<option value="Wallet">Wallet</option>@endif
                                 </select>
                             </div>
         
@@ -118,7 +119,7 @@ $studentPendingTransaction = $studentPendingTransactions->first();
                             </div>
         
                             <div>
-                                <button type="submit" id='submit-button' class="btn btn-primary">Make payment</button>
+                                <button type="submit" id="submit-button" id='submit-button' class="btn btn-primary">Make payment</button>
                             </div>
                         </form>
                     </div>
@@ -190,6 +191,7 @@ $studentPendingTransaction = $studentPendingTransactions->first();
                                     <option value="{{ $payment->structures->sum('amount')*0.6 }}">₦{{ number_format($payment->structures->sum('amount')*0.6/100, 2) }} - 60%</option>
                                     <option value="{{ $payment->structures->sum('amount')*0.5 }}">₦{{ number_format($payment->structures->sum('amount')*0.5/100, 2) }} - 50%</option>
                                     @if($passTuition && !$fullTuitionPayment && !$passEightyTuititon)
+                                    <option value="{{ $payment->structures->sum('amount')*0.5 }}">₦{{ number_format($payment->structures->sum('amount')*0.5/100, 2) }} - 50%</option>
                                     <option value="{{ $payment->structures->sum('amount')*0.4 }}">₦{{ number_format($payment->structures->sum('amount')*0.4/100, 2) }} - 40%</option>
                                     <option value="{{ $payment->structures->sum('amount')*0.3 }}">₦{{ number_format($payment->structures->sum('amount')*0.3/100, 2) }} - 30%</option>
                                     <option value="{{ $payment->structures->sum('amount')*0.2 }}">₦{{ number_format($payment->structures->sum('amount')*0.2/100, 2) }} - 20%</option>
@@ -206,9 +208,10 @@ $studentPendingTransaction = $studentPendingTransactions->first();
                                 <label for="paymentGateway" class="form-label">Select Payment Gateway<span class="text-danger">*</span></label>
                                 <select class="form-select" aria-label="paymentGateway" name="paymentGateway" required onchange="handlePaymentMethodChange(event)">
                                     <option value= "" selected>Select Payment Gateway</option>
-                                    @if(env('FLUTTERWAVE_STATUS'))<option value="Rave">Fluterwave</option>@endif
+                                    @if(env('FLUTTERWAVE_STATUS'))<option value="Rave">Flutterwave</option>@endif
                                     @if(env('PAYSTACK_STATUS'))<option value="Paystack">Paystack</option>@endif
                                     @if(env('BANK_TRANSFER_STATUS'))<option value="BankTransfer">Transfer</option>@endif
+                                    @if(env('WALLET_STATUS'))<option value="Wallet">Wallet</option>@endif
                                 </select>
                             </div>
         
@@ -239,7 +242,7 @@ $studentPendingTransaction = $studentPendingTransactions->first();
                             </div>
         
                             <div>
-                                <button type="submit" id='submit-button' class="btn btn-primary">Make payment</button>
+                                <button type="submit" id="submit-button" id='submit-button' class="btn btn-primary">Make payment</button>
                             </div>
                         </form>
                     </div>

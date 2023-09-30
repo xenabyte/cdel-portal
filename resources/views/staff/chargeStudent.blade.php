@@ -161,7 +161,7 @@
                                             <input name="payment_id" type="hidden" value="{{$filteredTransaction['id']}}">
                                             <input name="student_id" type="hidden" value="{{$student->id}}">
                                             <input name="session" type="hidden" value="{{ $filteredTransaction['session'] }}">
-                                            <button type="submit" class="btn btn-primary"><i class="mdi mdi-printer"></i></button>
+                                            <button type="submit" id="submit-button" class="btn btn-primary"><i class="mdi mdi-printer"></i></button>
                                         </form>
                                     </td>
                                 </tr>
@@ -283,7 +283,7 @@
 
                     <div class="text-end border-top border-top-dashed p-3">
                         <br>
-                        <button type="submit" class="btn btn-primary">Pay/Charge</button>
+                        <button type="submit" id="submit-button" class="btn btn-primary">Pay/Charge</button>
                     </div>
                 </form>
             </div>
@@ -397,7 +397,7 @@
                                 <th scope="row">{{ $loop->iteration }}</th>
                                 <td>{{ $transaction->reference }}</td>
                                 <td>₦{{ number_format($transaction->amount_payed/100, 2) }} </td>
-                                <td>{{ $transaction->paymentType->type }} </td>
+                                <td>{{ !empty($transaction->paymentType)? $transaction->paymentType->type : 'Wallet Deposit' }} </td>
                                 <td>{{ $transaction->session }}</td>
                                 <td>{{ $transaction->payment_method }}</td>
                                 <td><span class="badge badge-soft-{{ $transaction->status == 1 ? 'success' : 'warning' }}">{{ $transaction->status == 1 ? 'Paid' : 'Pending' }}</span></td>
@@ -503,7 +503,7 @@
 
                     <div class="text-end border-top border-top-dashed p-3">
                         <br>
-                        <button type="submit" class="btn btn-primary">Pay/Charge</button>
+                        <button type="submit" id="submit-button" class="btn btn-primary">Pay/Charge</button>
                     </div>
                 </form>
             </div>
@@ -538,7 +538,7 @@
                     </div>
                     <div class="text-end border-top border-top-dashed p-3">
                         <br>
-                        <button type="submit" class="btn btn-primary">Get student</button>
+                        <button type="submit" id="submit-button" class="btn btn-primary">Get student</button>
                     </div>
                 </form>
             </div>

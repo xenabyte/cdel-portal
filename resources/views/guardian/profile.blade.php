@@ -87,7 +87,7 @@ $name = $guardian->name;
                                 <!--end col-->
                                 <div class="col-lg-12">
                                     <div class="text-end">
-                                        <button type="submit" class="btn btn-success">Change Password</button>
+                                        <button type="submit" id="submit-button" class="btn btn-success">Change Password</button>
                                     </div>
                                 </div>
                                 <!--end col-->

@@ -131,7 +131,7 @@
                                                 <input name="type" type="hidden" value="hod">
                                                 @endif
                                                 <hr>
-                                                <button type="submit" class="btn btn-primary w-100">Yes, Approve</button>
+                                                <button type="submit" id="submit-button" class="btn btn-primary w-100">Yes, Approve</button>
                                             </form>
                                         </div>
                                     </div>

@@ -68,7 +68,7 @@
                                                                     @csrf
                                                                     <input name="session_id" type="hidden" value="{{$session->id}}">
                                                                     <hr>
-                                                                    <button type="submit" class="btn btn-danger w-100">Yes, Delete</button>
+                                                                    <button type="submit" id="submit-button" class="btn btn-danger w-100">Yes, Delete</button>
                                                                 </form>
                                                             </div>
                                                         </div>
@@ -100,7 +100,7 @@
 
                                                                 <hr>
                                                                 <div class="text-end">
-                                                                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                                                                    <button type="submit" id="submit-button" class="btn btn-primary">Save Changes</button>
                                                                 </div>
                                                             </form>
                                                         </div>
@@ -176,7 +176,7 @@
                                 <hr>
                                 <div class="col-lg-12">
                                     <div class="text-end">
-                                        <button type="submit" class="btn btn-primary">Update Settings</button>
+                                        <button type="submit" id="submit-button" class="btn btn-primary">Update Settings</button>
                                     </div>
                                 </div>
                             </div>
@@ -231,7 +231,7 @@
                                 <hr>
                                 <div class="col-lg-12">
                                     <div class="text-end">
-                                        <button type="submit" class="btn btn-primary">Update Settings</button>
+                                        <button type="submit" id="submit-button" class="btn btn-primary">Update Settings</button>
                                     </div>
                                 </div>
                             </div>
@@ -263,7 +263,7 @@
 
                     <hr>
                     <div class="text-end">
-                        <button type="submit" class="btn btn-primary">Create a Session</button>
+                        <button type="submit" id="submit-button" class="btn btn-primary">Create a Session</button>
                     </div>
                 </form>
             </div>

@@ -134,7 +134,7 @@
 
                                             <hr>
                                             <div class="text-end">
-                                                <button type="submit" class="btn btn-primary">Save Changes</button>
+                                                <button type="submit" id="submit-button" class="btn btn-primary">Save Changes</button>
                                             </div>
                                         </form>
                                     </div>
@@ -156,7 +156,7 @@
                                                 @csrf
                                                 <input type="hidden" name='department_id' value="{{ $department->id }}">
                                                 <hr>
-                                                <button type="submit" class="btn btn-danger w-100">Yes, Delete</button>
+                                                <button type="submit" id="submit-button" class="btn btn-danger w-100">Yes, Delete</button>
                                             </form>
                                         </div>
                                     </div>
@@ -319,7 +319,7 @@
 
                     <hr>
                     <div class="text-end">
-                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                        <button type="submit" id="submit-button" class="btn btn-primary">Save Changes</button>
                     </div>
                 </form>
             </div>
@@ -345,7 +345,7 @@
                     </div>
                     <hr>
                     <div class="text-end">
-                        <button type="submit" class="btn btn-primary">Add Department</button>
+                        <button type="submit" id="submit-button" class="btn btn-primary">Add Department</button>
                     </div>
                 </form>
             </div>

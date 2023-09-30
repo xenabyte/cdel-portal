@@ -72,7 +72,7 @@
 
                                 <div class="col-lg-2">
                                     <div class="form-floating">
-                                        <button type="submit" class="btn btn-lg btn-primary">Fetch Courses</button>
+                                        <button type="submit" id="submit-button" class="btn btn-lg btn-primary">Fetch Courses</button>
                                     </div>
                                 </div>
                             </div>
@@ -138,7 +138,7 @@
         
                                         <div class="col-lg-4">
                                             <div class="form-floating">
-                                                <button type="submit" class="btn btn-lg btn-primary">Assign Lecturer</button>
+                                                <button type="submit" id="submit-button" class="btn btn-lg btn-primary">Assign Lecturer</button>
                                             </div>
                                         </div>
                                     </div>

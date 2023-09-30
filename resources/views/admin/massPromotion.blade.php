@@ -69,7 +69,7 @@
                                                                 <input name="programme_id" type="hidden" value="{{$programme->id}}">
                                                                 <hr>
                                                                 <div class="text-end">
-                                                                    <button type="submit" class="btn btn-primary">Promote</button>
+                                                                    <button type="submit" id="submit-button" class="btn btn-primary">Promote</button>
                                                                 </div>
                                                             </form>
 

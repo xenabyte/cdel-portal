@@ -193,7 +193,7 @@
                                                 <br>
                                                 <form action="{{ url('applicant/submitApplication') }}" method="POST" enctype="multipart/form-data">
                                                     @csrf
-                                                    <button type="submit" class="btn btn-block btn-primary">Submit Applicattion</button>
+                                                    <button type="submit" id="submit-button" class="btn btn-block btn-primary">Submit Applicattion</button>
                                                 </form>
                                             </div>
                                         </div>
@@ -655,7 +655,7 @@
                                                 @if(empty($applicant->status))
                                                 <div class="col-lg-12">
                                                     <div class="hstack gap-2 justify-content-end">
-                                                        <button type="submit" class="btn btn-primary">Save</button>
+                                                        <button type="submit" id="submit-button" class="btn btn-primary">Save</button>
                                                     </div>
                                                 </div>
                                                 @endif
@@ -719,7 +719,7 @@
                                             @if(empty($applicant->status))
                                             <div class="col-lg-12">
                                                 <div class="text-end">
-                                                    <button type="submit" class="btn btn-success">Save</button>
+                                                    <button type="submit" id="submit-button" class="btn btn-success">Save</button>
                                                 </div>
                                             </div>
                                             @endif
@@ -760,7 +760,7 @@
 
                                             <div class="col-auto">
                                                 <br>
-                                                <button type="submit" class="btn btn-primary">Save</button>
+                                                <button type="submit" id="submit-button" class="btn btn-primary">Save</button>
                                             </div><!--end col-->
                                         </div>
                                     </form>
@@ -850,7 +850,7 @@
 
                                                 <div class="col-auto">
                                                     <br>
-                                                    <button type="submit" class="btn btn-primary">Save</button>
+                                                    <button type="submit" id="submit-button" class="btn btn-primary">Save</button>
                                                 </div><!--end col-->
                                             </div>
                                         </form>
@@ -914,7 +914,7 @@
                                                                                 <input name="olevel_id" type="hidden" value="{{$olevel->id}}">
         
                                                                                 <hr>
-                                                                                <button type="submit" class="btn btn-danger w-100">Yes, Delete</button>
+                                                                                <button type="submit" id="submit-button" class="btn btn-danger w-100">Yes, Delete</button>
                                                                             </form>
                                                                         </div>
                                                                     </div>
@@ -951,7 +951,7 @@
     
                                                 <div class="col-auto">
                                                     <br>
-                                                    <button type="submit" class="btn btn-primary">Upload</button>
+                                                    <button type="submit" id="submit-button" class="btn btn-primary">Upload</button>
                                                 </div><!--end col-->
                                             </div>
                                         </form>
@@ -984,7 +984,7 @@
                                                 @if(empty($applicant->status))
                                                 <div class="col-lg-12">
                                                     <div class="text-end">
-                                                        <button type="submit" class="btn btn-success">Save</button>
+                                                        <button type="submit" id="submit-button" class="btn btn-success">Save</button>
                                                     </div>
                                                 </div>
                                                 @endif
@@ -1069,7 +1069,7 @@
 
                                                 <div class="col-auto">
                                                     <br>
-                                                    <button type="submit" class="btn btn-primary">Save</button>
+                                                    <button type="submit" id="submit-button" class="btn btn-primary">Save</button>
                                                 </div><!--end col-->
                                             </div>
                                         </form>
@@ -1110,7 +1110,7 @@
                                                                                     <input name="utme_id" type="hidden" value="{{$utme->id}}">
             
                                                                                     <hr>
-                                                                                    <button type="submit" class="btn btn-danger w-100">Yes, Delete</button>
+                                                                                    <button type="submit" id="submit-button" class="btn btn-danger w-100">Yes, Delete</button>
                                                                                 </form>
                                                                             </div>
                                                                         </div>
@@ -1140,7 +1140,7 @@
         
                                                     <div class="col-auto">
                                                         <br>
-                                                        <button type="submit" class="btn btn-primary">Upload</button>
+                                                        <button type="submit" id="submit-button" class="btn btn-primary">Upload</button>
                                                     </div><!--end col-->
                                                 </div>
                                             </form>
@@ -1185,7 +1185,7 @@
                                             @if(empty($applicant->status))
                                             <div class="col-lg-12">
                                                 <div class="text-end">
-                                                    <button type="submit" class="btn btn-success">Save</button>
+                                                    <button type="submit" id="submit-button" class="btn btn-success">Save</button>
                                                 </div>
                                             </div>
                                             @endif
@@ -1241,7 +1241,7 @@
                                         @if(empty($applicant->status))
                                         <div class="col-lg-12">
                                             <div class="hstack gap-2 justify-content-end">
-                                                <button type="submit" class="btn btn-primary">Save Guardian Information</button>
+                                                <button type="submit" id="submit-button" class="btn btn-primary">Save Guardian Information</button>
                                             </div>
                                         </div>
                                         @endif
@@ -1302,7 +1302,7 @@
                                         @if(empty($applicant->status))
                                         <div class="col-lg-12">
                                             <div class="hstack gap-2 justify-content-end">
-                                                <button type="submit" class="btn btn-primary">Save Next of Kin Information</button>
+                                                <button type="submit" id="submit-button" class="btn btn-primary">Save Next of Kin Information</button>
                                             </div>
                                         </div>
                                         @endif

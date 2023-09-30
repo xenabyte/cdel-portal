@@ -199,7 +199,7 @@ $hodRole = array_filter($singleStaffRoles, function ($staffRole) {
                                                         @csrf
                                                         <input name="staff_role_id" type="hidden" value="{{$singleStaffRole->id}}">
                                                         <hr>
-                                                        <button type="submit" class="btn btn-danger w-100">Yes, Delete</button>
+                                                        <button type="submit" id="submit-button" class="btn btn-danger w-100">Yes, Delete</button>
                                                     </form>
                                                 </div>
                                             </div><!-- /.modal-content -->
@@ -251,7 +251,7 @@ $hodRole = array_filter($singleStaffRoles, function ($staffRole) {
 
                     <hr>
                     <div class="text-end">
-                        <button type="submit" class="btn btn-primary">Assign Role</button>
+                        <button type="submit" id="submit-button" class="btn btn-primary">Assign Role</button>
                     </div>
                 </form>
             </div>
@@ -284,7 +284,7 @@ $hodRole = array_filter($singleStaffRoles, function ($staffRole) {
 
                         <hr>
                         <div class="text-end">
-                            <button type="submit" class="btn btn-primary">Assign Dean To Faculty</button>
+                            <button type="submit" id="submit-button" class="btn btn-primary">Assign Dean To Faculty</button>
                         </div>
                     </form>
                 </div>
@@ -318,7 +318,7 @@ $hodRole = array_filter($singleStaffRoles, function ($staffRole) {
 
                         <hr>
                         <div class="text-end">
-                            <button type="submit" class="btn btn-primary">Assign Dean To Faculty</button>
+                            <button type="submit" id="submit-button" class="btn btn-primary">Assign Dean To Faculty</button>
                         </div>
                     </form>
                 </div>
@@ -352,7 +352,7 @@ $hodRole = array_filter($singleStaffRoles, function ($staffRole) {
 
                     <hr>
                     <div class="text-end">
-                        <button type="submit" class="btn btn-primary">Assign Dean To Faculty</button>
+                        <button type="submit" id="submit-button" class="btn btn-primary">Assign Dean To Faculty</button>
                     </div>
                 </form>
             </div>
@@ -376,7 +376,7 @@ $hodRole = array_filter($singleStaffRoles, function ($staffRole) {
                         @csrf
                         <input name="staff_id" type="hidden" value="{{$singleStaff->id}}">
                         <hr>
-                        <button type="submit" class="btn btn-danger w-100">Yes, Disable</button>
+                        <button type="submit" id="submit-button" class="btn btn-danger w-100">Yes, Disable</button>
                     </form>
                 </div>
             </div>
@@ -402,7 +402,7 @@ $hodRole = array_filter($singleStaffRoles, function ($staffRole) {
                         @csrf
                         <input name="staff_id" type="hidden" value="{{$singleStaff->id}}">
                         <hr>
-                        <button type="submit" class="btn btn-success w-100">Yes, Enable</button>
+                        <button type="submit" id="submit-button" class="btn btn-success w-100">Yes, Enable</button>
                     </form>
                 </div>
             </div>
