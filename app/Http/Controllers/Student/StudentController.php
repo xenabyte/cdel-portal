@@ -47,6 +47,9 @@ class StudentController extends Controller
         $acceptancePaymentId = $acceptancePayment->id;
         $acceptanceTransaction = Transaction::where('student_id', $studentId)->where('payment_id', $acceptancePaymentId)->where('status', 1)->first();
 
+        $totalExpenditure = Transaction::where('student_id', $studentId)->where('status', 1)->where('payment_method', 'Wallet')->sum('amount_payed');
+        $totalDeposit = Transaction::where('student_id', $studentId)->where('status', 1)->where('payment_id', 0)->sum('amount_payed');
+
 
         $paymentCheck = $this->checkSchoolFees($student, $academicSession, $levelId);
 
@@ -74,7 +77,9 @@ class StudentController extends Controller
             'payment' => $paymentCheck->schoolPayment,
             'passTuition' => $paymentCheck->passTuitionPayment,
             'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
-            'passEightyTuition' => $paymentCheck->passEightyTuition
+            'passEightyTuition' => $paymentCheck->passEightyTuition,
+            'totalExpenditure' => $totalExpenditure,
+            'totalDeposit' => $totalDeposit
         ]);
     }
 
@@ -359,7 +364,14 @@ class StudentController extends Controller
         $admissionSession = $globalData->sessionSetting['admission_session'];
         $academicSession = $globalData->sessionSetting['academic_session'];
 
-        $transactions = Transaction::where('student_id', $studentId)->where('payment_id', 0)->orWhere('payment_method', 'Wallet')->orderBy('id', 'DESC')->get();
+        $transactions = Transaction::where('student_id', $studentId)
+        ->where(function($query) {
+            $query->where('payment_id', 0)
+                ->orWhere('payment_method', 'Wallet');
+        })
+        ->orderBy('id', 'DESC')
+        ->get();
+
 
         $paymentCheck = $this->checkSchoolFees($student, $academicSession, $levelId);
         if(!$paymentCheck->passTuitionPayment){

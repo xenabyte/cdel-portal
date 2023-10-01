@@ -45,7 +45,7 @@
         <tbody>
             <tr>
                 <td style="width: 100%; border: none;">
-                    <img src="https://tau.edu.ng/assets/images/logo.png" width="40%">
+                    <img src="{{ env('SCHOOL_LOGO') }}" width="40%">
                 </td>
             </tr>
         </tbody>

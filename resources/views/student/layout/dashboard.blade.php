@@ -240,7 +240,7 @@
 
                         <li class="nav-item">
                             <a class="nav-link menu-link" href="#transaction" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="transaction">
-                                <i class="mdi mdi-bank-transfer"></i> <span data-key="t-transaction">Transaction</span>
+                                <i class="mdi mdi-bank-transfer"></i> <span data-key="t-transaction">Transactions</span>
                             </a>
                             <div class="collapse menu-dropdown" id="transaction">
                                 <ul class="nav nav-sm flex-column">

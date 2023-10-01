@@ -114,13 +114,13 @@ $studentRegistrations = $student->courseRegistrationDocument()->orderBy('created
                                 Overview
                             </a>
                         </li>
-                        @if($staffPublicRelationRole)
+                        {{-- @if($staffPublicRelationRole) --}}
                         <li class="nav-item">
                             <a class="nav-link fw-semibold" data-bs-toggle="tab" href="#settings" role="tab">
                                 Settings
                             </a>
                         </li>
-                        @endif
+                        {{-- @endif --}}
                     </ul>
                 </div>
                 <!-- end card body -->
@@ -354,7 +354,7 @@ $studentRegistrations = $student->courseRegistrationDocument()->orderBy('created
             <div class="tab-pane fade" id="settings" role="tabpanel">
                 <!-- Accordions with Icons -->
                 <div class="accordion custom-accordionwithicon" id="accordionWithicon">
-                    @if($staffPublicRelationRole)
+                    {{-- @if($staffPublicRelationRole) --}}
                     <div class="accordion-item shadow">
                         <h2 class="accordion-header" id="accordionwithiconExample1">
                             <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#accor_iconExamplecollapse1" aria-expanded="true" aria-controls="accor_iconExamplecollapse1">
@@ -395,7 +395,7 @@ $studentRegistrations = $student->courseRegistrationDocument()->orderBy('created
                             </div>
                         </div>
                     </div>
-                    @endif
+                    {{-- @endif --}}
                     <div class="accordion-item shadow">
                         <h2 class="accordion-header" id="accordionwithiconExample2">
                             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#accor_iconExamplecollapse2" aria-expanded="false" aria-controls="accor_iconExamplecollapse2">
