@@ -53,7 +53,7 @@ class StudentController extends Controller
 
         $paymentCheck = $this->checkSchoolFees($student, $academicSession, $levelId);
 
-        if(!$acceptanceTransaction && $student->level_id == 1){
+        if(!$acceptanceTransaction && $student->level_id == 1 && !$student->is_active){
             return view('student.acceptanceFee', [
                 'payment' => $acceptancePayment,
                 'passTuition' => $paymentCheck->passTuitionPayment,
