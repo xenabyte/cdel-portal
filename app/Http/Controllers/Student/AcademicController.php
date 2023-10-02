@@ -62,9 +62,16 @@ class AcademicController extends Controller
             'academic_session' => $academicSession
         ])->get();
 
-        $allRequiredCourses = CoursePerProgrammePerAcademicSession::where('programme_id', $student->programme_id)->where('status', '!=', 'Elective')->get();
+        $allRequiredCourses = CoursePerProgrammePerAcademicSession::where('programme_id', $student->programme_id)
+            ->where('status', '!=', 'Elective')
+            ->where('level_id', '<', $levelId)
+            ->get();
         if($student->applicant->application_type != 'UTME'){
-            $allRequiredCourses = CoursePerProgrammePerAcademicSession::where('programme_id', $student->programme_id)->where('status', '!=', 'Elective')->where('level_id', '!=', 1)->get();
+            $allRequiredCourses = CoursePerProgrammePerAcademicSession::where('programme_id', $student->programme_id)
+                ->where('status', '!=', 'Elective')
+                ->where('level_id', '!=', 1)
+                ->where('level_id', '<', $levelId)
+                ->get();
         }
 
         $allRequiredCoursesIds = $allRequiredCourses->pluck('course.id')->toArray();

@@ -1106,6 +1106,11 @@ class StaffController extends Controller
             alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
             return redirect()->back();
         }
+        
+        if(!$student = Student::find($request->student_id)){
+            alert()->error('Oops', 'Invalid Student ')->persistent('Close');
+            return redirect()->back();
+        }
 
         $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-',$student->matric_number.$student->lastname.$student->othernames)));
 

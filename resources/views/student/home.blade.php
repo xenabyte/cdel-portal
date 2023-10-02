@@ -158,7 +158,7 @@ $studentRegistrations = $student->courseRegistrationDocument()->orderBy('created
                             <div class="flex-grow-1 ms-3">
                                 <p class="text-uppercase fw-semibold fs-12 text-muted mb-1">
                                     Total Deposit</p>
-                                <h4 class=" mb-0">₦<span class="counter-value" data-target="2390.68">0</span></h4>
+                                <h4 class=" mb-0">₦<span class="counter-value" data-target="{{ $totalDeposit/100 }}">0</span></h4>
                             </div>
                         </div>
                     </div><!-- end card body -->
@@ -176,7 +176,7 @@ $studentRegistrations = $student->courseRegistrationDocument()->orderBy('created
                             <div class="flex-grow-1 ms-3">
                                 <p class="text-uppercase fw-semibold fs-12 text-muted mb-1">
                                     Total Expenditure</p>
-                                <h4 class=" mb-0">₦<span class="counter-value" data-target="19523.25">0</span></h4>
+                                <h4 class=" mb-0">₦<span class="counter-value" data-target="{{$totalExpenditure/100}}">0</span></h4>
                             </div>
                         </div>
                     </div><!-- end card body -->
