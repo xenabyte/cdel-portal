@@ -104,13 +104,17 @@
  $totalSchoolFeeExpected = 0;
  $totalSchoolFeePaid = 0;
 
-    foreach ($students as $student) {
-        $totalAmountExpected = $student->schoolFeeDetails->schoolPayment->structures->sum('amount');
-        $totalAmountPaid = $student->schoolFeeDetails->schoolPaymentTransaction->sum('amount_payed');
+ foreach ($students as $student) {
+    $schoolFeeDetails = $student->schoolFeeDetails;
+
+    if (isset($schoolFeeDetails->schoolPayment) && isset($schoolFeeDetails->schoolPaymentTransaction)) {
+        $totalAmountExpected = $schoolFeeDetails->schoolPayment->structures->sum('amount');
+        $totalAmountPaid = $schoolFeeDetails->schoolPaymentTransaction->sum('amount_payed');
 
         $totalSchoolFeePaid += $totalAmountPaid;
         $totalSchoolFeeExpected += $totalAmountExpected;
-    }   
+    }
+}    
 @endphp
 <div class="row">
     <div class="col-md-4">
@@ -197,16 +201,16 @@
                             <th>Amount left</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody>                     
                         @foreach($students as $student)
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{ $student->applicant->lastname.' '.$student->applicant->othernames }}</td>
                                 <td>{{ $student->matric_number }}</td>
                                 <td>{{ $student->academicLevel->level}}</td>
-                                <td class="text-primary">₦{{ number_format($student->schoolFeeDetails->schoolPayment->structures->sum('amount')/100, 2)}}</td>
-                                <td class="text-success">₦{{ number_format($student->schoolFeeDetails->schoolPaymentTransaction->sum('amount_payed')/100, 2)}}</td>
-                                <td class="text-danger">₦{{ number_format(($student->schoolFeeDetails->schoolPayment->structures->sum('amount') - $student->schoolFeeDetails->schoolPaymentTransaction->sum('amount_payed'))/100, 2)}}</td>
+                                <td class="text-primary">₦{{ number_format(isset($student->schoolFeeDetails->schoolPayment) && isset($student->schoolFeeDetails->schoolPaymentTransaction) ? $student->schoolFeeDetails->schoolPayment->structures->sum('amount')/100 : 0, 2)}}</td>
+                                <td class="text-success">₦{{ number_format(isset($student->schoolFeeDetails->schoolPayment) && isset($student->schoolFeeDetails->schoolPaymentTransaction) ? $student->schoolFeeDetails->schoolPaymentTransaction->sum('amount_payed')/100 : 0, 2)}}</td>
+                                <td class="text-danger">₦{{ number_format(isset($student->schoolFeeDetails->schoolPayment) && isset($student->schoolFeeDetails->schoolPaymentTransaction) ? ($student->schoolFeeDetails->schoolPayment->structures->sum('amount') - $student->schoolFeeDetails->schoolPaymentTransaction->sum('amount_payed'))/100 : 0, 2)}}</td>
                             </tr>
                         @endforeach
                     </tbody>

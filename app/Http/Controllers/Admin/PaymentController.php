@@ -548,7 +548,7 @@ class PaymentController extends Controller
         }
 
         $reference = $this->generateRandomString(10);
-        
+
         //check existing transaction
         $existingTx = Transaction::where([
             'student_id' => $studentId,
@@ -657,6 +657,9 @@ class PaymentController extends Controller
         $programme = null;
 
         $students = Student::with('applicant', 'academicLevel', 'transactions')
+        ->where('is_active', true)
+        ->where('is_passed_out', false)
+            ->where('is_rusticated', false)
         ->whereHas('transactions', function ($query) use ($paymentIds) {
             $query->whereIn('payment_id', $paymentIds);
         })
@@ -668,6 +671,9 @@ class PaymentController extends Controller
             $programmeIds = $faculty->departments->flatMap->programmes->pluck('id')->toArray();
             $paymentIds = $payments->whereIn('programme_id', $programmeIds)->pluck('id')->toArray();
             $students = Student::with('applicant', 'academicLevel', 'transactions')
+            ->where('is_active', true)
+            ->where('is_passed_out', false)
+            ->where('is_rusticated', false)
             ->whereHas('transactions', function ($query) use ($paymentIds) {
                 $query->whereIn('payment_id', $paymentIds);
             })
@@ -681,6 +687,9 @@ class PaymentController extends Controller
             $programmeIds = $department->programmes->pluck('id')->toArray();
             $paymentIds = $payments->whereIn('programme_id', $programmeIds)->pluck('id')->toArray();
             $students = Student::with('applicant', 'academicLevel', 'transactions')
+            ->where('is_active', true)
+            ->where('is_passed_out', false)
+            ->where('is_rusticated', false)
             ->whereHas('transactions', function ($query) use ($paymentIds) {
                 $query->whereIn('payment_id', $paymentIds);
             })
@@ -696,6 +705,9 @@ class PaymentController extends Controller
             $programmeIds = Programme::where('id', $programmeId)->pluck('id')->toArray();
             $paymentIds = $payments->whereIn('programme_id', $programmeIds)->pluck('id')->toArray();
             $students = Student::with('applicant', 'academicLevel', 'transactions')
+            ->where('is_active', true)
+            ->where('is_passed_out', false)
+            ->where('is_rusticated', false)
             ->whereHas('transactions', function ($query) use ($paymentIds) {
                 $query->whereIn('payment_id', $paymentIds);
             })
