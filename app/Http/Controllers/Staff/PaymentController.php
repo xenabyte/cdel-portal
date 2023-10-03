@@ -548,6 +548,24 @@ class PaymentController extends Controller
         }
 
         $reference = $this->generateRandomString(10);
+
+
+        //check existing transaction
+        $existingTx = Transaction::where([
+            'student_id' => $studentId,
+            'user_id' => $applicantId,
+            'payment_id' => $request->payment_id,
+            'amount_payed' => $amount,
+            'payment_method' => $request->paymentGateway,
+            'session' => $session,
+            'narration' => $request->narration,
+            'status' => $request->paymentStatus == 1 ? 1 : null
+        ])->first();
+
+        if($existingTx){
+            alert()->info('Good Job!!!', 'Payment already processed.')->persistent('Close');
+            return $this->getSingleStudent($student->matric_number, 'admin.chargeStudent');
+        }
         
         //Create new transaction
         $transaction = Transaction::create([
