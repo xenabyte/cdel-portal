@@ -27,6 +27,7 @@ Class Pdf {
 
         $student = Student::with('programme', 'faculty', 'department', 'applicant')->where('slug', $slug)->first();
         $setting = Setting::first();
+        $applicationType = $student->applicant->application_type;
 
         $acceptancePayment = Payment::with('structures')->where('type', Payment::PAYMENT_TYPE_ACCEPTANCE)->where('academic_session', $student->academic_session)->first();
         $type = Payment::PAYMENT_TYPE_SCHOOL;
