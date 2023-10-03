@@ -61,10 +61,15 @@ class ApplicationController extends Controller
 
         $paymentId = $applicationPayment->id;
         $interPaymentId = $interApplicationPayment->id;
-        $transaction = Transaction::where('user_id', $applicant->id)
+
+        $transaction = Transaction::where('user_id', $userId)
         ->where('session', $applicationSession)
         ->where('status', 1)
-        ->where('payment_id', $paymentId)->orWhere('payment_id', $interPaymentId)->first();
+        ->where(function($query) use ($paymentId, $interPaymentId) {
+            $query->where('payment_id', $paymentId)
+                  ->orWhere('payment_id', $interPaymentId);
+        })
+        ->first();
 
         if(!$transaction){
             return view('user.auth.register', [
