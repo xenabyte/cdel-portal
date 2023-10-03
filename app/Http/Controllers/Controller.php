@@ -217,7 +217,6 @@ class Controller extends BaseController
 
     public function getSingleApplicant($studentIdCode, $path){
         $student = User::with('programme', 'programme.department', 'programme.department.faculty', 'transactions')->where('application_number', $studentIdCode)->first();
-        Log::info("message");
         if(!$student){
             alert()->info('Record not found', '')->persistent('Close');
             return redirect()->back();
@@ -229,10 +228,28 @@ class Controller extends BaseController
         $programmes = Programme::get();
         $sessions = Session::orderBy('id', 'DESC')->get();
 
-        $transactions = Transaction::where('user_id', $studentId)->orderBy('id', 'DESC')->get();
+        $transactions = Transaction::where('user_id', $student->id)->where('payment_id', '!=', 0)->orderBy('id', 'DESC')->get();
+        $filteredTransactions = [];
+        foreach ($transactions as $transaction) {
+            $paymentType = !empty($transaction->paymentType)?$transaction->paymentType->type:Payment::PAYMENT_TYPE_WALLET_DEPOSIT;
+            $session = $transaction->session;
+            $totalPaid = $transaction->amount_payed;
+            $paymentId = $transaction->payment_id;
+        
+            if(isset($filteredTransactions[$paymentType][$session])) {
+                $filteredTransactions[$paymentType][$session]['totalPaid'] += $totalPaid;
+            } else {
+                $filteredTransactions[$paymentType][$session] = [
+                    'id' => $paymentId,
+                    'paymentType' => $paymentType,
+                    'totalPaid' => $totalPaid,
+                    'session' => $session,
+                ];
+            }
+        }
 
         return view($path, [
-            'transactions' => $transactions,
+            'transactions' => $filteredTransactions,
             'applicant' => $student,
             'levels' => $levels,
             'programmes' => $programmes,
@@ -254,7 +271,7 @@ class Controller extends BaseController
         $programmes = Programme::get();
         $sessions = Session::orderBy('id', 'DESC')->get();
 
-        $transactions = Transaction::with('paymentType')->where('student_id', $studentId)->where('status', 1)->orderBy('id', 'DESC')->get();
+        $transactions = Transaction::with('paymentType')->where('student_id', $studentId)->where('status', 1)->where('payment_id', '!=', 0)->orderBy('id', 'DESC')->get();
 
         $filteredTransactions = [];
         foreach ($transactions as $transaction) {
@@ -320,7 +337,8 @@ class Controller extends BaseController
             'student' => $student,
             'levels' => $levels,
             'programmes' => $programmes,
-            'sessions' => $sessions   
+            'sessions' => $sessions,
+            'allTxs' => $transactions,  
         ]);
 
     }

@@ -226,8 +226,6 @@ Class Pdf {
             'status' => 1
         ])->latest()->get();
 
-        Log::info("message".json_encode($transactions));
-
         if(!$paymentId > 0){
             $amountBilled = $transactions->sum('amount_payed');
         }

@@ -157,6 +157,7 @@
                                     <td class="bg bg-soft-success">₦{{ number_format($filteredTransaction['totalPaid']/100, 2) }}</td>
                                     <td class="bg bg-soft-danger">₦{{ number_format($balance/100, 2) }}</td>
                                     <td>
+                                        @if(empty($student))
                                         <form action="{{ url('/admin/generateInvoice') }}" method="post" enctype="multipart/form-data">
                                             @csrf
                                             <input name="payment_id" type="hidden" value="{{$filteredTransaction['id']}}">
@@ -164,6 +165,7 @@
                                             <input name="session" type="hidden" value="{{ $filteredTransaction['session'] }}">
                                             <button type="submit" id="submit-button" class="btn btn-primary"><i class="mdi mdi-printer"></i></button>
                                         </form>
+                                        @endif
                                     </td>
                                 </tr>
                             @endforeach
@@ -409,13 +411,15 @@
                                     <td class="bg bg-soft-success">₦{{ number_format($filteredTransaction['totalPaid']/100, 2) }}</td>
                                     <td class="bg bg-soft-danger">₦{{ number_format($balance/100, 2) }}</td>
                                     <td>
+                                        @if(!empty($applicant->student))
                                         <form action="{{ url('/admin/generateInvoice') }}" method="post" enctype="multipart/form-data">
                                             @csrf
                                             <input name="payment_id" type="hidden" value="{{$filteredTransaction['id']}}">
-                                            <input name="student_id" type="hidden" value="{{$student->id}}">
+                                            <input name="student_id" type="hidden" value="{{$applicant->student->id}}">
                                             <input name="session" type="hidden" value="{{ $filteredTransaction['session'] }}">
                                             <button type="submit" id="submit-button" class="btn btn-primary"><i class="mdi mdi-printer"></i></button>
                                         </form>
+                                        @endif
                                     </td>
                                 </tr>
                             @endforeach

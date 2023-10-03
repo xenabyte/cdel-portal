@@ -381,33 +381,45 @@
                         <thead>
                             <tr>
                                 <th scope="col">Id</th>
-                                <th scope="col">Reference</th>
-                                <th scope="col">Amount(₦)</th>
                                 <th scope="col">Payment For</th>
                                 <th scope="col">Session</th>
-                                <th scope="col">Payment Gateway</th>
-                                <th scope="col">Status</th>
-                                <th scope="col">Payment Date</th>
+                                <th class="bg bg-primary text-light" scope="col">Amount Billed(₦)</th>
+                                <th class="bg bg-success text-light" scope="col">Amount Paid(₦)</th>
+                                <th class="bg bg-danger text-light" scope="col">Balance(₦)</th>
                                 <th scope="col"></th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($transactions as $transaction)
-                            <tr>
-                                <th scope="row">{{ $loop->iteration }}</th>
-                                <td>{{ $transaction->reference }}</td>
-                                <td>₦{{ number_format($transaction->amount_payed/100, 2) }} </td>
-                                <td>{{ !empty($transaction->paymentType)? $transaction->paymentType->type : 'Wallet Deposit' }} </td>
-                                <td>{{ $transaction->session }}</td>
-                                <td>{{ $transaction->payment_method }}</td>
-                                <td><span class="badge badge-soft-{{ $transaction->status == 1 ? 'success' : 'warning' }}">{{ $transaction->status == 1 ? 'Paid' : 'Pending' }}</span></td>
-                                <td>{{ $transaction->status == 1 ? $transaction->updated_at : null }} </td>
-                                <td>
-                                    @if($transaction->status == 0)
-                                        <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#payNow{{$transaction->id}}" style="margin: 5px" class="btn btn-warning">Pay Now</a>
-                                    @endif
-                                </td>
-                            </tr>
+                            @php
+                                $id = 1;
+                            @endphp
+                            @foreach($transactions as $paymentType)
+                            @foreach($paymentType as $filteredTransaction)
+                            @php
+                                $payment = new \App\Models\Payment;
+                                $paymentAmount = $payment->getTotalStructureAmount($filteredTransaction['id']);
+                                $balance = $filteredTransaction['paymentType'] == 'Wallet Deposit'? 0 : $paymentAmount-$filteredTransaction['totalPaid'];
+                            @endphp
+                                <tr>
+                                    <td>{{ $id++ }}</td>
+                                    <td>{{ $filteredTransaction['paymentType'] }}</td>
+                                    <td>{{ $filteredTransaction['session'] }}</td>
+                                    <td class="bg bg-soft-primary">₦{{ number_format($paymentAmount/100, 2) }}</td>
+                                    <td class="bg bg-soft-success">₦{{ number_format($filteredTransaction['totalPaid']/100, 2) }}</td>
+                                    <td class="bg bg-soft-danger">₦{{ number_format($balance/100, 2) }}</td>
+                                    <td>
+                                        @if(empty($applicant->student))
+                                        <form action="{{ url('/staff/generateInvoice') }}" method="post" enctype="multipart/form-data">
+                                            @csrf
+                                            <input name="payment_id" type="hidden" value="{{$filteredTransaction['id']}}">
+                                            <input name="student_id" type="hidden" value="{{$applicant->student->id}}">
+                                            <input name="session" type="hidden" value="{{ $filteredTransaction['session'] }}">
+                                            <button type="submit" id="submit-button" class="btn btn-primary"><i class="mdi mdi-printer"></i></button>
+                                        </form>
+                                        @endif
+                                    </td>
+                                </tr>
+                            @endforeach
                             @endforeach
                         </tbody>
                     </table>
