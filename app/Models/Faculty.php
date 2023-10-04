@@ -46,7 +46,7 @@ class Faculty extends Model
      */
     public function students()
     {
-        return $this->hasMany(Student::class, 'faculty_id');
+        return $this->hasMany(Student::class, 'faculty_id')->where('is_active', true);
     }
 
     /**

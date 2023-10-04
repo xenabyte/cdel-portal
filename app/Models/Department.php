@@ -47,7 +47,7 @@ class Department extends Model
      */
     public function students()
     {
-        return $this->hasMany(Student::class, 'department_id');
+        return $this->hasMany(Student::class, 'department_id')->where('is_active', true);
     }
 
     /**

@@ -65,7 +65,7 @@ class Programme extends Model
      */
     public function students()
     {
-        return $this->hasMany(Student::class, 'programme_id');
+        return $this->hasMany(Student::class, 'programme_id')->where('is_active', true);
     }
 
     public function programmeCategory(){
