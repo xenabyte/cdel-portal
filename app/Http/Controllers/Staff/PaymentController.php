@@ -565,14 +565,14 @@ class PaymentController extends Controller
         if(!empty($request->student_id)){
             if($existingTx){
                 alert()->info('Good Job!!!', 'Payment already processed.')->persistent('Close');
-                return $this->getSingleStudent($student->matric_number, 'admin.chargeStudent');
+                return $this->getSingleStudent($student->matric_number, 'staff.chargeStudent');
             }
         }
 
         if(!empty($request->user_id)){
             if($existingTx){
                 alert()->info('Good Job!!!', 'Payment already processed.')->persistent('Close');
-                return $this->getSingleApplicant($applicant->application_number, 'admin.chargeStudent');
+                return $this->getSingleApplicant($applicant->application_number, 'staff.chargeStudent');
             }
         }
         
