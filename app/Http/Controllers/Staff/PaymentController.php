@@ -465,16 +465,20 @@ class PaymentController extends Controller
             $applicantId = $student->applicant->id;
         }
 
-        if(!empty($request->user_id)){
-            $applicant = Applicant::with('programme', 'student')->where('id', $request->user_id)->first();
-            $applicantId = $applicant->id;
-            if(!empty($applicant->student)){
-                $studentId = $applicant->student->id;
-            }
+        $levelId = $request->level;
+        $session = $request->academic_session;
+        $programmeId = $request->programme_id;
+        $payment = Payment::where('programme_id', $programmeId)->where('academic_session', $session)->where('level_id', $levelId)->first();
+
+        if(!$payment){
+            alert()->error('Oops', 'Bill not found')->persistent('Close');
+            return $this->getSingleStudent($student->matric_number, 'admin.chargeStudent');
         }
 
-        $payment = Payment::find($request->payment_id);
-        $session = $request->academic_session;
+        if(($payment->type == Payment::PAYMENT_TYPE_SCHOOL || $payment->type == Payment::PAYMENT_TYPE_SCHOOL_DE) && empty($studentId)){
+            alert()->error('Oops', 'The applicant does not have admission yet.')->persistent('Close');
+            return $this->getSingleStudent($student->matric_number, 'admin.chargeStudent');
+        }
 
         if(($payment->type == Payment::PAYMENT_TYPE_SCHOOL || $payment->type == Payment::PAYMENT_TYPE_SCHOOL_DE) && empty($studentId)){
             alert()->error('Oops', 'The applicant does not have admission yet.')->persistent('Close');
