@@ -203,33 +203,22 @@ class PaymentController extends Controller
         }else{
             $studentId = $request->student_id;
         }
-        
-        
 
         if(!empty($studentId)){
             $student = Student::find($studentId);
             
-            $payment = Payment::with(['structures'])->where([
-                'type' => $type,
-                'academic_session' => $session,
-            ])->first();
-
-            if(!$payment){
-                return response()->json(['status' =>  'Payment type: '.$type.' doesnt exist']);
-            }
-
             if ($type == Payment::PAYMENT_TYPE_SCHOOL || $type == Payment::PAYMENT_TYPE_SCHOOL_DE) {
-                $paymentCheck = $this->checkSchoolFees($student, $session, $student->level_id);
+                $paymentCheck = $this->checkSchoolFees($student, $session, $levelId);
                 if($paymentCheck->status != 'success'){
                     return response()->json(['status' => 'School fee not setup for the section and programme']);
                 }
 
-                $payment = Payment::with('structures')
-                ->where('type', $type)
-                ->where('programme_id', $student->programme_id)
-                ->where('level_id', $student->level_id)
-                ->where('academic_session', $session)
-                ->first();
+                $payment = Payment::with(['structures'])->where([
+                    'type' => $type,
+                    'programme_id' => $programmeId,
+                    'level_id' => $levelId,
+                    'academic_session' => $session,
+                ])->first();
 
                 if(!$payment){
                     return response()->json(['status' =>  'Payment type: '.$type.' doesnt exist']);
@@ -238,7 +227,18 @@ class PaymentController extends Controller
                 $payment->passTuition = $paymentCheck->passTuitionPayment;
                 $payment->fullTuitionPayment = $paymentCheck->fullTuitionPayment;
                 $payment->passEightyTuition = $paymentCheck->passEightyTuition;
+            }else{
+                $payment = Payment::with(['structures'])->where([
+                    'type' => $type,
+                    'academic_session' => $session,
+                ])->first();
+        
+                if(!$payment){
+                    return response()->json(['status' =>  'Payment type: '.$type.' doesnt exist']);
+                }
             }
+
+            
             
             return response()->json([
                 'status' => 'success',
@@ -476,7 +476,10 @@ class PaymentController extends Controller
         $levelId = $request->level;
         $session = $request->academic_session;
         $programmeId = $request->programme_id;
-        $payment = Payment::where('programme_id', $programmeId)->where('academic_session', $session)->where('level_id', $levelId)->first();
+        $type = $request->type;
+        $paymentId = $request->payment_id;
+
+        $payment = Payment::with(['structures'])->find($paymentId);
 
         if(!$payment){
             alert()->error('Oops', 'Bill not found')->persistent('Close');
@@ -484,19 +487,19 @@ class PaymentController extends Controller
         }
 
 
-        if(($payment->type == Payment::PAYMENT_TYPE_SCHOOL || $payment->type == Payment::PAYMENT_TYPE_SCHOOL_DE) && empty($studentId)){
+        if(($type == Payment::PAYMENT_TYPE_SCHOOL || $type == Payment::PAYMENT_TYPE_SCHOOL_DE) && empty($studentId)){
             alert()->error('Oops', 'The applicant does not have admission yet.')->persistent('Close');
             return $this->getSingleStudent($student->matric_number, 'admin.chargeStudent');
         }
 
 
-        if($payment->type == Payment::PAYMENT_TYPE_GENERAl_APPLICATION || $payment->type == Payment::PAYMENT_TYPE_ACCEPTANCE || $payment->type == Payment::PAYMENT_TYPE_INTER_TRANSFER_APPLICATION){
+        if($type == Payment::PAYMENT_TYPE_GENERAl_APPLICATION || $type == Payment::PAYMENT_TYPE_ACCEPTANCE || $type == Payment::PAYMENT_TYPE_INTER_TRANSFER_APPLICATION){
             $validator = Validator::make($request->all(), [
                 'amountAcceptance' => 'required',
             ],[
                 'amountAcceptance.required' => 'The amount field is required.',
             ]);
-        }elseif($payment->type == Payment::PAYMENT_TYPE_SCHOOL || $payment->type == Payment::PAYMENT_TYPE_SCHOOL_DE){
+        }elseif($type == Payment::PAYMENT_TYPE_SCHOOL || $type == Payment::PAYMENT_TYPE_SCHOOL_DE){
             $validator = Validator::make($request->all(), [
                 'amountTuition' => 'required',
             ],[
