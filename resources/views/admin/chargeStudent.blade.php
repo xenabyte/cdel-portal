@@ -49,6 +49,8 @@
                         <p class="text-muted">{{ $student->programme->name }} <br>
                             <strong>Matric Number:</strong> {{ $student->matric_number }}<br>
                             <strong>Jamb Reg. Number:</strong> {{ $student->applicant->jamb_reg_no }}
+                            <hr>
+                            @if(env('WALLET_STATUS'))<a class="dropdown-item" href=#"><i class="mdi mdi-wallet text-muted fs-16 align-middle me-1"></i> <span class="align-middle">Balance : <b>₦{{ number_format($student->amount_balance/100, 2) }}</b></span></a>@endif
                         </p>
                     </div>
                     <div class="table-responsive border-top border-top-dashed">
@@ -121,6 +123,7 @@
                 <h4 class="card-title mb-0 flex-grow-1">Transactions</h4>
                 <div class="text-end mb-5">
                     <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#addTransaction" class="btn btn-primary">Create Payment</a>
+                    <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#walletTopUp" class="btn btn-info">Topup Student Wallet</a>
                 </div>
             </div><!-- end card header -->
 
@@ -296,6 +299,34 @@
                     <div class="text-end border-top border-top-dashed p-3">
                         <br>
                         <button type="submit" id="submit-button" class="btn btn-primary">Pay/Charge</button>
+                    </div>
+                </form>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<div id="walletTopUp" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog modal-md modal-dialog-centered">
+        <div class="modal-content border-0 overflow-hidden">
+            <div class="modal-header p-3">
+                <h4 class="card-title mb-0">Deposit into Wallet</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body border-top border-top-dashed">
+                <form action="{{ url('/admin/walletTopUp') }}" method="post" enctype="multipart/form-data">
+                    @csrf
+                    <input type="hidden" name='student_id' value="{{ $student->id }}">
+                    <input type="hidden" name="payment_id" value="0">
+
+                    <div class="mb-3">
+                        <label for="amount" class="form-label">Payment Amount<span class="text-danger">*</span></label>
+                        <input type='number' name='amount' class="form-control" required placeholder="Enter Deposit Amount">
+                    </div>
+
+                    <div>
+                        <button type="submit" id="submit-button-main" class="btn btn-primary">Make payment</button>
                     </div>
                 </form>
             </div>

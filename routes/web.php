@@ -124,6 +124,7 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'admin'],
   Route::post('/getStudentPayment', [App\Http\Controllers\Admin\PaymentController::class, 'getStudentPayment'])->name('getStudentPayment')->middleware(['auth:admin']);
   Route::post('/editTransaction', [App\Http\Controllers\Admin\PaymentController::class, 'editTransaction'])->name('editTransaction')->middleware(['auth:admin']);
   Route::post('/deleteTransaction', [App\Http\Controllers\Admin\PaymentController::class, 'deleteTransaction'])->name('deleteTransaction')->middleware(['auth:admin']);
+  Route::post('/walletTopUp', [App\Http\Controllers\Admin\PaymentController::class, 'walletTopUp'])->name('walletTopUp')->middleware(['auth:admin']);
 
 
   Route::get('/applicants', [App\Http\Controllers\Admin\AdmissionController::class, 'applicants'])->name('applicants')->middleware(['auth:admin']);
@@ -397,6 +398,7 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'staff'],
   Route::post('/getStudentPayment', [App\Http\Controllers\Staff\PaymentController::class, 'getStudentPayment'])->name('getStudentPayment')->middleware(['auth:staff']);
   Route::post('/editTransaction', [App\Http\Controllers\Staff\PaymentController::class, 'editTransaction'])->name('editTransaction')->middleware(['auth:staff']);
   Route::post('/deleteTransaction', [App\Http\Controllers\Staff\PaymentController::class, 'deleteTransaction'])->name('deleteTransaction')->middleware(['auth:staff']);
+  Route::post('/walletTopUp', [App\Http\Controllers\Staff\PaymentController::class, 'walletTopUp'])->name('walletTopUp')->middleware(['auth:staff']);
 
   Route::post('/uploadSignature', [App\Http\Controllers\Staff\StaffController::class, 'uploadSignature'])->name('uploadSignature')->middleware(['auth:staff']);
 

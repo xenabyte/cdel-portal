@@ -901,4 +901,58 @@ class PaymentController extends Controller
         return $this->getSingleStudent($studentIdCode, 'admin.chargeStudent');
     } 
 
+    public function walletTopUp (Request $request){
+        $validator = Validator::make($request->all(), [
+            'payment_id' => 'required',
+            'amount' => 'required',
+        ]);
+
+        $globalData = $request->input('global_data');
+        $session = $globalData->sessionSetting['academic_session'];
+
+        $student = Student::with('applicant')->where('id', $request->student_id)->first();
+        $studentIdCode = $student->matric_number;
+        $studentId = $student->id;
+        $paymentId = $request->payment_id;
+        
+
+        if($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return $this->getSingleStudent($studentIdCode, 'admin.chargeStudent');
+        }
+
+        $amount = $request->amount * 100;
+        $reference = $this->generateAccessCode();
+
+        $transaction = Transaction::create([
+            'user_id' => null,
+            'student_id' => $student->id,
+            'payment_id' => $paymentId,
+            'amount_payed' => $amount,
+            'payment_method' => 'Bursary',
+            'reference' => $reference,
+            'session' => $session,
+            'status' => 1
+        ]);
+
+        if($this->creditStudentWallet($studentId, $amount)){
+            $pdf = new Pdf();
+            $invoice = $pdf->generateTransactionInvoice($session, $studentId, $paymentId, 'single');
+                    
+            $data = new \stdClass();
+            $data->lastname = $student->applicant->lastname;
+            $data->othernames = $student->applicant->othernames;
+            $data->amount = $amount;
+            $data->invoice = $invoice;
+            
+            Mail::to($student->email)->send(new TransactionMail($data));
+
+            alert()->success('Good job!!', 'Wallet credited successfully')->persistent('Close');
+            return $this->getSingleStudent($studentIdCode, 'admin.chargeStudent');
+        }
+
+        alert()->info('Oops!', 'Something went wrong')->persistent('Close');
+        return $this->getSingleStudent($studentIdCode, 'admin.chargeStudent');
+    }
+
 }
