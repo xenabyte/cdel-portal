@@ -6,12 +6,12 @@
 <div class="row">
     <div class="col-12">
         <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-            <h4 class="mb-sm-0">Charge 'a' student</h4>
+            <h4 class="mb-sm-0">Student Transactions</h4>
 
             <div class="page-title-right">
                 <ol class="breadcrumb m-0">
                     <li class="breadcrumb-item"><a href="javascript: void(0);">Pages</a></li>
-                    <li class="breadcrumb-item active">Charge 'a' student</li>
+                    <li class="breadcrumb-item active">Student Transactions</li>
                 </ol>
             </div>
 
@@ -34,6 +34,12 @@
 </div>
 <!-- end row -->
 @if(!empty($student))
+@php
+$payment = new \App\Models\Payment;
+$paymentAmount = $payment->getTotalStructureAmount($student->paymentId);
+$totalPaid = $transactions->where('status', 1)->sum('amount_payed');
+$balance = $paymentAmount - $totalPaid;
+@endphp
 <div class="row">
     <div class="col-xxl-4">
         <div class="card">
@@ -116,9 +122,65 @@
     <!--end col-->
 
     <div class="col-xxl-8">
+        <div class="row">
+            <div class="col-lg-4 col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <div class="avatar-sm flex-shrink-0">
+                                <span class="avatar-title bg-light text-primary rounded-circle shadow fs-3">
+                                    <i class="ri-money-dollar-circle-fill align-middle"></i>
+                                </span>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <p class="text-uppercase fw-semibold fs-12 text-muted mb-1">
+                                    Amount Billed</p>
+                                <h4 class=" mb-0">₦<span class="counter-value" data-target="{{ $paymentAmount/100 }}">0</span></h4>
+                            </div>
+                        </div>
+                    </div><!-- end card body -->
+                </div><!-- end card -->
+            </div><!-- end col -->
+            <div class="col-lg-4 col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <div class="avatar-sm flex-shrink-0">
+                                <span class="avatar-title bg-light text-primary rounded-circle shadow fs-3">
+                                    <i class="ri-money-dollar-circle-fill align-middle"></i>
+                                </span>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <p class="text-uppercase fw-semibold fs-12 text-muted mb-1">
+                                    Total Paid</p>
+                                <h4 class=" mb-0">₦<span class="counter-value" data-target="{{$totalPaid/100}}">0</span></h4>
+                            </div>
+                        </div>
+                    </div><!-- end card body -->
+                </div><!-- end card -->
+            </div><!-- end col -->
+            <div class="col-lg-4 col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <div class="avatar-sm flex-shrink-0">
+                                <span class="avatar-title bg-light text-primary rounded-circle shadow fs-3">
+                                    <i class="ri-money-dollar-circle-fill align-middle"></i>
+                                </span>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <p class="text-uppercase fw-semibold fs-12 text-muted mb-1">Balance</p>
+                                <h4 class=" mb-0">₦<span class="counter-value" data-target="{{$balance/100 }}">0</span></h4>
+                            </div>
+                        </div>
+                    </div><!-- end card body -->
+                </div><!-- end card -->
+            </div><!-- end col -->
+        </div><!-- end row -->
+        
         <div class="card">
             <div class="card-header border-0 align-items-center d-flex">
-                <h4 class="card-title mb-0 flex-grow-1">Transactions</h4>
+                <h4 class="card-title mb-0 flex-grow-1">{{ $student->paymentType}} Transactions for {{ $student->session }} Academic Session </h4>
                 <div class="text-end mb-5">
                     <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#addTransaction" class="btn btn-primary">Create Payment</a>
                 </div>
@@ -130,54 +192,129 @@
                         <thead>
                             <tr>
                                 <th scope="col">Id</th>
-                                <th scope="col">Payment For</th>
-                                <th scope="col">Session</th>
-                                <th class="bg bg-primary text-light" scope="col">Amount Billed(₦)</th>
-                                <th class="bg bg-success text-light" scope="col">Amount Paid(₦)</th>
-                                <th class="bg bg-danger text-light" scope="col">Balance(₦)</th>
+                                <th scope="col">Reference</th>
+                                <th scope="col">Amount(₦)</th>
+                                <th scope="col">Payment Gateway</th>
+                                <th scope="col">Status</th>
+                                <th scope="col">Payment Date</th>
                                 <th scope="col"></th>
                             </tr>
                         </thead>
                         <tbody>
-                            @php
-                                $id = 1;
-                            @endphp
-                            @foreach($transactions as $paymentType)
-                            @foreach($paymentType as $filteredTransaction)
-                            @php
-                                $payment = new \App\Models\Payment;
-                                $paymentAmount = $payment->getTotalStructureAmount($filteredTransaction['id']);
-                                $balance = $filteredTransaction['paymentType'] == 'Wallet Deposit'? 0 : $paymentAmount-$filteredTransaction['totalPaid'];
-                            @endphp
-                                <tr>
-                                    <td>{{ $id++ }}</td>
-                                    <td>{{ $filteredTransaction['paymentType'] }}</td>
-                                    <td>{{ $filteredTransaction['session'] }}</td>
-                                    <td class="bg bg-soft-primary">₦{{ number_format($paymentAmount/100, 2) }}</td>
-                                    <td class="bg bg-soft-success">₦{{ number_format($filteredTransaction['totalPaid']/100, 2) }}</td>
-                                    <td class="bg bg-soft-danger">₦{{ number_format($balance/100, 2) }}</td>
-                                    <td>
-                                        @if(!empty($student))
-                                        <form action="{{ url('/admin/generateInvoice') }}" method="post" enctype="multipart/form-data">
-                                            @csrf
-                                            <input name="payment_id" type="hidden" value="{{$filteredTransaction['id']}}">
-                                            <input name="student_id" type="hidden" value="{{$student->id}}">
-                                            <input name="session" type="hidden" value="{{ $filteredTransaction['session'] }}">
-                                            <button type="submit" id="submit-button" class="btn btn-primary my-1"><i class="mdi mdi-printer"></i></button>
-                                        </form>
-                                        @endif
+                            @foreach($transactions as $transaction)
+                            <tr>
+                                <th scope="row">{{ $loop->iteration }}</th>
+                                <td>{{ $transaction->reference }}</td>
+                                <td>₦{{ number_format($transaction->amount_payed/100, 2) }} </td>
+                                <td>{{ $transaction->payment_method }}</td>
+                                <td><span class="badge badge-soft-{{ $transaction->status == 1 ? 'success' : 'warning' }}">{{ $transaction->status == 1 ? 'Paid' : 'Pending' }}</span></td>
+                                <td>{{ $transaction->status == 1 ? $transaction->updated_at : null }} </td>
+                                <td>
+                                    @if($transaction->status == 1)
+                                    <form action="{{ url('/admin/generateInvoice') }}" method="post" enctype="multipart/form-data">
+                                        @csrf
+                                        <input name="payment_id" type="hidden" value="{{!empty($transaction->paymentType)?$transaction->paymentType->id:0}}">
+                                        <input name="student_id" type="hidden" value="{{$transaction->student_id}}">
+                                        <input name="session" type="hidden" value="{{ $transaction->session }}">
+                                        <input name="type" type="hidden" value="single">
+                                        <button type="submit" id="submit-button" class="btn btn-primary"><i class="mdi mdi-printer"></i></button>
+                                    </form>
+                                    @endif
+                                    <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#editTransaction{{ $transaction->id }}" class="btn btn-info my-1"><i class="mdi mdi-application-edit"></i></a>
+                                    <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#deleteTransaction{{ $transaction->id }}" class="btn btn-danger my-1"><i class="mdi mdi-trash-can"></i></a>
+                                </td>
 
-                                        <form action="{{ url('/admin/getStudentPayment') }}" method="post" enctype="multipart/form-data">
-                                            @csrf
-                                            <input name="payment_id" type="hidden" value="{{$filteredTransaction['id']}}">
-                                            <input name="student_id" type="hidden" value="{{$student->id}}">
-                                            <input name="session" type="hidden" value="{{ $filteredTransaction['session'] }}">
-                                            <button type="submit" id="submit-button" class="btn btn-info my-1"><i class="mdi mdi-eye"></i></button>
-                                        </form>
+                                <div id="deleteTransaction{{$transaction->id}}" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
+                                    <div class="modal-dialog modal-dialog-centered">
+                                        <div class="modal-content">
+                                            <div class="modal-body text-center p-5">
+                                                <div class="text-end">
+                                                    <button type="button" class="btn-close text-end" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="mt-2">
+                                                    <lord-icon src="https://cdn.lordicon.com/wwneckwc.json" trigger="hover" style="width:150px;height:150px">
+                                                    </lord-icon>
+                                                    <h4 class="mb-3 mt-4">Are you sure you want to delete transaction of <br/> ₦{{ number_format($transaction->amount_payed/100, 2) }}?</h4>
+                                                    <form action="{{ url('/admin/deleteTransaction') }}" method="POST">
+                                                        @csrf
+                                                        <input type="hidden" value="{{$transaction->id}}" name="transaction_id">
+                                                        <input type="hidden" value="{{$transaction->student_id}}" name="student_id">
+                                                        <hr>
+                                                        <button type="submit" id="submit-button" class="btn btn-danger w-100">Yes, Delete</button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer bg-light p-3 justify-content-center">
 
-                                    </td>
-                                </tr>
-                            @endforeach
+                                            </div>
+                                        </div><!-- /.modal-content -->
+                                    </div><!-- /.modal-dialog -->
+                                </div><!-- /.modal -->
+
+                                <div id="editTransaction{{ $transaction->id }}" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
+                                    <div class="modal-dialog modal-lg modal-dialog-centered">
+                                        <div class="modal-content border-0 overflow-hidden">
+                                            <div class="modal-header p-3">
+                                                <h4 class="card-title mb-0">Edit Transaction</h4>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                
+                                            <div class="modal-body border-top border-top-dashed">
+                                                <form action="{{ url('/admin/editTransaction') }}" method="post" enctype="multipart/form-data">
+                                                    @csrf
+                                                    <input type="hidden" value="{{$transaction->id}}" name="transaction_id">
+                                                    <input type="hidden" value="{{$transaction->student_id}}" name="student_id">
+                                                    
+                                
+                                                    <div class="mb-3">
+                                                        <label for="academic_session" class="form-label">Select Academic Session</label>
+                                                        <select class="form-select" id="academicSession" aria-label="academic_session" name="academic_session" required>
+                                                            @foreach($sessions as $session)
+                                                            <option @if($session->year == $student->session)selected @endif value="{{ $session->year }}">{{ $session->year }}</option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+                                
+                                                    <div class="mb-3">
+                                                        <label for="level" class="form-label">Select Level </label>
+                                                        <select class="form-select" id="level" aria-label="level" name="level">
+                                                            @foreach($levels as $level)
+                                                                @if($level->id <= $student->level_id)
+                                                                <option @if($level->id == $transaction->level_id)selected @endif value="{{ $level->id }}">{{ $level->level }} Level</option>
+                                                                @endif
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+                                
+                                                    <div class="mb-3">
+                                                        <label for="amount" class="form-label">Payment Amount<span class="text-danger">*</span></label>
+                                                        <input type="text" class="form-control" name="amount" id="amount" value="{{ $transaction->amount_payed/100 }}">
+                                                    </div>
+                                
+                                                    <div class="mb-3">
+                                                        <label for="paymentStatus" class="form-label">Select Payment Status<span class="text-danger">*</span></label>
+                                                        <select class="form-select" aria-label="paymentStatus" name="paymentStatus" required>
+                                                            <option value= "" selected>Select Payment Status</option>
+                                                            <option value="1">Paid</option>
+                                                            <option value="0">Not Paid</option>
+                                                        </select>
+                                                    </div>
+                                
+                                                    <div class="mb-3">
+                                                        <label for="narration" class="form-label">Payment Narration</label>
+                                                        <input type="text" class="form-control" name="narration" maxlength="200" id="narration">
+                                                    </div>
+                                
+                                                    <div class="text-end border-top border-top-dashed p-3">
+                                                        <br>
+                                                        <button type="submit" id="submit-button" class="btn btn-primary">Update</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div><!-- /.modal-content -->
+                                    </div><!-- /.modal-dialog -->
+                                </div><!-- /.modal -->
+                            </tr>
                             @endforeach
                         </tbody> 
                     </table>
@@ -303,239 +440,6 @@
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
 @endif
-
-@if(!empty($applicant))
-<div class="row">
-    <div class="col-xxl-4">
-        <div class="card">
-            <div class="card-body p-4">
-                <div>
-                    <div class="flex-shrink-0 avatar-md mx-auto">
-                        <div class="avatar-title bg-light rounded">
-                            <img src="{{empty($applicant->image)?asset('assets/images/users/user-dummy-img.jpg'):asset($applicant->image)}}" alt="" height="50" />
-                        </div>
-                    </div>
-                    <div class="mt-4 text-center">
-                        <h5 class="mb-1">{{$applicant->lastname.' '.$applicant->othernames}}</h5>
-                        <p class="text-muted">{{ $applicant->programme->name }} <br>
-                            <strong>Application Number:</strong> {{ $applicant->application_number }}<br>
-                            <strong>Jamb Reg. Number:</strong> {{ $applicant->jamb_reg_no }}
-                        </p>
-                    </div>
-                    <div class="table-responsive border-top border-top-dashed">
-                        <table class="table mb-0 table-borderless">
-                            <tbody>
-                                <tr>
-                                    <th><span class="fw-medium">Email:</span></th>
-                                    <td>{{ $applicant->email }}</td>
-                                </tr>
-                                <tr>
-                                    <th><span class="fw-medium">Contact No.:</span></th>
-                                    <td>{{ $applicant->phone_number }}</td>
-                                </tr>
-                                <tr>
-                                    <th><span class="fw-medium">Address:</span></th>
-                                    <td>{!! $applicant->address !!}</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-            @if(!empty($applicant->guardian))
-            <div class="card-body border-top border-top-dashed p-4">
-                <div>
-                    <h6 class="text-muted text-uppercase fw-semibold mb-4">Guardian Info</h6>
-                    <div class="table-responsive">
-                        <table class="table mb-0 table-borderless">
-                            <tbody>
-                                <tr>
-                                    <th><span class="fw-medium">Name</span></th>
-                                    <td>{{ $applicant->guardian->name }}</td>
-                                </tr>
-                                <tr>
-                                    <th><span class="fw-medium">Email</span></th>
-                                    <td>{{ $applicant->guardian->email }}</td>
-                                </tr>
-                                <tr>
-                                    <th><span class="fw-medium">Contact No.</span></th>
-                                    <td>{{ $applicant->guardian->phone_number }}</td>
-                                </tr>
-                                <tr>
-                                    <th><span class="fw-medium">Address</span></th>
-                                    <td>{!! $applicant->guardian->address !!}</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-            @endif
-        </div>
-        <!--end card-->
-    
-    </div>
-    <!--end col-->
-
-    <div class="col-xxl-8">
-        <div class="card">
-            <div class="card-header border-0 align-items-center d-flex">
-                <h4 class="card-title mb-0 flex-grow-1">Transactions</h4>
-                <div class="text-end mb-5">
-                    <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#addTransaction" class="btn btn-primary">Charge Student</a>
-                </div>
-            </div><!-- end card header -->
-
-            <div class="card-body pb-2 border-top border-top-dashed">
-                <div class="table-responsive">
-                    <table id="buttons-datatables" class="display table table-stripped" style="width:100%">
-                        <thead>
-                            <tr>
-                                <th scope="col">Id</th>
-                                <th scope="col">Payment For</th>
-                                <th scope="col">Session</th>
-                                <th class="bg bg-primary text-light" scope="col">Amount Billed(₦)</th>
-                                <th class="bg bg-success text-light" scope="col">Amount Paid(₦)</th>
-                                <th class="bg bg-danger text-light" scope="col">Balance(₦)</th>
-                                <th scope="col"></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @php
-                                $id = 1;
-                            @endphp
-                            @foreach($transactions as $paymentType)
-                            @foreach($paymentType as $filteredTransaction)
-                            @php
-                                $payment = new \App\Models\Payment;
-                                $paymentAmount = $payment->getTotalStructureAmount($filteredTransaction['id']);
-                                $balance = $filteredTransaction['paymentType'] == 'Wallet Deposit'? 0 : $paymentAmount-$filteredTransaction['totalPaid'];
-                            @endphp
-                                <tr>
-                                    <td>{{ $id++ }}</td>
-                                    <td>{{ $filteredTransaction['paymentType'] }}</td>
-                                    <td>{{ $filteredTransaction['session'] }}</td>
-                                    <td class="bg bg-soft-primary">₦{{ number_format($paymentAmount/100, 2) }}</td>
-                                    <td class="bg bg-soft-success">₦{{ number_format($filteredTransaction['totalPaid']/100, 2) }}</td>
-                                    <td class="bg bg-soft-danger">₦{{ number_format($balance/100, 2) }}</td>
-                                    <td>
-                                        @if(!empty($applicant->student))
-                                        <form action="{{ url('/admin/generateInvoice') }}" method="post" enctype="multipart/form-data">
-                                            @csrf
-                                            <input name="payment_id" type="hidden" value="{{$filteredTransaction['id']}}">
-                                            <input name="student_id" type="hidden" value="{{$applicant->student->id}}">
-                                            <input name="session" type="hidden" value="{{ $filteredTransaction['session'] }}">
-                                            <button type="submit" id="submit-button" class="btn btn-primary"><i class="mdi mdi-printer"></i></button>
-                                        </form>
-                                        @endif
-                                    </td>
-                                </tr>
-                            @endforeach
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
-            </div><!-- end card body -->
-        </div><!-- end card -->
-
-    </div>
-    <!--end col-->
-</div>
-<!--end row-->
-
-<div id="addTransaction" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
-    <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content border-0 overflow-hidden">
-            <div class="modal-header p-3">
-                <h4 class="card-title mb-0">Create Payment</h4>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-
-            <div class="modal-body border-top border-top-dashed">
-                <form action="{{ url('/admin/chargeStudent') }}" method="post" enctype="multipart/form-data">
-                    @csrf
-                    <input type="hidden" id="studentId" name="user_id" value="{{ $applicant->id }}">
-                    <input type="hidden" id="programmeId" name="programme_id" value="{{ $applicant->programme_id }}">
-                    <input type="hidden" id="academicSession" name="academic_session" value="{{ $applicant->academic_session }}">
-                    <input type="hidden" id="level" name="level" value="0">
-                    <input type="hidden" name="paymentGateway" value="Manual/BankTransfer">
-                    <input type="hidden" id="userType" name="userType" value="applicant">
-
-                    <div class="mb-3">
-                        <label for="type" class="form-label">Select Payment Type </label>
-                        <select class="form-select" aria-label="type" name="type" required onchange="handlePaymentTypeChange(event)">
-                            <option selected value= "">Select Type </option>
-                            <option value="General Application Fee">General Application Fee</option>
-                            <option value="Inter Transfer Application Fee">Inter Transfer Application Fee</option>
-                            <option value="Acceptance Fee">Acceptance Fee</option>
-                            <option value="School Fee">School Fee</option>
-                            <option value="DE School Fee">Direct Entry School Fee</option>
-                            <option value="General Fee">General Fee</option>
-                        </select>
-                    </div>
-                    
-                    <input type="hidden" id="paymentId" name="payment_id">
-
-                    <div class="mb-3" id='payment-for' style="display: none">
-                        <label for="payment_for" class="form-label">Payment For<span class="text-danger">*</span></label>
-                        <select class="form-select" aria-label="payment_for" name="payment_id">
-                            <option value= "" selected>Select Payment</option>
-                        </select>
-                    </div>
-
-                    <div class="mb-3" id='payment-options-acceptance' style="display: none">
-                        <label for="amount" class="form-label">Payment Amount<span class="text-danger">*</span></label>
-                        <select class="form-select" aria-label="amount" name="amountAcceptance">
-                            <option value= "" selected>Select Amount</option>
-                        </select>
-                    </div>
-
-
-                    @if(env('PAYMENT_TYPE') == 'Percentage')
-                    <div class="mb-3" id='payment-options-tuition' style="display: none">
-                        <label for="amount" class="form-label">Payment Amount<span class="text-danger">*</span></label>
-                        <select class="form-select" aria-label="amount" name="amountTuition">
-                            <option value= "" selected>Select Amount</option>
-                        </select>
-                    </div>
-                    @else
-                    <div class="mb-3" id='payment-options-tuition' style="display: none">
-                        <label for="amount" class="form-label">Payment Amount<span class="text-danger">*</span></label>
-                        <input type="number" class="form-control" name="amountTuition">
-                    </div>
-                    @endif
-
-                    <div class="mb-3" id='payment-options-general' style="display: none">
-                        <label for="amount" class="form-label">Payment Amount<span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" name="amountGeneral" id="amountGeneral">
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="paymentStatus" class="form-label">Select Payment Status<span class="text-danger">*</span></label>
-                        <select class="form-select" aria-label="paymentStatus" name="paymentStatus" required>
-                            <option value= "" selected>Select Payment Status</option>
-                            <option value="1">Paid</option>
-                            <option value="0">Not Paid</option>
-                        </select>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="narration" class="form-label">Payment Narration</label>
-                        <input type="text" class="form-control" name="narration" maxlength="200" id="narration">
-                    </div>
-
-                    <div class="text-end border-top border-top-dashed p-3">
-                        <br>
-                        <button type="submit" id="submit-button" class="btn btn-primary">Pay/Charge</button>
-                    </div>
-                </form>
-            </div>
-        </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
-@endif
-
 
 <div id="getStudent" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
     <div class="modal-dialog modal-dialog-centered">

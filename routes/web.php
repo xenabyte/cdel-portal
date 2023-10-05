@@ -121,6 +121,9 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'admin'],
 
   Route::post('/chargeStudent', [App\Http\Controllers\Admin\PaymentController::class, 'chargeStudent'])->name('chargeStudent')->middleware(['auth:admin']);
   Route::get('/chargeStudent', [App\Http\Controllers\Admin\AdminController::class, 'chargeStudent'])->name('chargeStudent')->middleware(['auth:admin']);
+  Route::post('/getStudentPayment', [App\Http\Controllers\Admin\PaymentController::class, 'getStudentPayment'])->name('getStudentPayment')->middleware(['auth:admin']);
+  Route::post('/editTransaction', [App\Http\Controllers\Admin\PaymentController::class, 'editTransaction'])->name('editTransaction')->middleware(['auth:admin']);
+  Route::post('/deleteTransaction', [App\Http\Controllers\Admin\PaymentController::class, 'deleteTransaction'])->name('deleteTransaction')->middleware(['auth:admin']);
 
 
   Route::get('/applicants', [App\Http\Controllers\Admin\AdmissionController::class, 'applicants'])->name('applicants')->middleware(['auth:admin']);
@@ -362,7 +365,6 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'staff'],
   Route::get('/getDepartments/{id}', [App\Http\Controllers\Staff\ProgrammeController::class, 'getDepartments'])->name('getDepartments')->middleware(['auth:staff']);
   Route::get('/getProgrammes/{id}', [App\Http\Controllers\Staff\ProgrammeController::class, 'getProgrammes'])->name('getProgrammes')->middleware(['auth:staff']);
 
-
   Route::get('/getStudentResults', [App\Http\Controllers\Staff\ResultController::class, 'getStudentResults'])->name('getStudentResults')->middleware(['auth:staff']);
   Route::post('/generateStudentResults', [App\Http\Controllers\Staff\ResultController::class, 'generateStudentResults'])->name('generateStudentResults')->middleware(['auth:staff']);
   Route::post('/approveResult', [App\Http\Controllers\Staff\ResultController::class, 'approveResult'])->name('approveResult')->middleware(['auth:staff']); 
@@ -389,10 +391,12 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'staff'],
   Route::post('/uploadBulkPayment', [App\Http\Controllers\Staff\PaymentController::class, 'uploadBulkPayment'])->name('uploadBulkPayment')->middleware(['auth:staff']);
   Route::post('/generateInvoice', [App\Http\Controllers\Staff\PaymentController::class, 'generateInvoice'])->name('generateInvoice')->middleware(['auth:staff']);
 
-
   Route::post('/chargeStudent', [App\Http\Controllers\Staff\PaymentController::class, 'chargeStudent'])->name('chargeStudent')->middleware(['auth:staff']);
   Route::get('/chargeStudent', [App\Http\Controllers\Staff\StaffController::class, 'chargeStudent'])->name('chargeStudent')->middleware(['auth:staff']);
   Route::post('/getStudent', [App\Http\Controllers\Staff\StaffController::class, 'getStudent'])->name('getStudent')->middleware(['auth:staff']);
+  Route::post('/getStudentPayment', [App\Http\Controllers\Staff\PaymentController::class, 'getStudentPayment'])->name('getStudentPayment')->middleware(['auth:staff']);
+  Route::post('/editTransaction', [App\Http\Controllers\Staff\PaymentController::class, 'editTransaction'])->name('editTransaction')->middleware(['auth:staff']);
+  Route::post('/deleteTransaction', [App\Http\Controllers\Staff\PaymentController::class, 'deleteTransaction'])->name('deleteTransaction')->middleware(['auth:staff']);
 
   Route::post('/uploadSignature', [App\Http\Controllers\Staff\StaffController::class, 'uploadSignature'])->name('uploadSignature')->middleware(['auth:staff']);
 

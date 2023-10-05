@@ -22,6 +22,7 @@ use App\Models\AcademicLevel as Level;
 use App\Models\Session;
 use App\Models\Faculty;
 use App\Models\Department;
+use App\Models\AcademicLevel;
 
 use App\Libraries\Pdf\Pdf;
 use App\Mail\TransactionMail;
@@ -472,14 +473,13 @@ class PaymentController extends Controller
             }
         }
 
+        $payment = Payment::find($request->payment_id);
+        $session = $request->academic_session;
+
         if(($payment->type == Payment::PAYMENT_TYPE_SCHOOL || $payment->type == Payment::PAYMENT_TYPE_SCHOOL_DE) && empty($studentId)){
             alert()->error('Oops', 'The applicant does not have admission yet.')->persistent('Close');
             return redirect()->back();
         }
-
-        $payment = Payment::find($request->payment_id);
-        $session = $request->academic_session;
-
 
         if($payment->type == Payment::PAYMENT_TYPE_GENERAl_APPLICATION || $payment->type == Payment::PAYMENT_TYPE_ACCEPTANCE || $payment->type == Payment::PAYMENT_TYPE_INTER_TRANSFER_APPLICATION){
             $validator = Validator::make($request->all(), [
@@ -768,5 +768,131 @@ class PaymentController extends Controller
 
         return redirect(asset($invoice));
 
+    }
+
+    public function getStudentPayment (Request $request){
+        $validator = Validator::make($request->all(), [
+            'session' => 'required',
+            'student_id' => 'required',
+            'payment_id' => 'required',
+        ]);
+
+        if($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+        $session = $request->session;
+        $studentId = $request->student_id;
+        $paymentId = $request->payment_id;
+
+        $amountBilled = 0;
+        $paymentType = Payment::PAYMENT_TYPE_WALLET_DEPOSIT;
+
+        $levels = AcademicLevel::orderBy('id', 'DESC')->get();
+        $sessions = Session::orderBy('id', 'DESC')->get();
+
+        if($paymentId > 0){
+            $payment = Payment::with('structures')->where('id', $paymentId)->first();
+            $amountBilled = $payment->structures->sum('amount');
+
+            $paymentType = $payment->type;
+        }
+
+        if(!$paymentId > 0){
+            $amountBilled = $transactions->sum('amount_payed');
+        }
+
+        $student = Student::with('applicant')->where('id', $studentId)->first();
+
+        $transactions = Transaction::where([
+            'session' => $session,
+            'student_id' => $studentId,
+            'payment_id' => $paymentId,
+        ])->get();
+
+        $student->session = $session;
+        $student->paymentType = $paymentType;
+        $student->amountBilled = $amountBilled;
+        $student->paymentId = $paymentId;
+
+
+        
+        return view('staff.getStudentPayment', [
+            'student' => $student,
+            'transactions' => $transactions,
+            'levels' => $levels,
+            'sessions' => $sessions
+        ]);
+
+    }
+
+    public function editTransaction(Request $request){
+        $validator = Validator::make($request->all(), [
+            'transaction_id' => 'required',
+            'academic_session' => 'required',
+            'level' => 'required',
+            'amount' => 'required',
+            'paymentStatus' => 'required'
+        ]);
+
+        $student = Student::with('applicant')->where('id', $request->student_id)->first();
+        $studentIdCode = $student->matric_number;
+
+        if($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return $this->getSingleStudent($studentIdCode, 'staff.chargeStudent');
+        }
+
+        if(!$transaction = Transaction::find($request->transaction_id)){
+            return $this->getSingleStudent($studentIdCode, 'staff.chargeStudent');
+        }
+
+        if(!empty($request->academic_session) && $transaction->session != $request->academic_session){
+            $transaction->session = $request->academic_session;
+        }
+
+        if(!empty($request->amount) && $transaction->amount_payed != $request->amount*100){
+            $transaction->amount_payed = $request->amount*100;
+        }
+
+        if(!empty($request->narration) && $transaction->narration != $request->narration){
+            $transaction->narration = $request->narration;
+        }
+
+        $transaction->status = $request->paymentStatus;
+
+        if($transaction->update()){
+            alert()->success('Good job!!', 'Transaction changes saved successfully')->persistent('Close');
+            return $this->getSingleStudent($studentIdCode, 'staff.chargeStudent');
+        }
+
+        alert()->info('Oops!', 'Something went wrong')->persistent('Close');
+        return $this->getSingleStudent($studentIdCode, 'staff.chargeStudent');
+    } 
+
+    public function deleteTransaction(Request $request){
+        $validator = Validator::make($request->all(), [
+            'transaction_id' => 'required',
+        ]);
+
+        $student = Student::with('applicant')->where('id', $request->student_id)->first();
+        $studentIdCode = $student->matric_number;
+
+        if($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return $this->getSingleStudent($studentIdCode, 'staff.chargeStudent');
+        }
+
+        if(!$transaction = Transaction::find($request->transaction_id)){
+            return $this->getSingleStudent($studentIdCode, 'staff.chargeStudent');
+        }
+
+        if($transaction->delete()){
+            alert()->success('Good job!!', 'Transaction deleted successfully')->persistent('Close');
+            return $this->getSingleStudent($studentIdCode, 'staff.chargeStudent');
+        }
+
+        alert()->info('Oops!', 'Something went wrong')->persistent('Close');
+        return $this->getSingleStudent($studentIdCode, 'staff.chargeStudent');
     }
 }
