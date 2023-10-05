@@ -103,7 +103,7 @@ class ProcessResultCSV extends Command
                 $programmeId = $row['ProgrammeId'];
                 $examScore = $row['Exam'];
                 $totalScore = $row['Total'];
-                $courseStatus = $row['CourseStatus'];
+                $courseStatus = ucwords($row['CourseStatus']);
                 // $grade = $row['Grade'];
                 // $gradePoint = $row['Point'];
                 $levelId = $row['LevelCode'];

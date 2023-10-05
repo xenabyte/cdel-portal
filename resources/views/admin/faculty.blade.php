@@ -274,7 +274,7 @@
                             @foreach($faculty->students->where('level_id', 1) as $student)
                             <tr>
                                 <td class="d-flex">
-                                    <img src="{{ env('APP_URL').'/'.$student->image }}" alt="" class="avatar-xs rounded-3 shadow me-2">
+                                    <img src="{{ asset($student->image) }}" alt="" class="avatar-xs rounded-3 shadow me-2">
                                     <div>
                                         <h5 class="fs-13 mb-0">{{ $student->applicant->lastname.' '.$student->applicant->othernames }}</h5>
                                         <p class="fs-12 mb-0 text-muted"><strong>Dept:</strong> {{ $student->programme->department->name }}</p>

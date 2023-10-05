@@ -148,6 +148,7 @@ class ResultController extends Controller
         $courseRegs = CourseRegistration::with('course')
         ->where('student_id', $studentId)
         ->where('academic_session', $academicSession)
+        ->where('level_id', $levelId)
         ->where('result_approval_id',  ResultApprovalStatus::getApprovalStatusId(ResultApprovalStatus::SENATE_APPROVED))
         ->whereHas('course', function ($query) use ($semester) {
             $query->where('semester', $semester);

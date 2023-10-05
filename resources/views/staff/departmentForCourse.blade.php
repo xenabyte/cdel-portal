@@ -99,7 +99,7 @@
             </div><!-- end cardheader -->
             @if(!empty($department->hod))
             <div class="card-body pt-0">
-                <img class="card-img-top img-fluid" src="{{ env('APP_URL').'/'.$department->hod->image }}" alt="Card image cap">
+                <img class="card-img-top img-fluid" src="{{ $department->hod->image }}" alt="Card image cap">
                 <div class="card-body">
                     <p class="card-text text-center"><strong>{{ $department->hod->lastname.' '. $department->hod->othernames }}</strong> <br> HOD, {{ $department->name }}</p>
                 </div>
