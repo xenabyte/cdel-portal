@@ -469,6 +469,7 @@ class PaymentController extends Controller
         $session = $request->academic_session;
         $programmeId = $request->programme_id;
         $paymentId = $request->payment_id;
+        $type = $request->type;
 
         $payment = Payment::with(['structures'])->find($paymentId);
 
