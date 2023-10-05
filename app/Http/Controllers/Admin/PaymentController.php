@@ -227,6 +227,16 @@ class PaymentController extends Controller
                 $payment->passTuition = $paymentCheck->passTuitionPayment;
                 $payment->fullTuitionPayment = $paymentCheck->fullTuitionPayment;
                 $payment->passEightyTuition = $paymentCheck->passEightyTuition;
+
+            }elseif($type == Payment::PAYMENT_TYPE_GENERAL){
+                $payment = Payment::with(['structures'])->where([
+                    'type' => $type,
+                    'academic_session' => $session,
+                ])->get();
+        
+                if(!$payment){
+                    return response()->json(['status' =>  'Payment type: '.$type.' doesnt exist']);
+                }
             }else{
                 $payment = Payment::with(['structures'])->where([
                     'type' => $type,
@@ -606,15 +616,13 @@ class PaymentController extends Controller
             'status' => $request->paymentStatus == 1 ? 1 : null
         ]);
 
-        if(!empty($studentId) && ($payment->type == Payment::PAYMENT_TYPE_SCHOOL || $payment->type == Payment::PAYMENT_TYPE_SCHOOL_DE)){
-            $student = Student::find($studentId);
+        if(!empty($studentId)){
+            $student = Student::with('applicant')->where('id', $studentId)->first();
 
-            if(!empty($studentId)){
+            if(!empty($student)){
                 $pdf = new Pdf();
                 $invoice = $pdf->generateTransactionInvoice($session, $studentId, $payment->id, 'single');
-    
-                $student = Student::with('applicant')->where('id', $studentId)->first();
-                        
+                            
                 $data = new \stdClass();
                 $data->lastname = $student->applicant->lastname;
                 $data->othernames = $student->applicant->othernames;
@@ -826,7 +834,7 @@ class PaymentController extends Controller
             'session' => $session,
             'student_id' => $studentId,
             'payment_id' => $paymentId,
-        ])->get();
+        ])->orderBy('id', 'DESC')->get();
 
         $student->session = $session;
         $student->paymentType = $paymentType;

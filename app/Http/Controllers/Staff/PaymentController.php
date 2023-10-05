@@ -229,6 +229,15 @@ class PaymentController extends Controller
                 $payment->passTuition = $paymentCheck->passTuitionPayment;
                 $payment->fullTuitionPayment = $paymentCheck->fullTuitionPayment;
                 $payment->passEightyTuition = $paymentCheck->passEightyTuition;
+            }elseif($type == Payment::PAYMENT_TYPE_GENERAL){
+                $payment = Payment::with(['structures'])->where([
+                    'type' => $type,
+                    'academic_session' => $session,
+                ])->get();
+        
+                if(!$payment){
+                    return response()->json(['status' =>  'Payment type: '.$type.' doesnt exist']);
+                }
             }else{
                 $payment = Payment::with(['structures'])->where([
                     'type' => $type,
@@ -593,30 +602,29 @@ class PaymentController extends Controller
             'status' => $request->paymentStatus == 1 ? 1 : null
         ]);
 
-        if(!empty($studentId) && ($payment->type == Payment::PAYMENT_TYPE_SCHOOL || $payment->type == Payment::PAYMENT_TYPE_SCHOOL_DE)){
-            $student = Student::find($studentId);
+        if(!empty($studentId)){
+            $student = Student::with('applicant')->where('id', $studentId)->first();
+
+            if(!empty($student)){
+                $pdf = new Pdf();
+                $invoice = $pdf->generateTransactionInvoice($session, $studentId, $payment->id, 'single');
+                            
+                $data = new \stdClass();
+                $data->lastname = $student->applicant->lastname;
+                $data->othernames = $student->applicant->othernames;
+                $data->amount = $amount;
+                $data->invoice = $invoice;
+                
+                Mail::to($student->email)->send(new TransactionMail($data));
+            }
 
             if(!empty($student) && ($payment->type == Payment::PAYMENT_TYPE_SCHOOL || $payment->type == Payment::PAYMENT_TYPE_SCHOOL_DE) && $request->paymentStatus == 1){
                 $this->generateMatricAndEmail($student);
             }
             alert()->success('Good job', 'Student Charged')->persistent('Close');
-            return $this->getSingleStudent($student->matric_number, 'staff.chargeStudent');
+            return $this->getSingleStudent($student->matric_number, 'admin.chargeStudent');
         }
 
-        if(!empty($studentId)){
-            $pdf = new Pdf();
-            $invoice = $pdf->generateTransactionInvoice($session, $studentId, $payment->id, 'single');
-
-            $student = Student::with('applicant')->where('id', $studentId)->first();
-                    
-            $data = new \stdClass();
-            $data->lastname = $student->applicant->lastname;
-            $data->othernames = $student->applicant->othernames;
-            $data->amount = $amount;
-            $data->invoice = $invoice;
-            
-            Mail::to($student->email)->send(new TransactionMail($data));
-        }
 
         if(!empty($request->user_id)){
             alert()->success('Good Job', 'Applicant Charged')->persistent('Close');
@@ -812,14 +820,12 @@ class PaymentController extends Controller
             'session' => $session,
             'student_id' => $studentId,
             'payment_id' => $paymentId,
-        ])->get();
+        ])->orderBy('id', 'DESC')->get();
 
         $student->session = $session;
         $student->paymentType = $paymentType;
         $student->amountBilled = $amountBilled;
         $student->paymentId = $paymentId;
-
-
         
         return view('staff.getStudentPayment', [
             'student' => $student,

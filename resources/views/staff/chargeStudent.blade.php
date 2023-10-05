@@ -150,6 +150,7 @@
                             @php
                                 $payment = new \App\Models\Payment;
                                 $paymentAmount = $payment->getTotalStructureAmount($filteredTransaction['id']);
+                                $balance = $paymentAmount>0? $paymentAmount - $filteredTransaction['totalPaid'] : 0;
                             @endphp
                                 <tr>
                                     <td>{{ $id++ }}</td>
@@ -157,7 +158,7 @@
                                     <td>{{ $filteredTransaction['session'] }}</td>
                                     <td class="bg bg-soft-primary">₦{{ number_format($paymentAmount/100, 2) }}</td>
                                     <td class="bg bg-soft-success">₦{{ number_format($filteredTransaction['totalPaid']/100, 2) }}</td>
-                                    <td class="bg bg-soft-danger">₦{{ number_format(($paymentAmount-$filteredTransaction['totalPaid'])/100, 2) }}</td>
+                                    <td class="bg bg-soft-danger">₦{{ number_format($balance/100, 2) }}</td>
                                     <td>
                                         <form action="{{ url('/staff/generateInvoice') }}" method="post" enctype="multipart/form-data">
                                             @csrf
@@ -311,7 +312,7 @@
             </div>
 
             <div class="modal-body border-top border-top-dashed">
-                <form action="{{ url('/admin/walletTopUp') }}" method="post" enctype="multipart/form-data">
+                <form action="{{ url('/staff/walletTopUp') }}" method="post" enctype="multipart/form-data">
                     @csrf
                     <input type="hidden" name='student_id' value="{{ $student->id }}">
                     <input type="hidden" name="payment_id" value="0">

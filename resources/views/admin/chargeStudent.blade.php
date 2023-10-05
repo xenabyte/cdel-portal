@@ -150,7 +150,7 @@
                             @php
                                 $payment = new \App\Models\Payment;
                                 $paymentAmount = $payment->getTotalStructureAmount($filteredTransaction['id']);
-                                $balance = $filteredTransaction['paymentType'] == 'Wallet Deposit'? 0 : $paymentAmount-$filteredTransaction['totalPaid'];
+                                $balance = $paymentAmount>0? $paymentAmount - $filteredTransaction['totalPaid'] : 0;
                             @endphp
                                 <tr>
                                     <td>{{ $id++ }}</td>

@@ -36,7 +36,7 @@
 @if(!empty($student))
 @php
 $payment = new \App\Models\Payment;
-$paymentAmount = $payment->getTotalStructureAmount(0);
+$paymentAmount = $payment->getTotalStructureAmount($student->payment_id);
 $totalPaid = $transactions->where('status', 1)->sum('amount_payed');
 $balance = $paymentAmount>0? $paymentAmount - $totalPaid : 0;
 @endphp
@@ -193,6 +193,7 @@ $balance = $paymentAmount>0? $paymentAmount - $totalPaid : 0;
                         <thead>
                             <tr>
                                 <th scope="col">Id</th>
+                                <th scope="col">Payment For</th>
                                 <th scope="col">Reference</th>
                                 <th scope="col">Amount(₦)</th>
                                 <th scope="col">Payment Gateway</th>
@@ -205,6 +206,7 @@ $balance = $paymentAmount>0? $paymentAmount - $totalPaid : 0;
                             @foreach($transactions as $transaction)
                             <tr>
                                 <th scope="row">{{ $loop->iteration }}</th>
+                                <td>{{ !empty($transaction->paymentType)? $transaction->paymentType->title : 'Wallet Deposit' }} </td>
                                 <td>{{ $transaction->reference }}</td>
                                 <td>₦{{ number_format($transaction->amount_payed/100, 2) }} </td>
                                 <td>{{ $transaction->payment_method }}</td>
