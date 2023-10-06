@@ -486,7 +486,7 @@
                     <input type="hidden" id="studentId" name="user_id" value="{{ $applicant->id }}">
                     <input type="hidden" id="programmeId" name="programme_id" value="{{ $applicant->programme_id }}">
                     <input type="hidden" id="academicSession" name="academic_session" value="{{ $applicant->academic_session }}">
-                    <input type="hidden" id="level" name="level" value="0">
+                    <input type="hidden" id="level" name="level" value="{{!empty($applicant->student)?$applicant->student->level_id: 0}}">
                     <input type="hidden" name="paymentGateway" value="Manual/BankTransfer">
                     <input type="hidden" id="userType" name="userType" value="applicant">
 
