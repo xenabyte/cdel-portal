@@ -622,7 +622,7 @@ class PaymentController extends Controller
                 $this->generateMatricAndEmail($student);
             }
             alert()->success('Good job', 'Student Charged')->persistent('Close');
-            return $this->getSingleStudent($student->matric_number, 'admin.chargeStudent');
+            return $this->getSingleStudent($student->matric_number, 'staff.chargeStudent');
         }
 
 
