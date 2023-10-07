@@ -257,7 +257,8 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'student'
   Route::get('/profile', [App\Http\Controllers\Student\StudentController::class, 'profile'])->name('profile')->middleware(['auth:student']);
   Route::post('/saveBioData', [App\Http\Controllers\Student\StudentController::class, 'saveBioData'])->name('saveBioData')->middleware(['auth:student']);
   Route::post('/updatePassword', [App\Http\Controllers\Student\StudentController::class, 'updatePassword'])->name('updatePassword')->middleware(['auth:student']);
-  
+  Route::post('/uploadImage', [App\Http\Controllers\Student\StudentController::class, 'uploadImage'])->name('uploadImage')->middleware(['auth:student']);
+
   
   Route::get('/transactions', [App\Http\Controllers\Student\StudentController::class, 'transactions'])->name('transactions')->middleware(['auth:student']);
   Route::get('/walletTransactions', [App\Http\Controllers\Student\StudentController::class, 'walletTransactions'])->name('walletTransactions')->middleware(['auth:student']);

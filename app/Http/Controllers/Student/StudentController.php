@@ -73,6 +73,16 @@ class StudentController extends Controller
             ]);
         }
 
+        if(empty($student->image)){
+            return view('student.updateImage', [
+                'payment' => $paymentCheck->schoolPayment,
+                'passTuition' => $paymentCheck->passTuitionPayment,
+                'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
+                'passEightyTuition' => $paymentCheck->passEightyTuition,
+                'studentPendingTransactions' => $paymentCheck->studentPendingTransactions
+            ]);
+        }
+
         return view('student.home', [
             'payment' => $paymentCheck->schoolPayment,
             'passTuition' => $paymentCheck->passTuitionPayment,
@@ -94,6 +104,16 @@ class StudentController extends Controller
         $paymentCheck = $this->checkSchoolFees($student, $academicSession, $levelId);
         if(!$paymentCheck->passTuitionPayment){
             return view('student.schoolFee', [
+                'payment' => $paymentCheck->schoolPayment,
+                'passTuition' => $paymentCheck->passTuitionPayment,
+                'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
+                'passEightyTuition' => $paymentCheck->passEightyTuition,
+                'studentPendingTransactions' => $paymentCheck->studentPendingTransactions
+            ]);
+        }
+
+        if(empty($student->image)){
+            return view('student.updateImage', [
                 'payment' => $paymentCheck->schoolPayment,
                 'passTuition' => $paymentCheck->passTuitionPayment,
                 'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
@@ -345,6 +365,16 @@ class StudentController extends Controller
                 'studentPendingTransactions' => $paymentCheck->studentPendingTransactions
             ]);
         }
+
+        if(empty($student->image)){
+            return view('student.updateImage', [
+                'payment' => $paymentCheck->schoolPayment,
+                'passTuition' => $paymentCheck->passTuitionPayment,
+                'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
+                'passEightyTuition' => $paymentCheck->passEightyTuition,
+                'studentPendingTransactions' => $paymentCheck->studentPendingTransactions
+            ]);
+        }
         
         return view('student.transactions', [
             'transactions' => $transactions,
@@ -383,7 +413,16 @@ class StudentController extends Controller
                 'studentPendingTransactions' => $paymentCheck->studentPendingTransactions
             ]);
         }
-        
+
+        if(empty($student->image)){
+            return view('student.updateImage', [
+                'payment' => $paymentCheck->schoolPayment,
+                'passTuition' => $paymentCheck->passTuitionPayment,
+                'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
+                'passEightyTuition' => $paymentCheck->passEightyTuition,
+                'studentPendingTransactions' => $paymentCheck->studentPendingTransactions
+            ]);
+        }
         return view('student.walletTransactions', [
             'transactions' => $transactions,
             'payment' => $paymentCheck->schoolPayment,
@@ -406,6 +445,16 @@ class StudentController extends Controller
         $paymentCheck = $this->checkSchoolFees($student, $academicSession, $levelId);
         if(!$paymentCheck->passTuitionPayment){
             return view('student.schoolFee', [
+                'payment' => $paymentCheck->schoolPayment,
+                'passTuition' => $paymentCheck->passTuitionPayment,
+                'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
+                'passEightyTuition' => $paymentCheck->passEightyTuition,
+                'studentPendingTransactions' => $paymentCheck->studentPendingTransactions
+            ]);
+        }
+
+        if(empty($student->image)){
+            return view('student.updateImage', [
                 'payment' => $paymentCheck->schoolPayment,
                 'passTuition' => $paymentCheck->passTuitionPayment,
                 'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
@@ -438,6 +487,16 @@ class StudentController extends Controller
         $paymentCheck = $this->checkSchoolFees($student, $academicSession, $levelId);
         if(!$paymentCheck->passTuitionPayment){
             return view('student.schoolFee', [
+                'payment' => $paymentCheck->schoolPayment,
+                'passTuition' => $paymentCheck->passTuitionPayment,
+                'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
+                'passEightyTuition' => $paymentCheck->passEightyTuition,
+                'studentPendingTransactions' => $paymentCheck->studentPendingTransactions
+            ]);
+        }
+
+        if(empty($student->image)){
+            return view('student.updateImage', [
                 'payment' => $paymentCheck->schoolPayment,
                 'passTuition' => $paymentCheck->passTuitionPayment,
                 'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
@@ -552,5 +611,39 @@ class StudentController extends Controller
 
         return redirect(asset($invoice));
 
+    }
+
+    public function uploadImage (Request $request) {
+
+        $validator = Validator::make($request->all(), [
+            'image' => 'required',
+        ]);
+
+
+        if($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+
+        $student = Auth::guard('student')->user();
+
+        if($request->password == $student->passcode){
+            $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $student->slug)));
+
+            $imageUrl = 'uploads/student/'.$slug.'.'.$request->file('image')->getClientOriginalExtension();
+            $image = $request->file('image')->move('uploads/student', $imageUrl);
+            $student->image = $imageUrl;
+        }else{
+            alert()->error('Oops', 'Wrong passcode, Try again with the right one')->persistent('Close');
+            return redirect()->back();
+        }
+
+        if($student->update()) {
+            alert()->success('Success', 'Save Changes')->persistent('Close');
+            return redirect()->back();
+        }
+
+        alert()->error('Oops!', 'An Error Occurred')->persistent('Close');
+        return redirect()->back();
     }
 }
