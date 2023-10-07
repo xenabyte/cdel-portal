@@ -28,6 +28,7 @@ use App\Models\Department;
 use App\Models\LevelAdviser;
 use App\Models\CourseManagement;
 use App\Models\CoursePerProgrammePerAcademicSession;
+use App\Models\ProgrammeCategory as Category;
 
 
 use App\Mail\NotificationMail;
@@ -1089,11 +1090,13 @@ class StaffController extends Controller
 
         $department = Department::with('programmes', 'programmes.students', 'programmes.academicAdvisers', 'programmes.academicAdvisers.staff', 'programmes.academicAdvisers.level')->where('slug', $department->slug)->first();
         $levels = AcademicLevel::all();
+        $categories = Category::all();
 
         return view('staff.department', [
             'department' => $department,
             'levels' => $levels,
             'students' => $students,
+            'categories' => $categories
         ]);
     }
 

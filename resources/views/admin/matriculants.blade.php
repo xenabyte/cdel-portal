@@ -60,7 +60,7 @@
                                 <td>{{ $matriculant->academic_session }} </td>
                                 <td>{{ $matriculant->created_at }} </td>
                                 <td>
-                                    <a href="{{ url('staff/studentProfile/'.$matriculant->student->slug) }}" class="btn btn-primary m-1"><i class= "ri-user-6-fill"></i> View matriculant</a>
+                                    <a href="{{ url('admin/studentProfile/'.$matriculant->student->slug) }}" class="btn btn-primary m-1"><i class= "ri-user-6-fill"></i> View matriculant</a>
                                 </td>
                             </tr>
                             @endif
