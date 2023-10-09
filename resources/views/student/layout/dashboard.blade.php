@@ -231,84 +231,86 @@
                             </a>
                         </li>
                         
-                        @if($passTuition)
-                        <li class="nav-item">
-                            <a class="nav-link menu-link" href="{{ url('student/mentor') }}">
-                                <i class="mdi mdi-account-child-circle"></i> <span data-key="t-transaction">Mentor</span>
-                            </a>
-                        </li>
+                        @if(!empty($student->image))
+                            @if($passTuition)
+                            <li class="nav-item">
+                                <a class="nav-link menu-link" href="{{ url('student/mentor') }}">
+                                    <i class="mdi mdi-account-child-circle"></i> <span data-key="t-transaction">Mentor</span>
+                                </a>
+                            </li>
 
-                        <li class="nav-item">
-                            <a class="nav-link menu-link" href="#transaction" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="transaction">
-                                <i class="mdi mdi-bank-transfer"></i> <span data-key="t-transaction">Transactions</span>
-                            </a>
-                            <div class="collapse menu-dropdown" id="transaction">
-                                <ul class="nav nav-sm flex-column">
-                                    <li class="nav-item">
-                                        <a href="{{ url('/student/transactions') }}" class="nav-link">School Transactions</a>
-                                    </li>
-                                    @if(env('WALLET_STATUS'))
-                                    <li class="nav-item">
-                                        <a href="{{ url('/student/walletTransactions') }}" class="nav-link">Wallet Transactions</a>
-                                    </li>
-                                    @endif
-                                </ul>
-                            </div>
-                        </li> 
+                            <li class="nav-item">
+                                <a class="nav-link menu-link" href="#transaction" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="transaction">
+                                    <i class="mdi mdi-bank-transfer"></i> <span data-key="t-transaction">Transactions</span>
+                                </a>
+                                <div class="collapse menu-dropdown" id="transaction">
+                                    <ul class="nav nav-sm flex-column">
+                                        <li class="nav-item">
+                                            <a href="{{ url('/student/transactions') }}" class="nav-link">School Transactions</a>
+                                        </li>
+                                        @if(env('WALLET_STATUS'))
+                                        <li class="nav-item">
+                                            <a href="{{ url('/student/walletTransactions') }}" class="nav-link">Wallet Transactions</a>
+                                        </li>
+                                        @endif
+                                    </ul>
+                                </div>
+                            </li> 
 
-                        <li class="nav-item">
-                            <a class="nav-link menu-link" href="#courseManagement" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="courseManagement">
-                                <i class="mdi mdi-bookshelf"></i> <span data-key="t-courseManagement">Course Management</span>
-                            </a>
-                            <div class="collapse menu-dropdown" id="courseManagement">
-                                <ul class="nav nav-sm flex-column">
-                                    <li class="nav-item">
-                                        <a href="{{ url('/student/courseRegistration') }}" class="nav-link">Course Registration</a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a href="{{ url('/student/allCourseRegs') }}" class="nav-link">All Course Registrations</a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a href="{{ url('/student/editCourseReg') }}" class="nav-link">Add/Remove Course(s)</a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </li> 
+                            <li class="nav-item">
+                                <a class="nav-link menu-link" href="#courseManagement" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="courseManagement">
+                                    <i class="mdi mdi-bookshelf"></i> <span data-key="t-courseManagement">Course Management</span>
+                                </a>
+                                <div class="collapse menu-dropdown" id="courseManagement">
+                                    <ul class="nav nav-sm flex-column">
+                                        <li class="nav-item">
+                                            <a href="{{ url('/student/courseRegistration') }}" class="nav-link">Course Registration</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a href="{{ url('/student/allCourseRegs') }}" class="nav-link">All Course Registrations</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a href="{{ url('/student/editCourseReg') }}" class="nav-link">Add/Remove Course(s)</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li> 
 
-                        <li class="nav-item">
-                            <a class="nav-link menu-link" href="#examManagement" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="examManagement">
-                                <i class="mdi mdi-facebook-gaming"></i> <span data-key="t-examManagement">Exam Management</span>
-                            </a>
-                            <div class="collapse menu-dropdown" id="examManagement">
-                                <ul class="nav nav-sm flex-column">
-                                    <li class="nav-item">
-                                        <a href="{{ url('/student/examDocket') }}" class="nav-link">Exam Docket</a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a href="{{ url('/student/allExamDockets') }}" class="nav-link">All Exam Docket</a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </li> 
+                            <li class="nav-item">
+                                <a class="nav-link menu-link" href="#examManagement" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="examManagement">
+                                    <i class="mdi mdi-facebook-gaming"></i> <span data-key="t-examManagement">Exam Management</span>
+                                </a>
+                                <div class="collapse menu-dropdown" id="examManagement">
+                                    <ul class="nav nav-sm flex-column">
+                                        <li class="nav-item">
+                                            <a href="{{ url('/student/examDocket') }}" class="nav-link">Exam Docket</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a href="{{ url('/student/allExamDockets') }}" class="nav-link">All Exam Docket</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li> 
 
-                        <li class="nav-item">
-                            <a class="nav-link menu-link" href="#resultManagement" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="resultManagement">
-                                <i class="mdi mdi-cards"></i> <span data-key="t-resultManagement">Result Management</span>
-                            </a>
-                            <div class="collapse menu-dropdown" id="resultManagement">
-                                <ul class="nav nav-sm flex-column">
-                                    <li class="nav-item">
-                                        <a href="{{ url('/student/examResult') }}" class="nav-link">Exam Result</a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </li>
+                            <li class="nav-item">
+                                <a class="nav-link menu-link" href="#resultManagement" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="resultManagement">
+                                    <i class="mdi mdi-cards"></i> <span data-key="t-resultManagement">Result Management</span>
+                                </a>
+                                <div class="collapse menu-dropdown" id="resultManagement">
+                                    <ul class="nav nav-sm flex-column">
+                                        <li class="nav-item">
+                                            <a href="{{ url('/student/examResult') }}" class="nav-link">Exam Result</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
 
-                        <li class="nav-item">
-                            <a class="nav-link menu-link" href="{{ url('student/exits') }}">
-                                <i class="mdi mdi-arrow-top-right-bold-box"></i> <span data-key="t-transaction">Exit(s)</span>
-                            </a>
-                        </li>
+                            <li class="nav-item">
+                                <a class="nav-link menu-link" href="{{ url('student/exits') }}">
+                                    <i class="mdi mdi-arrow-top-right-bold-box"></i> <span data-key="t-transaction">Exit(s)</span>
+                                </a>
+                            </li>
+                            @endif
                         @endif
                        
                         <li class="nav-item">
