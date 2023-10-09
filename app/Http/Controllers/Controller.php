@@ -271,7 +271,7 @@ class Controller extends BaseController
         $programmes = Programme::get();
         $sessions = Session::orderBy('id', 'DESC')->get();
 
-        $transactions = Transaction::with('paymentType')->where('student_id', $studentId)->where('status', 1)->where('payment_id', '!=', 0)->orderBy('id', 'DESC')->get();
+        $transactions = Transaction::with('paymentType')->where('student_id', $studentId)->orderBy('id', 'DESC')->get();
 
         $filteredTransactions = [];
         foreach ($transactions as $transaction) {

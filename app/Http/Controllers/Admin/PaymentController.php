@@ -637,16 +637,19 @@ class PaymentController extends Controller
             }
 
             if(!empty($request->student_id)){
-                if($existingTx){
-                    alert()->info('Good Job', 'Payment already processed.')->persistent('Close');
-                    return $this->getSingleStudent($student->matric_number, 'admin.chargeStudent');
-                }
+                alert()->info('Good Job', 'Student Charged.')->persistent('Close');
+                return $this->getSingleStudent($student->matric_number, 'admin.chargeStudent');
             }
 
             if(!empty($request->user_id)){
                 alert()->success('Good Job', 'Applicant Charged')->persistent('Close');
                 return $this->getSingleApplicant($applicant->application_number, 'admin.chargeStudent');
             }
+        }
+
+        if(!empty($request->student_id)){
+            alert()->info('Good Job', 'Student Charged.')->persistent('Close');
+            return $this->getSingleStudent($student->matric_number, 'admin.chargeStudent');
         }
 
         if(!empty($request->user_id)){
@@ -827,6 +830,12 @@ class PaymentController extends Controller
         $levels = AcademicLevel::orderBy('id', 'DESC')->get();
         $sessions = Session::orderBy('id', 'DESC')->get();
 
+         $transactions = Transaction::where([
+            'session' => $session,
+            'student_id' => $studentId,
+            'payment_id' => $paymentId,
+        ])->orderBy('id', 'DESC')->get();
+
         if($paymentId > 0){
             $payment = Payment::with('structures')->where('id', $paymentId)->first();
             $amountBilled = $payment->structures->sum('amount');
@@ -840,11 +849,6 @@ class PaymentController extends Controller
 
         $student = Student::with('applicant')->where('id', $studentId)->first();
 
-        $transactions = Transaction::where([
-            'session' => $session,
-            'student_id' => $studentId,
-            'payment_id' => $paymentId,
-        ])->orderBy('id', 'DESC')->get();
 
         $student->session = $session;
         $student->paymentType = $paymentType;

@@ -51,7 +51,7 @@
                             <td>{{ !empty($transaction->student_id)? 'Student' : 'Applicant' }}</td>
                             <td>{{ $transaction->reference }}</td>
                             <td>₦{{ number_format($transaction->amount_payed/100, 2) }} </td>
-                            <td>{{ !empty($transaction->paymentType)? $transaction->paymentType->type : 'Wallet Deposit' }} </td>
+                            <td>{{ !empty($transaction->paymentType) ? ($transaction->paymentType->type == 'General Fee' ? $transaction->paymentType->title : $transaction->paymentType->type) : 'Wallet Deposit' }} </td>
                             <td>{{ $transaction->session }}</td>
                             <td>{{ $transaction->payment_method }}</td>
                             <td><span class="badge badge-soft-{{ $transaction->status == 1 ? 'success' : 'warning' }}">{{ $transaction->status == 1 ? 'Paid' : 'Pending' }}</span></td>
