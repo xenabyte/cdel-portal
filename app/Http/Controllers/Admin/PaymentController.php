@@ -635,8 +635,18 @@ class PaymentController extends Controller
             if(!empty($student) && ($payment->type == Payment::PAYMENT_TYPE_SCHOOL || $payment->type == Payment::PAYMENT_TYPE_SCHOOL_DE) && $request->paymentStatus == 1){
                 $this->generateMatricAndEmail($student);
             }
-            alert()->success('Good job', 'Student Charged')->persistent('Close');
-            return $this->getSingleStudent($student->matric_number, 'admin.chargeStudent');
+
+            if(!empty($request->student_id)){
+                if($existingTx){
+                    alert()->info('Good Job', 'Payment already processed.')->persistent('Close');
+                    return $this->getSingleStudent($student->matric_number, 'admin.chargeStudent');
+                }
+            }
+
+            if(!empty($request->user_id)){
+                alert()->success('Good Job', 'Applicant Charged')->persistent('Close');
+                return $this->getSingleApplicant($applicant->application_number, 'admin.chargeStudent');
+            }
         }
 
         if(!empty($request->user_id)){
