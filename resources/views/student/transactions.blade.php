@@ -31,7 +31,7 @@
                     @if(!$fullTuitionPayment)
                     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addTransaction">Pay Tuition Fee</button>
                     @endif
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#payOthers">Pay Other Fees</button>
+                    <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#payOthers">Pay Other Fees</button>
                 </div>
             </div><!-- end card header -->
 
@@ -232,7 +232,7 @@
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
 
-{{-- <div id="payOthers" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
+<div id="payOthers" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
     <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content border-0 overflow-hidden">
             <div class="modal-header p-3">
@@ -247,40 +247,14 @@
                     <input type="hidden" id="programmeId" name="programme_id" value="{{ $student->programme_id }}">
                     <input type="hidden" name="paymentGateway" value="Manual/BankTransfer">
                     <input type="hidden" id="userType" name="userType" value="student">
-
-
-                    <div class="mb-3">
-                        <label for="academic_session" class="form-label">Select Academic Session</label>
-                        <select class="form-select" id="academicSession" aria-label="academic_session" name="academic_session" required>
-                            <option selected value= "">Select Select Academic Session </option>
-                            @foreach($sessions as $session)
-                            <option value="{{ $session->year }}">{{ $session->year }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="level" class="form-label">Select Level </label>
-                        <select class="form-select" id="level" aria-label="level" name="level">
-                            <option selected value= "">Select Level </option>
-                            @foreach($levels as $level)
-                                @if($level->id <= $student->level_id)
-                                <option value="{{ $level->id }}">{{ $level->level }} Level</option>
-                                @endif
-                            @endforeach
-                        </select>
-                    </div>
+                    <input type="hidden" id="academicSession" name="academic_session" value="{{ empty($session)?$pageGlobalData->sessionSetting->academic_session : $session }}">
+                    <input type="hidden" id="level" name="level" value="{{ $student->level_id }}">
 
 
                     <div class="mb-3">
                         <label for="type" class="form-label">Select Payment Type </label>
                         <select class="form-select" aria-label="type" name="type" required onchange="handlePaymentTypeChange(event)">
                             <option selected value= "">Select Type </option>
-                            <option value="General Application Fee">General Application Fee</option>
-                            <option value="Inter Transfer Application Fee">Inter Transfer Application Fee</option>
-                            <option value="Acceptance Fee">Acceptance Fee</option>
-                            <option value="School Fee">School Fee</option>
-                            <option value="DE School Fee">Direct Entry School Fee</option>
                             <option value="General Fee">General Fee</option>
                         </select>
                     </div>
@@ -295,54 +269,104 @@
                     </div>
 
 
-                    <div class="mb-3" id='payment-options-acceptance' style="display: none">
-                        <label for="amount" class="form-label">Payment Amount<span class="text-danger">*</span></label>
-                        <select class="form-select" aria-label="amount" name="amountAcceptance">
-                            <option value= "" selected>Select Amount</option>
-                        </select>
-                    </div>
-
-                    @if(env('PAYMENT_TYPE') == 'Percentage')
-                    <div class="mb-3" id='payment-options-tuition' style="display: none">
-                        <label for="amount" class="form-label">Payment Amount<span class="text-danger">*</span></label>
-                        <select class="form-select" aria-label="amount" name="amountTuition">
-                            <option value= "" selected>Select Amount</option>
-                        </select>
-                    </div>
-                    @else
-                    <div class="mb-3" id='payment-options-tuition' style="display: none">
-                        <label for="amount" class="form-label">Payment Amount<span class="text-danger">*</span></label>
-                        <input type="number" class="form-control" name="amountTuition">
-                    </div>
-                    @endif
-
                     <div class="mb-3" id='payment-options-general' style="display: none">
                         <label for="amount" class="form-label">Payment Amount<span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" name="amountGeneral" id="amountGeneral">
+                        <input type="text" class="form-control" name="
+                        " id="amountGeneral">
                     </div>
 
                     <div class="mb-3">
-                        <label for="paymentStatus" class="form-label">Select Payment Status<span class="text-danger">*</span></label>
-                        <select class="form-select" aria-label="paymentStatus" name="paymentStatus" required>
-                            <option value= "" selected>Select Payment Status</option>
-                            <option value="1">Paid</option>
-                            <option value="0">Not Paid</option>
+                        <label for="paymentGateway" class="form-label">Select Payment Gateway<span class="text-danger">*</span></label>
+                        <select class="form-select" aria-label="paymentGateway" name="paymentGateway" required onchange="handlePaymentMainMethodChange(event)">
+                            <option value= "" selected>Select Payment Gateway</option>
+                            @if(env('FLUTTERWAVE_STATUS'))<option value="Rave">Flutterwave</option>@endif
+                            @if(env('PAYSTACK_STATUS'))<option value="Paystack">Paystack</option>@endif
+                            @if(env('BANK_TRANSFER_STATUS'))<option value="BankTransfer">Transfer</option>@endif
+                            @if(env('WALLET_STATUS'))<option value="Wallet">Wallet</option>@endif
                         </select>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="narration" class="form-label">Payment Narration</label>
-                        <input type="text" class="form-control" name="narration" maxlength="200" id="narration">
                     </div>
 
                     <div class="text-end border-top border-top-dashed p-3">
                         <br>
-                        <button type="submit" id="submit-button" class="btn btn-primary">Pay/Charge</button>
+                        <button type="submit" id="submit-button" class="btn btn-primary">Pay</button>
                     </div>
                 </form>
             </div>
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
-</div><!-- /.modal --> --}}
+</div><!-- /.modal -->
 
+<script>
+    function handlePaymentTypeChange(event) {
+        const selectedPaymentType = event.target.value;
+        const academicSession = document.getElementById('academicSession').value;
+        const programmeId = document.getElementById('programmeId').value;
+        const paymentId = document.getElementById('paymentId');
+        const studentId = document.getElementById('studentId').value;
+        const level = document.getElementById('level').value;
+        const userType = document.getElementById('userType').value;
+
+        const paymentSelect = document.querySelector('select[name="payment_id"]');
+        const paymentHidden = document.querySelector('input[name="payment_id"]');
+
+
+        if(selectedPaymentType != ''){
+            axios.post("{{ url('/student/getPayment') }}", {
+                type: selectedPaymentType,
+                academic_session: academicSession,
+                programme_id: programmeId,
+                student_id: studentId,
+                level: level,
+                userType: userType
+            })
+            .then(response => {
+                const data = response.data.data;
+                if (response.data.status != 'success') {
+                    // Show a SweetAlert for record not found
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops!!',
+                        text: response.data.status,
+                    });
+                }else{
+                    if (selectedPaymentType === 'General Fee') {
+                        document.getElementById('payment-options-general').style.display = 'block';
+                        document.getElementById('payment-for').style.display = 'block';
+
+                        paymentSelect.disabled = false;
+                        paymentHidden.disabled = true; 
+
+                        const selectElement = document.querySelector('select[name="payment_id"]');
+
+                        data.forEach(item => {
+                            const option = document.createElement('option');
+                            option.value = item.id; 
+                            option.textContent = item.title;
+                            selectElement.appendChild(option);
+                        });
+
+                    } else {
+                        paymentId.value = data.id;
+
+                        document.getElementById('payment-options-general').style.display = 'none';
+                        document.getElementById('payment-for').style.display = 'none';
+
+                        paymentSelect.disabled = true;
+                        paymentHidden.disabled = false;
+
+                        
+                        const selectElement = document.querySelector('[name="amountAcceptance"]');
+                        selectElement.innerHTML = '<option value="">Select Amount</option>';
+
+                        const option = document.createElement('option');
+                        option.value = data.structures.reduce((total, structure) => total + structure.amount, 0);
+                        option.text = '₦' + (option.value / 100).toFixed(2) + ' - ' + data.title;
+                        selectElement.appendChild(option);
+                    }
+                }
+            })
+            
+        }
+    }
+</script>
 @endsection

@@ -14,6 +14,8 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Requests;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Response;
 
 use Log;
 use SweetAlert;
@@ -43,6 +45,22 @@ use App\Models\Session;
 class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
+
+    public function dataResponse($message, $data = null, $status = "success", $statusCode = null)
+    {
+        if (!$statusCode) {
+            if ($status == "error")
+                $statusCode = Response::HTTP_BAD_REQUEST;
+            else
+                $statusCode = Response::HTTP_OK;
+        }
+
+        return new JsonResponse([
+            'status' => $status,
+            'message' => $message,
+            'data' => $data,
+        ], $statusCode);
+    }
     
     public function processPaystackPayment($paymentDetails){
         $sessionSetting = SessionSetting::first();

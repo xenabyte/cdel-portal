@@ -262,6 +262,8 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'student'
   
   Route::get('/transactions', [App\Http\Controllers\Student\StudentController::class, 'transactions'])->name('transactions')->middleware(['auth:student']);
   Route::get('/walletTransactions', [App\Http\Controllers\Student\StudentController::class, 'walletTransactions'])->name('walletTransactions')->middleware(['auth:student']);
+  Route::post('/getPayment', [App\Http\Controllers\Student\StudentController::class, 'getPayment'])->name('getPayment')->middleware(['auth:student']);
+
 
   Route::get('/courseRegistration', [App\Http\Controllers\Student\AcademicController::class, 'courseRegistration'])->name('courseRegistration')->middleware(['auth:student']);
   Route::post('/registerCourses', [App\Http\Controllers\Student\AcademicController::class, 'registerCourses'])->name('registerCourses')->middleware(['auth:student']);

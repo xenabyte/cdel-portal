@@ -242,6 +242,10 @@ class StudentController extends Controller
             }
             $redirectLocation = 'student/transactions';
             $amount = $request->amount;
+
+            if($request->has('amountGeneral')){
+                $amount = $request->amountGeneral*100;
+            }
         }
         
 
@@ -353,7 +357,7 @@ class StudentController extends Controller
         $admissionSession = $globalData->sessionSetting['admission_session'];
         $academicSession = $globalData->sessionSetting['academic_session'];
 
-        $transactions = Transaction::where('student_id', $studentId)->where('payment_id', '!=', 0)->orderBy('id', 'DESC')->get();
+        $transactions = Transaction::where('student_id', $studentId)->where('payment_id', '!=', 0)->orderBy('status', 'ASC')->get();
 
         $paymentCheck = $this->checkSchoolFees($student, $academicSession, $levelId);
         if(!$paymentCheck->passTuitionPayment){
@@ -645,5 +649,68 @@ class StudentController extends Controller
 
         alert()->error('Oops!', 'An Error Occurred')->persistent('Close');
         return redirect()->back();
+    }
+
+    public function getPayment(Request $request) {
+        $type = $request->type;
+        $session = $request->academic_session;
+        $programmeId = $request->programme_id;
+        $levelId  = $request->level;
+        $userType = $request->userType;
+        if($userType == 'applicant') {
+            $applicant = Applicant::with('programme', 'student')->where('id', $request->student_id)->first();
+            $applicantId = $applicant->id;
+            if(!empty($applicant->student)){
+                $studentId = $applicant->student->id;
+            }
+        }else{
+            $studentId = $request->student_id;
+        }
+
+        if(!empty($studentId)){
+            $student = Student::find($studentId);
+            
+            if($type == Payment::PAYMENT_TYPE_GENERAL){
+                $payment = Payment::with(['structures'])->where([
+                    'type' => $type,
+                    'academic_session' => $session,
+                ])->get();
+        
+                if(!$payment){
+                    return response()->json(['status' =>  'Payment type: '.$type.' doesnt exist']);
+                }
+            }else{
+                $payment = Payment::with(['structures'])->where([
+                    'type' => $type,
+                    'academic_session' => $session,
+                ])->first();
+        
+                if(!$payment){
+                    return response()->json(['status' =>  'Payment type: '.$type.' doesnt exist']);
+                }
+            }
+
+            
+            
+            return response()->json([
+                'status' => 'success',
+                'data' => $payment
+            ]);
+        }
+
+        $payment = Payment::with(['structures'])->where([
+            'type' => $type,
+            'academic_session' => $session,
+        ])->first();
+
+        if(!$payment){
+            return response()->json(['status' =>  'Payment type: '.$type.' doesnt exist']);
+        }
+        
+        return response()->json([
+            'status' => 'success',
+            'data' => $payment
+        ]);
+
     }
 }
