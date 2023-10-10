@@ -65,36 +65,16 @@ class HomeController extends Controller
         $levelId = $student->level_id;
         $transactions = Transaction::where('student_id', $studentId)->orderBy('id', 'DESC')->get();
 
-        $schoolPayment = Payment::with('structures')
-            ->where('type', Payment::PAYMENT_TYPE_SCHOOL)
-            ->where('programme_id', $student->programme_id)
-            ->where('level_id', $levelId)
-            ->where('academic_session', $student->academic_session)
-            ->first();
-
-        if(!$schoolPayment){
-            alert()->info('Programme info missing, contact administrator', '')->persistent('Close');
+        $checkStudentPayment = $this->checkSchoolFees($student, $academicSession, $levelId);
+        if($checkStudentPayment->status != 'success'){
+            alert()->error('Oops!', 'Something went wrong with School fees')->persistent('Close');
             return redirect()->back();
         }
-        $schoolPaymentId = $schoolPayment->id;
-        $schoolAmount = $schoolPayment->structures->sum('amount');
-        $schoolPaymentTransaction = Transaction::where('student_id', $studentId)->where('payment_id', $schoolPaymentId)->where('session', $student->academic_session)->where('status', 1)->get();
 
-        $passTuitionPayment = false;
-        $fullTuitionPayment = false;
-        $passEightyTuition = false;
-        if($schoolPaymentTransaction && $schoolPaymentTransaction->sum('amount_payed') > $schoolAmount * 0.4){
-            $passTuitionPayment = true;
-        }
+        $passTuitionPayment = $checkStudentPayment->passTuitionPayment;
+        $fullTuitionPayment = $checkStudentPayment->fullTuitionPayment;
+        $passEightyTuition = $checkStudentPayment->passEightyTuition;
 
-        if($schoolPaymentTransaction && $schoolPaymentTransaction->sum('amount_payed') > $schoolAmount * 0.7){
-            $passEightyTuition = true;
-        }
-
-        if($schoolPaymentTransaction && $schoolPaymentTransaction->sum('amount_payed') >= $schoolAmount){
-            $passEightyTuition = true;
-            $fullTuitionPayment = true;
-        }
 
         $registeredCourses = CourseRegistration::with('course')
         ->where('student_id', $studentId)

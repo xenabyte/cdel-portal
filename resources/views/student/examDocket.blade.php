@@ -78,7 +78,7 @@
                                     <h4 class="mt-4 fw-semibold">Examination Docket</h4>
                                     <p class="text-muted mt-3"></p>
                                     <div class="mt-4">
-                                        Please be advised that generation of examination card(docket) has not yet begun. We will notify you as soon as the registration period becomes available.
+                                        Please be advised that generation of examination card(docket) has not yet begun. We will notify you as soon as the period becomes available.
                                     </div>
                                 </div>
                             </div>

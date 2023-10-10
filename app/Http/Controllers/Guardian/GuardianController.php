@@ -210,49 +210,23 @@ class GuardianController extends Controller
             return redirect()->back();
         }
 
-        $schoolPayment = Payment::with('structures')
-            ->where('type', Payment::PAYMENT_TYPE_SCHOOL)
-            ->where('programme_id', $student->programme_id)
-            ->where('level_id', $levelId)
-            ->where('academic_session', $academicSession)
-            ->first();
-
-        if(!$schoolPayment){
-            alert()->info('Programme info missing, contact administrator', '')->persistent('Close');
+        $checkStudentPayment = $this->checkSchoolFees($student, $academicSession, $levelId);
+        if($checkStudentPayment->status != 'success'){
+            alert()->error('Oops!', 'Something went wrong with School fees')->persistent('Close');
             return redirect()->back();
         }
 
-        $schoolPaymentId = $schoolPayment->id;
-        $schoolAmount = $schoolPayment->structures->sum('amount');
-        $schoolPaymentTransaction = Transaction::where('student_id', $studentId)
-            ->where('payment_id', $schoolPaymentId)
-            ->where('session', $academicSession)
-            ->where('status', 1)
-            ->get();
+        $passTuition = $checkStudentPayment->passTuitionPayment;
+        $fullTuitionPayment = $checkStudentPayment->fullTuitionPayment;
+        $passEightyTuition = $checkStudentPayment->passEightyTuition;
 
-        $passTuitionPayment = false;
-        $fullTuitionPayment = false;
-        $passEightyTuition = false;
-        if($schoolPaymentTransaction && $schoolPaymentTransaction->sum('amount_payed') > $schoolAmount * 0.4){
-            $passTuitionPayment = true;
-        }
-
-        if($schoolPaymentTransaction && $schoolPaymentTransaction->sum('amount_payed') > $schoolAmount * 0.7){
-            $passEightyTuition = true;
-        }
-
-        if($schoolPaymentTransaction && $schoolPaymentTransaction->sum('amount_payed') >= $schoolAmount){
-            $passEightyTuition = true;
-            $fullTuitionPayment = true;
-        }
-
-        if($semester == 1 && !$passTuitionPayment){
-            alert()->info('Oops!', 'Please be informed that in order to generate your examination results, it is necessary to clear 100% of school fees.')->persistent('Close');
+        if($semester == 1 && !$passTuition){
+            alert()->info('Oops!', 'Please be informed that in order to generate your examination results, it is necessary to clear 50% of school fees for '.$academicSession.' acaddemic session')->persistent('Close');
             return redirect()->back();
         }
 
         if($semester == 2 && !$fullTuitionPayment){
-            alert()->info('Oops!', 'Please be informed that in order to generate your examination results, it is necessary to clear 100% of school fees.')->persistent('Close');
+            alert()->info('Oops!', 'Please be informed that in order to generate your examination results, it is necessary to clear 100% of school fees for '.$academicSession.' acaddemic session')->persistent('Close');
             return redirect()->back();
         }
 
