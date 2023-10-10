@@ -22,6 +22,7 @@ use App\Models\ExaminationSetting;
 use App\Models\Programme;
 use App\Models\Student;
 use App\Models\StudentDemotion;
+use App\Models\Course;
 
 use SweetAlert;
 use Mail;
