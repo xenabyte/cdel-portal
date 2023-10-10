@@ -624,7 +624,7 @@ class PaymentController extends Controller
 
             if(!empty($request->student_id)){
                 alert()->info('Good Job', 'Student Charged.')->persistent('Close');
-                return $this->getSingleStudent($student->matric_number, 'admin.chargeStudent');
+                return $this->getSingleStudent($student->matric_number, 'staff.chargeStudent');
             }
 
             if(!empty($request->user_id)){
@@ -635,12 +635,12 @@ class PaymentController extends Controller
 
         if(!empty($request->student_id)){
             alert()->info('Good Job', 'Student Charged.')->persistent('Close');
-            return $this->getSingleStudent($student->matric_number, 'admin.chargeStudent');
+            return $this->getSingleStudent($student->matric_number, 'staff.chargeStudent');
         }
 
         if(!empty($request->user_id)){
             alert()->success('Good Job', 'Applicant Charged')->persistent('Close');
-            return $this->getSingleApplicant($applicant->application_number, 'admin.chargeStudent');
+            return $this->getSingleApplicant($applicant->application_number, 'staff.chargeStudent');
         }
     }
 
