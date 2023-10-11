@@ -5,7 +5,7 @@
 <head>
 
     <meta charset="utf-8" />
-    <title>Student Onboarding | {{ env('APP_NAME') }} </title>
+    <title>Onboarding | {{ env('APP_NAME') }} </title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta content="{{ env('APP_NAME') }} Dashboard" name="description" />

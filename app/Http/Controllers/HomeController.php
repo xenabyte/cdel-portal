@@ -20,6 +20,10 @@ use App\Models\Transaction;
 use App\Models\StudentExamCard;
 use App\Models\Student;
 use App\Models\Notification;
+use App\Models\Department;
+use App\Models\Faculty;
+use App\Models\Staff;
+
 
 
 use App\Libraries\Pdf\Pdf;
@@ -109,5 +113,96 @@ class HomeController extends Controller
         Notification::where('id', $request->notificationId)->update(['status' => true]);
 
         return true;
+    }
+
+    public function addStaffRecord(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'staffId' => 'required|unique:staff',
+            'lastname' => 'required',
+            'othernames' => 'required',
+            'description' => 'required',
+            'email' => 'required|unique:staff',
+            'phone_number' => 'required',
+            'image' => 'required',
+            'password' => 'required',
+            'confirm_password' => 'required',
+            'title' => 'required',
+        ]);
+
+        if($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+
+        if(!strpos($request->email, env('SCHOOL_DOMAIN'))) {
+            alert()->error('Error', 'Invalid email, your email must contain @'.env('SCHOOL_DOMAIN'))->persistent('Close');
+            return redirect()->back();
+        }
+
+        // if(strpos($request->staffId, env('SCHOOL_CODE')) !== false) {
+        //     alert()->error('Error', 'Invalid staff ID, please kindly follow the format ('.env("SCHOOL_CODE").'SSPFID)')->persistent('Close');
+        //     return redirect()->back();
+        // }
+
+        if(empty(strpos($request->staffId, 'AU'))) {
+            alert()->error('Error', 'Invalid staff ID, please kindly follow the format(TAU/SSPF/ID)')->persistent('Close');
+            return redirect()->back();
+        }
+
+        if((strpos($request->staffId, '/') !== false)) {
+            alert()->error('Error', 'Invalid staff ID, please kindly follow the format ('.env("SCHOOL_CODE").'SSPFID)')->persistent('Close');
+            return redirect()->back();
+        }
+        
+
+        if($request->password == $request->confirm_password){
+            $password = bcrypt($request->password);
+        }else{
+            alert()->error('Oops!', 'Password mismatch')->persistent('Close');
+            return redirect()->back();
+        }
+
+        $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $request->lastname.'-'.$request->othernames)));
+        $imageUrl = null;
+        if($request->has('image')) {
+            $imageUrl = 'uploads/staff/'.$slug.'.'.$request->file('image')->getClientOriginalExtension();
+            $image = $request->file('image')->move('uploads/staff', $imageUrl);
+        }
+
+        $newAddStaff = ([
+            'title' => $request->title,
+            'staffId' => $request->staffId,
+            'lastname' => $request->lastname,
+            'othernames' => $request->othernames,
+            'faculty_id' => $request->faculty_id,
+            'department_id' => $request->department_id,
+            'category' => $request->category,
+            'email' => $request->email,
+            'password' => $password,
+            'phone_number' => $request->phone_number,
+            'description' => $request->description,
+            'slug' => $slug,
+            'image' => env('APP_URL').'/public/'.$imageUrl,
+        ]);
+
+        if(Staff::create($newAddStaff)){
+            alert()->success('Staff added', 'A staff have been added')->persistent('Close');
+            return redirect()->back();
+        }
+
+        alert()->error('Oops!', 'Something went wrong')->persistent('Close');
+        return redirect()->back();
+    }
+
+    public function staffRecord(Request $request)
+    {
+        $departments = Department::all();
+        $faculties = Faculty::all();
+
+        return view('addStaff', [
+            'departments' => $departments,
+            'faculties' => $faculties,
+        ]);
     }
 }
