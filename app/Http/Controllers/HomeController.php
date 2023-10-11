@@ -184,6 +184,7 @@ class HomeController extends Controller
             'description' => $request->description,
             'slug' => $slug,
             'image' => env('APP_URL').'/'.$imageUrl,
+            'referral_code' => $this->generateReferralCode()
         ]);
 
         if(Staff::create($newAddStaff)){
