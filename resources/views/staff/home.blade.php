@@ -194,7 +194,7 @@ $staffCourses = $staff->staffCourses;
                         <tr>
                             <th scope="row">{{ $loop->iteration }}</th>
                             <td>{{ $applicant->lastname .' '. $applicant->othernames }}</td>
-                            <td>{{ $applicant->programme->name }}</td>
+                            <td>{{ !empty(applicant->programme)?$applicant->programme->name:null }}</td>
                             <td>{{ $applicant->email }} </td>
                             <td>{{ $applicant->phone_number }} </td>
                             <td>{{ $applicant->academic_session }} </td>
