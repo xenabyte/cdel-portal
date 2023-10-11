@@ -20,49 +20,49 @@
 
                             <div class="mb-3">
                                 <label for="image" class="form-label">Image</label>
-                                <input type="file" class="form-control" name='image' id="emailInput">
+                                <input type="file" class="form-control" name='image' id="emailInput" required>
                             </div>
         
                             <div class="row mt-3 g-3">
                                 <span class="text-muted"> Bio Data</span><br>
                                 <div class="col-lg-3">
                                     <div class="form-floating">
-                                        <input type="text" class="form-control" id="title" name="title" placeholder="Enter Title">
+                                        <input type="text" class="form-control" id="title" name="title" placeholder="Enter Title" required>
                                         <label for="title">Title(Mr/Miss/Mrs/Dr/Prof)</label>
                                     </div>
                                 </div>
         
                                 <div class="col-lg-4">
                                     <div class="form-floating">
-                                        <input type="text" class="form-control" id="lastname" name="lastname" placeholder="Enter lastname">
+                                        <input type="text" class="form-control" id="lastname" name="lastname" placeholder="Enter lastname" required>
                                         <label for="lastname">Lastname(Surname)</label>
                                     </div>
                                 </div>
         
                                 <div class="col-lg-5">
                                     <div class="form-floating">
-                                        <input type="text" class="form-control" id="othernames" name="othernames" placeholder="Enter othernames">
+                                        <input type="text" class="form-control" id="othernames" name="othernames" placeholder="Enter othernames" required>
                                         <label for="othernames">Othernames</label>
                                     </div>
                                 </div>
         
                                 <div class="col-lg-6">
                                     <div class="form-floating">
-                                        <input type="email" class="form-control" id="email" name="email" placeholder="Enter email">
+                                        <input type="email" class="form-control" id="email" name="email" placeholder="Enter email" required>
                                         <label for="email">Staff Email</label>
                                     </div>
                                 </div>
         
                                 <div class="col-lg-6">
                                     <div class="form-floating">
-                                        <input type="text" class="form-control" id="staffId" name="staffId" placeholder="Enter Staff Id">
+                                        <input type="text" class="form-control" id="staffId" name="staffId" placeholder="Enter Staff Id" required>
                                         <label for="staffId">Staff ID</label>
                                     </div>
                                 </div>
         
                                 <div class="col-lg-12">
                                     <div class="form-floating">
-                                        <input type="text" class="form-control" id="phone_number" name="phone_number" placeholder="Enter Staff Phone Number">
+                                        <input type="text" class="form-control" id="phone_number" name="phone_number" placeholder="Enter Staff Phone Number" required>
                                         <label for="phone_number">Staff Mobile Number</label>
                                     </div>
                                 </div>
@@ -70,14 +70,14 @@
                                 <span class="text-muted"> Authentication</span><br>
                                 <div class="col-lg-6">
                                     <div class="form-floating">
-                                        <input type="password" class="form-control" id="password" name="password" placeholder="Enter your Passowrd">
+                                        <input type="password" class="form-control" id="password" name="password" placeholder="Enter your Passowrd" required>
                                         <label for="password">Password</label>
                                     </div>
                                 </div>
         
                                 <div class="col-lg-6">
                                     <div class="form-floating">
-                                        <input type="password" class="form-control" id="confirm-password" name="confirm_password" placeholder="Enter your email">
+                                        <input type="password" class="form-control" id="confirm-password" name="confirm_password" placeholder="Enter your email" required>
                                         <label for="confirm-password">Confirm Password</label>
                                     </div>
                                 </div>
@@ -85,7 +85,7 @@
                                 <span class="text-muted"> Academic Information</span><br>
                                 <div class="mb-3">
                                     <label for="category" class="form-label">Select Staff Category</label>
-                                    <select class="form-select" aria-label="category" name="category">
+                                    <select class="form-select" aria-label="category" name="category" required>
                                         <option value= "" selected>Select Staff Category </option>
                                         <option value="Academic">Academic</option>
                                         <option value="Non Academic">Non Academic</option>
@@ -94,7 +94,7 @@
         
                                 <div class="mb-3">
                                     <label for="faculty" class="form-label">Select Staff Faculty</label>
-                                    <select class="form-select" aria-label="faculty" name="faculty_id">
+                                    <select class="form-select" aria-label="faculty" name="faculty_id" required>
                                         <option value= "" selected>Select Staff Faculty </option>
                                         @foreach($faculties as $faculty)
                                         <option value="{{ $faculty->id }}">{{ $faculty->name }}</option>
@@ -104,7 +104,7 @@
             
                                 <div class="mb-3">
                                     <label for="department" class="form-label">Select Staff Department</label>
-                                    <select class="form-select" aria-label="department" name="department_id">
+                                    <select class="form-select" aria-label="department" name="department_id" required>
                                         <option value= "" selected>Select Staff Department </option>
                                         @foreach($departments as $department)
                                         <option value="{{ $department->id }}">{{ $department->name }}</option>

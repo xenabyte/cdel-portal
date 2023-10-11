@@ -183,7 +183,7 @@ class HomeController extends Controller
             'phone_number' => $request->phone_number,
             'description' => $request->description,
             'slug' => $slug,
-            'image' => env('APP_URL').'/public/'.$imageUrl,
+            'image' => env('APP_URL').'/'.$imageUrl,
         ]);
 
         if(Staff::create($newAddStaff)){
