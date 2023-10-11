@@ -187,7 +187,7 @@
                                 <lord-icon src="https://cdn.lordicon.com/xxdqfhbi.json" trigger="hover" style="width:150px;height:150px">
                                 </lord-icon>
                                 <h4 class="mb-3 mt-4">Are you sure you want to approve result for <br>{{ $academiclevel->level }} level {{ $programme->name }}?</h4>
-                                <form action="{{ url('/admin/approveResult') }}" method="POST">
+                                <form action="{{ url('/staff/approveResult') }}" method="POST">
                                     @csrf
                                     @foreach ($students as $studentforIds)
                                     <input type="hidden" name="student_ids[]" value="{{ $studentforIds->id }}">

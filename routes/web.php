@@ -226,7 +226,6 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'admin'],
   Route::post('/unsetStaff', [App\Http\Controllers\Admin\StaffController::class, 'unsetStaff'])->name('unsetStaff')->middleware(['auth:admin']);
   Route::post('/addCourseForStudent', [App\Http\Controllers\Admin\ProgrammeController::class, 'addCourseForStudent'])->name('addCourseForStudent')->middleware(['auth:admin']);
 
-  
 
   
   
@@ -279,6 +278,7 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'student'
   Route::get('/examResult', [App\Http\Controllers\Student\AcademicController::class, 'examResult'])->name('examResult')->middleware(['auth:student']);
   Route::post('/generateResult', [App\Http\Controllers\Student\AcademicController::class, 'generateResult'])->name('generateResult')->middleware(['auth:student']);
 
+  Route::get('/transcript', [App\Http\Controllers\Student\AcademicController::class, 'transcript'])->name('transcript')->middleware(['auth:student']);
   Route::post('/generateInvoice', [App\Http\Controllers\Student\StudentController::class, 'generateInvoice'])->name('generateInvoice')->middleware(['auth:student']);
 
 

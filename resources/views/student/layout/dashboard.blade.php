@@ -301,6 +301,9 @@
                                         <li class="nav-item">
                                             <a href="{{ url('/student/examResult') }}" class="nav-link">Exam Result</a>
                                         </li>
+                                        <li class="nav-item">
+                                            <a href="{{ url('/student/transcript') }}" class="nav-link">Transcript</a>
+                                        </li>
                                     </ul>
                                 </div>
                             </li>

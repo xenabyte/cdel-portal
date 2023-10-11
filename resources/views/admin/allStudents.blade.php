@@ -32,6 +32,7 @@
                     <thead>
                         <tr>
                             <th scope="col">Id</th>
+                            <th scope="col">Image</th>
                             <th scope="col">Name</th>
                             <th scope="col">Level</th>
                             <th scope="col">Passcode</th>
@@ -46,6 +47,9 @@
                         @foreach($students as $student)
                         <tr>
                             <th scope="row">{{ $loop->iteration }}</th>
+                            <td>
+                                <img class="img-thumbnail rounded-circle avatar-md"  src="{{ !empty($student->image) ? asset($student->image) : asset('assets/images/users/user-dummy-img.jpg') }}">
+                            </td>
                             <td>{{ $student->applicant->lastname .' '. $student->applicant->othernames }}</td>
                             <td>{{ $student->academicLevel->level }} </td>
                             <td>{{ $student->passcode }} </td>
