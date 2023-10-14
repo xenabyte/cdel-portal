@@ -13,6 +13,7 @@ use App\Models\Guardian;
 use App\Mail\GuardianOnboardingMail;
 
 use Mail;
+use Log;
 
 class SendGuardianOnboardingMail implements ShouldQueue
 {
