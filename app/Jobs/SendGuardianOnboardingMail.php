@@ -35,6 +35,10 @@ class SendGuardianOnboardingMail implements ShouldQueue
      */
     public function handle()
     {
-        Mail::to($this->guardian->email)->send(new GuardianOnboardingMail($this->guardian));
+        try {
+            Mail::to($this->guardian->email)->send(new GuardianOnboardingMail($this->guardian));
+        } catch (\Exception $e) {
+            Log::error('Job failed: ' . $e->getMessage());
+        }
     }
 }
