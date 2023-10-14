@@ -299,7 +299,7 @@ class CronController extends Controller
                 $guardianEmail = $guardian->email;
                 $guardianPasscode = $guardian->passcode; 
 
-                if(!empty($guardianEmail)&& strtolower($guardian) != 'null'){
+                if(!empty($guardianEmail) && filter_var($guardianEmail, FILTER_VALIDATE_EMAIL)){
                     Mail::to($guardianEmail)->send(new GuardianOnboardingMail($guardian));
                 }
             }
