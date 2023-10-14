@@ -290,19 +290,23 @@ class CronController extends Controller
     }
 
     public function sendParentOnboardingMail(){
-        $students = Student::with('applicant')->get();
 
-        foreach($students as $student){
-            if(!empty($student->applicant) && !empty($student->applicant->guardian_id)){
-                $guardianId = $student->applicant->guardian_id;
-                $guardian = Guardian::find($guardianId);
-                $guardianEmail = $guardian->email;
-                $guardianPasscode = $guardian->passcode; 
+        $students = Student::with('applicant')->get()->chunk(50);
 
-                if(!empty($guardianEmail) && filter_var($guardianEmail, FILTER_VALIDATE_EMAIL)){
-                    Mail::to($guardianEmail)->send(new GuardianOnboardingMail($guardian));
+        foreach($students as $batch){
+            foreach($batch as $student){
+                if(!empty($student->applicant) && !empty($student->applicant->guardian_id)){
+                    $guardianId = $student->applicant->guardian_id;
+                    $guardian = Guardian::find($guardianId);
+                    $guardianEmail = $guardian->email;
+                    $guardianPasscode = $guardian->passcode; 
+    
+                    if(!empty($guardianEmail) && filter_var($guardianEmail, FILTER_VALIDATE_EMAIL)){
+                        Mail::to($guardianEmail)->send(new GuardianOnboardingMail($guardian));
+                    }
                 }
             }
+            sleep(10);
         }
         
         return $students;
