@@ -19,8 +19,7 @@ use App\Models\Guardian;
 use App\Libraries\Result\Result;
 
 use Illuminate\Support\Facades\Http;
-
-use App\Mail\GuardianOnboardingMail;
+use App\Jobs\SendGuardianOnboardingMail;
 
 
 use SweetAlert;
@@ -290,23 +289,19 @@ class CronController extends Controller
     }
 
     public function sendParentOnboardingMail(){
+        $students = Student::with('applicant')->get();
 
-        $students = Student::with('applicant')->get()->chunk(50);
+        foreach($students as $student){
+            if(!empty($student->applicant) && !empty($student->applicant->guardian_id)){
+                $guardianId = $student->applicant->guardian_id;
+                $guardian = Guardian::find($guardianId);
+                $guardianEmail = $guardian->email;
+                $guardianPasscode = $guardian->passcode; 
 
-        foreach($students as $batch){
-            foreach($batch as $student){
-                if(!empty($student->applicant) && !empty($student->applicant->guardian_id)){
-                    $guardianId = $student->applicant->guardian_id;
-                    $guardian = Guardian::find($guardianId);
-                    $guardianEmail = $guardian->email;
-                    $guardianPasscode = $guardian->passcode; 
-    
-                    if(!empty($guardianEmail) && filter_var($guardianEmail, FILTER_VALIDATE_EMAIL)){
-                        Mail::to($guardianEmail)->send(new GuardianOnboardingMail($guardian));
-                    }
+                if(!empty($guardianEmail) && filter_var($guardianEmail, FILTER_VALIDATE_EMAIL)){
+                    SendGuardianOnboardingMail::dispatch($guardian)->delay(now()->addSeconds(10));
                 }
             }
-            sleep(10);
         }
         
         return $students;
