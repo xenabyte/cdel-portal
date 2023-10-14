@@ -299,7 +299,9 @@ class CronController extends Controller
                 $guardianEmail = $guardian->email;
                 $guardianPasscode = $guardian->passcode; 
 
-                Mail::to($guardianEmail)->send(new GuardianOnboardingMail($guardian));
+                if(!empty($guardianEmail)&& strtolower($guardian) != 'null'){
+                    Mail::to($guardianEmail)->send(new GuardianOnboardingMail($guardian));
+                }
             }
         }
         
