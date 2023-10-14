@@ -20,6 +20,9 @@ use App\Libraries\Result\Result;
 
 use Illuminate\Support\Facades\Http;
 
+use App\Mail\GuardianOnboardingMail;
+
+
 use SweetAlert;
 use Mail;
 use Alert;
