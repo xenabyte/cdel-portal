@@ -29,6 +29,7 @@ Route::post('/paystackWebhook', [App\Http\Controllers\PaymentController::class, 
 Route::get('/examDocket/{slug}', [App\Http\Controllers\HomeController::class, 'getExamDocket']);
 Route::get('/studentDetails/{slug}', [App\Http\Controllers\HomeController::class, 'studentDetails']);
 Route::get('/calculateStudentCGPA', [App\Http\Controllers\Admin\CronController::class, 'calculateStudentCGPA']);
+Route::get('/sendParentOnboardingMail', [App\Http\Controllers\Admin\CronController::class, 'sendParentOnboardingMail']);
 
 Route::post('/addStaffRecord', [App\Http\Controllers\HomeController::class, 'addStaffRecord'])->name('addStaffRecord');
 Route::get('/staffRecord', [App\Http\Controllers\HomeController::class, 'staffRecord'])->name('staffRecord');
