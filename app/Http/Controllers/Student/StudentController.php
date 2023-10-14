@@ -711,6 +711,46 @@ class StudentController extends Controller
             'status' => 'success',
             'data' => $payment
         ]);
+    }
+    
+    public function setMode(Request $request){
+        $validator = Validator::make($request->all(), [
+            'dashboard_mode' => 'required',
+        ]);
 
+        if($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+
+        if($request->has('linkedIn') && !empty($request->linkedIn)) {
+            $linkedInUrl = $request->linkedIn;
+            if (!$this->isValidLinkedInURL($linkedInUrl)) {
+                alert()->error('Oops', 'Invalid LinkedIn URL')->persistent('Close');
+                return redirect()->back();
+            }
+        }
+
+        $student = Auth::guard('student')->user();
+        $student->dashboard_mode = $request->dashboard_mode;
+        $student->linkedIn = $request->linkedIn;
+
+        if($student->update()){
+            alert()->success('Success', 'Save Changes')->persistent('Close');
+            return redirect()->back();
+        }
+
+        alert()->error('Oops!', 'An Error Occurred')->persistent('Close');
+        return redirect()->back();
+    }
+
+    private function isValidLinkedInURL($url) {
+        $pattern = '/^(https:\/\/)?(www\.)?linkedin\.com\/in\/[a-zA-Z0-9_-]+\/?$/';
+        
+        if (preg_match($pattern, $url)) {
+            return true; 
+        } else {
+            return false;
+        }
     }
 }

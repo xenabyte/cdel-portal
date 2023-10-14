@@ -29,6 +29,24 @@
                     <p class="text-muted mb-0">Programme: {{ $student->programme->name }}</p>
                     <p class="text-muted mb-0 text-bold">Matric Number: {{  $student->matric_number }}</p>
                     <p class="text-muted mb-0 text-bold">Level: {{ $student->academicLevel->level }} Level</p>
+
+                    <hr>
+                    <form class="text-start" action="{{ url('student/setMode') }}" method="POST">
+                        @csrf
+                        <input type="hidden" name="student_id" value="{{ $student->id }}">
+
+                        <div class="mb-3">
+                            <label for="choices-publish-status-input" class="form-label">Set Dashboard Theme</label>
+                            <select class="form-select" name="dashboard_mode" id="choices-publish-status-input" data-choices data-choices-search-false required>
+                                <option value="" selected>Choose...</option>
+                                <option value="dark">Dark</option>
+                                <option value="light">Light</option>
+                            </select>
+                        </div>
+
+                        <br>
+                        <button type="submit" id="submit-button" class="btn btn-block btn-fill btn-primary"> Submit</button>
+                    </form>
                 </div>
             </div>
         </div>

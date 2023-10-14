@@ -58,7 +58,7 @@
                     <div class="d-flex">
                         <!-- LOGO -->
                         <div class="navbar-brand-box horizontal-logo">
-                            <a href="{{url('/')}}" class="logo logo-dark">
+                            <a href="{{url('guardian/home')}}" class="logo logo-dark">
                                 <span class="logo-sm">
                                     <img src="{{ !empty($pageGlobalData->setting) ? asset($pageGlobalData->setting->logo) : null }}" alt="" width="50">
                                 </span>
@@ -67,7 +67,7 @@
                                 </span>
                             </a>
 
-                            <a href="{{ url('/') }}" class="logo logo-light">
+                            <a href="{{ url('guardian/home') }}" class="logo logo-light">
                                 <span class="logo-sm">
                                     <img src="{{ !empty($pageGlobalData->setting) ? asset($pageGlobalData->setting->logo) : null }}" alt="" width="50">
                                 </span>
@@ -134,25 +134,19 @@
                 <!-- Dark Logo-->
                 <a href="{{url('guardian/home')}}" class="logo logo-dark">
                     <span class="logo-sm">
-                       <span class="logo-sm">
                         <img src="{{ !empty($pageGlobalData->setting) ? asset($pageGlobalData->setting->logo) : null }}" alt="" width="50">
                     </span>
-                    </span>
                     <span class="logo-lg">
-                       <span class="logo-sm">
                         <img src="{{ !empty($pageGlobalData->setting) ? asset($pageGlobalData->setting->logo) : null }}" alt="" width="200">
-                    </span>
                     </span>
                 </a>
                 <!-- Light Logo-->
-                <a href="{{ url('/') }}" class="logo logo-light">
+                <a href="{{ url('guardian/home') }}" class="logo logo-light">
                     <span class="logo-sm">
-                       <span class="logo-sm">
                         <img src="{{ !empty($pageGlobalData->setting) ? asset($pageGlobalData->setting->logo) : null }}" alt="" width="50">
                     </span>
-                    </span>
                     <span class="logo-lg">
-                        <img src="{{asset('assets/images/logo-light.png')}}" alt="" height="17">
+                        <img src="{{ !empty($pageGlobalData->setting) ? asset($pageGlobalData->setting->logo) : null }}" alt="" width="200">
                     </span>
                 </a>
                 <button type="button" class="btn btn-sm p-0 fs-20 header-item float-end btn-vertical-sm-hover" id="vertical-hover">

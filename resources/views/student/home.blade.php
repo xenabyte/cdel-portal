@@ -51,7 +51,66 @@ $studentRegistrations = $student->courseRegistrationDocument()->orderBy('created
         </div><!-- end card header -->
     </div>
 </div>
+@if(empty($student->linkedIn))
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <div class="card">
+            <div class="card-header align-items-center d-flex">
+                <h4 class="mb-sm-0">Update LinkedIn Url</h4>
+                <div class="flex-shrink-0">
+                </div>
+            </div><!-- end card header -->
 
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-8 offset-md-2 ">
+                        <div class="bg-soft-info p-2">
+                            <p>As part of our ongoing efforts to enhance your academic and professional development, we strongly encourage you to create a LinkedIn profile. LinkedIn is a valuable platform for networking, learning, and showcasing your skills and accomplishments to potential employers and collaborators. click <a href="javascript:void(0)" class="text-danger" data-bs-toggle="modal" data-bs-target="#read">here</a>
+                                to read more</p>
+                        </div>
+                        
+                        <form action="{{ url('student/setMode') }}" method="post" enctype="multipart/form-data">
+                            @csrf
+
+                            <div class="row mt-3 g-3">        
+                                <div class="col-lg-12">
+                                    <div class="form-floating">
+                                        <input type="url" class="form-control" id="linkedIn" name="linkedIn" placeholder="Enter LinkedIn Profile Link" required>
+                                        <label for="linkedIn">Student Linkedin Profile Link</label>
+                                    </div>
+                                </div>
+
+                                <input type="hidden" name="student_id" value="{{ $student->id }}">
+
+                                <div class="mb-3">
+                                    <label for="choices-publish-status-input" class="form-label">Set Dashboard Theme</label>
+                                    <select class="form-select" name="dashboard_mode" id="choices-publish-status-input" data-choices data-choices-search-false required>
+                                        <option value="" selected>Choose...</option>
+                                        <option value="dark">Dark</option>
+                                        <option value="light">Light</option>
+                                    </select>
+                                </div>
+        
+                
+                                <!--end col-->
+                                <div class="col-lg-12 border-top border-top-dashed">
+                                    <div class="d-flex align-items-start gap-3 mt-3">
+                                        <button type="submit" id="submit-button" class="btn btn-primary btn-label right ms-auto nexttab" data-nexttab="pills-bill-address-tab"><i class="ri-arrow-right-line label-icon align-middle fs-16 ms-2"></i> Submit</button>
+                                    </div>
+                                </div>
+                                <!--end col-->
+                            </div>    
+                        </form>
+                    </div>
+                </div>
+
+            </div>
+        </div><!-- end card -->
+    </div>
+    <!-- end col -->
+</div>
+<!-- end row -->
+@else
 <div class="row">
     <div class="col-xxl-4">
         <div class="card">
@@ -467,5 +526,96 @@ $studentRegistrations = $student->courseRegistrationDocument()->orderBy('created
     <!--end col-->
 </div>
 <!--end row-->
+@endif
+
+<div class="modal fade" id="read" tabindex="-1" role="dialog" aria-labelledby="read" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="read">More about LinkedIn</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                </button>
+            </div>
+            <div class="modal-body">
+                <h6 class="fs-15">Here are a few benefits of having a LinkedIn profile:</h6>
+                <div class="d-flex">
+                    <div class="flex-shrink-0">
+                        <i class="ri-checkbox-circle-fill text-success"></i>
+                    </div>
+                    <div class="flex-grow-1 ms-2">
+                        <p class="text-muted mb-0"><strong>Professional Networking:</strong> Connect with alumni, professors, and professionals in your field of interest.</p>
+                    </div>
+                </div>
+                <div class="d-flex mt-2">
+                    <div class="flex-shrink-0">
+                        <i class="ri-checkbox-circle-fill text-success"></i>
+                    </div>
+                    <div class="flex-grow-1 ms-2 ">
+                        <p class="text-muted mb-0"><strong>Career Opportunities:</strong> Discover job and internship opportunities tailored to your skills and interests.</p>
+                    </div>
+                </div>
+                <div class="d-flex mt-2">
+                    <div class="flex-shrink-0">
+                        <i class="ri-checkbox-circle-fill text-success"></i>
+                    </div>
+                    <div class="flex-grow-1 ms-2 ">
+                        <p class="text-muted mb-0"><strong>Skill Development:</strong> Join groups and follow influencers to stay updated on industry trends and enhance your knowledge.</p>
+                    </div>
+                </div>
+                <div class="d-flex mt-2">
+                    <div class="flex-shrink-0">
+                        <i class="ri-checkbox-circle-fill text-success"></i>
+                    </div>
+                    <div class="flex-grow-1 ms-2 ">
+                        <p class="text-muted mb-0"><strong>Showcase Your Achievements:</strong> Highlight your academic achievements, projects, and extracurricular activities to potential employers.</p>
+                    </div>
+                </div>
+                <div class="d-flex mt-2">
+                    <div class="flex-shrink-0">
+                        <i class="ri-checkbox-circle-fill text-success"></i>
+                    </div>
+                    <div class="flex-grow-1 ms-2 ">
+                        <p class="text-muted mb-0"><strong>Recommendations:</strong> Request recommendations from teachers, mentors, or colleagues to strengthen your profile.</p>
+                    </div>
+                </div>
+                <h6 class="fs-16 my-3">Action Required:</h6>
+                <div class="d-flex mt-2">
+                    <div class="flex-shrink-0">
+                        <i class="ri-checkbox-circle-fill text-success"></i>
+                    </div>
+                    <div class="flex-grow-1 ms-2 ">
+                        <p class="text-muted mb-0"><strong>Create Your LinkedIn Profile:</strong> If you don't already have one, visit <a href="https://www.linkedin.com">LinkedIn</a> and create your profile. Make sure to add a professional profile picture and complete all relevant sections, including your education, skills, and experiences.</p>
+                    </div>
+                </div>
+                <div class="d-flex mt-2">
+                    <div class="flex-shrink-0">
+                        <i class="ri-checkbox-circle-fill text-success"></i>
+                    </div>
+                    <div class="flex-grow-1 ms-2 ">
+                        <p class="text-muted mb-0"><strong>Add Your LinkedIn Profile Link:</strong> Once your LinkedIn profile is complete, copy the URL of your profile page.</p>
+                    </div>
+                </div>
+                <div class="d-flex mt-2">
+                    <div class="flex-shrink-0">
+                        <i class="ri-checkbox-circle-fill text-success"></i>
+                    </div>
+                    <div class="flex-grow-1 ms-2 ">
+                        <p class="text-muted mb-0"><strong>Paste the Link in the URL Below:</strong> Click on the link provided below to access your student profile on our university website. There, you'll find a field to add your LinkedIn profile URL. Paste the link and save your changes.</p>
+                    </div>
+                </div>
+                <div class="d-flex mt-5">
+                    <div class="flex-grow-1 ms-2 ">
+                        <p class="text-muted mb-0">Having an active LinkedIn profile will not only expand your professional network but also open doors to various opportunities.</p>
+                        <p class="text-muted mb-0">Thank you for your attention and proactive participation in building your professional identity. We look forward to seeing your LinkedIn profiles grow and flourish.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
 
 @endsection

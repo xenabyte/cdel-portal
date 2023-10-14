@@ -39,6 +39,8 @@ class CreateStudentsTable extends Migration
             $table->string('mentor_id')->nullable();
             $table->string('degree_class')->nullable();
             $table->string('standing')->nullable();
+            $table->string('linkedIn')->nullable();
+            $table->string('dashboard_mode')->nullable();
             $table->softDeletes();
             $table->rememberToken();
             $table->timestamps();

@@ -14,6 +14,7 @@ use App\Models\AcademicLevel;
 use App\Models\Staff;
 use App\Models\SessionSetting;
 use App\Models\Student;
+use App\Models\Guardian;
 
 use App\Libraries\Result\Result;
 
@@ -280,6 +281,23 @@ class CronController extends Controller
 
         foreach($students as $student){
             Result::calculateCGPA($student->id);
+        }
+        
+        return $students;
+    }
+
+    public function sendParentOnboardingMail(){
+        $students = Student::with('applicant')->get();
+
+        foreach($students as $student){
+            if(!empty($student->applicant) && !empty($student->applicant->guardian_id)){
+                $guardianId = $student->applicant->guardian_id;
+                $guardian = Guardian::find($guardianId);
+                $guardianEmail = $guardian->email;
+                $guardianPasscode = $guardian->passcode; 
+
+                Mail::to($guardianEmail)->send(new GuardianOnboardingMail($guardian));
+            }
         }
         
         return $students;

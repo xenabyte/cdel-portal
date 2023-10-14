@@ -1,11 +1,12 @@
 
 <!doctype html>
-<html lang="en" data-layout="vertical" data-topbar="light" data-sidebar="dark" data-sidebar-size="lg" data-sidebar-image="none" data-preloader="disable">
 <?php 
     $student = Auth::guard('student')->user();
     $notifications = $student->notifications()->orderBy('created_at', 'desc')->get();
     $name = $student->applicant->lastname. ' ' . $student->applicant->othernames;
+    $mode = $student->dashboard_mode;
 ?>
+<html lang="en" data-layout="vertical" data-topbar="light" data-layout-mode="{{ $mode }}" data-sidebar="dark" data-sidebar-size="lg" data-sidebar-image="none" data-preloader="disable">
 
 <head>
 
@@ -16,7 +17,7 @@
     <meta content="Olanrewaju kolawole" name="author" />
     <!-- App favicon -->
     <link rel="shortcut icon" href="{{asset('favicon.png')}}">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
     <!--datatable css-->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css" />
@@ -59,25 +60,19 @@
                         <div class="navbar-brand-box horizontal-logo">
                             <a href="{{ url('/student/home') }}" class="logo logo-dark">
                                 <span class="logo-sm">
-                                   <span class="logo-sm">
-                        <img src="{{ !empty($pageGlobalData->setting) ? asset($pageGlobalData->setting->logo) : null }}" alt="" width="50">
-                    </span>
+                                    <img src="{{ !empty($pageGlobalData->setting) ? asset($pageGlobalData->setting->logo) : null }}" alt="" width="50">
                                 </span>
                                 <span class="logo-lg">
-                                   <span class="logo-sm">
-                        <img src="{{ !empty($pageGlobalData->setting) ? asset($pageGlobalData->setting->logo) : null }}" alt="" width="200">
-                    </span>
+                                    <img src="{{ !empty($pageGlobalData->setting) ? asset($pageGlobalData->setting->logo) : null }}" alt="" width="200">
                                 </span>
                             </a>
 
                             <a href="{{ url('/student/home') }}" class="logo logo-light">
                                 <span class="logo-sm">
-                                   <span class="logo-sm">
-                        <img src="{{ !empty($pageGlobalData->setting) ? asset($pageGlobalData->setting->logo) : null }}" alt="" width="50">
-                    </span>
+                                    <img src="{{ !empty($pageGlobalData->setting) ? asset($pageGlobalData->setting->logo) : null }}" alt="" width="50">
                                 </span>
                                 <span class="logo-lg">
-                                    <img src="{{asset('assets/images/logo-light.png')}}" alt="" height="17">
+                                    <img src="{{ !empty($pageGlobalData->setting) ? asset($pageGlobalData->setting->logo) : null }}" alt="" width="200">
                                 </span>
                             </a>
                         </div>
@@ -231,7 +226,7 @@
                             </a>
                         </li>
                         
-                        @if(!empty($student->image))
+                        @if(!empty($student->image) && !empty($student->linkedIn))
                             @if($passTuition)
                             <li class="nav-item">
                                 <a class="nav-link menu-link" href="{{ url('student/mentor') }}">

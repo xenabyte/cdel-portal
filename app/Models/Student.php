@@ -42,7 +42,9 @@ class Student extends Authenticatable
         'degree_class',
         'standing',
         'cgpa',
-        'onboard_status'
+        'onboard_status',
+        'linkedIn',
+        'dashboard_mode',
     ];
 
     /**
