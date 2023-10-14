@@ -22,7 +22,6 @@ use App\Models\Notification;
 use App\Models\GradeScale;
 use App\Models\CourseRegistration;
 use App\Models\Role;
-use App\Models\StaffRole;
 use App\Models\Faculty;
 use App\Models\Department;
 use App\Models\LevelAdviser;
@@ -47,11 +46,22 @@ class GuardianController extends Controller
     //
 
     public function index(Request $request){
+        $guardian = Auth::guard('guardian')->user();
+
+        if(empty($guardian->change_password)){
+            return view('guardian.changePassword');
+        }
 
         return view('guardian.home');
     }
 
     public function students(Request $request){
+
+        $guardian = Auth::guard('guardian')->user();
+
+        if(empty($guardian->change_password)){
+            return view('guardian.changePassword');
+        }
 
         return view('guardian.students');
     }
@@ -251,22 +261,32 @@ class GuardianController extends Controller
             return redirect()->back();
         }
 
-        $staff = Auth::guard('staff')->user();
+        $guardian = Auth::guard('guardian')->user();
 
-
-        if(\Hash::check($request->old_password, Auth::guard('staff')->user()->password)){
+        if($request->has('case')){
             if($request->password == $request->confirm_password){
-                $staff->password = bcrypt($request->password);
+                $guardian->password = bcrypt($request->password);
             }else{
                 alert()->error('Oops!', 'Password mismatch')->persistent('Close');
                 return redirect()->back();
             }
+            $guardian->change_password = true;
         }else{
-            alert()->error('Oops', 'Wrong old password, Try again with the right one')->persistent('Close');
-            return redirect()->back();
+
+            if(\Hash::check($request->old_password, Auth::guard('guardian')->user()->password)){
+                if($request->password == $request->confirm_password){
+                    $guardian->password = bcrypt($request->password);
+                }else{
+                    alert()->error('Oops!', 'Password mismatch')->persistent('Close');
+                    return redirect()->back();
+                }
+            }else{
+                alert()->error('Oops', 'Wrong old password, Try again with the right one')->persistent('Close');
+                return redirect()->back();
+            }
         }
 
-        if($staff->update()) {
+        if($guardian->update()) {
             alert()->success('Success', 'Save Changes')->persistent('Close');
             return redirect()->back();
         }
