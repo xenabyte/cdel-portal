@@ -23,10 +23,12 @@ class SendGuardianOnboardingMail implements ShouldQueue
      *
      * @return void
      */
-     public function __construct(Guardian $guardian)
-     {
-         $this->guardian = $guardian;
-     }
+    protected $guardian;
+
+    public function __construct(Guardian $guardian)
+    {
+        $this->guardian = $guardian;
+    }
 
     /**
      * Execute the job.
