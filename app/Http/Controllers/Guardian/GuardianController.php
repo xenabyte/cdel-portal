@@ -250,7 +250,6 @@ class GuardianController extends Controller
     public function updatePassword (Request $request) {
 
         $validator = Validator::make($request->all(), [
-            'old_password' => 'required',
             'password' => 'required',
             'confirm_password' => 'required'
         ]);
@@ -272,6 +271,10 @@ class GuardianController extends Controller
             }
             $guardian->change_password = true;
         }else{
+            if(!empty($request->old_password)){
+                alert()->error('Oops!', 'Old password is required')->persistent('Close');
+                return redirect()->back();
+            }
 
             if(\Hash::check($request->old_password, Auth::guard('guardian')->user()->password)){
                 if($request->password == $request->confirm_password){

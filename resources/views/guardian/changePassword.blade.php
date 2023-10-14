@@ -1,18 +1,18 @@
-@extends('staff.layout.dashboard')
+@extends('guardian.layout.dashboard')
 <?php 
-    $staff = Auth::guard('staff')->user();
+   $guardian = Auth::guard('guardian')->user();
 ?>
 @section('content')
 <!-- start page title -->
 <div class="row">
     <div class="col-12">
         <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-            <h4 class="mb-sm-0">Staff Update Password</h4>
+            <h4 class="mb-sm-0">Guardian Update Password</h4>
 
             <div class="page-title-right">
                 <ol class="breadcrumb m-0">
                     <li class="breadcrumb-item"><a href="javascript: void(0);">Pages</a></li>
-                    <li class="breadcrumb-item active">Staff Update Password</li>
+                    <li class="breadcrumb-item active">Guardian Update Password</li>
                 </ol>
             </div>
 
@@ -28,7 +28,7 @@
                 <div class="text-center">
                     <div class="row justify-content-center">
                         <div class="col-lg-9">
-                            <h4 class="mt-4 fw-semibold">Staff Update Password</h4>
+                            <h4 class="mt-4 fw-semibold">Guardian Update Password</h4>
                             <p class="text-muted mt-3">Welcome! To secure your portal, kindly update your password. We're excited to have you join us!</p>
                             <div class="mt-4">
                                 <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
@@ -63,7 +63,7 @@
             <div class="modal-body">
                 <div class="tab-content">
                     <div class="tab-pane fade show active" id="pills-bill-info" role="tabpanel" aria-labelledby="pills-bill-info-tab">
-                        <form class="needs-validation" method="POST" novalidate action="{{ url('staff/updatePassword') }}">
+                        <form class="needs-validation" method="POST" novalidate action="{{ url('guardian/updatePassword') }}">
                             @csrf
 
                             <input type="hidden" name="case" value="pass">
