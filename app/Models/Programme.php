@@ -22,10 +22,12 @@ class Programme extends Model
         'code',
         'code_number',
         'matric_last_number',
-        'academic_session'
+        'academic_session',
+        'course_registration'
     ];
 
     /**
+     * 
      * Get all of the courses for the Programme
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany

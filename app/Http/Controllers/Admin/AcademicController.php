@@ -649,11 +649,55 @@ class AcademicController extends Controller
 
     public function courseRegMgt(Request $request){
 
+        $globalData = $request->input('global_data');
+        $academicSession = $globalData->sessionSetting['academic_session'];
+
+        $programmes = Programme::with(['students' => function ($query) {
+            $query->where('is_active', true)
+                  ->where('is_passed_out', false)
+                  ->where('is_rusticated', false);
+        }, 'programmeCategory'])
+        ->where(function ($query) use ($academicSession) {
+            $query->where('academic_session', $academicSession)
+                  ->orWhereNull('academic_session');
+                  
+        })
+        ->get();
+
         $courseRegMgt = CourseRegistrationSetting::first();
 
         return view('admin.courseRegMgt', [
-            'courseRegMgt' => $courseRegMgt
+            'courseRegMgt' => $courseRegMgt,
+            'programmes' => $programmes
         ]);
+    }
+
+    public function manageCourseReg(Request $request){
+        $validator = Validator::make($request->all(), [
+            'programme_id' => 'required',
+            'course_registration' => 'required',
+        ]);
+
+        $programmeId = $request->programme_id;
+        $courseRegistration = $request->course_registration;
+
+        $programme = Programme::where('id', $programmeId)
+        ->first();
+
+        if(empty($programme)){
+            alert()->error('Oops', 'Invalid Programme')->persistent('Close');
+            return redirect()->back();
+        }
+
+        $programme->course_registration = $courseRegistration;
+
+        if($programme->save()){
+            alert()->success('Changes Saved', 'Course registration changes saved successfully')->persistent('Close');
+            return redirect()->back();
+        }
+
+        alert()->error('Oops!', 'Something went wrong')->persistent('Close');
+        return redirect()->back();
     }
 
     public function setCourseRegStatus(Request $request){

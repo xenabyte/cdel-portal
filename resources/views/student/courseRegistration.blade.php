@@ -1,6 +1,7 @@
 @extends('student.layout.dashboard')
 <?php 
     $student = Auth::guard('student')->user();
+    $programme = $student->programme;
     $maxUnit = !empty($student->credit_load)?$student->credit_load:24;
 ?>
 @section('content')
@@ -68,7 +69,7 @@
     <!--end col-->
 </div>
 @else
-    @if($courseRegMgt->status == 'stop')
+    @if($programme->course_registration != 'start')
         <div class="row justify-content-center">
             <div class="col-lg-6">
                 <div class="card">
@@ -151,10 +152,10 @@
                                             </td>
                                         </tr>
                                     @endforeach
-                                    @foreach($unregisteredRequiredCourses->where('semester', 1) as $unregisteredCourse)
+                                    {{-- @foreach($unregisteredRequiredCourses->where('semester', 1) as $unregisteredCourse)
                                         <tr>
                                             <td>{{ $firstSemester++ }}</td>
-                                            <td>{{ $unregisteredCourse->course->code }}</td>
+                                            <td>{{ $unregisteredCourse->course->code }} - {{ $unregisteredCourse->course->id }}</td>
                                             <td>{{ $unregisteredCourse->course->name }}</td>
                                             <td>{{ $unregisteredCourse->credit_unit }}</td>
                                             <td>{{ $unregisteredCourse->status }}</td>
@@ -162,7 +163,7 @@
                                                 <input type="checkbox" name="selected_courses[]" value="{{ $unregisteredCourse->id }}">
                                             </td>
                                         </tr>
-                                    @endforeach
+                                    @endforeach --}}
                                     @foreach($courses->where('semester', 1) as $course11)
                                         <tr>
                                             <td>{{ $firstSemester++ }}</td>
@@ -217,7 +218,7 @@
                                             </td>
                                         </tr>
                                     @endforeach
-                                    @foreach($unregisteredRequiredCourses->where('semester', 2) as $unregisteredCourse2)
+                                    {{-- @foreach($unregisteredRequiredCourses->where('semester', 2) as $unregisteredCourse2)
                                         <tr>
                                             <td>{{ $secondSemester++ }}</td>
                                             <td>{{ $unregisteredCourse2->course->code }}</td>
@@ -228,7 +229,7 @@
                                                 <input type="checkbox" name="selected_courses[]" value="{{ $unregisteredCourse2->id }}">
                                             </td>
                                         </tr>
-                                    @endforeach
+                                    @endforeach --}}
                                     @foreach($courses->where('semester', 2) as $course12)
                                         <tr>
                                             <td>{{ $secondSemester++ }}</td>
