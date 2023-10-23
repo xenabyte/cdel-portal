@@ -391,8 +391,10 @@ class Controller extends BaseController
 
         $type = Payment::PAYMENT_TYPE_SCHOOL;
 
-        if($applicationType != 'UTME' && ($student->level_id == 2|| $student->level_id == 3)){
-            $type = Payment::PAYMENT_TYPE_SCHOOL_DE;
+        if($student->level_id == $levelId){
+            if($applicationType != 'UTME' && ($student->level_id == 2|| $student->level_id == 3)){
+                $type = Payment::PAYMENT_TYPE_SCHOOL_DE;
+            }
         }
 
         $schoolPayment = Payment::with('structures')
