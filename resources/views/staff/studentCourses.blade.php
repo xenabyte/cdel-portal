@@ -228,6 +228,83 @@
                             <td>{{$course->level->level}}</td>
                             <td>
                                 <a href="{{ url('/staff/courseDetail/'.$course->id) }}" class="btn btn-lg btn-primary">Course Details</a>
+                                <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#delete{{$course->id}}" class="btn btn-danger"><i class="ri-delete-bin-5-line"></i> Delete</a>
+                                <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#edit{{$course->id}}" class="btn btn-info"><i class="ri-edit-circle-fill"></i> Edit</a>
+
+                                <div id="delete{{$course->id}}" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
+                                    <div class="modal-dialog modal-dialog-centered">
+                                        <div class="modal-content">
+                                            <div class="modal-body text-center p-5">
+                                                <div class="text-end">
+                                                    <button type="button" class="btn-close text-end" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="mt-2">
+                                                    <lord-icon src="https://cdn.lordicon.com/wwneckwc.json" trigger="hover" style="width:150px;height:150px">
+                                                    </lord-icon>
+                                                    <h4 class="mb-3 mt-4">Are you sure you want to delete <br/> {{ $course->course->code }}?</h4>
+                                                    <form action="{{ url('/staff/deleteCourseForStudent') }}" method="POST">
+                                                        @csrf
+                                                        <input name="student_course_id" type="hidden" value="{{$course->id}}">
+                                                        <input type="hidden" name="level_id" value="{{ $academiclevel->id }}">
+                                                        <input type="hidden" name="programme_id" value="{{ $programme->id }}">
+                                                        <input type="hidden" name="semester" value="{{$semester}}">
+                                                        <hr>
+                                                        <button type="submit" id="submit-button" class="btn btn-danger w-100">Yes, Delete</button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer bg-light p-3 justify-content-center">
+
+                                            </div>
+                                        </div><!-- /.modal-content -->
+                                    </div><!-- /.modal-dialog -->
+                                </div><!-- /.modal -->
+
+                                <div id="edit{{$course->id}}" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
+                                    <div class="modal-dialog modal-dialog-centered">
+                                        <div class="modal-content border-0 overflow-hidden">
+                                            <div class="modal-header p-3">
+                                                <h4 class="card-title mb-0">Edit Level</h4>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                    
+                                            <div class="modal-body">
+                                                <form action="{{ url('/staff/updateCourseForStudent') }}" method="post" enctype="multipart/form-data">
+                                                    @csrf
+
+                                                    <input name="student_course_id" type="hidden" value="{{$course->id}}">
+                                                    <input type="hidden" name="level_id" value="{{ $academiclevel->id }}">
+                                                    <input type="hidden" name="programme_id" value="{{ $programme->id }}">
+                                                    <input type="hidden" name="semester" value="{{$semester}}">
+                                                    
+                                                    <div class="col-lg-12">
+                                                        <div class="form-floating">
+                                                            <select class="form-select" id="cstatus" name="status" aria-label="cstatus">
+                                                                <option value="" selected>--Select--</option>
+                                                                <option @if($course->status == "Required") selected @endif value="Required">Required</option>
+                                                                <option @if($course->status == "Core") selected @endif value="Core">Core</option>
+                                                                <option @if($course->status == "Elective") selected @endif value="Elective">Elective</option>
+                                                            </select>
+                                                            <label for="cstatus">Status</label>
+                                                        </div>
+                                                    </div>
+                            
+                                                    <div class="col-lg-12 mt-3">
+                                                        <div class="form-floating">
+                                                            <input type="text" class="form-control" max="6" name="credit_unit" id="credit_unit" value="{{ $course->credit_unit }}">
+                                                            <label for="semester">Credit Unit</label>
+                                                        </div>
+                                                    </div>
+                            
+                                                    <hr>
+                                                    <div class="text-end">
+                                                        <button type="submit" id="submit-button" class="btn btn-primary">Save Changes</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div><!-- /.modal-content -->
+                                    </div><!-- /.modal-dialog -->
+                                </div><!-- /.modal -->
                             </td>
                         </tr>
                         @endforeach

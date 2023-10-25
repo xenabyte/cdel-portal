@@ -217,6 +217,7 @@ class ProgrammeController extends Controller
             'programme' => Programme::find($request->programme_id),
             'semester' => $request->semester,
             'allCourses' => Course::all(),
+            'academicLevels' => AcademicLevel::get()
         ];
 
         $validator = Validator::make($request->all(), [
@@ -233,8 +234,8 @@ class ProgrammeController extends Controller
         }
 
 
-        $courseRegistrationSetting = CourseRegistrationSetting::first();
-        if($courseRegistrationSetting->status != 'stop'){
+        $courseRegistrationSetting = Programme::where('id', $request->programme_id)->value('course_registration');
+        if(!empty($courseRegistrationSetting) && $courseRegistrationSetting != 'stop'){
             alert()->error('Oops', 'Course Registration already started')->persistent('Close');
             return view('staff.studentCourses', $defaultData);
         }
@@ -277,6 +278,7 @@ class ProgrammeController extends Controller
                 'programme' => Programme::find($request->programme_id),
                 'semester' => $request->semester,
                 'allCourses' => Course::all(),
+                'academicLevels' => AcademicLevel::get()
             ];
             return view('staff.studentCourses',$defaultData);
         }
@@ -285,6 +287,117 @@ class ProgrammeController extends Controller
         return view('staff.studentCourses', $defaultData);
     }
 
+    public function deleteCourseForStudent(Request $request){
+        $globalData = $request->input('global_data');
+        $academicSession = $globalData->sessionSetting['academic_session'];
+
+        $courses = CoursePerProgrammePerAcademicSession::with('course')->where('programme_id', $request->programme_id)->where('level_id', $request->level_id)->where('academic_session', $academicSession)->where('semester', $request->semester)->get();
+        $defaultData = [
+            'courses' => $courses,
+            'academiclevel' => AcademicLevel::find($request->level_id),
+            'programme' => Programme::find($request->programme_id),
+            'semester' => $request->semester,
+            'allCourses' => Course::all(),
+            'academicLevels' => AcademicLevel::get(),
+        ];
+
+        $validator = Validator::make($request->all(), [
+            'student_course_id' => 'required',
+        ]);
+
+        if($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return view('staff.studentCourses',$defaultData);
+        }
+
+        $courseRegistrationSetting = Programme::where('id', $request->programme_id)->value('course_registration');
+        if(!empty($courseRegistrationSetting) && $courseRegistrationSetting != 'stop'){
+            alert()->error('Oops', 'Course Registration already started')->persistent('Close');
+            return view('staff.studentCourses', $defaultData);
+        }
+
+        if(!$studentCourse = CoursePerProgrammePerAcademicSession::find($request->student_course_id)){
+            alert()->error('Oops', 'Invalid Record ')->persistent('Close');
+            return view('staff.studentCourses',$defaultData);
+        }
+        
+        if($studentCourse->delete()){
+            alert()->success('Delete Successfully', '')->persistent('Close');
+            $courses = CoursePerProgrammePerAcademicSession::with('course', 'course.courseManagement', 'course.courseManagement.staff')->where('programme_id', $request->programme_id)->where('level_id', $request->level_id)->where('academic_session', $academicSession)->where('semester', $request->semester)->get();
+            $defaultData = [
+                'courses' => $courses,
+                'academiclevel' => AcademicLevel::find($request->level_id),
+                'programme' => Programme::find($request->programme_id),
+                'semester' => $request->semester,
+                'allCourses' => Course::all(),
+                'academicLevels' => AcademicLevel::get(),
+            ];
+            return view('staff.studentCourses',$defaultData);
+        }
+
+        alert()->error('Oops!', 'Something went wrong')->persistent('Close');
+        return view('staff.studentCourses',$defaultData);
+
+    }
+
+    public function updateCourseForStudent(Request $request){
+            $globalData = $request->input('global_data');
+            $academicSession = $globalData->sessionSetting['academic_session'];
+
+            $courses = CoursePerProgrammePerAcademicSession::with('course')->where('programme_id', $request->programme_id)->where('level_id', $request->level_id)->where('academic_session', $academicSession)->where('semester', $request->semester)->get();
+            $defaultData = [
+                'courses' => $courses,
+                'academiclevel' => AcademicLevel::find($request->level_id),
+                'programme' => Programme::find($request->programme_id),
+                'semester' => $request->semester,
+                'allCourses' => Course::all(),
+                'academicLevels' => AcademicLevel::get(),
+            ];
+
+            $validator = Validator::make($request->all(), [
+                'student_course_id' => 'required',
+            ]);
+
+            if($validator->fails()) {
+                alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+                return view('staff.studentCourses',$defaultData);
+            }
+
+            $courseRegistrationSetting = Programme::where('id', $request->programme_id)->value('course_registration');
+            if(!empty($courseRegistrationSetting) && $courseRegistrationSetting != 'stop'){
+                alert()->error('Oops', 'Course Registration already started')->persistent('Close');
+                return view('staff.studentCourses', $defaultData);
+            }
+
+            if(!$studentCourse = CoursePerProgrammePerAcademicSession::find($request->student_course_id)){
+                alert()->error('Oops', 'Invalid Record ')->persistent('Close');
+                return view('staff.studentCourses',$defaultData);
+            }
+
+            if(!empty($request->status) && $request->status != $studentCourse->status) {
+                $studentCourse->status = $request->status;
+            }
+
+            if(!empty($request->credit_unit) && $request->credit_unit != $studentCourse->credit_unit) {
+                $studentCourse->credit_unit = $request->credit_unit;
+            }
+
+            if($studentCourse->update()){
+                alert()->success('Record Updated Successfully', '')->persistent('Close');
+                $courses = CoursePerProgrammePerAcademicSession::with('course', 'course.courseManagement', 'course.courseManagement.staff')->where('programme_id', $request->programme_id)->where('level_id', $request->level_id)->where('academic_session', $academicSession)->where('semester', $request->semester)->get();
+                $defaultData = [
+                    'courses' => $courses,
+                    'academiclevel' => AcademicLevel::find($request->level_id),
+                    'programme' => Programme::find($request->programme_id),
+                    'semester' => $request->semester,
+                    'allCourses' => Course::all(),
+                    'academicLevels' => AcademicLevel::get(),
+                ];
+                return view('staff.studentCourses',$defaultData);
+            }
+            alert()->error('Oops!', 'Something went wrong')->persistent('Close');
+            return view('staff.studentCourses',$defaultData);
+    }
 
     Public function levelCourseReg(Request $request, $id){
         $staff = Auth::guard('staff')->user();
