@@ -69,7 +69,7 @@
     <!--end col-->
 </div>
 @else
-    @if($programme->course_registration != 'start')
+    @if(!empty($programme->course_registration) && $programme->course_registration != 'start')
         <div class="row justify-content-center">
             <div class="col-lg-6">
                 <div class="card">
