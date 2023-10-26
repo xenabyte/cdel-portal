@@ -160,13 +160,15 @@
                                     <td class="bg bg-soft-success">₦{{ number_format($filteredTransaction['totalPaid']/100, 2) }}</td>
                                     <td class="bg bg-soft-danger">₦{{ number_format($balance/100, 2) }}</td>
                                     <td>
+                                        @if(!empty($student))
                                         <form action="{{ url('/staff/generateInvoice') }}" method="post" enctype="multipart/form-data">
                                             @csrf
                                             <input name="payment_id" type="hidden" value="{{$filteredTransaction['id']}}">
                                             <input name="student_id" type="hidden" value="{{$student->id}}">
                                             <input name="session" type="hidden" value="{{ $filteredTransaction['session'] }}">
-                                            <button type="submit" id="submit-button" class="btn btn-primary"><i class="mdi mdi-printer"></i></button>
+                                            <button type="submit" id="submit-button" class="btn btn-primary my-1"><i class="mdi mdi-printer"></i></button>
                                         </form>
+                                        @endif
 
                                         <form action="{{ url('/staff/getStudentPayment') }}" method="post" enctype="multipart/form-data">
                                             @csrf
@@ -175,11 +177,12 @@
                                             <input name="session" type="hidden" value="{{ $filteredTransaction['session'] }}">
                                             <button type="submit" id="submit-button" class="btn btn-info my-1"><i class="mdi mdi-eye"></i></button>
                                         </form>
+
                                     </td>
                                 </tr>
                             @endforeach
                             @endforeach
-                        </tbody>
+                        </tbody> 
                     </table>
                 </div>
             </div><!-- end card body -->
@@ -323,7 +326,7 @@
                     </div>
 
                     <div>
-                        <button type="submit" class="btn btn-primary">Make payment</button>
+                        <button type="submit" id="submit-button-main" class="btn btn-primary">Make payment</button>
                     </div>
                 </form>
             </div>
@@ -448,7 +451,7 @@
                                     <td class="bg bg-soft-success">₦{{ number_format($filteredTransaction['totalPaid']/100, 2) }}</td>
                                     <td class="bg bg-soft-danger">₦{{ number_format($balance/100, 2) }}</td>
                                     <td>
-                                        @if(empty($applicant->student))
+                                        @if(!empty($applicant->student))
                                         <form action="{{ url('/staff/generateInvoice') }}" method="post" enctype="multipart/form-data">
                                             @csrf
                                             <input name="payment_id" type="hidden" value="{{$filteredTransaction['id']}}">
@@ -502,7 +505,7 @@
                             <option value="General Fee">General Fee</option>
                         </select>
                     </div>
-
+                    
                     <input type="hidden" id="paymentId" name="payment_id">
 
                     <div class="mb-3" id='payment-for' style="display: none">
@@ -512,13 +515,13 @@
                         </select>
                     </div>
 
-
                     <div class="mb-3" id='payment-options-acceptance' style="display: none">
                         <label for="amount" class="form-label">Payment Amount<span class="text-danger">*</span></label>
                         <select class="form-select" aria-label="amount" name="amountAcceptance">
                             <option value= "" selected>Select Amount</option>
                         </select>
                     </div>
+
 
                     @if(env('PAYMENT_TYPE') == 'Percentage')
                     <div class="mb-3" id='payment-options-tuition' style="display: none">
@@ -542,7 +545,7 @@
                     <div class="mb-3">
                         <label for="paymentStatus" class="form-label">Select Payment Status<span class="text-danger">*</span></label>
                         <select class="form-select" aria-label="paymentStatus" name="paymentStatus" required>
-                            <option value="" selected>Select Payment Status</option>
+                            <option value= "" selected>Select Payment Status</option>
                             <option value="1">Paid</option>
                             <option value="0">Not Paid</option>
                         </select>
@@ -611,6 +614,7 @@
         const paymentSelect = document.querySelector('select[name="payment_id"]');
         const paymentHidden = document.querySelector('input[name="payment_id"]');
 
+
         if(selectedPaymentType != ''){
             axios.post("{{ url('/staff/getPayment') }}", {
                 type: selectedPaymentType,
@@ -622,82 +626,88 @@
             })
             .then(response => {
                 const data = response.data.data;
-
-                if (selectedPaymentType === 'School Fee' || selectedPaymentType === 'DE School Fee') {
-                    const amount = data.structures.reduce((total, structure) => total + parseInt(structure.amount), 0); 
-                    paymentId.value = data.id;
-                    console.log(paymentId.value);
-
-                    document.getElementById('payment-options-acceptance').style.display = 'none';
-                    document.getElementById('payment-options-tuition').style.display = 'block';
-                    document.getElementById('payment-options-general').style.display = 'none';
-                    document.getElementById('payment-for').style.display = 'none';
-                    paymentSelect.disabled = true;
-                    paymentHidden.disabled = false;
-
-
-                    const selectElement = document.querySelector('[name="amountTuition"]');
-                    if (!data.passTuition) {
-                        selectElement.innerHTML += `<option value="${amount}">₦${(amount / 100).toFixed(2)} - 100%</option>`;
-                        selectElement.innerHTML += `<option value="${amount * 0.9}">₦${((amount * 0.9) / 100).toFixed(2)} - 90%</option>`;
-                        selectElement.innerHTML += `<option value="${amount * 0.8}">₦${((amount * 0.8) / 100).toFixed(2)} - 80%</option>`;
-                        selectElement.innerHTML += `<option value="${amount * 0.7}">₦${((amount * 0.7) / 100).toFixed(2)} - 70%</option>`;
-                        selectElement.innerHTML += `<option value="${amount * 0.6}">₦${((amount * 0.6) / 100).toFixed(2)} - 60%</option>`;
-                        selectElement.innerHTML += `<option value="${amount * 0.5}">₦${((amount * 0.5) / 100).toFixed(2)} - 50%</option>`;
-                    }
-                    if (data.passTuition && !data.fullTuitionPayment && !data.passEightyTuition) {
-                        selectElement.innerHTML += `<option value="${amount * 0.5}">₦${((amount * 0.5) / 100).toFixed(2)} - 50%</option>`;
-                        selectElement.innerHTML += `<option value="${amount * 0.4}">₦${((amount * 0.4) / 100).toFixed(2)} - 40%</option>`;
-                        selectElement.innerHTML += `<option value="${amount * 0.3}">₦${((amount * 0.3) / 100).toFixed(2)} - 30%</option>`;
-                        selectElement.innerHTML += `<option value="${amount * 0.2}">₦${((amount * 0.2) / 100).toFixed(2)} - 20%</option>`;
-                        selectElement.innerHTML += `<option value="${amount * 0.1}">₦${((amount * 0.1) / 100).toFixed(2)} - 10%</option>`;
-                    }
-                    if (data.passTuition && !data.fullTuitionPayment && data.passEightyTuition) {
-                        selectElement.innerHTML += `<option value="${amount * 0.2}">₦${((amount * 0.2) / 100).toFixed(2)} - 20%</option>`;
-                        selectElement.innerHTML += `<option value="${amount * 0.1}">₦${((amount * 0.1) / 100).toFixed(2)} - 10%</option>`;
-                    }
-
-                }else if (selectedPaymentType === 'General Fee') {
-                    document.getElementById('payment-options-tuition').style.display = 'none';
-                    document.getElementById('payment-options-acceptance').style.display = 'none';
-                    document.getElementById('payment-options-general').style.display = 'block';
-                    document.getElementById('payment-for').style.display = 'block';
-
-                    paymentSelect.disabled = false;
-                    paymentHidden.disabled = true; 
-                    const selectElement = document.querySelector('select[name="payment_id"]');
-
-                    data.forEach(item => {
-                        const option = document.createElement('option');
-                        option.value = item.id; 
-                        option.textContent = item.title;
-                        selectElement.appendChild(option);
+                if (response.data.status != 'success') {
+                    // Show a SweetAlert for record not found
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops!!',
+                        text: response.data.status,
                     });
+                }else{
+                    if (selectedPaymentType === 'School Fee' || selectedPaymentType === 'DE School Fee') {
+                        const amount = data.structures.reduce((total, structure) => total + parseInt(structure.amount), 0); 
+                        paymentId.value = data.id;
 
-                } else {
-                    paymentId.value = data.id;
-                    console.log(paymentId.value);
+                        document.getElementById('payment-options-acceptance').style.display = 'none';
+                        document.getElementById('payment-options-tuition').style.display = 'block';
+                        document.getElementById('payment-options-general').style.display = 'none';
+                        document.getElementById('payment-for').style.display = 'none';
+                        paymentSelect.disabled = true;
+                        paymentHidden.disabled = false;
 
-                    document.getElementById('payment-options-tuition').style.display = 'none';
-                    document.getElementById('payment-options-acceptance').style.display = 'block';
-                    document.getElementById('payment-options-general').style.display = 'none';
-                    document.getElementById('payment-for').style.display = 'none';
-                    paymentSelect.disabled = true;
-                    paymentHidden.disabled = false;
 
-                    
-                    const selectElement = document.querySelector('[name="amountAcceptance"]');
-                    selectElement.innerHTML = '<option value="">Select Amount</option>';
+                        const selectElement = document.querySelector('[name="amountTuition"]');
+                        if (!data.passTuition) {
+                            selectElement.innerHTML += `<option value="${amount}">₦${(amount / 100).toFixed(2)} - 100%</option>`;
+                            selectElement.innerHTML += `<option value="${amount * 0.9}">₦${((amount * 0.9) / 100).toFixed(2)} - 90%</option>`;
+                            selectElement.innerHTML += `<option value="${amount * 0.8}">₦${((amount * 0.8) / 100).toFixed(2)} - 80%</option>`;
+                            selectElement.innerHTML += `<option value="${amount * 0.7}">₦${((amount * 0.7) / 100).toFixed(2)} - 70%</option>`;
+                            selectElement.innerHTML += `<option value="${amount * 0.6}">₦${((amount * 0.6) / 100).toFixed(2)} - 60%</option>`;
+                            selectElement.innerHTML += `<option value="${amount * 0.5}">₦${((amount * 0.5) / 100).toFixed(2)} - 50%</option>`;
+                        }
+                        if (data.passTuition && !data.fullTuitionPayment && !data.passEightyTuition) {
+                            selectElement.innerHTML += `<option value="${amount * 0.5}">₦${((amount * 0.5) / 100).toFixed(2)} - 50%</option>`;
+                            selectElement.innerHTML += `<option value="${amount * 0.4}">₦${((amount * 0.4) / 100).toFixed(2)} - 40%</option>`;
+                            selectElement.innerHTML += `<option value="${amount * 0.3}">₦${((amount * 0.3) / 100).toFixed(2)} - 30%</option>`;
+                            selectElement.innerHTML += `<option value="${amount * 0.2}">₦${((amount * 0.2) / 100).toFixed(2)} - 20%</option>`;
+                            selectElement.innerHTML += `<option value="${amount * 0.1}">₦${((amount * 0.1) / 100).toFixed(2)} - 10%</option>`;
+                        }
+                        if (data.passTuition && !data.fullTuitionPayment && data.passEightyTuition) {
+                            selectElement.innerHTML += `<option value="${amount * 0.2}">₦${((amount * 0.2) / 100).toFixed(2)} - 20%</option>`;
+                            selectElement.innerHTML += `<option value="${amount * 0.1}">₦${((amount * 0.1) / 100).toFixed(2)} - 10%</option>`;
+                        }
+                    }else if (selectedPaymentType === 'General Fee') {
+                        document.getElementById('payment-options-tuition').style.display = 'none';
+                        document.getElementById('payment-options-acceptance').style.display = 'none';
+                        document.getElementById('payment-options-general').style.display = 'block';
+                        document.getElementById('payment-for').style.display = 'block';
 
-                    const option = document.createElement('option');
-                    option.value = data.structures.reduce((total, structure) => total + structure.amount, 0);
-                    option.text = '₦' + (option.value / 100).toFixed(2) + ' - ' + data.title;
-                    selectElement.appendChild(option);
+                        paymentSelect.disabled = false;
+                        paymentHidden.disabled = true; 
+
+                        const selectElement = document.querySelector('select[name="payment_id"]');
+
+                        data.forEach(item => {
+                            const option = document.createElement('option');
+                            option.value = item.id; 
+                            option.textContent = item.title;
+                            selectElement.appendChild(option);
+                        });
+
+                    } else {
+                        paymentId.value = data.id;
+
+                        document.getElementById('payment-options-tuition').style.display = 'none';
+                        document.getElementById('payment-options-acceptance').style.display = 'block';
+                        document.getElementById('payment-options-general').style.display = 'none';
+                        document.getElementById('payment-for').style.display = 'none';
+
+                        paymentSelect.disabled = true;
+                        paymentHidden.disabled = false;
+
+                        
+                        const selectElement = document.querySelector('[name="amountAcceptance"]');
+                        selectElement.innerHTML = '<option value="">Select Amount</option>';
+
+                        const option = document.createElement('option');
+                        option.value = data.structures.reduce((total, structure) => total + structure.amount, 0);
+                        option.text = '₦' + (option.value / 100).toFixed(2) + ' - ' + data.title;
+                        selectElement.appendChild(option);
+                    }
                 }
             })
             
         }
-
     }
 </script>
 @endsection

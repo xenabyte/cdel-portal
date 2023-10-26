@@ -666,7 +666,6 @@
                             selectElement.innerHTML += `<option value="${amount * 0.2}">₦${((amount * 0.2) / 100).toFixed(2)} - 20%</option>`;
                             selectElement.innerHTML += `<option value="${amount * 0.1}">₦${((amount * 0.1) / 100).toFixed(2)} - 10%</option>`;
                         }
-z
                     }else if (selectedPaymentType === 'General Fee') {
                         document.getElementById('payment-options-tuition').style.display = 'none';
                         document.getElementById('payment-options-acceptance').style.display = 'none';
