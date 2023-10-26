@@ -474,11 +474,20 @@ class PaymentController extends Controller
             $applicantId = $student->applicant->id;
         }
 
+        if(!empty($request->user_id)){
+            $applicant = Applicant::with('programme', 'student')->where('id', $request->user_id)->first();
+            $applicantId = $applicant->id;
+            if(!empty($applicant->student)){
+                $studentId = $applicant->student->id;
+                $student = Student::with('programme', 'applicant')->where('id', $studentId)->first();
+            }
+        }
+
         $levelId = $request->level;
         $session = $request->academic_session;
         $programmeId = $request->programme_id;
-        $paymentId = $request->payment_id;
         $type = $request->type;
+        $paymentId = $request->payment_id;
 
         $payment = Payment::with(['structures'])->find($paymentId);
 
@@ -557,11 +566,11 @@ class PaymentController extends Controller
                         return $this->getSingleStudent($student->matric_number, 'staff.chargeStudent');
                     }
                 }
+                return $this->getSingleStudent($student->matric_number, 'staff.chargeStudent');
             }
         }
 
         $reference = $this->generateRandomString(10);
-
 
         //check existing transaction
         $existingTx = Transaction::where([
@@ -587,6 +596,11 @@ class PaymentController extends Controller
                 alert()->info('Good Job!!!', 'Payment already processed.')->persistent('Close');
                 return $this->getSingleApplicant($applicant->application_number, 'staff.chargeStudent');
             }
+        }
+
+        if($existingTx){
+            alert()->info('Good Job!!!', 'Payment already processed.')->persistent('Close');
+            return $this->getSingleStudent($student->matric_number, 'staff.chargeStudent');
         }
         
         //Create new transaction
