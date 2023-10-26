@@ -47,7 +47,7 @@
                         @foreach($transactions as $transaction)
                         <tr>
                             <th scope="row">{{ $loop->iteration }}</th>
-                            <td>{{ !empty($transaction->student_id)? $transaction->student->applicant->lastname .' '. $transaction->student->applicant->othernames :  null }}</td>
+                            <td>{{ !empty($transaction->student_id)? $transaction->student->applicant->lastname .' '. $transaction->student->applicant->othernames :  $transaction->applicant->lastname .' '. $transaction->applicant->othernames }}</td>
                             <td>{{ !empty($transaction->student_id)? 'Student' : 'Applicant' }}</td>
                             <td>{{ $transaction->reference }}</td>
                             <td>₦{{ number_format($transaction->amount_payed/100, 2) }} </td>
