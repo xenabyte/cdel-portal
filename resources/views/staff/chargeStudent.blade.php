@@ -326,7 +326,7 @@
                     </div>
 
                     <div>
-                        <button type="submit" id="submit-button-main" class="btn btn-primary">Make payment</button>
+                        <button type="submit" class="btn btn-primary">Make payment</button>
                     </div>
                 </form>
             </div>

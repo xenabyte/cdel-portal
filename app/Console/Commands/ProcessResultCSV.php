@@ -110,9 +110,9 @@ class ProcessResultCSV extends Command
                 $courseCreditUnit = $row['CourseUnit'];
                 $carryOver = $row['CarryOver'];
 
-                // if($matricNumber != 'TAU/20232966' && $matricNumber != 'TAU/20222722' && $matricNumber != 'TAU/20222775' && $matricNumber != 'TAU/20233419'){
+                // if($matricNumber != 'TAU/20232966' && $matricNumber != 'TAU/20222722' && $matricNumber != 'TAU/20222755' && $matricNumber != 'TAU/20233419'){
 
-                if($matricNumber == 'TAU/20222722'){
+                if($matricNumber == 'TAU/20222755'){
                     if(!empty($totalScore)) {
                         if (strpos($matricNumber, 'TAU') !== false) {
                             $applicantId = Applicant::where('application_number', $matricNumber)->value('id');
