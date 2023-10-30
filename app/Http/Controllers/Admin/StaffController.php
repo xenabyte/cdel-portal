@@ -719,6 +719,68 @@ class StaffController extends Controller
         return redirect()->back();
     }
 
+    public function changeStudentName(Request $request){
+        $validator = Validator::make($request->all(), [
+            'student_id' => 'required',
+        ]);
+
+        if($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+
+        if(!$student = Student::find($request->student_id)){
+            alert()->error('Oops', 'Invalid Student ')->persistent('Close');
+            return redirect()->back();
+        }
+
+        $applicantId = $student->user_id;
+        if(!$applicant = Applicant::find($applicantId)){
+            alert()->error('Oops!', 'Student application data mismatch')->persistent('Close');
+            return redirect()->back();
+        }
+        
+        $applicant->lastname = $request->lastname;
+        $applicant->othernames = $request->othernames;
+        $applicant->save();
+
+        $student->email = $request->email;
+        
+        if($student->save()) {
+            alert()->success('Success', 'Save Changes')->persistent('Close');
+            return redirect()->back();
+        }
+
+        alert()->error('Oops!', 'An Error Occurred')->persistent('Close');
+        return redirect()->back();
+    }
+
+    public function changeStudentLevel(Request $request){
+        $validator = Validator::make($request->all(), [
+            'student_id' => 'required',
+        ]);
+
+        if($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+
+        if(!$student = Student::find($request->student_id)){
+            alert()->error('Oops', 'Invalid Student ')->persistent('Close');
+            return redirect()->back();
+        }
+
+        $student->level_id = $request->level_id;
+        
+        if($student->save()) {
+            alert()->success('Success', 'Save Changes')->persistent('Close');
+            return redirect()->back();
+        }
+
+        alert()->error('Oops!', 'An Error Occurred')->persistent('Close');
+        return redirect()->back();
+    }
+
     public function courseAllocation(Request $request){
         $staff = Auth::guard('staff')->user();
         $staffId = $staff->id;

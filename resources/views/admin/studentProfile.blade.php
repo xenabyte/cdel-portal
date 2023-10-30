@@ -302,6 +302,7 @@ $studentRegistrations = $student->courseRegistrationDocument()->orderBy('created
                 </div>
                 <!-- end row -->
             </div>
+
             <!-- end tab pane -->
             <div class="tab-pane fade" id="settings" role="tabpanel">
                 <!-- Accordions with Icons -->
@@ -309,7 +310,7 @@ $studentRegistrations = $student->courseRegistrationDocument()->orderBy('created
                     <div class="accordion-item shadow">
                         <h2 class="accordion-header" id="accordionwithiconExample1">
                             <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#accor_iconExamplecollapse1" aria-expanded="true" aria-controls="accor_iconExamplecollapse1">
-                                <i class="ri-image-add-fill g-3"></i> Upload Student Image
+                                Upload Student Image
                             </button>
                         </h2>
                         <div id="accor_iconExamplecollapse1" class="accordion-collapse collapse show" aria-labelledby="accordionwithiconExample1" data-bs-parent="#accordionWithicon">
@@ -324,7 +325,7 @@ $studentRegistrations = $student->courseRegistrationDocument()->orderBy('created
                                             <div class="row">
                                                 <div class="col-lg-12 text-center">
                                                     <div class="profile-user position-relative d-inline-block mx-auto mb-2">
-                                                        <img src="{{asset(empty($student->image)?'assets/images/users/user-dummy-img.jpg':$student->image)}}" class="rounded-circle avatar-lg img-thumbnail user-profile-image" alt="user-profile-image">
+                                                        <img src="{{empty($student->image)?asset('assets/images/users/user-dummy-img.jpg'):asset($student->image)}}" class="rounded-circle avatar-lg img-thumbnail user-profile-image" alt="user-profile-image">
                                                         <div class="avatar-xs p-0 rounded-circle profile-photo-edit">
                                                             <input id="profile-img-file-input" type="file" class="profile-img-file-input" accept="image/png, image/jpeg" name="image" required>
                                                             <label for="profile-img-file-input" class="profile-photo-edit avatar-xs">
@@ -348,9 +349,96 @@ $studentRegistrations = $student->courseRegistrationDocument()->orderBy('created
                     </div>
 
                     <div class="accordion-item shadow">
+                        <h2 class="accordion-header" id="accordionwithiconExample4">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#accor_iconExamplecollapse4" aria-expanded="false" aria-controls="accor_iconExamplecollapse3">
+                                 Update Student Name
+                            </button>
+                        </h2>
+                        <div id="accor_iconExamplecollapse4" class="accordion-collapse collapse" data-bs-parent="#accordionWithicon">
+                            <div class="accordion-body">
+                                <form action="{{ url('admin/changeStudentName') }}" method="POST">
+                                    @csrf
+                                    <input type="hidden" name="student_id" value="{{ $student->id }}">
+
+                                    <div class="row g-2">
+                                        <div class="hidden-fields row mt-3 g-3">
+                                            <div class="col-lg-6">
+                                                <div class="form-floating">
+                                                    <input type="text" class="form-control" id="lastname" name="lastname" value="{{ $student->applicant->lastname }}">
+                                                    <label for="lastname">Lastname(Surname)</label>
+                                                </div>
+                                            </div>
+                    
+                                            <div class="col-lg-6">
+                                                <div class="form-floating">
+                                                    <input type="text" class="form-control" id="othernames" name="othernames" value="{{ $student->applicant->othernames }}">
+                                                    <label for="othernames">Othernames</label>
+                                                </div>
+                                            </div>
+                    
+                                            <div class="col-lg-12">
+                                                <div class="form-floating">
+                                                    <input type="email" class="form-control" id="email" name="email" value="{{ $student->email }}">
+                                                    <label for="email">TAU Student Email</label>
+                                                </div>
+                                            </div>                    
+                                        </div>     
+        
+                                        <!--end col-->
+                                        <div class="col-lg-12">
+                                            <div class="text-end">
+                                                <br>
+                                                <button type="submit" id="submit-button" class="btn btn-primary btn-lg">Save Changes</button>
+                                            </div>
+                                        </div>
+                                        <!--end col-->
+                                    </div>
+                                    <!--end row-->
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item shadow">
+                        <h2 class="accordion-header" id="accordionwithiconExample5">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#accor_iconExamplecollapse5" aria-expanded="false" aria-controls="accor_iconExamplecollapse3">
+                                 Update Student Level
+                            </button>
+                        </h2>
+                        <div id="accor_iconExamplecollapse5" class="accordion-collapse collapse" data-bs-parent="#accordionWithicon">
+                            <div class="accordion-body">
+                                <form action="{{ url('admin/changeStudentLevel') }}" method="POST">
+                                    @csrf
+                                    <input type="hidden" name="student_id" value="{{ $student->id }}">
+
+                                    <div class="row g-2">
+                                        <div class="mb-3">
+                                            <label for="level" class="form-label">Level</label>
+                                            <select class="form-select" name="level_id" id="level" data-choices data-choices-search-false required>
+                                                <option value="" selected>Choose...</option>
+                                                @foreach($academicLevels as $academicLevel)<option value="{{ $academicLevel->id }}">{{ $academicLevel->level }}</option>@endforeach
+                                            </select>
+                                        </div>
+        
+                                        <!--end col-->
+                                        <div class="col-lg-12">
+                                            <div class="text-end">
+                                                <br>
+                                                <button type="submit" id="submit-button" class="btn btn-primary btn-lg">Save Changes</button>
+                                            </div>
+                                        </div>
+                                        <!--end col-->
+                                    </div>
+                                    <!--end row-->
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item shadow">
                         <h2 class="accordion-header" id="accordionwithiconExample2">
                             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#accor_iconExamplecollapse2" aria-expanded="false" aria-controls="accor_iconExamplecollapse2">
-                                <i class="ri-lock-password-fill"></i> Update Student Password
+                               Update Student Password
                             </button>
                         </h2>
                         <div id="accor_iconExamplecollapse2" class="accordion-collapse collapse" aria-labelledby="accordionwithiconExample2" data-bs-parent="#accordionWithicon">
@@ -392,7 +480,7 @@ $studentRegistrations = $student->courseRegistrationDocument()->orderBy('created
                     <div class="accordion-item shadow">
                         <h2 class="accordion-header" id="accordionwithiconExample3">
                             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#accor_iconExamplecollapse3" aria-expanded="false" aria-controls="accor_iconExamplecollapse3">
-                                <i class="ri-contacts-book-upload-fill"></i> Update Student Credit Load
+                                Update Student Credit Load
                             </button>
                         </h2>
                         <div id="accor_iconExamplecollapse3" class="accordion-collapse collapse" aria-labelledby="accordionwithiconExample2" data-bs-parent="#accordionWithicon">

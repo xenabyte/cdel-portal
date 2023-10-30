@@ -572,8 +572,8 @@ class StudentController extends Controller
             return redirect()->back();
         }
         
-        $applicant->lastname = $applicant->lastname;
-        $applicant->othernames = $applicant->othernames;
+        $applicant->lastname = $request->lastname;
+        $applicant->othernames = $request->othernames;
         $applicant->update();
 
         if($request->password == $request->confirm_password){
