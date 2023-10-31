@@ -25,6 +25,8 @@ Route::post('/updateNotificationStatus', [App\Http\Controllers\HomeController::c
 Route::get('/verifyPayment', [App\Http\Controllers\PaymentController::class, 'verifyPayment'])->name('verifyPayment');
 Route::get('/raveVerifyPayment', [App\Http\Controllers\PaymentController::class, 'raveVerifyPayment'])->name('raveVerifyPayment');
 Route::post('/paystackWebhook', [App\Http\Controllers\PaymentController::class, 'paystackWebhook']);
+Route::post('/callback', [App\Http\Controllers\PaymentController::class, 'callback']);
+
 
 Route::get('/examDocket/{slug}', [App\Http\Controllers\HomeController::class, 'getExamDocket']);
 Route::get('/studentDetails/{slug}', [App\Http\Controllers\HomeController::class, 'studentDetails']);

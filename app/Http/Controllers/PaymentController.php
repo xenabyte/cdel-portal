@@ -293,5 +293,10 @@ class PaymentController extends Controller
     //         return true;
     //     }
     // }
+    public function callback (Request $request) {  
 
+        dd($request->all());
+
+        return $request;
+    }
 }

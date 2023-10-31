@@ -12,6 +12,6 @@ class VerifyCsrfToken extends Middleware
      * @var array<int, string>
      */
     protected $except = [
-        'portal.tau.edu.ng/callback',
+        'https://portal.tau.edu.ng/callback?order=006989&product=1002',
     ];
 }
