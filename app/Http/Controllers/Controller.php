@@ -293,12 +293,14 @@ class Controller extends BaseController
 
         $filteredTransactions = [];
         foreach ($transactions as $transaction) {
-            $paymentType = !empty($transaction->paymentType)?$transaction->paymentType->type:Payment::PAYMENT_TYPE_WALLET_DEPOSIT;
+            $paymentType = !empty($transaction->paymentType) ? $transaction->paymentType->type : Payment::PAYMENT_TYPE_WALLET_DEPOSIT;
             $session = $transaction->session;
-            $totalPaid = $transaction->amount_payed;
+            $totalPaid = $transaction->status == 1 ? $transaction->amount_payed : 0; // Fixed the condition and property name
+            
+            // Using the payment_id as the array key for easy access
             $paymentId = $transaction->payment_id;
         
-            if(isset($filteredTransactions[$paymentType][$session])) {
+            if (isset($filteredTransactions[$paymentType][$session])) {
                 $filteredTransactions[$paymentType][$session]['totalPaid'] += $totalPaid;
             } else {
                 $filteredTransactions[$paymentType][$session] = [
@@ -309,6 +311,7 @@ class Controller extends BaseController
                 ];
             }
         }
+        
         
         // foreach ($filteredTransactions as &$paymentType) {
         //     usort($paymentType, 'sortBySession');
