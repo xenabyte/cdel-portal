@@ -295,8 +295,17 @@ class PaymentController extends Controller
     // }
     public function callback (Request $request) {  
 
-        dd($request->all());
 
-        return $request;
+        // dd($request->all());
+        
+
+        // File path where you want to create the new file
+        $filePath = "example.txt";
+
+        // Write content to the file using file_put_contents
+        file_put_contents($filePath, $request->all());
+
+        // alert()->success('Good Job', 'Payment is successful')->persistent('Close');
+        return $this->dataResponse('Payment is successful!', $request->all());
     }
 }
