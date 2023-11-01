@@ -1,4 +1,8 @@
 <?php
+header('Access-Control-Allow-Methods: GET, POST, PATCH, PUT, DELETE, OPTIONS');
+header('Access-Control-Allow-Headers: Origin, Content-Type, X-Auth-Token, Authorization, Accept,charset,boundary,Content-Length');
+header('Access-Control-Allow-Origin: *');
+
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\GlobalDataMiddleware;
@@ -25,7 +29,8 @@ Route::post('/updateNotificationStatus', [App\Http\Controllers\HomeController::c
 Route::get('/verifyPayment', [App\Http\Controllers\PaymentController::class, 'verifyPayment'])->name('verifyPayment');
 Route::get('/raveVerifyPayment', [App\Http\Controllers\PaymentController::class, 'raveVerifyPayment'])->name('raveVerifyPayment');
 Route::post('/paystackWebhook', [App\Http\Controllers\PaymentController::class, 'paystackWebhook']);
-Route::post('/callback', [App\Http\Controllers\PaymentController::class, 'callback']);
+Route::post('/raveWebhook', [App\Http\Controllers\PaymentController::class, 'raveWebhook']);
+Route::get('/callback', [App\Http\Controllers\PaymentController::class, 'callback']);
 
 
 Route::get('/examDocket/{slug}', [App\Http\Controllers\HomeController::class, 'getExamDocket']);

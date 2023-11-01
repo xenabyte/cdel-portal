@@ -253,6 +253,91 @@ class PaymentController extends Controller
         }
     }
 
+    /**
+     * Receives Flutterwave webhook
+     * @return void
+     */
+    public function raveWebhook(Request $request){
+        $verified = Flutterwave::verifyWebhook();
+
+        if ($verified && $request->event == 'charge.completed' && $request->data->status == 'successful') {
+            $verificationData = Flutterwave::verifyPayment($request->data['id']);
+            $paymentDetails = Flutterwave::verifyTransaction($request->data['id']);
+            if ($verificationData['status'] === 'success') {
+            // process for successful charge
+                $paymentId = $paymentDetails['data']['meta']['payment_id'];
+                $studentId = !empty($paymentDetails['data']['meta']['student_id'])?$paymentDetails['data']['meta']['student_id']:null;
+                $redirectPath = $paymentDetails['data']['meta']['redirect_path'];
+
+                $paymentType = Payment::PAYMENT_TYPE_WALLET_DEPOSIT;
+                if($paymentId > 0){
+                    $payment = Payment::where('id', $paymentId)->first();
+                    $paymentType = $payment->type;
+                }
+
+                $student = Student::with('applicant', 'programme')->where('id', $studentId)->first();
+                $amount = $paymentDetails['data']['meta']['amount'];
+                $session = $paymentDetails['data']['meta']['academic_session'];
+                
+                if($paymentDetails['status'] == 'success'){
+                    if($this->processRavePayment($paymentDetails)){
+
+                        if($student && !empty($studentId)){
+                            $pdf = new Pdf();
+                            $invoice = $pdf->generateTransactionInvoice($session, $studentId, $paymentId, 'single');
+                                    
+                            $data = new \stdClass();
+                            $data->lastname = $student->applicant->lastname;
+                            $data->othernames = $student->applicant->othernames;
+                            $data->amount = $amount;
+                            $data->invoice = $invoice;
+                            
+                            Mail::to($student->email)->send(new TransactionMail($data));
+
+                            if($paymentType == Payment::PAYMENT_TYPE_WALLET_DEPOSIT){
+                                $creditStudent = $this->creditStudentWallet($studentId, $amount);
+                                if(!$creditStudent){
+                                    Log::info("**********************Unable to credit student**********************: ". $amount .' - '.$student);
+                                }
+                            }     
+                        }
+
+                        if($paymentType == Payment::PAYMENT_TYPE_GENERAl_APPLICATION || $paymentType == Payment::PAYMENT_TYPE_INTER_TRANSFER_APPLICATION){
+                            return true;
+                        }elseif($paymentType == Payment::PAYMENT_TYPE_ACCEPTANCE){
+                            return true;
+                        }elseif($paymentType == Payment::PAYMENT_TYPE_SCHOOL || $paymentType == Payment::PAYMENT_TYPE_SCHOOL_DE){
+                            $this->generateMatricAndEmail($student);
+                            return true;
+                        }else{
+                            return true;
+                        }
+                    }else{
+                        if($paymentType == Payment::PAYMENT_TYPE_GENERAl_APPLICATION || $paymentType == Payment::PAYMENT_TYPE_INTER_TRANSFER_APPLICATION){
+                            return false;
+                        }elseif($paymentType == Payment::PAYMENT_TYPE_ACCEPTANCE){
+                            return false;
+                        }else{
+                            return false;
+                        }
+                    }
+
+                }
+
+                if($paymentType == Payment::PAYMENT_TYPE_GENERAl_APPLICATION || $paymentType == Payment::PAYMENT_TYPE_INTER_TRANSFER_APPLICATION){
+                    return false;
+                }elseif($paymentType == Payment::PAYMENT_TYPE_ACCEPTANCE){
+                    return false;
+                }else{
+                    return false;
+                }
+
+            }
+        }
+    }
+
+}
+
     // private function generateMatricAndEmail($student){
     //     if(!$student->is_active && empty($student->matric_number)){
     //         $sessionSetting = SessionSetting::first();
