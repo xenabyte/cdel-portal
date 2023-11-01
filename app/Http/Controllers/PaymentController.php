@@ -336,8 +336,6 @@ class PaymentController extends Controller
         }
     }
 
-}
-
     // private function generateMatricAndEmail($student){
     //     if(!$student->is_active && empty($student->matric_number)){
     //         $sessionSetting = SessionSetting::first();
