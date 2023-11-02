@@ -5,7 +5,7 @@
 <head>
 
     <meta charset="utf-8" />
-    <title>Onboarding | {{ env('APP_NAME') }} </title>
+    <title>{{ env('APP_NAME') }} </title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta content="{{ env('APP_NAME') }} Dashboard" name="description" />
@@ -270,6 +270,9 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.32/vfs_fonts.js"></script>
+    <script src="{{asset('assets/libs/glightbox/js/glightbox.min.js')}}"></script>
+    <script src="{{asset('assets/libs/isotope-layout/isotope.pkgd.min.js')}}"></script>
+    <script src="{{asset('assets/js/pages/gallery.init.js')}}"></script>
 
 
 

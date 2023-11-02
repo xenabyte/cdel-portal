@@ -32,7 +32,6 @@ Route::post('/paystackWebhook', [App\Http\Controllers\PaymentController::class, 
 Route::post('/raveWebhook', [App\Http\Controllers\PaymentController::class, 'raveWebhook']);
 Route::get('/callback', [App\Http\Controllers\PaymentController::class, 'callback']);
 
-
 Route::get('/examDocket/{slug}', [App\Http\Controllers\HomeController::class, 'getExamDocket']);
 Route::get('/studentDetails/{slug}', [App\Http\Controllers\HomeController::class, 'studentDetails']);
 Route::get('/calculateStudentCGPA', [App\Http\Controllers\Admin\CronController::class, 'calculateStudentCGPA']);
@@ -301,6 +300,7 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'student'
   Route::get('/mentor', [App\Http\Controllers\Student\StudentController::class, 'mentor'])->name('mentor')->middleware(['auth:student']);
   Route::get('/exits', [App\Http\Controllers\Student\StudentController::class, 'exits'])->name('exits')->middleware(['auth:student']);
 
+  Route::get('/hallOfFame', [App\Http\Controllers\HomeController::class, 'hallOfFame']);
   
 });
 
