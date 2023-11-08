@@ -229,6 +229,22 @@
                                 <i class="mdi mdi-view-dashboard"></i> <span>Dashboard</span>
                             </a>
                         </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link menu-link" href="#admin" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarForms">
+                                <i class="mdi mdi-account-box-multiple"></i> <span data-key="t-forms">Admins</span>
+                            </a>
+                            <div class="collapse menu-dropdown" id="admin">
+                                <ul class="nav nav-sm flex-column">
+                                    <li class="nav-item">
+                                        <a class="nav-link menu-link" href="{{ url('admin/admins') }}"
+                                            data-key="t-profile">Admins
+                                        </a>
+                                    </li>   
+                                </ul>
+        
+                            </div>
+                        </li>
                        
                         <li class="menu-title"><i class="ri-more-fill"></i> <span data-key="t-portal">Portal Settings</span></li>
 
