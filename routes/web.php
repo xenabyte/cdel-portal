@@ -19,7 +19,7 @@ use App\Http\Middleware\GlobalDataMiddleware;
 */
 
 Route::get('/', function () {
-  return redirect('https://tau.edu.ng');
+  return view('welcome');
 });
 
 Auth::routes(['register' => false, 'login' => false]);
