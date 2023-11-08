@@ -44,7 +44,7 @@
                     <thead>
                         <tr>
                             <th scope="col">Id</th>
-                            <th scope="col">Image</th>
+                            {{-- <th scope="col">Image</th> --}}
                             <th scope="col">Name</th>
                             <th scope="col">Staff ID</th>
                             <th scope="col">Email</th>
@@ -56,9 +56,9 @@
                         @foreach($staff as $singleStaff)
                         <tr>
                             <th scope="row">{{ $loop->iteration }}</th>
-                            <td>
+                            {{-- <td>
                                 <img class="img-thumbnail rounded-circle avatar-md"  src="{{ !empty($singleStaff->image) ? $singleStaff->image : asset('assets/images/users/user-dummy-img.jpg') }}">
-                            </td>
+                            </td> --}}
                             <td>{{ $singleStaff->title.' '.$singleStaff->lastname .' '. $singleStaff->othernames }}</td>
                             <td>{{ $singleStaff->staffId }}</td>
                             <td>{{ $singleStaff->email }} </td>

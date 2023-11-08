@@ -274,6 +274,10 @@ $studentRegistrations = $student->courseRegistrationDocument()->orderBy('created
                                         <table class="table mb-0 table-borderless">
                                             <tbody>
                                                 <tr>
+                                                    <th><span class="fw-medium">SN</span></th>
+                                                    <td class="text-danger">#{{ $student->applicant->guardian->id }}</td>
+                                                </tr>
+                                                <tr>
                                                     <th><span class="fw-medium">Name</span></th>
                                                     <td>{{ $student->applicant->guardian->name }}</td>
                                                 </tr>

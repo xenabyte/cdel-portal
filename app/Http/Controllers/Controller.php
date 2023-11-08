@@ -350,6 +350,7 @@ class Controller extends BaseController
         }
 
         return view($path, [
+            'path' => $path,
             'transactions' => $filteredTransactions,
             'payment' => $schoolPayment,
             'passTuition' => $passTuitionPayment,

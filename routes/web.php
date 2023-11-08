@@ -57,10 +57,21 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'admin'],
   Route::get('/password/reset', [App\Http\Controllers\Admin\Auth\ForgotPasswordController::class, 'showLinkRequestForm'])->name('password.reset');
   Route::get('/password/reset/{token}', [App\Http\Controllers\Admin\Auth\ResetPasswordController::class, 'showResetForm']);
 
-  Route::get('/admins', [App\Http\Controllers\Admin\AdminController::class, 'admins'])->name('admins');
-  Route::post('/addAdmin', [App\Http\Controllers\Admin\AdminController::class, 'addAdmin'])->name('addAdmin');
-  Route::post('/updateAdmin', [App\Http\Controllers\Admin\AdminController::class, 'updateAdmin'])->name('updateAdmin');
-  Route::post('/deleteAdmin', [App\Http\Controllers\Admin\AdminController::class, 'deleteAdmin'])->name('deleteAdmin');
+  Route::get('/admins', [App\Http\Controllers\Admin\AdminController::class, 'admins'])->name('admins')->middleware(['auth:admin']);
+  Route::post('/addAdmin', [App\Http\Controllers\Admin\AdminController::class, 'addAdmin'])->name('addAdmin')->middleware(['auth:admin']);
+  Route::post('/updateAdmin', [App\Http\Controllers\Admin\AdminController::class, 'updateAdmin'])->name('updateAdmin')->middleware(['auth:admin']);
+  Route::post('/deleteAdmin', [App\Http\Controllers\Admin\AdminController::class, 'deleteAdmin'])->name('deleteAdmin')->middleware(['auth:admin']);
+
+  Route::get('/messageStudent', [App\Http\Controllers\Admin\CommunicationController::class, 'messageStudent'])->name('messageStudent')->middleware(['auth:admin']);
+  Route::get('/messageParent', [App\Http\Controllers\Admin\CommunicationController::class, 'messageParent'])->name('messageParent')->middleware(['auth:admin']);
+  Route::get('/messageAllStudent', [App\Http\Controllers\Admin\CommunicationController::class, 'messageAllStudent'])->name('messageAllStudent')->middleware(['auth:admin']);
+  Route::get('/messageAllParent', [App\Http\Controllers\Admin\CommunicationController::class, 'messageAllParent'])->name('messageAllParent')->middleware(['auth:admin']);
+
+  Route::post('/communication/getStudent', [App\Http\Controllers\Admin\CommunicationController::class, 'getStudent'])->name('getStudent')->middleware(['auth:admin']);
+  Route::post('/sendStudentMessage', [App\Http\Controllers\Admin\CommunicationController::class, 'sendStudentMessage'])->name('sendStudentMessage')->middleware(['auth:admin']);
+
+  
+  
 
   Route::get('/setting', [App\Http\Controllers\Admin\AdminController::class, 'setting'])->name('setting');
   Route::post('/updateSiteInfo', [App\Http\Controllers\Admin\AdminController::class, 'updateSiteInfo'])->name('updateSiteInfo');
