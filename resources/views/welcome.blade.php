@@ -90,7 +90,7 @@
                                     </div>
                                 </div>
 
-                                <img src="assets/images/job-profile2.png" alt="" class="user-img">
+                                <img src="{{asset('assets/images/profile-bg3.png')}}" alt="" class="user-img">
 
                                 <div class="circle-effect">
                                     <div class="circle"></div>
