@@ -31,7 +31,7 @@
 <body>
     @include('sweetalert::alert')
 
-    <form id="logout-form" action="{{ url('/user/logout') }}" method="POST" style="display: none;">@csrf</form> 
+    <form id="logout-form" action="{{ url('/applicant/logout') }}" method="POST" style="display: none;">@csrf</form> 
      <!-- auth-page wrapper -->
      <div class="auth-page-wrapper  py-5 d-flex justify-content-center align-items-center min-vh-100">
         <!-- auth-page content -->
@@ -46,7 +46,7 @@
                                         <div class="bg-overlay"></div>
                                         <div class="position-relative h-100 d-flex flex-column">
                                             <div class="mb-4">
-                                                <a @auth href="{{ url('/user/logout') }}"onclick="event.preventDefault();document.getElementById('logout-form').submit();"  @else href="{{url('/')}}" @endauth class="d-block">
+                                                <a @auth href="{{ url('/applicant/logout') }}"onclick="event.preventDefault();document.getElementById('logout-form').submit();"  @else href="{{url('/')}}" @endauth class="d-block">
                                                     <img src="{{ !empty($pageGlobalData->setting) ? asset($pageGlobalData->setting->logo) : null }}" alt="" width="250">
                                                 </a>
                                             </div>
