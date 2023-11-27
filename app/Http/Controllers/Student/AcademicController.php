@@ -84,8 +84,8 @@ class AcademicController extends Controller
         $unregisteredRequiredCoursesIds = array_diff($allRequiredCoursesIds, $registeredCourseIds);
 
         $failedCourses = CourseRegistration::with('course')->where('student_id', $studentId)->where('grade', 'F')->where('re_reg', null)->get();
-        $failedCourseIds = $failedCourses->pluck('course.id')->toArray();
-        $carryOverCourses = CoursePerProgrammePerAcademicSession::where('programme_id', $student->programme_id)->whereIn('course_id', $failedCourseIds)->get();
+        $failedCourseIds = $failedCourses->pluck('programme_course_id')->toArray();
+        $carryOverCourses = CoursePerProgrammePerAcademicSession::where('programme_id', $student->programme_id)->whereIn('id', $failedCourseIds)->get();
         $unregisteredRequiredCourses = CoursePerProgrammePerAcademicSession::where('programme_id', $student->programme_id)->whereIn('course_id', $unregisteredRequiredCoursesIds)->get();
 
         $addOrRemoveTxPay = Payment::with('structures')->where('type', Payment::PAYMENT_MODIFY_COURSE_REG)->where('academic_session', $academicSession)->first();
