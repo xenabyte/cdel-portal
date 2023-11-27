@@ -36,6 +36,7 @@
 
                         <div class="row gallery-wrapper">
                             @foreach($students as $hofStudent)
+                            @if(!empty($hofStudent->image))
                             <div class="element-item col-xxl-3 col-xl-4 col-sm-6 {{ ($hofStudent->level_id - 1) * 100 }}" data-category="{{ ($hofStudent->level_id - 1) * 100 }}">
                                 <div class="gallery-box card">
                                     <div class="gallery-container">
@@ -65,6 +66,7 @@
                                 </div>
                             </div>
                             <!-- end col -->
+                            @endif
                             @endforeach
                         </div>
                         
