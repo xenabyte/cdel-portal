@@ -103,7 +103,7 @@ class CommunicationController extends Controller
 
 
         if ($type !== 'sms') {
-            $mail = new NotificationMail($senderName, $message, $receiverName);
+            $mail = new NotificationMail($senderName, $message, $receiverName, $attachmentUrl);
             if (!empty($ccEmail)) {
                 Mail::to($student->email)->cc($ccEmail)->send($mail);
             }else{
@@ -183,7 +183,7 @@ class CommunicationController extends Controller
         }
 
         if ($type !== 'sms') {
-            $mail = new NotificationMail($senderName, $message, $receiverName);
+            $mail = new NotificationMail($senderName, $message, $receiverName, $attachmentUrl);
             Mail::to($receiverEmail)->send($mail);
         }
         

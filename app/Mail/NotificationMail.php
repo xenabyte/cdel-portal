@@ -14,17 +14,19 @@ class NotificationMail extends Mailable
     public $senderName;
     public $messageBody;
     public $receiverName;
+    public $attachment;
 
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct($senderName, $messageBody, $receiverName)
+    public function __construct($senderName, $messageBody, $receiverName, $attachment = null)
     {
         $this->senderName = $senderName;
         $this->messageBody = $messageBody;
         $this->receiverName = $receiverName;
+        $this->attachment = $attachment;
     }
 
     /**
@@ -35,7 +37,13 @@ class NotificationMail extends Mailable
     public function build()
     {
         $subject = 'TAU: Message from ' . $this->senderName;
-        return $this->subject($subject)
+        $message = $this->subject($subject)
             ->view('mail.notification.generalNotification');
+
+        if(!empty($this->attachment)){
+            $message->attach($this->attachment);
+        }
+        
+        return $message;
     }
 }
