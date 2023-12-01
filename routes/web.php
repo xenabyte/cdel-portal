@@ -69,9 +69,7 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'admin'],
 
   Route::post('/communication/getStudent', [App\Http\Controllers\Admin\CommunicationController::class, 'getStudent'])->name('getStudent')->middleware(['auth:admin']);
   Route::post('/sendStudentMessage', [App\Http\Controllers\Admin\CommunicationController::class, 'sendStudentMessage'])->name('sendStudentMessage')->middleware(['auth:admin']);
-
-  
-  
+  Route::post('/sendParentMessage', [App\Http\Controllers\Admin\CommunicationController::class, 'sendParentMessage'])->name('sendParentMessage')->middleware(['auth:admin']);
 
   Route::get('/setting', [App\Http\Controllers\Admin\AdminController::class, 'setting'])->name('setting');
   Route::post('/updateSiteInfo', [App\Http\Controllers\Admin\AdminController::class, 'updateSiteInfo'])->name('updateSiteInfo');
@@ -352,6 +350,14 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'staff'],
   Route::post('/sendMessage', [App\Http\Controllers\Staff\StaffController::class, 'sendMessage'])->name('sendMessage')->middleware(['auth:staff']);
   Route::post('/unsetStaff', [App\Http\Controllers\Staff\StaffController::class, 'unsetStaff'])->name('unsetStaff')->middleware(['auth:staff']);
 
+  Route::get('/messageStudent', [App\Http\Controllers\Staff\CommunicationController::class, 'messageStudent'])->name('messageStudent')->middleware(['auth:staff']);
+  Route::get('/messageParent', [App\Http\Controllers\Staff\CommunicationController::class, 'messageParent'])->name('messageParent')->middleware(['auth:staff']);
+  Route::get('/messageAllStudent', [App\Http\Controllers\Staff\CommunicationController::class, 'messageAllStudent'])->name('messageAllStudent')->middleware(['auth:staff']);
+  Route::get('/messageAllParent', [App\Http\Controllers\Staff\CommunicationController::class, 'messageAllParent'])->name('messageAllParent')->middleware(['auth:staff']);
+
+  Route::post('/communication/getStudent', [App\Http\Controllers\Staff\CommunicationController::class, 'getStudent'])->name('getStudent')->middleware(['auth:staff']);
+  Route::post('/sendStudentMessage', [App\Http\Controllers\Staff\CommunicationController::class, 'sendStudentMessage'])->name('sendStudentMessage')->middleware(['auth:staff']);
+  Route::post('/sendParentMessage', [App\Http\Controllers\Staff\CommunicationController::class, 'sendParentMessage'])->name('sendParentMessage')->middleware(['auth:staff']);
 
   Route::get('/studentCourses', [App\Http\Controllers\Staff\StaffController::class, 'studentCourses'])->name('studentCourses')->middleware(['auth:staff']);
   Route::post('/getStudentCourses', [App\Http\Controllers\Staff\StaffController::class, 'getStudentCourses'])->name('getStudentCourses')->middleware(['auth:staff']);

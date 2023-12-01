@@ -254,13 +254,9 @@
                             <div class="collapse menu-dropdown" id="communications">
                                 <ul class="nav nav-sm flex-column">
                                     <li class="nav-item">
-                                        <a class="nav-link menu-link" href="{{ url('admin/messageStudent') }}" data-key="t-profile">Message Student</a>
+                                        <a class="nav-link menu-link" href="{{ url('admin/messageStudent') }}" data-key="t-profile">Message Student/Parent</a>
                                     </li>
                                     
-                                    <li class="nav-item">
-                                        <a class="nav-link menu-link" href="{{ url('admin/messageParent') }}" data-key="t-profile">Message Parent</a>
-                                    </li> 
-
                                     <li class="nav-item">
                                         <a class="nav-link menu-link" href="{{ url('admin/messageAllStudent') }}" data-key="t-profile">Message All Student</a>
                                     </li> 

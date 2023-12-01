@@ -2,9 +2,10 @@
 
 <!doctype html>
 <html lang="en" data-layout="vertical" data-layout-style="default" data-layout-position="fixed" data-topbar="light" data-sidebar="dark" data-sidebar-size="lg" data-layout-width="fluid" data-preloader="disable">
-<?php 
+@php
     $guardian = Auth::guard('guardian')->user();
-?>
+    $notifications = $guardian->notifications()->orderBy('created_at', 'desc')->get();
+@endphp
 
 <head>
 
@@ -99,6 +100,57 @@
                             <button type="button" class="btn btn-icon btn-topbar btn-ghost-secondary rounded-circle light-dark-mode shadow-none">
                                 <i class='bx bx-moon fs-22'></i>
                             </button>
+                        </div>
+
+                        <div class="dropdown topbar-head-dropdown ms-1 header-item" id="notificationDropdown">
+                            <button type="button" class="btn btn-icon btn-topbar btn-ghost-secondary rounded-circle shadow-none" id="page-header-notifications-dropdown" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-haspopup="true" aria-expanded="false">
+                                <i class='bx bx-bell fs-22'></i>
+                                <span class="position-absolute topbar-badge fs-10 translate-middle badge rounded-pill bg-danger">{{ $notifications->where('status', 0)->count() }}<span class="visually-hidden">unread messages</span></span>
+                            </button>
+                            <div class="dropdown-menu dropdown-menu-lg dropdown-menu-end p-0" aria-labelledby="page-header-notifications-dropdown">
+
+                                <div class="dropdown-head bg-primary bg-pattern rounded-top">
+                                    <div class="p-3">
+                                        <div class="row align-items-center">
+                                            <div class="col">
+                                                <h6 class="m-0 fs-16 fw-semibold text-white"> Notifications </h6>
+                                            </div>
+                                            <div class="col-auto dropdown-tabs">
+                                                <span class="badge badge-soft-light fs-13"> {{ $notifications->where('status', 0)->count() }} New</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                  <div class="tab-pane fade show active py-2 ps-2" id="all-noti-tab" role="tabpanel">
+                                        <div data-simplebar style="max-height: 300px;" class="pe-2">
+
+                                            @foreach ($notifications as $notification)
+                                            <a href="#" data-notification-id="{{ $notification->id }}" onclick="updateNotificationStatus(event)">
+                                                <div class="text-reset notification-item d-block dropdown-item position-relative {{ $loop->iteration != 1 ? 'border-top border-top-dashed':null }} {{ $notification->status == 1 ? 'notification-read' : 'notification-unread' }}">
+                                                    <div class="d-flex">
+                                                        <div class="flex-1">
+                                                            <div class="fs-13 text-muted">
+                                                                <p class="mb-1">{{ $notification->description }}</p>
+                                                                @if(!empty($notification->attachment))<a class="badge text-bg-danger" href="{{ asset($notification->attachment) }}">View Attachment</a>@endif
+                                                            </div>
+                                                            @php
+                                                                $createdAt = \Carbon\Carbon::parse($notification->created_at);
+                                                                $diff = $createdAt->diffForHumans();
+                                                            @endphp
+                                                            <p class="mb-0 fs-11 fw-medium text-uppercase text-muted">
+                                                                <span><i class="mdi mdi-clock-outline"></i> {{ $diff }}</span>
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                            @endforeach
+                                        </div>
+
+                                    </div>
+                            </div>
                         </div>
 
                         <div class="dropdown ms-sm-3 header-item topbar-user">
@@ -306,7 +358,32 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.32/vfs_fonts.js"></script>
 
 
-</body>
+<script>
+    // Get the current time
+    var currentTime = new Date();
+    var currentHour = currentTime.getHours();
+
+    // Define the greeting messages
+    var morningGreeting = "Good morning";
+    var afternoonGreeting = "Good afternoon";
+    var eveningGreeting = "Good evening";
+
+    // Get the DOM element to display the greeting
+    var greetingElement = document.getElementById("greeting");
+
+    // Determine the appropriate greeting based on the time of day
+    var greeting;
+    if (currentHour >= 0 && currentHour < 12) {
+        greeting = morningGreeting;
+    } else if (currentHour >= 12 && currentHour < 18) {
+        greeting = afternoonGreeting;
+    } else {
+        greeting = eveningGreeting;
+    }
+
+    // Display the greeting
+    greetingElement.innerHTML = greeting;
+</script>
 <script>
     function handlePaymentMethodChange(event) {
         const selectedPaymentMethod = event.target.value;
@@ -355,6 +432,21 @@
             submitButton.disabled = true;
         }
     }
+    function updateNotificationStatus(event) {
+        event.preventDefault();
+        
+        const notificationId = event.currentTarget.getAttribute('data-notification-id');
+        
+        axios.post("{{ url('/updateNotificationStatus') }}", {
+            notificationId: notificationId
+        })
+        .then(response => {
+            event.currentTarget.classList.add('notification-read');
+        })
+        .catch(error => {
+            console.error(error);
+        });
+    }
 </script>
 <script>
     $(document).ready(function() {
@@ -388,4 +480,5 @@
       });
     });
 </script>
+</body>
 </html>

@@ -1,4 +1,4 @@
-@extends('admin.layout.dashboard')
+@extends('staff.layout.dashboard')
 
 @section('content')
 
@@ -132,9 +132,9 @@
             </div><!-- end card header -->
 
             <div class="card-body pb-2 border-top border-top-dashed">
-                <form action="{{ url('/admin/sendStudentMessage') }}" method="post" enctype="multipart/form-data">
+                <form action="{{ url('/staff/sendStudentMessage') }}" method="post" enctype="multipart/form-data">
                     @csrf
-                    <input type="hidden" name="url" value="admin.messageStudent">
+                    <input type="hidden" name="url" value="staff.messageStudent">
                     <input type="hidden" name="studentId" value="{{ $student->id }}">
                     
                     <div class="mb-3">
@@ -190,9 +190,9 @@
             </div><!-- end card header -->
 
             <div class="card-body pb-2 border-top border-top-dashed">
-                <form action="{{ url('/admin/sendParentMessage') }}" method="post" enctype="multipart/form-data">
+                <form action="{{ url('/staff/sendParentMessage') }}" method="post" enctype="multipart/form-data">
                     @csrf
-                    <input type="hidden" name="url" value="admin.messageStudent">
+                    <input type="hidden" name="url" value="staff.messageStudent">
                     <input type="hidden" name="guardianId" value="{{ $student->applicant->guardian->id }}">
                     <input type="hidden" name="studentId" value="{{ $student->id }}">
                     
@@ -248,9 +248,9 @@
             </div>
 
             <div class="modal-body border-top border-top-dashed">
-                <form action="{{ url('/admin/communication/getStudent') }}" method="post" enctype="multipart/form-data">
+                <form action="{{ url('/staff/communication/getStudent') }}" method="post" enctype="multipart/form-data">
                     @csrf
-                    <input type="hidden" name="url" value="admin.messageStudent">
+                    <input type="hidden" name="url" value="staff.messageStudent">
                     <div class="mb-3">
                         <label for="reg" class="form-label">Application/Matric Number</label>
                         <input type="text" class="form-control" name="reg_number" id="reg">

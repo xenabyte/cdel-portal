@@ -132,6 +132,7 @@
                                                         <div class="flex-1">
                                                             <div class="fs-13 text-muted">
                                                                 <p class="mb-1">{!! $notification->description !!}</p>
+                                                                @if(!empty($notification->attachment))<a class="badge text-bg-danger" href="{{ asset($notification->attachment) }}">View Attachment</a>@endif
                                                             </div>
                                                             @php
                                                                 $createdAt = \Carbon\Carbon::parse($notification->created_at);

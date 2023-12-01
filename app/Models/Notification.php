@@ -14,6 +14,8 @@ class Notification extends Model
         'student_id',
         'staff_id',
         'user_id',
+        'guardian_id',
+        'attachment',
         'description',
         'status',
         'owner_type'
@@ -37,6 +39,16 @@ class Notification extends Model
     public function student()
     {
         return $this->belongsTo(Student::class, 'student_id');
+    }
+
+    /**
+     * Get the guardian that owns the Notification
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function guardian()
+    {
+        return $this->belongsTo(Guardian::class, 'guardian_id');
     }
 
     /**

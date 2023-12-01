@@ -299,6 +299,30 @@
                             </li>
                             @endif
 
+                            @if($staffStudentCareRole || $staffBursaryRole || $staffRegistrarRole || $staffVCRole)
+                            <li class="nav-item">
+                                <a class="nav-link menu-link" href="#communications" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarForms">
+                                    <i class="mdi mdi-broadcast"></i> <span data-key="t-communications">Communications</span>
+                                </a>
+                                <div class="collapse menu-dropdown" id="communications">
+                                    <ul class="nav nav-sm flex-column">
+                                        <li class="nav-item">
+                                            <a class="nav-link menu-link" href="{{ url('staff/messageStudent') }}" data-key="t-profile">Message Student/Parent</a>
+                                        </li>
+                                        
+                                        <li class="nav-item">
+                                            <a class="nav-link menu-link" href="{{ url('staff/messageAllStudent') }}" data-key="t-profile">Message All Student</a>
+                                        </li> 
+
+                                        <li class="nav-item">
+                                            <a class="nav-link menu-link" href="{{ url('staff/messageAllParent') }}" data-key="t-profile">Message All Parent</a>
+                                        </li> 
+                                    </ul>
+            
+                                </div>
+                            </li>
+                            @endif
+
                             @if($staffAdmissionOfficerRole || $staffPublicRelationRole || $staffRegistrarRole || $staffVCRole)
                             <li class="nav-item">
                                 <a class="nav-link menu-link" href="#admission" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="admission">

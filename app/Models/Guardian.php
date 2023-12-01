@@ -54,4 +54,14 @@ class Guardian extends Authenticatable
     {
         return $this->hasMany(User::class, 'guardian_id',);
     }
+
+    /**
+     * Get all of the notifications for the Staff
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function notifications()
+    {
+        return $this->hasMany(Notification::class, 'guardian_id');
+    }
 }

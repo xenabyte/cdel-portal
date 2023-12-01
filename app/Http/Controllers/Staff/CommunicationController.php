@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Staff;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -31,7 +31,7 @@ class CommunicationController extends Controller
 {
     //
     public function messageStudent(){
-        return view('admin.messageStudent');
+        return view('staff.messageStudent');
     }
 
     public function getStudent(Request $request){
