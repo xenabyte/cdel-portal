@@ -254,8 +254,11 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'admin'],
   Route::post('/deleteCourseForStudent', [App\Http\Controllers\Admin\ProgrammeController::class, 'deleteCourseForStudent'])->name('deleteCourseForStudent')->middleware(['auth:admin']);
   Route::post('/updateCourseForStudent', [App\Http\Controllers\Admin\ProgrammeController::class, 'updateCourseForStudent'])->name('updateCourseForStudent')->middleware(['auth:admin']);
 
+  Route::post('/changeStudentProgramme', [App\Http\Controllers\Admin\ProgrammeController::class, 'changeStudentProgramme'])->name('changeStudentProgramme')->middleware(['auth:admin']);
+  Route::get('/changeProgramme', [App\Http\Controllers\Admin\ProgrammeController::class, 'changeProgramme'])->name('changeProgramme')->middleware(['auth:admin']);
 
-  
+  Route::post('/acad/getStudent', [App\Http\Controllers\Admin\ProgrammeController::class, 'getStudent'])->name('getStudent')->middleware(['auth:admin']);
+
   
 });
 

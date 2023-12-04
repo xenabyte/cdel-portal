@@ -41,6 +41,8 @@ use App\Models\Partner;
 use App\Models\AcademicLevel;
 use App\Models\Programme;
 use App\Models\Session;
+use App\Models\Faculty;
+use App\Models\Department;
 
 class Controller extends BaseController
 {
@@ -244,6 +246,8 @@ class Controller extends BaseController
 
         $levels = AcademicLevel::get();
         $programmes = Programme::get();
+        $departments = Department::get();
+        $faculties = Faculty::get();
         $sessions = Session::orderBy('id', 'DESC')->get();
 
         $transactions = Transaction::where('user_id', $student->id)->where('payment_id', '!=', 0)->orderBy('id', 'DESC')->get();
@@ -271,6 +275,8 @@ class Controller extends BaseController
             'applicant' => $student,
             'levels' => $levels,
             'programmes' => $programmes,
+            'departments' => $departments,
+            'faculties' => $faculties,
             'sessions' => $sessions   
         ]);
     }
@@ -287,6 +293,8 @@ class Controller extends BaseController
 
         $levels = AcademicLevel::orderBy('id', 'DESC')->get();
         $programmes = Programme::get();
+        $departments = Department::get();
+        $faculties = Faculty::get();
         $sessions = Session::orderBy('id', 'DESC')->get();
 
         $transactions = Transaction::with('paymentType')->where('student_id', $studentId)->orderBy('id', 'DESC')->get();
@@ -359,6 +367,8 @@ class Controller extends BaseController
             'student' => $student,
             'levels' => $levels,
             'programmes' => $programmes,
+            'departments' => $departments,
+            'faculties' => $faculties,
             'sessions' => $sessions,
             'allTxs' => $transactions,  
         ]);

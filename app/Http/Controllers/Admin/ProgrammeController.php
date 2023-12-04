@@ -20,8 +20,12 @@ use App\Models\Notification;
 use App\Models\GradeScale;
 use App\Models\CourseRegistration;
 use App\Models\Staff;
+use App\Models\Student;
 use App\Models\CoursePerProgrammePerAcademicSession;
 use App\Models\CourseRegistrationSetting;
+use App\Models\Transaction;
+use App\Models\User;
+use App\Models\Payment;
 
 use App\Mail\NotificationMail;
 use App\Libraries\Result\Result;
@@ -585,4 +589,90 @@ class ProgrammeController extends Controller
         return redirect()->back();
     }
 
+    public function changeProgramme(){
+        return view('admin.changeProgramme');
+    }
+
+    public function getStudent(Request $request){
+        $validator = Validator::make($request->all(), [
+            'reg_number' => 'required',
+            'type' => 'required',
+            'url' => 'required',
+        ]);
+
+        if($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+
+        $studentIdCode = $request->reg_number;
+        if($request->type == 'Student'){
+            return $this->getSingleStudent($studentIdCode, $request->url);
+        }
+    }
+
+    public function changeStudentProgramme (Request $request) {
+        $validator = Validator::make($request->all(), [
+            'studentId' => 'required',
+        ]);
+
+        if($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+        
+        if(!$student = Student::find($request->studentId)){
+            alert()->error('Oops', 'Invalid Student ')->persistent('Close');
+            return redirect()->back();
+        }
+
+        if(!empty($request->level_id) && ($request->level_id != $student->level_id)){
+            $student->level_id = $request->level_id;
+        }
+
+        if(!empty($request->programme_id) && ($request->programme_id != $student->programme_id)){
+            $student->programme_id = $request->programme_id;
+            $academicSession = $student->academic_session;
+            $studentId = $student->id;
+            $applicantId = $student->user_id;
+            $applicant = User::find($applicantId);
+            $applicationType = $applicant->application_type;
+
+            $type = Payment::PAYMENT_TYPE_SCHOOL;
+
+            if($applicationType != 'UTME' && ($student->level_id == 2|| $student->level_id == 3)){
+                $type = Payment::PAYMENT_TYPE_SCHOOL_DE;
+            }
+
+            $schoolPayment = Payment::with('structures')
+                ->where('type', $type)
+                ->where('programme_id', $student->programme_id)
+                ->where('level_id', $student->level_id)
+                ->where('academic_session', $academicSession)
+                ->first();
+
+            if(!$schoolPayment){
+                alert()->success('Programme school fees not set, check with ICT admin', '')->persistent('Close');
+                return $this->getSingleStudent($student->matric_number, $request->url);
+            }
+
+            Transaction::where('student_id', $studentId)->where('session', $academicSession)->where('status', 1)->update(['payment_id' => $schoolPayment]);
+        }
+
+        if(!empty($request->department_id) && ($request->department_id != $student->department_id)){
+            $student->department_id = $request->department_id;
+        }
+
+        if(!empty($request->faculty_id) && ($request->faculty_id != $student->faculty_id)){
+            $student->faculty_id = $request->faculty_id;
+        }
+
+        if($student->save()){
+            alert()->success('Student details updated successfully', '')->persistent('Close');
+            return $this->getSingleStudent($student->matric_number, $request->url);
+        }
+
+        alert()->error('Oops!', 'Something went wrong')->persistent('Close');
+        return $this->getSingleStudent($student->matric_number, $request->url);
+    }
 }

@@ -408,6 +408,9 @@
                                         <a href="{{ url('/admin/massPromotion') }}" class="nav-link">Promote Student</a>
                                     </li>
                                     <li class="nav-item">
+                                        <a href="{{ url('/admin/changeProgramme') }}" class="nav-link">Change Programme</a>
+                                    </li>
+                                    <li class="nav-item">
                                         <a href="{{ url('/admin/demoteStudent') }}" class="nav-link">Demote Student</a>
                                     </li>
                                     <li class="nav-item">
