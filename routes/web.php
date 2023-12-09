@@ -259,7 +259,10 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'admin'],
 
   Route::post('/acad/getStudent', [App\Http\Controllers\Admin\ProgrammeController::class, 'getStudent'])->name('getStudent')->middleware(['auth:admin']);
 
-  
+  Route::get('/studentExits', [App\Http\Controllers\Admin\StudentCareController::class, 'studentExits'])->name('studentExits')->middleware(['auth:admin']);
+  Route::post('getExitApplication', [App\Http\Controllers\Admin\StudentCareController::class, 'getExitApplication'])->name('getExitApplication')->middleware(['auth:admin']);
+  Route::post('manageExitApplication', [App\Http\Controllers\Admin\StudentCareController::class, 'manageExitApplication'])->name('manageExitApplication')->middleware(['auth:admin']);
+
 });
 
 Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'student'], function () {
@@ -316,6 +319,7 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'student'
 
   Route::get('/mentor', [App\Http\Controllers\Student\StudentController::class, 'mentor'])->name('mentor')->middleware(['auth:student']);
   Route::get('/exits', [App\Http\Controllers\Student\StudentController::class, 'exits'])->name('exits')->middleware(['auth:student']);
+  Route::post('exitApplication', [App\Http\Controllers\Student\StudentController::class, 'exitApplication'])->name('exitApplication')->middleware(['auth:student']);
 
   Route::get('/hallOfFame', [App\Http\Controllers\HomeController::class, 'hallOfFame']);
   
@@ -465,7 +469,10 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'staff'],
   Route::post('/deleteCourseForStudent', [App\Http\Controllers\Staff\ProgrammeController::class, 'deleteCourseForStudent'])->name('deleteCourseForStudent')->middleware(['auth:staff']);
   Route::post('/updateCourseForStudent', [App\Http\Controllers\Staff\ProgrammeController::class, 'updateCourseForStudent'])->name('updateCourseForStudent')->middleware(['auth:staff']);
 
-  
+  Route::get('/studentExits', [App\Http\Controllers\Staff\StudentCareController::class, 'studentExits'])->name('studentExits')->middleware(['auth:staff']);
+  Route::post('getExitApplication', [App\Http\Controllers\Staff\StudentCareController::class, 'getExitApplication'])->name('getExitApplication')->middleware(['auth:staff']);
+  Route::post('manageExitApplication', [App\Http\Controllers\Staff\StudentCareController::class, 'manageExitApplication'])->name('manageExitApplication')->middleware(['auth:staff']);
+
 });
 
 Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'bursary'], function () {

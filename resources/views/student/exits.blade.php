@@ -30,7 +30,7 @@
             <div class="card-header align-items-center d-flex">
                 <h4 class="card-title mb-0 flex-grow-1">Exit Application(s)</h4>
                 <div class="flex-shrink-0">
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#add">Exit Application(s)</button>
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#add">Apply For Exit</button>
                 </div>
             </div><!-- end card header -->
 
@@ -43,76 +43,24 @@
                             <thead>
                                 <tr>
                                     <th scope="col">Id</th>
-                                    <th scope="col">Academic Level</th>
-                                    <th scope="col"></th>
+                                    <th scope="col">Purpose</th>
+                                    <th scope="col">Destination</th>
+                                    <th scope="col">Outing Date</th>
+                                    <th scope="col">Returning Date</th>
+                                    <th scope="col">Status</th>
+                                    <th scope="col">File</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach($exitApplications as $exitApplication)
                                 <tr>
                                     <th scope="row">{{ $loop->iteration }}</th>
-                                    <td>{{ $exitApplications->level }} </td>
-                                    <td>
-                                        <div class="hstack gap-3 fs-15">
-                                            <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#delete{{$exitApplications->id}}" class="link-danger"><i class="ri-delete-bin-5-line"></i></a>
-                                            <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#edit{{$exitApplications->id}}" class="link-primary"><i class="ri-edit-circle-fill"></i></a>
-
-                                            <div id="delete{{$exitApplications->id}}" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
-                                                <div class="modal-dialog modal-dialog-centered">
-                                                    <div class="modal-content">
-                                                        <div class="modal-body text-center p-5">
-                                                            <div class="text-end">
-                                                                <button type="button" class="btn-close text-end" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                            </div>
-                                                            <div class="mt-2">
-                                                                <lord-icon src="https://cdn.lordicon.com/wwneckwc.json" trigger="hover" style="width:150px;height:150px">
-                                                                </lord-icon>
-                                                                <h4 class="mb-3 mt-4">Are you sure you want to delete <br/> {{ $exitApplications->level }}?</h4>
-                                                                <form action="{{ url('/admin/deleteLevel') }}" method="POST">
-                                                                    @csrf
-                                                                    <input name="level_id" type="hidden" value="{{$exitApplications->id}}">
-                                                                    <hr>
-                                                                    <button type="submit" id="submit-button" class="btn btn-danger w-100">Yes, Delete</button>
-                                                                </form>
-                                                            </div>
-                                                        </div>
-                                                        <div class="modal-footer bg-light p-3 justify-content-center">
-
-                                                        </div>
-                                                    </div><!-- /.modal-content -->
-                                                </div><!-- /.modal-dialog -->
-                                            </div><!-- /.modal -->
-
-                                            <div id="edit{{$exitApplications->id}}" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
-                                                <div class="modal-dialog modal-dialog-centered">
-                                                    <div class="modal-content border-0 overflow-hidden">
-                                                        <div class="modal-header p-3">
-                                                            <h4 class="card-title mb-0">Edit Level</h4>
-                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                        </div>
-                                
-                                                        <div class="modal-body">
-                                                            <form action="{{ url('/admin/updateLevel') }}" method="post" enctype="multipart/form-data">
-                                                                @csrf
-
-                                                                <input name="level_id" type="hidden" value="{{$exitApplications->id}}">
-                                
-                                                                <div class="mb-3">
-                                                                    <label for="level" class="form-label">Level</label>
-                                                                    <input type="text" class="form-control" name="level"  minlength="3" maxlength="3" id="level" value="{{ $exitApplications->level }}">
-                                                                </div>
-
-                                                                <hr>
-                                                                <div class="text-end">
-                                                                    <button type="submit" id="submit-button" class="btn btn-primary">Save Changes</button>
-                                                                </div>
-                                                            </form>
-                                                        </div>
-                                                    </div><!-- /.modal-content -->
-                                                </div><!-- /.modal-dialog -->
-                                            </div><!-- /.modal -->
-                                        </div>
-                                    </td>
+                                    <td>{{ $exitApplication->purpose }} </td>
+                                    <td>{{ $exitApplication->destination }} </td>
+                                    <td>{{ empty($exitApplication->exit_date)? null : date('F j, Y \a\t g:i A', strtotime($exitApplication->exit_date)) }} </td>
+                                    <td>{{ empty($exitApplication->exit_date)? null : date('F j, Y \a\t g:i A', strtotime($exitApplication->return_date)) }} </td>
+                                    <td>{{ ucwords($exitApplication->status) }} </td>
+                                    <td>@if($exitApplication->status != 'pending') <a href="{{ asset($exitApplication->file) }}" class="btn btn-outline-primary" target="_blank" rel="noopener noreferrer">View Document</a>@endif
                                 </tr>
                                 @endforeach
                             </tbody>
@@ -130,22 +78,78 @@
     <div class="modal-dialog modal-md modal-dialog-centered">
         <div class="modal-content border-0 overflow-hidden">
             <div class="modal-header p-3">
-                <h4 class="card-title mb-0">Exit Application(s)</h4>
+                <h4 class="card-title mb-0">Exit Application</h4>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
 
             <div class="modal-body">
-                <form action="{{ url('/admin/addLevel') }}" method="post" enctype="multipart/form-data">
+                <form action="{{ url('student/exitApplication') }}" class="checkout-tab border-top border-top-dashed" method="POST">
                     @csrf
-                    <div class="mb-3">
-                        <label for="level" class="form-label">Exit Application(s)</label>
-                        <input type="text" class="form-control" minlength="3" maxlength="3" name="level" id="level">
-                    </div>
+                    <input type="hidden" name="student_id" value="{{ $student->id }}">
+                    <div class="modal-body">
+                        <div class="hidden-fields row mt-3 g-3">
 
-                    <hr>
-                    <div class="text-end">
-                        <button type="submit" id="submit-button" class="btn btn-primary">Send Application</button>
+                            <div class="col-lg-6">
+                                <div class="form-floating">
+                                    <select name="type" class="form-control" id="type" required>
+                                        <option selected value="">Select Exit Type</option>
+                                        <option value="Holiday">Holiday</option>
+                                        <option value="Casual">Casual</option>
+                                    </select>
+                                    <label for="type">Exit Type</label>
+                                </div>
+                            </div>
+    
+                            <div class="col-lg-6" id="transportField">
+                                <div class="form-floating">
+                                    <select name="transport_mode" class="form-control" id="transport" required>
+                                        <option selected value="">Select Mode of Transportation</option>
+                                        <option value="Private">Private</option>
+                                        <option value="School Transport">School Transport</option>
+                                        <option value="Flight">Flight</option>
+                                    </select>
+                                    <label for="transport">Select Mode of Transportation</label>
+                                </div>
+                            </div>
+    
+                            <div class="col-lg-6" id="exitDateField">
+                                <div class="form-floating">
+                                    <input type="date" class="form-control" id="exit_date" name="exit_date">
+                                    <label for="exit_date">Outing Date</label>
+                                </div>
+                            </div>
+    
+                            <div class="col-lg-6" id="returnDateField">
+                                <div class="form-floating">
+                                    <input type="datetime-local" class="form-control" id="return_date" name="return_date">
+                                    <label for="return_date">Returning Date and time</label>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-12">
+                                <div class="form-floating">
+                                    <input type="text" class="form-control" id="destination" name="destination">
+                                    <label for="destination">Destination</label>
+                                </div>
+                            </div>
+    
+                            <div class="col-lg-12">
+                                <div class="form-floating">
+                                    <input type="text" class="form-control" id="purpose" name="purpose">
+                                    <label for="purpose">Purpose</label>
+                                </div>
+                            </div>
+        
+                            <!--end col-->
+                            <div class="col-lg-12 border-top border-top-dashed">
+                                <div class="d-flex align-items-start gap-3 mt-3">
+                                    <button type="submit" id="submit-button" class="btn btn-primary btn-label right ms-auto nexttab" data-nexttab="pills-bill-address-tab"><i class="ri-arrow-right-line label-icon align-middle fs-16 ms-2"></i> Submit</button>
+                                </div>
+                            </div>
+                            <!--end col-->
+                        </div>                        
                     </div>
+                    <!--end modal-body-->
                 </form>
             </div>
         </div><!-- /.modal-content -->

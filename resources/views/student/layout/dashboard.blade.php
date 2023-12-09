@@ -44,6 +44,11 @@
           toolbar_mode: 'floating',
         });
     </script>
+
+    <script>
+        window.Laravel = {!! json_encode(['csrfToken' => csrf_token()]) !!};
+    </script>
+
 <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 </head>
 
@@ -564,6 +569,25 @@
         });
         });
     </script>
+    <script>
+        $(document).ready(function () {
+            // Hide initially
+            $('#exit_date, #return_date').closest('.col-lg-6').hide();
+    
+            // On change of the 'type' select
+            $('#type').on('change', function () {
+                var selectedType = $(this).val();
+    
+                // Show or hide the fields based on the selected type
+                if (selectedType === 'Holiday') {
+                    $('#exit_date, #return_date').closest('.col-lg-6').hide();
+                } else {
+                    $('#exit_date, #return_date').closest('.col-lg-6').show();
+                }
+            });
+        });
+    </script>
+    
 </body>
 
 </html>

@@ -12,6 +12,7 @@ use App\Models\Payment;
 use App\Models\Staff;
 use App\Models\StudentCourseRegistration;
 use App\Models\Transaction;
+use App\Models\StudentExit;
 
 use Carbon\Carbon;
 use Log;
@@ -247,6 +248,34 @@ Class Pdf {
         $data = ['info'=>$student, 'transactions' => $transactions];
 
         $pdf = PDFDocument::loadView('pdf.invoice', $data)
+        ->setOptions($options)
+        ->save($fileDirectory);
+
+        return $fileDirectory;
+    }
+
+    public function generateExitApplication($session, $studentId, $newExitId){
+        $options = [
+            'isRemoteEnabled' => true,
+            'encryption' => '128',
+            'no_modify' => true,
+        ];
+
+        $student = Student::with('applicant', 'applicant.guardian', 'academicLevel', 'faculty', 'department', 'programme')->where('id', $studentId)->first();
+        $name = $student->applicant->lastname.' '.$student->applicant->othernames;
+        $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $name .' Exit Application '. $session .' '. $newExitId)));
+
+
+        $exitApplication = StudentExit::find($newExitId);
+
+        $fileDirectory = 'uploads/files/exit_applications/'.$slug.'.pdf';
+        if (file_exists($fileDirectory)) {
+            unlink($fileDirectory);
+        }   
+             
+        $data = ['info'=>$student, 'exitApplication' => $exitApplication];
+
+        $pdf = PDFDocument::loadView('pdf.exitApplication', $data)
         ->setOptions($options)
         ->save($fileDirectory);
 

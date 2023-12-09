@@ -99,6 +99,9 @@
           toolbar_mode: 'floating',
         });
     </script>
+     <script>
+        window.Laravel = {!! json_encode(['csrfToken' => csrf_token()]) !!};
+    </script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 </head>
 
@@ -432,6 +435,25 @@
                                     <ul class="nav nav-sm flex-column">
                                         <li class="nav-item">
                                             <a href="{{ url('/staff/getStudentResults') }}" class="nav-link">Students Results</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li> <!-- end Dashboard Menu -->
+                            @endif
+
+
+                            @if($staffStudentCareRole)
+                            <li class="nav-item">
+                                <a class="nav-link menu-link" href="#studentCare" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="studentCare">
+                                    <i class="mdi mdi-account-heart"></i> <span data-key="t-student">Student Care</span> <span class="badge badge-pill bg-danger" data-key="t-hot">{{ !empty($pageGlobalData->exitApplicationCount) ? $pageGlobalData->exitApplicationCount : 0 }}</span>
+                                </a>
+                                <div class="collapse menu-dropdown" id="studentCare">
+                                    <ul class="nav nav-sm flex-column">
+                                        <li class="nav-item">
+                                            <a href="{{ url('/staff/studentExits') }}" class="nav-link">Student Exit <span class="badge badge-pill bg-danger" data-key="t-hot">{{ !empty($pageGlobalData->exitApplicationCount) ? $pageGlobalData->exitApplicationCount : 0 }}</span></a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a href="{{ url('/staff/studentHostelMgt') }}" class="nav-link">Student Hostel Mgt</a>
                                         </li>
                                     </ul>
                                 </div>

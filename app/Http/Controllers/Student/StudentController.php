@@ -16,6 +16,7 @@ use App\Models\Transaction;
 use App\Models\Staff;
 use App\Models\User as Applicant;
 use App\Models\Student;
+use App\Models\StudentExit;
 
 use App\Libraries\Pdf\Pdf;
 
@@ -737,6 +738,50 @@ class StudentController extends Controller
 
         if($student->update()){
             alert()->success('Success', 'Save Changes')->persistent('Close');
+            return redirect()->back();
+        }
+
+        alert()->error('Oops!', 'An Error Occurred')->persistent('Close');
+        return redirect()->back();
+    }
+
+    public function exitApplication(Request $request){
+        $validator = Validator::make($request->all(), [
+            'student_id' => 'required',
+            'type' => 'required',
+            'transport_mode' => 'required',
+            'purpose' => 'required',
+        ]);
+
+        if($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+
+        $student = Auth::guard('student')->user();
+        $globalData = $request->input('global_data');
+        $academicSession = $globalData->sessionSetting['academic_session'];
+
+        $newExitApplication = ([
+            'student_id' => $student->id,
+            'type' => $request->type,
+            'transport_mode' => $request->transport_mode,
+            'purpose' => $request->purpose,
+            'destination' => $request->destination,
+            'exit_date' => !empty($request->exit_date) ? $request->exit_date : null,
+            'return_date' => !empty($request->return_date) ? $request->return_date : null,
+        ]);
+
+        if($newExit = StudentExit::create($newExitApplication)){
+            $newExitId = $newExit->id;
+            $getLatestExit = StudentExit::find($newExitId);
+
+            $pdf = new Pdf();
+            $exitApplication = $pdf->generateExitApplication($academicSession, $student->id, $newExitId);
+            $getLatestExit->file = $exitApplication;
+            $getLatestExit->save();
+
+            alert()->success('Success', 'Application submitted')->persistent('Close');
             return redirect()->back();
         }
 

@@ -22,6 +22,11 @@ class CreateStudentExitsTable extends Migration
             $table->timestamp('exited_at')->nullable();
             $table->timestamp('return_at')->nullable();
             $table->string('status')->default('Pending');
+            $table->string('type')->nullable();
+            $table->string('destination')->nullable();
+            $table->string('academic_session')->nullable();
+            $table->string('file')->nullable();
+            $table->string('transport_mode')->nullable();
             $table->boolean('is_dap_approved')->default(false);
             $table->timestamp('is_dap_approved_date')->nullable();
             $table->boolean('is_registrar_approved')->default(false);

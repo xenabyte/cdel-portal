@@ -66,14 +66,14 @@ class CommunicationController extends Controller
 
         $studentId = $request->studentId;
 
-        $student = Student::find($studentId);
-        $receiverName = $student->applicant->lastname .' ' . $student->applicant->othernames;
-        $phoneNumber = $student->applicant->phone_number;
-
         if (!$student = Student::find($studentId)) {
             alert()->error('Oops!', 'Student record not found')->persistent('Close');
             return $this->getSingleStudent($student->matric_number, $request->url);
         }
+
+        $receiverName = $student->applicant->lastname .' ' . $student->applicant->othernames;
+        $phoneNumber = $student->applicant->phone_number;
+
 
         $type = $request->type;
         $message = $request->message;
