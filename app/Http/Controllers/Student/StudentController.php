@@ -753,10 +753,9 @@ class StudentController extends Controller
         $globalData = $request->input('global_data');
         $academicSession = $globalData->sessionSetting['academic_session'];
 
-        $studentRegistrationCount = StudentCourseRegistration::where([
-            'student_id' => $studentId,
-            'academic_session' => $academicSession
-        ])->orderBy('id', 'DESC')->get();
+        $studentRegistrationCount = StudentCourseRegistration::where('student_id', $studentId)
+        ->where('academic_session', $academicSession)
+        ->count();
 
         if($studentRegistrationCount < 1){
             alert()->error('Oops!', 'You are required to complete your course registration')->persistent('Close');
