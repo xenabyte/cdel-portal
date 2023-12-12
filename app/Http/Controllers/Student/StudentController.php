@@ -746,6 +746,21 @@ class StudentController extends Controller
     }
 
     public function exitApplication(Request $request){
+
+        $student = Auth::guard('student')->user();
+        $globalData = $request->input('global_data');
+        $academicSession = $globalData->sessionSetting['academic_session'];
+
+        $studentRegistrationCount = StudentCourseRegistration::where([
+            'student_id' => $studentId,
+            'academic_session' => $academicSession
+        ])->orderBy('id', 'DESC')->get();
+
+        if($studentRegistrationCount < 1){
+            alert()->error('Oops!', 'You are required to complete your course registration')->persistent('Close');
+            return redirect()->back();
+        }
+
         $validator = Validator::make($request->all(), [
             'student_id' => 'required',
             'type' => 'required',
@@ -756,11 +771,7 @@ class StudentController extends Controller
         if($validator->fails()) {
             alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
             return redirect()->back();
-        }
-
-        $student = Auth::guard('student')->user();
-        $globalData = $request->input('global_data');
-        $academicSession = $globalData->sessionSetting['academic_session'];
+        }        
 
         $newExitApplication = ([
             'student_id' => $student->id,
