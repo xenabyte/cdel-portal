@@ -656,7 +656,7 @@ class ProgrammeController extends Controller
                 return $this->getSingleStudent($student->matric_number, $request->url);
             }
 
-            Transaction::where('student_id', $studentId)->where('session', $academicSession)->where('status', 1)->update(['payment_id' => $schoolPayment]);
+            Transaction::where('student_id', $studentId)->where('session', $academicSession)->where('status', 1)->update(['payment_id' => $schoolPayment->id]);
         }
 
         if(!empty($request->department_id) && ($request->department_id != $student->department_id)){
