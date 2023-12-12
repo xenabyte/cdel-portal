@@ -749,6 +749,7 @@ class StudentController extends Controller
     public function exitApplication(Request $request){
 
         $student = Auth::guard('student')->user();
+        $studentId = $student->id;
         $globalData = $request->input('global_data');
         $academicSession = $globalData->sessionSetting['academic_session'];
 
