@@ -408,7 +408,7 @@ class ProgrammeController extends Controller
             $studentCourse->status = $request->status;
         }
 
-        if(!empty($request->credit_unit) && $request->credit_unit != $studentCourse->credit_unit) {
+        if($request->credit_unit != $studentCourse->credit_unit) {
             $studentCourse->credit_unit = $request->credit_unit;
         }
 
