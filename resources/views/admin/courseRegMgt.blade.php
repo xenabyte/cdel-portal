@@ -67,6 +67,16 @@
                                                     @endif
                                                 </div>
                                             </form>
+
+                                            @if($programme->course_registration != 'start')
+                                            <form action="{{ url('/admin/resetCourseReg') }}" method="post" enctype="multipart/form-data">
+                                                @csrf
+                                                <input name="programme_id" type="hidden" value="{{$programme->id}}">
+                                                <div class="text-end">
+                                                    <button type="submit" id="submit-button" class="btn btn-warning">Reset</button>
+                                                </div>
+                                            </form>
+                                            @endif
                                         </div>
                                     </td>
                                 </tr>

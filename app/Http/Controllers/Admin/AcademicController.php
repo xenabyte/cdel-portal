@@ -27,6 +27,10 @@ use App\Models\StudentDemotion;
 use App\Models\StudentCourseRegistration;
 use App\Models\Course;
 use App\Models\Transaction;
+use App\Models\Notification;
+use App\Models\CourseRegistration;
+
+use App\Mail\NotificationMail;
 
 use SweetAlert;
 use Mail;
@@ -700,6 +704,42 @@ class AcademicController extends Controller
         return redirect()->back();
     }
 
+    public function resetCourseReg(Request $request){
+        $validator = Validator::make($request->all(), [
+            'programme_id' => 'required',
+        ]);
+
+        $programmeId = $request->programme_id;
+
+        $programme = Programme::where('id', $programmeId)
+        ->first();
+
+        if(empty($programme)){
+            alert()->error('Oops', 'Invalid Programme')->persistent('Close');
+            return redirect()->back();
+        }
+
+        $programmeStudents = Student::where('programme_id', $programmeId)->get();
+        $programmeStudentIds = $programmeStudents->pluck('id')->toArray();
+        $studentCourseRegistrations = StudentCourseRegistration::whereIn('student_id', $programmeStudentIds)->get();
+        
+        foreach ($studentCourseRegistrations as $studentCourseReg){
+            $studentId = $studentCourseReg->student_id;
+            $academicSession = $studentCourseReg->academic_session;
+    
+            // Delete registered courses
+            CourseRegistration::where([
+                'student_id' => $studentId,
+                'academic_session' => $academicSession
+            ])->forceDelete();
+    
+            $studentCourseReg->forceDelete();
+        }
+
+        alert()->success('Good Job', 'Course registration reset successfully')->persistent('Close');
+        return redirect()->back();
+    }
+
     public function setCourseRegStatus(Request $request){
         
         $courseRegMgt = new CourseRegistrationSetting;
@@ -1111,6 +1151,22 @@ class AcademicController extends Controller
         $studentCourseReg->hod_status = true;
 
         if($studentCourseReg->save()){
+            $studentId = $studentCourseReg->student_id;
+            $student = Student::find($studentId);
+
+            $senderName = env('SCHOOL_NAME');
+            $receiverName = $student->applicant->lastname .' ' . $student->applicant->othernames;
+            $message = 'Your course registration has been successfully approved. Please proceed to print at your earliest convenience.';
+
+            $mail = new NotificationMail($senderName, $message, $receiverName);
+            Mail::to($student->email)->send($mail);
+            Notification::create([
+                'student_id' => $student->id,
+                'description' => $message,
+                'attachment' => null,
+                'status' => 0
+            ]);
+
             alert()->success('Registration Approved', '')->persistent('Close');
             return redirect()->back();
         }
@@ -1118,7 +1174,55 @@ class AcademicController extends Controller
         alert()->error('Oops!', 'Something went wrong')->persistent('Close');
         return redirect()->back();
     }
-    
+
+    public function undoReg(Request $request){
+        $validator = Validator::make($request->all(), [
+            'reg_id' => 'required',
+        ]);
+
+        if($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+
+        if(!$studentCourseReg = StudentCourseRegistration::find($request->reg_id)){
+            alert()->error('Oops', 'Invalid Student Registration ')->persistent('Close');
+            return redirect()->back();
+        }
+
+        $levelId = $studentCourseReg->level_id;
+        $studentId = $studentCourseReg->student_id;
+        $academicSession = $studentCourseReg->academic_session;
+
+        // Delete registered courses
+        CourseRegistration::where([
+            'student_id' => $studentId,
+            'academic_session' => $academicSession
+        ])->forceDelete();
+
+        if($studentCourseReg->forceDelete()){
+            $student = Student::find($studentId);
+
+            $senderName = env('SCHOOL_NAME');
+            $receiverName = $student->applicant->lastname .' ' . $student->applicant->othernames;
+            $message = 'Your course registration has been successfully reset. Please proceed to re-register as soon as possible.';
+
+            $mail = new NotificationMail($senderName, $message, $receiverName);
+            Mail::to($student->email)->send($mail);
+            Notification::create([
+                'student_id' => $student->id,
+                'description' => $message,
+                'attachment' => null,
+                'status' => 0
+            ]);
+
+            alert()->success('Registration reversed', '')->persistent('Close');
+            return redirect()->back();
+        }
+
+        alert()->error('Oops!', 'Something went wrong')->persistent('Close');
+        return redirect()->back();
+    }
 
     public function resultApprovalStatus(){
 

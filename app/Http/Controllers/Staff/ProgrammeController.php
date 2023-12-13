@@ -466,6 +466,21 @@ class ProgrammeController extends Controller
         $pdf = new Pdf();
         $courseReg = $pdf->generateCourseRegistration($studentId, $academicSession, $otherData);
         if(!empty($courseReg)){
+            $studentId = $studentCourseReg->student_id;
+            $student = Student::find($studentId);
+
+            $senderName = env('SCHOOL_NAME');
+            $receiverName = $student->applicant->lastname .' ' . $student->applicant->othernames;
+            $message = 'Your course registration has been successfully approved. Please proceed to print at your earliest convenience.';
+
+            $mail = new NotificationMail($senderName, $message, $receiverName, $courseReg);
+            Mail::to($student->email)->send($mail);
+            Notification::create([
+                'student_id' => $student->id,
+                'description' => $message,
+                'attachment' => $courseReg,
+                'status' => 0
+            ]);
             alert()->success('Registration Approved', '')->persistent('Close');
             return redirect()->back();
         }
