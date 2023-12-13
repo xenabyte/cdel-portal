@@ -127,6 +127,11 @@ Class Pdf {
 
         $data = ['info'=>$student, 'registeredCourses' => $courseReg, 'staffData' => $staffData];
 
+        $fileDirectory = 'uploads/files/course_registration/'.$slug.'.pdf';
+        if (file_exists($fileDirectory)) {
+            unlink($fileDirectory);
+        } 
+
         $pdf = PDFDocument::loadView('pdf.courseRegistration', $data)
         ->setOptions($options)
         ->save($fileDirectory);
