@@ -71,7 +71,7 @@
                                 <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#editStaff{{$singleStaff->id}}" class="btn btn-info"><i class= "mdi mdi-application-edit"></i></a>
                             </td>
 
-                            <div id="editStaff{{$singleStaff->id}}" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
+                            {{-- <div id="editStaff{{$singleStaff->id}}" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
                                 <div class="modal-dialog modal-lg modal-dialog-centered">
                                     <div class="modal-content border-0 overflow-hidden">
                                         <div class="modal-header p-3">
@@ -192,7 +192,7 @@
                                         </div>
                                     </div><!-- /.modal-content -->
                                 </div><!-- /.modal-dialog -->
-                            </div><!-- /.modal -->
+                            </div><!-- /.modal --> --}}
                         </tr>
                         @endforeach
                     </tbody>
