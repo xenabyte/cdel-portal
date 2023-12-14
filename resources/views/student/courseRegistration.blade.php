@@ -149,6 +149,7 @@
                                             <td>
                                                 <input type="checkbox" name="selected_courses[]" value="{{ $failedCourse->id }}"
                                                     checked disabled>
+                                                <input type="hidden" name="selected_courses[]" value="{{ $failedCourse->id }}">
                                             </td>
                                         </tr>
                                     @endforeach
@@ -215,6 +216,7 @@
                                             <td>
                                                 <input type="checkbox" name="selected_courses[]" value="{{ $failedCourse2->id }}"
                                                     checked disabled>
+                                                <input type="hidden" name="selected_courses[]" value="{{ $failedCourse2->id }}">
                                             </td>
                                         </tr>
                                     @endforeach

@@ -1212,7 +1212,6 @@ class AcademicController extends Controller
             Notification::create([
                 'student_id' => $student->id,
                 'description' => $message,
-                'attachment' => null,
                 'status' => 0
             ]);
 
