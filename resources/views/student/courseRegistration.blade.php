@@ -149,7 +149,7 @@
                                             <td>
                                                 <input type="checkbox" name="selected_courses[]" value="{{ $failedCourse->id }}"
                                                     checked disabled>
-                                                <input type="hidden" name="selected_courses[]" value="{{ $failedCourse->id }}">
+                                                <input type="hidden" name="failed_selected_courses[]" value="{{ $failedCourse->id }}">
                                             </td>
                                         </tr>
                                     @endforeach
@@ -216,7 +216,7 @@
                                             <td>
                                                 <input type="checkbox" name="selected_courses[]" value="{{ $failedCourse2->id }}"
                                                     checked disabled>
-                                                <input type="hidden" name="selected_courses[]" value="{{ $failedCourse2->id }}">
+                                                <input type="hidden" name="failed_selected_courses[]" value="{{ $failedCourse2->id }}">
                                             </td>
                                         </tr>
                                     @endforeach
@@ -293,7 +293,7 @@
 
                     // Enable/Disable rows based on selected credit units
                     $("input[name='selected_courses[]']").each(function() {
-                        let creditUnit = parseFloat($(this).closest("tr").find("td:eq(3)").text());
+                    let creditUnit = parseFloat($(this).closest("tr").find("td:eq(3)").text());
                         if (!$(this).prop("checked")) {
                             if ($(this).closest("tbody").hasClass("first-semester") && firstSemesterTotal + creditUnit > maxUnit) {
                                 $(this).prop("disabled", true);

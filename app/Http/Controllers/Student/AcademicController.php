@@ -117,6 +117,8 @@ class AcademicController extends Controller
     public function registerCourses(Request $request)
     {
         $selectedCourses = $request->input('selected_courses', []);
+        $failedSelectedCourses = $request->input('failed_selected_courses', []);
+        
         $txId = $request->input('tx_id');
 
         if(empty($selectedCourses)){
@@ -163,6 +165,44 @@ class AcademicController extends Controller
         }
         
         try {
+            foreach ($failedSelectedCourses as $failedCourseId) { 
+                $coursePerProgrammeAndLevel = CoursePerProgrammePerAcademicSession::with('course')->findOrFail($failedCourseId);
+                $course = $coursePerProgrammeAndLevel->course;
+
+                // Check if the student is already registered for this course
+                $existingRegistration = CourseRegistration::where([
+                    'student_id' => $studentId,
+                    'course_id' => $failedCourseId,
+                    'academic_session' => $academicSession,
+                    'level_id' => $student->level_id
+                ])->first();
+
+                if (!$existingRegistration) {
+                    $checkCarryOver = CourseRegistration::where([
+                        'student_id' => $student->id,
+                        'course_id' => $course->id,
+                        'grade' => 'F',
+                    ])->first();
+
+                    if(!empty($checkCarryOver)){
+                        $checkCarryOver->re_reg = true;
+                        $checkCarryOver->save();
+                    }
+                    
+                    $courseReg = CourseRegistration::create([
+                        'student_id' => $studentId,
+                        'course_id' => $course->id,
+                        'course_credit_unit' => $coursePerProgrammeAndLevel->credit_unit,
+                        'course_code' => $course->code,
+                        'semester' => $coursePerProgrammeAndLevel->semester,
+                        'academic_session' => $academicSession,
+                        'level_id' => $student->level_id,
+                        'programme_course_id' => $failedCourseId,
+                        'course_status' => $coursePerProgrammeAndLevel->status
+                    ]);
+                }
+            }
+
             foreach ($selectedCourses as $courseId) {
                 $coursePerProgrammeAndLevel = CoursePerProgrammePerAcademicSession::with('course')->findOrFail($courseId);
                 $course = $coursePerProgrammeAndLevel->course;
