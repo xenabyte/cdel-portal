@@ -53,7 +53,10 @@ Class Pdf {
         $acceptanceAmount = $acceptancePayment->structures->sum('amount');
 
         $fileDirectory = 'uploads/files/admission/'.$slug.'.pdf';
-
+        if (file_exists($fileDirectory)) {
+            unlink($fileDirectory);
+        } 
+        
         $studentData = [
             'levelId' => $student->level_id,
             'created_at' => $student->created_at,
@@ -160,6 +163,9 @@ Class Pdf {
 
 
         $fileDirectory = 'uploads/files/exam_card/'.$slug.'.pdf';
+        if (file_exists($fileDirectory)) {
+            unlink($fileDirectory);
+        } 
         $data = ['info'=>$student, 'registeredCourses' => $courseRegs];
 
         $pdf = PDFDocument::loadView('pdf.examCard', $data)
@@ -195,6 +201,9 @@ Class Pdf {
         $student->resultLevel = $level;
 
         $fileDirectory = 'uploads/files/result_card/'.$slug.'.pdf';
+        if (file_exists($fileDirectory)) {
+            unlink($fileDirectory);
+        } 
         $data = ['info'=>$student, 'registeredCourses' => $courseRegs];
 
         $pdf = PDFDocument::loadView('pdf.resultCard', $data)
@@ -250,6 +259,9 @@ Class Pdf {
         $student->amountBilled = $amountBilled;
 
         $fileDirectory = 'uploads/files/invoice/'.$slug.'.pdf';
+        if (file_exists($fileDirectory)) {
+            unlink($fileDirectory);
+        } 
         $data = ['info'=>$student, 'transactions' => $transactions];
 
         $pdf = PDFDocument::loadView('pdf.invoice', $data)
