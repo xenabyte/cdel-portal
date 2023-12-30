@@ -288,8 +288,9 @@ class AcademicController extends Controller
             'academic_session' => $academicSession,
         ])->first();
 
+        $pdf = new Pdf();
+
         if(empty($studentRegistration)){
-            $pdf = new Pdf();
             $courseReg = $pdf->generateCourseRegistration($studentId, $academicSession);
 
             $studentRegistration = StudentCourseRegistration::create([
@@ -299,6 +300,8 @@ class AcademicController extends Controller
                 'level_id' => $student->level_id
             ]);
         }
+
+        $courseReg = $pdf->generateCourseRegistration($studentId, $academicSession);
 
         return redirect(asset($studentRegistration->file));
     }
