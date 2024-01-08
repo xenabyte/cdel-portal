@@ -153,7 +153,7 @@
                                             </td>
                                         </tr>
                                     @endforeach
-                                    {{-- @foreach($unregisteredRequiredCourses->where('semester', 1) as $unregisteredCourse)
+                                    @foreach($unregisteredRequiredCourses->where('semester', 1) as $unregisteredCourse)
                                         <tr>
                                             <td>{{ $firstSemester++ }}</td>
                                             <td>{{ $unregisteredCourse->course->code }} - {{ $unregisteredCourse->course->id }}</td>
@@ -164,7 +164,7 @@
                                                 <input type="checkbox" name="selected_courses[]" value="{{ $unregisteredCourse->id }}">
                                             </td>
                                         </tr>
-                                    @endforeach --}}
+                                    @endforeach
                                     @foreach($courses->where('semester', 1) as $course11)
                                         <tr>
                                             <td>{{ $firstSemester++ }}</td>

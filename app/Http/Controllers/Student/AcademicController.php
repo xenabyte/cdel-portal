@@ -44,6 +44,8 @@ class AcademicController extends Controller
         $globalData = $request->input('global_data');
         $admissionSession = $globalData->sessionSetting['admission_session'];
         $academicSession = $globalData->sessionSetting['academic_session'];
+        $isUTME = $student->applicant->application_type == 'UTME'? true :false;
+        $minLevel = $isUTME ? 1 : 2;
 
         $paymentCheck = $this->checkSchoolFees($student, $academicSession, $levelId);
         if(!$paymentCheck->passTuitionPayment){
@@ -62,26 +64,26 @@ class AcademicController extends Controller
             'academic_session' => $academicSession
         ])->get();
 
-        $allRequiredCourses = CoursePerProgrammePerAcademicSession::where('programme_id', $student->programme_id)
-            ->where('status', '!=', 'Elective')
-            ->where('level_id', '<', $levelId)
-            ->get();
-        if($student->applicant->application_type != 'UTME'){
+        $unregisteredRequiredCoursesIds = [];
+
+        for ($level = $levelId - 1; $level >= $minLevel; $level--) {
+            $prevAcademicSession = getPreviousAcademicSession($academicSession);
+
             $allRequiredCourses = CoursePerProgrammePerAcademicSession::where('programme_id', $student->programme_id)
-                ->where('status', '!=', 'Elective')
-                ->where('level_id', '!=', 1)
-                ->where('level_id', '<', $levelId)
+                ->where('course_status', '!=', 'Elective')
+                ->where('level_id', $level)
+                ->where('academic_session', $prevAcademicSession)
                 ->get();
+
+            $allRequiredCoursesIds = $allRequiredCourses->pluck('course_id')->toArray();
+
+            $registeredCourseIds = CourseRegistration::where('student_id', $student->id)
+                ->whereIn('course_id', $allRequiredCoursesIds)
+                ->pluck('course_id')
+                ->toArray();
+
+            $unregisteredRequiredCoursesIds = array_merge($unregisteredRequiredCoursesIds, array_diff($allRequiredCoursesIds, $registeredCourseIds));        
         }
-
-        $allRequiredCoursesIds = $allRequiredCourses->pluck('course.id')->toArray();
-        // Get the IDs of courses that the student has registered for
-        $registeredCourseIds = CourseRegistration::where('student_id', $student->id)
-        ->pluck('course_id')
-        ->toArray();
-
-        // Use array_diff to find the required courses that are not in CourseRegistration
-        $unregisteredRequiredCoursesIds = array_diff($allRequiredCoursesIds, $registeredCourseIds);
 
         $failedCourses = CourseRegistration::with('course')->where('student_id', $studentId)->where('grade', 'F')->where('re_reg', null)->get();
         $failedCourseIds = $failedCourses->pluck('programme_course_id')->toArray();

@@ -555,4 +555,14 @@ class Controller extends BaseController
         alert()->success('Good Job', 'Payment successful')->persistent('Close');
         return redirect($transactionData->redirect_path);
     }
+
+    public function getPreviousAcademicSession($currentAcademicSession)
+    {
+        [$year, $term] = explode('/', $currentAcademicSession);
+        $year = intval($year);
+        $prevYear = $year - 1;
+        $prevAcademicSession = $prevYear . '/' . $year;
+    
+        return $prevAcademicSession;
+    }
 }
