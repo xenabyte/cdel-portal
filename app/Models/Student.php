@@ -45,6 +45,7 @@ class Student extends Authenticatable
         'onboard_status',
         'linkedIn',
         'dashboard_mode',
+        'bandwidth_username',
     ];
 
     /**

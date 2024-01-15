@@ -28,6 +28,7 @@ use Log;
 use Carbon\Carbon;
 use Paystack;
 use KingFlamez\Rave\Facades\Rave as Flutterwave;
+use App\Libraries\Bandwidth\Bandwidth;
 
 
 class StudentController extends Controller
@@ -54,6 +55,16 @@ class StudentController extends Controller
 
 
         $paymentCheck = $this->checkSchoolFees($student, $academicSession, $levelId);
+
+        if(empty($student->bandwidth_username)){
+            return view('student.bandwidth', [
+                'payment' => $acceptancePayment,
+                'passTuition' => $paymentCheck->passTuitionPayment,
+                'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
+                'passEightyTuition' => $paymentCheck->passEightyTuition,
+                'studentPendingTransactions' => $paymentCheck->studentPendingTransactions
+            ]);
+        }
 
         if(!$acceptanceTransaction && $student->is_active == 0){
             return view('student.acceptanceFee', [
@@ -102,6 +113,16 @@ class StudentController extends Controller
         $globalData = $request->input('global_data');
         $admissionSession = $globalData->sessionSetting['admission_session'];
         $academicSession = $globalData->sessionSetting['academic_session'];
+
+        if(empty($student->bandwidth_username)){
+            return view('student.bandwidth', [
+                'payment' => $acceptancePayment,
+                'passTuition' => $paymentCheck->passTuitionPayment,
+                'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
+                'passEightyTuition' => $paymentCheck->passEightyTuition,
+                'studentPendingTransactions' => $paymentCheck->studentPendingTransactions
+            ]);
+        }
 
         $paymentCheck = $this->checkSchoolFees($student, $academicSession, $levelId);
         if(!$paymentCheck->passTuitionPayment){
@@ -362,6 +383,17 @@ class StudentController extends Controller
         $transactions = Transaction::where('student_id', $studentId)->where('payment_id', '!=', 0)->orderBy('status', 'ASC')->get();
 
         $paymentCheck = $this->checkSchoolFees($student, $academicSession, $levelId);
+
+        if(empty($student->bandwidth_username)){
+            return view('student.bandwidth', [
+                'payment' => $acceptancePayment,
+                'passTuition' => $paymentCheck->passTuitionPayment,
+                'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
+                'passEightyTuition' => $paymentCheck->passEightyTuition,
+                'studentPendingTransactions' => $paymentCheck->studentPendingTransactions
+            ]);
+        }
+
         if(!$paymentCheck->passTuitionPayment){
             return view('student.schoolFee', [
                 'payment' => $paymentCheck->schoolPayment,
@@ -410,6 +442,17 @@ class StudentController extends Controller
 
 
         $paymentCheck = $this->checkSchoolFees($student, $academicSession, $levelId);
+
+        if(empty($student->bandwidth_username)){
+            return view('student.bandwidth', [
+                'payment' => $acceptancePayment,
+                'passTuition' => $paymentCheck->passTuitionPayment,
+                'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
+                'passEightyTuition' => $paymentCheck->passEightyTuition,
+                'studentPendingTransactions' => $paymentCheck->studentPendingTransactions
+            ]);
+        }
+
         if(!$paymentCheck->passTuitionPayment){
             return view('student.schoolFee', [
                 'payment' => $paymentCheck->schoolPayment,
@@ -449,6 +492,17 @@ class StudentController extends Controller
 
         $mentorId  = $student->mentor_id;
         $paymentCheck = $this->checkSchoolFees($student, $academicSession, $levelId);
+
+        if(empty($student->bandwidth_username)){
+            return view('student.bandwidth', [
+                'payment' => $acceptancePayment,
+                'passTuition' => $paymentCheck->passTuitionPayment,
+                'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
+                'passEightyTuition' => $paymentCheck->passEightyTuition,
+                'studentPendingTransactions' => $paymentCheck->studentPendingTransactions
+            ]);
+        }
+
         if(!$paymentCheck->passTuitionPayment){
             return view('student.schoolFee', [
                 'payment' => $paymentCheck->schoolPayment,
@@ -491,6 +545,17 @@ class StudentController extends Controller
 
         $mentorId  = $student->mentor_id;
         $paymentCheck = $this->checkSchoolFees($student, $academicSession, $levelId);
+
+        if(empty($student->bandwidth_username)){
+            return view('student.bandwidth', [
+                'payment' => $acceptancePayment,
+                'passTuition' => $paymentCheck->passTuitionPayment,
+                'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
+                'passEightyTuition' => $paymentCheck->passEightyTuition,
+                'studentPendingTransactions' => $paymentCheck->studentPendingTransactions
+            ]);
+        }
+
         if(!$paymentCheck->passTuitionPayment){
             return view('student.schoolFee', [
                 'payment' => $paymentCheck->schoolPayment,
@@ -537,14 +602,24 @@ class StudentController extends Controller
 
     public function saveStudentDetails(Request $request){
 
-        $validator = Validator::make($request->all(), [
-            'student_id' => 'required',
-            'email' => 'required',
-            'lastname' => 'required',
-            'othernames' => 'required',
-            'password' => 'required',
-            'confirm_password' => 'required'
-        ]);
+        $onboarding = FALSE;
+        if(empty($request->bandwidth_username)){
+            $validator = Validator::make($request->all(), [
+                'student_id' => 'required',
+                'email' => 'required',
+                'lastname' => 'required',
+                'othernames' => 'required',
+                'password' => 'required',
+                'confirm_password' => 'required'
+            ]);
+
+            $onboarding = TRUE;
+        }else{
+            $validator = Validator::make($request->all(), [
+                'student_id' => 'required',
+                'bandwidth_username' => 'required',
+            ]);
+        }
 
 
         if($validator->fails()) {
@@ -558,35 +633,49 @@ class StudentController extends Controller
             return redirect()->back();
         }
 
-        if(empty(strpos($request->email, env('SCHOOL_DOMAIN')))) {
+        if($onboarding && empty(strpos($request->email, env('SCHOOL_DOMAIN')))) {
             alert()->error('Error', 'Invalid student email, your student email must contain @'.env('SCHOOL_DOMAIN'))->persistent('Close');
             return redirect()->back();
         }
 
-        if($student->onboard_status){
+        if($onboarding && $student->onboard_status){
             alert()->info('Oops!', 'You have been onboarded successfully, kindly login to your portal with your details')->persistent('Close');
             return redirect()->back();
         }
 
         $applicantId = $student->user_id;
-        if(!$applicant = Applicant::find($applicantId)){
+        if($onboarding && !$applicant = Applicant::find($applicantId)){
             alert()->error('Oops!', 'Student application data mismatch')->persistent('Close');
             return redirect()->back();
         }
         
-        $applicant->lastname = $request->lastname;
-        $applicant->othernames = $request->othernames;
-        $applicant->update();
-
-        if($request->password == $request->confirm_password){
-            $student->password = bcrypt($request->password);
-        }else{
-            alert()->error('Oops!', 'Password mismatch')->persistent('Close');
-            return redirect()->back();
+        if($onboarding && !empty($applicant)){
+            $applicant->lastname = $request->lastname;
+            $applicant->othernames = $request->othernames;
+            $applicant->update();
         }
 
-        $student->email = $request->email;
-        $student->onboard_status = true;
+        if($onboarding){
+            if($request->password == $request->confirm_password){
+                $student->password = bcrypt($request->password);
+            }else{
+                alert()->error('Oops!', 'Password mismatch')->persistent('Close');
+                return redirect()->back();
+            }
+
+            $student->email = $request->email;
+            $student->onboard_status = true;
+        }
+
+        if(!empty($request->bandwidth_username)){
+            $bandwidth = new Bandwidth();
+            $validateUsername = $bandwidth->validateUser($request->bandwidth_username);
+            if($validateUsername['status'] != 'success'){
+                alert()->error('Oops!', 'Invalid Username, Kindly enter the correct username')->persistent('Close');
+                return redirect()->back();
+            }
+            $student->bandwidth_username = $request->bandwidth_username;
+        }
 
         if($student->update()) {
             alert()->success('Success', 'Save Changes')->persistent('Close');
@@ -692,8 +781,6 @@ class StudentController extends Controller
                 }
             }
 
-            
-            
             return response()->json([
                 'status' => 'success',
                 'data' => $payment

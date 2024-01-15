@@ -21,3 +21,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::group(['prefix' => 'auth'], function () {
     Route::post('/login', [App\Http\Controllers\ApiController::class, 'login'])->name('apiLogin');
 });
+
+Route::group(['prefix' => 'user'], function () {
+    Route::post('/validateUser', [App\Http\Controllers\ApiController::class, 'validateUser'])->name('apiValidateUser');
+});

@@ -53,7 +53,7 @@ class ApiController extends Controller
         $email = $request->email;
         $password = $request->password;
         $role = $request->role;
-        $apiKey = md5($request->api_key);
+        $apiKey = $request->api_key;
 
         if($appApiKey != $apiKey){
             return $this->dataResponse('Invalid Api Key', null, 'error');
@@ -82,9 +82,45 @@ class ApiController extends Controller
 
     }
     
-    
-    
-    
-    
+    public function validateUser(Request $request){
+        $validator = Validator::make($request->all(), [
+            'uniqueId' => 'required',
+            'role' => 'required',
+            'api_key' => 'required',
+        ]);
+        $appApiKey = env('APP_API_KEY');
 
+        $uniqueId = $request->uniqueId;
+        $role = $request->role;
+        $apiKey = $request->api_key;
+
+        if($appApiKey != $apiKey){
+            return $this->dataResponse('Invalid Api Key', null, 'error');
+        }
+
+        switch ($role) {
+            case 'staff':
+                $user = Staff::where('email', $uniqueId)->first();
+                break;
+            case 'student':
+                $user = Student::where('matric_number', $uniqueId)->first();
+                break;
+            default:
+                return $this->dataResponse('Invalid role', null, 'error');
+        }
+    
+        // Check if the user exists and if the password matches
+        if ($user) {
+            $response = new \stdClass();
+            $response->lastname = $user->lastname;
+            $response->othernames = $user->othernames;
+            $respone->email = $user->email;
+            $response->image = $role == 'student'? 'https://portal.tau.edu.ng/'.$user->image : $user->image;
+
+            return $this->dataResponse($role.' record found!', $response);
+        } else {
+            return $this->dataResponse($role.' record not found', null, 'error');
+        }
+
+    }
 }

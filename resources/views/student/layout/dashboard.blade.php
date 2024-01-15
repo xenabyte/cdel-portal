@@ -220,7 +220,7 @@
                         @if(env('WALLET_STATUS'))
                         <hr class="text-light">
                         <li class="nav-item">
-                            <a class="nav-link menu-link" href=#"><i class="mdi mdi-wallet fs-16 align-middle me-1"></i> <span class="align-middle">Balance: <b>₦{{ number_format($student->amount_balance/100, 2) }}</b></span></a>
+                            <a class="nav-link menu-link" href="#"><i class="mdi mdi-wallet fs-16 align-middle me-1"></i> <span class="align-middle">Balance: <b>₦{{ number_format($student->amount_balance/100, 2) }}</b></span></a>
                         </li>
                         <hr class="text-light">
                         @endif
@@ -232,12 +232,30 @@
                             </a>
                         </li>
                         
-                        @if(!empty($student->image) && !empty($student->linkedIn))
+                        @if(!empty($student->image) && !empty($student->linkedIn) && !empty($student->bandwidth_username))
                             @if($passTuition)
                             <li class="nav-item">
                                 <a class="nav-link menu-link" href="{{ url('student/mentor') }}">
                                     <i class="mdi mdi-account-child-circle"></i> <span data-key="t-transaction">Mentor</span>
                                 </a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link menu-link" href="#bandwidth" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="transaction">
+                                    <i class="mdi mdi-bank-transfer"></i> <span data-key="t-transaction">Bandwidth</span>
+                                </a>
+                                <div class="collapse menu-dropdown" id="bandwidth">
+                                    <ul class="nav nav-sm flex-column">
+                                        <li class="nav-item">
+                                            <a href="{{ url('/student/checkBalance') }}" class="nav-link">Bandwidth Balance</a>
+                                        </li>
+                                        @if(env('WALLET_STATUS'))
+                                        <li class="nav-item">
+                                            <a href="{{ url('/student/purchaseBandwidth') }}" class="nav-link">Purchase Bandwidth</a>
+                                        </li>
+                                        @endif
+                                    </ul>
+                                </div>
                             </li>
 
                             <li class="nav-item">

@@ -27,6 +27,8 @@ use App\Models\Staff;
 
 
 use App\Libraries\Pdf\Pdf;
+use App\Libraries\Bandwidth\Bandwidth;
+
 
 use SweetAlert;
 use Mail;
@@ -219,5 +221,25 @@ class HomeController extends Controller
         return view('hallOfFame', [
             'students' => $students,
         ]);
+    }
+
+    public function checkDataBalance(Request $request){
+        $validator = Validator::make($request->all(), [
+            'bandwidth_password' => 'required',
+            'bandwidth_username' => 'required',
+        ]);
+
+        if($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+
+        if(!empty($request->bandwidth_username)){
+            $bandwidth = new Bandwidth();
+            $checkBalance = $bandwidth->checkDataBalance($request->bandwidth_username, $request->bandwidth_password);
+            $message = $checkBalance['message'];
+            alert()->info('Bandwidth Balance!', $message)->persistent('Close');
+            return redirect()->back();
+        }
     }
 }

@@ -52,6 +52,9 @@
                             <li class="nav-item">
                                 <a class="nav-link text-light fs-14" href="{{ url('student/hallOfFame') }}">Hall of Fame</a>
                             </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-light fs-14" data-bs-toggle="modal" data-bs-target="#exampleModal">Check Bandwidth Balance</a>
+                            </li>
                         </ul>
 
                         <div class="">
@@ -257,6 +260,49 @@
                 <i class="ri-arrow-up-line"></i>
             </button>
             <!--end back-to-top-->
+
+            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-md">
+                    <div class="modal-content">
+                        <div class="modal-header p-3">
+                            <h5 class="modal-title text-uppercase fw-bold" id="exampleModalLabel">Bandwidth Balance</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <hr>
+                        <div class="modal-body">
+                            <div class="tab-content">
+                                <div class="tab-pane fade show active" id="pills-bill-info" role="tabpanel" aria-labelledby="pills-bill-info-tab">
+                                    <form class="needs-validation" method="POST" novalidate action="{{ url('checkDataBalance') }}" enctype="multipart/form-data">
+                                        @csrf
+                        
+                                        <div class="col-lg-12 mt-3">
+                                            <div class="form-floating">
+                                                <input class="form-control" type="text" name="bandwidth_username" id="cusername">
+                                                <label for="cpassword">Bandwidth Username</label>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-12 mt-3">
+                                            <div class="form-floating">
+                                                <input class="form-control" type="password" name="bandwidth_password" id="cpass">
+                                                <label for="cpass">Bandwidth Password</label>
+                                            </div>
+                                        </div>
+            
+                                        <div class="mt-4">
+                                            <button class="btn btn-success w-100" id='submit-button' type="submit">Check Balance</button>
+                                        </div>
+            
+                                    </form>
+                                </div>
+                                <!-- end tab pane -->
+                            </div>
+                            <!-- end tab content -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--end modal-->
 
         </div>
         <!-- end layout wrapper -->
