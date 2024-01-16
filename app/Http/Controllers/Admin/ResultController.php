@@ -27,6 +27,7 @@ use App\Models\StudentCourseRegistration;
 use App\Models\CourseRegistration;
 use App\Models\Transaction;
 use App\Models\Payment;
+use App\Models\GradeScale;
 
 
 use App\Libraries\Result\Result;
@@ -166,4 +167,104 @@ class ResultController extends Controller
 
         return redirect(asset($examResult));
     }
+
+    public function studentResult(){
+        return view('admin.studentResult');
+    }
+
+    public function getStudent(Request $request){
+        $validator = Validator::make($request->all(), [
+            'reg_number' => 'required',
+            'type' => 'required',
+            'url' => 'required',
+        ]);
+
+        if($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+
+        $studentIdCode = $request->reg_number;
+        if($request->type == 'Student'){
+            return $this->getSingleStudent($studentIdCode, $request->url);
+        }
+    }
+
+    public function getStudentResult(Request $request){
+        $validator = Validator::make($request->all(), [
+            'reg_number' => 'required',
+            'url' => 'required',
+            'level_id' => 'required',
+            'session' => 'required'
+        ]);
+
+        if($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+
+        $data = new \stdClass();
+        $data->levelId = $request->level_id;
+        $data->academicSession = $request->session;
+
+        $studentIdCode = $request->reg_number;
+        return $this->getSingleStudent($studentIdCode, $request->url, $data);
+    }
+
+
+   public function updateStudentResult(Request $request){
+        $validator = Validator::make($request->all(), [
+            'student_id' => 'required',
+            'url' => 'required',
+            'level_id' => 'required',
+            'session' => 'required',
+            'course_reg_id' => 'required'
+        ]);
+
+        if($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+
+        $studentId = $request->student_id;
+        $student = Student::find($studentId);
+        $data = new \stdClass();
+        $data->levelId = $request->level_id;
+        $data->academicSession = $request->session; 
+        $studentIdCode = $student->matric_number;
+
+        if(!$registeredCourse = CourseRegistration::with('course')->where('id', $request->course_reg_id)->first()){
+            alert()->info('Oops!', 'Record not found')->persistent('Close');
+            return redirect()->back();
+        }
+
+        if(!empty($request->ca_score) && ($request->ca_score != $registeredCourse->ca_score)){
+            $registeredCourse->ca_score = $request->ca_score;
+        }
+
+        if(!empty($request->exam_score) && ($request->exam_score != $registeredCourse->exam_score)){
+            $registeredCourse->exam_score = $request->exam_score;
+        }
+
+        if(!empty($request->total) && ($request->total != $registeredCourse->total)){
+            $registeredCourse->total = $request->total;
+
+            $grading = GradeScale::computeGrade($request->total);
+            $grade = $grading->grade;
+            $points = $grading->point;
+
+            $registeredCourse->grade = $grade;
+            $registeredCourse->points = $points*$registeredCourse->course_credit_unit;
+        }
+
+        if($registeredCourse->save()){
+            alert()->success('Result details updated successfully', '')->persistent('Close');
+            return $this->getSingleStudent($studentIdCode, $request->url, $data);
+        }
+
+        alert()->error('Oops!', 'Something went wrong')->persistent('Close');
+        return $this->getSingleStudent($studentIdCode, $request->url, $data);
+   }
+
+
 }

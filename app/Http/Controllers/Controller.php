@@ -43,6 +43,8 @@ use App\Models\Programme;
 use App\Models\Session;
 use App\Models\Faculty;
 use App\Models\Department;
+use App\Models\CourseRegistration;
+
 
 class Controller extends BaseController
 {
@@ -281,7 +283,7 @@ class Controller extends BaseController
         ]);
     }
 
-    public function getSingleStudent($studentIdCode, $path){
+    public function getSingleStudent($studentIdCode, $path, $otherData=null){
 
         $student = Student::with('programme', 'transactions', 'applicant')->where('matric_number', $studentIdCode)->first();
         if(!$student){
@@ -357,6 +359,12 @@ class Controller extends BaseController
             $fullTuitionPayment = true;
         }
 
+        $registeredCourses = null;
+
+        if(!empty($otherData->levelId) && !empty($otherData->academicSession)){
+            $registeredCourses = CourseRegistration::with('course')->where('student_id', $studentId)->where('level_id', $otherData->levelId)->where('academic_session', $otherData->academicSession)->get();
+        }
+        
         return view($path, [
             'path' => $path,
             'transactions' => $filteredTransactions,
@@ -371,6 +379,9 @@ class Controller extends BaseController
             'faculties' => $faculties,
             'sessions' => $sessions,
             'allTxs' => $transactions,  
+            'studentLevelId' => empty($otherData)? null : $otherData->levelId,
+            'studentSession' => empty($otherData)? null : $otherData->academicSession,
+            'registeredCourses' => $registeredCourses,
         ]);
 
     }

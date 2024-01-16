@@ -114,7 +114,7 @@ class ApiController extends Controller
             $response = new \stdClass();
             $response->lastname = $user->lastname;
             $response->othernames = $user->othernames;
-            $respone->email = $user->email;
+            $response->email = $user->email;
             $response->image = $role == 'student'? 'https://portal.tau.edu.ng/'.$user->image : $user->image;
 
             return $this->dataResponse($role.' record found!', $response);

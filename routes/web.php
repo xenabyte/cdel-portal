@@ -260,13 +260,18 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'admin'],
 
   Route::post('/changeStudentProgramme', [App\Http\Controllers\Admin\ProgrammeController::class, 'changeStudentProgramme'])->name('changeStudentProgramme')->middleware(['auth:admin']);
   Route::get('/changeProgramme', [App\Http\Controllers\Admin\ProgrammeController::class, 'changeProgramme'])->name('changeProgramme')->middleware(['auth:admin']);
-
   Route::post('/acad/getStudent', [App\Http\Controllers\Admin\ProgrammeController::class, 'getStudent'])->name('getStudent')->middleware(['auth:admin']);
 
   Route::get('/studentExits', [App\Http\Controllers\Admin\StudentCareController::class, 'studentExits'])->name('studentExits')->middleware(['auth:admin']);
   Route::post('getExitApplication', [App\Http\Controllers\Admin\StudentCareController::class, 'getExitApplication'])->name('getExitApplication')->middleware(['auth:admin']);
   Route::post('manageExitApplication', [App\Http\Controllers\Admin\StudentCareController::class, 'manageExitApplication'])->name('manageExitApplication')->middleware(['auth:admin']);
 
+  Route::get('/studentResult', [App\Http\Controllers\Admin\ResultController::class, 'studentResult'])->name('studentResult')->middleware(['auth:admin']);
+  Route::post('/result/getStudent', [App\Http\Controllers\Admin\ResultController::class, 'getStudent'])->name('getStudent')->middleware(['auth:admin']);
+  Route::post('/result/getStudentResult', [App\Http\Controllers\Admin\ResultController::class, 'getStudentResult'])->name('getStudentResult')->middleware(['auth:admin']);
+  Route::post('/result/updateStudentResult', [App\Http\Controllers\Admin\ResultController::class, 'updateStudentResult'])->name('updateStudentResult')->middleware(['auth:admin']);
+
+  
 });
 
 Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'student'], function () {
