@@ -39,6 +39,7 @@
                             <th scope="col">Level</th>
                             <th scope="col">Passcode</th>
                             <th scope="col">Matric Number</th>
+                            <th scope="col">Application Number</th>
                             <th scope="col">Programme</th>
                             <th scope="col">Email</th>
                             <th scope="col"></th>
