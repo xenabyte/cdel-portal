@@ -103,7 +103,7 @@ class ApiController extends Controller
                 $user = Staff::where('email', $uniqueId)->first();
                 break;
             case 'student':
-                $user = Student::where('matric_number', $uniqueId)->first();
+                $user = Student::with("applicant")->where('matric_number', $uniqueId)->first();
                 break;
             default:
                 return $this->dataResponse('Invalid role', null, 'error');
@@ -112,8 +112,8 @@ class ApiController extends Controller
         // Check if the user exists and if the password matches
         if ($user) {
             $response = new \stdClass();
-            $response->lastname = $user->lastname;
-            $response->othernames = $user->othernames;
+            $response->lastname =  $role == 'student'? $user->applicant->lastname: $user->lastname;
+            $response->othernames = $role == 'student'? $user->applicant->othernames: $user->othernames;
             $response->email = $user->email;
             $response->image = $role == 'student'? 'https://portal.tau.edu.ng/'.$user->image : $user->image;
 
