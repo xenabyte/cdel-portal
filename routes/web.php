@@ -270,7 +270,7 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'admin'],
   Route::post('/result/getStudent', [App\Http\Controllers\Admin\ResultController::class, 'getStudent'])->name('getStudent')->middleware(['auth:admin']);
   Route::post('/result/getStudentResult', [App\Http\Controllers\Admin\ResultController::class, 'getStudentResult'])->name('getStudentResult')->middleware(['auth:admin']);
   Route::post('/result/updateStudentResult', [App\Http\Controllers\Admin\ResultController::class, 'updateStudentResult'])->name('updateStudentResult')->middleware(['auth:admin']);
-
+  Route::post('/result/addStudentCourse', [App\Http\Controllers\Admin\ResultController::class, 'addStudentCourse'])->name('addStudentCourse')->middleware(['auth:admin']);
   
 });
 

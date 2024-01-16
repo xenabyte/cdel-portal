@@ -167,7 +167,8 @@
             <div class="card-header border-0 align-items-center d-flex">
                 <h4 class="card-title mb-0 flex-grow-1">Student Result for {{ $studentLevelId * 100 }} Level for {{ $studentSession }} Academic Session</h4>
                 <div class="text-end mb-5">
-                    
+                    <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#add" class="btn btn-primary">
+                        Add Missing Course</a>
                 </div>
             </div><!-- end card header -->
 
@@ -176,6 +177,7 @@
                     <tbody>
                         <tr>
                             <th scope="col">ID</th>
+                            <th scope="col">Semester</th>
                             <th scope="col">Course Code</th>
                             <th scope="col">Course Title</th>
                             <th scope="col">Course Unit</th>
@@ -188,6 +190,7 @@
                         @foreach($registeredCourses as $registeredCourse)
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
+                                <td>{{ $registeredCourse->semester }}</td>
                                 <td>{{ $registeredCourse->course->code }}</td>
                                 <td>{{ $registeredCourse->course->name }}</td>
                                 <td>{{ $registeredCourse->course_credit_unit }}</td>
@@ -260,6 +263,60 @@
     
 </div>
 <!--end row-->
+
+<div id="add" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 overflow-hidden">
+            <div class="modal-header p-3">
+                <h4 class="card-title mb-0">Add Missing Course</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body">
+                <form action="{{ url('/admin/result/addStudentCourse') }}" method="post" enctype="multipart/form-data">
+                    @csrf
+                    <input type="hidden" name="url" value="admin.studentResult">
+                    <input type="hidden" name='student_id' value="{{ $student->id }}">
+                    <input type="hidden" name='session' value="{{ $studentSession }}">
+                    <input type="hidden" name='level_id' value="{{  $studentLevelId }}">
+
+                    <div class="mb-3">
+                        <label for="course_code" class="form-label">Course Code</label>
+                        <input type="text" class="form-control" name="course_code" id="course_code" placeholder="Enter Course Code">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="semester">Semester</label>
+                        <select class="form-select" id="semester" name="semester" aria-label="semester">
+                            <option value="" selected>--Select--</option>
+                            <option value="1">First Semester</option>
+                            <option value="2">Second Semester</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="ca_score" class="form-label">CA Score</label>
+                        <input type="number" class="form-control" name="ca_score" id="ca_score" >
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="exam_score" class="form-label">Exam Score</label>
+                        <input type="number" class="form-control" name="exam_score" id="exam_score">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="total" class="form-label">Total Score</label>
+                        <input type="number" class="form-control" name="total" id="total">
+                    </div>
+                    <hr>
+                    <div class="text-end">
+                        <button type="submit" id="submit-button" class="btn btn-primary">Add Course </button>
+                    </div>
+                </form>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
 @endif
 
 

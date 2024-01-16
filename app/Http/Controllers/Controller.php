@@ -362,7 +362,7 @@ class Controller extends BaseController
         $registeredCourses = null;
 
         if(!empty($otherData->levelId) && !empty($otherData->academicSession)){
-            $registeredCourses = CourseRegistration::with('course')->where('student_id', $studentId)->where('level_id', $otherData->levelId)->where('academic_session', $otherData->academicSession)->get();
+            $registeredCourses = CourseRegistration::with('course')->where('student_id', $studentId)->where('level_id', $otherData->levelId)->where('academic_session', $otherData->academicSession)->orderBy('semester', 'ASC')->get();
         }
         
         return view($path, [

@@ -28,6 +28,9 @@ use App\Models\CourseRegistration;
 use App\Models\Transaction;
 use App\Models\Payment;
 use App\Models\GradeScale;
+use App\Models\Course;
+use App\Models\CoursePerProgrammePerAcademicSession;
+
 
 
 use App\Libraries\Result\Result;
@@ -266,5 +269,130 @@ class ResultController extends Controller
         return $this->getSingleStudent($studentIdCode, $request->url, $data);
    }
 
+
+   public function addStudentCourse(Request $request){
+        $validator = Validator::make($request->all(), [
+            'student_id' => 'required',
+            'url' => 'required',
+            'level_id' => 'required',
+            'session' => 'required',
+            'course_code' => 'required',
+            'semester' => 'required'
+        ]);
+
+        if($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+
+        $studentId = $request->student_id;
+        $student = Student::find($studentId);
+        $data = new \stdClass();
+        $data->levelId = $request->level_id;
+        $data->academicSession = $request->session; 
+        $studentIdCode = $student->matric_number;
+
+        $resultApprovalId = ResultApprovalStatus::getApprovalStatusId(ResultApprovalStatus::SENATE_APPROVED);
+
+        $courseCode = $request->course_code;
+        $semester = $request->semester;
+        $levelId = $request->level_id;
+        $programmeId = $student->programme_id;
+        $academicSession = $request->session;
+        $caScore = $request->ca_score;
+        $examScore = $request->exam_score;
+        $totalScore = $request->total;
+
+
+        if(!$course = Course::where('code', $courseCode)->first()){
+            alert()->error('Oops!', 'Course not found')->persistent('Close');
+            return $this->getSingleStudent($studentIdCode, $request->url, $data);
+        }
+
+        $courseId = $course->id;
+
+        $programmeCourse = CoursePerProgrammePerAcademicSession::where([
+            'course_id' => $courseId,
+            'level_id' => $levelId,
+            'programme_id' => $programmeId,
+            'semester' => $semester,
+            'academic_session' => $academicSession,
+        ])->first();
+
+        if (!$programmeCourse && $levelId !== null) {
+            $programmeCourse = CoursePerProgrammePerAcademicSession::where([
+                'course_id' => $courseId,
+                'programme_id' => $programmeId,
+                'semester' => $semester,
+                'academic_session' => $academicSession,
+            ])->first();
+        }
+
+        if (!$programmeCourse) {
+            alert()->error('Oops!', 'Course not registered for student in programme and session')->persistent('Close');
+            return $this->getSingleStudent($studentIdCode, $request->url, $data);
+        }
+
+
+        $existingRegistration = CourseRegistration::where([
+            'student_id' => $student->id,
+            'course_id' => $course->id,
+            'academic_session' => $academicSession,
+            'level_id' => $levelId,
+        ])->first();
+
+        if(!$existingRegistration){
+            $courseReg = CourseRegistration::create([
+                'student_id' => $student->id,
+                'course_id' => $programmeCourse->course_id,
+                'course_credit_unit' => $programmeCourse->credit_unit,
+                'course_code' => $courseCode,
+                'course_status' => $programmeCourse->status,
+                'semester' => $programmeCourse->semester,
+                'academic_session' => $academicSession,
+                'level_id' => $levelId,
+                'programme_course_id' => $programmeCourse->id
+            ]);
+        }
+
+        $studentCourseReg = CourseRegistration::where([
+            'student_id' => $student->id,
+            'course_code' => $courseCode,
+            'academic_session' => $academicSession,
+            'level_id' => $levelId,
+        ])->first();
+
+        $checkCarryOver = CourseRegistration::where([
+            'student_id' => $student->id,
+            'course_id' => $course->id,
+            'grade' => 'F',
+        ])->first();
+
+        if(!empty($checkCarryOver)){
+            $checkCarryOver->re_reg = true;
+            $checkCarryOver->save();
+        }
+
+        $grading = GradeScale::computeGrade($totalScore);
+        $grade = $grading->grade;
+        $points = $grading->point;
+
+
+        $studentCourseReg->ca_score = $caScore;
+        $studentCourseReg->exam_score = $examScore;
+        $studentCourseReg->total = $totalScore;
+        $studentCourseReg->grade = $grade;
+        $studentCourseReg->points = $points*$studentCourseReg->course_credit_unit;
+        $studentCourseReg->result_approval_id = $resultApprovalId;
+        $studentCourseReg->status = 'Completed';
+
+        if($studentCourseReg->save()){
+            alert()->success('Result added successfully', '')->persistent('Close');
+            return $this->getSingleStudent($studentIdCode, $request->url, $data);
+        }
+
+        alert()->error('Oops!', 'Something went wrong')->persistent('Close');
+        return $this->getSingleStudent($studentIdCode, $request->url, $data);
+   }
 
 }
