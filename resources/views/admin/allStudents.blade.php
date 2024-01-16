@@ -57,6 +57,7 @@
                             <td>{{ $student->academicLevel->level }} </td>
                             <td>{{ $student->passcode }} </td>
                             <td>{{ $student->matric_number }}</td>
+                            <td>{{ $student->applicant->application_number }}</td>
                             <td>{{ $student->programme->name }}</td>
                             <td>{{ $student->email }} </td>
                             <td>
