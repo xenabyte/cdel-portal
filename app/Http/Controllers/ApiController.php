@@ -88,6 +88,11 @@ class ApiController extends Controller
             'role' => 'required',
             'api_key' => 'required',
         ]);
+
+        if($validator->fails()) {
+            return $this->dataResponse($validator->messages()->all()[0], null, 'error');
+        }
+
         $appApiKey = env('APP_API_KEY');
 
         $uniqueId = $request->uniqueId;
