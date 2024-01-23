@@ -57,16 +57,6 @@ class StudentController extends Controller
 
         $paymentCheck = $this->checkSchoolFees($student, $academicSession, $levelId);
 
-        if(empty($student->bandwidth_username)){
-            return view('student.bandwidth', [
-                'payment' => $acceptancePayment,
-                'passTuition' => $paymentCheck->passTuitionPayment,
-                'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
-                'passEightyTuition' => $paymentCheck->passEightyTuition,
-                'studentPendingTransactions' => $paymentCheck->studentPendingTransactions
-            ]);
-        }
-
         if(!$acceptanceTransaction && $student->is_active == 0){
             return view('student.acceptanceFee', [
                 'payment' => $acceptancePayment,
@@ -97,6 +87,16 @@ class StudentController extends Controller
             ]);
         }
 
+        if(empty($student->bandwidth_username)){
+            return view('student.bandwidth', [
+                'payment' => $paymentCheck->schoolPayment,
+                'passTuition' => $paymentCheck->passTuitionPayment,
+                'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
+                'passEightyTuition' => $paymentCheck->passEightyTuition,
+                'studentPendingTransactions' => $paymentCheck->studentPendingTransactions
+            ]);
+        }
+
         return view('student.home', [
             'payment' => $paymentCheck->schoolPayment,
             'passTuition' => $paymentCheck->passTuitionPayment,
@@ -115,17 +115,8 @@ class StudentController extends Controller
         $admissionSession = $globalData->sessionSetting['admission_session'];
         $academicSession = $globalData->sessionSetting['academic_session'];
 
-        if(empty($student->bandwidth_username)){
-            return view('student.bandwidth', [
-                'payment' => $acceptancePayment,
-                'passTuition' => $paymentCheck->passTuitionPayment,
-                'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
-                'passEightyTuition' => $paymentCheck->passEightyTuition,
-                'studentPendingTransactions' => $paymentCheck->studentPendingTransactions
-            ]);
-        }
-
         $paymentCheck = $this->checkSchoolFees($student, $academicSession, $levelId);
+
         if(!$paymentCheck->passTuitionPayment){
             return view('student.schoolFee', [
                 'payment' => $paymentCheck->schoolPayment,
@@ -138,6 +129,16 @@ class StudentController extends Controller
 
         if(empty($student->image)){
             return view('student.updateImage', [
+                'payment' => $paymentCheck->schoolPayment,
+                'passTuition' => $paymentCheck->passTuitionPayment,
+                'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
+                'passEightyTuition' => $paymentCheck->passEightyTuition,
+                'studentPendingTransactions' => $paymentCheck->studentPendingTransactions
+            ]);
+        }
+
+        if(empty($student->bandwidth_username)){
+            return view('student.bandwidth', [
                 'payment' => $paymentCheck->schoolPayment,
                 'passTuition' => $paymentCheck->passTuitionPayment,
                 'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
@@ -382,16 +383,6 @@ class StudentController extends Controller
 
         $paymentCheck = $this->checkSchoolFees($student, $academicSession, $levelId);
 
-        if(empty($student->bandwidth_username)){
-            return view('student.bandwidth', [
-                'payment' => $acceptancePayment,
-                'passTuition' => $paymentCheck->passTuitionPayment,
-                'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
-                'passEightyTuition' => $paymentCheck->passEightyTuition,
-                'studentPendingTransactions' => $paymentCheck->studentPendingTransactions
-            ]);
-        }
-
         if(!$paymentCheck->passTuitionPayment){
             return view('student.schoolFee', [
                 'payment' => $paymentCheck->schoolPayment,
@@ -404,6 +395,16 @@ class StudentController extends Controller
 
         if(empty($student->image)){
             return view('student.updateImage', [
+                'payment' => $paymentCheck->schoolPayment,
+                'passTuition' => $paymentCheck->passTuitionPayment,
+                'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
+                'passEightyTuition' => $paymentCheck->passEightyTuition,
+                'studentPendingTransactions' => $paymentCheck->studentPendingTransactions
+            ]);
+        }
+
+        if(empty($student->bandwidth_username)){
+            return view('student.bandwidth', [
                 'payment' => $paymentCheck->schoolPayment,
                 'passTuition' => $paymentCheck->passTuitionPayment,
                 'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
@@ -440,16 +441,6 @@ class StudentController extends Controller
 
         $paymentCheck = $this->checkSchoolFees($student, $academicSession, $levelId);
 
-        if(empty($student->bandwidth_username)){
-            return view('student.bandwidth', [
-                'payment' => $acceptancePayment,
-                'passTuition' => $paymentCheck->passTuitionPayment,
-                'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
-                'passEightyTuition' => $paymentCheck->passEightyTuition,
-                'studentPendingTransactions' => $paymentCheck->studentPendingTransactions
-            ]);
-        }
-
         if(!$paymentCheck->passTuitionPayment){
             return view('student.schoolFee', [
                 'payment' => $paymentCheck->schoolPayment,
@@ -469,6 +460,17 @@ class StudentController extends Controller
                 'studentPendingTransactions' => $paymentCheck->studentPendingTransactions
             ]);
         }
+
+        if(empty($student->bandwidth_username)){
+            return view('student.bandwidth', [
+                'payment' => $paymentCheck->schoolPayment,
+                'passTuition' => $paymentCheck->passTuitionPayment,
+                'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
+                'passEightyTuition' => $paymentCheck->passEightyTuition,
+                'studentPendingTransactions' => $paymentCheck->studentPendingTransactions
+            ]);
+        }
+
         return view('student.walletTransactions', [
             'transactions' => $transactions,
             'payment' => $paymentCheck->schoolPayment,
@@ -490,16 +492,6 @@ class StudentController extends Controller
         $mentorId  = $student->mentor_id;
         $paymentCheck = $this->checkSchoolFees($student, $academicSession, $levelId);
 
-        if(empty($student->bandwidth_username)){
-            return view('student.bandwidth', [
-                'payment' => $acceptancePayment,
-                'passTuition' => $paymentCheck->passTuitionPayment,
-                'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
-                'passEightyTuition' => $paymentCheck->passEightyTuition,
-                'studentPendingTransactions' => $paymentCheck->studentPendingTransactions
-            ]);
-        }
-
         if(!$paymentCheck->passTuitionPayment){
             return view('student.schoolFee', [
                 'payment' => $paymentCheck->schoolPayment,
@@ -512,6 +504,16 @@ class StudentController extends Controller
 
         if(empty($student->image)){
             return view('student.updateImage', [
+                'payment' => $paymentCheck->schoolPayment,
+                'passTuition' => $paymentCheck->passTuitionPayment,
+                'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
+                'passEightyTuition' => $paymentCheck->passEightyTuition,
+                'studentPendingTransactions' => $paymentCheck->studentPendingTransactions
+            ]);
+        }
+
+        if(empty($student->bandwidth_username)){
+            return view('student.bandwidth', [
                 'payment' => $paymentCheck->schoolPayment,
                 'passTuition' => $paymentCheck->passTuitionPayment,
                 'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
@@ -543,16 +545,6 @@ class StudentController extends Controller
         $mentorId  = $student->mentor_id;
         $paymentCheck = $this->checkSchoolFees($student, $academicSession, $levelId);
 
-        if(empty($student->bandwidth_username)){
-            return view('student.bandwidth', [
-                'payment' => $acceptancePayment,
-                'passTuition' => $paymentCheck->passTuitionPayment,
-                'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
-                'passEightyTuition' => $paymentCheck->passEightyTuition,
-                'studentPendingTransactions' => $paymentCheck->studentPendingTransactions
-            ]);
-        }
-
         if(!$paymentCheck->passTuitionPayment){
             return view('student.schoolFee', [
                 'payment' => $paymentCheck->schoolPayment,
@@ -565,6 +557,16 @@ class StudentController extends Controller
 
         if(empty($student->image)){
             return view('student.updateImage', [
+                'payment' => $paymentCheck->schoolPayment,
+                'passTuition' => $paymentCheck->passTuitionPayment,
+                'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
+                'passEightyTuition' => $paymentCheck->passEightyTuition,
+                'studentPendingTransactions' => $paymentCheck->studentPendingTransactions
+            ]);
+        }
+
+        if(empty($student->bandwidth_username)){
+            return view('student.bandwidth', [
                 'payment' => $paymentCheck->schoolPayment,
                 'passTuition' => $paymentCheck->passTuitionPayment,
                 'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
@@ -899,16 +901,6 @@ class StudentController extends Controller
         $paymentCheck = $this->checkSchoolFees($student, $academicSession, $levelId);
         $bandwidthPayment = Payment::where("type", "Bandwidth Fee")->where("academic_session", $academicSession)->first();
 
-        if(empty($student->bandwidth_username)){
-            return view('student.bandwidth', [
-                'payment' => $acceptancePayment,
-                'passTuition' => $paymentCheck->passTuitionPayment,
-                'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
-                'passEightyTuition' => $paymentCheck->passEightyTuition,
-                'studentPendingTransactions' => $paymentCheck->studentPendingTransactions
-            ]);
-        }
-
         if(!$paymentCheck->passTuitionPayment){
             return view('student.schoolFee', [
                 'payment' => $paymentCheck->schoolPayment,
@@ -921,6 +913,16 @@ class StudentController extends Controller
 
         if(empty($student->image)){
             return view('student.updateImage', [
+                'payment' => $paymentCheck->schoolPayment,
+                'passTuition' => $paymentCheck->passTuitionPayment,
+                'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
+                'passEightyTuition' => $paymentCheck->passEightyTuition,
+                'studentPendingTransactions' => $paymentCheck->studentPendingTransactions
+            ]);
+        }
+
+        if(empty($student->bandwidth_username)){
+            return view('student.bandwidth', [
                 'payment' => $paymentCheck->schoolPayment,
                 'passTuition' => $paymentCheck->passTuitionPayment,
                 'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
