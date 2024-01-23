@@ -904,9 +904,18 @@ class AcademicController extends Controller
                   ->where('is_passed_out', false)
                   ->where('is_rusticated', false);
         }, 'programmeCategory'])->get();
+
+        // $faculties = Faculty::with(['students' => function ($query) {
+        //     $query->select('level_id', \DB::raw('count(*) as student_count'))
+        //           ->groupBy('level_id');
+        // }])->get();
+    
+        // Log::info($faculties);
+
         
         return view('admin.campusCapacity', [
-            'programmes' => $programmes
+            'programmes' => $programmes,
+            // 'faculties' => $faculties
         ]);
     }
 

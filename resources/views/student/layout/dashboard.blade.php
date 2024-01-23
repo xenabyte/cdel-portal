@@ -247,13 +247,8 @@
                                 <div class="collapse menu-dropdown" id="bandwidth">
                                     <ul class="nav nav-sm flex-column">
                                         <li class="nav-item">
-                                            <a href="{{ url('/student/checkBalance') }}" class="nav-link">Bandwidth Balance</a>
-                                        </li>
-                                        @if(env('WALLET_STATUS'))
-                                        <li class="nav-item">
                                             <a href="{{ url('/student/purchaseBandwidth') }}" class="nav-link">Purchase Bandwidth</a>
                                         </li>
-                                        @endif
                                     </ul>
                                 </div>
                             </li>

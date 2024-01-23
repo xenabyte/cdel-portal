@@ -17,6 +17,7 @@ use App\Models\Staff;
 use App\Models\User as Applicant;
 use App\Models\Student;
 use App\Models\StudentExit;
+use App\Models\Plan;
 use App\Models\StudentCourseRegistration;
 
 use App\Libraries\Pdf\Pdf;
@@ -153,8 +154,7 @@ class StudentController extends Controller
         ]);
     }
 
-    public function saveBioData(Request $request)
-    {
+    public function saveBioData(Request $request){
         $validator = Validator::make($request->all(), [
             'dob' => 'required',
             'religion' => 'required',
@@ -248,8 +248,7 @@ class StudentController extends Controller
         return redirect()->back();
     }
 
-    public function makePayment(Request $request)
-    {
+    public function makePayment(Request $request){
         $student = Auth::guard('student')->user();
         $studentId = $student->id;
         $globalData = $request->input('global_data');
@@ -371,8 +370,7 @@ class StudentController extends Controller
         return redirect()->back();
     }
     
-    public function transactions(Request $request)
-    {
+    public function transactions(Request $request){
         $student = Auth::guard('student')->user();
         $studentId = $student->id;
         $levelId = $student->level_id;
@@ -423,8 +421,7 @@ class StudentController extends Controller
         ]);
     }
 
-    public function walletTransactions(Request $request)
-    {
+    public function walletTransactions(Request $request){
         $student = Auth::guard('student')->user();
         $studentId = $student->id;
         $levelId = $student->level_id;
@@ -887,6 +884,105 @@ class StudentController extends Controller
         alert()->error('Oops!', 'An Error Occurred')->persistent('Close');
         return redirect()->back();
     }
+
+    public function purchaseBandwidth(Request $request){
+        $student = Auth::guard('student')->user();
+        $studentId = $student->id;
+        $levelId = $student->level_id;
+        $globalData = $request->input('global_data');
+        $admissionSession = $globalData->sessionSetting['admission_session'];
+        $academicSession = $globalData->sessionSetting['academic_session'];
+        $plans = Plan::all();
+
+        $transactions = Transaction::where('student_id', $studentId)->where('payment_id', '!=', 0)->orderBy('status', 'ASC')->get();
+
+        $paymentCheck = $this->checkSchoolFees($student, $academicSession, $levelId);
+        $bandwidthPayment = Payment::where("type", "Bandwidth Fee")->where("academic_session", $academicSession)->first();
+
+        if(empty($student->bandwidth_username)){
+            return view('student.bandwidth', [
+                'payment' => $acceptancePayment,
+                'passTuition' => $paymentCheck->passTuitionPayment,
+                'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
+                'passEightyTuition' => $paymentCheck->passEightyTuition,
+                'studentPendingTransactions' => $paymentCheck->studentPendingTransactions
+            ]);
+        }
+
+        if(!$paymentCheck->passTuitionPayment){
+            return view('student.schoolFee', [
+                'payment' => $paymentCheck->schoolPayment,
+                'passTuition' => $paymentCheck->passTuitionPayment,
+                'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
+                'passEightyTuition' => $paymentCheck->passEightyTuition,
+                'studentPendingTransactions' => $paymentCheck->studentPendingTransactions
+            ]);
+        }
+
+        if(empty($student->image)){
+            return view('student.updateImage', [
+                'payment' => $paymentCheck->schoolPayment,
+                'passTuition' => $paymentCheck->passTuitionPayment,
+                'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
+                'passEightyTuition' => $paymentCheck->passEightyTuition,
+                'studentPendingTransactions' => $paymentCheck->studentPendingTransactions
+            ]);
+        }
+        
+        return view('student.purchaseBandwidth', [
+            'plans' => $plans,
+            'transactions' => $transactions,
+            'payment' => $paymentCheck->schoolPayment,
+            'bandwidthPayment' => $bandwidthPayment,
+            'passTuition' => $paymentCheck->passTuitionPayment,
+            'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
+            'passEightyTuition' => $paymentCheck->passEightyTuition
+        ]);
+    }
+
+
+    public function createBandwidthPayment (Request $request){
+        $student = Auth::guard('student')->user();
+        $studentId = $student->id;
+        $globalData = $request->input('global_data');
+        $academicSession = $globalData->sessionSetting['academic_session'];
+
+
+        $validator = Validator::make($request->all(), [
+            'payment_id' => 'required',
+            'plan_id' => 'required',
+        ]);
+
+        if($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+        
+        $bandwidthPayment = Payment::find($request->payment_id);
+        $bandwidthPlan = Plan::find($request->plan_id);
+        $amount = $this->getUpperlinkAmount($bandwidthPlan->amount);
+        $reference = $this->generateRandomString(25);
+
+        $newBandwidthTx = ([
+            'student_id' => $student->id,
+            'payment_id' => $request->payment_id,
+            'amount_payed' => $amount,
+            'reference' => $reference,
+            'session' => $academicSession,
+            'payment_method' => "UpperLink",
+            'narration' => "Bandwidth Purchase of ".$bandwidthPlan->title,
+            'status' => 0,
+        ]);
+
+        if($newTx = Transaction::create($newBandwidthTx)){
+            alert()->success('Success', 'Kindly proceed to payment')->persistent('Close');
+            return redirect()->back();
+        }
+
+        alert()->error('Oops!', 'An Error Occurred')->persistent('Close');
+        return redirect()->back();
+    }
+    
 
     private function isValidLinkedInURL($url) {
         $pattern = '/^(https:\/\/)?(www\.)?linkedin\.com\/in\/[a-zA-Z0-9_-]+\/?$/';

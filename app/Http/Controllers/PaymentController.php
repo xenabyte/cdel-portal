@@ -24,6 +24,8 @@ use App\Mail\TransactionMail;
 
 use App\Libraries\Google\Google;
 use App\Libraries\Pdf\Pdf;
+use App\Libraries\Paygate\Paygate;
+
 
 
 use Paystack;
@@ -233,6 +235,25 @@ class PaymentController extends Controller
 
         }catch(\Exception $e) {
             Log::error($e);
+        }
+    }
+
+    public function upperlinkVerifyPayment(){
+
+        Log::info("**********************Upperlink Verifying Payment**********************");
+
+        
+        //Requery transaction
+        $data = new \stdClass();
+        $data->transactionId = NUll;
+
+        $upperLinkPayGate = new PayGate;
+        $paymentDetails =$upperLinkPayGate->verifyTransaction($data);
+
+        if($paymentDetails['status'] == 'success'){
+            if($this->processUpperLinkPayment($paymentDetails)){
+
+            }
         }
     }
 

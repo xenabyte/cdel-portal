@@ -61,4 +61,51 @@
     </div>
 </div>
 <!-- end row -->
+
+<div class="row">
+
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-header align-items-center d-flex">
+                <h4 class="card-title mb-0 flex-grow-1">University Faculties </h4>
+            </div><!-- end card header -->
+
+            @if(!empty($faculties) && $faculties->count() > 0)
+            <div class="card-body">
+                <div class="row mb-2">
+                    <div class="col-sm-6 col-xl-12">
+                        
+                        <table id="fixed-header" class="table table-borderedless dt-responsive nowrap table-striped align-middle" style="width:100%">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Id</th>
+                                    <th scope="col">Faculties</th>
+                                    <th scope="col">Student Strength</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($faculties as $faculty)
+                                <tr>
+                                    <th scope="row">{{ $loop->iteration }}</th>
+                                    <td>{{ $faculty->name }} </td>
+                                    <td>
+                                        @foreach ($faculty['students'] as $student)
+                                            <tr>
+                                                <td>{{ $student['level_id'] * 100 }} Level</td>
+                                                <td>{{ $student['student_count'] }}</td>
+                                            </tr>
+                                        @endforeach
+                                    </td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div><!-- end col -->
+                </div>
+            </div>
+            @endif
+        </div><!-- end card -->
+    </div>
+</div>
+<!-- end row -->
 @endsection

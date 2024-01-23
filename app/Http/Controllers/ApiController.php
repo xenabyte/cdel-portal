@@ -121,6 +121,7 @@ class ApiController extends Controller
             $response->othernames = $role == 'student'? $user->applicant->othernames: $user->othernames;
             $response->email = $user->email;
             $response->image = $role == 'student'? 'https://portal.tau.edu.ng/'.$user->image : $user->image;
+            $response->phone_number = $role == 'student'? $user->applicant->phone_number: $user->phone_number;
 
             return $this->dataResponse($role.' record found!', $response);
         } else {

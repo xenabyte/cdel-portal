@@ -40,6 +40,7 @@
                             <th scope="col">Phone Number</th>
                             <th scope="col">Academic Session</th>
                             <th scope="col">Admitted Date</th>
+                            <th scope="col">Admission Letter</th>
                             <th scope="col"></th>
                         </tr>
                     </thead>
@@ -55,6 +56,9 @@
                             <td>{{ $student->applicant->phone_number }} </td>
                             <td>{{ $student->academic_session }} </td>
                             <td>{{ $student->created_at }} </td>
+                            <td>
+                                <a href="{{ asset($student->admission_letter) }}" class="btn btn-danger m-1"> Download Admission Letter</a>
+                            </td>
                             <td>
                                 <a href="{{ url('admin/student/'.$student->slug) }}" class="btn btn-primary m-1"><i class= "ri-user-6-fill"></i> View Student</a>
                             </td>

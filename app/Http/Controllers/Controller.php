@@ -172,6 +172,29 @@ class Controller extends BaseController
        return true;
     }
 
+    public function processUpperlinkPayment($transactionId){
+        $sessionSetting = SessionSetting::first();
+        $academicSession = $sessionSetting['academic_session'];
+        $applicationSession = $sessionSetting['application_session'];
+        $admissionSession = $sessionSetting['admission_session'];
+
+
+        log::info("Processing payment:" . $transactionId);
+
+        if(!$transaction = Transaction::where('id', $transactionId)->first()){
+            return false;
+        }
+
+        if($transaction->status == 1){
+            return true;
+        }
+
+        $transaction->status = 1;
+        if($transacton->save()){
+            return true;
+        }
+    }
+
 
     public function generateAccessCode () {
         $applicationAccessCode = "";
@@ -208,6 +231,12 @@ class Controller extends BaseController
         $paymentAmount = $amount + 5000;
 
         return $paymentAmount/100;
+    }
+
+    public function getUpperlinkAmount($amount){
+        $upperLinkAmount =  (((1.5/100) * $amount)+5000);
+
+        return $upperLinkAmount;
     }
 
     public function generateReferralCode() {

@@ -30,6 +30,8 @@ Route::post('/checkDataBalance', [App\Http\Controllers\HomeController::class, 'c
 Route::post('/updateNotificationStatus', [App\Http\Controllers\HomeController::class, 'updateNotificationStatus'])->name('updateNotificationStatus');
 Route::get('/verifyPayment', [App\Http\Controllers\PaymentController::class, 'verifyPayment'])->name('verifyPayment');
 Route::get('/raveVerifyPayment', [App\Http\Controllers\PaymentController::class, 'raveVerifyPayment'])->name('raveVerifyPayment');
+Route::get('/upperlinkVerifyPayment', [App\Http\Controllers\PaymentController::class, 'upperlinkVerifyPayment'])->name('upperlinkVerifyPayment');
+
 Route::post('/paystackWebhook', [App\Http\Controllers\PaymentController::class, 'paystackWebhook']);
 Route::post('/raveWebhook', [App\Http\Controllers\PaymentController::class, 'raveWebhook']);
 Route::get('/callback', [App\Http\Controllers\PaymentController::class, 'callback']);
@@ -324,13 +326,15 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'student'
 
   Route::get('/transcript', [App\Http\Controllers\Student\AcademicController::class, 'transcript'])->name('transcript')->middleware(['auth:student']);
   Route::post('/generateInvoice', [App\Http\Controllers\Student\StudentController::class, 'generateInvoice'])->name('generateInvoice')->middleware(['auth:student']);
-
+  
 
   Route::get('/mentor', [App\Http\Controllers\Student\StudentController::class, 'mentor'])->name('mentor')->middleware(['auth:student']);
   Route::get('/exits', [App\Http\Controllers\Student\StudentController::class, 'exits'])->name('exits')->middleware(['auth:student']);
   Route::post('exitApplication', [App\Http\Controllers\Student\StudentController::class, 'exitApplication'])->name('exitApplication')->middleware(['auth:student']);
 
   Route::get('/hallOfFame', [App\Http\Controllers\HomeController::class, 'hallOfFame']);
+  Route::get('/purchaseBandwidth', [App\Http\Controllers\Student\StudentController::class, 'purchaseBandwidth'])->name('purchaseBandwidth')->middleware(['auth:student']);
+  Route::post('createBandwidthPayment', [App\Http\Controllers\Student\StudentController::class, 'createBandwidthPayment'])->name('createBandwidthPayment')->middleware(['auth:student']);
   
 });
 
