@@ -67,7 +67,7 @@ class AcademicController extends Controller
         $unregisteredRequiredCoursesIds = [];
 
         for ($level = $levelId - 1; $level >= $minLevel; $level--) {
-            $prevAcademicSession = getPreviousAcademicSession($academicSession);
+            $prevAcademicSession = $this->getPreviousAcademicSession($academicSession);
 
             $allRequiredCourses = CoursePerProgrammePerAcademicSession::where('programme_id', $student->programme_id)
                 ->where('course_status', '!=', 'Elective')
