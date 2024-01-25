@@ -70,7 +70,7 @@ class AcademicController extends Controller
             $prevAcademicSession = $this->getPreviousAcademicSession($academicSession);
 
             $allRequiredCourses = CoursePerProgrammePerAcademicSession::where('programme_id', $student->programme_id)
-                ->where('course_status', '!=', 'Elective')
+                ->where('status', '!=', 'Elective')
                 ->where('level_id', $level)
                 ->where('academic_session', $prevAcademicSession)
                 ->get();
