@@ -3,7 +3,7 @@
     $student = Auth::guard('student')->user();
 @endphp
 @section('content')
-
+@if($student->id == 82)
 <!-- start page title -->
 <div class="row">
     <div class="col-12">
@@ -233,4 +233,5 @@
         }
     }
 </script>
+@endif
 @endsection

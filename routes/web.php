@@ -31,9 +31,12 @@ Route::post('/updateNotificationStatus', [App\Http\Controllers\HomeController::c
 Route::get('/verifyPayment', [App\Http\Controllers\PaymentController::class, 'verifyPayment'])->name('verifyPayment');
 Route::get('/raveVerifyPayment', [App\Http\Controllers\PaymentController::class, 'raveVerifyPayment'])->name('raveVerifyPayment');
 Route::get('/upperlinkVerifyPayment', [App\Http\Controllers\PaymentController::class, 'upperlinkVerifyPayment'])->name('upperlinkVerifyPayment');
+Route::get('/monnifyVerifyPayment', [App\Http\Controllers\Student\StudentController::class, 'monnifyVerifyPayment'])->name('monnifyVerifyPayment');
+
 
 Route::post('/paystackWebhook', [App\Http\Controllers\PaymentController::class, 'paystackWebhook']);
 Route::post('/raveWebhook', [App\Http\Controllers\PaymentController::class, 'raveWebhook']);
+Route::post('/monnifyWebhook', [App\Http\Controllers\PaymentController::class, 'monnifyWebhook']);
 Route::get('/callback', [App\Http\Controllers\PaymentController::class, 'callback']);
 
 Route::get('/examDocket/{slug}', [App\Http\Controllers\HomeController::class, 'getExamDocket']);

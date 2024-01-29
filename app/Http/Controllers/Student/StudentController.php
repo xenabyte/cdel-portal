@@ -997,7 +997,7 @@ class StudentController extends Controller
                 $invoiceExpire = $future->format('Y-m-d H:i:s');
     
                 $monnifyPaymentdata = array(
-                    'amount' => ceil($newTx->amount),
+                    'amount' => ceil($newTx->amount_payed/100),
                     'invoiceReference' => $newTx->reference,
                     'description' =>  $newTx->narration,
                     'currencyCode' => "NGN",
@@ -1011,12 +1011,12 @@ class StudentController extends Controller
     
                 $monnify = new Monnify();
                 $createInvoice = $monnify->initiateInvoice($monnifyPaymentdata);
-                $checkoutUrl = $createInvoice->data->link;
+                $checkoutUrl = $createInvoice->responseBody->checkoutUrl;
 
                 $newTx->checkout_url = $checkoutUrl;
                 $newTx->save();
 
-                return redirect($createInvoice->data->link);
+                return redirect($checkoutUrl);
             }
             alert()->success('Success', 'Kindly proceed to payment')->persistent('Close');
             return redirect()->back();
@@ -1026,7 +1026,7 @@ class StudentController extends Controller
         return redirect()->back();
     }
 
-    public function monnifySuccessfulTransaction(Request $request){
+    public function monnifyVerifyPayment(Request $request){
         $student = Auth::guard('student')->user();
         $studentId = $student->id;
         $levelId = $student->level_id;

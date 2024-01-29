@@ -21,12 +21,14 @@ class Monnify
 
     public function initiateInvoice($paymentData)
     {
-        $response = Http::withHeaders([
+        $createInvoice = Http::withoutVerifying()->withHeaders([
             'Authorization' => 'Basic ' . base64_encode("{$this->api_key}:{$this->secret_key}"),
             'Content-Type' => 'application/json',
-        ])->post($this->baseUrl, $paymentData);
+        ])->post($this->baseUrl, $paymentData);   
+        
+        $response = json_decode($createInvoice);
 
-        return $response->json();
+        return $response;
     }
 
     // Implement other methods as needed

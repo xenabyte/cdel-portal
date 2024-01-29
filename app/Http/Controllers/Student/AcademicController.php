@@ -610,7 +610,7 @@ class AcademicController extends Controller
         // }
 
         $pdf = new Pdf();
-        $examResult = $pdf->generateExamResult($studentId, $academicSession, $semester, $level);
+        $examResult = $pdf->generateExamResult($studentId, $academicSession, $semester, $levelId);
 
         return redirect(asset($examResult));
     }
