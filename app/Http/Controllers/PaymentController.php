@@ -417,7 +417,8 @@ class PaymentController extends Controller
 
     public function monnifyWebhook (Request $request) {   
         try {
-          file_put_contents('monnify_webhook.txt', $request);
+          //file_put_contents('monnify_webhook.txt', $request);
+          log::info($request);
           $paymentReference = $request->paymentReference;
           $transactionReference = $request->transactionReference;
           $transactionHash=$request->transactionHash;
