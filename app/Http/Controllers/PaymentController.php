@@ -25,6 +25,7 @@ use App\Mail\TransactionMail;
 use App\Libraries\Google\Google;
 use App\Libraries\Pdf\Pdf;
 use App\Libraries\Paygate\Paygate;
+use App\Libraries\Bandwidth\Bandwidth;
 
 
 
@@ -412,4 +413,58 @@ class PaymentController extends Controller
         // alert()->success('Good Job', 'Payment is successful')->persistent('Close');
         return $this->dataResponse('Payment is successful!', $request->all());
     }
+
+
+    public function invoiceWebhook (Request $request) {   
+        try {
+          //file_put_contents('monnify_webhook.txt', $request);
+          $paymentReference = $request->input('paymentReference');
+          $transactionReference = $request->input('transactionReference');
+          $transactionHash=$request->input('transactionHash');
+          $paymentStatus = $request->input('paymentStatus');
+          $paidOn = $request->input('paidOn');
+          $amountPaid=$request->input('amountPaid');
+          $paymentMethod=$request->input('paymentMethod');
+          $accountDetails=$request->input('accountDetails');
+          
+          $clientSecret =  env('MONNIFY_SECRET_KEY');
+    
+          Log::info('*****************Monnify Webhook ****************');
+          Log::info('paymentReference: '.$paymentReference);
+          Log::info('transactionReference: '.$transactionReference);
+          Log::info('paidOn: '.$paidOn);
+          Log::info('accountDetails:'.json_encode(print_r($accountDetails)));
+          $data = $clientSecret ."|". $paymentReference ."|". $amountPaid ."|". $paidOn ."|". $transactionReference;
+          $hashed = hash('sha512', $data);
+          if($paymentStatus == "PAID") {
+            $transaction = Transaction::where('reference', $paymentReference)
+            ->where('status', null)
+            ->first();
+    
+            if($transactionHash == $hashed ){
+                if(!empty($transaction)){
+                  $newamount=$amountPaid*100;
+                  $amountdiff=round(($newamount-$transaction->amount_payed)/100);
+                  if($amountdiff >= 0) {
+                    $student = Student::find($transaction->student_id);
+                    $bandwidthUsername = $student->bandwidth_username;
+
+                    $bandwidthPlan = Plan::find($request->plan_id);
+                    $bandwidth = $bandwidthPlan->bandwidth + $bandwidthPlan->bonus;
+                    //bandwidth credit
+                    $bandwidth = new Bandwidth();
+                    $creditStudent = $bandwidth->addToDataBalance($bandwidthUsername, $bandwidth);
+                    $transaction->status = 1;
+                    $transaction->update();
+                  }
+                  else{
+                    Log::info('difference in amount: '.$amountdiff);
+                  }
+                }
+            }
+          } 
+        }catch (ValidationException $e) {
+          return $this->dataResponse($this->getMissingParams($e), null, 'error');
+        }
+      }
 }

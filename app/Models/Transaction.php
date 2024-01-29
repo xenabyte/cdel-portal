@@ -21,7 +21,9 @@ class Transaction extends Model
         'payment_method',
         'status',
         'session',
-        'narration'
+        'narration',
+        'checkout_url',
+        'plan_id'
     ];
 
     /**

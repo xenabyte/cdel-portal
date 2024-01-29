@@ -80,36 +80,40 @@
                                                 <lord-icon src="https://cdn.lordicon.com/ggihhudh.json" trigger="hover" style="width:150px;height:150px">
                                                 </lord-icon>
                                                 </div>
-                                                <form action="https://staging.gateway.paychoice.ng/upl/merchant/pay" method="POST" enctype="multipart/form-data">
-                                                    @csrf
-                                                    @php
-                                                        $uniqueString = md5(uniqid('', true));
-                                                        $reference = base64_encode("$transaction->reference:" . $uniqueString);
-                                                        $narration = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $transaction->narration)));
-                                                        $hash = env('UPPERLINK_MERCHANT_ID') . 'UPL002' . $narration . $transaction->amount_payed . env('UPPERLINK_NGN_CODE') . $reference . $student->email . $student->applicant->phone_number . $student->applicant->lastname . $student->applicant->lastname . env('UPPERLINK_REDIRECT_URL') . env('UPPERLINK_REDIRECT_URL') . env('UPPERLINK_MERCHANT_SECRET');
-                                                        $hashedValue = hash('sha256', $hash);
-                                                    @endphp
-                                                    <input type="hidden" name="merchant_id" value="{{ env('UPPERLINK_MERCHANT_ID') }}">
-                                                    <input type="hidden" name="transaction_id" value="{{ $reference }}">
-                                                    <input type="hidden" name="product_id" value="UPL002">
-                                                    <input type="hidden" name="product_description" value="{{ $narration }}">
-                                                    <input type="hidden" name="amount" value="{{ $transaction->amount_payed }}">
-                                                    <input type="hidden" name="email" value="{{ $student->email }}">
-                                                    <input type="hidden" name="phone_number" value="{{ $student->applicant->phone_number }}">
-                                                    <input type="hidden" name="first_name" value="{{ $student->applicant->lastname }}">
-                                                    <input type="hidden" name="last_name" value="{{ $student->applicant->lastname }}">
-                                                    <input type="hidden" name="response_url" value="{{ env('UPPERLINK_REDIRECT_URL') }}">
-                                                    <input type="hidden" name="notify_url" value="{{ env('UPPERLINK_REDIRECT_URL') }}">
-                                                    <input type="hidden" name="string2hash" value="{{ $hashedValue }}">
-                                                    <input type="hidden" name="currency" value="{{ env('UPPERLINK_NGN_CODE') }}">
-                                                   
-                                                    <input type="hidden" name="hash" value="{{ hash('sha256', $hash) }}">
-
+                                                @if(empty($transaction->checkout_url))
+                                                    <form action="https://staging.gateway.paychoice.ng/upl/merchant/pay" method="POST" enctype="multipart/form-data">
+                                                        @csrf
+                                                        @php
+                                                            $uniqueString = md5(uniqid('', true));
+                                                            $reference = base64_encode("$transaction->reference:" . $uniqueString);
+                                                            $narration = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $transaction->narration)));
+                                                            $hash = env('UPPERLINK_MERCHANT_ID') . 'UPL002' . $narration . $transaction->amount_payed . env('UPPERLINK_NGN_CODE') . $reference . $student->email . $student->applicant->phone_number . $student->applicant->lastname . $student->applicant->lastname . env('UPPERLINK_REDIRECT_URL') . env('UPPERLINK_REDIRECT_URL') . env('UPPERLINK_MERCHANT_SECRET');
+                                                            $hashedValue = hash('sha256', $hash);
+                                                        @endphp
+                                                        <input type="hidden" name="merchant_id" value="{{ env('UPPERLINK_MERCHANT_ID') }}">
+                                                        <input type="hidden" name="transaction_id" value="{{ $reference }}">
+                                                        <input type="hidden" name="product_id" value="UPL002">
+                                                        <input type="hidden" name="product_description" value="{{ $narration }}">
+                                                        <input type="hidden" name="amount" value="{{ $transaction->amount_payed }}">
+                                                        <input type="hidden" name="email" value="{{ $student->email }}">
+                                                        <input type="hidden" name="phone_number" value="{{ $student->applicant->phone_number }}">
+                                                        <input type="hidden" name="first_name" value="{{ $student->applicant->lastname }}">
+                                                        <input type="hidden" name="last_name" value="{{ $student->applicant->lastname }}">
+                                                        <input type="hidden" name="response_url" value="{{ env('UPPERLINK_REDIRECT_URL') }}">
+                                                        <input type="hidden" name="notify_url" value="{{ env('UPPERLINK_REDIRECT_URL') }}">
+                                                        <input type="hidden" name="string2hash" value="{{ $hashedValue }}">
+                                                        <input type="hidden" name="currency" value="{{ env('UPPERLINK_NGN_CODE') }}">
                                                     
-                                                    <div>
-                                                        <button type="submit" id="submit-button" id='submit-button' class="btn btn-primary">Make payment</button>
-                                                    </div>
-                                                </form>
+                                                        <input type="hidden" name="hash" value="{{ hash('sha256', $hash) }}">
+
+                                                        
+                                                        <div>
+                                                            <button type="submit" id="submit-button" id='submit-button' class="btn btn-primary">Make payment</button>
+                                                        </div>
+                                                    </form>
+                                                @else
+                                                    <a href="{{ $transaction->checkout_url }}" class="btn btn-primary">Make payment</a>
+                                                @endif
                                             </div>
                                         </div><!-- /.modal-content -->
                                     </div><!-- /.modal-dialog -->

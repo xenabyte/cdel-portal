@@ -21,6 +21,8 @@ use App\Models\Plan;
 use App\Models\StudentCourseRegistration;
 
 use App\Libraries\Pdf\Pdf;
+use App\Libraries\Bandwidth\Bandwidth;
+use App\Libraries\Monnify\Monnify;
 
 use SweetAlert;
 use Mail;
@@ -29,7 +31,7 @@ use Log;
 use Carbon\Carbon;
 use Paystack;
 use KingFlamez\Rave\Facades\Rave as Flutterwave;
-use App\Libraries\Bandwidth\Bandwidth;
+
 
 
 class StudentController extends Controller
@@ -962,7 +964,17 @@ class StudentController extends Controller
         
         $bandwidthPayment = Payment::find($request->payment_id);
         $bandwidthPlan = Plan::find($request->plan_id);
-        $amount = $this->getUpperlinkAmount($bandwidthPlan->amount);
+        $bandwidthPaymentGateway = env("BANDWIDTH_PURCHASE_GATEWAY");
+
+        if($bandwidthPaymentGateway == "UpperLink"){
+            $amount = $this->getUpperlinkAmount($bandwidthPlan->amount);
+        }elseif($bandwidthPaymentGateway == "Monnify"){
+            $amount = $this->getMonnifyAmount($bandwidthPlan->amount);
+        }else{
+            alert()->error('Oops!', 'Invalid Payment Gateway')->persistent('Close');
+            return redirect()->back();
+        }
+
         $reference = $this->generateRandomString(25);
 
         $newBandwidthTx = ([
@@ -971,18 +983,103 @@ class StudentController extends Controller
             'amount_payed' => $amount,
             'reference' => $reference,
             'session' => $academicSession,
-            'payment_method' => "UpperLink",
+            'payment_method' => $bandwidthPaymentGateway,
             'narration' => "Bandwidth Purchase of ".$bandwidthPlan->title,
+            'plan_id' => $bandwidthPlan->id,
             'status' => 0,
         ]);
 
         if($newTx = Transaction::create($newBandwidthTx)){
+
+            if($bandwidthPaymentGateway == "Monnify"){
+                $now = Carbon::now();
+                $future = $now->addHours(48);
+                $invoiceExpire = $future->format('Y-m-d H:i:s');
+    
+                $monnifyPaymentdata = array(
+                    'amount' => ceil($newTx->amount),
+                    'invoiceReference' => $newTx->reference,
+                    'description' =>  $newTx->narration,
+                    'currencyCode' => "NGN",
+                    'contractCode' => env('MONNIFY_CONTRACT_CODE'),
+                    'customerEmail' => $student->email,
+                    'customerName' => $student->applicant->lastname. ' '.$student->applicant->othernames,
+                    'expiryDate' => $invoiceExpire,
+                    'paymentMethods' => ["ACCOUNT_TRANSFER"],
+                    "redirectUrl"=> env("MONNIFY_REDIRECT_URL"),
+                );
+    
+                $monnify = new Monnify();
+                $createInvoice = $monnify->initiateInvoice($monnifyPaymentdata);
+                $checkoutUrl = $createInvoice->data->link;
+
+                $newTx->checkout_url = $checkoutUrl;
+                $newTx->save();
+
+                return redirect($createInvoice->data->link);
+            }
             alert()->success('Success', 'Kindly proceed to payment')->persistent('Close');
             return redirect()->back();
         }
 
         alert()->error('Oops!', 'An Error Occurred')->persistent('Close');
         return redirect()->back();
+    }
+
+    public function monnifySuccessfulTransaction(Request $request){
+        $student = Auth::guard('student')->user();
+        $studentId = $student->id;
+        $levelId = $student->level_id;
+        $globalData = $request->input('global_data');
+        $admissionSession = $globalData->sessionSetting['admission_session'];
+        $academicSession = $globalData->sessionSetting['academic_session'];
+        $plans = Plan::all();
+
+        $transactions = Transaction::where('student_id', $studentId)->where('payment_id', '!=', 0)->orderBy('status', 'ASC')->get();
+
+        $paymentCheck = $this->checkSchoolFees($student, $academicSession, $levelId);
+        $bandwidthPayment = Payment::where("type", "Bandwidth Fee")->where("academic_session", $academicSession)->first();
+
+        if(!$paymentCheck->passTuitionPayment){
+            return view('student.schoolFee', [
+                'payment' => $paymentCheck->schoolPayment,
+                'passTuition' => $paymentCheck->passTuitionPayment,
+                'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
+                'passEightyTuition' => $paymentCheck->passEightyTuition,
+                'studentPendingTransactions' => $paymentCheck->studentPendingTransactions
+            ]);
+        }
+
+        if(empty($student->image)){
+            return view('student.updateImage', [
+                'payment' => $paymentCheck->schoolPayment,
+                'passTuition' => $paymentCheck->passTuitionPayment,
+                'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
+                'passEightyTuition' => $paymentCheck->passEightyTuition,
+                'studentPendingTransactions' => $paymentCheck->studentPendingTransactions
+            ]);
+        }
+
+        if(empty($student->bandwidth_username)){
+            return view('student.bandwidth', [
+                'payment' => $paymentCheck->schoolPayment,
+                'passTuition' => $paymentCheck->passTuitionPayment,
+                'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
+                'passEightyTuition' => $paymentCheck->passEightyTuition,
+                'studentPendingTransactions' => $paymentCheck->studentPendingTransactions
+            ]);
+        }
+    
+        alert()->success('Success', 'Transaction Successful')->persistent('Close');
+        return view('student.purchaseBandwidth', [
+            'plans' => $plans,
+            'transactions' => $transactions,
+            'payment' => $paymentCheck->schoolPayment,
+            'bandwidthPayment' => $bandwidthPayment,
+            'passTuition' => $paymentCheck->passTuitionPayment,
+            'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
+            'passEightyTuition' => $paymentCheck->passEightyTuition
+        ]);
     }
     
 

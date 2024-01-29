@@ -236,7 +236,25 @@ class Controller extends BaseController
     public function getUpperlinkAmount($amount){
         $upperLinkAmount =  (((1.5/100) * $amount)+5000);
 
-        return $upperLinkAmount;
+        if(($upperLinkAmount) > 200000){
+            $paymentAmount = $amount + 200000 + 5000;
+        }else{
+            $paymentAmount = $amount + $upperLinkAmount + 5000;
+        }
+
+        return $paymentAmount;
+    }
+
+    public function getMonnifyAmount($amount){
+        $monnifyAmount =  (((1.5/100) * $amount)+5000);
+
+        if(($monnifyAmount) > 200000){
+            $paymentAmount = $amount + 200000 + 5000;
+        }else{
+            $paymentAmount = $amount + $monnifyAmount + 5000;
+        }
+
+        return $paymentAmount;
     }
 
     public function generateReferralCode() {
@@ -596,13 +614,19 @@ class Controller extends BaseController
         return redirect($transactionData->redirect_path);
     }
 
-    public function getPreviousAcademicSession($currentAcademicSession)
-    {
+    public function getPreviousAcademicSession($currentAcademicSession){
         [$year, $term] = explode('/', $currentAcademicSession);
         $year = intval($year);
-        $prevYear = $year - 1;
-        $prevAcademicSession = $prevYear . '/' . $year;
-    
+        
+        if ($term === '1') {
+            $prevYear = $year - 2;
+        } else {
+            $prevYear = $year - 1; 
+        }
+        
+        $prevAcademicSession = $prevYear . '/' . ($year - 1);
+
         return $prevAcademicSession;
     }
+
 }
