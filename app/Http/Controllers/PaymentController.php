@@ -417,7 +417,7 @@ class PaymentController extends Controller
 
     public function monnifyWebhook (Request $request) {   
         try {
-          //file_put_contents('monnify_webhook.txt', $request);
+          file_put_contents('monnify_webhook.txt', $request);
           $paymentReference = $request->paymentReference;
           $transactionReference = $request->transactionReference;
           $transactionHash=$request->transactionHash;
@@ -441,7 +441,7 @@ class PaymentController extends Controller
             ->where('status', null)
             ->first();
     
-            if($transactionHash == $hashed ){
+            if($transactionHash == $hashed){
                 if(!empty($transaction)){
                   $newamount=$amountPaid*100;
                   $amountdiff=round(($newamount-$transaction->amount_payed)/100);
