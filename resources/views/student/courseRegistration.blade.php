@@ -156,7 +156,7 @@
                                     @foreach($unregisteredRequiredCourses->where('semester', 1) as $unregisteredCourse)
                                         <tr>
                                             <td>{{ $firstSemester++ }}</td>
-                                            <td>{{ $unregisteredCourse->course->code }} - {{ $unregisteredCourse->course->id }}</td>
+                                            <td>{{ $unregisteredCourse->course->code }}</td>
                                             <td>{{ $unregisteredCourse->course->name }}</td>
                                             <td>{{ $unregisteredCourse->credit_unit }}</td>
                                             <td>{{ $unregisteredCourse->status }}</td>
