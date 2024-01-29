@@ -418,14 +418,14 @@ class PaymentController extends Controller
     public function monnifyWebhook (Request $request) {   
         try {
           //file_put_contents('monnify_webhook.txt', $request);
-          $paymentReference = $request->input('paymentReference');
-          $transactionReference = $request->input('transactionReference');
-          $transactionHash=$request->input('transactionHash');
-          $paymentStatus = $request->input('paymentStatus');
-          $paidOn = $request->input('paidOn');
-          $amountPaid=$request->input('amountPaid');
-          $paymentMethod=$request->input('paymentMethod');
-          $accountDetails=$request->input('accountDetails');
+          $paymentReference = $request->paymentReference;
+          $transactionReference = $request->transactionReference;
+          $transactionHash=$request->transactionHash;
+          $paymentStatus = $request->paymentStatus;
+          $paidOn = $request->paidOn;
+          $amountPaid=$request->amountPaid;
+          $paymentMethod=$request->paymentMethod;
+          $accountDetails=$request->accountDetails;
           
           $clientSecret =  env('MONNIFY_SECRET_KEY');
     
