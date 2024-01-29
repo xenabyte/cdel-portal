@@ -14,5 +14,6 @@ class VerifyCsrfToken extends Middleware
     protected $except = [
         'https://portal.tau.edu.ng/callback?order=006989&product=1002',
         '/raveWebhook',
+        '/monnifyWebhook',
     ];
 }
