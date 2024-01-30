@@ -70,7 +70,7 @@ class Bandwidth {
 
         $dataok = json_encode($postfields);
 
-        $url = $this->balanceUrl;
+        $url = $this->purchaseUrl;
         $header= array(
         "content-type: application/json"
         );
@@ -90,7 +90,7 @@ class Bandwidth {
 
         $dataok = json_encode($postfields);
 
-        $url = $this->balanceUrl;
+        $url = $this->newUserUrl;
         $header= array(
         "content-type: application/json"
         );

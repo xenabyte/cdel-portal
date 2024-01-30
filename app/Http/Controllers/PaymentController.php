@@ -16,6 +16,7 @@ use App\Models\Programme;
 use App\Models\Transaction;
 use App\Models\Payment;
 use App\Models\Student;
+use App\Models\Plan;
 use App\Models\SessionSetting;
 
 use App\Mail\ApplicationPayment;
@@ -418,49 +419,46 @@ class PaymentController extends Controller
     public function monnifyWebhook (Request $request) {   
         try {
           //file_put_contents('monnify_webhook.txt', $request);
-          log::info($request);
-          $paymentReference = $request->paymentReference;
-          $transactionReference = $request->transactionReference;
-          $transactionHash=$request->transactionHash;
-          $paymentStatus = $request->paymentStatus;
-          $paidOn = $request->paidOn;
-          $amountPaid=$request->amountPaid;
-          $paymentMethod=$request->paymentMethod;
-          $accountDetails=$request->accountDetails;
-          
-          $clientSecret =  env('MONNIFY_SECRET_KEY');
+          $data = json_encode($request->eventData);
+          $responseData = json_decode($data);
+
+          // Access the paymentReference
+          $paymentReference = $responseData->paymentReference;
+          $transactionReference = $responseData->transactionReference;
+          $paymentStatus = $responseData->paymentStatus;
+          $paidOn = $responseData->paidOn;
+          $amountPaid = $responseData->amountPaid;
+          $paymentMethod = $responseData->paymentMethod;
     
           Log::info('*****************Monnify Webhook ****************');
           Log::info('paymentReference: '.$paymentReference);
           Log::info('transactionReference: '.$transactionReference);
           Log::info('paidOn: '.$paidOn);
-          Log::info('accountDetails:'.json_encode(print_r($accountDetails)));
-          $data = $clientSecret ."|". $paymentReference ."|". $amountPaid ."|". $paidOn ."|". $transactionReference;
-          $hashed = hash('sha512', $data);
-          if($paymentStatus == "PAID") {
-            $transaction = Transaction::where('reference', $paymentReference)
-            ->where('status', null)
-            ->first();
     
-            if($transactionHash == $hashed){
-                if(!empty($transaction)){
-                  $newamount=$amountPaid*100;
-                  $amountdiff=round(($newamount-$transaction->amount_payed)/100);
-                  if($amountdiff >= 0) {
+          if($paymentStatus == "PAID"){
+            if(!$transaction = Transaction::where('reference', $paymentReference)->where('status', 0)->first()){
+                return $this->dataResponse('transaction not found', null, 'error');  
+            }
+
+            if($paymentReference == $transaction->reference){
+                $newamount=$amountPaid*100;
+                $amountdiff=round(($newamount-$transaction->amount_payed)/100);
+
+                if($amountdiff >= 0) {
                     $student = Student::find($transaction->student_id);
                     $bandwidthUsername = $student->bandwidth_username;
 
-                    $bandwidthPlan = Plan::find($request->plan_id);
-                    $bandwidth = $bandwidthPlan->bandwidth + $bandwidthPlan->bonus;
+                    $bandwidthPlan = Plan::find($transaction->plan_id);
+                    $bandwidthAmount = $bandwidthPlan->bandwidth + $bandwidthPlan->bonus;
                     //bandwidth credit
                     $bandwidth = new Bandwidth();
-                    $creditStudent = $bandwidth->addToDataBalance($bandwidthUsername, $bandwidth);
+                    $creditStudent = $bandwidth->addToDataBalance($bandwidthUsername, $bandwidthAmount);
                     $transaction->status = 1;
                     $transaction->update();
-                  }
-                  else{
-                    Log::info('difference in amount: '.$amountdiff);
-                  }
+                    return $this->dataResponse('Account Credited', $creditStudent);
+                }else{
+                    Log::info('difference in amount for '.$bandwidthUsername.' : '.$amountdiff);
+                    return $this->dataResponse('difference in amount for '.$bandwidthUsername.' : '.$amountdiff, null, 'error');
                 }
             }
           } 
