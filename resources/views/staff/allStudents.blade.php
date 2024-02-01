@@ -39,6 +39,9 @@
                             <th scope="col">Programme</th>
                             <th scope="col">Email</th>
                             <th scope="col">Phone Number</th>
+                            <th scope="col">Guardian Name</th>
+                            <th scope="col">Guardian Email</th>
+                            <th scope="col">Guardian Phone</th>
                             <th scope="col"></th>
                         </tr>
                     </thead>
@@ -52,7 +55,9 @@
                             <td>{{ $student->matric_number }}</td>
                             <td>{{ $student->programme->name }}</td>
                             <td>{{ $student->email }} </td>
-                            <td>{{ $student->applicant->phone_number }} </td>
+                            <td>{{ !empty($student->applicant->guardian) ? $student->applicant->guardian->name : null }} </td>
+                            <td>{{ !empty($student->applicant->guardian) ? $student->applicant->guardian->email : null }} </td>
+                            <td>{{ !empty($student->applicant->guardian) ? $student->applicant->guardian->phone_number : null }} </td>
                             <td>
                                 <a href="{{ url('staff/studentProfile/'.$student->slug) }}" class="btn btn-primary m-1"><i class= "ri-user-6-fill"></i> View Student</a>
                             </td>
