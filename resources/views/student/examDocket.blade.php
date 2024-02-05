@@ -96,7 +96,8 @@
             <!--end col-->
         </div>
     @else
-        @if($pageGlobalData->examSetting->semester == 2 && !$passEightyTuition)
+    {{--  $pageGlobalData->examSetting->semester == 2 &&  --}}
+        @if(!$passEightyTuition)
             <div class="row justify-content-center">
                 <div class="col-lg-6">
                     <div class="card">

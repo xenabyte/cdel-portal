@@ -55,6 +55,7 @@
                             <td>{{ $student->matric_number }}</td>
                             <td>{{ $student->programme->name }}</td>
                             <td>{{ $student->email }} </td>
+                            <td>{{ !empty($student->applicant->phone_number) ? $student->applicant->phone_number : null }} </td>
                             <td>{{ !empty($student->applicant->guardian) ? $student->applicant->guardian->name : null }} </td>
                             <td>{{ !empty($student->applicant->guardian) ? $student->applicant->guardian->email : null }} </td>
                             <td>{{ !empty($student->applicant->guardian) ? $student->applicant->guardian->phone_number : null }} </td>
