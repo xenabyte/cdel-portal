@@ -1176,8 +1176,8 @@ class AcademicController extends Controller
         if($studentCourseReg->save()){
             
 
-            // $globalData = $request->input('global_data');
-            // $academicSession = $globalData->sessionSetting['academic_session'];
+            $globalData = $request->input('global_data');
+            $academicSession = $globalData->sessionSetting['academic_session'];
 
             $pdf = new Pdf();
             $courseReg = $pdf->generateCourseRegistration($studentId, $academicSession, $otherData);
