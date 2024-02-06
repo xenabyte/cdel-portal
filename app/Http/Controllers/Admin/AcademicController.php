@@ -1161,18 +1161,23 @@ class AcademicController extends Controller
         $studentCourseReg->level_adviser_status = true;
         $studentCourseReg->hod_status = true;
 
+        $studentId = $studentCourseReg->student_id;
+        $student = Student::find($studentId);
+
+        $department = Department::find($student->department_id);
+        $staffId = $department->hod_id;
+
+        $academicSession = $studentCourseReg->academic_session;
+        $otherData = new \stdClass();
+        $otherData->staffId = $staffId;
+        $otherData->courseRegId = $request->reg_id;
+        $otherData->type = $request->type;
+
         if($studentCourseReg->save()){
-            $studentId = $studentCourseReg->student_id;
-            $student = Student::find($studentId);
+            
 
-            $department = Department::find($student->department_id);
-            $staffId = $department->hod_id;
-
-            $academicSession = $studentCourseReg->academic_session;
-            $otherData = new \stdClass();
-            $otherData->staffId = $staffId;
-            $otherData->courseRegId = $request->reg_id;
-            $otherData->type = $request->type;
+            // $globalData = $request->input('global_data');
+            // $academicSession = $globalData->sessionSetting['academic_session'];
 
             $pdf = new Pdf();
             $courseReg = $pdf->generateCourseRegistration($studentId, $academicSession, $otherData);
