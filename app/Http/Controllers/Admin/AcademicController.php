@@ -1172,9 +1172,6 @@ class AcademicController extends Controller
         $otherData->staffId = $staffId;
         $otherData->courseRegId = $request->reg_id;
         $otherData->type = $request->type;
-        
-        // $globalData = $request->input('global_data');
-        // $academicSession = $globalData->sessionSetting['academic_session'];
 
         $pdf = new Pdf();
         $courseReg = $pdf->generateCourseRegistration($studentId, $academicSession, $otherData);
