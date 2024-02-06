@@ -1172,16 +1172,15 @@ class AcademicController extends Controller
         $otherData->staffId = $staffId;
         $otherData->courseRegId = $request->reg_id;
         $otherData->type = $request->type;
+        
+        // $globalData = $request->input('global_data');
+        // $academicSession = $globalData->sessionSetting['academic_session'];
+
+        $pdf = new Pdf();
+        $courseReg = $pdf->generateCourseRegistration($studentId, $academicSession, $otherData);
+
 
         if($studentCourseReg->save()){
-            
-
-            $globalData = $request->input('global_data');
-            $academicSession = $globalData->sessionSetting['academic_session'];
-
-            $pdf = new Pdf();
-            $courseReg = $pdf->generateCourseRegistration($studentId, $academicSession, $otherData);
-
             $senderName = env('SCHOOL_NAME');
             $receiverName = $student->applicant->lastname .' ' . $student->applicant->othernames;
             $message = 'Your course registration has been successfully approved. Please proceed to print at your earliest convenience.';
