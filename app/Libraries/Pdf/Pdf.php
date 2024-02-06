@@ -113,12 +113,19 @@ Class Pdf {
                 $studentCourseReg->level_adviser_status = true;
                 $studentCourseReg->level_adviser_id = $staff->id;
                 $studentCourseReg->level_adviser_approved_date = Carbon::now();
-                CourseRegistration::with('course')->where('student_id', $studentId)->where('academic_session', $academicSession)->update(['status', 'approved']);
-            }else{
+
+                CourseRegistration::where('student_id', $studentId)
+                ->where('academic_session', $academicSession)
+                ->update(['status' => 'approved']);
+
+                }else{
                 $studentCourseReg->hod_status = true;
                 $studentCourseReg->hod_id = $staff->id;
                 $studentCourseReg->hod_approved_date = Carbon::now();
-                CourseRegistration::with('course')->where('student_id', $studentId)->where('academic_session', $academicSession)->update(['status', 'approved']);
+
+                CourseRegistration::where('student_id', $studentId)
+                ->where('academic_session', $academicSession)
+                ->update(['status' => 'approved']);
             }
 
             $studentCourseReg->save();
