@@ -32,6 +32,8 @@ use App\Models\CourseRegistration;
 
 use App\Mail\NotificationMail;
 
+use App\Libraries\Pdf\Pdf;
+
 use SweetAlert;
 use Mail;
 use Alert;
@@ -1162,6 +1164,18 @@ class AcademicController extends Controller
         if($studentCourseReg->save()){
             $studentId = $studentCourseReg->student_id;
             $student = Student::find($studentId);
+
+            $department = Department::find($student->department_id);
+            $staffId = $department->hod_id;
+
+            $academicSession = $studentCourseReg->academic_session;
+            $otherData = new \stdClass();
+            $otherData->staffId = $staffId;
+            $otherData->courseRegId = $request->reg_id;
+            $otherData->type = $request->type;
+
+            $pdf = new Pdf();
+            $courseReg = $pdf->generateCourseRegistration($studentId, $academicSession, $otherData);
 
             $senderName = env('SCHOOL_NAME');
             $receiverName = $student->applicant->lastname .' ' . $student->applicant->othernames;
