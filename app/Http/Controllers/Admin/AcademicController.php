@@ -29,6 +29,8 @@ use App\Models\Course;
 use App\Models\Transaction;
 use App\Models\Notification;
 use App\Models\CourseRegistration;
+use App\Models\User;
+use App\Models\Payment;
 
 use App\Mail\NotificationMail;
 
@@ -1056,13 +1058,15 @@ class AcademicController extends Controller
             return redirect()->back();
         }
 
+        $url = empty($request->url) ? 'admin.chargeStudent' : $request->url;
+
         $studentIdCode = $request->reg_number;
         if($request->type == 'Student'){
-            return $this->getSingleStudent($studentIdCode, 'admin.chargeStudent');
+            return $this->getSingleStudent($studentIdCode, $url);
         }
 
         if($request->type == 'Applicant'){
-            return $this->getSingleApplicant($studentIdCode, 'admin.chargeStudent');
+            return $this->getSingleApplicant($studentIdCode, $url);
         }
     }
 
@@ -1102,6 +1106,39 @@ class AcademicController extends Controller
         if ($existingDemotion) {
             alert()->error('Oops!', 'Student already demoted')->persistent('Close');
             return $this->getSingleStudent($student->matric_number, 'admin.demoteStudent'); 
+        }
+
+        CourseRegistration::where('student_id', $studentId)
+            ->where('level_id', $request->new_level)
+            ->delete();
+
+        if(!empty($request->programme_id) && ($request->programme_id != $student->programme_id)){
+            $student->programme_id = $request->programme_id;
+            $academicSession = $student->academic_session;
+            $studentId = $student->id;
+            $applicantId = $student->user_id;
+            $applicant = User::find($applicantId);
+            $applicationType = $applicant->application_type;
+
+            $type = Payment::PAYMENT_TYPE_SCHOOL;
+
+            if($applicationType != 'UTME' && ($student->level_id == 2|| $student->level_id == 3)){
+                $type = Payment::PAYMENT_TYPE_SCHOOL_DE;
+            }
+
+            $schoolPayment = Payment::with('structures')
+                ->where('type', $type)
+                ->where('programme_id', $student->programme_id)
+                ->where('level_id', $student->level_id)
+                ->where('academic_session', $academicSession)
+                ->first();
+
+            if(!$schoolPayment){
+                alert()->success('Programme school fees not set, check with ICT admin', '')->persistent('Close');
+                return $this->getSingleStudent($student->matric_number, $request->url);
+            }
+
+            Transaction::where('student_id', $studentId)->where('session', $academicSession)->where('status', 1)->update(['payment_id' => $schoolPayment->id]);
         }
 
         StudentDemotion::create([

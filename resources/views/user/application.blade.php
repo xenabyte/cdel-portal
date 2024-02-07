@@ -23,7 +23,7 @@
                     <div class="hstack text-white-50 gap-1">
                         <div class="me-2"><i class="ri-building-4-fill me-1 text-white-75 fs-16 align-middle"></i>@if(!empty($applicant->programme)){{ $applicant->programme->name }}@endif</div>
                         <div>
-                            <i class="ri-building-line me-1 text-white-75 fs-16 align-middle"></i> {{ $applicant->jamb_reg_no }}
+                            <i class="ri-building-line me-1 text-white-75 fs-16 align-middle"></i> {{ $applicant->jamb_reg_no }}<br>
                         </div>
                     </div>
                 </div>
@@ -711,7 +711,7 @@
                                         <div class="col-lg-12">
                                             <div class="mb-3">
                                                 <label for="jamb_reg" class="form-label">Jamb Registration Number</label>
-                                                <input type="text" class="form-control" id="jamb_reg" name="jamb_reg_no" value="{{ $applicant->jamb_reg_no }}" required>
+                                                <input type="text" class="form-control" id="jamb_reg" name="jamb_reg_no" value="{{ $applicant->jamb_reg_no }}<br>" required>
                                             </div>
                                         </div>
                                         <hr>
@@ -975,7 +975,7 @@
                                             <div class="col-lg-12">
                                                 <div class="mb-3">
                                                     <label for="jamb_reg" class="form-label">Jamb Registration Number</label>
-                                                    <input type="text" class="form-control" id="jamb_reg" name="jamb_reg_no" value="{{ $applicant->jamb_reg_no }}" required>
+                                                    <input type="text" class="form-control" id="jamb_reg" name="jamb_reg_no" value="{{ $applicant->jamb_reg_no }}<br>" required>
                                                 </div>
                                             </div>
 
