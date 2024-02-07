@@ -133,9 +133,11 @@ Class Pdf {
 
             $staffData->studentCourseReg = $studentCourseRegNew;
         }else{
-            CourseRegistration::where('student_id', $studentId)
+            if(!empty($otherData)){
+                CourseRegistration::where('student_id', $studentId)
                 ->where('academic_session', $academicSession)
                 ->update(['status' => 'approved']);
+            }
         }
 
         $data = ['info'=>$student, 'registeredCourses' => $courseReg, 'staffData' => $staffData];
