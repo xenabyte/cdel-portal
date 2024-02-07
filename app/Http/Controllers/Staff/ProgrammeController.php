@@ -22,6 +22,8 @@ use App\Models\Department;
 use App\Models\CoursePerProgrammePerAcademicSession;
 use App\Models\Course;
 use App\Models\CourseRegistrationSetting;
+use App\Models\Notification;
+
 
 
 use App\Libraries\Pdf\Pdf;
