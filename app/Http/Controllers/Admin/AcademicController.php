@@ -1227,6 +1227,11 @@ class AcademicController extends Controller
         if($studentCourseReg->forceDelete()){
             $student = Student::find($studentId);
 
+            $fileDirectory = $studentCourseReg->file;
+            if (file_exists($fileDirectory)) {
+                unlink($fileDirectory);
+            } 
+
             $senderName = env('SCHOOL_NAME');
             $receiverName = $student->applicant->lastname .' ' . $student->applicant->othernames;
             $message = 'Your course registration has been successfully reset. Please proceed to re-register as soon as possible.';
