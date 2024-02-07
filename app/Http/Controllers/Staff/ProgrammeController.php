@@ -25,6 +25,7 @@ use App\Models\CourseRegistrationSetting;
 
 
 use App\Libraries\Pdf\Pdf;
+use App\Mail\NotificationMail;
 
 use SweetAlert;
 use Mail;
