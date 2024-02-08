@@ -202,7 +202,7 @@
 
                         <div class="col-lg-12">
                             <div class="form-floating">
-                                <input type="text" class="form-control" id="reason" placeholder="Reason"  required>
+                                <input type="text" class="form-control" id="reason" name="reason" placeholder="Reason"  required>
                                 <label for="reason">Reason</label>
                             </div>
                         </div>
