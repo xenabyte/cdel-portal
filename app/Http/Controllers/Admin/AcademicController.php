@@ -1088,7 +1088,7 @@ class AcademicController extends Controller
             return $this->getSingleStudent($student->matric_number, 'admin.demoteStudent');
         }
 
-        $programmeId = $request->programme_id;
+        $programmeId = $request->new_programme_id;
         if(!empty($programmeId)){
             $programme = Programme::with('department', 'department.faculty')->where('id', $programmeId)->first();
         }
