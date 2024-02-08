@@ -31,6 +31,7 @@ use App\Models\Notification;
 use App\Models\CourseRegistration;
 use App\Models\User;
 use App\Models\Payment;
+use App\Models\StudentExamCard;
 
 use App\Mail\NotificationMail;
 
@@ -1449,5 +1450,58 @@ class AcademicController extends Controller
 
         alert()->error('Oops!', 'Something went wrong')->persistent('Close');
         return redirect()->back();
+    }
+
+    public function genExamDocket(Request $request){
+        $studentId = $request->student_id;
+        $globalData = $request->input('global_data');
+        $admissionSession = $globalData->sessionSetting['admission_session'];
+        $academicSession = $globalData->sessionSetting['academic_session'];
+        $semester  = $globalData->examSetting['semester'];
+
+        $courseRegs = CourseRegistration::with('course')
+            ->where('student_id', $studentId)
+            ->where('academic_session', $academicSession)
+            ->where('total', null)
+            ->where('semester', $semester)
+            ->where('status', 'approved')
+            ->get();
+
+        if(empty($courseRegs)){
+            alert()->error('Oops!', 'No approved course registration for this semester and session.')->persistent('Close');
+            return redirect()->back();
+        }
+
+        try {
+
+            $pdf = new Pdf();
+            $examDocket = $pdf->generateExamDocket($studentId, $academicSession, $semester);
+
+             //create record for file
+            $studentExamCard = StudentExamCard::where([
+                'student_id' => $studentId,
+                'academic_session' => $academicSession,
+                'semester' => $semester
+            ])->first();
+
+
+            if(empty($studentExamCard)){
+                $studentExamCard = StudentExamCard::create([
+                    'student_id' => $studentId,
+                    'academic_session' => $academicSession,
+                    'semester' => $semester,
+                    'file' => $examDocket,
+                    'level_id' => $student->level_id
+                ]);
+            }
+
+            return redirect(asset($examDocket));
+
+        } catch (\Exception $e) {
+            Log::info($e);
+            alert()->error('Oops!', 'Something went wrong')->persistent('Close');
+            return redirect()->back();
+        }
+
     }
 }

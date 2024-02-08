@@ -59,6 +59,12 @@
                                 <a href="{{ asset($studentRegistration->file) }}" target="_blank" style="margin: 5px" class="btn btn-primary">View Registration</a>
                                 <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#approve{{$studentRegistration->id}}"> Approve</button>
                                 <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#undo{{$studentRegistration->id}}"> Undo Registration</button>
+                                <form action="{{ url('/admin/genExamDocket') }}" method="POST">
+                                    @csrf
+                                    <input name="student_id" type="hidden" value="{{$studentRegistration->student->id}}">
+                                    <hr>
+                                    <button type="submit" id="submit-button" class="btn btn-warning w-100">Generate Exam Docket</button>
+                                </form>
                             </td>
                         </tr>
 

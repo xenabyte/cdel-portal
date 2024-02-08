@@ -98,6 +98,7 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'admin'],
   Route::post('/updateResultApprovalStatus', [App\Http\Controllers\Admin\AcademicController::class, 'updateResultApprovalStatus'])->name('updateResultApprovalStatus')->middleware(['auth:admin']);
   Route::post('/deleteResultApprovalStatus', [App\Http\Controllers\Admin\AcademicController::class, 'deleteResultApprovalStatus'])->name('deleteResultApprovalStatus')->middleware(['auth:admin']);
   
+  Route::post('/genExamDocket', [App\Http\Controllers\Admin\AcademicController::class, 'genExamDocket'])->name('genExamDocket')->middleware(['auth:admin']);
 
   Route::get('/programmeCategory', [App\Http\Controllers\Admin\ProgrammeController::class, 'programmeCategory'])->name('programmeCategory')->middleware(['auth:admin']);
   Route::post('/addProgrammeCategory', [App\Http\Controllers\Admin\ProgrammeController::class, 'addProgrammeCategory'])->name('addProgrammeCategory')->middleware(['auth:admin']);
