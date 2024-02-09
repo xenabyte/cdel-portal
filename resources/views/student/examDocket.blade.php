@@ -44,7 +44,7 @@
                               You have generated <strong>Examination Card</strong>! Click the button below to print your examination card.
                             </div>
                             <div class="mt-4">
-                                <form action="{{ url('/student/printExamCard') }}" method="post" enctype="multipart/form-data">
+                                <form action="{{ url('/student/genExamDocket') }}" method="post" enctype="multipart/form-data">
                                     @csrf
                                     <button type="submit" id="submit-button" class="btn btn-info">
                                         Click here to download
