@@ -1493,7 +1493,15 @@ class AcademicController extends Controller
                     'file' => $examDocket,
                     'level_id' => $student->level_id
                 ]);
+            }else{
+                $fileDirectory = $studentExamCard->file;
+                if (file_exists($fileDirectory)) {
+                    unlink($fileDirectory);
+                } 
+                $studentExamCard->file = $examDocket;
+                $studentExamCard->save();
             }
+
 
             return redirect(asset($examDocket));
 

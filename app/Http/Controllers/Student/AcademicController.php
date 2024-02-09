@@ -453,13 +453,30 @@ class AcademicController extends Controller
             $pdf = new Pdf();
             $examDocket = $pdf->generateExamDocket($studentId, $academicSession, $semester);
 
-            $studentExamCard = StudentExamCard::create([
+             //create record for file
+            $studentExamCard = StudentExamCard::where([
                 'student_id' => $studentId,
                 'academic_session' => $academicSession,
-                'semester' => $semester,
-                'file' => $examDocket,
-                'level_id' => $student->level_id
-            ]);
+                'semester' => $semester
+            ])->first();
+
+
+            if(empty($studentExamCard)){
+                $studentExamCard = StudentExamCard::create([
+                    'student_id' => $studentId,
+                    'academic_session' => $academicSession,
+                    'semester' => $semester,
+                    'file' => $examDocket,
+                    'level_id' => $student->level_id
+                ]);
+            }else{
+                $fileDirectory = $studentExamCard->file;
+                if (file_exists($fileDirectory)) {
+                    unlink($fileDirectory);
+                } 
+                $studentExamCard->file = $examDocket;
+                $studentExamCard->save();
+            }
 
             return redirect(asset($examDocket));
 
