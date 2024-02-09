@@ -461,8 +461,7 @@ class AcademicController extends Controller
                 'level_id' => $student->level_id
             ]);
 
-            alert()->success('Good Job', 'Examination card generate successfully')->persistent('Close');
-            return redirect()->back();
+            return redirect(asset($examDocket));
 
         } catch (\Exception $e) {
             Log::info($e);
