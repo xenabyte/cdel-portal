@@ -13,9 +13,9 @@ use Illuminate\Support\Facades\Validator;
 
 use App\Models\GlobalSetting as Setting;
 use App\Models\Admin;
-use App\models\Guardian;
-use App\models\Notification;
-use App\models\Student;
+use App\Models\Guardian;
+use App\Models\Notification;
+use App\Models\Student;
 
 use App\Mail\NotificationMail;
 
