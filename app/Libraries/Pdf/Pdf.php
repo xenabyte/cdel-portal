@@ -109,7 +109,7 @@ Class Pdf {
             $staffData = new \stdClass();
             $staffData->staff = $staff;
 
-            if($otherData->type == 'level_adviser'){
+            if($otherData->type == 'Level Adviser'){
                 $studentCourseReg->level_adviser_status = true;
                 $studentCourseReg->level_adviser_id = $staff->id;
                 $studentCourseReg->level_adviser_approved_date = Carbon::now();
@@ -118,7 +118,7 @@ Class Pdf {
                 ->where('academic_session', $academicSession)
                 ->update(['status' => 'approved']);
 
-                }else{
+            }else{
                 $studentCourseReg->hod_status = true;
                 $studentCourseReg->hod_id = $staff->id;
                 $studentCourseReg->hod_approved_date = Carbon::now();
