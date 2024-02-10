@@ -117,6 +117,7 @@ class ApiController extends Controller
         // Check if the user exists and if the password matches
         if ($user) {
             $response = new \stdClass();
+            $response->application_id = $role == 'student'? $user->applicant->id:null;
             $response->lastname =  $role == 'student'? $user->applicant->lastname: $user->lastname;
             $response->othernames = $role == 'student'? $user->applicant->othernames: $user->othernames;
             $response->email = $user->email;
