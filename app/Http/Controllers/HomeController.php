@@ -77,6 +77,13 @@ class HomeController extends Controller
             return redirect()->back();
         }
 
+        $schoolPayment = Payment::with('structures')
+        ->where('type', $type)
+        ->where('programme_id', $student->programme_id)
+        ->where('level_id', $student->level_id)
+        ->where('academic_session', $student->academic_session)
+        ->first();
+
         $passTuitionPayment = $checkStudentPayment->passTuitionPayment;
         $fullTuitionPayment = $checkStudentPayment->fullTuitionPayment;
         $passEightyTuition = $checkStudentPayment->passEightyTuition;
