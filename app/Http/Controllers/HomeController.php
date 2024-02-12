@@ -78,7 +78,7 @@ class HomeController extends Controller
         }
 
         $schoolPayment = Payment::with('structures')
-        ->where('type', $type)
+        ->where('type', Payment::PAYMENT_TYPE_SCHOOL)
         ->where('programme_id', $student->programme_id)
         ->where('level_id', $student->level_id)
         ->where('academic_session', $student->academic_session)
