@@ -352,7 +352,6 @@
                         <p class="text-muted">{{ $applicant->programme->name }} <br>
                             <strong>Application Number:</strong> {{ $applicant->application_number }}<br>
                             <strong>Jamb Reg. Number:</strong> {{ $applicant->jamb_reg_no }}<br>
-                            <strong>Support Code:</strong> <span class="text-danger">ST{{ sprintf("%06d", $student->id) }}</span> 
                         </p>
                     </div>
                     <div class="table-responsive border-top border-top-dashed">
