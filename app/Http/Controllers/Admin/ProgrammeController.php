@@ -633,6 +633,18 @@ class ProgrammeController extends Controller
         if(!empty($request->programme_id) && ($request->programme_id != $student->programme_id)){
             $student->programme_id = $request->programme_id;
             $academicSession = $student->academic_session;
+        }
+
+        if(!empty($request->department_id) && ($request->department_id != $student->department_id)){
+            $student->department_id = $request->department_id;
+        }
+
+        if(!empty($request->faculty_id) && ($request->faculty_id != $student->faculty_id)){
+            $student->faculty_id = $request->faculty_id;
+        }
+
+        if($student->save()){
+            $student->refresh();
             $studentId = $student->id;
             $applicantId = $student->user_id;
             $applicant = User::find($applicantId);
@@ -657,20 +669,9 @@ class ProgrammeController extends Controller
             }
 
             Transaction::where('student_id', $studentId)->where('session', $academicSession)->where('status', 1)->update(['payment_id' => $schoolPayment->id]);
-        }
-
-        if(!empty($request->department_id) && ($request->department_id != $student->department_id)){
-            $student->department_id = $request->department_id;
-        }
-
-        if(!empty($request->faculty_id) && ($request->faculty_id != $student->faculty_id)){
-            $student->faculty_id = $request->faculty_id;
-        }
-
-        if($student->save()){
-            alert()->success('Student details updated successfully', '')->persistent('Close');
-            return $this->getSingleStudent($student->matric_number, $request->url);
-        }
+                alert()->success('Student details updated successfully', '')->persistent('Close');
+                return $this->getSingleStudent($student->matric_number, $request->url);
+            }
 
         alert()->error('Oops!', 'Something went wrong')->persistent('Close');
         return $this->getSingleStudent($student->matric_number, $request->url);
