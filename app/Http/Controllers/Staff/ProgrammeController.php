@@ -437,6 +437,7 @@ class ProgrammeController extends Controller
         }
         $studentId = $request->student_id;
         $staffId = $request->staff_id;
+        $type = 'both';
 
         if(!$studentCourseReg = StudentCourseRegistration::find($request->reg_id)){
             alert()->error('Oops', 'Invalid Student Registration ')->persistent('Close');
@@ -464,7 +465,7 @@ class ProgrammeController extends Controller
         $otherData = new \stdClass();
         $otherData->staffId = $staffId;
         $otherData->courseRegId = $request->reg_id;
-        $otherData->type = $request->type;
+        $otherData->type = $type;
 
         $pdf = new Pdf();
         $courseReg = $pdf->generateCourseRegistration($studentId, $academicSession, $otherData);
