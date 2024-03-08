@@ -85,11 +85,6 @@ class AcademicController extends Controller
             $unregisteredRequiredCoursesIds = array_merge($unregisteredRequiredCoursesIds, array_diff($allRequiredCoursesIds, $registeredCourseIds));        
         }
 
-        $failedCourses = CourseRegistration::with('course')->where('student_id', $studentId)->where('grade', 'F')->where('re_reg', null)->get();
-        $failedCourseIds = $failedCourses->pluck('programme_course_id')->toArray();
-        $carryOverCourses = CoursePerProgrammePerAcademicSession::where('programme_id', $student->programme_id)->whereIn('id', $failedCourseIds)->get();
-        $unregisteredRequiredCourses = CoursePerProgrammePerAcademicSession::where('programme_id', $student->programme_id)->whereIn('course_id', $unregisteredRequiredCoursesIds)->get();
-
         $addOrRemoveTxPay = Payment::with('structures')->where('type', Payment::PAYMENT_MODIFY_COURSE_REG)->where('academic_session', $academicSession)->first();
         $addOrRemoveTxId = $addOrRemoveTxPay->id;
         $addOrRemoveTxs = Transaction::where([
@@ -98,6 +93,34 @@ class AcademicController extends Controller
             'is_used' => null,
             'status' => 1
         ])->orderBy('id', 'DESC')->get();
+
+        if($addOrRemoveTxs->count() > 0){
+            $registeredCourses =  CourseRegistration::where([
+                'student_id' => $studentId,
+                'academic_session' => $academicSession
+            ])->get();
+
+            foreach ($registeredCourses as $registeredCourse) { 
+                $courseId = $registeredCourse->course_id;
+    
+                $checkCarryOver = CourseRegistration::where([
+                    'student_id' => $studentId,
+                    'course_id' => $courseId,
+                    'grade' => 'F',
+                ])->first();
+    
+                if(!empty($checkCarryOver)){
+                    $checkCarryOver->re_reg = null;
+                    $checkCarryOver->save();
+                }
+            }
+
+        }
+
+        $failedCourses = CourseRegistration::with('course')->where('student_id', $studentId)->where('grade', 'F')->where('re_reg', null)->get();
+        $failedCourseIds = $failedCourses->pluck('programme_course_id')->toArray();
+        $carryOverCourses = CoursePerProgrammePerAcademicSession::where('programme_id', $student->programme_id)->whereIn('id', $failedCourseIds)->get();
+        $unregisteredRequiredCourses = CoursePerProgrammePerAcademicSession::where('programme_id', $student->programme_id)->whereIn('course_id', $unregisteredRequiredCoursesIds)->get();
 
         $courseRegMgt = CourseRegistrationSetting::first();
 

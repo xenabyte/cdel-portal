@@ -1256,11 +1256,28 @@ class AcademicController extends Controller
         $studentId = $studentCourseReg->student_id;
         $academicSession = $studentCourseReg->academic_session;
 
-        // Delete registered courses
-        CourseRegistration::where([
+        $registeredCourses =  CourseRegistration::where([
             'student_id' => $studentId,
             'academic_session' => $academicSession
-        ])->forceDelete();
+        ])->get();
+
+        foreach ($registeredCourses as $registeredCourse) { 
+            $courseId = $registeredCourse->course_id;
+
+            $checkCarryOver = CourseRegistration::where([
+                'student_id' => $studentId,
+                'course_id' => $courseId,
+                'grade' => 'F',
+            ])->first();
+
+            if(!empty($checkCarryOver)){
+                $checkCarryOver->re_reg = null;
+                $checkCarryOver->save();
+            }
+        }
+
+        // Delete registered courses
+        $registeredCourses->forceDelete();
 
         if($studentCourseReg->forceDelete()){
             $student = Student::find($studentId);
