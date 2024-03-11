@@ -1274,10 +1274,11 @@ class AcademicController extends Controller
                 $checkCarryOver->re_reg = null;
                 $checkCarryOver->save();
             }
+
+            // Delete the registered course
+            $registeredCourse->forceDelete();
         }
 
-        // Delete registered courses
-        $registeredCourses->forceDelete();
 
         if($studentCourseReg->forceDelete()){
             $student = Student::find($studentId);
