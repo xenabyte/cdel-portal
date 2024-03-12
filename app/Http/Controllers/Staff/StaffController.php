@@ -752,7 +752,7 @@ class StaffController extends Controller
         $studentRegistration->exam_score = $examScore;
         $studentRegistration->total = $totalScore;
         $studentRegistration->grade = $grade;
-        $studentRegistration->points = $points;
+        $studentRegistration->points = $studentRegistration->course_credit_unit * $points;
         if($studentRegistration->save()){
             alert()->success('Student scores updated successfully!', '')->persistent('Close');
             return redirect()->back();

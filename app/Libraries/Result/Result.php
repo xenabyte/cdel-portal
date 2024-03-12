@@ -53,7 +53,7 @@ class Result
                 $studentRegistration->exam_score = $examScore;
                 $studentRegistration->total = $totalScore;
                 $studentRegistration->grade = $grade;
-                $studentRegistration->points = $points * $course->credit_unit;
+                $studentRegistration->points = $points * $studentRegistration->course_credit_unit;
                 $studentRegistration->save();
             }
         }
