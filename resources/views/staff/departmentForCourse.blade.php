@@ -136,6 +136,7 @@
                             <th scope="col">Course Name</th>
                             <th scope="col">Course Code</th>
                             <th scope="col">Course Lecturer</th>
+                            <th scope="col">Course Password</th>
                             <th scope="col"></th>
                         </tr>
                     </thead>
@@ -146,11 +147,13 @@
                                 $courseManagement =  $course->courseManagement->where('academic_session', $pageGlobalData->sessionSetting->academic_session);
                                 $assignedCourse = $courseManagement->where('academic_session', $pageGlobalData->sessionSetting->academic_session)->first();
                                 $staff = !empty($assignedCourse) ? $assignedCourse->staff->title.' '.$assignedCourse->staff->lastname.' '.$assignedCourse->staff->othernames :null;
+                                $password = !empty($assignedCourse) ? $assignedCourse->passcode :null;
                             @endphp
                             <th scope="row">{{ $loop->iteration }}</th>
                             <td>{{ $course->name }}</td>
                             <td>{{ $course->code }}</td>
                             <td>{{ $staff }}</td>
+                            <td>{{ $password }}</td>
                             <td>
                                 <div class="hstack gap-3 fs-15">
                                     <a href="avascript:void(0);"  data-bs-toggle="modal" data-bs-target="#edit{{$course->id}}"  class="btn btn-primary m-1"><i class= "mdi mdi-edit"></i> Edit Course</a>

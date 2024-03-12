@@ -98,7 +98,6 @@ class ResultController extends Controller
         $students = Student::whereIn('id', $studentIds)->get();
 
         foreach ($students as $student) {
-            Log::info("message:". $student->Id);
             
             $studentRegistration = CourseRegistration::where([
                 'student_id' => $student->id,

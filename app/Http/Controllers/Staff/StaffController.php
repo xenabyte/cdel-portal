@@ -585,7 +585,7 @@ class StaffController extends Controller
         $staffId = $staff->id;
 
         $message = $request->message;
-        $course = Course::with('level', 'registrations', 'registrations.student', 'registrations.student.applicant', 'registrations.student.programme')->where('staff_id', $staffId)->first();
+        $course = Course::with('level', 'registrations', 'registrations.student', 'registrations.student.applicant', 'registrations.student.programme')->where('id', $request->course_id)->first();
         $registeredStudents = $course->registrations->where('academic_session', $academicSession)->pluck('student');
 
         foreach ($registeredStudents as $student){
@@ -613,10 +613,19 @@ class StaffController extends Controller
     }
 
     public function staffUploadResult(Request $request){
+        $staff = Auth::guard('staff')->user();
+        $staffId = $staff->id;
+
         $globalData = $request->input('global_data');
         $admissionSession = $globalData->sessionSetting['admission_session'];
         $academicSession = $globalData->sessionSetting['academic_session'];
         $applicationSession = $globalData->sessionSetting['application_session'];
+        $resultProcessStatus = $globalData->examSetting['result_processing_status'];
+
+        if(strtolower($resultProcessStatus) != 'start'){
+            alert()->error('Result Processing has not started yet', 'Contact ICT')->persistent('Close');
+            return redirect()->back();
+        }
 
         $validator = Validator::make($request->all(), [
             'result' => 'required|file',
@@ -627,6 +636,24 @@ class StaffController extends Controller
             alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
             return redirect()->back();
         }
+
+        $courseManagement = CourseManagement::where([
+            'course_id' => $request->course_id,
+            'staff_id' => $staffId,
+            'academic_session' => $academicSession
+        ])->first();
+
+        if(!$courseManagement){
+            alert()->error('Oops!', 'Course not assigned to staff')->persistent('Close');
+            return redirect()->back();
+        }
+
+        $courseManagementCourseCode = $courseManagement->passcode;
+        if(!empty($request->passcode) && $request->passcode != $courseManagementCourseCode){
+            alert()->error('Oops!', 'Wrong Password, No changes was made')->persistent('Close');
+            return redirect()->back();
+        }
+
         $file = $request->file('result');
         $fileExtension = $file->getClientOriginalExtension();
         
@@ -653,12 +680,41 @@ class StaffController extends Controller
     }
 
     public function updateStudentResult(Request $request){
+        $staff = Auth::guard('staff')->user();
+        $staffId = $staff->id;
+
+        $globalData = $request->input('global_data');
+        $resultProcessStatus = $globalData->examSetting['result_processing_status'];
+        $academicSession = $globalData->sessionSetting['academic_session'];
+
+        if(strtolower($resultProcessStatus) != 'start'){
+            alert()->error('Result Processing has not started yet', 'Contact ICT')->persistent('Close');
+            return redirect()->back();
+        }
+
         $validator = Validator::make($request->all(), [
             'test' => 'required',
             'exam' => 'required',
             'course_id' => 'required',
             'matric_number' => 'required',
         ]);
+
+        $courseManagement = CourseManagement::where([
+            'course_id' => $request->course_id,
+            'staff_id' => $staffId,
+            'academic_session' => $academicSession
+        ])->first();
+
+        if(!$courseManagement){
+            alert()->error('Oops!', 'Course not assigned to staff')->persistent('Close');
+            return redirect()->back();
+        }
+
+        $courseManagementCourseCode = $courseManagement->passcode;
+        if(!empty($request->passcode) && $request->passcode != $courseManagementCourseCode){
+            alert()->error('Oops!', 'Wrong Password, No changes was made')->persistent('Close');
+            return redirect()->back();
+        }
 
         $matricNumber = $request->matric_number;
 

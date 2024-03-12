@@ -14,7 +14,8 @@ class CourseManagement extends Model
         'course_id',
         'staff_id',
         'academic_session',
-        'status'
+        'status',
+        'passcode'
     ];
 
 

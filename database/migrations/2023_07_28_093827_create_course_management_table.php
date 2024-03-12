@@ -19,6 +19,7 @@ class CreateCourseManagementTable extends Migration
             $table->unsignedBigInteger('staff_id')->nullable();
             $table->string('academic_session')->nullable();
             $table->string('status')->nullable();
+            $table->string('passcode')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

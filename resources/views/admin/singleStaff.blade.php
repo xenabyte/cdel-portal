@@ -333,7 +333,7 @@ $hodRole = array_filter($singleStaffRoles, function ($staffRole) {
     <div class="modal-dialog modal-md">
         <div class="modal-content border-0 overflow-hidden">
             <div class="modal-header p-3">
-                <h4 class="card-title mb-0">Assign Dean To Faculty</h4>
+                <h4 class="card-title mb-0">Assign HOD To Department</h4>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <hr>
@@ -352,7 +352,7 @@ $hodRole = array_filter($singleStaffRoles, function ($staffRole) {
 
                     <hr>
                     <div class="text-end">
-                        <button type="submit" id="submit-button" class="btn btn-primary">Assign Dean To Faculty</button>
+                        <button type="submit" id="submit-button" class="btn btn-primary">Assign HOD To Department</button>
                     </div>
                 </form>
             </div>

@@ -1,6 +1,7 @@
 @extends('staff.layout.dashboard')
 @php
     $totalStudent = $coursePerProgrammePerAcademicSession->registeredStudents->count();
+    $courseRegistration = $coursePerProgrammePerAcademicSession->registrations->first();
     $passedPercent = 0;
     $failedPercent = 0;
     if($totalStudent){
@@ -155,7 +156,7 @@
             <div class="modal-body">
                 <form action="{{ url('/staff/sendMessage') }}" method="post" enctype="multipart/form-data">
                     @csrf
-                    <input type="hidden" name="course_id" value="{{ $coursePerProgrammePerAcademicSession->id }}">
+                    <input type="hidden" name="course_id" value="{{ $coursePerProgrammePerAcademicSession->course->id }}">
                     <div class="form-floating">
                         <textarea class="form-control" name="message"></textarea>
                         <label for="semester">Message</label>
@@ -182,7 +183,7 @@
             <div class="modal-body">
                 <form action="{{ url('/staff/updateStudentResult') }}" method="post" enctype="multipart/form-data">
                     @csrf
-                    <input type="hidden" name="course_id" value="{{ $coursePerProgrammePerAcademicSession->id }}">
+                    <input type="hidden" name="course_id" value="{{ $coursePerProgrammePerAcademicSession->course->id }}">
                     <div class="form-floating mb-3">
                         <input type="text" name="matric_number" id="matric_number" class="form-control" required>
                         <label for="matric_number">Matric Number</label>
@@ -197,6 +198,13 @@
                         <input type="number" name="exam" id="exam" class="form-control" required>
                         <label for="exam">Exam Score</label>
                     </div>
+
+                    @if(!empty($courseRegistration->grade))
+                    <div class="form-floating mb-3 mt-3">
+                        <input type="password" name="passcode" id="passcode" class="form-control" required>
+                        <label for="passcode">Password <code>Get Code from your HOD</code></label>
+                    </div>
+                    @endif
 
                     <hr>
                     <div class="text-end">
@@ -220,7 +228,7 @@
             <div class="modal-body">
                 <form action="{{ url('/staff/staffUploadResult') }}" method="post" enctype="multipart/form-data">
                     @csrf
-                    <input type="hidden" name="course_id" value="{{ $coursePerProgrammePerAcademicSession->id }}">
+                    <input type="hidden" name="course_id" value="{{ $coursePerProgrammePerAcademicSession->course->id }}">
                     <div class="row">
                         <div class="col-lg-12">
                             <div>
@@ -230,6 +238,12 @@
                         </div>
                     </div>
 
+                    @if(!empty($courseRegistration->grade))
+                    <div class="form-floating mb-3 mt-3">
+                        <input type="password" name="passcode" id="passcode" class="form-control" required>
+                        <label for="passcode">Password <code>Get Code from your HOD</code></label>
+                    </div>
+                    @endif
                     <hr>
                     <div class="text-end">
                         <button type="submit" id="submit-button" class="btn btn-primary">Upload Result</button>

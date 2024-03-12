@@ -25,3 +25,5 @@ Route::group(['prefix' => 'auth'], function () {
 Route::group(['prefix' => 'user'], function () {
     Route::post('/validateUser', [App\Http\Controllers\ApiController::class, 'validateUser'])->name('apiValidateUser');
 });
+
+Route::get('/changeCourseManagementPasscode', [App\Http\Controllers\CronController::class, 'changeCourseManagementPasscode'])->name('changeCourseManagementPasscode');
