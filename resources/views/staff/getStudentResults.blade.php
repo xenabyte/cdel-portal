@@ -197,6 +197,7 @@
                                     <input type="hidden" name="department_id" value="{{ $department_id }}">
                                     <input type="hidden" name="faculty_id" value="{{ $faculty_id }}">
                                     <input type="hidden" name="session" value="{{ $academicSession }}">
+                                    <input type="hidden" name="semester" value="{{ $semester }}">
 
                                     @if($staffHODRole)
                                     <input name="type" type="hidden" value="Department">

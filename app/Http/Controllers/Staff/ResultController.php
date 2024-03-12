@@ -96,15 +96,17 @@ class ResultController extends Controller
 
         $studentIds = $request->input('student_ids', []);
         $students = Student::whereIn('id', $studentIds)->get();
+        $senateStatus =  ResultApprovalStatus::getApprovalStatusId(ResultApprovalStatus::SENATE_APPROVED);
 
         foreach ($students as $student) {
             
-            $studentRegistration = CourseRegistration::where([
-                'student_id' => $student->id,
-                'level_id' => $request->level_id,
-                'academic_session' => $request->session,
-                'semester' => $request->semester,
-            ])->where('grade', '!=', null)->where('result_approval_id', '!=', ResultApprovalStatus::getApprovalStatusId(ResultApprovalStatus::SENATE_APPROVED))->update(['result_approval_id' => ResultApprovalStatus::getApprovalStatusId($request->type)]);
+            $studentRegistration = CourseRegistration::where('student_id', $student->id)
+            ->where('level_id', $request->level_id)
+            ->where('academic_session', $request->session)
+            ->where('semester', $request->semester)
+            ->whereNotNull('grade')
+            ->update(['result_approval_id' => ResultApprovalStatus::getApprovalStatusId($request->type)]);
+            
         }
 
 

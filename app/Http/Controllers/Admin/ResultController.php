@@ -103,12 +103,12 @@ class ResultController extends Controller
 
         foreach ($students as $student) {
             
-            $studentRegistration = CourseRegistration::where([
-                'student_id' => $student->id,
-                'level_id' => $request->level_id,
-                'academic_session' => $request->session,
-                'semester' => $request->semester,
-            ])->where('grade', '!=', null)->update(['result_approval_id' => ResultApprovalStatus::getApprovalStatusId(ResultApprovalStatus::SENATE_APPROVED)]);
+            $studentRegistration = CourseRegistration::where('student_id', $student->id)
+            ->where('level_id', $request->level_id)
+            ->where('academic_session', $request->session)
+            ->where('semester', $request->semester)
+            ->whereNotNull('grade')
+            ->update(['result_approval_id' => ResultApprovalStatus::getApprovalStatusId(ResultApprovalStatus::SENATE_APPROVED)]);
 
             Result::calculateCGPA($student->id);
         }
