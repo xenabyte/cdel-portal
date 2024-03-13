@@ -333,16 +333,10 @@
                 <form action="{{ url('/admin/result/getStudent') }}" method="post" enctype="multipart/form-data">
                     @csrf
                     <input type="hidden" name="url" value="admin.studentResult">
+                    <input type="hidden" name="type" value="Student">
                     <div class="mb-3">
                         <label for="reg" class="form-label">Application/Matric Number</label>
                         <input type="text" class="form-control" name="reg_number" id="reg">
-                    </div>
-                    <div class="mb-3">
-                        <label for="type" class="form-label">Select  Type</label>
-                        <select class="form-select" aria-label="type" name="type" required>
-                            <option selected value= "">Select type </option>
-                            <option value="Student">Student</option>
-                        </select>
                     </div>
                     <div class="text-end border-top border-top-dashed p-3">
                         <br>

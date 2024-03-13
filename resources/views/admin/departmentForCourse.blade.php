@@ -156,6 +156,7 @@
                             <td>{{ $password }}</td>
                             <td>
                                 <div class="hstack gap-3 fs-15">
+                                    <a href="{{ url('/admin/courseDetail/'.$course->id) }}" class="btn btn-lg btn-primary">Course Details</a>
                                     <a href="avascript:void(0);"  data-bs-toggle="modal" data-bs-target="#edit{{$course->id}}"  class="btn btn-primary m-1"><i class= "mdi mdi-edit"></i> Edit Course</a>
                                     @if(empty($staff))
                                     <a href="avascript:void(0);"  data-bs-toggle="modal" data-bs-target="#assignCourse{{$course->id}}" class="btn btn-info m-1"><i class= "mdi mdi-link"></i> Assign Staff To Course</a>
