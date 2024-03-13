@@ -220,7 +220,7 @@
                             <td>{{$course->status}}</td>
                             <td>{{$course->level->level}}</td>
                             <td>
-                                <a href="{{ url('/admin/courseDetail/'.$course->id) }}" class="btn btn-lg btn-primary">Course Details</a>
+                                <a href="{{ url('/admin/courseDetail/'.$course->course->id) }}" class="btn btn-lg btn-primary">Course Details</a>
                                 <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#delete{{$course->id}}" class="btn btn-danger"><i class="ri-delete-bin-5-line"></i> Delete</a>
                                 <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#edit{{$course->id}}" class="btn btn-info"><i class="ri-edit-circle-fill"></i> Edit</a>
 

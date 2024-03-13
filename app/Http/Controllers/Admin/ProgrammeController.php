@@ -23,6 +23,7 @@ use App\Models\Staff;
 use App\Models\Student;
 use App\Models\CoursePerProgrammePerAcademicSession;
 use App\Models\CourseRegistrationSetting;
+use App\Models\CourseManagement;
 use App\Models\Transaction;
 use App\Models\User;
 use App\Models\Payment;
@@ -435,14 +436,14 @@ class ProgrammeController extends Controller
         $academicSession = $globalData->sessionSetting['academic_session'];
         $applicationSession = $globalData->sessionSetting['application_session'];
 
-        $coursePerProgrammePerAcademicSession = CoursePerProgrammePerAcademicSession::with('course', 'course.courseManagement', 'course.courseManagement.staff',  'level',  'registrations', 'registrations.student', 'registrations.student.applicant', 'registrations.student.programme')->where('id', $id)->first();
-        $registeredStudents = $coursePerProgrammePerAcademicSession->registrations->where('academic_session', $academicSession)->pluck('student');
-        $studentGrades = $coursePerProgrammePerAcademicSession->registrations->where('academic_session', $academicSession);
-        $coursePerProgrammePerAcademicSession->registeredStudents = $registeredStudents;
-        $coursePerProgrammePerAcademicSession->studentGrades = $studentGrades;
+        $lecturerDetails = CourseManagement::where('course_id', $id)->where('academic_session', $academicSession)->first(); 
+        $registrations = CourseRegistration::where('course_id', $id)->where('academic_session', $academicSession)->get();
+        $course = Course::find($id);
 
         return view('admin.courseDetail', [
-            'coursePerProgrammePerAcademicSession' => $coursePerProgrammePerAcademicSession,
+            'registrations' => $registrations,
+            'lecturerDetails' => $lecturerDetails,
+            'course' => $course,
         ]);
     }
     
@@ -626,13 +627,14 @@ class ProgrammeController extends Controller
             return redirect()->back();
         }
 
+        $academicSession = $student->academic_session;
+
         if(!empty($request->level_id) && ($request->level_id != $student->level_id)){
             $student->level_id = $request->level_id;
         }
 
         if(!empty($request->programme_id) && ($request->programme_id != $student->programme_id)){
             $student->programme_id = $request->programme_id;
-            $academicSession = $student->academic_session;
         }
 
         if(!empty($request->department_id) && ($request->department_id != $student->department_id)){

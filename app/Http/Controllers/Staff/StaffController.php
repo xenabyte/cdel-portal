@@ -371,19 +371,20 @@ class StaffController extends Controller
     public function courseDetail(Request $request, $id){
         $staff = Auth::guard('staff')->user();
         $staffId = $staff->id;
+
         $globalData = $request->input('global_data');
         $admissionSession = $globalData->sessionSetting['admission_session'];
         $academicSession = $globalData->sessionSetting['academic_session'];
         $applicationSession = $globalData->sessionSetting['application_session'];
 
-        $coursePerProgrammePerAcademicSession = CoursePerProgrammePerAcademicSession::with('course', 'course.courseManagement', 'course.courseManagement.staff',  'level',  'registrations', 'registrations.student', 'registrations.student.applicant', 'registrations.student.programme')->where('id', $id)->first();
-        $registeredStudents = $coursePerProgrammePerAcademicSession->registrations->where('academic_session', $academicSession)->pluck('student');
-        $studentGrades = $coursePerProgrammePerAcademicSession->registrations->where('academic_session', $academicSession);
-        $coursePerProgrammePerAcademicSession->registeredStudents = $registeredStudents;
-        $coursePerProgrammePerAcademicSession->studentGrades = $studentGrades;
+        $lecturerDetails = CourseManagement::with('staff')->where('course_id', $id)->where('academic_session', $academicSession)->first(); 
+        $registrations = CourseRegistration::where('course_id', $id)->where('academic_session', $academicSession)->get();
+        $course = Course::find($id);
 
         return view('staff.courseDetail', [
-            'coursePerProgrammePerAcademicSession' => $coursePerProgrammePerAcademicSession,
+            'registrations' => $registrations,
+            'lecturerDetails' => $lecturerDetails,
+            'course' => $course,
         ]);
     }
 

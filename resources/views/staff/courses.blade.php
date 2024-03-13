@@ -53,15 +53,15 @@ $staffCourses = $staff->staffCourses;
                         @if(!empty($courseData))
                         <tr>
                             <td scope="row"> {{ $loop->iteration }}</td>
-                            <td>{{$staffCourse->course->code}}</td>
-                            <td>{{$staffCourse->course->name }}</td>
+                            <td>{{ $staffCourse->course->code}}</td>
+                            <td>{{ $staffCourse->course->name }}</td>
                             <td>{{ $courseData->credit_unit}}</td>
                             <td>{{ $courseData->status}}</td>
                             <td>{{ $courseData->registrations->where('academic_session', $pageGlobalData->sessionSetting->academic_session)->count()}}</td>
                             <td>{{ $courseData->level->level}}</td>
                             <td></td>
                             <td>
-                                <a href="{{ url('/staff/courseDetail/'.$courseData->id) }}" class="btn btn-lg btn-primary">Course Details</a>
+                                <a href="{{ url('/staff/courseDetail/'.$staffCourse->course->id) }}" class="btn btn-lg btn-primary">Course Details</a>
                             </td>
                         </tr>
                         @endif

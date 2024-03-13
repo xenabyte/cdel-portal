@@ -157,7 +157,7 @@ $staffCourses = $staff->staffCourses;
                             <td>{{ $courseData->level->level}}</td>
                             <td></td>
                             <td>
-                                <a href="{{ url('/staff/courseDetail/'.$courseData->id) }}" class="btn btn-lg btn-primary">Course Details</a>
+                                <a href="{{ url('/staff/courseDetail/'.$staffCourse->course->id) }}" class="btn btn-lg btn-primary">Course Details</a>
                             </td>
                         </tr>
                         @endif
