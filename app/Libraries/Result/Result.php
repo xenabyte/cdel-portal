@@ -31,7 +31,7 @@ class Result
             $matricNumber = $row['Matric No'];
             $testScore = $row['Test Score'];
             $examScore = $row['Exam Score'];
-            $totalScore = $testScore + $examScore;
+            $totalScore = round($testScore + $examScore);
             $grading = GradeScale::computeGrade($totalScore);
             $grade = $grading->grade;
             $points = $grading->point;

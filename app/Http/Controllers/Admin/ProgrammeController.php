@@ -570,7 +570,7 @@ class ProgrammeController extends Controller
 
         $testScore = $request->test;
         $examScore = $request->exam;
-        $totalScore = $testScore + $examScore;
+        $totalScore = round($testScore + $examScore);
         $grading = GradeScale::computeGrade($totalScore);
         $grade = $grading->grade;
         $points = $grading->point;
