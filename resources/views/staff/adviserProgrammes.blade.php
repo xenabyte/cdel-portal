@@ -42,7 +42,7 @@
                         <tr>
                             <td scope="row"> {{ $loop->iteration }}</td>
                             <td>{{$adviserProgramme->programme->name}}</td>
-                            <td>{{$adviserProgramme->level->level}} Level</td>
+                            <td>{{$adviserProgramme->level->level}} Level <span class="badge badge-pill bg-danger" data-key="t-hot">{{ $adviserProgramme->studentRegistrationsCount }} </span></td>
                             <td>
                                 <a href="{{ url('/staff/programme/'.$adviserProgramme->programme->slug) }}" class="btn btn-primary">Programme Details</a>
                                 <a href="{{ url('/staff/levelCourseReg/'.$adviserProgramme->id) }}" class="btn btn-info">Course Registrations</a>

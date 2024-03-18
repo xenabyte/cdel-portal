@@ -181,6 +181,8 @@ class ProgrammeController extends Controller
         $staff = Auth::guard('staff')->user();
         $staffId = $staff->id;
         $staffDepartmentId = $staff->department_id;
+        $globalData = $request->input('global_data');
+        $academicSession = $globalData->sessionSetting['academic_session'];
 
         // $staffHod = false;
         // if($staff->id == $staff->acad_department->hod_id){
@@ -194,6 +196,29 @@ class ProgrammeController extends Controller
             })->orWhere('staff_id', $staff->id);
         })
         ->get();
+
+        foreach ($adviserProgrammes as $adviserProgramme) {
+            $levelId = $adviserProgramme->level_id;
+            $programmeId = $adviserProgramme->programme_id;
+        
+            $studentIds = Student::where('level_id', $levelId)
+                ->where('programme_id', $programmeId)
+                ->pluck('id')
+                ->toArray();
+        
+            $studentRegistrationsCount = StudentCourseRegistration::with('student', 'student.applicant')
+                ->whereIn('student_id', $studentIds)
+                ->where('level_id', $levelId)
+                ->where('academic_session', $academicSession)
+                ->where(function ($query) {
+                    $query->where('level_adviser_status', null)
+                          ->orWhere('hod_status', null);
+                })
+                ->count();
+        
+            // Add studentRegistrationsCount to the object
+            $adviserProgramme->studentRegistrationsCount = $studentRegistrationsCount;
+        }
 
         // if($staffHod){
         //     $departmentId = $staff->department_id;

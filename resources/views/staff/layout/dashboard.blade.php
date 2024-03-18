@@ -1,4 +1,3 @@
-
 <!doctype html>
 <html lang="en" data-layout="vertical" data-layout-style="default" data-layout-position="fixed" data-topbar="light" data-sidebar="dark" data-sidebar-size="lg" data-layout-width="fluid" data-preloader="disable">
 @php
@@ -16,8 +15,7 @@
     $staffBursaryRole = false;
     $staffAdmissionOfficerRole = false;
 
-    $notifications = $staff->notifications()->orderBy('created_at', 'desc')->get();
-    
+    $notifications = $staff->notifications()->orderBy('created_at', 'desc')->get();    
     
     foreach ($staff->staffRoles as $staffRole) {
         if (strtolower($staffRole->role->role) == 'dean') {
@@ -56,8 +54,6 @@
         if(strtolower($staffRole->role->role) == 'admission'){
             $staffAdmissionOfficerRole = true;
         }
-
-        
     }
 @endphp
 
@@ -403,13 +399,13 @@
                             @if($staffLevelAdviserRole || $staffHODRole || $staffDeanRole || $staffSubDeanRole)
                             <li class="nav-item">
                                 <a class="nav-link menu-link" href="#courseSettings" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="courseSettings">
-                                    <i class="mdi mdi-card"></i> <span  data-key="t-hot">Prog. Management</span>
+                                    <i class="mdi mdi-card"></i> <span  data-key="t-hot">Prog. Management </span><span class="badge badge-pill bg-danger" data-key="t-hot">{{ $pageGlobalData->totalPendingRegistrations }} </span>
                                 </a>
                                 <div class="collapse menu-dropdown" id="courseSettings">
                                     <ul class="nav nav-sm flex-column">
                                         @if($staffLevelAdviserRole || $staffHODRole)
                                         <li class="nav-item">
-                                            <a href="{{ url('/staff/adviserProgrammes') }}" class="nav-link">Programmes</a>
+                                            <a href="{{ url('/staff/adviserProgrammes') }}" class="nav-link">Programmes <span class="badge badge-pill bg-danger" data-key="t-hot">{{ $pageGlobalData->totalPendingRegistrations }} </span></a>
                                         </li>
 
                                         <li class="nav-item">
