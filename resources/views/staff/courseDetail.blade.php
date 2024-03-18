@@ -199,7 +199,7 @@
                         <label for="exam">Exam Score</label>
                     </div>
 
-                    @if(!empty($courseRegistration->grade))
+                    @if(!empty($registrations->grade))
                     <div class="form-floating mb-3 mt-3">
                         <input type="password" name="passcode" id="passcode" class="form-control" required>
                         <label for="passcode">Password <code>Get Code from your HOD</code></label>
@@ -238,7 +238,7 @@
                         </div>
                     </div>
 
-                    @if(!empty($courseRegistration->grade))
+                    @if(!empty($registrations->grade))
                     <div class="form-floating mb-3 mt-3">
                         <input type="password" name="passcode" id="passcode" class="form-control" required>
                         <label for="passcode">Password <code>Get Code from your HOD</code></label>
