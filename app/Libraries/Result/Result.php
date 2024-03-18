@@ -33,13 +33,25 @@ class Result
             $examScore = $row['Exam Score'];
             $totalScore = round($testScore + $examScore);
             $grading = GradeScale::computeGrade($totalScore);
-            $grade = $grading->grade;
-            $points = $grading->point;
 
             $course = Course::find($courseId);
 
-            $student = Student::where('matric_number', $matricNumber)->first();
+            $student = Student::with('applicant')->where('matric_number', $matricNumber)->first();
+            if(!$student){
+                return "Student with ". $matricNumber ." did register for this course.";
+            }
+
+            if($testScore > 30){
+                return $student->applicant->lastname.' '.$student->applicant->othernames ." tests score is greater than 30.";
+            }
+
+            if($examScore > 70){
+                return $student->applicant->lastname.' '.$student->applicant->othernames ." examination score is greater than 70.";
+            }
+
             $studentId = $student->id;
+            $grade = $grading->grade;
+            $points = $grading->point;
 
             $studentRegistration = CourseRegistration::where([
                 'student_id' => $studentId,
@@ -58,7 +70,7 @@ class Result
             }
         }
 
-        return true;
+        return 'success';
     }
 
     public static function calculateCGPA($studentId){

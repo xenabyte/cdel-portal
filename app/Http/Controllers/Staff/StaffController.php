@@ -671,6 +671,11 @@ class StaffController extends Controller
         $file = $request->file('result');
         $processResult = Result::processResult($file, $courseId, $globalData);
 
+        if($processResult != 'success'){
+            alert()->error('oops!', $processResult)->persistent('Close');
+            return redirect()->back();
+        }
+
         if($processResult){
             alert()->success('Student scores updated successfully!', '')->persistent('Close');
             return redirect()->back();
@@ -745,10 +750,21 @@ class StaffController extends Controller
         $examScore = $request->exam;
         $totalScore = $testScore + $examScore;
         $grading = GradeScale::computeGrade($totalScore);
+       
+
+        if($testScore > 30){
+            alert()->success('Oops!', 'Test score is greater than 30.')->persistent('Close');
+            return redirect()->back();
+        }
+
+        if($examScore > 70){
+            alert()->success('Oops', 'Examination score is greater than 70.')->persistent('Close');
+            return redirect()->back();
+        }
+        
         $grade = $grading->grade;
         $points = $grading->point;
-        
-      
+
         $studentRegistration->ca_score = $testScore;
         $studentRegistration->exam_score = $examScore;
         $studentRegistration->total = $totalScore;

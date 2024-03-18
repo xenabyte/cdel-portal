@@ -527,6 +527,11 @@ class ProgrammeController extends Controller
         $file = $request->file('result');
         $processResult = Result::processResult($file, $courseId, $globalData);
 
+        if($processResult != 'success'){
+            alert()->error('oops!', $processResult)->persistent('Close');
+            return redirect()->back();
+        }
+
         if($processResult){
             alert()->success('Student scores updated successfully!', '')->persistent('Close');
             return redirect()->back();
@@ -574,8 +579,17 @@ class ProgrammeController extends Controller
         $grading = GradeScale::computeGrade($totalScore);
         $grade = $grading->grade;
         $points = $grading->point;
+
+        if($testScore > 30){
+            alert()->success('Oops!', 'Test score is greater than 30.')->persistent('Close');
+            return redirect()->back();
+        }
+
+        if($examScore > 70){
+            alert()->success('Oops', 'Examination score is greater than 70.')->persistent('Close');
+            return redirect()->back();
+        }
         
-      
         $studentRegistration->ca_score = $testScore;
         $studentRegistration->exam_score = $examScore;
         $studentRegistration->total = $totalScore;
