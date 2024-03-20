@@ -136,7 +136,6 @@ $staffCourses = $staff->staffCourses;
                             <th scope="col">Course Title</th>
                             <th scope="col">Course Unit</th>
                             <th scope="col">Status</th>
-                            <th scope="col">Enrolled Student Count</th>
                             <th scope="col">Level</th>
                             <th scope="col"></th>
                         </tr>
@@ -153,11 +152,9 @@ $staffCourses = $staff->staffCourses;
                             <td>{{$staffCourse->course->name }}</td>
                             <td>{{ $courseData->credit_unit}}</td>
                             <td>{{ $courseData->status}}</td>
-                            <td>{{ $courseData->registrations->where('academic_session', $pageGlobalData->sessionSetting->academic_session)->count()}}</td>
                             <td>{{ $courseData->level->level}}</td>
-                            <td></td>
                             <td>
-                                <a href="{{ url('/staff/courseDetail/'.$staffCourse->course->id) }}" class="btn btn-lg btn-primary">Course Details</a>
+                                <a href="{{ url('/staff/courseDetail/'.$staffCourse->course->id) }}" class="btn btn-md btn-primary">Course Details</a>
                             </td>
                         </tr>
                         @endif

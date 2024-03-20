@@ -56,7 +56,13 @@ $studentRegistrations = $student->courseRegistrationDocument()->orderBy('created
                             </div>
                         </div>
                         <div class="col-md-auto">
-                            
+                            <div class="hstack gap-1 flex-wrap">
+                                @if(empty($student->deleted_at))
+                                <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#expelStudent">Disable Student</button>
+                                @else
+                                <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#enableStudent">Enable Student</button>
+                                @endif
+                            </div>
                         </div>
                     </div>
 
@@ -523,5 +529,57 @@ $studentRegistrations = $student->courseRegistrationDocument()->orderBy('created
     <!-- end col -->
 </div>
 <!-- end row -->
+
+<div id="expelStudent" class="modal fade" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" style="display: none;">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body text-center p-5">
+                <div class="text-end">
+                    <button type="button" class="btn-close text-end" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="mt-2">
+                    <lord-icon src="https://cdn.lordicon.com/wwneckwc.json" trigger="hover" style="width:150px;height:150px">
+                    </lord-icon>
+                    <h4 class="mb-3 mt-4">Are you sure you want to disable <br/> {{ $student->applicant->lastname.' '.$student->applicant->othernames }}?</h4>
+                    <form action="{{ url('/admin/expelStudent') }}" method="POST">
+                        @csrf
+                        <input name="student_id" type="hidden" value="{{$student->id}}">
+                        <hr>
+                        <button type="submit" id="submit-button" class="btn btn-danger w-100">Yes, Disable</button>
+                    </form>
+                </div>
+            </div>
+            <div class="modal-footer bg-light p-3 justify-content-center">
+
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<div id="enableStudent" class="modal fade" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" style="display: none;">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body text-center p-5">
+                <div class="text-end">
+                    <button type="button" class="btn-close text-end" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="mt-2">
+                    <lord-icon src="https://cdn.lordicon.com/tqywkdcz.json" trigger="hover" style="width:150px;height:150px">
+                    </lord-icon>
+                    <h4 class="mb-3 mt-4">Are you sure you want to enable <br/> {{ $student->applicant->lastname.' '.$student->applicant->othernames }}?</h4>
+                    <form action="{{ url('/admin/enableStudent') }}" method="POST">
+                        @csrf
+                        <input name="student_id" type="hidden" value="{{$student->id}}">
+                        <hr>
+                        <button type="submit" id="submit-button" class="btn btn-success w-100">Yes, Enable</button>
+                    </form>
+                </div>
+            </div>
+            <div class="modal-footer bg-light p-3 justify-content-center">
+
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
 
 @endsection

@@ -943,7 +943,8 @@ class AcademicController extends Controller
         $sessions = Session::orderBy('id', 'desc')->get();
 
         $student = Student::
-            with(['applicant', 'programme', 'transactions', 'courseRegistrationDocument', 'registeredCourses', 'partner', 'academicLevel', 'department', 'faculty'])
+            withTrashed()
+            ->with(['applicant', 'programme', 'transactions', 'courseRegistrationDocument', 'registeredCourses', 'partner', 'academicLevel', 'department', 'faculty'])
             ->where('slug', $slug)
             ->where('is_active', true)
             ->where('is_passed_out', false)
@@ -1530,4 +1531,60 @@ class AcademicController extends Controller
         }
 
     }
+
+    public function expelStudent(Request $request){
+        $validator = Validator::make($request->all(), [
+            'student_id' => 'required',
+        ]);
+
+        if($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+        if(!$student = Student::find($request->student_id)){
+            alert()->error('Oops', 'Invalid Student ')->persistent('Close');
+            return redirect()->back();
+        }
+        
+        if($student->delete()){
+            alert()->success('Disable Successfully', '')->persistent('Close');
+            return redirect()->back();
+        }
+
+        alert()->error('Oops!', 'Something went wrong')->persistent('Close');
+        return redirect()->back(); 
+    }
+
+    public function enableStudent(Request $request){
+        $validator = Validator::make($request->all(), [
+            'student_id' => 'required',
+        ]);
+
+        if($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+        if(!$student = Student::withTrashed()->find($request->student_id)){
+            alert()->error('Oops', 'Invalid Student ')->persistent('Close');
+            return redirect()->back();
+        }
+        
+        if($student->restore()){
+            alert()->success('Enable Successfully', '')->persistent('Close');
+            return redirect()->back();
+        }
+
+        alert()->error('Oops!', 'Something went wrong')->persistent('Close');
+        return redirect()->back(); 
+    }
+
+    public function deletedStudents(){
+
+        $deletedStudents =  Student::onlyTrashed()->with('faculty', 'department', 'programme')->get();
+
+        return view('admin.deletedStudents', [
+            'deletedStudents' => $deletedStudents
+        ]);
+    }
+    
 }
