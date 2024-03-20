@@ -508,6 +508,19 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'staff'],
   Route::post('getExitApplication', [App\Http\Controllers\Staff\StudentCareController::class, 'getExitApplication'])->name('getExitApplication')->middleware(['auth:staff']);
   Route::post('manageExitApplication', [App\Http\Controllers\Staff\StudentCareController::class, 'manageExitApplication'])->name('manageExitApplication')->middleware(['auth:staff']);
 
+  Route::get('/committees', [App\Http\Controllers\Staff\CommitteeController::class, 'committees'])->name('committees')->middleware(['auth:staff']);
+  Route::post('/addCommittee', [App\Http\Controllers\Staff\CommitteeController::class, 'addCommittee'])->name('addCommittee')->middleware(['auth:staff']);
+  Route::post('/updateCommittee', [App\Http\Controllers\Staff\CommitteeController::class, 'updateCommittee'])->name('updateCommittee')->middleware(['auth:staff']);
+  Route::post('/deleteCommittee', [App\Http\Controllers\Staff\CommitteeController::class, 'deleteCommittee'])->name('deleteCommittee')->middleware(['auth:staff']);
+  
+  Route::get('/committee/{slug}', [App\Http\Controllers\Staff\CommitteeController::class, 'committee'])->name('committee')->middleware(['auth:staff']);
+  Route::post('/assignCommitteePosition', [App\Http\Controllers\Staff\CommitteeController::class, 'assignCommitteePosition'])->name('assignCommitteePosition')->middleware(['auth:staff']);
+  Route::post('/addMember', [App\Http\Controllers\Staff\CommitteeController::class, 'addMember'])->name('addMember')->middleware(['auth:staff']);
+
+  Route::post('/createMeeting', [App\Http\Controllers\Staff\CommitteeController::class, 'createMeeting'])->name('createMeeting')->middleware(['auth:staff']);
+  Route::post('/updateMeeting', [App\Http\Controllers\Staff\CommitteeController::class, 'updateMeeting'])->name('updateMeeting')->middleware(['auth:staff']);
+  Route::post('/deleteMeeting', [App\Http\Controllers\Staff\CommitteeController::class, 'deleteMeeting'])->name('deleteMeeting')->middleware(['auth:staff']);
+  
 });
 
 Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'bursary'], function () {

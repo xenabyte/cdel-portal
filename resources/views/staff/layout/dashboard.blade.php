@@ -15,6 +15,8 @@
     $staffBursaryRole = false;
     $staffAdmissionOfficerRole = false;
 
+    $committeeIds = $staff->committeeMembers->pluck('committee_id');
+
     $notifications = $staff->notifications()->orderBy('created_at', 'desc')->get();    
     
     foreach ($staff->staffRoles as $staffRole) {
@@ -297,6 +299,19 @@
                                 </a>
                             </li>
                             @endif
+
+                            <li class="nav-item">
+                                <a class="nav-link menu-link" href="#committeeMgt" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="committeeMgt">
+                                    <i class="mdi mdi-account-supervisor-circle-outline"></i> <span data-key="t-committee">Committee MGT</span><span class="badge badge-pill bg-danger" data-key="t-hot">New</span>
+                                </a>
+                                <div class="collapse menu-dropdown" id="committeeMgt">
+                                    <ul class="nav nav-sm flex-column">
+                                        <li class="nav-item">
+                                            <a href="{{ url('/staff/committees') }}" class="nav-link"> Committees </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
 
                             @if($staffStudentCareRole || $staffBursaryRole || $staffRegistrarRole || $staffVCRole)
                             <li class="nav-item">

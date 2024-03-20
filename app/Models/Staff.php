@@ -133,7 +133,7 @@ class Staff extends Authenticatable
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function committeeMember()
+    public function committeeMembers()
     {
         return $this->hasMany(CommitteeMember::class);
     }
