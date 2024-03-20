@@ -46,7 +46,7 @@ class HomeController extends Controller
         $admissionSession = $globalData->sessionSetting['admission_session'];
         $academicSession = $globalData->sessionSetting['academic_session'];
 
-        $student = Student::with(['applicant', 'programme', 'partner', 'academicLevel', 'department', 'faculty'])
+        $student = Student::withTrashed()->with(['applicant', 'programme', 'partner', 'academicLevel', 'department', 'faculty'])
         ->where('slug', $slug)->first();
 
         return view('studentProfile', [

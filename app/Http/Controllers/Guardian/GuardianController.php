@@ -73,7 +73,7 @@ class GuardianController extends Controller
 
     
     public function studentProfile(Request $request, $slug){
-        $student = Student::with('applicant', 'applicant.utmes', 'programme', 'transactions')->where('slug', $slug)->first();
+        $student = Student::withTrashed()->with('applicant', 'applicant.utmes', 'programme', 'transactions')->where('slug', $slug)->first();
         $academicLevels = AcademicLevel::orderBy('id', 'desc')->get();
         $sessions = Session::orderBy('id', 'desc')->get();
         $student->schoolFeeDetails = $this->checkSchoolFees($student, $student->academic_session, $student->level_id);

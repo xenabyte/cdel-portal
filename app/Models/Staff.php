@@ -127,5 +127,15 @@ class Staff extends Authenticatable
         return $this->hasMany(Student::class, 'mentor_id');
     }
     
+
+    /**
+     * Get all of the committees for the Staff
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function committeeMember()
+    {
+        return $this->hasMany(CommitteeMember::class);
+    }
     
 }

@@ -278,6 +278,24 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'admin'],
   Route::post('/result/updateStudentResult', [App\Http\Controllers\Admin\ResultController::class, 'updateStudentResult'])->name('updateStudentResult')->middleware(['auth:admin']);
   Route::post('/result/addStudentCourse', [App\Http\Controllers\Admin\ResultController::class, 'addStudentCourse'])->name('addStudentCourse')->middleware(['auth:admin']);
   
+  Route::get('/committees', [App\Http\Controllers\Admin\CommitteeController::class, 'committees'])->name('committees')->middleware(['auth:admin']);
+  Route::post('/addCommittee', [App\Http\Controllers\Admin\CommitteeController::class, 'addCommittee'])->name('addCommittee')->middleware(['auth:admin']);
+  Route::post('/updateCommittee', [App\Http\Controllers\Admin\CommitteeController::class, 'updateCommittee'])->name('updateCommittee')->middleware(['auth:admin']);
+  Route::post('/deleteCommittee', [App\Http\Controllers\Admin\CommitteeController::class, 'deleteCommittee'])->name('deleteCommittee')->middleware(['auth:admin']);
+  
+  Route::get('/committee/{slug}', [App\Http\Controllers\Admin\CommitteeController::class, 'committee'])->name('committee')->middleware(['auth:admin']);
+  Route::post('/assignCommitteePosition', [App\Http\Controllers\Admin\CommitteeController::class, 'assignCommitteePosition'])->name('assignCommitteePosition')->middleware(['auth:admin']);
+  Route::post('/addMember', [App\Http\Controllers\Admin\CommitteeController::class, 'addMember'])->name('addMember')->middleware(['auth:admin']);
+
+  Route::post('/createMeeting', [App\Http\Controllers\Admin\CommitteeController::class, 'createMeeting'])->name('createMeeting')->middleware(['auth:admin']);
+  Route::post('/updateMeeting', [App\Http\Controllers\Admin\CommitteeController::class, 'updateMeeting'])->name('updateMeeting')->middleware(['auth:admin']);
+  Route::post('/deleteMeeting', [App\Http\Controllers\Admin\CommitteeController::class, 'deleteMeeting'])->name('deleteMeeting')->middleware(['auth:admin']);
+  
+  Route::post('/enableStudent', [App\Http\Controllers\Admin\AcademicController::class, 'enableStudent'])->name('enableStudent')->middleware(['auth:admin']);
+  Route::post('/expelStudent', [App\Http\Controllers\Admin\AcademicController::class, 'expelStudent'])->name('expelStudent')->middleware(['auth:admin']);
+  Route::get('/deletedStudents', [App\Http\Controllers\Admin\AcademicController::class, 'deletedStudents'])->name('expelStudent')->middleware(['auth:admin']);
+
+  
 });
 
 Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'student'], function () {

@@ -364,6 +364,9 @@
                                     <li class="nav-item">
                                         <a href="{{ url('/admin/studentCourses') }}" class="nav-link">Student Courses</a>
                                     </li>
+                                    <li class="nav-item">
+                                        <a href="{{ url('/admin/courseRegistrations') }}" class="nav-link">Course Registrations</a>
+                                    </li>
                                     {{-- <li class="nav-item">
                                         <a href="{{ url('/admin/courseAllocation') }}" class="nav-link">Course-to-Staff Allocation</a>
                                     </li> --}}
@@ -421,7 +424,7 @@
                                         <a href="{{ url('/admin/demoteStudentRecord') }}" class="nav-link">Demoted Student Record</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a href="{{ url('/admin/courseRegistrations') }}" class="nav-link">Course Registrations</a>
+                                        <a href="{{ url('/admin/deletedStudents') }}" class="nav-link">Deleted Student Record</a>
                                     </li>
                                 </ul>
                             </div>
@@ -485,6 +488,20 @@
                                                 </li>
                                             </ul>
                                         </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+
+                        <li class="menu-title"><i class="ri-more-fill"></i> <span data-key="t-staff">Committee Management</span></li>
+                        <li class="nav-item">
+                            <a class="nav-link menu-link" href="#committeeMgt" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="committeeMgt">
+                                <i class="mdi mdi-account-supervisor-circle-outline"></i> <span data-key="t-committee">Committee MGT</span><span class="badge badge-pill bg-danger" data-key="t-hot">New</span>
+                            </a>
+                            <div class="collapse menu-dropdown" id="committeeMgt">
+                                <ul class="nav nav-sm flex-column">
+                                    <li class="nav-item">
+                                        <a href="{{ url('/admin/committees') }}" class="nav-link"> Committees </a>
                                     </li>
                                 </ul>
                             </div>
