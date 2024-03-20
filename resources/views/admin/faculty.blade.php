@@ -304,7 +304,7 @@
             </div>
 
             <div class="modal-body">
-                <form action="{{ url('/admin/saveFaculty') }}" method="post" enctype="multipart/form-data">
+                <form action="{{ url('/admin/updateFaculty') }}" method="post" enctype="multipart/form-data">
                     @csrf
                     <input type="hidden" name="faculty_id" value="{{ $faculty->id }}">
                     <div class="mb-3">
