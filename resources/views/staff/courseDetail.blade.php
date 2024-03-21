@@ -124,18 +124,20 @@
                         </thead>
                         <tbody>
                             @foreach($registrations as $registration)
-                            <tr>
-                                <th scope="row">{{ $loop->iteration }}</th>
-                                <td>{{ $registration->student->applicant->lastname .' '. $registration->student->applicant->othernames }}</td>
-                                <td>{{ $registration->student->matric_number }}</td>
-                                <td>{{ $registration->student->programme->name }}</td>
-                                <td>{{ $registration->student->email }} </td>
-                                <td>{{ $registration->student->applicant->phone_number }} </td>
-                                <td>{{ $registration->ca_score }} </td>
-                                <td>{{ $registration->exam_score }} </td>
-                                <td>{{ $registration->total }}</td>
-                                <td>{{ $registration->grade }} </td>
-                            </tr>
+                                @if($registration->student)
+                                <tr>
+                                    <th scope="row">{{ $loop->iteration }}</th>
+                                    <td>{{ $registration->student->applicant->lastname .' '. $registration->student->applicant->othernames }}</td>
+                                    <td>{{ $registration->student->matric_number }}</td>
+                                    <td>{{ $registration->student->programme->name }}</td>
+                                    <td>{{ $registration->student->email }} </td>
+                                    <td>{{ $registration->student->applicant->phone_number }} </td>
+                                    <td>{{ $registration->ca_score }} </td>
+                                    <td>{{ $registration->exam_score }} </td>
+                                    <td>{{ $registration->total }}</td>
+                                    <td>{{ $registration->grade }} </td>
+                                </tr>
+                                @endif
                             @endforeach
                         </tbody>
                     </table>
