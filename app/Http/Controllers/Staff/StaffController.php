@@ -750,6 +750,17 @@ class StaffController extends Controller
         $examScore = $request->exam;
         $totalScore = $testScore + $examScore;
         $grading = GradeScale::computeGrade($totalScore);
+        $grade = $grading->grade;
+        $points = $grading->point;
+
+        $courseCode = $studentRegistration->course_code;
+
+        if (strpos($courseCode, 'NSC') !== false) {
+            if($totalScore < 50){
+                $grade = 'F';
+                $points = 0;
+            }
+        }
        
 
         if($testScore > 30){
@@ -762,8 +773,6 @@ class StaffController extends Controller
             return redirect()->back();
         }
         
-        $grade = $grading->grade;
-        $points = $grading->point;
 
         $studentRegistration->ca_score = $testScore;
         $studentRegistration->exam_score = $examScore;

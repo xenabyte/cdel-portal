@@ -36,8 +36,18 @@ class Result
             
             $totalScore = round($testScore + $examScore);
             $grading = GradeScale::computeGrade($totalScore);
+            $grade = $grading->grade;
+            $points = $grading->point;
 
             $course = Course::find($courseId);
+            $courseCode = $course->code;
+
+            if (strpos($courseCode, 'NSC') !== false) {
+                if($totalScore < 50){
+                    $grade = 'F';
+                    $points = 0;
+                }
+            }
 
             $student = Student::with('applicant')->where('matric_number', $matricNumber)->first();
             if(!$student){
@@ -53,8 +63,6 @@ class Result
             }
 
             $studentId = $student->id;
-            $grade = $grading->grade;
-            $points = $grading->point;
 
             $studentRegistration = CourseRegistration::where([
                 'student_id' => $studentId,

@@ -256,6 +256,15 @@ class ResultController extends Controller
             $grade = $grading->grade;
             $points = $grading->point;
 
+            $courseCode = $registeredCourse->course_code;
+
+            if (strpos($courseCode, 'NSC') !== false) {
+                if($totalScore < 50){
+                    $grade = 'F';
+                    $points = 0;
+                }
+            }
+
             $registeredCourse->grade = $grade;
             $registeredCourse->points = $points*$registeredCourse->course_credit_unit;
         }
@@ -377,6 +386,14 @@ class ResultController extends Controller
         $grade = $grading->grade;
         $points = $grading->point;
 
+        $courseCode = $studentCourseReg->course_code;
+
+        if (strpos($courseCode, 'NSC') !== false) {
+            if($totalScore < 50){
+                $grade = 'F';
+                $points = 0;
+            }
+        }
 
         $studentCourseReg->ca_score = $caScore;
         $studentCourseReg->exam_score = $examScore;

@@ -580,6 +580,15 @@ class ProgrammeController extends Controller
         $grade = $grading->grade;
         $points = $grading->point;
 
+        $courseCode = $studentRegistration->course_code;
+
+        if (strpos($courseCode, 'NSC') !== false) {
+            if($totalScore < 50){
+                $grade = 'F';
+                $points = 0;
+            }
+        }
+
         if($testScore > 30){
             alert()->success('Oops!', 'Test score is greater than 30.')->persistent('Close');
             return redirect()->back();
@@ -594,7 +603,7 @@ class ProgrammeController extends Controller
         $studentRegistration->exam_score = $examScore;
         $studentRegistration->total = $totalScore;
         $studentRegistration->grade = $grade;
-        $studentRegistration->points = $points;
+        $studentRegistration->points = $points * $studentRegistration->course_credit_unit;
         if($studentRegistration->save()){
             alert()->success('Student scores updated successfully!', '')->persistent('Close');
             return redirect()->back();

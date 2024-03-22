@@ -6,6 +6,9 @@ use Google\Client as GoogleClient;
 use Google\Service\Directory;
 use Log;
 
+use Google\Service\Calendar;
+use Config;
+
 class Google
 {
     protected $client;
@@ -18,7 +21,13 @@ class Google
         $this->client->setAuthConfig($path);
         $this->client->setSubject(env('GOOGLE_CLIENT_SUBJECT'));
         $this->client->addScope('https://www.googleapis.com/auth/admin.directory.user');
+        $this->client->setApplicationName('Your Application Name');
+
         $this->service = new Directory($this->client);
+        $this->client->setScopes([
+            'https://www.googleapis.com/auth/admin.directory.group',
+            'https://www.googleapis.com/auth/admin.directory.group.member'
+        ]);
     }
 
     public function createUser($email, $firstName, $lastName, $password)
@@ -37,6 +46,57 @@ class Google
         }catch (\Google\Service\Exception $e) {
             // Log or print the error message for debugging
             Log::info("Message: ". $e->getMessage());
+            return false;
+        }
+    }
+
+    public function generateGoogleMeetLink($title, $date, $time)
+    {
+        $path = base_path('public/google/tau-core-api-2551c52d28f8.json');
+
+        $client = new GoogleClient();
+        $client->setScopes(Calendar::CALENDAR_EVENTS);
+        $client->setAuthConfig($path);
+        $service = new Calendar($client);
+
+        $requestId = uniqid(); 
+
+        $event = new CalendarEvent(array(
+            'summary' => $title,
+            'start' => array(
+                'dateTime' => $date . 'T' . $time . ':00',
+                'timeZone' => Config::get('app.timezone'),
+            ),
+            'end' => array(
+                'dateTime' => $date . 'T' . $time . ':00',
+                'timeZone' => Config::get('app.timezone'),
+            ),
+            'conferenceData' => array(
+                'createRequest' => array(
+                    'requestId' => $requestId,
+                ),
+            ),
+        ));
+
+        $calendarId = 'primary'; // Or your specific calendar ID
+        $event = $service->events->insert($calendarId, $event, ['conferenceDataVersion' => 1]);
+
+        return $event->getHangoutLink();
+    }
+
+    public function addMemberToGroup($email, $groupEmail)
+    {
+        $service = new Google_Service_Directory($this->client);
+
+        $member = new Google_Service_Directory_Member();
+        $member->setEmail($email);
+        $member->setRole('MEMBER');
+
+        try {
+            $service->members->insert($groupEmail, $member);
+            return true;
+        } catch (Exception $e) {
+            Log::error($e->getMessage);
             return false;
         }
     }
