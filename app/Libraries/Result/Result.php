@@ -33,8 +33,18 @@ class Result
             $examScore = $row['Exam Score'];
             $testScore = (int)$testScore;
             $examScore = (int)$examScore;
+
+            $student = Student::with('applicant')->where('matric_number', $matricNumber)->first();
+            if(!$student){
+                return "Student with ". $matricNumber ." did register for this course.";
+            }
             
             $totalScore = round($testScore + $examScore);
+
+            if($totalScore > 100){
+                return $student->applicant->lastname.' '.$student->applicant->othernames ." total score is greater than 100.";
+            }
+
             $grading = GradeScale::computeGrade($totalScore);
             $grade = $grading->grade;
             $points = $grading->point;
@@ -49,18 +59,6 @@ class Result
                 }
             }
 
-            $student = Student::with('applicant')->where('matric_number', $matricNumber)->first();
-            if(!$student){
-                return "Student with ". $matricNumber ." did register for this course.";
-            }
-
-            if($testScore > 30){
-                return $student->applicant->lastname.' '.$student->applicant->othernames ." tests score is greater than 30.";
-            }
-
-            if($examScore > 70){
-                return $student->applicant->lastname.' '.$student->applicant->othernames ." examination score is greater than 70.";
-            }
 
             $studentId = $student->id;
 

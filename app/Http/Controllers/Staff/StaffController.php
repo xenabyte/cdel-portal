@@ -749,6 +749,12 @@ class StaffController extends Controller
         $testScore = $request->test;
         $examScore = $request->exam;
         $totalScore = $testScore + $examScore;
+
+        if($totalScore > 100){
+            alert()->success('Oops', 'Total score is greater than 100.')->persistent('Close');
+            return redirect()->back();
+        }
+
         $grading = GradeScale::computeGrade($totalScore);
         $grade = $grading->grade;
         $points = $grading->point;
@@ -761,19 +767,7 @@ class StaffController extends Controller
                 $points = 0;
             }
         }
-       
-
-        if($testScore > 30){
-            alert()->success('Oops!', 'Test score is greater than 30.')->persistent('Close');
-            return redirect()->back();
-        }
-
-        if($examScore > 70){
-            alert()->success('Oops', 'Examination score is greater than 70.')->persistent('Close');
-            return redirect()->back();
-        }
-        
-
+    
         $studentRegistration->ca_score = $testScore;
         $studentRegistration->exam_score = $examScore;
         $studentRegistration->total = $totalScore;
