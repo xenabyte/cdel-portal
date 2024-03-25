@@ -53,7 +53,7 @@ $hodRole = array_filter($singleStaffRoles, function ($staffRole) {
                         </div>
                         <div class="col-md-auto">
                             <div class="hstack gap-1 flex-wrap">
-                                <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#editStaff">Update Staff Password</button>
+                                <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#editStaff">Update Staff</button>
                                 <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#assignRole">Assign Role</button>
                                 @if(empty($singleStaff->deleted_at))
                                 <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#disableStaff">Disable Staff</button>
