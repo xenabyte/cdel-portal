@@ -282,10 +282,15 @@ class StaffController extends Controller
         $roles  = Role::get();
         $departments = Department::where('faculty_id', $staff->faculty_id)->get();
 
+        $allDepartments = Department::all();
+        $faculties = Faculty::all();
+
         return view('admin.singleStaff', [
             'singleStaff' => $staff,
             'roles' => $roles,
-            'departments' => $departments
+            'departments' => $departments,
+            'allDepartments' => $allDepartments,
+            'faculties' => $faculties,
         ]);
     }
 
