@@ -188,104 +188,106 @@
                     </thead>
                     <tbody>
                         @foreach($students as $student)
-                        @php
-                            $degreeClass = new \App\Models\DegreeClass;
+                            @if(!empty($students))
+                                @php
+                                    $degreeClass = new \App\Models\DegreeClass;
 
-                            $semesterRegisteredCourses = $student->registeredCourses->where('semester', $semester)->where('level_id', $academiclevel->id)->where('academic_session', $academicSession);
-                            $currentRegisteredCreditUnits =  $semesterRegisteredCourses->sum('course_credit_unit');
-                            $currentRegisteredGradePoints = $semesterRegisteredCourses->sum('points');
-                            $currentGPA = $currentRegisteredGradePoints > 0 ? number_format($currentRegisteredGradePoints / $currentRegisteredCreditUnits, 2) : 0;
-                            $failedSemesterCourses = $semesterRegisteredCourses->where('grade', 'F');
+                                    $semesterRegisteredCourses = $student->registeredCourses->where('semester', $semester)->where('level_id', $academiclevel->id)->where('academic_session', $academicSession);
+                                    $currentRegisteredCreditUnits =  $semesterRegisteredCourses->sum('course_credit_unit');
+                                    $currentRegisteredGradePoints = $semesterRegisteredCourses->sum('points');
+                                    $currentGPA = $currentRegisteredGradePoints > 0 ? number_format($currentRegisteredGradePoints / $currentRegisteredCreditUnits, 2) : 0;
+                                    $failedSemesterCourses = $semesterRegisteredCourses->where('grade', 'F');
 
-                            $allRegisteredCourses = $student->registeredCourses->where('grade', '!=', null);
-                            $allRegisteredCreditUnits =  $allRegisteredCourses->sum('course_credit_unit');
-                            $allRegisteredGradePoints = $allRegisteredCourses->sum('points');
-                            $CGPA = $allRegisteredGradePoints > 0 ? number_format($allRegisteredGradePoints / $allRegisteredCreditUnits, 2) : 0;
+                                    $allRegisteredCourses = $student->registeredCourses->where('grade', '!=', null);
+                                    $allRegisteredCreditUnits =  $allRegisteredCourses->sum('course_credit_unit');
+                                    $allRegisteredGradePoints = $allRegisteredCourses->sum('points');
+                                    $CGPA = $allRegisteredGradePoints > 0 ? number_format($allRegisteredGradePoints / $allRegisteredCreditUnits, 2) : 0;
 
-                            $prevRegisteredCourses = $student->registeredCourses->where('semester', '!=', $semester)->where('level_id', '!=', $academiclevel->id);
-                            $prevRegisteredCreditUnits =  $prevRegisteredCourses->sum('course_credit_unit');
-                            $prevRegisteredGradePoints = $prevRegisteredCourses->sum('points');
-                            if ($prevRegisteredCreditUnits != 0) {
-                                $prevCGPA = number_format($prevRegisteredGradePoints / $prevRegisteredCreditUnits, 2);
-                            } else {
-                                $prevCGPA = 0.00; // Set a default value or handle the situation accordingly
-                            }
+                                    $prevRegisteredCourses = $student->registeredCourses->where('semester', '!=', $semester)->where('level_id', '!=', $academiclevel->id);
+                                    $prevRegisteredCreditUnits =  $prevRegisteredCourses->sum('course_credit_unit');
+                                    $prevRegisteredGradePoints = $prevRegisteredCourses->sum('points');
+                                    if ($prevRegisteredCreditUnits != 0) {
+                                        $prevCGPA = number_format($prevRegisteredGradePoints / $prevRegisteredCreditUnits, 2);
+                                    } else {
+                                        $prevCGPA = 0.00; // Set a default value or handle the situation accordingly
+                                    }
 
-                            $classGrade = $degreeClass->computeClass($CGPA);
-                            $class = $classGrade->degree_class;
-                            $standing = $classGrade->id > 3? 'NGS' : 'GS'; 
-                            
-                        @endphp
-                            <tr>
-                                <td>{{ $loop->iteration }}</td>
-                                <td>{{ strtoupper($student->applicant->lastname).', '.$student->applicant->othernames }}</td>
-                                <td>{{ $student->matric_number }}</td>
-                                <td>{{$class}}</td>
-                                <td>{{ $standing }}</td>
-                                <td class="text-danger">{{ $failedSemesterCourses->count() }}</td>
-                                <td class="text-danger">{{ $failedSemesterCourses->sum('course_credit_unit') }}</td>
-                                <td>
-                                    @if($failedSemesterCourses->count() > 0)
-                                        <span class="text-danger">
-                                            @foreach($failedSemesterCourses as $failedSemesterCourse)
-                                                {{ $failedSemesterCourse->course_code }}
-                                            @endforeach
-                                        </span>
-                                    @endif    
-                                </td>
-                                <td>{{ $prevRegisteredCreditUnits }}</td>
-                                <td>{{ $prevRegisteredGradePoints }}</td>
-                                <td>{{ $prevCGPA }}</td>
-                                <td class="bg bg-soft-primary">{{ $currentRegisteredCreditUnits }}</td>
-                                <td class="bg bg-soft-primary">{{ $currentRegisteredGradePoints }}</td>
-                                <td class="bg bg-soft-primary">{{ $currentGPA }}</td>
-                                <td>{{ $allRegisteredCreditUnits }}</td>
-                                <td>{{ $allRegisteredGradePoints }}</td>
-                                <td>{{ $CGPA }}</td>
-                                <td width="200px">
-                                    <div class="accordion" id="default-accordion-example">
-                                        <div class="accordion-item shadow">
-                                            <h2 class="accordion-header" id="headingTwo">
-                                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#studentCourses{{ $student->id  }}" aria-expanded="false" aria-controls="studentCourses">
-                                                    View Courses
-                                                </button>
-                                            </h2>
-                                            <div id="studentCourses{{ $student->id  }}" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#default-accordion-example">
-                                                <div class="accordion-body">
-                                                    <div class="table-responsive">
-                                                        <table class="table table-bordered table-striped">
-                                                            <thead>
-                                                            <tr>
-                                                                <th>SN</th>
-                                                                <th>Code</th>
-                                                                <th>Course Title</th>
-                                                                <th>Unit</th>
-                                                                <th>Total Score</th>
-                                                                <th>Grade</th>
-                                                                <th>Point</th>
-                                                            </tr>
-                                                            </thead>
-                                                            <tbody>
-                                                                @foreach($semesterRegisteredCourses as $registeredCourse)
-                                                                    <tr>
-                                                                        <td>{{ $loop->iteration }}</td>
-                                                                        <td>{{ $registeredCourse->course->code }}</td>
-                                                                        <td>{{ $registeredCourse->course->name }}</td>
-                                                                        <td>{{ $registeredCourse->course_credit_unit }}</td>
-                                                                        <td>{{ $registeredCourse->total }}</td>
-                                                                        <td>{{ $registeredCourse->grade }}</td>
-                                                                        <td>{{ $registeredCourse->points }}</td>
-                                                                    </tr>
-                                                                @endforeach
-                                                            </tbody>
-                                                        </table>
+                                    $classGrade = $degreeClass->computeClass($CGPA);
+                                    $class = $classGrade->degree_class;
+                                    $standing = $classGrade->id > 3? 'NGS' : 'GS'; 
+                                    
+                                @endphp
+                                <tr>
+                                    <td>{{ $loop->iteration }}</td>
+                                    <td>{{ strtoupper($student->applicant->lastname).', '.$student->applicant->othernames }}</td>
+                                    <td>{{ $student->matric_number }}</td>
+                                    <td>{{$class}}</td>
+                                    <td>{{ $standing }}</td>
+                                    <td class="text-danger">{{ $failedSemesterCourses->count() }}</td>
+                                    <td class="text-danger">{{ $failedSemesterCourses->sum('course_credit_unit') }}</td>
+                                    <td>
+                                        @if($failedSemesterCourses->count() > 0)
+                                            <span class="text-danger">
+                                                @foreach($failedSemesterCourses as $failedSemesterCourse)
+                                                    {{ $failedSemesterCourse->course_code }}
+                                                @endforeach
+                                            </span>
+                                        @endif    
+                                    </td>
+                                    <td>{{ $prevRegisteredCreditUnits }}</td>
+                                    <td>{{ $prevRegisteredGradePoints }}</td>
+                                    <td>{{ $prevCGPA }}</td>
+                                    <td class="bg bg-soft-primary">{{ $currentRegisteredCreditUnits }}</td>
+                                    <td class="bg bg-soft-primary">{{ $currentRegisteredGradePoints }}</td>
+                                    <td class="bg bg-soft-primary">{{ $currentGPA }}</td>
+                                    <td>{{ $allRegisteredCreditUnits }}</td>
+                                    <td>{{ $allRegisteredGradePoints }}</td>
+                                    <td>{{ $CGPA }}</td>
+                                    <td width="200px">
+                                        <div class="accordion" id="default-accordion-example">
+                                            <div class="accordion-item shadow">
+                                                <h2 class="accordion-header" id="headingTwo">
+                                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#studentCourses{{ $student->id  }}" aria-expanded="false" aria-controls="studentCourses">
+                                                        View Courses
+                                                    </button>
+                                                </h2>
+                                                <div id="studentCourses{{ $student->id  }}" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#default-accordion-example">
+                                                    <div class="accordion-body">
+                                                        <div class="table-responsive">
+                                                            <table class="table table-bordered table-striped">
+                                                                <thead>
+                                                                <tr>
+                                                                    <th>SN</th>
+                                                                    <th>Code</th>
+                                                                    <th>Course Title</th>
+                                                                    <th>Unit</th>
+                                                                    <th>Total Score</th>
+                                                                    <th>Grade</th>
+                                                                    <th>Point</th>
+                                                                </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    @foreach($semesterRegisteredCourses as $registeredCourse)
+                                                                        <tr>
+                                                                            <td>{{ $loop->iteration }}</td>
+                                                                            <td>{{ $registeredCourse->course->code }}</td>
+                                                                            <td>{{ $registeredCourse->course->name }}</td>
+                                                                            <td>{{ $registeredCourse->course_credit_unit }}</td>
+                                                                            <td>{{ $registeredCourse->total }}</td>
+                                                                            <td>{{ $registeredCourse->grade }}</td>
+                                                                            <td>{{ $registeredCourse->points }}</td>
+                                                                        </tr>
+                                                                    @endforeach
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                </td>
-                            </tr>
+                                    </td>
+                                </tr>
+                            @endif
                         @endforeach
                     </tbody>
                 </table>
