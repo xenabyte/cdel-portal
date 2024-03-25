@@ -40,6 +40,10 @@ class Result
             if(!$student){
                 return "Student with ". $matricNumber ." did register for this course.";
             }
+
+            if($testScore < 1 && $examScore < 1){
+                continue;
+            }
             
             $totalScore = round($testScore + $examScore);
 
