@@ -31,8 +31,8 @@ class Result
             $matricNumber = $row['Matric No'];
             $testScore = $row['Test Score'];
             $examScore = $row['Exam Score'];
-            $testScore = (int)$testScore;
-            $examScore = (int)$examScore;
+            $testScore =  number_format($testScore, 2);
+            $examScore =  number_format($examScore, 2);
 
             $student = Student::with('applicant')->where('matric_number', $matricNumber)->first();
             if(!$student){
