@@ -26,6 +26,7 @@ class Result
         $csv->setHeaderOffset(0);
 
         $records = $csv->getRecords();
+        $academicSession = $globalData->sessionSetting['academic_session'];
 
         foreach ($records as $row) {
             $matricNumber = $row['Matric No'];
@@ -72,6 +73,7 @@ class Result
                 'student_id' => $studentId,
                 'course_id' => $courseId,
                 'result_approval_id' => null,
+                'academic_session' => $academicSession
             ])->first();
 
 
