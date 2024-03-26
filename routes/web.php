@@ -190,11 +190,13 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'admin'],
   Route::get('/staff', [App\Http\Controllers\Admin\StaffController::class, 'staff'])->name('staff')->middleware(['auth:admin']);
   Route::get('/staff/{slug}', [App\Http\Controllers\Admin\StaffController::class, 'singleStaff'])->name('singleStaff')->middleware(['auth:admin']);
 
+  Route::post('/updateStaff', [App\Http\Controllers\Admin\StaffController::class, 'updateStaff'])->name('updateStaff')->middleware(['auth:admin']);
+
   Route::get('/staffRoles', [App\Http\Controllers\Admin\StaffController::class, 'roles'])->name('roles')->middleware(['auth:admin']);
   Route::post('/addRole', [App\Http\Controllers\Admin\StaffController::class, 'addRole'])->name('addRole')->middleware(['auth:admin']);
   Route::post('/updateRole', [App\Http\Controllers\Admin\StaffController::class, 'updateRole'])->name('updateRole')->middleware(['auth:admin']);
   Route::post('/deleteRole', [App\Http\Controllers\Admin\StaffController::class, 'deleteRole'])->name('deleteRole')->middleware(['auth:admin']);
-
+  
   Route::post('/assignRole', [App\Http\Controllers\Admin\StaffController::class, 'assignRole'])->name('assignRole')->middleware(['auth:admin']);
   Route::post('/unAssignRole', [App\Http\Controllers\Admin\StaffController::class, 'unAssignRole'])->name('unAssignRole')->middleware(['auth:admin']);
 
