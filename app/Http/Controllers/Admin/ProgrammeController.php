@@ -542,6 +542,11 @@ class ProgrammeController extends Controller
     }
 
     public function updateStudentResult(Request $request){
+        $globalData = $request->input('global_data');
+        $admissionSession = $globalData->sessionSetting['admission_session'];
+        $academicSession = $globalData->sessionSetting['academic_session'];
+        $applicationSession = $globalData->sessionSetting['application_session'];
+
         $validator = Validator::make($request->all(), [
             'test' => 'required',
             'exam' => 'required',
@@ -561,6 +566,7 @@ class ProgrammeController extends Controller
         $studentRegistration = CourseRegistration::where([
             'student_id' => $studentId,
             'course_id' => $courseId,
+            'academic_session' => $academicSession
         ])->first();
 
         if(!$studentRegistration){
@@ -568,10 +574,10 @@ class ProgrammeController extends Controller
             return redirect()->back();
         }
 
-        // if(!empty($studentRegistration->result_approval_id)){
-        //     alert()->error('Result already approved', 'Visit the ICT with relevant approval for modification')->persistent('Close');
-        //     return redirect()->back();
-        // }
+        if(!empty($studentRegistration->result_approval_id)){
+            alert()->error('Result already approved', 'Visit the ICT with relevant approval for modification')->persistent('Close');
+            return redirect()->back();
+        }
 
         $testScore = $request->test;
         $examScore = $request->exam;
