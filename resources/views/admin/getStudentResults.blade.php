@@ -192,7 +192,7 @@
                                 @php
                                     $degreeClass = new \App\Models\DegreeClass;
 
-                                    $semesterRegisteredCourses = $student->registeredCourses->where('semester', $semester)->where('level_id', $academiclevel->id)->where('academic_session', $academicSession);
+                                    $semesterRegisteredCourses = $student->registeredCourses->where('semester', $semester)->where('level_id', $academiclevel->id)->where('academic_session', $academicSession)->where('grade', '!=', null);
                                     $currentRegisteredCreditUnits =  $semesterRegisteredCourses->sum('course_credit_unit');
                                     $currentRegisteredGradePoints = $semesterRegisteredCourses->sum('points');
                                     $currentGPA = $currentRegisteredGradePoints > 0 ? number_format($currentRegisteredGradePoints / $currentRegisteredCreditUnits, 2) : 0;
