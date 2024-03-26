@@ -26,7 +26,7 @@ class Result
         $csv->setHeaderOffset(0);
 
         $records = $csv->getRecords();
-        $academicSession = $globalData->sessionSetting['academic_session'];
+        $academicSession = $globalSettings->sessionSetting['academic_session'];
 
         foreach ($records as $row) {
             $matricNumber = $row['Matric No'];
