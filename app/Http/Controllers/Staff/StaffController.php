@@ -741,10 +741,10 @@ class StaffController extends Controller
             return redirect()->back();
         }
 
-        if(!empty($studentRegistration->result_approval_id)){
-            alert()->error('Result already approved', 'Visit the ICT with relevant approval for modification')->persistent('Close');
-            return redirect()->back();
-        }
+        // if(!empty($studentRegistration->result_approval_id)){
+        //     alert()->error('Result already approved', 'Visit the ICT with relevant approval for modification')->persistent('Close');
+        //     return redirect()->back();
+        // }
 
         $testScore = $request->test;
         $examScore = $request->exam;
