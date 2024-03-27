@@ -192,6 +192,8 @@
                                 @php
                                     $degreeClass = new \App\Models\DegreeClass;
 
+                                    $viewSemesterRegisteredCourses = $student->registeredCourses->where('semester', $semester)->where('level_id', $academiclevel->id)->where('academic_session', $academicSession);
+
                                     $semesterRegisteredCourses = $student->registeredCourses->where('semester', $semester)->where('level_id', $academiclevel->id)->where('academic_session', $academicSession)->where('grade', '!=', null);
                                     $currentRegisteredCreditUnits =  $semesterRegisteredCourses->sum('course_credit_unit');
                                     $currentRegisteredGradePoints = $semesterRegisteredCourses->sum('points');
@@ -267,7 +269,7 @@
                                                                 </tr>
                                                                 </thead>
                                                                 <tbody>
-                                                                    @foreach($semesterRegisteredCourses as $registeredCourse)
+                                                                    @foreach($viewSemesterRegisteredCourses as $registeredCourse)
                                                                         <tr>
                                                                             <td>{{ $loop->iteration }}</td>
                                                                             <td>{{ $registeredCourse->course->code }}</td>
