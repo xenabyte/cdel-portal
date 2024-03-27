@@ -33,10 +33,19 @@ class Handler extends ExceptionHandler
      * @return void
      */
     public function register() {
-        $this->reportable(function (Throwable $e) {
-          if (app()->bound('sentry')) {
-            app('sentry')->captureException($e);
-          }
-        });
-      }
+      $this->reportable(function (Throwable $e) {
+        if (app()->bound('sentry')) {
+          app('sentry')->captureException($e);
+        }
+      });
+    }
+
+    public function render($request, Throwable $exception)
+    {
+        if ($exception instanceof TokenMismatchException) {
+            return redirect()->route('csrf_error_page'); 
+        }
+
+        return parent::render($request, $exception);
+    }
 }
