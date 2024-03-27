@@ -310,7 +310,7 @@
                                             <div class="accordion-item shadow">
                                                 <h2 class="accordion-header" id="headingTwo">
                                                     <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#studentCourses{{ $student->id  }}" aria-expanded="false" aria-controls="studentCourses">
-                                                        View Courses
+                                                        View Courses - {{ strtoupper($student->applicant->lastname).', '.$student->applicant->othernames }} - {{ $CGPA }}
                                                     </button>
                                                 </h2>
                                                 <div id="studentCourses{{ $student->id  }}" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#default-accordion-example">
