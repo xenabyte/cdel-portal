@@ -519,8 +519,6 @@ class ProgrammeController extends Controller
             return redirect()->back();
         }
 
-        $staff = Auth::guard('staff')->user();
-        $staffId = $staff->id;
         $courseId = $request->course_id;
 
     
