@@ -87,7 +87,7 @@
                                                 <select class="form-select" id="faculty" name="faculty_id" aria-label="faculty" onchange="handleFacultyChange(event)">
                                                     <option value="" selected>--Select--</option>
                                                     @foreach($faculties as $faculty)
-                                                        @if(!$staffVCRole && !staffRegistrarRole && !$staffStudentCareRole && $staff->faculty_id == $faculty->id)
+                                                        @if(!$staffVCRole && !$staffRegistrarRole && !$staffStudentCareRole && $staff->faculty_id == $faculty->id)
                                                             <option value="{{ $faculty->id }}">{{ $faculty->name }}</option>
                                                         {{-- @else
                                                             <option value="{{ $faculty->id }}">{{ $faculty->name }}</option> --}}
