@@ -171,9 +171,10 @@
         <div class="card">
             <div class="card-header align-items-center d-flex">
                 <h4 class="card-title mb-0 flex-grow-1">Result(s) for {{ $academiclevel->level }} Level,  {{ $programme->name }} for {{ $academicSession }} Academic Session</h4>
-                <div class="flex-shrink-0">
+                
+                {{-- <div class="flex-shrink-0">
                     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#approveResult">Approve Result(s)</button>
-                </div>
+                </div> --}}
             </div><!-- end card header -->
 
             <div id="approveResult" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
