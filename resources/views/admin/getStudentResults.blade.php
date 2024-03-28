@@ -174,6 +174,9 @@
                             <th>No of failed course</th>
                             <th>Total failed unit</th>
                             <th>Failed courses</th>
+                            <th class="bg bg-info text-light">Current GPA</th>
+                            <th class="bg bg-info text-light">Previous CGPA</th>
+                            <th class="bg bg-info text-light">Cumulative CGPA</th>
                             <th>Previous Total Credit Units</th>
                             <th>Previous Total Credit Points</th>
                             <th>Previous CGPA</th>
@@ -236,6 +239,9 @@
                                             </span>
                                         @endif    
                                     </td>
+                                    <td class="bg bg-soft-info">{{ $currentGPA }}</td>
+                                    <td class="bg bg-soft-info">{{ $prevCGPA }}</td>
+                                    <td class="bg bg-soft-info">{{ $CGPA }}</td>
                                     <td>{{ $prevRegisteredCreditUnits }}</td>
                                     <td>{{ $prevRegisteredGradePoints }}</td>
                                     <td>{{ $prevCGPA }}</td>
