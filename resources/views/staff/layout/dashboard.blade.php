@@ -677,6 +677,7 @@
                     var staffStudentCareRole = "<?php echo $staffStudentCareRole ?>";
                     var staffDeanRole = "<?php echo $staffDeanRole ?>";
                     var staffSubDeanRole = "<?php echo $staffSubDeanRole ?>";
+                    var staffRegistrarRole = "<?php echo $staffRegistrarRole ?>";
                     
                     $.each(response.data, function (index, department) {
                         if (!staffRoleVCRole && 
@@ -684,6 +685,7 @@
                         !staffStudentCareRole && 
                         !staffDeanRole && 
                         !staffSubDeanRole &&
+                        !staffRegistrarRole && 
                         staffDepartmentId == department.id) {
                             departmentSelect.append($('<option>', {
                                 value: department.id,
@@ -692,7 +694,7 @@
                         }
                     });
 
-                    if (staffRoleVCRole || staffBursaryRole || staffStudentCareRole || staffDeanRole || staffSubDeanRole) {
+                    if (staffRoleVCRole || staffBursaryRole || staffStudentCareRole || staffDeanRole || staffSubDeanRole || staffRegistrarRole) {
                         $.each(response.data, function (index, department) {
                             departmentSelect.append($('<option>', {
                                 value: department.id,

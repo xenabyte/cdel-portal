@@ -278,7 +278,7 @@
 
                                     $classGrade = $degreeClass->computeClass($CGPA);
                                     $class = $classGrade->degree_class;
-                                    $standing = $classGrade->id >= 4? 'NGS' : 'GS'; 
+                                    $standing = $classGrade->id > 4? 'NGS' : 'GS'; 
                                     
                                 @endphp
                                 <tr>
