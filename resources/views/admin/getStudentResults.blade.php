@@ -171,6 +171,7 @@
                             <th>Matric Number</th>
                             <th>Degree Class</th>
                             <th>Standing</th>
+                            <th>No of course offered</th>
                             <th>No of failed course</th>
                             <th>Total failed unit</th>
                             <th>Failed courses</th>
@@ -228,6 +229,7 @@
                                     <td>{{ $student->matric_number }}</td>
                                     <td>{{$class}}</td>
                                     <td>{{ $standing }}</td>
+                                    <td>{{ $viewSemesterRegisteredCourses->count() }}</td>
                                     <td class="text-danger">{{ $failedSemesterCourses->count() }}</td>
                                     <td class="text-danger">{{ $failedSemesterCourses->sum('course_credit_unit') }}</td>
                                     <td>
