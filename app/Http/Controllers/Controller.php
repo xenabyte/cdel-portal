@@ -204,7 +204,7 @@ class Controller extends BaseController
             $applicationAccessCode = $current;
             return $applicationAccessCode;
         } else {
-            return $this->generateUserCode();
+            return $this->generateAccessCode();
         }           
     }
 

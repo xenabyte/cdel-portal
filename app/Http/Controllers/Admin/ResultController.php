@@ -259,7 +259,7 @@ class ResultController extends Controller
             $courseCode = $registeredCourse->course_code;
 
             if (strpos($courseCode, 'NSC') !== false) {
-                if($totalScore < 50){
+                if($request->total < 50){
                     $grade = 'F';
                     $points = 0;
                 }
