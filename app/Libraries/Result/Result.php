@@ -59,7 +59,7 @@ class Result
             $course = Course::find($courseId);
             $courseCode = $course->code;
 
-            if (strpos($courseCode, 'NSC') !== false) {
+            if (strpos($courseCode, 'NSC') !== false && $student->programme_id == 15) {
                 if($totalScore < 50){
                     $grade = 'F';
                     $points = 0;
