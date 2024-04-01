@@ -60,7 +60,7 @@
                                     <td>{{ empty($exitApplication->exit_date)? null : date('F j, Y \a\t g:i A', strtotime($exitApplication->exit_date)) }} </td>
                                     <td>{{ empty($exitApplication->exit_date)? null : date('F j, Y \a\t g:i A', strtotime($exitApplication->return_date)) }} </td>
                                     <td>{{ ucwords($exitApplication->status) }} </td>
-                                    <td>@if($exitApplication->status != 'pending') <a href="{{ asset($exitApplication->file) }}" class="btn btn-outline-primary" target="_blank" rel="noopener noreferrer">View Document</a>@endif
+                                    <td>@if($exitApplication->status != 'Pending') <a href="{{ asset($exitApplication->file) }}" class="btn btn-outline-primary" target="_blank" rel="noopener noreferrer">View Document</a>@endif
                                 </tr>
                                 @endforeach
                             </tbody>
@@ -75,7 +75,7 @@
 
 <div id="add" class="modal fade" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" style="display: none;">
     <!-- Fullscreen Modals -->
-    <div class="modal-dialog modal-md modal-dialog-centered">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content border-0 overflow-hidden">
             <div class="modal-header p-3">
                 <h4 class="card-title mb-0">Exit Application</h4>
