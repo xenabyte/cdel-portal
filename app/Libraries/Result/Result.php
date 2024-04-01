@@ -105,7 +105,7 @@ class Result
         $CGPA = number_format($allRegisteredGradePoints / $allRegisteredCreditUnits, 2);
         $classGrade = DegreeClass::computeClass($CGPA);
         $class = $classGrade->degree_class;
-        $standing = $classGrade->id > 3? 'Not in Good Standing(NGS)' : 'Good Standing(GS)'; 
+        $standing = $classGrade->id > 4? 'Not in Good Standing(NGS)' : 'Good Standing(GS)'; 
 
         $student = Student::find($studentId);
         $student->cgpa = $CGPA;
