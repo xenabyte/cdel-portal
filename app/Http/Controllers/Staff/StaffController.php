@@ -232,8 +232,13 @@ class StaffController extends Controller
         $staffId = $staff->id;
         $programmes = Programme::with('department', 'department.faculty')->where('department_id', $staff->department_id)->get();
 
+
+        if(empty($staff->acad_department)){
+            $programmes = Programme::with('department', 'department.faculty')->get();
+        }
+
         $staffHod = false;
-        if($staff->id == $staff->acad_department->hod_id){
+        if(!empty($staff->acad_department) && $staff->id == $staff->acad_department->hod_id){
             $staffHod = true;
         }
 

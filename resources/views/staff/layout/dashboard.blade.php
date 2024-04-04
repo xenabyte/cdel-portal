@@ -14,6 +14,7 @@
     $staffStudentCareRole = false;
     $staffBursaryRole = false;
     $staffAdmissionOfficerRole = false;
+    $staffAcademicPlannerRole = false;
 
     $committeeIds = $staff->committeeMembers->pluck('committee_id');
 
@@ -56,6 +57,9 @@
         if(strtolower($staffRole->role->role) == 'admission'){
             $staffAdmissionOfficerRole = true;
         }
+        if(strtolower($staffRole->role->role) == 'academic planning'){
+            $staffAcademicPlannerRole = true;
+        }   
     }
 @endphp
 
@@ -411,7 +415,7 @@
                             </li> 
                             @endif
 
-                            @if($staffLevelAdviserRole || $staffHODRole || $staffDeanRole || $staffSubDeanRole)
+                            @if($staffLevelAdviserRole || $staffHODRole || $staffDeanRole || $staffSubDeanRole || $staffAcademicPlannerRole)
                             <li class="nav-item">
                                 <a class="nav-link menu-link" href="#courseSettings" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="courseSettings">
                                     <i class="mdi mdi-card"></i> <span  data-key="t-hot">Prog. Management </span><span class="badge badge-pill bg-danger" data-key="t-hot">{{ $pageGlobalData->totalPendingRegistrations }} </span>
@@ -437,7 +441,7 @@
                             @endif
 
 
-                            @if($staffExamOfficerRole || $staffHODRole || $staffStudentCareRole || $staffDeanRole || $staffSubDeanRole)
+                            @if($staffAcademicPlannerRole || $staffExamOfficerRole || $staffHODRole || $staffStudentCareRole || $staffDeanRole || $staffSubDeanRole)
                             <li class="nav-item">
                                 <a class="nav-link menu-link" href="#resultMgt" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="resultMgt">
                                     <i class="mdi mdi-credit-card-search-outline"></i> <span data-key="t-result">Result Management</span>
@@ -678,6 +682,7 @@
                     var staffDeanRole = "<?php echo $staffDeanRole ?>";
                     var staffSubDeanRole = "<?php echo $staffSubDeanRole ?>";
                     var staffRegistrarRole = "<?php echo $staffRegistrarRole ?>";
+                    var staffAcademicPlannerRole = "<?php echo $staffAcademicPlannerRole ?>";
                     
                     $.each(response.data, function (index, department) {
                         if (!staffRoleVCRole && 
@@ -686,6 +691,7 @@
                         !staffDeanRole && 
                         !staffSubDeanRole &&
                         !staffRegistrarRole && 
+                        !staffAcademicPlannerRole &&
                         staffDepartmentId == department.id) {
                             departmentSelect.append($('<option>', {
                                 value: department.id,
@@ -694,7 +700,7 @@
                         }
                     });
 
-                    if (staffRoleVCRole || staffBursaryRole || staffStudentCareRole || staffDeanRole || staffSubDeanRole || staffRegistrarRole) {
+                    if (staffRoleVCRole || staffBursaryRole || staffStudentCareRole || staffDeanRole || staffSubDeanRole || staffRegistrarRole || $staffAcademicPlannerRole) {
                         $.each(response.data, function (index, department) {
                             departmentSelect.append($('<option>', {
                                 value: department.id,
