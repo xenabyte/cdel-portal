@@ -251,7 +251,7 @@
                                             <p class="text-muted mb-0"><i data-feather="users" class="me-2 icon-sm"></i>{{ $semesterGoodStandingCount }}</p>
                                         </td>
                                         <td class="text-end">
-                                            <p class="text-success fw-medium fs-12 mb-0"><i class="ri-arrow-up-s-fill fs-5 align-middle"></i>{{ $semesterGoodStandingPercentage }}%</p>
+                                            <p class="text-success fw-medium fs-12 mb-0"><i class="ri-arrow-up-s-fill fs-5 align-middle"></i>{{ number_format($semesterGoodStandingPercentage, 2) }}%</p>
                                         </td>
                                     </tr>
                                     <tr>
@@ -262,7 +262,7 @@
                                             <p class="text-muted mb-0"><i data-feather="users" class="me-2 icon-sm"></i>{{ $semesterNotInGoodStandingCount }}</p>
                                         </td>
                                         <td class="text-end">
-                                            <p class="text-danger fw-medium fs-12 mb-0"><i class="ri-arrow-down-s-fill fs-5 align-middle"></i>{{ $semesterNotInGoodStandingPercentage }}%</p>
+                                            <p class="text-danger fw-medium fs-12 mb-0"><i class="ri-arrow-down-s-fill fs-5 align-middle"></i>{{ number_format($semesterNotInGoodStandingPercentage, 2) }}%</p>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -298,7 +298,7 @@
                                             <p class="text-muted mb-0"><i data-feather="users" class="me-2 icon-sm"></i>{{ $goodStandingCount }}</p>
                                         </td>
                                         <td class="text-end">
-                                            <p class="text-success fw-medium fs-12 mb-0"><i class="ri-arrow-up-s-fill fs-5 align-middle"></i>{{ $goodStandingPercentage }}%</p>
+                                            <p class="text-success fw-medium fs-12 mb-0"><i class="ri-arrow-up-s-fill fs-5 align-middle"></i>{{ number_format($goodStandingPercentage, 2) }}%</p>
                                         </td>
                                     </tr>
                                     <tr>
@@ -309,7 +309,7 @@
                                             <p class="text-muted mb-0"><i data-feather="users" class="me-2 icon-sm"></i>{{ $notInGoodStandingCount }}</p>
                                         </td>
                                         <td class="text-end">
-                                            <p class="text-danger fw-medium fs-12 mb-0"><i class="ri-arrow-down-s-fill fs-5 align-middle"></i>{{ $notInGoodStandingPercentage }}%</p>
+                                            <p class="text-danger fw-medium fs-12 mb-0"><i class="ri-arrow-down-s-fill fs-5 align-middle"></i>{{ number_format($notInGoodStandingPercentage, 2) }}%</p>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -345,7 +345,7 @@
                             <div class="progress progress-lg rounded-pill">
                                 @foreach($degreeClassCounts as $degreeClass => $count)
                                 @php
-                                    $percentage = ($count / $totalStudents) * 100;
+                                    $percentage = number_format(($count / $totalStudents) * 100, 2);
                                 @endphp
                                     <div class="progress-bar @switch($degreeClass)
                                             @case('First Class')

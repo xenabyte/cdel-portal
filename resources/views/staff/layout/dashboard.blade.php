@@ -700,7 +700,7 @@
                         }
                     });
 
-                    if (staffRoleVCRole || staffBursaryRole || staffStudentCareRole || staffDeanRole || staffSubDeanRole || staffRegistrarRole || $staffAcademicPlannerRole) {
+                    if (staffRoleVCRole || staffBursaryRole || staffStudentCareRole || staffDeanRole || staffSubDeanRole || staffRegistrarRole || staffAcademicPlannerRole) {
                         $.each(response.data, function (index, department) {
                             departmentSelect.append($('<option>', {
                                 value: department.id,
