@@ -104,4 +104,33 @@ class StudentCareController extends Controller
         alert()->error('Oops!', 'An Error Occurred')->persistent('Close');
         return redirect()->back();
     }
+
+    public function verifyStudentExits(Request $request){
+
+        return view('admin.verifyStudentExit');
+
+    }
+
+    public function verifyStudentExit(Request $request){
+        $validator = Validator::make($request->all(), [
+            'exit_id' => 'required',
+        ]);
+
+        if($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+
+        if (!$studentExit = StudentExit::find($request->exit_id)) {
+            alert()->error('Oops!', 'Student exit applicattion record not found')->persistent('Close');
+            return redirect()->back();
+        }
+
+        $student = Student::find($studentExit->student_id);
+
+        return view('admin.verifyStudentExit', [
+            'studentExit' => $studentExit,
+            'student' => $student
+        ]);
+    }
 }

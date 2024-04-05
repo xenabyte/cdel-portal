@@ -50,6 +50,7 @@
                                                 <thead>
                                                     <tr>
                                                         <th scope="col">Id</th>
+                                                        <th scope="col">Application ID </th>
                                                         <th scope="col">Student Name</th>
                                                         <th scope="col">Purpose</th>
                                                         <th scope="col">Destination</th>
@@ -64,6 +65,7 @@
                                                     @foreach($exitApplications as $exitApplication)
                                                     <tr>
                                                         <th scope="row">{{ $loop->iteration }}</th>
+                                                        <th>#{{ sprintf("%06d", $exitApplication->id) }}</th>
                                                         <td>{{ $exitApplication->student->applicant->lastname .' ' . $exitApplication->student->applicant->othernames}} </td>
                                                         <td>{{ $exitApplication->purpose }} </td>
                                                         <td>{{ $exitApplication->destination }} </td>

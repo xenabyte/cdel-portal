@@ -95,8 +95,8 @@ $qrcode = 'https://chart.googleapis.com/chart?chs=300x300&cht=qr&chl='.env('APP_
                             <div><strong>Destination:</strong> {{ $exitApplication->destination }}</div>
                             <div><strong>Purpose:</strong> {{ $exitApplication->purpose }}</div>
                             <div><strong>Mode of Transportation:</strong> {{ $exitApplication->transport_mode }}</div>
-                            @if(!empty($exitApplication->exit_date))<div><strong>Outing Date:</strong> {{ $exitApplication->exit_date }} Level</div>@endif
-                            @if(!empty($exitApplication->return_date))<div><strong>Returning Date:</strong> {{ $exitApplication->return_date }} Level</div>@endif
+                            @if(!empty($exitApplication->exit_date))<div><strong>Outing Date:</strong> {{ $exitApplication->exit_date }}</div>@endif
+                            @if(!empty($exitApplication->return_date))<div><strong>Returning Date:</strong> {{ $exitApplication->return_date }}</div>@endif
                             <div><hr></div>
                             <div><strong>Student Email:</strong> {{ $info->email }}</div>
                             <div><strong>Student Phone Number:</strong> {{ $info->applicant->phone_number }}</div>

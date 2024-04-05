@@ -302,6 +302,9 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'admin'],
   Route::post('/expelStudent', [App\Http\Controllers\Admin\AcademicController::class, 'expelStudent'])->name('expelStudent')->middleware(['auth:admin']);
   Route::get('/deletedStudents', [App\Http\Controllers\Admin\AcademicController::class, 'deletedStudents'])->name('expelStudent')->middleware(['auth:admin']);
 
+  Route::get('/verifyStudentExits', [App\Http\Controllers\Admin\StudentCareController::class, 'verifyStudentExits'])->name('verifyStudentExits')->middleware(['auth:admin']);
+  Route::post('/verifyStudentExit', [App\Http\Controllers\Admin\StudentCareController::class, 'verifyStudentExit'])->name('verifyStudentExit')->middleware(['auth:admin']);
+  
   
 });
 
