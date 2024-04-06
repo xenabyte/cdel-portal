@@ -1,4 +1,4 @@
-@extends('admin.layout.dashboard')
+@extends('staff.layout.dashboard')
 
 @section('content')
 
@@ -182,7 +182,7 @@
                     <lord-icon src="https://cdn.lordicon.com/gsqxdxog.json" trigger="loop" colors="primary:#f7b84b,secondary:#f06548" style="width:100px;height:100px"></lord-icon>
                     </lord-icon>
                     <h4 class="mb-3 mt-4">Are you sure you want to decline <br/> {{ $student->applicant->lastname .' ' . $student->applicant->othernames}} exit application?</h4>
-                    <form action="{{ url('/admin/manageExitApplication') }}" method="POST">
+                    <form action="{{ url('/staff/manageExitApplication') }}" method="POST">
                         @csrf
                         <input name="exit_id" type="hidden" value="{{$studentExit->id}}">
                         <input name="action" type="hidden" value="declined">
@@ -209,7 +209,7 @@
                     <lord-icon src="https://cdn.lordicon.com/wwneckwc.json" trigger="hover" style="width:150px;height:150px">
                     </lord-icon>
                     <h4 class="mb-3 mt-4">Are you sure you want to approve <br/> {{ $student->applicant->lastname .' ' . $student->applicant->othernames}} exit application?</h4>
-                    <form action="{{ url('/admin/manageExitApplication') }}" method="POST">
+                    <form action="{{ url('/staff/manageExitApplication') }}" method="POST">
                         @csrf
                         <input name="exit_id" type="hidden" value="{{$studentExit->id}}">
                         <input name="action" type="hidden" value="approved">
@@ -237,7 +237,7 @@
                     <lord-icon src="https://cdn.lordicon.com/gsqxdxog.json" trigger="loop" colors="primary:#f7b84b,secondary:#f06548" style="width:100px;height:100px"></lord-icon>
                     </lord-icon>
                     <h4 class="mb-3 mt-4">Are you sure  <br/> {{ $student->applicant->lastname .' ' . $student->applicant->othernames}} <br> is leaving Campus?</h4>
-                    <form action="{{ url('/admin/leftSchool') }}" method="POST">
+                    <form action="{{ url('/staff/leftSchool') }}" method="POST">
                         @csrf
                         <input name="exit_id" type="hidden" value="{{$studentExit->id}}">
                         <input name="action" type="hidden" value="declined">
@@ -264,7 +264,7 @@
                     <lord-icon src="https://cdn.lordicon.com/wwneckwc.json" trigger="hover" style="width:150px;height:150px">
                     </lord-icon>
                     <h4 class="mb-3 mt-4">Are you sure  <br/> {{ $student->applicant->lastname .' ' . $student->applicant->othernames}} <br> is entry Campus?</h4>
-                    <form action="{{ url('/admin/enterSchool') }}" method="POST">
+                    <form action="{{ url('/staff/enterSchool') }}" method="POST">
                         @csrf
                         <input name="exit_id" type="hidden" value="{{$studentExit->id}}">
                         <hr>
@@ -291,7 +291,7 @@
             </div>
 
             <div class="modal-body border-top border-top-dashed">
-                <form action="{{ url('/admin/verifyStudentExit') }}" method="post" enctype="multipart/form-data">
+                <form action="{{ url('/staff/verifyStudentExit') }}" method="post" enctype="multipart/form-data">
                     @csrf
                     <div class="mb-3">
                         <label for="exit_id" class="form-label">Exit Application  Number</label>

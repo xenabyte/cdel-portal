@@ -305,6 +305,8 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'admin'],
   Route::get('/verifyStudentExits', [App\Http\Controllers\Admin\StudentCareController::class, 'verifyStudentExits'])->name('verifyStudentExits')->middleware(['auth:admin']);
   Route::post('/verifyStudentExit', [App\Http\Controllers\Admin\StudentCareController::class, 'verifyStudentExit'])->name('verifyStudentExit')->middleware(['auth:admin']);
   
+  Route::post('/leftSchool', [App\Http\Controllers\Admin\StudentCareController::class, 'leftSchool'])->name('leftSchool')->middleware(['auth:admin']);
+  Route::post('/enterSchool', [App\Http\Controllers\Admin\StudentCareController::class, 'enterSchool'])->name('enterSchool')->middleware(['auth:admin']);
   
 });
 
@@ -530,6 +532,10 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'staff'],
   Route::post('/createMeeting', [App\Http\Controllers\Staff\CommitteeController::class, 'createMeeting'])->name('createMeeting')->middleware(['auth:staff']);
   Route::post('/updateMeeting', [App\Http\Controllers\Staff\CommitteeController::class, 'updateMeeting'])->name('updateMeeting')->middleware(['auth:staff']);
   Route::post('/deleteMeeting', [App\Http\Controllers\Staff\CommitteeController::class, 'deleteMeeting'])->name('deleteMeeting')->middleware(['auth:staff']);
+
+  Route::get('/verifyStudentExits', [App\Http\Controllers\Staff\StudentCareController::class, 'verifyStudentExits'])->name('verifyStudentExits')->middleware(['auth:staff']);
+  Route::post('/verifyStudentExit', [App\Http\Controllers\Staff\StudentCareController::class, 'verifyStudentExit'])->name('verifyStudentExit')->middleware(['auth:staff']);
+  
   
 });
 

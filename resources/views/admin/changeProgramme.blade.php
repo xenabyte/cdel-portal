@@ -48,8 +48,8 @@
                         <h5 class="mb-1">{{$student->applicant->lastname.' '.$student->applicant->othernames}}</h5>
                         <p class="text-muted">{{ $student->programme->name }} <br>
                             <strong>Matric Number:</strong> {{ $student->matric_number }}<br>
-                            <strong>Jamb Reg. Number:</strong> {{ $student->applicant->jamb_reg_no }}<br> <br>
-                            <strong>Level:</strong> {{ $student->level_id *100 }} Level
+                            <strong>Jamb Reg. Number:</strong> {{ $student->applicant->jamb_reg_no }}<br>
+                            <strong>Level:</strong> {{ $student->level_id *100 }} Level <br>
                             <strong>Support Code:</strong> <span class="text-danger">ST{{ sprintf("%06d", $student->id) }}</span> 
                             <hr>
                             @if(env('WALLET_STATUS'))<a class="dropdown-item" href=#"><i class="mdi mdi-wallet text-muted fs-16 align-middle me-1"></i> <span class="align-middle">Balance : <b>₦{{ number_format($student->amount_balance/100, 2) }}</b></span></a>@endif
