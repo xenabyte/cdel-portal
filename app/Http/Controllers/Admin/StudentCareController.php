@@ -48,7 +48,7 @@ class StudentCareController extends Controller
         }
 
         if (!$studentExit = StudentExit::find($request->exit_id)) {
-            alert()->error('Oops!', 'Student exit applicattion record not found')->persistent('Close');
+            alert()->error('Oops!', 'Student exit application record not found')->persistent('Close');
             return redirect()->back();
         }
 

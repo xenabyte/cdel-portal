@@ -369,6 +369,10 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'student'
   Route::get('/hallOfFame', [App\Http\Controllers\HomeController::class, 'hallOfFame']);
   Route::get('/purchaseBandwidth', [App\Http\Controllers\Student\StudentController::class, 'purchaseBandwidth'])->name('purchaseBandwidth')->middleware(['auth:student']);
   Route::post('createBandwidthPayment', [App\Http\Controllers\Student\StudentController::class, 'createBandwidthPayment'])->name('createBandwidthPayment')->middleware(['auth:student']);
+
+  Route::get('/verifyStudentExits', [App\Http\Controllers\HomeController::class, 'verifyStudentExits'])->name('verifyStudentExits');
+  Route::post('/verifyStudentExit', [App\Http\Controllers\HomeController::class, 'verifyStudentExit'])->name('verifyStudentExit');
+
   
 });
 

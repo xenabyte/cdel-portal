@@ -23,6 +23,7 @@ use App\Models\Notification;
 use App\Models\Department;
 use App\Models\Faculty;
 use App\Models\Staff;
+use App\Models\StudentExit;
 
 
 
@@ -248,6 +249,35 @@ class HomeController extends Controller
             alert()->info('Bandwidth Balance!', $message)->persistent('Close');
             return redirect()->back();
         }
+    }
+
+    public function verifyStudentExits(Request $request){
+
+        return view('student.verifyStudentExit');
+
+    }
+
+    public function verifyStudentExit(Request $request){
+        $validator = Validator::make($request->all(), [
+            'exit_id' => 'required',
+        ]);
+
+        if($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+
+        if (!$studentExit = StudentExit::find($request->exit_id)) {
+            alert()->error('Oops!', 'Student exit applicattion record not found')->persistent('Close');
+            return redirect()->back();
+        }
+
+        $student = Student::find($studentExit->student_id);
+
+        return view('student.verifyStudentExit', [
+            'studentExit' => $studentExit,
+            'student' => $student
+        ]);
     }
 
     public function csrfErrorPage(){ 
