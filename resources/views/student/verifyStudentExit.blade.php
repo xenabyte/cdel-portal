@@ -1,4 +1,4 @@
-@extends('staff.layout.dashboard')
+@extends('layouts.dashboard')
 
 @section('content')
 
@@ -129,10 +129,6 @@
             <div class="card-header border-0 align-items-center d-flex">
                 <h4 class="card-title mb-0 flex-grow-1">Application Information</h4>
                 <div class="text-end mb-5">
-                    @if(empty($studentExit->status))
-                    <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#decline{{$studentExit->id}}" class="btn btn-danger"><i class="ri-close-circle-fill"></i> Decline</a>
-                    <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#approve{{$studentExit->id}}" class="btn btn-success"><i class="ri-checkbox-circle-fill"></i> Approve</a>
-                    @endif
                     <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#exit{{$studentExit->id}}" class="btn btn-info"><i class="mdi mdi-logout"></i> Left Campus</a>
                     <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#entry{{$studentExit->id}}" class="btn btn-primary"><i class="mdi mdi-login"></i> Enter Campus</a>
                 </div>
@@ -171,61 +167,6 @@
 </div>
 <!--end row-->
 
-<div id="decline{{$studentExit->id}}" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-body text-center p-5">
-                <div class="text-end">
-                    <button type="button" class="btn-close text-end" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="mt-2">
-                    <lord-icon src="https://cdn.lordicon.com/gsqxdxog.json" trigger="loop" colors="primary:#f7b84b,secondary:#f06548" style="width:100px;height:100px"></lord-icon>
-                    </lord-icon>
-                    <h4 class="mb-3 mt-4">Are you sure you want to decline <br/> {{ $student->applicant->lastname .' ' . $student->applicant->othernames}} exit application?</h4>
-                    <form action="{{ url('/staff/manageExitApplication') }}" method="POST">
-                        @csrf
-                        <input name="exit_id" type="hidden" value="{{$studentExit->id}}">
-                        <input name="action" type="hidden" value="declined">
-                        <hr>
-                        <button type="submit" id="submit-button" class="btn btn-danger w-100">Yes, Decline</button>
-                    </form>
-                </div>
-            </div>
-            <div class="modal-footer bg-light p-3 justify-content-center">
-
-            </div>
-        </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
-
-<div id="approve{{$studentExit->id}}" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-body text-center p-5">
-                <div class="text-end">
-                    <button type="button" class="btn-close text-end" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="mt-2">
-                    <lord-icon src="https://cdn.lordicon.com/wwneckwc.json" trigger="hover" style="width:150px;height:150px">
-                    </lord-icon>
-                    <h4 class="mb-3 mt-4">Are you sure you want to approve <br/> {{ $student->applicant->lastname .' ' . $student->applicant->othernames}} exit application?</h4>
-                    <form action="{{ url('/staff/manageExitApplication') }}" method="POST">
-                        @csrf
-                        <input name="exit_id" type="hidden" value="{{$studentExit->id}}">
-                        <input name="action" type="hidden" value="approved">
-                        <hr>
-                        <button type="submit" id="submit-button" class="btn btn-success w-100">Yes, Approve</button>
-                    </form>
-                </div>
-            </div>
-            <div class="modal-footer bg-light p-3 justify-content-center">
-
-            </div>
-        </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
-
-
 <div id="exit{{$studentExit->id}}" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -237,7 +178,7 @@
                     <lord-icon src="https://cdn.lordicon.com/gsqxdxog.json" trigger="loop" colors="primary:#f7b84b,secondary:#f06548" style="width:100px;height:100px"></lord-icon>
                     </lord-icon>
                     <h4 class="mb-3 mt-4">Are you sure  <br/> {{ $student->applicant->lastname .' ' . $student->applicant->othernames}} <br> is leaving Campus?</h4>
-                    <form action="{{ url('/staff/leftSchool') }}" method="POST">
+                    <form action="{{ url('/student/leftSchool') }}" method="POST">
                         @csrf
                         <input name="exit_id" type="hidden" value="{{$studentExit->id}}">
                         <input name="action" type="hidden" value="declined">
@@ -264,7 +205,7 @@
                     <lord-icon src="https://cdn.lordicon.com/wwneckwc.json" trigger="hover" style="width:150px;height:150px">
                     </lord-icon>
                     <h4 class="mb-3 mt-4">Are you sure  <br/> {{ $student->applicant->lastname .' ' . $student->applicant->othernames}} <br> is entry Campus?</h4>
-                    <form action="{{ url('/staff/enterSchool') }}" method="POST">
+                    <form action="{{ url('/student/enterSchool') }}" method="POST">
                         @csrf
                         <input name="exit_id" type="hidden" value="{{$studentExit->id}}">
                         <hr>
@@ -291,7 +232,7 @@
             </div>
 
             <div class="modal-body border-top border-top-dashed">
-                <form action="{{ url('/staff/verifyStudentExit') }}" method="post" enctype="multipart/form-data">
+                <form action="{{ url('/student/verifyStudentExit') }}" method="post" enctype="multipart/form-data">
                     @csrf
                     <div class="mb-3">
                         <label for="exit_id" class="form-label">Exit Application  Number</label>
