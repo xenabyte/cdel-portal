@@ -25,6 +25,8 @@ use App\Models\Faculty;
 use App\Models\Staff;
 use App\Models\StudentExit;
 
+use App\Mail\NotificationMail;
+
 
 
 use App\Libraries\Pdf\Pdf;
@@ -278,6 +280,86 @@ class HomeController extends Controller
             'studentExit' => $studentExit,
             'student' => $student
         ]);
+    }
+
+    public function enterSchool(Request $request){
+        $validator = Validator::make($request->all(), [
+            'exit_id' => 'required',
+        ]);
+
+        if($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+
+        if (!$studentExit = StudentExit::find($request->exit_id)) {
+            alert()->error('Oops!', 'Student exit applicattion record not found')->persistent('Close');
+            return redirect()->back();
+        }
+
+        $globalData = $request->input('global_data');
+        $academicSession = $globalData->sessionSetting['academic_session'];
+
+        $studentExit->return_at = Carbon::now();
+
+        if($studentExit->save()){
+            $student = Student::find($studentExit->student_id);
+
+            $senderName = env('SCHOOL_NAME');
+            $receiverName = $student->applicant->lastname .' ' . $student->applicant->othernames;
+            $message = 'You are welcome back to school.';
+
+            $mail = new NotificationMail($senderName, $message, $receiverName);
+            Mail::to($student->email)->send($mail);
+            Notification::create([
+                'student_id' => $student->id,
+                'description' => $message,
+                'status' => 0
+            ]);
+
+            alert()->success('Success', '')->persistent('Close');
+            return redirect()->back();
+        }
+    }
+
+    public function leftSchool(Request $request){
+        $validator = Validator::make($request->all(), [
+            'exit_id' => 'required',
+        ]);
+
+        if($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+
+        if (!$studentExit = StudentExit::find($request->exit_id)) {
+            alert()->error('Oops!', 'Student exit applicattion record not found')->persistent('Close');
+            return redirect()->back();
+        }
+
+        $globalData = $request->input('global_data');
+        $academicSession = $globalData->sessionSetting['academic_session'];
+
+        $studentExit->exited_at = Carbon::now();
+
+        if($studentExit->save()){
+            $student = Student::find($studentExit->student_id);
+
+            $senderName = env('SCHOOL_NAME');
+            $receiverName = $student->applicant->lastname .' ' . $student->applicant->othernames;
+            $message = 'This is to notify you that you have been exited from the university campus. Safe Trip';
+
+            $mail = new NotificationMail($senderName, $message, $receiverName);
+            Mail::to($student->email)->send($mail);
+            Notification::create([
+                'student_id' => $student->id,
+                'description' => $message,
+                'status' => 0
+            ]);
+
+            alert()->success('Success', '')->persistent('Close');
+            return redirect()->back();
+        }
     }
 
     public function csrfErrorPage(){ 
