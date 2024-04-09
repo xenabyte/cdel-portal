@@ -285,6 +285,7 @@ class HomeController extends Controller
     public function enterSchool(Request $request){
         $validator = Validator::make($request->all(), [
             'exit_id' => 'required',
+            'password' => 'required',
         ]);
 
         if($validator->fails()) {
@@ -294,6 +295,11 @@ class HomeController extends Controller
 
         if (!$studentExit = StudentExit::find($request->exit_id)) {
             alert()->error('Oops!', 'Student exit applicattion record not found')->persistent('Close');
+            return redirect()->back();
+        }
+
+        if ($request->password != env('SECURITY_PASSWORD')) {
+            alert()->error('Oops!', 'Password Mismatch')->persistent('Close');
             return redirect()->back();
         }
 
@@ -325,6 +331,7 @@ class HomeController extends Controller
     public function leftSchool(Request $request){
         $validator = Validator::make($request->all(), [
             'exit_id' => 'required',
+            'password' => 'required',
         ]);
 
         if($validator->fails()) {

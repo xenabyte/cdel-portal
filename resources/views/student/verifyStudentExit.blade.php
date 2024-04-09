@@ -182,6 +182,14 @@
                         @csrf
                         <input name="exit_id" type="hidden" value="{{$studentExit->id}}">
                         <input name="action" type="hidden" value="declined">
+
+                        <div class="col-lg-6">
+                            <div class="form-floating">
+                                <input type="password" class="form-control" id="password" name="password" placeholder="Enter your Passowrd">
+                                <label for="password">Password</label>
+                            </div>
+                        </div>
+
                         <hr>
                         <button type="submit" id="submit-button" class="btn btn-danger w-100">Yes, student is leaving campus</button>
                     </form>
@@ -208,6 +216,12 @@
                     <form action="{{ url('/student/enterSchool') }}" method="POST">
                         @csrf
                         <input name="exit_id" type="hidden" value="{{$studentExit->id}}">
+                        <div class="col-lg-6">
+                            <div class="form-floating">
+                                <input type="password" class="form-control" id="password" name="password" placeholder="Enter your Passowrd">
+                                <label for="password">Password</label>
+                            </div>
+                        </div>
                         <hr>
                         <button type="submit" id="submit-button" class="btn btn-danger w-100">Yes, student is entering campus</button>
                     </form>
