@@ -35,6 +35,8 @@ use App\Models\CoursePerProgrammePerAcademicSession;
 
 use App\Libraries\Result\Result;
 use App\Libraries\Pdf\Pdf;
+use App\Exports\StudentResultBroadSheet;
+
 
 use SweetAlert;
 use Mail;
@@ -74,10 +76,12 @@ class ResultController extends Controller
         $academicLevels = AcademicLevel::get();
         $academicSessions = Session::orderBy('id', 'desc')->get();
         $faculties = Faculty::get();
-
+        $semester = $request->semester;
+        $academicSession = $request->session;
+    
         $programme = Programme::find($request->programme_id);
         $academicLevel = AcademicLevel::find($request->level_id);
-
+    
         $students = Student::
         with(['applicant', 'programme', 'transactions', 'courseRegistrationDocument', 'registeredCourses', 'registeredCourses.course', 'partner', 'academicLevel', 'department', 'faculty'])
         ->where([
@@ -92,8 +96,10 @@ class ResultController extends Controller
             $query->where('level_id', $request->level_id)
                   ->where('academic_session', $request->session);
         })
-        ->get();    
-
+        ->get();
+    
+        $classifiedCourses = $this->classifyCourses($students, $semester, $academicLevel, $academicSession);
+    
         return view('admin.getStudentResults',[
             'students' => $students,
             'academicLevels' => $academicLevels,
@@ -105,8 +111,10 @@ class ResultController extends Controller
             'programme' => $programme,
             'faculty_id' => $request->faculty_id,
             'department_id' => $request->department_id,
+            'classifiedCourses' => $classifiedCourses,
         ]);
     }
+    
 
     public function generateStudentResultSummary(Request $request){
         $academicLevels = AcademicLevel::get();
@@ -154,6 +162,96 @@ class ResultController extends Controller
             'faculty' => $faculty
         ]);
     }
+
+    // public function generateResultBroadSheet(Request $request){
+    //     $academicLevels = AcademicLevel::get();
+    //     $academicSessions = Session::orderBy('id', 'desc')->get();
+    //     $faculties = Faculty::get();
+    //     $semester = $request->semester;
+    //     $academicSession = $request->session;
+    //     $academicLevel = AcademicLevel::find($request->level_id);
+    //     $programme = Programme::find($request->programme_id);
+
+    //     $students = Student::with(['applicant', 'programme', 'registeredCourses', 'registeredCourses.course', 'academicLevel', 'department', 'faculty'])
+    //         ->where([
+    //             'is_active' => true,
+    //             'is_passed_out' => false,
+    //             'is_rusticated' => false,
+    //             'programme_id' => $request->programme_id,
+    //             'department_id' => $request->department_id,
+    //             'faculty_id' => $request->faculty_id,
+    //         ])
+    //         ->whereHas('registeredCourses', function ($query) use ($request) {
+    //             $query->where('level_id', $request->level_id)
+    //                 ->where('academic_session', $request->session);
+    //         })
+    //         ->get();
+
+    //     $classifiedCourses = $this->classifyCourses($students, $semester, $academicLevel, $academicSession);
+        
+    //     // Generate a unique filename for the download
+    //     $fileName = $programme->name . ' ' . $academicLevel->level . ' ' . $semester . ' ' . $academicSession . ' resultBroadSheet.xlsx';
+    //     $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $fileName)));
+
+    //     // Return the export instance, ready for download
+
+    //     new StudentResultBroadSheet($students, $semester, $academicLevel, $academicSession, $classifiedCourses);
+
+    //     return view('admin.getStudentResults',[
+    //         'students' => $students,
+    //         'academicLevels' => $academicLevels,
+    //         'academicSessions' => $academicSessions,
+    //         'faculties' => $faculties,
+    //         'semester' => $request->semester,
+    //         'academicSession' => $request->session,
+    //         'academiclevel' => $academicLevel,
+    //         'programme' => $programme,
+    //         'faculty_id' => $request->faculty_id,
+    //         'department_id' => $request->department_id,
+    //         'classifiedCourses' => $classifiedCourses,
+    //     ]);
+    // }
+
+    public function generateResultBroadSheet(Request $request){
+        $academicLevels = AcademicLevel::get();
+        $academicSessions = Session::orderBy('id', 'desc')->get();
+        $faculties = Faculty::get();
+        $semester = $request->semester;
+        $academicSession = $request->session;
+        $academicLevel = AcademicLevel::find($request->level_id);
+        $programme = Programme::find($request->programme_id);
+    
+        $students = Student::with(['applicant', 'programme', 'registeredCourses', 'registeredCourses.course', 'academicLevel', 'department', 'faculty'])
+            ->where([
+                'is_active' => true,
+                'is_passed_out' => false,
+                'is_rusticated' => false,
+                'programme_id' => $request->programme_id,
+                'department_id' => $request->department_id,
+                'faculty_id' => $request->faculty_id,
+            ])
+            ->whereHas('registeredCourses', function ($query) use ($request) {
+                $query->where('level_id', $request->level_id)
+                    ->where('academic_session', $request->session);
+            })
+            ->get();
+    
+        $classifiedCourses = $this->classifyCourses($students, $semester, $academicLevel, $academicSession);
+        
+        // Generate a unique filename for the download
+        $fileName = $programme->name . ' ' . $academicLevel->level . ' ' . $semester . ' ' . $academicSession . ' resultBroadSheet';
+        $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $fileName))) . '.xlsx'; // Add the extension
+        
+        // Create the export instance
+        $export = new StudentResultBroadSheet($students, $semester, $academicLevel, $academicSession, $classifiedCourses);
+              
+    
+        return \Excel::download($export, $slug);
+    }
+    
+    
+    
+
 
     public function approveResult(Request $request){
 

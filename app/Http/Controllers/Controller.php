@@ -629,4 +629,21 @@ class Controller extends BaseController
         return $prevAcademicSession;
     }
 
+    public function classifyCourses($students, $semester, $academicLevel, $academicSession) {
+        $classifiedCourses = [];
+    
+        foreach ($students as $student) {
+            foreach ($student->registeredCourses->where('semester', $semester)->where('level_id', $academicLevel->id)->where('academic_session', $academicSession) as $registeredCourse) {
+                $courseName = $registeredCourse->course_code;
+    
+                if (!isset($classifiedCourses[$courseName])) {
+                    $classifiedCourses[$courseName] = [];
+                }
+    
+                $classifiedCourses[$courseName][] = $student;
+            }
+        }
+    
+        return $classifiedCourses;
+    }
 }
