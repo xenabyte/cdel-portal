@@ -85,218 +85,10 @@
 
 <div class="row">
 
-    {{-- <div class="col-lg-12">
-        <div class="card">
-            <div class="card-header align-items-center d-flex">
-                <h4 class="card-title mb-0 flex-grow-1">Summary of Result(s) for {{ $academiclevel->level }} Level,  {{ !empty($programme)?$programme->name:null }} for {{ $academicSession }} Academic Session</h4>
-            </div><!-- end card header -->
-        </div>
-
-        <div class="row">
-            <div class="col-xl-3">
-                <div class="card card-height-100">
-                    <div class="card-header align-items-center d-flex">
-                        <h4 class="card-title mb-0 flex-grow-1">Summary by Standing - (This Semester)</h4>
-                    </div><!-- end card header -->
-                    <div class="card-body">
-
-                        <div class="table-responsive mt-3">
-                            <table class="table table-borderless table-sm table-centered align-middle table-nowrap mb-0">
-                                <tbody class="border-0">
-                                    <tr>
-                                        <td>
-                                            <h4 class="text-truncate fs-14 fs-medium mb-0"><i class="ri-stop-fill align-middle fs-18 text-primary me-2"></i>Total Students</h4>
-                                        </td>
-                                        <td>
-                                            <p class="text-muted mb-0"><i data-feather="users" class="me-2 icon-sm"></i>{{ $totalStudents }}</p>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <h4 class="text-truncate fs-14 fs-medium mb-0"><i class="ri-stop-fill align-middle fs-18 text-warning me-2"></i>Total Students with Batch B/C</h4>
-                                        </td>
-                                        <td>
-                                            <p class="text-muted mb-0"><i data-feather="users" class="me-2 icon-sm"></i>{{ $totalStudentsWithNullGrades }}</p>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <h4 class="text-truncate fs-14 fs-medium mb-0"><i class="ri-stop-fill align-middle fs-18 text-success me-2"></i>Good Standing (GS)</h4>
-                                        </td>
-                                        <td>
-                                            <p class="text-muted mb-0"><i data-feather="users" class="me-2 icon-sm"></i>{{ $semesterGoodStandingCount }}</p>
-                                        </td>
-                                        <td class="text-end">
-                                            <p class="text-success fw-medium fs-12 mb-0"><i class="ri-arrow-up-s-fill fs-5 align-middle"></i>{{ number_format($semesterGoodStandingPercentage, 2) }}%</p>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <h4 class="text-truncate fs-14 fs-medium mb-0"><i class="ri-stop-fill align-middle fs-18 text-danger me-2"></i>Not in Good Standing (NGS)</h4>
-                                        </td>
-                                        <td>
-                                            <p class="text-muted mb-0"><i data-feather="users" class="me-2 icon-sm"></i>{{ $semesterNotInGoodStandingCount }}</p>
-                                        </td>
-                                        <td class="text-end">
-                                            <p class="text-danger fw-medium fs-12 mb-0"><i class="ri-arrow-down-s-fill fs-5 align-middle"></i>{{ number_format($semesterNotInGoodStandingPercentage, 2) }}%</p>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div><!-- end card body -->
-                </div><!-- end card -->
-            </div><!-- end col -->
-
-            <div class="col-xl-4">
-                <div class="card card-height-100">
-                    <div class="card-header align-items-center d-flex">
-                        <h4 class="card-title mb-0 flex-grow-1">Summary by Standing - (Overall)</h4>
-                    </div><!-- end card header -->
-                    <div class="card-body">
-
-                        <div class="table-responsive mt-3">
-                            <table class="table table-borderless table-sm table-centered align-middle table-nowrap mb-0">
-                                <tbody class="border-0">
-                                    <tr>
-                                        <td>
-                                            <h4 class="text-truncate fs-14 fs-medium mb-0"><i class="ri-stop-fill align-middle fs-18 text-primary me-2"></i>Total Students</h4>
-                                        </td>
-                                        <td>
-                                            <p class="text-muted mb-0"><i data-feather="users" class="me-2 icon-sm"></i>{{ $totalStudents }}</p>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <h4 class="text-truncate fs-14 fs-medium mb-0"><i class="ri-stop-fill align-middle fs-18 text-success me-2"></i>Good Standing (GS)</h4>
-                                        </td>
-                                        <td>
-                                            <p class="text-muted mb-0"><i data-feather="users" class="me-2 icon-sm"></i>{{ $goodStandingCount }}</p>
-                                        </td>
-                                        <td class="text-end">
-                                            <p class="text-success fw-medium fs-12 mb-0"><i class="ri-arrow-up-s-fill fs-5 align-middle"></i>{{ number_format($goodStandingPercentage, 2) }}%</p>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <h4 class="text-truncate fs-14 fs-medium mb-0"><i class="ri-stop-fill align-middle fs-18 text-danger me-2"></i>Not in Good Standing (NGS)</h4>
-                                        </td>
-                                        <td>
-                                            <p class="text-muted mb-0"><i data-feather="users" class="me-2 icon-sm"></i>{{ $notInGoodStandingCount }}</p>
-                                        </td>
-                                        <td class="text-end">
-                                            <p class="text-danger fw-medium fs-12 mb-0"><i class="ri-arrow-down-s-fill fs-5 align-middle"></i>{{ number_format($notInGoodStandingPercentage, 2) }}%</p>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div><!-- end card body -->
-                </div><!-- end card -->
-            </div><!-- end col -->
-
-            <div class="col-xl-5">
-                <div class="card card-height-100">
-                    <div class="card-header align-items-center d-flex">
-                        <h4 class="card-title mb-0 flex-grow-1">Summary by Class</h4>
-                    </div>
-
-                    <div class="card-body">
-
-                        <div class="row align-items-center">
-                            <div class="col-6">
-                                <h6 class="text-muted text-uppercase fw-semibold text-truncate fs-12 mb-3">
-                                    Total Students</h6>
-                                <h4 class="fs- mb-0">{{ $totalStudents }}</h4>
-                                <p class="mb-0 mt-2 text-muted"><span class="badge bg-success-subtle text-success mb-0"></p>
-                            </div><!-- end col -->
-                            <div class="col-6">
-                                <div class="text-center">
-                                    <img src="{{ asset('assets/images/user-illustarator-2.png') }}" class="img-fluid" alt="">
-                                </div>
-                            </div><!-- end col -->
-                        </div><!-- end row -->
-                        
-                        <div class="mt-3 pt-2">
-                            <div class="progress progress-lg rounded-pill">
-                                @foreach($degreeClassCounts as $degreeClass => $count)
-                                @php
-                                    $percentage = number_format(($count / $totalStudents) * 100, 2);
-                                @endphp
-                                    <div class="progress-bar @switch($degreeClass)
-                                            @case('First Class')
-                                                bg-primary
-                                                @break
-                                            @case('Second Class Upper')
-                                                bg-secondary
-                                                @break
-                                            @case('Second Class Lower')
-                                                bg-success
-                                                @break
-                                            @case('Third Class')
-                                                bg-info
-                                                @break
-                                            @case('Pass')
-                                                bg-warning
-                                                @break
-                                            @default
-                                                bg-danger
-                                        @endswitch"
-                                        role="progressbar" style="width: {{ $percentage }}%" aria-valuenow="{{ $percentage }}" aria-valuemin="0" aria-valuemax="100"></div>
-                                @endforeach
-                            </div>
-                        </div><!-- end -->
-
-                        <div class="mt-3 pt-2">
-                            @foreach($degreeClassCounts as $degreeClass => $count)
-                                <div class="d-flex mb-2">
-                                    <div class="flex-grow-1">
-                                        <p class="text-truncate text-muted fs-14 mb-0"><i class="mdi mdi-circle align-middle  @switch($degreeClass)
-                                            @case('First Class')
-                                                text-primary
-                                                @break
-                                            @case('Second Class Upper')
-                                                text-secondary
-                                                @break
-                                            @case('Second Class Lower')
-                                                text-success
-                                                @break
-                                            @case('Third Class')
-                                                text-info
-                                                @break
-                                            @case('Pass')
-                                                text-warning
-                                                @break
-                                            @default
-                                                text-danger
-                                            @endswitch
-                                            
-                                            me-2"></i>{{ $degreeClass }}: {{ $count }}</p>
-                                    </div>
-                                    <div class="flex-shrink-0">
-                                        @php
-                                            $percentage = ($count / $totalStudents) * 100;
-                                        @endphp
-                                        <p class="mb-0">{{ number_format($percentage, 2) }}%</p>
-                                    </div>
-                                </div><!-- end -->
-                            @endforeach
-
-                        </div><!-- end -->
-
-                    </div><!-- end card body -->
-                </div><!-- end card -->
-            </div><!-- end col -->
-        </div><!-- end row -->
-
-        </div>
-    </div> --}}
-
-
     <div class="col-lg-12">
         <div class="card">
             <div class="card-header align-items-center d-flex">
-                <h4 class="card-title mb-0 flex-grow-1">Result(s) for  {{ !empty($faculty)?$faculty->name:null }} for {{ $academicSession }} Academic Session</h4>
+                <h4 class="card-title mb-0 flex-grow-1">{{ $semester==1? 'Harmattan' : 'Rain'}} Semester Result Summary for  {{ !empty($faculty)?$faculty->name:null }} for {{ $academicSession }} Academic Session</h4>
                 <div class="flex-shrink-0">
                     @if(!empty($faculty))
                     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#approveResult">Approve Result(s)</button>
@@ -325,6 +117,7 @@
                                     <input type="hidden" name="session" value="{{ $academicSession }}">
                                     <input type="hidden" name="semester" value="{{ $semester }}">
                                     @endif
+                                    <input type="hidden" name="url" value="admin.getStudentResultSummary">
                                     <hr>
                                     <button type="submit" id="submit-button" class="btn btn-success w-100">Yes, Approve</button>
                                 </form>
@@ -340,39 +133,146 @@
             <div class="card-body table-responsive">
                 <!-- Bordered Tables -->
                 @foreach($academicLevels as $academicLevel)
-                <table id="buttons-datatables" class="display table table-bordered table-striped p-3" style="width:100%">
-                    <thead>
-                        <tr>
-                            <th>SN</th>
-                            <th>Programmes</th>
-                            <th>Number of Students</th>
-                            <th>Number of Good Standing</th>
-                            <th>Number of Not in Good Standing</th>
-                            <th>Number of First Class</th>
-                            <th>Number of Second Class Upper</th>
-                            <th>Number of Second Lower</th>
-                            <th>Number of Third Class</th>
-                            <th>Number of Fail</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach($classifiedStudents[$academicLevel->name] as $programName => $students)
+                    @if($academicLevel->id <= count($classifiedStudents))
+                    <div class="card-header align-items-center d-flex mb-3">
+                        <h4 class="card-title mb-0 flex-grow-1">Summary of Result for {{ $academicLevel->level }} Level</h4>
+                    </div><!-- end card header -->
+                    <table id="buttons-datatables{{ $loop->iteration }}" class="display table table-bordered table-striped p-3 mt-3" style="width:100%">
+                        <thead>
                             <tr>
-                                <td>{{ $loop->iteration }}</td>
-                                <td>{{ $programName }}</td>
-                                <td>{{ count($students) }}</td>
-                                <td>{{ $students->where('status', 'Good Standing')->count() }}</td>
-                                <td>{{ $students->where('status', 'Not in Good Standing')->count() }}</td>
-                                <td>{{ $students->where('class', 'First Class')->count() }}</td>
-                                <td>{{ $students->where('class', 'Second Class Upper')->count() }}</td>
-                                <td>{{ $students->where('class', 'Second Class Lower')->count() }}</td>
-                                <td>{{ $students->where('class', 'Third Class')->count() }}</td>
-                                <td>{{ $students->where('class', 'Fail')->count() }}</td>
+                                <th>SN</th>
+                                <th>Programmes</th>
+                                <th>Level</th>
+                                <th>Number of Students</th>
+                                <th class="bg bg-success text-light">Number of Good Standing</th>
+                                <th class="bg bg-warning text-light">Number of Not in Good Standing</th>
+                                <th class="bg bg-primary text-light">Number of First Class</th>
+                                <th class="bg bg-secondary text-light">Number of Second Class Upper</th>
+                                <th class="bg bg-dark text-light">Number of Second Lower</th>
+                                <th class="bg bg-info text-light">Number of Third Class</th>
+                                <th class="bg bg-warning text-light">Number of Pass</th>
+                                <th class="bg bg-danger text-light">Number of Fail</th>
                             </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            @endforeach
+                        </thead>
+                        <tbody>
+                            @foreach($classifiedStudents[$academicLevel->level] as $programName => $students)
+                                @php
+                                    $totalStudents = count($students);
+                                    $goodStandingCount = 0;
+                                    $notInGoodStandingCount = 0;
+                
+                                    $totalStudentsWithNullGrades = 0;
+                
+                                    $semesterGoodStandingCount = 0;
+                                    $semesterNotInGoodStandingCount =0;
+                
+                                    $degreeClassCounts = (object) [
+                                        'First Class' => 0,
+                                        'Second Class Upper' => 0,
+                                        'Second Class Lower' => 0,
+                                        'Third Class' => 0,
+                                        'Pass' => 0,
+                                        'Fail' => 0,
+                                    ];
+                
+                                    $degreeClass = new \App\Models\DegreeClass;
+                
+                                    foreach($students as $student){
+                                        $semesterRegisteredCourses = $student->registeredCourses
+                                            ->where('semester', $semester)
+                                            ->where('level_id', $academicLevel->id)
+                                            ->where('academic_session', $academicSession);
+                
+                                        $nullGradeCount = $semesterRegisteredCourses->where('grade', null)->count();
+                
+                                        $totalCoursesCount = $semesterRegisteredCourses->count();
+                                        $eightyPercent = 0.8 * $totalCoursesCount;
+                
+                                        if ($nullGradeCount >= $eightyPercent) {
+                                            $totalStudentsWithNullGrades++;
+                                        }
+                
+                                        $semesterRegisteredCourses = $student->registeredCourses->where('semester', $semester)->where('level_id', $academicLevel->id)->where('academic_session', $academicSession)->where('grade', '!=', null);
+                                        $currentRegisteredCreditUnits =  $semesterRegisteredCourses->sum('course_credit_unit');
+                                        $currentRegisteredGradePoints = $semesterRegisteredCourses->sum('points');
+                                        $currentGPA = $currentRegisteredGradePoints > 0 ? number_format($currentRegisteredGradePoints / $currentRegisteredCreditUnits, 2) : 0;
+                
+                                        $allRegisteredCourses = $student->registeredCourses->where('grade', '!=', null);
+                                        $allRegisteredCreditUnits =  $allRegisteredCourses->sum('course_credit_unit');
+                                        $allRegisteredGradePoints = $allRegisteredCourses->sum('points');
+                                        $CGPA = $allRegisteredGradePoints > 0 ? number_format($allRegisteredGradePoints / $allRegisteredCreditUnits, 2) : 0;
+                
+                                        $semesterClassGrade = $degreeClass->computeClass($currentGPA);
+                                        $semesterClass = $semesterClassGrade->degree_class;
+                                        $semesterStanding = $semesterClassGrade->id > 4? 'NGS' : 'GS'; 
+                
+                                        if ($semesterStanding === 'GS') {
+                                            $semesterGoodStandingCount++;
+                                        } else {
+                                            $semesterNotInGoodStandingCount++;
+                                        }
+                
+                                        $classGrade = $degreeClass->computeClass($CGPA);
+                                        $class = $classGrade->degree_class;
+                                        $standing = $classGrade->id > 4? 'NGS' : 'GS'; 
+                
+                                        if ($standing === 'GS') {
+                                            $goodStandingCount++;
+                                        } else {
+                                            $notInGoodStandingCount++;
+                                        }
+                
+                                        switch ($class) {
+                                            case 'First Class':
+                                                $degreeClassCounts->{'First Class'}++;
+                                                break;
+                                            case 'Second Class Upper':
+                                                $degreeClassCounts->{'Second Class Upper'}++;
+                                                break;
+                                            case 'Second Class Lower':
+                                                $degreeClassCounts->{'Second Class Lower'}++;
+                                                break;
+                                            case 'Third Class':
+                                                $degreeClassCounts->{'Third Class'}++;
+                                                break;
+                                            case 'Pass':
+                                                $degreeClassCounts->{'Pass'}++;
+                                                break;
+                                            default:
+                                                $degreeClassCounts->{'Fail'}++;
+                                                break;
+                                        }
+                                    }
+                
+                                    $goodStandingPercentage = $totalStudents > 0 ? ($goodStandingCount / $totalStudents) * 100 : 0;
+                                    $notInGoodStandingPercentage = $totalStudents > 0 ? ($notInGoodStandingCount / $totalStudents) * 100 : 0;
+                
+                                    $semesterGoodStandingPercentage = $totalStudents > 0 ? ($semesterGoodStandingCount / $totalStudents) * 100 : 0;
+                                    $semesterNotInGoodStandingPercentage = $totalStudents > 0 ? ($semesterNotInGoodStandingCount / $totalStudents) * 100 : 0;
+                                    
+                                @endphp
+                                
+                                <tr>
+                                    <td>{{ $loop->iteration }}</td>
+                                    <td>{{ $programName }}</td>
+                                    <td>{{ $academicLevel->level }}</td>
+                                    <td>{{ $totalStudents }}</td>
+                                    <td class="bg bg-soft-success">{{ $semesterGoodStandingCount }}</td>
+                                    <td class="bg bg-soft-warning">{{ $semesterNotInGoodStandingCount }}</td>
+                                    <td class="bg bg-soft-primary"> @foreach($degreeClassCounts as $degreeClass => $count) @if($degreeClass == 'First Class') {{ $count }}  @endif @endforeach</td>
+                                    <td class="bg bg-soft-secondary"> @foreach($degreeClassCounts as $degreeClass => $count) @if($degreeClass == 'Second Class Upper') {{ $count }}  @endif @endforeach</td>
+                                    <td class="bg bg-soft-dark"> @foreach($degreeClassCounts as $degreeClass => $count) @if($degreeClass == 'Second Class Lower') {{ $count }}  @endif @endforeach</td>
+                                    <td class="bg bg-soft-info"> @foreach($degreeClassCounts as $degreeClass => $count) @if($degreeClass == 'Third Class') {{ $count }}  @endif @endforeach</td>
+                                    <td class="bg bg-soft-warning"> @foreach($degreeClassCounts as $degreeClass => $count) @if($degreeClass == 'Pass') {{ $count }}  @endif @endforeach</td>
+                                    <td class="bg bg-soft-danger"> @foreach($degreeClassCounts as $degreeClass => $count) @if($degreeClass == 'Fail') {{ $count }}  @endif @endforeach</td>
+
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                    @endif
+                    <br>
+                @endforeach
             </div>
         </div><!-- end card -->
     </div>

@@ -144,7 +144,6 @@ class ResultController extends Controller
             $classifiedStudents[$level][$program][] = $student;
         }
 
-        log::info($classifiedStudents);
 
         return view('admin.getStudentResultSummary',[
             'classifiedStudents' => $classifiedStudents,
@@ -159,12 +158,12 @@ class ResultController extends Controller
     public function approveResult(Request $request){
 
         $studentIds = $request->input('student_ids', []);
+        $url = $request->url;
         $students = Student::whereIn('id', $studentIds)->get();
 
         foreach ($students as $student) {
             
             $studentRegistration = CourseRegistration::where('student_id', $student->id)
-            ->where('level_id', $request->level_id)
             ->where('academic_session', $request->session)
             ->where('semester', $request->semester)
             ->whereNotNull('grade')
@@ -179,7 +178,7 @@ class ResultController extends Controller
         $faculties = Faculty::get();
 
         alert()->success('Result Approved', '')->persistent('Close');
-        return view('admin.getStudentResults',[
+        return view($url,[
             'academicLevels' => $academicLevels,
             'academicSessions' => $academicSessions,
             'faculties' => $faculties
