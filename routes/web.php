@@ -237,6 +237,10 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'admin'],
 
   Route::get('/getStudentResults', [App\Http\Controllers\Admin\ResultController::class, 'getStudentResults'])->name('getStudentResults')->middleware(['auth:admin']);
   Route::post('/generateStudentResults', [App\Http\Controllers\Admin\ResultController::class, 'generateStudentResults'])->name('generateStudentResults')->middleware(['auth:admin']);
+  Route::get('/getStudentResultSummary', [App\Http\Controllers\Admin\ResultController::class, 'getStudentResultSummary'])->name('getStudentResultSummary')->middleware(['auth:admin']);
+  Route::post('/generateStudentResultSummary', [App\Http\Controllers\Admin\ResultController::class, 'generateStudentResultSummary'])->name('generateStudentResultSummary')->middleware(['auth:admin']);
+
+
   Route::post('/approveResult', [App\Http\Controllers\Admin\ResultController::class, 'approveResult'])->name('approveResult')->middleware(['auth:admin']);
 
   Route::get('/studentCourses', [App\Http\Controllers\Admin\ProgrammeController::class, 'studentCourses'])->name('studentCourses')->middleware(['auth:admin']);

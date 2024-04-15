@@ -389,6 +389,10 @@
                                     <li class="nav-item">
                                         <a href="{{ url('/admin/getStudentResults') }}" class="nav-link">Students Results</a>
                                     </li>
+
+                                    <li class="nav-item">
+                                        <a href="{{ url('/admin/getStudentResultSummary') }}" class="nav-link">Students Results Summary</a>
+                                    </li>
                                 </ul>
                             </div>
                         </li> <!-- end Dashboard Menu -->

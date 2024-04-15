@@ -58,6 +58,18 @@ class ResultController extends Controller
         ]);
     }
 
+    public function getStudentResultSummary(Request $request){
+        $globalData = $request->input('global_data');
+        $academicSessions = Session::orderBy('id', 'desc')->get();
+        $faculties = Faculty::get(); 
+
+        
+        return view('admin.getStudentResultSummary',[
+            'faculties' => $faculties,
+            'academicSessions' => $academicSessions,
+        ]);
+    }
+
     public function generateStudentResults(Request $request){
         $academicLevels = AcademicLevel::get();
         $academicSessions = Session::orderBy('id', 'desc')->get();
@@ -93,6 +105,54 @@ class ResultController extends Controller
             'programme' => $programme,
             'faculty_id' => $request->faculty_id,
             'department_id' => $request->department_id,
+        ]);
+    }
+
+    public function generateStudentResultSummary(Request $request){
+        $academicLevels = AcademicLevel::get();
+        $globalData = $request->input('global_data');
+
+        $students = Student::
+        with(['applicant', 'programme', 'registeredCourses', 'registeredCourses.course', 'academicLevel', 'department', 'faculty'])
+        ->where([
+            'is_active' => true,
+            'is_passed_out' => false,
+            'is_rusticated' => false,
+            'faculty_id' => $request->faculty_id,
+        ])
+        ->whereHas('registeredCourses', function ($query) use ($request) {
+            $query->where('academic_session', $request->session);
+        })
+        ->get(); 
+
+        $faculty = Faculty::find($request->faculty_id);
+
+        $classifiedStudents = [];
+
+        foreach ($students as $student) {
+            $level = $student->academicLevel->level;
+            $program = $student->programme->name;
+
+            if (!isset($classifiedStudents[$level])) {
+                $classifiedStudents[$level] = [];
+            }
+
+            if (!isset($classifiedStudents[$level][$program])) {
+                $classifiedStudents[$level][$program] = [];
+            }
+
+            $classifiedStudents[$level][$program][] = $student;
+        }
+
+        log::info($classifiedStudents);
+
+        return view('admin.getStudentResultSummary',[
+            'classifiedStudents' => $classifiedStudents,
+            'academicLevels' => $academicLevels,
+            'academicSession' => $request->session,
+            'semester' => $request->semester,
+            'students' => $students,
+            'faculty' => $faculty
         ]);
     }
 
