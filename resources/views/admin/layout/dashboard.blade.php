@@ -783,10 +783,7 @@
             buttons: [
                 'copy', 'csv', 'excel', 'pdf', 'print'
             ],
-            fixedHeader: true
         });
-
-        new $.fn.dataTable.FixedHeader(table);
 
         $('#buttons-datatables1').DataTable({
             dom: 'Bfrtip',
