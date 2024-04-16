@@ -5,6 +5,9 @@
 
     $staffVCRole = false;
     $staffRegistrarRole = false;
+    $staffDeanRole = false;
+    $staffSubDeanRole = false;
+    $staffHODRole = false;
 
     foreach ($staff->staffRoles as $staffRole) {
         if (strtolower($staffRole->role->role) == 'vice chancellor') {
@@ -12,6 +15,15 @@
         }
         if (strtolower($staffRole->role->role) == 'registrar') {
             $staffRegistrarRole = true;
+        }
+        if (strtolower($staffRole->role->role) == 'dean') {
+            $staffDeanRole = true;
+        }
+        if (strtolower($staffRole->role->role) == 'sub-dean') {
+            $staffSubDeanRole = true;
+        }
+        if (strtolower($staffRole->role->role) == 'hod') {
+            $staffHODRole = true;
         }
     }
     
@@ -39,7 +51,7 @@
         <div class="card">
             <div class="card-header align-items-center d-flex">
                 <h4 class="card-title mb-0 flex-grow-1">Committees </h4>
-                @if($staffRegistrarRole || $staffVCRole)
+                @if($staffRegistrarRole || $staffVCRole || $staffDeanRole || $$staffSubDeanRole || $staffHODRole)
                     <div class="flex-shrink-0">
                         <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addCommittee">Add Committee</button>
                     </div>
