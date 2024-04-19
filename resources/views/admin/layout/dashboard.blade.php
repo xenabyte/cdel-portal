@@ -366,9 +366,9 @@
                                     <li class="nav-item">
                                         <a href="{{ url('/admin/courseRegistrations') }}" class="nav-link">Course Registrations</a>
                                     </li>
-                                    {{-- <li class="nav-item">
-                                        <a href="{{ url('/admin/courseAllocation') }}" class="nav-link">Course-to-Staff Allocation</a>
-                                    </li> --}}
+                                    <li class="nav-item">
+                                        <a href="{{ url('/admin/getCourseResult') }}" class="nav-link">Course Per Semester</a>
+                                    </li>
                                     @if(env('POPULATE_DATA'))
                                     <li class="nav-item">
                                         <a href="{{ url('/admin/populateCourse') }}" class="nav-link">Populate Course</a>

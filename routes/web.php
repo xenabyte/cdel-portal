@@ -270,7 +270,11 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'admin'],
   Route::post('/updateCourse', [App\Http\Controllers\Admin\AcademicController::class, 'updateCourse'])->name('updateCourse')->middleware(['auth:admin']);
   Route::post('/assignCourse', [App\Http\Controllers\Admin\StaffController::class, 'assignCourse'])->name('assignCourse')->middleware(['auth:admin']);
   Route::post('/unsetStaff', [App\Http\Controllers\Admin\StaffController::class, 'unsetStaff'])->name('unsetStaff')->middleware(['auth:admin']);
- 
+  
+  Route::get('/getCourseResult', [App\Http\Controllers\Admin\ProgrammeController::class, 'getCourseResult'])->name('getCourseResult')->middleware(['auth:admin']);
+  Route::post('/getCourseResults', [App\Http\Controllers\Admin\ProgrammeController::class, 'getCourseResults'])->name('getCourseResults')->middleware(['auth:admin']);
+  Route::post('/updateCourseResult', [App\Http\Controllers\Admin\ProgrammeController::class, 'updateCourseResult'])->name('updateCourseResult')->middleware(['auth:admin']);
+
   Route::post('/addCourseForStudent', [App\Http\Controllers\Admin\ProgrammeController::class, 'addCourseForStudent'])->name('addCourseForStudent')->middleware(['auth:admin']);
   Route::post('/deleteCourseForStudent', [App\Http\Controllers\Admin\ProgrammeController::class, 'deleteCourseForStudent'])->name('deleteCourseForStudent')->middleware(['auth:admin']);
   Route::post('/updateCourseForStudent', [App\Http\Controllers\Admin\ProgrammeController::class, 'updateCourseForStudent'])->name('updateCourseForStudent')->middleware(['auth:admin']);

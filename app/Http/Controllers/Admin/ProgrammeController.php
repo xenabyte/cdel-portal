@@ -27,6 +27,8 @@ use App\Models\CourseManagement;
 use App\Models\Transaction;
 use App\Models\User;
 use App\Models\Payment;
+use App\Models\Session;
+
 
 use App\Mail\NotificationMail;
 use App\Libraries\Result\Result;
@@ -701,4 +703,160 @@ class ProgrammeController extends Controller
         alert()->error('Oops!', 'Something went wrong')->persistent('Close');
         return $this->getSingleStudent($student->matric_number, $request->url);
     }
+
+    public function getCourseResult(){
+        $programme = Programme::get();
+        $academicSessions = Session::get();
+        $academicLevels = AcademicLevel::get();
+        $allCourses = Course::all();
+
+        return view('admin.courseResults', [
+            'programmes' => $programme,
+            'academicSessions' => $academicSessions,
+            'academicLevels' => $academicLevels,
+            'allCourses' => $allCourses
+        ]);
+    }
+
+    public function getCourseResults(Request $request){
+        $validator = Validator::make($request->all(), [
+            'programme_id' => 'required',
+            'academic_session' => 'required',
+            'level_id' => 'required',
+            'course_id' => 'required',
+        ]);
+
+        if($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+
+        if(!$courseForReg = CoursePerProgrammePerAcademicSession::where('programme_id', $request->programme_id)
+        ->where('academic_session', $request->academic_session)
+        ->where('level_id', $request->level_id)
+        ->where('course_id', $request->course_id)
+        ->first()){
+            alert()->error('Oops', 'Record not found')->persistent('Close');
+            return redirect()->back();
+        }
+
+        $programme = Programme::get();
+        $academicSessions = Session::get();
+        $academicLevels = AcademicLevel::get();
+        $allCourses = Course::all();
+
+        return view('admin.courseResults', [
+            'programmes' => $programme,
+            'academicSessions' => $academicSessions,
+            'academicLevels' => $academicLevels,
+            'allCourses' => $allCourses,
+            'courseForReg' => $courseForReg
+        ]);
+    }
+
+    public function updateCourseResult(Request $request){
+
+        $programme = Programme::get();
+        $academicSessions = Session::get();
+        $academicLevels = AcademicLevel::get();
+        $allCourses = Course::all();
+        $courseForReg = null;
+
+
+        $validator = Validator::make($request->all(), [
+            'course_per_prog_id' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            alert()->error('Error', $validator->messages()->first())->persistent('Close');
+            return view('admin.courseResults', [
+                'programmes' => $programme,
+                'academicSessions' => $academicSessions,
+                'academicLevels' => $academicLevels,
+                'allCourses' => $allCourses,
+                'courseForReg' => $courseForReg
+            ]);
+        }
+        $courseForReg = CoursePerProgrammePerAcademicSession::find($request->course_per_prog_id);
+        if (!$courseForReg) {
+            alert()->error('Oops', 'Record not found')->persistent('Close');
+
+            return view('admin.courseResults', [
+                'programmes' => $programme,
+                'academicSessions' => $academicSessions,
+                'academicLevels' => $academicLevels,
+                'allCourses' => $allCourses,
+                'courseForReg' => $courseForReg
+            ]);
+        }
+
+        $updatedFields = [];
+        if (!empty($request->level_id) && $request->level_id != $courseForReg->level_id) {
+            $courseForReg->level_id = $request->level_id;
+            $updatedFields['level_id'] = $request->level_id;
+        }
+
+        if (!empty($request->session) && $request->session != $courseForReg->academic_session) {
+            $courseForReg->academic_session = $request->session;
+            $updatedFields['academic_session'] = $request->session;
+        }
+
+        if (!empty($request->semester) && $request->semester != $courseForReg->semester) {
+            $courseForReg->semester = $request->semester;
+            $updatedFields['semester'] = $request->semester;
+        }
+
+        if (!empty($request->credit_unit) && $request->credit_unit != $courseForReg->credit_unit) {
+            $courseForReg->credit_unit = $request->credit_unit;
+            $updatedFields['credit_unit'] = $request->credit_unit;
+
+            CourseRegistration::where('programme_course_id', $request->course_per_prog_id)
+                ->where('academic_session', $request->session)
+                ->where('level_id', $request->level_id)
+                ->update(['course_credit_unit' => $request->credit_unit]);
+
+
+            $registrations = CourseRegistration::where('programme_course_id', $request->course_per_prog_id)
+                ->where('academic_session', $request->session)
+                ->where('level_id', $request->level_id)
+                ->whereNotNull('total')
+                ->get();
+
+            foreach ($registrations as $registration) {
+                $grading = GradeScale::computeGrade($registration->total);
+                $points = $grading->point;
+
+                $course = Course::find($registration->course_id);
+                $student = Student::find($registration->student_id);
+
+                if ($course && $student) {
+                    $courseCode = $course->code;
+                    if (strpos($courseCode, 'NSC') !== false && $student->programme_id == 15) {
+                        if ($registration->total < 50) {
+                            $grading->grade = 'F';
+                            $points = 0;
+                        }
+                    }
+
+                    $registration->points = $points * $request->credit_unit;
+                    $registration->save();
+                }
+            }
+        }
+
+        if (!empty($updatedFields)) {
+            $courseForReg->save();
+            alert()->success('Changes saved successfully', '')->persistent('Close');
+        }
+
+        return view('admin.courseResults', [
+            'programmes' => $programme,
+            'academicSessions' => $academicSessions,
+            'academicLevels' => $academicLevels,
+            'allCourses' => $allCourses,
+            'courseForReg' => $courseForReg
+        ]);
+        
+    }
+
 }
