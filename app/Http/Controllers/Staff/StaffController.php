@@ -649,16 +649,16 @@ class StaffController extends Controller
             'academic_session' => $academicSession
         ])->first();
 
-        if(!$courseManagement){
-            alert()->error('Oops!', 'Course not assigned to staff')->persistent('Close');
-            return redirect()->back();
-        }
+        // if(!$courseManagement){
+        //     alert()->error('Oops!', 'Course not assigned to staff')->persistent('Close');
+        //     return redirect()->back();
+        // }
 
-        $courseManagementCourseCode = $courseManagement->passcode;
-        if(!empty($request->passcode) && $request->passcode != $courseManagementCourseCode){
-            alert()->error('Oops!', 'Wrong Password, No changes was made')->persistent('Close');
-            return redirect()->back();
-        }
+        // $courseManagementCourseCode = $courseManagement->passcode;
+        // if(!empty($request->passcode) && $request->passcode != $courseManagementCourseCode){
+        //     alert()->error('Oops!', 'Wrong Password, No changes was made')->persistent('Close');
+        //     return redirect()->back();
+        // }
 
         $file = $request->file('result');
         $fileExtension = $file->getClientOriginalExtension();
