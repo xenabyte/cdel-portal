@@ -19,6 +19,55 @@
 </div>
 
 <div class="row">
+
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-body">
+                <div class="accordion" id="default-accordion-example">
+                    <div class="accordion-item shadow">
+                        <h2 class="accordion-header" id="headingTwo">
+                            <button class="accordion-button collapsed bg-info" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                Students yet to do course registration
+                            </button>
+                        </h2>
+                        <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#default-accordion-example">
+                            <div class="accordion-body">
+                                <table id="buttons-datatables" class="display table table-bordered" style="width:100%">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">Id</th>
+                                            <th scope="col">Student Name</th>
+                                            <th scope="col">Matric Number</th>
+                                            <th scope="col">Phone Number</th>
+                                            <th scope="col">Programme</th>
+                                            <th scope="col">Level</th>
+                                            <th scope="col"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach($pendingStudents as $pendingStudent)
+                                            <tr>
+                                                <th scope="row">{{ $loop->iteration }}</th>
+                                                <td>{{ $pendingStudent->applicant->lastname .' '. $pendingStudent->applicant->othernames}}</td>
+                                                <td>{{ $pendingStudent->matric_number }}</td>
+                                                <td>{{ $pendingStudent->applicant->phone_number }}</td>
+                                                <td>{{ $pendingStudent->programme->name }}</td>
+                                                <td>{{ $pendingStudent->academicLevel->level }} Level</td>
+                                                <td>
+                                                    <a href="{{ url('admin/studentProfile/'.$pendingStudent->slug) }}" class="btn btn-success m-1"><i class= "ri-user-6-fill"></i> View Student</a>
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="col-lg-12">
         <div class="card">
             <div class="card-header align-items-center d-flex">

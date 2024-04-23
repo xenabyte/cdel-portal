@@ -1166,19 +1166,22 @@ class AcademicController extends Controller
     }
 
 
-    public function courseRegistrations (Request $request){
+    public function courseRegistrations(Request $request){
         $globalData = $request->input('global_data');
         $academicSession = $globalData->sessionSetting['academic_session'];
 
+        $studentRegistrations = StudentCourseRegistration::with('student')
+            ->where('academic_session', $academicSession)
+            ->orderBy('level_id', 'asc')
+            ->get();
 
-        $studentRegistrations = StudentCourseRegistration::with('student')->where([
-            'academic_session' => $academicSession,
-        ])->orderBy('level_id', 'asc')->get();
-        
+        $studentIds = $studentRegistrations->pluck('student_id');
+        $pendingStudents = Student::with('applicant')->whereNotNull('matric_number')->whereNotIn('id', $studentIds)->get();
+
         return view('admin.courseRegistrations', [
-            'studentRegistrations' => $studentRegistrations
+            'studentRegistrations' => $studentRegistrations,
+            'pendingStudents' => $pendingStudents
         ]);
-
     }
 
     public function approveReg(Request $request){
