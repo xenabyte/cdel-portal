@@ -636,13 +636,13 @@
                             <th rowspan="2">Cumulative Total Credit Units</th>
                             <th rowspan="2">Cumulative Total Credit Points</th>
                             <th rowspan="2">Cumulative CGPA</th>
-                            @foreach($classifiedCourses as $courseName => $students)
+                            @foreach($classifiedCourses as $courseName => $allStudents)
                                 <th colspan="6">{{ $courseName }}</th>
                             @endforeach
                         </tr>
                         <tr>
                             <!-- Subtable headers -->
-                            @foreach($classifiedCourses as $courseName => $students)
+                            @foreach($classifiedCourses as $courseName => $allStudents)
                                 <th>Credit Unit</th>
                                 <th>Test Score</th>
                                 <th>Exam Score</th>

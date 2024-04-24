@@ -612,13 +612,13 @@
                             <th class="bg bg-dark text-light" rowspan="2">Cumulative Total Credit Units</th>
                             <th class="bg bg-dark text-light" rowspan="2">Cumulative Total Credit Points</th>
                             <th class="bg bg-dark text-light" rowspan="2">Cumulative CGPA</th>
-                            @foreach($classifiedCourses as $courseName => $students)
+                            @foreach($classifiedCourses as $courseName => $allStudents)
                                 <th class="bg bg-dark text-light" colspan="6">{{ $courseName }}</th>
                             @endforeach
                         </tr>
                         <tr>
                             <!-- Subtable headers -->
-                            @foreach($classifiedCourses as $courseName => $students)
+                            @foreach($classifiedCourses as $courseName => $allStudents)
                                 <th class="bg bg-soft-dark">Credit Unit</th>
                                 <th class="bg bg-soft-dark">Test Score</th>
                                 <th class="bg bg-soft-dark">Exam Score</th>
@@ -630,7 +630,7 @@
                     </thead>
                     <tbody>
                         @foreach($students as $student)
-                            @if(!empty($student))
+                            {{-- @if(!empty($student)) --}}
                                 @php
                                     $degreeClass = new \App\Models\DegreeClass;
                                     $viewSemesterRegisteredCourses = $student->registeredCourses->where('semester', $semester)->where('level_id', $academiclevel->id)->where('academic_session', $academicSession);
@@ -768,7 +768,7 @@
                                     @endforeach
                                     
                                 </tr>
-                            @endif
+                            {{-- @endif --}}
                         @endforeach
                     </tbody>
                 </table>
