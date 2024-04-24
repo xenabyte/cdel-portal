@@ -654,7 +654,7 @@
                     </thead>
                     <tbody>
                         @foreach($students as $student)
-                            @if(!empty($students))
+                            @if(!empty($student))
                                 @php
                                     $degreeClass = new \App\Models\DegreeClass;
                                     $viewSemesterRegisteredCourses = $student->registeredCourses->where('semester', $semester)->where('level_id', $academiclevel->id)->where('academic_session', $academicSession);

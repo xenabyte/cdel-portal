@@ -594,6 +594,7 @@
                     <thead>
                         <tr>
                             <th rowspan="2">SN</th>
+                            <th class="bg bg-info text-light" rowspan="2">Result Approval Status</th>
                             <th rowspan="2">Student Result</th>
                             <th rowspan="2">Student Name</th>
                             <th rowspan="2">Matric Number</th>
@@ -629,10 +630,19 @@
                     </thead>
                     <tbody>
                         @foreach($students as $student)
-                            @if(!empty($students))
+                            @if(!empty($student))
                                 @php
                                     $degreeClass = new \App\Models\DegreeClass;
                                     $viewSemesterRegisteredCourses = $student->registeredCourses->where('semester', $semester)->where('level_id', $academiclevel->id)->where('academic_session', $academicSession);
+                                    $countRegCourses = count($viewSemesterRegisteredCourses);
+                                    $approvedSemesterCourse = $student->registeredCourses->where('semester', $semester)->where('level_id', $academiclevel->id)->where('academic_session', $academicSession)->where('result_approval_id', '!=', null);
+                                    $countApprovedResult = count($approvedSemesterCourse);
+                                    $approvedStudentStatus = false;
+
+                                    if($countRegCourses == $countApprovedResult){
+                                        $approvedStudentStatus = true;
+                                    }
+
                                     $semesterRegisteredCourses = $student->registeredCourses->where('semester', $semester)->where('level_id', $academiclevel->id)->where('academic_session', $academicSession)->where('grade', '!=', null);
                                     $currentRegisteredCreditUnits =  $semesterRegisteredCourses->sum('course_credit_unit');
                                     $currentRegisteredGradePoints = $semesterRegisteredCourses->sum('points');
@@ -653,6 +663,7 @@
                                 @endphp
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
+                                    <td class="bg bg-soft-info">{{ $approvedStudentStatus?'Approved':'Not Approved' }}</td>
                                     <td width="200px">
                                         <div class="accordion" id="default-accordion-example">
                                             <div class="accordion-item shadow">
