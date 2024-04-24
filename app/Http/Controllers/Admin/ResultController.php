@@ -83,7 +83,7 @@ class ResultController extends Controller
         $academicLevel = AcademicLevel::find($request->level_id);
     
         $students = Student::
-        with(['applicant', 'programme', 'transactions', 'courseRegistrationDocument', 'registeredCourses', 'registeredCourses.course', 'partner', 'academicLevel', 'department', 'faculty'])
+        with(['applicant', 'programme', 'registeredCourses', 'registeredCourses.course'])
         ->where([
             'is_active' => true,
             'is_passed_out' => false,
