@@ -254,34 +254,31 @@ class ResultController extends Controller
 
 
     public function approveResult(Request $request){
-
         $studentIds = $request->input('student_ids', []);
         $url = $request->url;
         $students = Student::whereIn('id', $studentIds)->get();
-
+    
         foreach ($students as $student) {
-            
             $studentRegistration = CourseRegistration::where('student_id', $student->id)
-            ->where('academic_session', $request->session)
-            ->where('semester', $request->semester)
-            ->whereNotNull('grade')
-            ->update(['result_approval_id' => ResultApprovalStatus::getApprovalStatusId(ResultApprovalStatus::SENATE_APPROVED)]);
-
-            Result::calculateCGPA($student->id);
+                ->where('academic_session', $request->session)
+                ->where('semester', $request->semester)
+                ->whereNotNull('grade')
+                ->update(['result_approval_id' => ResultApprovalStatus::getApprovalStatusId(ResultApprovalStatus::SENATE_APPROVED)]);
+            
         }
-
-
+    
         $academicLevels = AcademicLevel::get();
         $academicSessions = Session::orderBy('id', 'desc')->get();
         $faculties = Faculty::get();
-
+    
         alert()->success('Result Approved', '')->persistent('Close');
-        return view($url,[
+        return view($url, [
             'academicLevels' => $academicLevels,
             'academicSessions' => $academicSessions,
             'faculties' => $faculties
         ]);
     }
+    
 
     public function generateResult(Request $request){
         $validator = Validator::make($request->all(), [
