@@ -112,7 +112,7 @@
                                     @foreach ($students as $studentforIds)
                                     <input type="hidden" name="student_ids[]" value="{{ $studentforIds->id }}">
                                     @endforeach
-                                    @if(!empty($programme))
+                                    @if(!empty($faculty))
                                     <input type="hidden" name="faculty_id" value="{{ $faculty->id }}">
                                     <input type="hidden" name="session" value="{{ $academicSession }}">
                                     <input type="hidden" name="semester" value="{{ $semester }}">

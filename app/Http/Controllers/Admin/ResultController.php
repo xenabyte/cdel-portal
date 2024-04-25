@@ -257,6 +257,9 @@ class ResultController extends Controller
         $studentIds = $request->input('student_ids', []);
         $url = $request->url;
         $students = Student::whereIn('id', $studentIds)->get();
+
+        log::info($request->session);
+        log::info($request->semester);
     
         foreach ($students as $student) {
             $studentRegistration = CourseRegistration::where('student_id', $student->id)
