@@ -1,5 +1,5 @@
 @php
-$qrcode = 'https://chart.googleapis.com/chart?chs=300x300&cht=qr&chl='.env('APP_URL').'/exit/'.$exitApplication->id;
+$qrcode = 'https://quickchart.io/chart?chs=300x300&cht=qr&chl='.env('APP_URL').'/exit/'.$exitApplication->id;
 @endphp
 <!DOCTYPE html>
 <html>

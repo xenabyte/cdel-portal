@@ -1,7 +1,7 @@
 @extends('layouts.dashboard')
 @php
 
-$qrcode = 'https://chart.googleapis.com/chart?chs=300x300&cht=qr&chl='.env('APP_URL').'/studentDetails/'.$student->slug;
+$qrcode = 'https://quickchart.io/chart?chs=300x300&cht=qr&chl='.env('APP_URL').'/studentDetails/'.$student->slug;
 $name = $student->applicant->lastname.' '.$student->applicant->othernames;
 @endphp
 @section('content')

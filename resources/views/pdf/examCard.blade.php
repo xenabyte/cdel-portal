@@ -1,5 +1,5 @@
 @php
-$qrcode = 'https://chart.googleapis.com/chart?chs=300x300&cht=qr&chl='.env('APP_URL').'/examDocket/'.$info->slug;
+$qrcode = 'https://quickchart.io/chart?chs=300x300&cht=qr&chl='.env('APP_URL').'/examDocket/'.$info->slug;
 @endphp
 <!DOCTYPE html>
 <html>
