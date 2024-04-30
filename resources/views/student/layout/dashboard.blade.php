@@ -36,6 +36,38 @@
     <link href="{{asset('assets/css/app.min.css')}}" rel="stylesheet" type="text/css" />
     <!-- custom Css-->
     <link href="{{asset('assets/css/custom.min.css')}}" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+    <script>
+        window.OneSignalDeferred = window.OneSignalDeferred || [];
+        OneSignalDeferred.push(function(OneSignal) {
+            OneSignal.init({
+                appId: "6738e20a-154a-46d6-8b26-0afffd0ad96f",
+            });
+
+            OneSignal.getUserId().then(function(playerId) {
+                // Send the player ID to your Laravel backend
+                fetch('/save-player-id', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}' // Ensure you include CSRF token if using Laravel CSRF protection
+                    },
+                    body: JSON.stringify({ player_id: playerId })
+                })
+                .then(response => {
+                    if (response.ok) {
+                        console.log('Player ID saved successfully');
+                    } else {
+                        console.error('Failed to save player ID');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+            });
+        });
+
+    </script>
     <script src="https://cdn.tiny.cloud/1/b9d45cy4rlld8ypwkzb6yfzdza63fznxtcoc3iyit61r4rv9/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
     <script>
         tinymce.init({
@@ -456,7 +488,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.32/vfs_fonts.js"></script>
 
-
+    
     <script>
         function handlePaymentMethodChange(event) {
             const selectedPaymentMethod = event.target.value;

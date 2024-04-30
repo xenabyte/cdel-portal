@@ -9,6 +9,7 @@
         "alaminfirdows/laravel-multi-auth": "^0.0.1@alpha",
         "barryvdh/laravel-cors": "^3.0",
         "barryvdh/laravel-dompdf": "^2.0",
+        "berkayk/onesignal-laravel": "^2.1",
         "fruitcake/laravel-cors": "^2.0",
         "google/apiclient": "^2.0",
         "guzzlehttp/guzzle": "^7.0.1",

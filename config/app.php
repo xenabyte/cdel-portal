@@ -164,6 +164,7 @@ return [
         Unicodeveloper\Paystack\PaystackServiceProvider::class,
         Barryvdh\DomPDF\ServiceProvider::class,
         KingFlamez\Rave\RaveServiceProvider::class,
+        Berkayk\OneSignal\OneSignalServiceProvider::class,
 
         /*
          * Package Service Providers...
@@ -235,6 +236,7 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
         'PDF' => Barryvdh\DomPDF\Facade::class,
         'Rave' => KingFlamez\Rave\Facades\Rave::class,
+        'OneSignal' => Berkayk\OneSignal\OneSignalFacade::class
 
     ],
 
