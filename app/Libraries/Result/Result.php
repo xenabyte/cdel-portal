@@ -30,6 +30,7 @@ class Result
 
         foreach ($records as $row) {
             $matricNumber = $row['Matric No'];
+            $courseCodeMain = $row['Course Code'];
             $testScore = $row['Test Score'];
             $examScore = $row['Exam Score'];
             $testScore = floatval($testScore);
@@ -58,6 +59,10 @@ class Result
 
             $course = Course::find($courseId);
             $courseCode = $course->code;
+
+            if($courseCode != $courseCodeMain){
+                return "Result Uploaded is not for course: " . $courseCode;
+            }
 
             if (strpos($courseCode, 'NSC') !== false && $student->programme_id == 15) {
                 if($totalScore < 50){

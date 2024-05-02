@@ -111,6 +111,7 @@
                         <thead>
                             <tr>
                                 <th scope="col">Id</th>
+                                <th scope="col">Course Code</th>
                                 <th scope="col">Name</th>
                                 <th scope="col">Matric No</th>
                                 <th scope="col">Programme</th>
@@ -127,6 +128,7 @@
                                 @if($registration->student)
                                 <tr>
                                     <th scope="row">{{ $loop->iteration }}</th>
+                                    <td>{{ $course->code }}</td>
                                     <td>{{ $registration->student->applicant->lastname .' '. $registration->student->applicant->othernames }}</td>
                                     <td>{{ $registration->student->matric_number }}</td>
                                     <td>{{ $registration->student->programme->name }}</td>
