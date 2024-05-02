@@ -48,7 +48,7 @@
                             $matriculantId = 1;
                         @endphp
                         @foreach($matriculants as $matriculant)
-                            @if($matriculant->student->is_active)
+                            @if($matriculant->student && $matriculant->student->is_active)
                             <tr>
                                 <th scope="row">{{ $matriculantId++ }}</th>
                                 <td>{{ $matriculant->lastname .' '. $matriculant->othernames }}</td>
