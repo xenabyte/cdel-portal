@@ -44,6 +44,7 @@ use App\Models\Session;
 use App\Models\Faculty;
 use App\Models\Department;
 use App\Models\CourseRegistration;
+use App\Libraries\Bandwidth\Bandwidth;
 
 
 class Controller extends BaseController
@@ -559,6 +560,46 @@ class Controller extends BaseController
             return true;
         }
     }
+
+    public function createBandwidthAccount($student){
+        $student->refresh();
+    
+        if($student->is_active && !empty($student->matric_number)){
+    
+            $programme = Programme::with('students', 'department', 'department.faculty')->where('id', $student->programme_id)->first();
+            $codeNumber = $programme->code_number;
+            $deptCode = $programme->department->code;
+            $facultyCode = $programme->department->faculty->code;
+            $programmeCode = $programme->code;
+            $code = $deptCode.$programmeCode;
+            $bandwidthAmount = 32212254720;
+
+            $accessCode = $student->applicant->passcode;
+    
+            $name = $student->applicant->lastname.' '.$student->applicant->othernames;
+            $nameParts = explode(' ', $student->applicant->othernames);
+            $firstName = $nameParts[0];
+            $username = strtolower(str_replace(' ', '', $code.'.'.$student->applicant->lastname.'.'.$firstName));
+
+            $userData = new \stdClass();
+            $userData->username = $username; 
+            $userData->password =  $accessCode;
+            $userData->firstname = $firstName;
+            $userData->lastname = $student->applicant->lastname; 
+            $userData->phone = $student->applicant->phone_number; 
+            $userData->address = $student->applicant->address; 
+    
+            $bandwidth = new Bandwidth();
+            $createStudentBandwidthRecord = $bandwidth->createUser($userData);
+            if ($createStudentBandwidthRecord && isset($createStudentBandwidthRecord['status']) && $createStudentBandwidthRecord['status'] === 'success') {
+                $creditStudent = $bandwidth->addToDataBalance($username, $bandwidthAmount);
+                $student->bandwidth_username = $username;
+                $student->save();
+            }
+        }
+    }
+    
+
 
     public  function sortBySession($a, $b) {
         return strcmp($a['session'], $b['session']);

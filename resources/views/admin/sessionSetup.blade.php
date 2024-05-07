@@ -212,12 +212,12 @@
 
                                 <div class="col-lg-4">
                                     <h4 class="card-title mb-0 flex-grow-1">Registrar Signature:
-                                        <img class="img-thumbnail" alt="Registrar Signature" width="200" src="{{ !empty($pageGlobalData->sessionSetting)? asset($pageGlobalData->sessionSetting->registrar_signature):'Not Set' }}"></h4>
-                                    <br>
                                     <div class="form-floating">
                                         <input type="file" class="form-control" id="registrar_signature" name="registrar_signature">
                                         <label for="registrar_signature"></label>
                                     </div>
+                                    <br>
+                                    <img class="img-thumbnail" alt="Registrar Signature" width="200" src="{{ !empty($pageGlobalData->sessionSetting)? asset($pageGlobalData->sessionSetting->registrar_signature):'Not Set' }}"></h4>
                                 </div>
 
                                 <div class="col-lg-4">

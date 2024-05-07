@@ -106,6 +106,7 @@ class PaymentController extends Controller
                         return redirect($redirectPath);
                     }elseif($paymentType == Payment::PAYMENT_TYPE_SCHOOL || $paymentType == Payment::PAYMENT_TYPE_SCHOOL_DE){
                         $this->generateMatricAndEmail($student);
+                        $this->createBandwidthAccount($student);
                         return redirect($redirectPath);
                     }else{
                         return redirect($redirectPath);
@@ -202,6 +203,7 @@ class PaymentController extends Controller
                         return redirect($redirectPath);
                     }elseif($paymentType == Payment::PAYMENT_TYPE_SCHOOL || $paymentType == Payment::PAYMENT_TYPE_SCHOOL_DE){
                         $this->generateMatricAndEmail($student);
+                        $this->createBandwidthAccount($student);
                         return redirect($redirectPath);
                     }else{
                         return redirect($redirectPath);
@@ -331,6 +333,7 @@ class PaymentController extends Controller
                             return true;
                         }elseif($paymentType == Payment::PAYMENT_TYPE_SCHOOL || $paymentType == Payment::PAYMENT_TYPE_SCHOOL_DE){
                             $this->generateMatricAndEmail($student);
+                            $this->createBandwidthAccount($student);
                             return true;
                         }else{
                             return true;

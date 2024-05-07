@@ -83,8 +83,12 @@ class Bandwidth {
 
     public function createUser($userData){
         $postfields = array(
-            'username' => $username,
-            'bandwidth' => $bandwidth,
+            'username' => $userData->username,
+            'password' => $userData->password,
+            'firstname' => $userData->firstname,
+            'lastname' => $userData->lastname,
+            'phone' => $userData->phone,
+            'address' => $userData->address,
             'token' => $this->apiToken
         );
 
