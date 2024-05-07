@@ -34,7 +34,7 @@
                             <th scope="col">Id</th>
                             <th scope="col">Support Code</th>
                             <th scope="col">CGPA</th>
-                            <th scope="col">Image</th>
+                            {{-- <th scope="col">Image</th> --}}
                             <th scope="col">Name</th>
                             <th scope="col">Level</th>
                             <th scope="col">Passcode</th>
@@ -51,9 +51,9 @@
                             <th scope="row">{{ $loop->iteration }}</th>
                             <td><span class="text-danger">#{{ $student->id }}</span></td>
                             <td><span class="text-primary">{{ $student->cgpa }}</span></td>
-                            <td>
+                            {{-- <td>
                                 <img class="img-thumbnail rounded-circle avatar-md"  src="{{ !empty($student->image) ? asset($student->image) : asset('assets/images/users/user-dummy-img.jpg') }}">
-                            </td>
+                            </td> --}}
                             <td>{{ $student->applicant->lastname .' '. $student->applicant->othernames }}</td>
                             <td>{{ $student->academicLevel->level }} </td>
                             <td>{{ $student->passcode }} </td>

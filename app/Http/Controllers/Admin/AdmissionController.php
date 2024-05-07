@@ -97,7 +97,8 @@ class AdmissionController extends Controller
             'applicant_id' => 'required',
             'programme_id' => 'required',
             'level_id' => 'required',
-            'status' => 'required'
+            'status' => 'required',
+            'batch' => 'required',
         ]);
 
 
@@ -141,8 +142,8 @@ class AdmissionController extends Controller
                 'faculty_id' => $programme->department->faculty->id,
                 'department_id' => $programme->department->id,
                 'programme_id' => $programme->id,
-                'entry_year' => $entryYear
-                
+                'entry_year' => $entryYear,
+                'batch' => $request->batch
             ])->id;
 
             //create an email with tau letter heading 

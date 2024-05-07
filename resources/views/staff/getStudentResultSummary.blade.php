@@ -1,4 +1,4 @@
-@extends('admin.layout.dashboard')
+@extends('staff.layout.dashboard')
 
 @section('content')
 <div class="row">
@@ -278,7 +278,6 @@
                                     <td class="bg bg-soft-info"> @foreach($degreeClassCounts as $degreeClass => $count) @if($degreeClass == 'Third Class') {{ $count }}  @endif @endforeach</td>
                                     <td class="bg bg-soft-warning"> @foreach($degreeClassCounts as $degreeClass => $count) @if($degreeClass == 'Pass') {{ $count }}  @endif @endforeach</td>
                                     <td class="bg bg-soft-danger"> @foreach($degreeClassCounts as $degreeClass => $count) @if($degreeClass == 'Fail') {{ $count }}  @endif @endforeach</td>
-
                                 </tr>
                             @endforeach
                         </tbody>

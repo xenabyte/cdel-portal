@@ -57,6 +57,16 @@
                             </div>
 
                             <div class="mb-3">
+                                <label for="choices-batch-input" class="form-label">Batch</label>
+                                <select class="form-select" name="batch" id="choices-batch-input" data-choices data-choices-search-false required>
+                                    <option value="" selected>Choose...</option>
+                                    <option value="A">Batch A</option>
+                                    <option value="B">Batch B</option>
+                                    <option value="C">Batch C</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
                                 <label for="choices-publish-status-input" class="form-label">Manage Application</label>
                                 <select class="form-select" name="status" id="choices-publish-status-input" data-choices data-choices-search-false required>
                                     <option value="" selected>Choose...</option>

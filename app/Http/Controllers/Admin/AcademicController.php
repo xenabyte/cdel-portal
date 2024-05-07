@@ -1034,6 +1034,7 @@ class AcademicController extends Controller
             }
 
             $student->update([
+                'batch' => 'A',
                 'level_id' => $student->level_id + $promotionOffset,
                 'academic_session' => $academicSession,
                 'credit_load' => null

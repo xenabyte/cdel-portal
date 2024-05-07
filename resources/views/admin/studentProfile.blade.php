@@ -230,11 +230,12 @@ $studentRegistrations = $student->courseRegistrationDocument()->orderBy('created
                                             <strong>Jamb Reg. Number:</strong> {{ $student->applicant->jamb_reg_no }}<br> <br>
                                             <strong>Support Code:</strong> <span class="text-danger">ST{{ sprintf("%06d", $student->id) }}</span> 
                                             <hr>
-                                            @if(env('WALLET_STATUS'))<a class="dropdown-item" href=#"><i class="mdi mdi-wallet text-muted fs-16 align-middle me-1"></i> <span class="align-middle">Balance : <b>₦{{ number_format($student->amount_balance/100, 2) }}</b></span></a>@endif
+                                            @if(env('WALLET_STATUS'))<a class="dropdown-item" href="#"><i class="mdi mdi-wallet text-muted fs-16 align-middle me-1"></i> <span class="align-middle">Balance : <b>₦{{ number_format($student->amount_balance/100, 2) }}</b></span></a>@endif
                                         </p>
                                         <p class="text-muted border-top border-top-dashed"><strong>CGPA:</strong> {{ $student->cgpa }} <br>
                                             <strong>Class:</strong> {{ $student->degree_class }}<br>
                                             <strong>Standing:</strong> {{ $student->standing }}<br>
+                                            <strong>Batch:</strong> {{ $student->batch }}<br>
                                         </p>
                                     </div>
                                     <div class="table-responsive border-top border-top-dashed">
@@ -505,6 +506,44 @@ $studentRegistrations = $student->courseRegistrationDocument()->orderBy('created
                                                 <label for="creditLoad" class="form-label">Credit Load<span class="text-danger">*</span></label>
                                                 <input type="number"  name="credit_load"  class="form-control" id="credit_load" value="{{ $student->credit_load }}">
                                             </div>
+                                        </div>
+        
+                                        <!--end col-->
+                                        <div class="col-lg-12">
+                                            <div class="text-end">
+                                                <br>
+                                                <button type="submit" id="submit-button" class="btn btn-primary btn-lg">Save Changes</button>
+                                            </div>
+                                        </div>
+                                        <!--end col-->
+                                    </div>
+                                    <!--end row-->
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item shadow">
+                        <h2 class="accordion-header" id="accordionwithiconExample4">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#accor_iconExamplecollapse4" aria-expanded="false" aria-controls="accor_iconExamplecollapse4">
+                                Update Student Credit Load
+                            </button>
+                        </h2>
+                        <div id="accor_iconExamplecollapse3" class="accordion-collapse collapse" aria-labelledby="accordionwithiconExample2" data-bs-parent="#accordionWithicon">
+                            <div class="accordion-body">
+                                <form action="{{ url('admin/changeStudentBatch') }}" method="POST">
+                                    @csrf
+                                    <input type="hidden" name="student_id" value="{{ $student->id }}">
+
+                                    <div class="row g-2">
+                                        <div class="mb-3">
+                                            <label for="choices-batch-input" class="form-label">Student Batch</label>
+                                            <select class="form-select" name="batch" id="choices-batch-input" data-choices data-choices-search-false required>
+                                                <option value="" selected>Choose...</option>
+                                                <option value="A">Batch A</option>
+                                                <option value="B">Batch B</option>
+                                                <option value="C">Batch C</option>
+                                            </select>
                                         </div>
         
                                         <!--end col-->

@@ -96,6 +96,18 @@
                                             </div>
                                         </div>
 
+                                        <div class="col-lg-12">
+                                            <div class="form-floating">
+                                                <select class="form-select" id="batch" name="batch" aria-label="Batch">
+                                                    <option value="" selected>--Select--</option>
+                                                    <option value="A">Batch A</option>
+                                                    <option value="B">Batch B</option>
+                                                    <option value="C">Batch C</option>
+                                                </select>
+                                                <label for="batch">Batch</label>
+                                            </div>
+                                        </div>
+
                                         <button type="submit" id="submit-button" class="btn btn-fill btn-primary btn-lg btn-block mb-5">Get Results</button>
                                     </div>
                                 </form>

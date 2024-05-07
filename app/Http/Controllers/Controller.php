@@ -554,6 +554,8 @@ class Controller extends BaseController
             $programme->matric_last_number = $newMatric;
             $programme->save();
 
+            $this->createBandwidthAccount($student);
+            $student->refresh();
             
             Mail::to($studentPreviousEmail)->send(new StudentActivated($student));
 

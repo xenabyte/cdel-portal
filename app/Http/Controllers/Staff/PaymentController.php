@@ -634,7 +634,6 @@ class PaymentController extends Controller
 
             if(!empty($student) && ($payment->type == Payment::PAYMENT_TYPE_SCHOOL || $payment->type == Payment::PAYMENT_TYPE_SCHOOL_DE) && $request->paymentStatus == 1){
                 $this->generateMatricAndEmail($student);
-                $this->createBandwidthAccount($student);
             }
 
             if(!empty($request->student_id)){

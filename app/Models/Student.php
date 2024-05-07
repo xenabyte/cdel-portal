@@ -46,7 +46,8 @@ class Student extends Authenticatable
         'linkedIn',
         'dashboard_mode',
         'bandwidth_username',
-        'onesignal_id '
+        'onesignal_id ',
+        'batch'
     ];
 
     /**

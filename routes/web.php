@@ -257,6 +257,7 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'admin'],
   Route::post('/changeStudentCreditLoad', [App\Http\Controllers\Admin\StaffController::class, 'changeStudentCreditLoad'])->name('changeStudentCreditLoad')->middleware(['auth:admin']);
   Route::post('/changeStudentName', [App\Http\Controllers\Admin\StaffController::class, 'changeStudentName'])->name('changeStudentName')->middleware(['auth:admin']);
   Route::post('/changeStudentLevel', [App\Http\Controllers\Admin\StaffController::class, 'changeStudentLevel'])->name('changeStudentLevel')->middleware(['auth:admin']);
+  Route::post('/changeStudentBatch', [App\Http\Controllers\Admin\StaffController::class, 'changeStudentBatch'])->name('changeStudentBatch')->middleware(['auth:admin']);
 
   Route::get('/partners', [App\Http\Controllers\Admin\PartnerController::class, 'partners'])->name('partners')->middleware(['auth:admin']);
   Route::get('/partnerApproval', [App\Http\Controllers\Admin\PartnerController::class, 'partnerApproval'])->name('partnerApproval')->middleware(['auth:admin']);
@@ -477,10 +478,15 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'staff'],
   Route::post('/generateStudentResults', [App\Http\Controllers\Staff\ResultController::class, 'generateStudentResults'])->name('generateStudentResults')->middleware(['auth:staff']);
   Route::post('/approveResult', [App\Http\Controllers\Staff\ResultController::class, 'approveResult'])->name('approveResult')->middleware(['auth:staff']); 
 
+  Route::get('/getStudentResultSummary', [App\Http\Controllers\Staff\ResultController::class, 'getStudentResultSummary'])->name('getStudentResultSummary')->middleware(['auth:staff']);
+  Route::post('/generateStudentResultSummary', [App\Http\Controllers\Staff\ResultController::class, 'generateStudentResultSummary'])->name('generateStudentResultSummary')->middleware(['auth:staff']);
+
   Route::post('/generateResult', [App\Http\Controllers\Staff\ResultController::class, 'generateResult'])->name('generateResult')->middleware(['auth:staff']);
   Route::post('/uploadStudentImage', [App\Http\Controllers\Staff\StaffController::class, 'uploadStudentImage'])->name('uploadStudentImage')->middleware(['auth:staff']);
   Route::post('/changeStudentPassword', [App\Http\Controllers\Staff\StaffController::class, 'changeStudentPassword'])->name('changeStudentPassword')->middleware(['auth:staff']);
   Route::post('/changeStudentCreditLoad', [App\Http\Controllers\Staff\StaffController::class, 'changeStudentCreditLoad'])->name('changeStudentCreditLoad')->middleware(['auth:staff']);
+  Route::post('/changeStudentBatch', [App\Http\Controllers\Staff\StaffController::class, 'changeStudentBatch'])->name('changeStudentBatch')->middleware(['auth:staff']);
+
 
   Route::get('/payments', [App\Http\Controllers\Staff\PaymentController::class, 'payments'])->name('payments')->middleware(['auth:staff']);
   Route::post('/addPayment', [App\Http\Controllers\Staff\PaymentController::class, 'addPayment'])->name('addPayment')->middleware(['auth:staff']);

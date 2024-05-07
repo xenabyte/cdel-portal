@@ -280,6 +280,7 @@ $studentRegistrations = $student->courseRegistrationDocument()->orderBy('created
                                         <p class="text-muted border-top border-top-dashed"><strong>CGPA:</strong> {{ $student->cgpa }} <br>
                                             <strong>Class:</strong> {{ $student->degree_class }}<br>
                                             <strong>Standing:</strong> {{ $student->standing }}<br>
+                                            <strong>Batch:</strong> {{ $student->batch }}<br>
                                         </p>
                                     </div>
                                     <div class="table-responsive border-top border-top-dashed">
@@ -399,7 +400,7 @@ $studentRegistrations = $student->courseRegistrationDocument()->orderBy('created
                         </div>
                     </div>
                     {{-- @endif --}}
-                    <div class="accordion-item shadow">
+                    {{-- <div class="accordion-item shadow">
                         <h2 class="accordion-header" id="accordionwithiconExample2">
                             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#accor_iconExamplecollapse2" aria-expanded="false" aria-controls="accor_iconExamplecollapse2">
                                 <i class="ri-lock-password-fill"></i> Update Student Password
@@ -438,9 +439,9 @@ $studentRegistrations = $student->courseRegistrationDocument()->orderBy('created
                                 </form>
                             </div>
                         </div>
-                    </div>
+                    </div> --}}
 
-                    <div class="accordion-item shadow">
+                    {{-- <div class="accordion-item shadow">
                         <h2 class="accordion-header" id="accordionwithiconExample3">
                             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#accor_iconExamplecollapse3" aria-expanded="false" aria-controls="accor_iconExamplecollapse3">
                                 <i class="ri-contacts-book-upload-fill"></i> Update Student Credit Load
@@ -473,7 +474,7 @@ $studentRegistrations = $student->courseRegistrationDocument()->orderBy('created
                                 </form>
                             </div>
                         </div>
-                    </div>
+                    </div> --}}
                 </div>
             </div>
             <!-- end tab pane -->

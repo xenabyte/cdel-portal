@@ -695,6 +695,34 @@ class StaffController extends Controller
         return redirect()->back();
     }
 
+    public function changeStudentBatch (Request $request) {
+
+        $validator = Validator::make($request->all(), [
+            'student_id' => 'required',
+            'batch' => 'required',
+        ]);
+
+        if($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+
+        if(!$student = Student::find($request->student_id)){
+            alert()->error('Oops', 'Invalid Student ')->persistent('Close');
+            return redirect()->back();
+        }
+
+        $student->batch = $request->batch;
+
+        if($student->save()) {
+            alert()->success('Success', 'Save Changes')->persistent('Close');
+            return redirect()->back();
+        }
+
+        alert()->error('Oops!', 'An Error Occurred')->persistent('Close');
+        return redirect()->back();
+    }
+
     public function changeStudentCreditLoad (Request $request) {
 
         $validator = Validator::make($request->all(), [

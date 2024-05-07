@@ -60,13 +60,13 @@ class ResultController extends Controller
         $faculties = Faculty::get();
         $semester = $request->semester;
         $academicSession = $request->session;
+        $batch = $request->batch;
     
-
         $programme = Programme::find($request->programme_id);
         $academicLevel = AcademicLevel::find($request->level_id);
-
-        $students = Student::
-        with(['applicant', 'programme', 'registeredCourses', 'registeredCourses.course', 'academicLevel', 'department', 'faculty'])
+    
+        $studentsQuery = Student::
+        with(['applicant', 'programme', 'registeredCourses', 'registeredCourses.course'])
         ->where([
             'is_active' => true,
             'is_passed_out' => false,
@@ -75,14 +75,18 @@ class ResultController extends Controller
             'department_id' => $request->department_id,
             'faculty_id' => $request->faculty_id,
         ])
-        ->whereHas('registeredCourses', function ($query) use ($request) {
+        ->whereHas('registeredCourses', function ($query) use ($request, $batch) {
             $query->where('level_id', $request->level_id)
                   ->where('academic_session', $request->session);
-        })
-        ->get();
-
+            if (!empty($batch)) {
+                $query->where('batch', $batch);
+            }
+        });
+    
+        $students = $studentsQuery->get();
+    
         $classifiedCourses = $this->classifyCourses($students, $semester, $academicLevel, $academicSession);
-
+    
         return view('staff.getStudentResults',[
             'students' => $students,
             'academicLevels' => $academicLevels,
@@ -95,6 +99,58 @@ class ResultController extends Controller
             'faculty_id' => $request->faculty_id,
             'department_id' => $request->department_id,
             'classifiedCourses' => $classifiedCourses,
+        ]);
+    }
+
+
+    public function generateStudentResultSummary(Request $request){
+        $academicLevels = AcademicLevel::get();
+        $globalData = $request->input('global_data');
+        $batch = $request->batch;
+    
+        $studentsQuery = Student::
+        with(['applicant', 'programme', 'registeredCourses', 'registeredCourses.course', 'academicLevel', 'department', 'faculty'])
+        ->where([
+            'is_active' => true,
+            'is_passed_out' => false,
+            'is_rusticated' => false,
+            'faculty_id' => $request->faculty_id,
+        ])
+        ->whereHas('registeredCourses', function ($query) use ($request, $batch) {
+            $query->where('academic_session', $request->session);
+            if (!empty($batch)) {
+                $query->where('batch', $batch);
+            }
+        });
+    
+        $students = $studentsQuery->get();
+    
+        $faculty = Faculty::find($request->faculty_id);
+    
+        $classifiedStudents = [];
+    
+        foreach ($students as $student) {
+            $level = $student->academicLevel->level;
+            $program = $student->programme->name;
+    
+            if (!isset($classifiedStudents[$level])) {
+                $classifiedStudents[$level] = [];
+            }
+    
+            if (!isset($classifiedStudents[$level][$program])) {
+                $classifiedStudents[$level][$program] = [];
+            }
+    
+            $classifiedStudents[$level][$program][] = $student;
+        }
+    
+        return view('staff.getStudentResultSummary',[
+            'classifiedStudents' => $classifiedStudents,
+            'academicLevels' => $academicLevels,
+            'academicSession' => $request->session,
+            'semester' => $request->semester,
+            'students' => $students,
+            'faculty' => $faculty
         ]);
     }
 
