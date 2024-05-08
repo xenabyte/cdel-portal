@@ -84,6 +84,15 @@ class ResultController extends Controller
         });
     
         $students = $studentsQuery->get();
+
+        if(empty($students)){
+            alert()->success('No students found', '')->persistent('Close');
+            return view('admin.getStudentResults',[
+                'academicLevels' => $academicLevels,
+                'academicSessions' => $academicSessions,
+                'faculties' => $faculties
+            ]);
+        }
     
         $classifiedCourses = $this->classifyCourses($students, $semester, $academicLevel, $academicSession);
     
@@ -107,6 +116,9 @@ class ResultController extends Controller
         $academicLevels = AcademicLevel::get();
         $globalData = $request->input('global_data');
         $batch = $request->batch;
+
+        $academicSessions = Session::orderBy('id', 'desc')->get();
+        $faculties = Faculty::get(); 
     
         $studentsQuery = Student::
         with(['applicant', 'programme', 'registeredCourses', 'registeredCourses.course', 'academicLevel', 'department', 'faculty'])
@@ -142,6 +154,14 @@ class ResultController extends Controller
             }
     
             $classifiedStudents[$level][$program][] = $student;
+        }
+
+        if(count($students) < 1){
+            alert()->success('No students found', '')->persistent('Close');
+            return view('admin.getStudentResultSummary',[
+                'faculties' => $faculties,
+                'academicSessions' => $academicSessions,
+            ]);
         }
     
         return view('staff.getStudentResultSummary',[
