@@ -133,12 +133,15 @@ class ApplicationController extends Controller
     //applicant
     public function showRegistrationForm(Request $request)
     {
-        $payment = Payment::with('structures')->where('type', Payment::PAYMENT_TYPE_GENERAl_APPLICATION)->first();
-        $interApplicationPayment = Payment::with('structures')->where('type', Payment::PAYMENT_TYPE_INTER_TRANSFER_APPLICATION)->first();
+        $globalData = $request->input('global_data');
+        $applicationSession = $globalData->sessionSetting['application_session'];
+
+        $applicationPayment = Payment::with('structures')->where('type', Payment::PAYMENT_TYPE_GENERAl_APPLICATION)->where('academic_session', $applicationSession)->first();
+        $interApplicationPayment = Payment::with('structures')->where('type', Payment::PAYMENT_TYPE_INTER_TRANSFER_APPLICATION)->where('academic_session', $applicationSession)->first();
 
         return view('user.auth.register', [
             'programmes' => $this->programmes,
-            'payment' => $payment,
+            'payment' => $applicationPayment,
             'interPayment' => $interApplicationPayment
         ]);
     }
