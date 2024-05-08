@@ -259,6 +259,7 @@ class StudentController extends Controller
         $paymentId = $request->payment_id;
         $redirectLocation = 'student/walletTransactions';
         $amount = $request->amount * 100;
+        $transaction = Transaction::find($request->transaction_id);
 
         if($paymentId > 0){
             if(!$payment = Payment::with('structures')->where('id', $paymentId)->first()){
@@ -280,6 +281,11 @@ class StudentController extends Controller
 
         if(strtolower($paymentGateway) == 'paystack') {
             Log::info("Paystack Amount ****************: ". round($this->getPaystackAmount($amount)));
+
+            if($transaction){
+                $transaction->reference = $reference;
+                $transaction->save();
+            }
 
             $data = array(
                 "amount" => round($this->getPaystackAmount($amount)),
@@ -305,6 +311,10 @@ class StudentController extends Controller
             Log::info("Flutterwave Amount ****************: ". round($this->getRaveAmount($amount)));
 
             $reference = Flutterwave::generateReference();
+            if($transaction){
+                $transaction->reference = $reference;
+                $transaction->save();
+            }
 
             $data = array(
                 "payment_options" => "card,banktransfer",
@@ -364,6 +374,7 @@ class StudentController extends Controller
             $transactionData->academic_session = $student->academic_session;
             $transactionData->redirect_path = $redirectLocation;
             $transactionData->payment_gateway = $paymentGateway;
+            $transactionData->transaction_id = $request->transaction_id;
 
             return $this->billStudent($transactionData);
         }

@@ -159,6 +159,8 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'admin'],
   Route::post('/editTransaction', [App\Http\Controllers\Admin\PaymentController::class, 'editTransaction'])->name('editTransaction')->middleware(['auth:admin']);
   Route::post('/deleteTransaction', [App\Http\Controllers\Admin\PaymentController::class, 'deleteTransaction'])->name('deleteTransaction')->middleware(['auth:admin']);
   Route::post('/walletTopUp', [App\Http\Controllers\Admin\PaymentController::class, 'walletTopUp'])->name('walletTopUp')->middleware(['auth:admin']);
+  Route::post('/chargeStudents', [App\Http\Controllers\Admin\PaymentController::class, 'chargeStudents'])->name('chargeStudents')->middleware(['auth:admin']);
+
 
 
   Route::get('/applicants', [App\Http\Controllers\Admin\AdmissionController::class, 'applicants'])->name('applicants')->middleware(['auth:admin']);
@@ -504,6 +506,8 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'staff'],
   Route::post('/deleteStructure', [App\Http\Controllers\Staff\PaymentController::class, 'deleteStructure'])->name('deleteStructure')->middleware(['auth:staff']);
   Route::post('/uploadBulkPayment', [App\Http\Controllers\Staff\PaymentController::class, 'uploadBulkPayment'])->name('uploadBulkPayment')->middleware(['auth:staff']);
   Route::post('/generateInvoice', [App\Http\Controllers\Staff\PaymentController::class, 'generateInvoice'])->name('generateInvoice')->middleware(['auth:staff']);
+
+  Route::post('/chargeStudents', [App\Http\Controllers\Staff\PaymentController::class, 'chargeStudents'])->name('chargeStudents')->middleware(['auth:staff']);
 
   Route::post('/chargeStudent', [App\Http\Controllers\Staff\PaymentController::class, 'chargeStudent'])->name('chargeStudent')->middleware(['auth:staff']);
   Route::get('/chargeStudent', [App\Http\Controllers\Staff\StaffController::class, 'chargeStudent'])->name('chargeStudent')->middleware(['auth:staff']);

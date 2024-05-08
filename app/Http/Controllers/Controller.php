@@ -623,17 +623,24 @@ class Controller extends BaseController
     public function billStudent($transactionData){
 
         $student = Student::with('applicant')->where('id', $transactionData->student_id)->first();
+        
+         if(empty($transactionData->transaction_id)){
+            //Create new transaction
+            $transaction = Transaction::create([
+                'student_id' => $transactionData->student_id,
+                'payment_id' => $transactionData->payment_id,
+                'amount_payed' => $transactionData->amount,
+                'payment_method' => $transactionData->payment_gateway,
+                'reference' => $transactionData->reference,
+                'session' => $transactionData->academic_session,
+                'status' => 1
+            ]);
+         }else{
+            $transaction = Transaction::find($transactionData->transaction_id);
+         }
 
-       //Create new transaction
-        $transaction = Transaction::create([
-            'student_id' => $transactionData->student_id,
-            'payment_id' => $transactionData->payment_id,
-            'amount_payed' => $transactionData->amount,
-            'payment_method' => $transactionData->payment_gateway,
-            'reference' => $transactionData->reference,
-            'session' => $transactionData->academic_session,
-            'status' => 1
-        ]);
+
+       
 
         $studentBalance = $student->amount_balance;
         $studentNewBalance = $studentBalance - $transactionData->amount;
@@ -643,15 +650,19 @@ class Controller extends BaseController
         if($student && !empty($transactionData->student_id)){
             $pdf = new Pdf();
             $invoice = $pdf->generateTransactionInvoice($transactionData->academic_session, $transactionData->student_id, $transactionData->payment_id, 'single');
-                    
+            
             $data = new \stdClass();
             $data->lastname = $student->applicant->lastname;
             $data->othernames = $student->applicant->othernames;
             $data->amount = $transactionData->amount;
             $data->invoice = $invoice;
+
+            $transaction->status = 1;
+            $transaction->save();
             
             Mail::to($student->email)->send(new TransactionMail($data));   
         }
+        
 
         alert()->success('Good Job', 'Payment successful')->persistent('Close');
         return redirect($transactionData->redirect_path);

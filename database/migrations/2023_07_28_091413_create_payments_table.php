@@ -21,6 +21,7 @@ class CreatePaymentsTable extends Migration
             $table->string('slug')->nullable();
             $table->string('type')->nullable();
             $table->string('academic_session')->nullable();
+            $table->integer('is_charged')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

@@ -23,6 +23,7 @@ use App\Models\Session;
 use App\Models\Faculty;
 use App\Models\Department;
 use App\Models\AcademicLevel;
+use App\Models\Notification;
 
 use App\Libraries\Pdf\Pdf;
 use App\Mail\TransactionMail;
@@ -179,13 +180,72 @@ class PaymentController extends Controller
         $programmes = Programme::get();
         $levels = Level::get();
         $sessions = Session::orderBy('id', 'DESC')->get();
+        $students = null;
+        if(!empty($payment->level_id)){
+            $students = Student::with('applicant')->where('level_id', $payment->level_id)->where('academic_session', $payment->academic_session)->where('programme_id', $payment->programme_id)->get();
+
+            foreach($students as $student){
+                $transaction = Transaction::where('student_id', $student->id)->where('payment_id', $payment->id)->where('session', $payment->academic_session)->where('status', 1)->get();
+                if($transaction){
+                    $student->paymentTransaction = $transaction;
+                }
+            }
+        }
 
         return view('admin.payment', [
             'payment' => $payment,
             'programmes' => $programmes,
             'levels' => $levels,
-            'sessions' => $sessions
+            'sessions' => $sessions,
+            'students' => $students
         ]);
+    }
+
+    public function chargeStudents(Request $request){
+        $validator = Validator::make($request->all(), [
+            'payment_id' => 'required',
+        ]);
+
+        if($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+
+        $payment = Payment::with(['structures'])->where('id', $request->payment_id)->first();
+        if(!$payment){
+            alert()->error('Oops', 'Invalid Payment')->persistent('Close');
+            return redirect()->back();
+        }
+
+        $totalPayment = $payment->structures->sum('amount');
+
+        $students = Student::where('level_id', $payment->level_id)->where('academic_session', $payment->academic_session)->where('programme_id', $payment->programme_id)->get();
+
+        foreach($students as $student){
+            //Create new transaction
+            $reference = $this->generateRandomString(10);
+            $transaction = Transaction::create([
+                'student_id' => $student->id,
+                'payment_id' => $payment->id,
+                'amount_payed' => $totalPayment,
+                'session' => $payment->academic_session,
+                'reference' => $reference,
+            ]);
+
+            $message = 'Dear '.$student->applicant->lastname.' '.$student->applicant->othername.', you have been charged ₦'.number_format($totalPayment/100, 2).' for '.$payment->title;
+
+            Notification::create([
+                'student_id' => $student->id,
+                'description' => $message,
+                'status' => 0
+            ]);
+        }
+
+        $payment->is_charged = 1;
+        $payment->save();
+
+        alert()->success('Good job!!', 'Student charged successfully')->persistent('Close');
+        return redirect()->back();
     }
 
     public function getPayment(Request $request) {

@@ -31,7 +31,7 @@
                     @if(!$fullTuitionPayment)
                     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addTransaction">Pay Tuition Fee</button>
                     @endif
-                    <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#payOthers">Pay Other Fees</button>
+                    {{-- <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#payOthers">Pay Other Fees</button> --}}
                 </div>
             </div><!-- end card header -->
 
@@ -258,6 +258,7 @@
                         <select class="form-select" aria-label="type" name="type" required onchange="handlePaymentTypeChange(event)">
                             <option selected value= "">Select Type </option>
                             <option value="General Fee">General Fee</option>
+                            <option value="Other Fee">Other Fee</option>
                         </select>
                     </div>
 

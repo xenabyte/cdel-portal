@@ -69,6 +69,14 @@
                         <p class="text-muted">Bill Academic Session: {{ $payment->academic_session }} </p>
                         <hr>
                         {!! $payment->description !!}
+                        @if($payment->type)
+                        <div class="align-items-center d-flex border-top border-top-dashed mt-3 pt-3">
+                            <p class="mb-0 flex-grow-1">Status</p>
+                            <div class="flex-shrink-0">
+                                <span class="btn {{ $payment->is_charged ? 'btn-success': 'btn-warning' }}">{{ $payment->is_charged ? 'Charged': 'Not Charged' }}</span>
+                            </div>
+                        </div>
+                        @endif
                     </div><!-- end card body -->
                 </div><!-- end card -->
             </div><!-- end col -->
@@ -191,6 +199,79 @@
     </div><!-- end col -->
 </div><!-- end row -->
 
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-header align-items-center d-flex">
+                <h4 class="card-title mb-0 flex-grow-1">Students </h4>
+                <div class="flex-shrink-0">
+                    <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#charge" style="margin: 5px" class="btn btn-success">Bill Students</a>
+                </div>
+            </div><!-- end card header -->
+
+            <div class="card-body table-responsive">
+                <!-- Bordered Tables -->
+                <table id="buttons-datatables" class="display table table-bordered" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th scope="col">Id</th>
+                            <th scope="col">Name</th>
+                            <th scope="col">Matric Number</th>
+                            <th scope="col">Email</th>
+                            <th scope="col">Level</th>
+                            <th scope="col">Programme</th>
+                            <th class="bg bg-info text-light" scope="col">Amount Paid</th>
+                            <th scope="col"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($students as $student)
+                        <tr>
+                            <th scope="row">{{ $loop->iteration }}</th>
+                            <td>{{ $student->applicant->lastname .' '. $student->applicant->othernames }}</td>
+                            <td>{{ $student->matric_number }} </td>
+                            <td>{{ $student->email }} </td>
+                            <td>{{ $student->academicLevel->level }} </td>
+                            <td>{{ $student->programme->name }}</td>
+                            <td class="bg bg-soft-info">₦{{ number_format($student->paymentTransaction->sum('amount_payed')/100, 2) }}</td>
+                            <td>
+                                <a href="{{ url('admin/studentProfile/'.$student->slug) }}" class="btn btn-primary m-1"><i class= "ri-user-6-fill"></i> View Student</a>
+                            </td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+        </div><!-- end card -->
+    </div>
+    <!-- end col -->
+</div>
+
+<div id="charge" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body text-center p-5">
+                <div class="text-end">
+                    <button type="button" class="btn-close text-end" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="mt-2">
+                    <lord-icon src="https://cdn.lordicon.com/tqywkdcz.json" trigger="hover" style="width:150px;height:150px">
+                    </lord-icon>
+                    <h4 class="mb-3 mt-4">Are you sure you want to Charge the students?</h4>
+                    <form action="{{ url('/admin/chargeStudents') }}" method="POST">
+                        @csrf
+                        <input name="payment_id" type="hidden" value="{{$payment->id}}">
+                        <hr>
+                        <button type="submit" class="btn btn-primary w-100">Yes, procced</button>
+                    </form>
+                </div>
+            </div>
+            <div class="modal-footer bg-light p-3 justify-content-center">
+
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
 
 
 <div id="editPayment{{$payment->id}}" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
@@ -220,6 +301,7 @@
                             <option value="School Fee">School Fee</option>
                             <option value="DE School Fee">Direct Entry School Fee</option>
                             <option value="General Fee">General Fee</option>
+                            <option value="Other Fee">Other Fee</option>
                             <option value="Course Reg">Modify Course Reg Fee</option>
                         </select>
                     </div>

@@ -82,6 +82,7 @@
                                                     <option value="School Fee">School Fee</option>
                                                     <option value="DE School Fee">Direct Entry School Fee</option>
                                                     <option value="General Fee">General Fee</option>
+                                                   <option value="Other Fee">Other Fee</option>
                                                     <option value="Bandwidth Fee">Bandwidth Fee</option>
                                                     <option value="Course Reg">Modify Course Reg Fee</option>
                                                 </select>
@@ -237,6 +238,7 @@
                                                                                                 <option value="School Fee">School Fee</option>
                                                                                                 <option value="DE School Fee">Direct Entry School Fee</option>
                                                                                                 <option value="General Fee">General Fee</option>
+                                                                                               <option value="Other Fee">Other Fee</option>
                                                                                                 <option value="Bandwidth Fee">Bandwidth Fee</option>
                                                                                                 <option value="Course Reg">Modify Course Reg Fee</option>
                                                                                             </select>
@@ -365,6 +367,7 @@
                             <option value="School Fee">School Fee</option>
                             <option value="DE School Fee">Direct Entry School Fee</option>
                             <option value="General Fee">General Fee</option>
+                            <option value="Other Fee">Other Fee</option>
                             <option value="Bandwidth Fee">Bandwidth Fee</option>
                             <option value="Course Reg">Modify Course Reg Fee</option>
                         </select>
