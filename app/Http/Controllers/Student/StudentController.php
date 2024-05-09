@@ -773,7 +773,7 @@ class StudentController extends Controller
         if(!empty($studentId)){
             $student = Student::find($studentId);
             
-            if($type == Payment::PAYMENT_TYPE_GENERAL){
+            if($type == Payment::PAYMENT_TYPE_OTHER){
                 $payment = Payment::with(['structures'])->where([
                     'type' => $type,
                     'academic_session' => $session,

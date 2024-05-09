@@ -504,7 +504,6 @@
                             <option value="Acceptance Fee">Acceptance Fee</option>
                             <option value="School Fee">School Fee</option>
                             <option value="DE School Fee">Direct Entry School Fee</option>
-                            <option value="General Fee">General Fee</option>
                            <option value="Other Fee">Other Fee</option>
                         </select>
                     </div>

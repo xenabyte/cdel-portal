@@ -289,7 +289,7 @@ class PaymentController extends Controller
                 $payment->passTuition = $paymentCheck->passTuitionPayment;
                 $payment->fullTuitionPayment = $paymentCheck->fullTuitionPayment;
                 $payment->passEightyTuition = $paymentCheck->passEightyTuition;
-            }elseif($type == Payment::PAYMENT_TYPE_GENERAL){
+            }elseif($type == Payment::PAYMENT_TYPE_OTHER){
                 $payment = Payment::with(['structures'])->where([
                     'type' => $type,
                     'academic_session' => $session,
@@ -609,7 +609,7 @@ class PaymentController extends Controller
             $amount = $request->amountGeneral * 100;
         }
 
-        if($payment->type != Payment::PAYMENT_TYPE_GENERAL && !empty($request->student_id)){
+        if($payment->type != Payment::PAYMENT_TYPE_OTHER && !empty($request->student_id)){
             $totalPayment = $payment->structures->sum('amount');
             $paymentTransactions = Transaction::where('student_id', $studentId)
             ->where('payment_id', $payment->id)
