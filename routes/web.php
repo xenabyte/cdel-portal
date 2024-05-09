@@ -265,6 +265,7 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'admin'],
   Route::get('/partnerApproval', [App\Http\Controllers\Admin\PartnerController::class, 'partnerApproval'])->name('partnerApproval')->middleware(['auth:admin']);
   Route::post('/approvePartner', [App\Http\Controllers\Admin\PartnerController::class, 'approvePartner'])->name('approvePartner')->middleware(['auth:admin']);
   Route::post('/deletePartner', [App\Http\Controllers\Admin\PartnerController::class, 'deletePartner'])->name('deletePartner')->middleware(['auth:admin']);
+  Route::get('/partner/{slug}', [App\Http\Controllers\Admin\PartnerController::class, 'partner'])->name('partner')->middleware(['auth:admin']);
 
   
   Route::get('/departmentForCourses', [App\Http\Controllers\Admin\AcademicController::class, 'departmentForCourses'])->name('departmentForCourses')->middleware(['auth:admin']);

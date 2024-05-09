@@ -689,7 +689,27 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.32/vfs_fonts.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
+    <script>
+        document.getElementById('copyButton').addEventListener('click', function() {
+            // Select the link text
+            var link = document.getElementById('myLink');
+            var range = document.createRange();
+            range.selectNode(link);
+            window.getSelection().removeAllRanges();
+            window.getSelection().addRange(range);
+    
+            // Copy the selected text to the clipboard
+            try {
+                document.execCommand('copy');
+                alert('Link copied to clipboard');
+            } catch (err) {
+                console.error('Unable to copy link: ', err);
+            }
+    
+            // Deselect the text
+            window.getSelection().removeAllRanges();
+        });
+    </script> 
 <script>
     function handleFacultyChange(event) {
         const selectedFaculty = event.target.value;

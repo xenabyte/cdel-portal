@@ -199,7 +199,7 @@
                                             <i class="ri-user-voice-line fs-1"></i>
                                         </div>
                                     </div>
-                                    <a href="{{ url('/partners') }}" class="stretched-link">
+                                    <a href="{{ url('/partner') }}" class="stretched-link">
                                         <h5 class="fs-17 pt-1">Partner Portal</h5>
                                     </a>
                                 </div>

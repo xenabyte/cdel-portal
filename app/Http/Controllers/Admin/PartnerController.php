@@ -23,6 +23,13 @@ class PartnerController extends Controller
 {
     //
 
+    public function partner($slug){
+        $partner = Partner::where('slug', $slug)->first();
+        return view('admin.partnerProfile',[
+            'partner' => $partner
+        ]);
+    }
+
     public function partners(Request $request){
 
         $partners = Partner::where('status', 1)->get();

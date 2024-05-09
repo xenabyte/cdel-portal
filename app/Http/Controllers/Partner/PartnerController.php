@@ -46,8 +46,9 @@ class PartnerController extends Controller
     public function applicants(Request $request){
         $globalData = $request->input('global_data');
         $academicSession = $globalData->sessionSetting['application_session'];
-        $applicants = Applicant::where('academic_session', $academicSession)->get();
         $partner = Auth::guard('partner')->user();
+
+        $applicants = Applicant::where('academic_session', $academicSession)->where('partner_id', $partner->id)->get();
 
         if(!$partner->status){
             return view('partner.approval',);
