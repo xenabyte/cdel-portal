@@ -51,7 +51,7 @@
         <div class="card">
             <div class="card-header align-items-center d-flex">
                 <h4 class="card-title mb-0 flex-grow-1">Committees </h4>
-                @if($staffRegistrarRole || $staffVCRole || $staffDeanRole || $$staffSubDeanRole || $staffHODRole)
+                @if($staffRegistrarRole || $staffVCRole || $staffDeanRole || $staffSubDeanRole || $staffHODRole)
                     <div class="flex-shrink-0">
                         <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addCommittee">Add Committee</button>
                     </div>
