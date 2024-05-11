@@ -260,6 +260,7 @@ class StudentController extends Controller
         $redirectLocation = 'student/walletTransactions';
         $amount = $request->amount * 100;
         $transaction = Transaction::find($request->transaction_id);
+        $paymentType = 'Tuition';
 
         if($paymentId > 0){
             if(!$payment = Payment::with('structures')->where('id', $paymentId)->first()){
@@ -272,6 +273,9 @@ class StudentController extends Controller
             if($request->has('amountGeneral')){
                 $amount = $request->amountGeneral*100;
             }
+
+            $paymentClass = new Payment();
+            $paymentType = $paymentClass->classifyPaymentType($payment->type);
         }
         
 
@@ -301,6 +305,7 @@ class StudentController extends Controller
                     "reference" => null,
                     "academic_session" => $student->academic_session,
                     "redirect_path" => $redirectLocation,
+                    "payment_Type" => $paymentType,
                 ),
             );
 
@@ -338,6 +343,7 @@ class StudentController extends Controller
                     "reference" => $reference,
                     "academic_session" => $student->academic_session,
                     "redirect_path" => $redirectLocation,
+                    "payment_Type" => $paymentType,
                 ),
                 "customizations" => array(
                     "title" => env('SCHOOL_NAME'),
@@ -961,7 +967,7 @@ class StudentController extends Controller
         $studentId = $student->id;
         $globalData = $request->input('global_data');
         $academicSession = $globalData->sessionSetting['academic_session'];
-
+        $redirectLocation = 'student/transactions';
 
         $validator = Validator::make($request->all(), [
             'payment_id' => 'required',
@@ -981,12 +987,63 @@ class StudentController extends Controller
             $amount = $this->getUpperlinkAmount($bandwidthPlan->amount);
         }elseif($bandwidthPaymentGateway == "Monnify"){
             $amount = $this->getMonnifyAmount($bandwidthPlan->amount);
+        }elseif($bandwidthPaymentGateway == "rave"){
+            $amount = $this->getMonnifyAmount($bandwidthPlan->amount);
         }else{
             alert()->error('Oops!', 'Invalid Payment Gateway')->persistent('Close');
             return redirect()->back();
         }
 
         $reference = $this->generateRandomString(25);
+
+        $paymentClass = new Payment();
+        $paymentType = $paymentClass->classifyPaymentType($bandwidthPayment->type);
+
+        if(strtolower($bandwidthPaymentGateway) == 'rave') {
+            Log::info("Flutterwave Amount ****************: ". round($this->getRaveAmount($amount)));
+
+            $reference = Flutterwave::generateReference();
+
+            $data = array(
+                "payment_options" => "card,banktransfer",
+                "amount" => round($this->getRaveAmount($amount)),
+                "tx_ref" => $reference,
+                "redirect_url" => env("FLW_REDIRECT_URL"),
+                "email" => $student->email,
+                "currency" => "NGN",
+                "customer" => [
+                    "email" => $student->email,
+                    "phone_number" => $student->applicant->phone_number,
+                    "name" => $student->applicant->lastname.' '.$student->applicant->othernames,
+                ],
+                "meta" => array(
+                    "amount" => $amount,
+                    "email" => $student->email,
+                    "application_id" => null,
+                    "student_id" => $studentId,
+                    "payment_id" => $bandwidthPayment->id,
+                    "payment_gateway" => $bandwidthPaymentGateway,
+                    "reference" => $reference,
+                    "academic_session" => $student->academic_session,
+                    "redirect_path" => $redirectLocation,
+                    "payment_Type" => $paymentType,
+                ),
+                "customizations" => array(
+                    "title" => env('SCHOOL_NAME'),
+                    "logo" => env('SCHOOL_LOGO'),
+                ),
+            );
+
+            $payment = Flutterwave::initializePayment($data);
+
+            if ($payment['status'] !== 'success') {
+                $message = 'Flutterwave Gateway is down, try again.';
+                alert()->info('Opps!', $message)->persistent('Close');
+                return redirect()->back();
+            }
+
+            return redirect($payment['data']['link']);
+        }
 
         $newBandwidthTx = ([
             'student_id' => $student->id,
@@ -1001,7 +1058,6 @@ class StudentController extends Controller
         ]);
 
         if($newTx = Transaction::create($newBandwidthTx)){
-
             if($bandwidthPaymentGateway == "Monnify"){
                 $now = Carbon::now();
                 $future = $now->addHours(48);

@@ -19,6 +19,7 @@ class Payment extends Model
     const PAYMENT_TYPE_OTHER = 'Other Fee';
     const PAYMENT_MODIFY_COURSE_REG = 'Course Reg';
     const PAYMENT_TYPE_WALLET_DEPOSIT = 'Wallet Deposit';
+    const PAYMENT_TYPE_BANDWIDTH = 'Bandwidth Fee';
 
 
     protected $fillable = [
@@ -71,5 +72,26 @@ class Payment extends Model
             return $totalAmount;
         } 
         return 0;
+    }
+
+    public function classifyPaymentType($paymentType) {
+        switch ($paymentType) {
+            case 'Other Fee':
+            case 'Wallet Deposit':
+                return 'Other Fee';
+            case 'Course Reg':
+            case 'Bandwidth Fee':
+                return 'ICT';
+            case 'Accommodation':
+                return 'Accommodation';
+            case 'General Application Fee':
+            case 'Inter Transfer Application Fee':
+            case 'Acceptance Fee':
+            case 'School Fee':
+            case 'DE School Fee':
+                return 'Tuition Fee';
+            default:
+                return 'Unknown';
+        }
     }
 }

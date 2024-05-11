@@ -360,6 +360,9 @@ class ApplicationController extends Controller
 
         $referralCode = $request->referrer;
 
+        $paymentClass = new Payment();
+        $paymentType = $paymentClass->classifyPaymentType($payment->type);
+
         if(!$request->has('user_id')){
             $validator = Validator::make($request->all(), [
                 'email' => 'required|string|email|max:255|unique:users,email,NULL,id,academic_session,' . $applicationSession,
@@ -462,7 +465,8 @@ class ApplicationController extends Controller
                     'payment_gateway' => $paymentGateway,
                     'reference' => null,
                     'academic_session' => $applicationSession,
-                    'redirect_path' => 'user.auth.login'
+                    'redirect_path' => 'user.auth.login',
+                    'payment_Type' => $paymentType,
                 ),
             );
 
@@ -494,6 +498,7 @@ class ApplicationController extends Controller
                     "reference" => $reference,
                     "academic_session" => $applicationSession,
                     "redirect_path" => 'user.auth.login',
+                    "payment_Type" => $paymentType,
                 ),
                 "customizations" => array(
                     "title" => env('SCHOOL_NAME'),

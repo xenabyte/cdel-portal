@@ -26,6 +26,9 @@ use Paystack;
 
 use App\Libraries\Google\Google;
 use App\Libraries\Pdf\Pdf;
+use App\Libraries\Bandwidth\Bandwidth;
+
+
 
 use App\Mail\ApplicationPayment;
 use App\Mail\StudentActivated;
@@ -44,15 +47,15 @@ use App\Models\Session;
 use App\Models\Faculty;
 use App\Models\Department;
 use App\Models\CourseRegistration;
-use App\Libraries\Bandwidth\Bandwidth;
+use App\Models\Plan;
+
 
 
 class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
-    public function dataResponse($message, $data = null, $status = "success", $statusCode = null)
-    {
+    public function dataResponse($message, $data = null, $status = "success", $statusCode = null){
         if (!$statusCode) {
             if ($status == "error")
                 $statusCode = Response::HTTP_BAD_REQUEST;
@@ -156,10 +159,10 @@ class Controller extends BaseController
             return true;
         }
 
-       $payment = Payment::with('programme')->where('id', $paymentId)->first();
+        $payment = Payment::with('programme')->where('id', $paymentId)->first();
 
-       //Create new transaction
-       $transaction = Transaction::create([
+        //Create new transaction
+        $transaction = Transaction::create([
             'user_id' => !empty($applicationId)?$applicationId:null,
             'student_id' => !empty($studentId)?$studentId:null,
             'payment_id' => $paymentId,
@@ -195,7 +198,6 @@ class Controller extends BaseController
             return true;
         }
     }
-
 
     public function generateAccessCode () {
         $applicationAccessCode = "";
@@ -445,8 +447,7 @@ class Controller extends BaseController
         return $randomString;
     }
 
-    public function getPreviousAcademicYear($session)
-    {
+    public function getPreviousAcademicYear($session){
         list($startYear, $endYear) = explode('/', $session);
     
         $startAcademicYear = Carbon::createFromDate($startYear, 1, 1)->subYear()->format('Y');
@@ -455,8 +456,7 @@ class Controller extends BaseController
         return $startAcademicYear . '/' . $endAcademicYear;
     }
 
-    public function checkSchoolFees($student, $academicSession, $levelId)
-    {
+    public function checkSchoolFees($student, $academicSession, $levelId){
         $studentId = $student->id;
         $applicantId = $student->user_id;
         $applicant = User::find($applicantId);
@@ -601,7 +601,24 @@ class Controller extends BaseController
         }
     }
     
+    public function creditBandwidth($transaction){
+        $student = Student::find($transaction->student_id);
+        $bandwidthUsername = $student->bandwidth_username;
 
+        $bandwidthPlan = Plan::find($transaction->plan_id);
+        $bandwidthAmount = $bandwidthPlan->bandwidth + $bandwidthPlan->bonus;
+
+        // Credit bandwidth
+        $bandwidth = new Bandwidth();
+        $creditStudent = $bandwidth->addToDataBalance($bandwidthUsername, $bandwidthAmount);
+        if ($creditStudent && isset($creditStudent['status']) && $creditStudent['status'] === 'success') {
+            $transaction->status = 1;
+            $transaction->update();
+
+            return true;
+        }
+        return false;
+    }
 
     public  function sortBySession($a, $b) {
         return strcmp($a['session'], $b['session']);

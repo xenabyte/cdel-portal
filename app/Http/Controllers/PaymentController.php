@@ -158,6 +158,8 @@ class PaymentController extends Controller
             $paymentId = $paymentDetails['data']['meta']['payment_id'];
             $studentId = !empty($paymentDetails['data']['meta']['student_id'])?$paymentDetails['data']['meta']['student_id']:null;
             $redirectPath = $paymentDetails['data']['meta']['redirect_path'];
+            $txRef = $paymentDetails['data']['meta']['reference'];
+
 
             $paymentType = Payment::PAYMENT_TYPE_WALLET_DEPOSIT;
             if($paymentId > 0){
@@ -171,6 +173,7 @@ class PaymentController extends Controller
             
             if($paymentDetails['status'] == 'success'){
                 if($this->processRavePayment($paymentDetails)){
+                    
 
                     if($student && !empty($studentId)){
                         $pdf = new Pdf();
@@ -189,7 +192,16 @@ class PaymentController extends Controller
                             if(!$creditStudent){
                                 Log::info("**********************Unable to credit student**********************: ". $amount .' - '.$student);
                             }
-                        }     
+                        }  
+                        
+                        if($paymentType == Payment::PAYMENT_TYPE_BANDWIDTH){
+                            $transaction = Transaction::where('reference', $txRef)->first();
+                            $creditStudent = $this->creditBandwidth($transaction, $amount);
+
+                            if(!$creditStudent){
+                                Log::info("**********************Unable to credit student**********************: ". $amount .' - '.$student);
+                            }
+                        }
                     }
 
                     alert()->success('Good Job', 'Payment successful')->persistent('Close');
@@ -416,54 +428,43 @@ class PaymentController extends Controller
     }
 
 
-    public function monnifyWebhook (Request $request) {   
+    public function monnifyWebhook(Request $request){
         try {
-          //file_put_contents('monnify_webhook.txt', $request);
-          $data = json_encode($request->eventData);
-          $responseData = json_decode($data);
+            // Process webhook data
+            $responseData = json_decode(json_encode($request->eventData));
 
-          // Access the paymentReference
-          $paymentReference = $responseData->paymentReference;
-          $transactionReference = $responseData->transactionReference;
-          $paymentStatus = $responseData->paymentStatus;
-          $paidOn = $responseData->paidOn;
-          $amountPaid = $responseData->amountPaid;
-          $paymentMethod = $responseData->paymentMethod;
-    
-          Log::info('*****************Monnify Webhook ****************');
-          Log::info('paymentReference: '.$paymentReference);
-          Log::info('transactionReference: '.$transactionReference);
-          Log::info('paidOn: '.$paidOn);
-    
-          if($paymentStatus == "PAID"){
-            if(!$transaction = Transaction::where('reference', $paymentReference)->where('status', 0)->first()){
-                return $this->dataResponse('transaction not found', null, 'error');  
-            }
+            // Extract payment information
+            $paymentReference = $responseData->paymentReference;
+            $paymentStatus = $responseData->paymentStatus;
+            $amountPaid = $responseData->amountPaid;
 
-            if($paymentReference == $transaction->reference){
-                $newamount=$amountPaid*100;
-                $amountdiff=round(($newamount-$transaction->amount_payed)/100);
+            Log::info('*****************Monnify Webhook ****************');
+            Log::info('paymentReference: ' . $paymentReference);
 
-                if($amountdiff >= 0) {
-                    $student = Student::find($transaction->student_id);
-                    $bandwidthUsername = $student->bandwidth_username;
-
-                    $bandwidthPlan = Plan::find($transaction->plan_id);
-                    $bandwidthAmount = $bandwidthPlan->bandwidth + $bandwidthPlan->bonus;
-                    //bandwidth credit
-                    $bandwidth = new Bandwidth();
-                    $creditStudent = $bandwidth->addToDataBalance($bandwidthUsername, $bandwidthAmount);
-                    $transaction->status = 1;
-                    $transaction->update();
-                    return $this->dataResponse('Account Credited', $creditStudent);
-                }else{
-                    Log::info('difference in amount for '.$bandwidthUsername.' : '.$amountdiff);
-                    return $this->dataResponse('difference in amount for '.$bandwidthUsername.' : '.$amountdiff, null, 'error');
+            if ($paymentStatus == "PAID") {
+                if (!$transaction = Transaction::where('reference', $paymentReference)->where('status', 0)->first()) {
+                    return $this->dataResponse('Transaction not found', null, 'error');
                 }
+
+                if ($paymentReference == $transaction->reference) {
+                    $newAmount = $amountPaid * 100;
+                    $amountDiff = round(($newAmount - $transaction->amount_payed) / 100);
+
+                    if ($amountDiff >= 0) {
+                        // Credit bandwidth and update transaction status if the payment is valid
+                        $result = $this->creditBandwidth($transaction, $amountPaid);
+                        if($result){
+                            return $this->dataResponse('Account Credited', $creditStudent);
+                        }
+                        return $this->dataResponse('Account not credited', null, 'error');
+                    }
+                    Log::info('Difference in amount: ' . $amountDiff);
+                    return $this->dataResponse('Difference in amount: ' . $amountDiff, null, 'error');
+                }
+                return $this->dataResponse('invalid Transaction', null, 'error');
             }
-          } 
-        }catch (ValidationException $e) {
-          return $this->dataResponse($this->getMissingParams($e), null, 'error');
+        } catch (ValidationException $e) {
+            return $this->dataResponse($this->getMissingParams($e), null, 'error');
         }
-      }
+    }
 }

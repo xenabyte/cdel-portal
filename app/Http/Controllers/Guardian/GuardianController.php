@@ -94,6 +94,7 @@ class GuardianController extends Controller
         $paymentId = $request->payment_id;
         $amount = $request->amount*100;
         $redirectLocation = 'guardian/home';
+        $paymentType = 'Tuition';
         
         if($paymentId > 0){
             if(!$payment = Payment::with('structures')->where('id', $paymentId)->first()){
@@ -102,12 +103,16 @@ class GuardianController extends Controller
             }
             $redirectLocation = 'student/transactions';
             $amount = $request->amount;
+
+            $paymentClass = new Payment();
+            $paymentType = $paymentClass->classifyPaymentType($payment->type);
         }
         
 
         $paymentGateway = $request->paymentGateway;
 
         $reference = $this->generateAccessCode();
+       
 
         if(strtolower($paymentGateway) == 'paystack') {
             Log::info("Paystack Amount ****************: ". round($this->getPaystackAmount($amount)));
@@ -126,6 +131,7 @@ class GuardianController extends Controller
                     "reference" => null,
                     "academic_session" => $student->academic_session,
                     "redirect_path" => $redirectLocation,
+                    "payment_Type" => $paymentType,
                 ),
             );
 
@@ -159,6 +165,7 @@ class GuardianController extends Controller
                     "reference" => $reference,
                     "academic_session" => $student->academic_session,
                     "redirect_path" => $redirectLocation,
+                    "payment_Type" => $paymentType,
                 ),
                 "customizations" => array(
                     "title" => env('SCHOOL_NAME'),
