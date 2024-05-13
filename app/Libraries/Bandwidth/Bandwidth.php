@@ -35,10 +35,15 @@ class Bandwidth {
         "content-type: application/json"
         );
 
-        $response = $this->makeCurlRequest($url, $dataok, $header);
+        try {
+            $response = $this->makeCurlRequest($url, $dataok, $header);
 
-        $data = json_decode($response, true);
-        return $data;
+            $data = json_decode($response, true);
+            return $data;
+        } catch (Exception $e) {
+            Log::info("Message validate Bandwidth User: ". $e->getMessage());
+            return false;
+        }
     }
 
     public function checkDataBalance($username, $password){
@@ -55,10 +60,15 @@ class Bandwidth {
         "content-type: application/json"
         );
 
-        $response = $this->makeCurlRequest($url, $dataok, $header);
+        try {
+            $response = $this->makeCurlRequest($url, $dataok, $header);
 
-        $data = json_decode($response, true);
-        return $data;
+            $data = json_decode($response, true);
+            return $data;
+        } catch (Exception $e) {
+            Log::info("Message Bandwidth balance: ". $e->getMessage());
+            return false;
+        }
     }
 
     public function addToDataBalance($username, $bandwidth){
@@ -75,10 +85,15 @@ class Bandwidth {
         "content-type: application/json"
         );
 
-        $response = $this->makeCurlRequest($url, $dataok, $header);
+        try {
+            $response = $this->makeCurlRequest($url, $dataok, $header);
 
-        $data = json_decode($response, true);
-        return $data;
+            $data = json_decode($response, true);
+            return $data;
+        } catch (Exception $e) {
+            Log::info("Message add to Bandwidth: ". $e->getMessage());
+            return false;
+        }
     }
 
     public function createUser($userData){
@@ -93,16 +108,22 @@ class Bandwidth {
         );
 
         $dataok = json_encode($postfields);
+        log::info($dataok);
 
         $url = $this->newUserUrl;
         $header= array(
         "content-type: application/json"
         );
 
-        $response = $this->makeCurlRequest($url, $dataok, $header);
+        try {
+            $response = $this->makeCurlRequest($url, $dataok, $header);
 
-        $data = json_decode($response, true);
-        return $data;
+            $data = json_decode($response, true);
+            return $data;
+        } catch (Exception $e) {
+            Log::info("Message Bandwidth User: ". $e->getMessage());
+            return false;
+        }
     }
 
     public function makeCurlRequest($url, $data, $header, $method = "POST") {

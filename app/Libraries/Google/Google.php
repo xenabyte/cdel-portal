@@ -52,7 +52,7 @@ class Google
 
     public function generateGoogleMeetLink($title, $date, $time)
     {
-        $path = base_path('public/google/tau-core-api-2551c52d28f8.json');
+        $path = base_path('public/google/tau-core-api-d3dd9b502e4d');
 
         $client = new GoogleClient();
         $client->setScopes(Calendar::CALENDAR_EVENTS);

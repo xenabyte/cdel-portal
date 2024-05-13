@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "tau-core-api",
+  "private_key_id": "d3dd9b502e4da45e504111225cd641507d59af04",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDIuehhVwdDLURT\nQid8i5e0YplfM7Hn93wswGOgk4Pg4p9/t9mda2tgD5Ho3yreNiWojamMv0ZJ0t53\nQruZSIpdxaIzX9e6l7FfALKwtYDdBO8IsJ2E3ZpndeBr+7IAHgxlvLHGJtCkwKX/\nC0ccjlpzjxcADal3z4jPv6S5CEAicUKg36gL2L6Rutd0wJFwT65fITO/AtfduQ9p\ny762Nd+ei/SsZu4AHiS8DuFCYPE3hCelzqQjObYTRD7ud0gXT0NkixOosl/2h+u9\npP7VRCxSrpxvc2Z3QQowOuwpNCpUpbTpS2NdyFc1qe9s12lhm0FaDN+CmOvIyF1U\ngjtWoOYFAgMBAAECggEAJcNyIHQQ2fbXeqmAx8n0a9u7+qD9aMSTIFE+vRxbrJC+\nTLdAUgE+ZYdwXkU0KbO6sIQcYK4wsV1ifMH5jNxMqdkvi6ZNrh1xYYv+UkgHey19\nMh+WNwPBE5Nl+jLTeXmtv+s47+xoBwL2h+3tfkYa5tBGFby8RB3voZQuz5/pfwEF\n2Fh6rjeLnx01O2NhOD92NXwBgwPHD5Ni801Er3LB1MDbUlyPpWY8JWZOEk0/dvwT\nh0zgECW9cotTf0W7PUyFvUjuyI9Fu1eHDRhvqtOP4rwaXFUQZnPBBLw0/IIS+gx5\nsdV4s3KdoFn3tENf2jum49Ln67ndb3jqKj22AhpZiQKBgQD3KtORV3aRzjJJ53Ci\nHtfMpIUNZGS99Ah4or9ukkCbyZgGVfCZcCPDx4rIVykx7eUumKB2fbGrZjwm1r9g\ngqtPfKbjWjSMycL7tJ7G+9yqXLXdfa1fvGIV39IbxXCKzFT6bRBF6qQO9f8n8lRP\n1Uvhxr9Rs+0kLQHwySG6cpQ8HQKBgQDP5jjKWb/NhYYQiYlKMGpUac/yp3m1Khot\ndvogB1Ema8+2xaDuIpzOGjJAQxhGkrXZFaSp++3xiWGkpkVces0H+MyQfYnwarmq\naO2JP95+q0B2uO/dGakEt4iU6QS6+8iM94Gr5QI4Jdi8issvkJZL5eF71ZmP7RMt\nDcUVaTGdCQKBgQDUxKkblI8dNMNVm0X6SVK7d2SSAro2SryAHJluNbgoY4Ha8mAL\ntd0Ty9JMY7uyn3eKhRic59bqFTfytypHijSuWD/RtvVFvOl8hB+qa2WpweVMpcN5\nhlFpQyM7hNs8oGkGqpw3k6Vmu5zKZnDtyE9qLAzF6H1bhuMExB+kwL2agQKBgEKL\nTSgvu/3bvEK00zXk81Pbnozr4EAFnuVojL0NuoLSxWSaM12lxI0Pw3/gOff047H9\nhHxIQCwsrg1WjyL/x3rCvy+Mj0dd0dnixg1FXUEsLXES1uvtV7VDzbrkLvhuuQ2t\n91p+7cvtCUeoIUszO3hFt3u8re9skdO88ZVd21yJAoGBAKC3D9mrmS20e67CrSe6\nk+8gOxeyOjO4ho1wuDK5SSZvJAD30X9jCe5ySnXrfSMpMotS5EurNh9AGfpYR0/H\nDUfcQsusS+x78HLgjp7vLPfMGKGqlyn7CBImOxd8vuf4X2oPGjV5zEbCS5d8odxs\nUg6WeIcwJ/W3D7bBz6TO/uBs\n-----END PRIVATE KEY-----\n",
+  "client_email": "tau-user-management@tau-core-api.iam.gserviceaccount.com",
+  "client_id": "117494793228591168009",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/tau-user-management%40tau-core-api.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}
