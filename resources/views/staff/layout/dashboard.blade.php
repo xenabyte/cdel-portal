@@ -73,7 +73,7 @@
     <meta content="Aremu Adeola Abidemi(Codex)" name="author" />
     <!-- App favicon -->
     <link rel="shortcut icon" href="{{asset('favicon.png')}}">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
     <!--datatable css-->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css" />
@@ -352,7 +352,6 @@
                                             <a href="{{ url('/staff/applicants') }}" class="nav-link">Applicants</a>
                                         </li>
                 
-
                                         <li class="nav-item">
                                             <a href="{{ url('/staff/students') }}" class="nav-link">Admitted Students</a>
                                         </li>
@@ -441,15 +440,20 @@
                             @endif
 
 
-                            @if($staffAcademicPlannerRole || $staffExamOfficerRole || $staffHODRole || $staffStudentCareRole || $staffDeanRole || $staffSubDeanRole)
+                            @if($staffRoleVCRole || $staffRegistrarRole || $staffAcademicPlannerRole || $staffExamOfficerRole || $staffHODRole || $staffStudentCareRole || $staffDeanRole || $staffSubDeanRole)
                             <li class="nav-item">
                                 <a class="nav-link menu-link" href="#resultMgt" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="resultMgt">
                                     <i class="mdi mdi-credit-card-search-outline"></i> <span data-key="t-result">Result Management</span>
                                 </a>
                                 <div class="collapse menu-dropdown" id="resultMgt">
                                     <ul class="nav nav-sm flex-column">
+
                                         <li class="nav-item">
                                             <a href="{{ url('/staff/getStudentResults') }}" class="nav-link">Students Results</a>
+                                        </li>
+
+                                        <li class="nav-item">
+                                            <a href="{{ url('/staff/getStudentResultSummary') }}" class="nav-link">Students Results Summary</a>
                                         </li>
                                     </ul>
                                 </div>

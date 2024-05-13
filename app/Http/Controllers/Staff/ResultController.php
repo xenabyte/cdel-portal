@@ -87,7 +87,7 @@ class ResultController extends Controller
 
         if(empty($students)){
             alert()->success('No students found', '')->persistent('Close');
-            return view('admin.getStudentResults',[
+            return view('staff.getStudentResults',[
                 'academicLevels' => $academicLevels,
                 'academicSessions' => $academicSessions,
                 'faculties' => $faculties
@@ -158,7 +158,7 @@ class ResultController extends Controller
 
         if(count($students) < 1){
             alert()->success('No students found', '')->persistent('Close');
-            return view('admin.getStudentResultSummary',[
+            return view('staff.getStudentResultSummary',[
                 'faculties' => $faculties,
                 'academicSessions' => $academicSessions,
             ]);

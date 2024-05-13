@@ -130,7 +130,7 @@
                                     <input type="hidden" name="session" value="{{ $academicSession }}">
                                     <input type="hidden" name="semester" value="{{ $semester }}">
                                     @endif
-                                    <input type="hidden" name="url" value="admin.getStudentResultSummary">
+                                    <input type="hidden" name="url" value="staff.getStudentResultSummary">
                                     <hr>
                                     <button type="submit" id="submit-button" class="btn btn-success w-100">Yes, Approve</button>
                                 </form>
