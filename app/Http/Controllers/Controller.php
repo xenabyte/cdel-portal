@@ -555,7 +555,6 @@ class Controller extends BaseController
             $programme->save();
 
             $createBandwitdth = $this->createBandwidthAccount($student);
-            log::info(json_encode($createBandwitdth));
             $student = Student::find($student->id);
             
             Mail::to($studentPreviousEmail)->send(new StudentActivated($student));

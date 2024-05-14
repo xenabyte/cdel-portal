@@ -108,7 +108,6 @@ class Bandwidth {
         );
 
         $dataok = json_encode($postfields);
-        log::info($dataok);
 
         $url = $this->newUserUrl;
         $header= array(
