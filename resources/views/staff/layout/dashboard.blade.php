@@ -440,7 +440,7 @@
                             @endif
 
 
-                            @if($staffRoleVCRole || $staffRegistrarRole || $staffAcademicPlannerRole || $staffExamOfficerRole || $staffHODRole || $staffStudentCareRole || $staffDeanRole || $staffSubDeanRole)
+                            @if($staffVCRole || $staffRegistrarRole || $staffAcademicPlannerRole || $staffExamOfficerRole || $staffHODRole || $staffStudentCareRole || $staffDeanRole || $staffSubDeanRole)
                             <li class="nav-item">
                                 <a class="nav-link menu-link" href="#resultMgt" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="resultMgt">
                                     <i class="mdi mdi-credit-card-search-outline"></i> <span data-key="t-result">Result Management</span>
@@ -679,7 +679,7 @@
                         text: '--Select--'
                     }));
 
-                    var staffRoleVCRole = "<?php echo $staffVCRole ?>";
+                    var staffVCRole = "<?php echo $staffVCRole ?>";
                     var staffBursaryRole = "<?php echo $staffBursaryRole ?>";
                     var staffDepartmentId =  "<?php echo $staff->department_id ?>";
                     var staffStudentCareRole = "<?php echo $staffStudentCareRole ?>";
@@ -689,7 +689,7 @@
                     var staffAcademicPlannerRole = "<?php echo $staffAcademicPlannerRole ?>";
                     
                     $.each(response.data, function (index, department) {
-                        if (!staffRoleVCRole && 
+                        if (!staffVCRole && 
                         !staffBursaryRole && 
                         !staffStudentCareRole && 
                         !staffDeanRole && 
@@ -704,7 +704,7 @@
                         }
                     });
 
-                    if (staffRoleVCRole || staffBursaryRole || staffStudentCareRole || staffDeanRole || staffSubDeanRole || staffRegistrarRole || staffAcademicPlannerRole) {
+                    if (staffVCRole || staffBursaryRole || staffStudentCareRole || staffDeanRole || staffSubDeanRole || staffRegistrarRole || staffAcademicPlannerRole) {
                         $.each(response.data, function (index, department) {
                             departmentSelect.append($('<option>', {
                                 value: department.id,
