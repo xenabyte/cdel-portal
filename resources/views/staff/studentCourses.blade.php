@@ -121,7 +121,7 @@
                                             <label>Select Course</label>
                                             <select class="form-select select2" id="selectWithSearch" name="course_id" aria-label="cstatus">
                                                     <option value="" selected>--Select--</option>
-                                                @foreach($allCourses as $allCourse)<option value="{{$allCourse->id}}">{{$allCourse->code}}</option>@endforeach
+                                                @foreach($allCourses as $allCourse)<option value="{{$allCourse->id}}">{{$allCourse->code}} - {{$allCourse->name}}</option>@endforeach
                                             </select>
                                         </div>
                                     </div>
