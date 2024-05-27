@@ -174,6 +174,18 @@ class ResultController extends Controller
         ]);
     }
 
+    public function getStudentResultSummary(Request $request){
+        $globalData = $request->input('global_data');
+        $academicSessions = Session::orderBy('id', 'desc')->get();
+        $faculties = Faculty::get(); 
+
+        
+        return view('admin.getStudentResultSummary',[
+            'faculties' => $faculties,
+            'academicSessions' => $academicSessions,
+        ]);
+    }
+
 
     public function generateResultBroadSheet(Request $request){
 
