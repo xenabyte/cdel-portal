@@ -28,7 +28,7 @@
                             <h4 class="mt-4 fw-semibold">Fetch Examination result</h4>
                             <p class="text-muted mt-3"></p>
                             <div class="mt-4">
-                                <form action="{{ url('/admin/generateStudentResultSummary') }}" method="POST">
+                                <form action="{{ url('/staff/generateStudentResultSummary') }}" method="POST">
                                     @csrf
                                     <div class="row g-3">
 
@@ -120,7 +120,7 @@
                                 <lord-icon src="https://cdn.lordicon.com/xxdqfhbi.json" trigger="hover" style="width:150px;height:150px">
                                 </lord-icon>
                                 <h4 class="mb-3 mt-4">Are you sure you want to approve result for <br>{{ !empty($faculty)?$faculty->name:null }}?</h4>
-                                <form action="{{ url('/admin/approveResult') }}" method="POST">
+                                <form action="{{ url('/staff/approveResult') }}" method="POST">
                                     @csrf
                                     @foreach ($students as $studentforIds)
                                     <input type="hidden" name="student_ids[]" value="{{ $studentforIds->id }}">
