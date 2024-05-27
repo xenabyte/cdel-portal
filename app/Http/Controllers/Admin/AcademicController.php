@@ -1285,13 +1285,13 @@ class AcademicController extends Controller
         }
 
 
-        if($studentCourseReg->forceDelete()){
-            $student = Student::find($studentId);
+        $fileDirectory = $studentCourseReg->file;
+        if (file_exists($fileDirectory)) {
+            unlink($fileDirectory);
+        }
 
-            $fileDirectory = $studentCourseReg->file;
-            if (file_exists($fileDirectory)) {
-                unlink($fileDirectory);
-            } 
+        if($studentCourseReg->forceDelete()){
+            $student = Student::find($studentId); 
 
             $senderName = env('SCHOOL_NAME');
             $receiverName = $student->applicant->lastname .' ' . $student->applicant->othernames;
