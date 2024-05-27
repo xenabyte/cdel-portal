@@ -180,7 +180,7 @@ class ResultController extends Controller
         $faculties = Faculty::get(); 
 
         
-        return view('admin.getStudentResultSummary',[
+        return view('staff.getStudentResultSummary',[
             'faculties' => $faculties,
             'academicSessions' => $academicSessions,
         ]);
