@@ -334,12 +334,46 @@ class CommitteeController extends Controller
             $minuteUrl = 'uploads/meetings/'.$slug.'.'.$request->file('minute')->getClientOriginalExtension();
             $image = $request->file('minute')->move('uploads/meetings', $minuteUrl);
             $meeting->minute = $minuteUrl;
+
+            $committeeMembers = CommitteeMember::where('committee_id', $request->committee_id)->pluck('staff_id');
+
+            foreach ($committeeMembers as $memberId) {
+                $member = Staff::find($memberId);
+                $memberEmail = $member->email;
+                $senderName = env('SCHOOL_NAME');
+                $receiverName = $member->lastname .' ' . $member->othernames;
+                $message = 'Meeting Minute"' . $request->title . '" has been uploaded for ' . $meeting->title;
+                $mail = new NotificationMail($senderName, $message, $receiverName);
+
+                Notification::create([
+                    'staff_id' => $memberId,
+                    'message' => $message,
+                    'status' => 0
+                ]);
+            }
         }
 
         if(!empty($request->excerpt) && $request->excerpt!= $meeting->excerpt){
             $excerptUrl = 'uploads/meetings/'.$slug.'.'.$request->file('excerpt')->getClientOriginalExtension();
             $image = $request->file('excerpt')->move('uploads/meetings', $excerptUrl);
             $meeting->excerpt = $excerptUrl;
+
+            $committeeMembers = CommitteeMember::where('committee_id', $request->committee_id)->pluck('staff_id');
+
+            foreach ($committeeMembers as $memberId) {
+                $member = Staff::find($memberId);
+                $memberEmail = $member->email;
+                $senderName = env('SCHOOL_NAME');
+                $receiverName = $member->lastname .' ' . $member->othernames;
+                $message = 'Meeting Except"' . $request->title . '" has been uploaded for ' . $meeting->title;
+                $mail = new NotificationMail($senderName, $message, $receiverName);
+
+                Notification::create([
+                    'staff_id' => $memberId,
+                    'message' => $message,
+                    'status' => 0
+                ]);
+            }
         }
 
         if(!empty($request->status) && $request->status!= $meeting->status){
