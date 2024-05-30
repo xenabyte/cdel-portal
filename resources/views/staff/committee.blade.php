@@ -84,7 +84,7 @@
                     </div><!-- end card header -->
                     <div class="card-body">
                         @if(!empty($committee->chairman) || !empty($committee->secretary))
-                            @if(($committee->chairman->id == $staff->id) || ($committee->secretary->id == $staff->id))
+                            @if((!empty($committee->chairman) && $committee->chairman->id == $staff->id) || (!empty($committee->secretary) && ($committee->secretary->id == $staff->id)))
                             <div class="align-items-center d-flex border-top border-top-dashed mt-3 pt-3">
                                 <p class="mb-0 flex-grow-1">Edit Committee</p>
                                 <div class="flex-shrink-0">
