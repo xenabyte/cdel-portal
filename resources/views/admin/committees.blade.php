@@ -67,7 +67,7 @@
 
                                                 <div class="mb-3">
                                                     <label for="duties" class="form-label">Committee Duties</label>
-                                                    <textarea class="form-control" name="duties" id="duties" value="{!! $committee->duties !!}"></textarea>
+                                                    <textarea class="form-control" name="duties" id="duties">{!! $committee->duties !!}</textarea>
                                                 </div>
 
                                                 <hr>
