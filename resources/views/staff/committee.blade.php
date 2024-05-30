@@ -83,48 +83,50 @@
                         </div>
                     </div><!-- end card header -->
                     <div class="card-body">
-                        @if($committee->chairman->id == $staff->id)
-                        <div class="align-items-center d-flex border-top border-top-dashed mt-3 pt-3">
-                            <p class="mb-0 flex-grow-1">Edit Committee</p>
-                            <div class="flex-shrink-0">
-                                <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#editCommittee" class="btn btn-primary">Edit Committee</a>
+                        @if(!empty($committee->chairman) || !empty($committee->secretary))
+                            @if(($committee->chairman->id == $staff->id) || ($committee->secretary->id == $staff->id))
+                            <div class="align-items-center d-flex border-top border-top-dashed mt-3 pt-3">
+                                <p class="mb-0 flex-grow-1">Edit Committee</p>
+                                <div class="flex-shrink-0">
+                                    <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#editCommittee" class="btn btn-primary">Edit Committee</a>
+                                </div>
                             </div>
-                        </div>
 
-                        <div class="align-items-center d-flex border-top border-top-dashed mt-3 pt-3">
-                            <p class="mb-0 flex-grow-1">Kindly Appoint Secretary </p>
-                            <div class="flex-shrink-0">
-                                <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#assignSec" class="btn btn-success">Assign Secretary</a>
+                            <div class="align-items-center d-flex border-top border-top-dashed mt-3 pt-3">
+                                <p class="mb-0 flex-grow-1">Kindly Appoint Secretary </p>
+                                <div class="flex-shrink-0">
+                                    <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#assignSec" class="btn btn-success">Assign Secretary</a>
+                                </div>
                             </div>
-                        </div>
-                       
-                        <div class="align-items-center d-flex border-top border-top-dashed mt-3 mb-3 pt-3">
-                            <p class="mb-0 flex-grow-1">Kindly Appoint Chairman</p>
-                            <div class="flex-shrink-0">
-                                <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#assignChairman" class="btn btn-primary">Assign Chairman</a>
-                            </div>
-                        </div>
-                        <br>
-                        <hr>
-
-                        <h4 class="mb-3">Add Members</h4>
                         
-                        <form action="{{ url('/staff/addMember') }}" method="post" enctype="multipart/form-data">
-                            @csrf
-                            <input type="hidden" name='committee_id' value="{{ $committee->id }}">
-        
-                            <div class="mb-3">
-                                <label for="staff_id" class="form-label">Select Staff</label>
-                                <select class="form-select select2" id="selectWithSearch" name="staff_id" aria-label="cstatus" required>
-                                    <option value="" selected>--Select--</option>
-                                    @foreach($staffs as $uniStaff)<option value="{{$uniStaff->id}}">{{ $uniStaff->title.' '. $uniStaff->lastname.' '.$uniStaff->othernames }}</option>@endforeach
-                                </select>
+                            <div class="align-items-center d-flex border-top border-top-dashed mt-3 mb-3 pt-3">
+                                <p class="mb-0 flex-grow-1">Kindly Appoint Chairman</p>
+                                <div class="flex-shrink-0">
+                                    <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#assignChairman" class="btn btn-primary">Assign Chairman</a>
+                                </div>
                             </div>
-        
-                            <div class="text-end border-top border-top-dashed p-3 p-3">
-                                <button type="submit" id="submit-button" class="btn btn-primary">Add Members</button>
-                            </div>
-                        </form>
+                            <br>
+                            <hr>
+
+                            <h4 class="mb-3">Add Members</h4>
+                            
+                            <form action="{{ url('/staff/addMember') }}" method="post" enctype="multipart/form-data">
+                                @csrf
+                                <input type="hidden" name='committee_id' value="{{ $committee->id }}">
+            
+                                <div class="mb-3">
+                                    <label for="staff_id" class="form-label">Select Staff</label>
+                                    <select class="form-select select2" id="selectWithSearch" name="staff_id" aria-label="cstatus" required>
+                                        <option value="" selected>--Select--</option>
+                                        @foreach($staffs as $uniStaff)<option value="{{$uniStaff->id}}">{{ $uniStaff->title.' '. $uniStaff->lastname.' '.$uniStaff->othernames }}</option>@endforeach
+                                    </select>
+                                </div>
+            
+                                <div class="text-end border-top border-top-dashed p-3 p-3">
+                                    <button type="submit" id="submit-button" class="btn btn-primary">Add Members</button>
+                                </div>
+                            </form>
+                            @endif
                         @endif
 
                     </div><!-- end card body -->
