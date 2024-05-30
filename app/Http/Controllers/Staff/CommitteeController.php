@@ -330,11 +330,18 @@ class CommitteeController extends Controller
             $meeting->agenda = $fileUrl;
         }
 
-        if(!empty($request->agenda) && $request->agenda!= $meeting->agenda){
+        if(!empty($request->minute) && $request->minute!= $meeting->minute){
             $minuteUrl = 'uploads/meetings/'.$slug.'.'.$request->file('minute')->getClientOriginalExtension();
             $image = $request->file('minute')->move('uploads/meetings', $minuteUrl);
-            $meeting->agenda = $minuteUrl;
+            $meeting->minute = $minuteUrl;
         }
+
+        if(!empty($request->excerpt) && $request->excerpt!= $meeting->excerpt){
+            $excerptUrl = 'uploads/meetings/'.$slug.'.'.$request->file('excerpt')->getClientOriginalExtension();
+            $image = $request->file('excerpt')->move('uploads/meetings', $excerptUrl);
+            $meeting->excerpt = $excerptUrl;
+        }
+
         if(!empty($request->status) && $request->status!= $meeting->status){
             $meeting->status = $request->status;
         }

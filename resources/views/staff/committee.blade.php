@@ -263,7 +263,8 @@
                                 <td style="width:5%;">
                                     <div class="hstack gap-3 fs-15">
                                         @if(!empty($meeting->agenda))<a target="blank" href="{{ asset($meeting->agenda) }}" class="btn btn-sm btn-primary">View Agenda</a>@endif
-                                        @if(!empty($meeting->minute))<a target="blank" href="{{ asset($meeting->minue) }}" class="btn btn-sm btn-primary">View Minute</a>@endif
+                                        @if(!empty($meeting->minute))<a target="blank" href="{{ asset($meeting->minute) }}" class="btn btn-sm btn-primary">View Minute</a>@endif
+                                        @if(!empty($meeting->excerpt))<a target="blank" href="{{ asset($meeting->excerpt) }}" class="btn btn-sm btn-primary">View Excerpt</a>@endif
                                         <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#editMeeting{{$meeting->id}}" class="link-primary"><i class="ri-edit-circle-fill"></i></a>
                                         <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#deleteMeeting{{$meeting->id}}" class="link-danger"><i class="ri-delete-bin-5-line"></i></a>
                                     </div>
@@ -312,6 +313,11 @@
                                                 <div class="mb-3">
                                                     <label for="minute" class="form-label">Minute (Optional)</label>
                                                     <input type="file" class="form-control" name="minute" id="minute">
+                                                </div>
+
+                                                <div class="mb-3">
+                                                    <label for="excerpt" class="form-label">Excerpt (Optional)</label>
+                                                    <input type="file" class="form-control" name="excerpt" id="excerpt">
                                                 </div>
                                                 
                                                 <div class="mb-3">

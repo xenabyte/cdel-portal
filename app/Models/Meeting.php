@@ -16,7 +16,7 @@ class Meeting extends Model
         'committee_id',
         'agenda',
         'venue',
-        'additional_attendee',
+        'excerpt',
         'minute',
         'status',
         'title',
