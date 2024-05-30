@@ -56,7 +56,7 @@ class CommitteeController extends Controller
         $newCommittee = [
             'name' => $request->name,
             'duties' => $request->duties,
-            'slug' => $request->slug
+            'slug' => $slug
         ];
         
         if(Committee::create($newCommittee)){
