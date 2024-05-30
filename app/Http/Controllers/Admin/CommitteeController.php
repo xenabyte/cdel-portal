@@ -194,6 +194,21 @@ class CommitteeController extends Controller
         ];
         
         if(CommitteeMember::create($newCommitteeMember)){
+            $member = Staff::find($request->staff_id);
+            if($member){
+                $memberEmail = $member->email;
+                $senderName = env('SCHOOL_NAME');
+                $receiverName = $member->lastname .' ' . $member->othernames;
+                $message = "You have been added as a member to ".$committee->name;
+                $mail = new NotificationMail($senderName, $message, $receiverName);
+
+                Notification::create([
+                    'staff_id' => $member->id,
+                    'message' => $message,
+                    'status' => 0
+                ]);
+            }
+
             alert()->success('Committee Member created successfully', '')->persistent('Close');
             return redirect()->back();
         }
@@ -263,17 +278,19 @@ class CommitteeController extends Controller
 
             foreach ($committeeMembers as $memberId) {
                 $member = Staff::find($memberId);
-                $memberEmail = $member->email;
-                $senderName = env('SCHOOL_NAME');
-                $receiverName = $member->lastname .' ' . $member->othernames;
-                $message = 'New meeting "' . $request->title . '" has been scheduled for ' . $request->date .' at ' . $request->time;
-                $mail = new NotificationMail($senderName, $message, $receiverName);
+                if($member){
+                    $memberEmail = $member->email;
+                    $senderName = env('SCHOOL_NAME');
+                    $receiverName = $member->lastname .' ' . $member->othernames;
+                    $message = 'New meeting "' . $request->title . '" has been scheduled for ' . $request->date .' at ' . $request->time;
+                    $mail = new NotificationMail($senderName, $message, $receiverName);
 
-                Notification::create([
-                    'staff_id' => $memberId,
-                    'message' => $message,
-                    'status' => 0
-                ]);
+                    Notification::create([
+                        'staff_id' => $memberId,
+                        'message' => $message,
+                        'status' => 0
+                    ]);
+                }
             }
             alert()->success('Meeting Created Successfully', '')->persistent('Close');
             return redirect()->back();
@@ -339,17 +356,19 @@ class CommitteeController extends Controller
 
             foreach ($committeeMembers as $memberId) {
                 $member = Staff::find($memberId);
-                $memberEmail = $member->email;
-                $senderName = env('SCHOOL_NAME');
-                $receiverName = $member->lastname .' ' . $member->othernames;
-                $message = 'Meeting Minute"' . $request->title . '" has been uploaded for ' . $meeting->title;
-                $mail = new NotificationMail($senderName, $message, $receiverName);
+                if($member){
+                    $memberEmail = $member->email;
+                    $senderName = env('SCHOOL_NAME');
+                    $receiverName = $member->lastname .' ' . $member->othernames;
+                    $message = 'Meeting Minute"' . $request->title . '" has been uploaded for ' . $meeting->title;
+                    $mail = new NotificationMail($senderName, $message, $receiverName);
 
-                Notification::create([
-                    'staff_id' => $memberId,
-                    'message' => $message,
-                    'status' => 0
-                ]);
+                    Notification::create([
+                        'staff_id' => $memberId,
+                        'message' => $message,
+                        'status' => 0
+                    ]);
+                }
             }
         }
 
@@ -362,17 +381,19 @@ class CommitteeController extends Controller
 
             foreach ($committeeMembers as $memberId) {
                 $member = Staff::find($memberId);
-                $memberEmail = $member->email;
-                $senderName = env('SCHOOL_NAME');
-                $receiverName = $member->lastname .' ' . $member->othernames;
-                $message = 'Meeting Except"' . $request->title . '" has been uploaded for ' . $meeting->title;
-                $mail = new NotificationMail($senderName, $message, $receiverName);
+                if($member){
+                    $memberEmail = $member->email;
+                    $senderName = env('SCHOOL_NAME');
+                    $receiverName = $member->lastname .' ' . $member->othernames;
+                    $message = 'Meeting Except"' . $request->title . '" has been uploaded for ' . $meeting->title;
+                    $mail = new NotificationMail($senderName, $message, $receiverName);
 
-                Notification::create([
-                    'staff_id' => $memberId,
-                    'message' => $message,
-                    'status' => 0
-                ]);
+                    Notification::create([
+                        'staff_id' => $memberId,
+                        'message' => $message,
+                        'status' => 0
+                    ]);
+                }
             }
         }
 
