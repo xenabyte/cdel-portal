@@ -204,7 +204,7 @@ class CommitteeController extends Controller
 
                 Notification::create([
                     'staff_id' => $member->id,
-                    'message' => $message,
+                    'description' => $message,
                     'status' => 0
                 ]);
             }
@@ -287,7 +287,7 @@ class CommitteeController extends Controller
 
                     Notification::create([
                         'staff_id' => $memberId,
-                        'message' => $message,
+                        'description' => $message,
                         'status' => 0
                     ]);
                 }
@@ -365,7 +365,7 @@ class CommitteeController extends Controller
 
                     Notification::create([
                         'staff_id' => $memberId,
-                        'message' => $message,
+                        'description' => $message,
                         'status' => 0
                     ]);
                 }
@@ -390,7 +390,7 @@ class CommitteeController extends Controller
 
                     Notification::create([
                         'staff_id' => $memberId,
-                        'message' => $message,
+                        'description' => $message,
                         'status' => 0
                     ]);
                 }
