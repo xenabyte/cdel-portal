@@ -71,6 +71,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta content="{{ env('APP_NAME') }} Dashboard" name="description" />
     <meta content="Aremu Adeola Abidemi(Codex)" name="author" />
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <!-- App favicon -->
     <link rel="shortcut icon" href="{{asset('favicon.png')}}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -93,15 +94,10 @@
     <link href="{{asset('assets/css/app.min.css')}}" rel="stylesheet" type="text/css" />
     <!-- custom Css-->
     <link href="{{asset('assets/css/custom.min.css')}}" rel="stylesheet" type="text/css" />
-    <script src="https://cdn.tiny.cloud/1/b9d45cy4rlld8ypwkzb6yfzdza63fznxtcoc3iyit61r4rv9/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+    
+    <script src="https://cdn.ckeditor.com/4.16.0/standard/ckeditor.js"></script>
+
     <script>
-        tinymce.init({
-          selector: 'textarea',
-          plugins: 'advlist autolink lists link image charmap print preview hr anchor pagebreak',
-          toolbar_mode: 'floating',
-        });
-    </script>
-     <script>
         window.Laravel = {!! json_encode(['csrfToken' => csrf_token()]) !!};
     </script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
@@ -859,6 +855,12 @@
             // Replace the text with a spinner
             $(this).html("<i class='fa fa-spinner fa-spin'></i>");
           });
+        });
+    </script>
+    <script>
+        // Select all textarea elements and initialize CKEditor on each
+        document.querySelectorAll('textarea').forEach((textarea) => {
+            CKEDITOR.replace(textarea);
         });
     </script>
 </body>
