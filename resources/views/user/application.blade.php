@@ -5,7 +5,7 @@
 <div class="container-fluid">
     <div class="profile-foreground position-relative mx-n4 mt-n4">
         <div class="profile-wid-bg">
-            <img src="assets/images/profile-bg.jpg" alt="" class="profile-wid-img" />
+            <img src="{{ asset('assets/images/profile-bg.jpg') }}" alt="" class="profile-wid-img" />
         </div>
     </div>
     <div class="pt-4 mb-4 mb-lg-3 pb-lg-4">
@@ -740,30 +740,30 @@
                                 <h5 class="card-title mb-3">O'Level Results:</h5>
                                     <hr>
                                     @if(empty($applicant->sitting_no))
-                                    <form action="{{ url('applicant/saveSitting') }}" method="POST" enctype="multipart/form-data">
-                                        @csrf
-                                        <div class="row gx-3 gy-2 align-items-center">
-                                            <div class="col-sm-3">
-                                                <label for="subject">Number of sittings</label>
-                                                <select class="form-select" name="sitting_no" id="subject" required>
-                                                    <option selected>Choose...</option>
-                                                    <option value="1">1</option>
-                                                    <option value="2">2</option>
-                                                </select>
-                                            </div><!--end col-->
+                                        <form action="{{ url('applicant/saveSitting') }}" method="POST" enctype="multipart/form-data">
+                                            @csrf
+                                            <div class="row gx-3 gy-2 align-items-center">
+                                                <div class="col-sm-3">
+                                                    <label for="subject">Number of sittings</label>
+                                                    <select class="form-select" name="sitting_no" id="subject" required>
+                                                        <option selected>Choose...</option>
+                                                        <option value="1">1</option>
+                                                        <option value="2">2</option>
+                                                    </select>
+                                                </div><!--end col-->
 
-                                            <br>
-                                            <div class="col-md-12">
-                                                <label for="schools_attended">School(s) Attended</label>
-                                                <textarea id="schools_attended" name="schools_attended" >{!! $applicant->schools_attended !!}</textarea>
-                                            </div><!--end col-->
-
-                                            <div class="col-auto">
                                                 <br>
-                                                <button type="submit" id="submit-button" class="btn btn-primary">Save</button>
-                                            </div><!--end col-->
-                                        </div>
-                                    </form>
+                                                <div class="col-md-12">
+                                                    <label for="schools_attended">School(s) Attended</label>
+                                                    <textarea id="schools_attended" name="schools_attended" >{!! $applicant->schools_attended !!}</textarea>
+                                                </div><!--end col-->
+
+                                                <div class="col-auto">
+                                                    <br>
+                                                    <button type="submit" id="submit-button" class="btn btn-primary">Save</button>
+                                                </div><!--end col-->
+                                            </div>
+                                        </form>
                                     @else
                                         @if(empty($applicant->status))
                                         <form action="{{ url('applicant/addOlevel') }}" method="POST" enctype="multipart/form-data">
@@ -826,6 +826,7 @@
                                                     <label for="grade">Grade</label>
                                                     <select class="form-select" name="grade" id="grade" required>
                                                         <option selected>Choose...</option>
+                                                        <option value="A/R">A/R</option>
                                                         <option value="A1">A1</option>
                                                         <option value="B2">B2</option>
                                                         <option value="B3">B3</option>

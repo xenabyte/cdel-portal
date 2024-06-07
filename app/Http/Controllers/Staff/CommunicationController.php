@@ -34,6 +34,10 @@ class CommunicationController extends Controller
         return view('staff.messageStudent');
     }
 
+    public function messageAllStudent (){
+        return view('staff.messageAllStudent');
+    }
+
     public function getStudent(Request $request){
         $validator = Validator::make($request->all(), [
             'reg_number' => 'required',

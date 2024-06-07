@@ -29,6 +29,8 @@ use App\Libraries\Paygate\Paygate;
 use App\Libraries\Bandwidth\Bandwidth;
 
 
+use App\Mail\ApplicationMail;
+use App\Mail\BankDetailsMail;
 
 use Paystack;
 use SweetAlert;
@@ -75,6 +77,14 @@ class PaymentController extends Controller
             $session = $paymentDetails['data']['metadata']['academic_session'];
             $amount = $paymentDetails['data']['metadata']['amount'];
 
+            // $applicant = Applicant::create($newApplicant);
+            // $code = $programmeApplied->code;
+            // $applicationNumber = env('SCHOOL_CODE').'/'.substr($applicationSession, 0, 4).sprintf("%03d", ($applicant->id + env('APPLICATION_STARTING_NUMBER')));
+            // $applicant->application_number = $applicationNumber;
+            // $applicant->save();
+    
+            // Mail::to($request->email)->send(new ApplicationMail($applicant));
+
             if($paymentDetails['status'] == true){
                 if($this->processPaystackPayment($paymentDetails)){
                     if($student && !empty($studentId)){
@@ -98,6 +108,9 @@ class PaymentController extends Controller
 
                     alert()->success('Good Job', 'Payment successful')->persistent('Close');
                     if($paymentType == Payment::PAYMENT_TYPE_GENERAl_APPLICATION || $paymentType == Payment::PAYMENT_TYPE_INTER_TRANSFER_APPLICATION){
+                        
+                        $this->createApplicant($payment);
+
                         return view($redirectPath, [
                             'programmes' => $this->programmes,
                             'payment' => $payment

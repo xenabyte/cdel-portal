@@ -173,16 +173,6 @@
                             </div>
                         </div>
 
-                        <div class="mb-3">
-                            <label for="programme_id" class="form-label">Select Programme<span class="text-danger">*</span></label>
-                            <select class="form-select" aria-label="programme_id" name="programme_id" required>
-                                <option value= "" selected>Select Programme</option>
-                                @foreach($programmes as $programme)
-                                    <option value="{{ $programme->id }}">{{ $programme->name }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-
                         {{-- <div class="alert alert-primary alert-dismissible alert-additional fade show" role="alert" style="display: none" id="paymentInfo">
                             <div class="alert-content">
                                 <p id="amount" class="mb-0"></p>

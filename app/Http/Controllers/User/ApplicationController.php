@@ -426,55 +426,51 @@ class ApplicationController extends Controller
             if($existingApplicant = Applicant::where('slug', $slug)->first()) {
                 $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $existingApplicant->lastname .' '. $existingApplicant->othernames.' '. $accessCode)));
             }
-            
-            $newApplicant = ([
-                'slug' => $slug,
-                'email' => strtolower($request->email),
-                'lastname' => ucwords($request->lastname),
-                'programme_id' => $programmeApplied->id,
-                'phone_number' => $request->phone_number,
-                'othernames' => ucwords($request->othernames),
-                'password' => Hash::make($accessCode),
-                'passcode' => $accessCode,
-                'academic_session' => $applicationSession,
-                'partner_id' => $partnerId,
-                'referrer' => $referralCode,
-                'application_type' => $applicationType == 'Inter Transfer Application'? $applicationType : null,
-            ]);
-    
-            $applicant = Applicant::create($newApplicant);
-            $code = $programmeApplied->code;
-            $applicationNumber = env('SCHOOL_CODE').'/'.substr($applicationSession, 0, 4).sprintf("%03d", ($applicant->id + env('APPLICATION_STARTING_NUMBER')));
-            $applicant->application_number = $applicationNumber;
-            $applicant->save();
-
-            Mail::to($request->email)->send(new ApplicationMail($applicant));
         }
+
+        $reference = NULL;
+        if(strtolower($paymentGateway) == 'rave'){
+            $reference = Flutterwave::generateReference();
+        }
+
+        $metaData = [
+            'slug' => $slug,
+            'email' => strtolower($request->email),
+            'lastname' => ucwords($request->lastname),
+            'programme_id' => $programmeApplied->id,
+            'phone_number' => $request->phone_number,
+            'othernames' => ucwords($request->othernames),
+            'password' => Hash::make($accessCode),
+            'passcode' => $accessCode,
+            'academic_session' => $applicationSession,
+            'partner_id' => $partnerId,
+            'referrer' => $referralCode,
+            'application_type' => $applicationType == 'Inter Transfer Application'? $applicationType : null,
+            'amount' => $amount,
+            'email' => $applicant->email,
+            'application_id' => $applicant->id,
+            'student_id' => null,
+            'payment_id' => $payment->id,
+            'payment_gateway' => $paymentGateway,
+            'reference' => $reference,
+            'academic_session' => $applicationSession,
+            'redirect_path' => 'user.auth.login',
+            'payment_Type' => $paymentType,
+        ];
 
         if(strtolower($paymentGateway) == 'paystack') {
             $data = array(
                 "amount" => $this->getPaystackAmount($amount),
                 "email" => $applicant->email,
                 "currency" => "NGN",
-                "metadata" => array(
-                    "amount" => $amount,
-                    "email" => $applicant->email,
-                    "application_id" => $applicant->id,
-                    "student_id" => null,
-                    "payment_id" => $payment->id,
-                    'payment_gateway' => $paymentGateway,
-                    'reference' => null,
-                    'academic_session' => $applicationSession,
-                    'redirect_path' => 'user.auth.login',
-                    'payment_Type' => $paymentType,
-                ),
+                "metadata" => $metaData,
             );
 
             return Paystack::getAuthorizationUrl($data)->redirectNow();
         }
 
         if(strtolower($paymentGateway) == 'rave') {
-            $reference = Flutterwave::generateReference();
+            
 
             $data = array(
                 "payment_options" => "card,banktransfer",
@@ -488,18 +484,7 @@ class ApplicationController extends Controller
                     "phone_number" => $applicant->phone_number,
                     "name" => $applicant->lastname.' '.$applicant->othernames,
                 ],
-                "meta" => array(
-                    "amount" => $amount,
-                    "email" => $applicant->email,
-                    "application_id" => $applicant->id,
-                    "student_id" => null,
-                    "payment_id" => $payment->id,
-                    "payment_gateway" => $paymentGateway,
-                    "reference" => $reference,
-                    "academic_session" => $applicationSession,
-                    "redirect_path" => 'user.auth.login',
-                    "payment_Type" => $paymentType,
-                ),
+                "meta" => $metaData,
                 "customizations" => array(
                     "title" => env('SCHOOL_NAME'),
                     "logo" => env('SCHOOL_LOGO'),
