@@ -127,6 +127,7 @@ class ApplicationController extends Controller
         return view('user.application', [
             'applicant' => $applicant,
             'percent' => $percent,
+            'programmes' => $this->programmes,
         ]);
     }
 
@@ -149,6 +150,7 @@ class ApplicationController extends Controller
     public function saveBioData(Request $request)
     {
         $validator = Validator::make($request->all(), [
+            'image' => 'required',
             'dob' => 'required',
             'religion' => 'required',
             'gender' => 'required',
@@ -156,7 +158,6 @@ class ApplicationController extends Controller
             'nationality' => 'required',
             'state' => 'required',
             'lga' => 'required',
-            'image' => 'required',
             'address' => 'required',
         ]);
 
@@ -212,6 +213,7 @@ class ApplicationController extends Controller
             $user->image = $imageUrl;
         }
 
+        session()->put('previous_section', 'bio-data');
         if($user->save()){
             alert()->success('Changes Saved', 'Bio data saved successfully')->persistent('Close');
             return redirect()->back();
@@ -238,6 +240,7 @@ class ApplicationController extends Controller
             $user->jamb_reg_no = $request->jamb_reg_no;
         }
 
+        session()->put('previous_section', 'utme');
         if($user->save()){
             alert()->success('Changes Saved', 'Jamb registration number saved successfully')->persistent('Close');
             return redirect()->back();
@@ -250,7 +253,7 @@ class ApplicationController extends Controller
     public function saveProgramme(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'application_type' => 'required',
+            'programme_id' => 'required',
         ]);
 
         if($validator->fails()) {
@@ -268,6 +271,11 @@ class ApplicationController extends Controller
             $user->jamb_reg_no = $request->jamb_reg_no;
         }
 
+        if(!empty($request->programme_id) && $request->programme_id != $user->programme_id){
+            $user->programme_id = $request->programme_id;
+        }
+
+        session()->put('previous_section', 'programme');
         if($user->save()){
             alert()->success('Changes Saved', 'Type saved successfully')->persistent('Close');
             return redirect()->back();
@@ -329,6 +337,7 @@ class ApplicationController extends Controller
             $guardian->address = $request->address;
         }
 
+        session()->put('previous_section', 'guardian');
         if($guardian->save()){
             $gua = Guardian::where('email', $request->email)->first();
             $user->guardian_id = $gua->id;
@@ -367,7 +376,7 @@ class ApplicationController extends Controller
             $validator = Validator::make($request->all(), [
                 'email' => 'required|string|email|max:255|unique:users,email,NULL,id,academic_session,' . $applicationSession,
                 'lastname' => 'required',
-                'programme_id' => 'required',
+                'password' => 'required',
                 'phone_number' => 'required',
                 'othernames' => 'required',
                 'paymentGateway' => 'required',
@@ -375,7 +384,6 @@ class ApplicationController extends Controller
             ]);
         }else{
             $validator = Validator::make($request->all(), [
-                'programme_id' => 'required',
                 'paymentGateway' => 'required',
             ]);
         }
@@ -407,7 +415,6 @@ class ApplicationController extends Controller
         $programmeId = $request->programme_id;
         $programmeApplied = Programme::where('id', $programmeId)->first();
         
-
         $accessCode = $this->generateAccessCode();
         $amount = $payment->structures->sum('amount');
 
@@ -440,9 +447,7 @@ class ApplicationController extends Controller
             'programme_id' => $programmeApplied->id,
             'phone_number' => $request->phone_number,
             'othernames' => ucwords($request->othernames),
-            'password' => Hash::make($accessCode),
-            'passcode' => $accessCode,
-            'academic_session' => $applicationSession,
+            'password' => $request->password,
             'partner_id' => $partnerId,
             'referrer' => $referralCode,
             'application_type' => $applicationType == 'Inter Transfer Application'? $applicationType : null,
@@ -470,8 +475,7 @@ class ApplicationController extends Controller
         }
 
         if(strtolower($paymentGateway) == 'rave') {
-            
-
+        
             $data = array(
                 "payment_options" => "card,banktransfer",
                 "amount" => round($this->getRaveAmount($amount)),
@@ -567,6 +571,54 @@ class ApplicationController extends Controller
 
     }
 
+    public function deleteFile(Request $request){
+        $user = Auth::guard('user')->user();
+        
+        $validator = Validator::make($request->all(), [
+            'file_type' => 'required',
+        ]);
+
+        if($request->file_type =='utme'){
+            if(!empty($user->utme)){
+                unlink($user->utme);
+            }
+
+            $user->utme = null;
+        }
+        
+        if($request->file_type =='de'){
+            if(!empty($user->de_result)){
+                unlink($user->de_result);
+            }
+
+            $user->de_result = null;
+        }
+
+        if($request->file_type =='olevel_1'){
+            if(!empty($user->olevel_1)){
+                unlink($user->olevel_1);
+            }
+
+            $user->olevel_1 = null;
+        }
+
+        if($request->file_type =='olevel_2'){
+            if(!empty($user->olevel_2)){
+                unlink($user->olevel_2);
+            }
+
+            $user->olevel_2 = null;
+        }
+
+        if($user->save()){
+            alert()->success('Good Job', 'File Deleted')->persistent('Close');
+            return redirect()->back();
+        }
+
+        alert()->error('Oops!', 'Something went wrong')->persistent('Close');
+        return redirect()->back();
+    }
+
     public function saveDe(Request $request)
     {
         $user = Auth::guard('user')->user();
@@ -592,6 +644,7 @@ class ApplicationController extends Controller
             $user->de_school_attended = $request->de_school_attended;
         }
 
+        session()->put('previous_section', 'de');
         if($user->save()){
             alert()->success('Good Job', 'DE Result Uploaded')->persistent('Close');
             return redirect()->back();
@@ -641,6 +694,7 @@ class ApplicationController extends Controller
             $nextOfKin->address = $request->address;
         }
 
+        session()->put('previous_section', 'nok');
         if($nextOfKin->save()){
             $nok = NextOfKin::where('email', $request->email)->first();
             $user->next_of_kin_id = $nok->id;
@@ -676,6 +730,7 @@ class ApplicationController extends Controller
             $user->schools_attended = $request->schools_attended;
         }
 
+        session()->put('previous_section', 'olevel');
         if($user->save()){
             alert()->success('Changes Saved', 'Number of sittings saved successfully')->persistent('Close');
             return redirect()->back();
@@ -745,6 +800,7 @@ class ApplicationController extends Controller
             'reg_no' => $request->reg_no,
         ]);
 
+        session()->put('previous_section', 'olevel');
         if(Olevel::create($newOlevel)){
             alert()->success('Changes Saved', 'Subject saved successfully')->persistent('Close');
             return redirect()->back();
@@ -778,6 +834,7 @@ class ApplicationController extends Controller
             return redirect()->back();
         }
 
+        session()->put('previous_section', 'olevel');
         if($olevel->delete()){
             alert()->success('Record Deleted', '')->persistent('Close');
             return redirect()->back();
@@ -818,6 +875,7 @@ class ApplicationController extends Controller
             'score' => $request->score,
         ]);
 
+        session()->put('previous_section', 'utme');
         if(Utme::create($newUtme)){
             alert()->success('Changes Saved', 'Subject saved successfully')->persistent('Close');
             return redirect()->back();
@@ -919,6 +977,7 @@ class ApplicationController extends Controller
             $user->olevel_2 = $imageUrl2;
         } 
 
+        session()->put('previous_section', 'olevel');
         if($user->save()){
             alert()->success('Good Job', 'Olevel Result Uploaded')->persistent('Close');
             return redirect()->back();

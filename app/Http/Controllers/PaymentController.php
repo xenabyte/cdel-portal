@@ -108,10 +108,9 @@ class PaymentController extends Controller
 
                     alert()->success('Good Job', 'Payment successful')->persistent('Close');
                     if($paymentType == Payment::PAYMENT_TYPE_GENERAl_APPLICATION || $paymentType == Payment::PAYMENT_TYPE_INTER_TRANSFER_APPLICATION){
-                        
-                        $this->createApplicant($payment);
-
-                        return view($redirectPath, [
+                        $applicantData = $paymentDetails;
+                        $this->createApplicant($applicantData);
+                        return view($redirectPath, [ 
                             'programmes' => $this->programmes,
                             'payment' => $payment
                         ]);

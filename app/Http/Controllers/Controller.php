@@ -28,11 +28,11 @@ use App\Libraries\Google\Google;
 use App\Libraries\Pdf\Pdf;
 use App\Libraries\Bandwidth\Bandwidth;
 
-
-
 use App\Mail\ApplicationPayment;
 use App\Mail\StudentActivated;
 use App\Mail\TransactionMail;
+use App\Mail\ApplicationMail;
+use App\Mail\BankDetailsMail;
 
 use App\Models\Transaction;
 use App\Models\User;
@@ -709,5 +709,45 @@ class Controller extends BaseController
         }
     
         return $classifiedCourses;
+    }
+
+    public function createApplicant($applicantData){
+        $slug = $paymentDetails['data']['metadata']['slug'];
+        $email = $paymentDetails['data']['metadata']['email'];
+        $lastname = $paymentDetails['data']['metadata']['lastname'];
+        $programmeId = $paymentDetails['data']['metadata']['programme_id'];
+        $phoneNumber = $paymentDetails['data']['metadata']['phone_number'];
+        $otherNames = $paymentDetails['data']['metadata']['othernames'];
+        $password = $paymentDetails['data']['metadata']['password'];
+        $applicationSession = $paymentDetails['data']['metadata']['academic_session'];
+        $partnerId = $paymentDetails['data']['metadata']['partner_id'];
+        $referralCode = $paymentDetails['data']['metadata']['referrer'];
+        $applicationType = $paymentDetails['data']['metadata']['application_type'];
+
+        $programmeApplied = Programme::where('id', $programmeId)->first();
+
+        $newApplicant = ([
+            'slug' => $slug,
+            'email' => strtolower($email),
+            'lastname' => ucwords($lastname),
+            'phone_number' => $phoneNumber,
+            'othernames' => ucwords($otherNames),
+            'password' => Hash::make($password),
+            'passcode' => $password,
+            'academic_session' => $applicationSession,
+            'partner_id' => $partnerId,
+            'referrer' => $referralCode,
+            'application_type' => $applicationType,
+        ]);
+
+        $applicant = User::create($newApplicant);
+        $code = $programmeApplied->code;
+        $applicationNumber = env('SCHOOL_CODE').'/'.substr($applicationSession, 0, 4).sprintf("%03d", ($applicant->id + env('APPLICATION_STARTING_NUMBER')));
+        $applicant->application_number = $applicationNumber;
+        $applicant->save();
+
+        Mail::to($applicant->email)->send(new ApplicationMail($applicant));
+
+        return true;
     }
 }

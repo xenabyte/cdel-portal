@@ -1,3 +1,6 @@
+@php
+    $formSession =  session('previous_section');
+@endphp
 @extends('user.layout.dashboard')
 
 @section('content')
@@ -56,45 +59,45 @@
                     <!-- Nav tabs -->
                     <ul class="nav nav-pills animation-nav profile-nav gap-2 gap-lg-3 flex-grow-1" role="tablist">
                         <li class="nav-item">
-                            <a class="nav-link fs-14 active" data-bs-toggle="tab" href="#overview-tab" role="tab">
+                            <a class="nav-link fs-14 {{ $formSession == 'bio-data'?'active':null }} {{ $formSession == ''?'active':null }}" data-bs-toggle="tab" href="#overview-tab" role="tab">
                                 <i class="ri-airplay-fill d-inline-block d-md-none"></i> <span class="d-none d-md-inline-block">Overview</span>
                             </a>
                         </li>
 
                         <li class="nav-item">
-                            <a class="nav-link fs-14" data-bs-toggle="tab" href="#programme" role="tab">
+                            <a class="nav-link fs-14 {{ $formSession == 'programme'?'active':null }}" data-bs-toggle="tab" href="#programme" role="tab">
                                 <i class="ri-airplay-fill d-inline-block d-md-none"></i> <span class="d-none d-md-inline-block">Programme</span>
                             </a>
                         </li>
 
                         <li class="nav-item">
-                            <a class="nav-link fs-14" data-bs-toggle="tab" href="#olevel" role="tab">
+                            <a class="nav-link fs-14 {{ $formSession == 'olevel'?'active':null }}" data-bs-toggle="tab" href="#olevel" role="tab">
                                 <i class="ri-price-tag-line d-inline-block d-md-none"></i> <span class="d-none d-md-inline-block">Olevel Result</span>
                             </a>
                         </li>
 
                         @if(!empty($applicant->application_type) && $applicant->application_type == 'UTME')
                         <li class="nav-item">
-                            <a class="nav-link fs-14" data-bs-toggle="tab" href="#jamb" role="tab">
+                            <a class="nav-link fs-14 {{ $formSession == 'utme'?'active':null }}" data-bs-toggle="tab" href="#jamb" role="tab">
                                 <i class="ri-folder-4-line d-inline-block d-md-none"></i> <span class="d-none d-md-inline-block">Jamb Result</span>
                             </a>
                         </li>
                         @elseif(!empty($applicant->application_type) && $applicant->application_type != 'UTME')
                         <li class="nav-item">
-                            <a class="nav-link fs-14" data-bs-toggle="tab" href="#deresult" role="tab">
+                            <a class="nav-link fs-14 {{ $formSession == 'de'?'active':null }}" data-bs-toggle="tab" href="#deresult" role="tab">
                                 <i class="ri-folder-4-line d-inline-block d-md-none"></i> <span class="d-none d-md-inline-block">Direct Entry/Previous Institution Result</span>
                             </a>
                         </li>
                         @endif
 
                         <li class="nav-item">
-                            <a class="nav-link fs-14" data-bs-toggle="tab" href="#guardian" role="tab">
+                            <a class="nav-link fs-14 {{ $formSession == 'guardian'?'active':null }}" data-bs-toggle="tab" href="#guardian" role="tab">
                                 <i class="ri-folder-4-line d-inline-block d-md-none"></i> <span class="d-none d-md-inline-block">Guardian</span>
                             </a>
                         </li>
 
                         <li class="nav-item">
-                            <a class="nav-link fs-14" data-bs-toggle="tab" href="#nok" role="tab">
+                            <a class="nav-link fs-14 {{ $formSession == 'nok'?'active':null }}" data-bs-toggle="tab" href="#nok" role="tab">
                                 <i class="ri-folder-4-line d-inline-block d-md-none"></i> <span class="d-none d-md-inline-block">Next of Kin</span>
                             </a>
                         </li>
@@ -105,137 +108,9 @@
                 </div>
                 <!-- Tab panes -->
                 <div class="tab-content pt-4 text-muted">
-                    <div class="tab-pane active" id="overview-tab" role="tabpanel">
+                    <div class="tab-pane {{ $formSession == 'bio-data'?'active':null }} {{ $formSession == ''?'active':null }}" id="overview-tab" role="tabpanel">
                         <div class="row">
-                            <div class="col-xxl-4">
-                                @if($percent != 100 && empty($applicant->status))
-                                <div class="card">
-                                    <div class="card-body">
-                                        <div class="d-flex align-items-center mb-5">
-                                            <div class="flex-grow-1">
-                                                <h5 class="card-title mb-0">Complete Your Application</h5>
-                                            </div>
-                                            <div class="flex-shrink-0">
-                                            </div>
-                                        </div>
-                                        <div class="progress animated-progress custom-progress progress-label">
-                                            <div class="progress-bar bg-danger" role="progressbar" style="width: {{$percent}}%" aria-valuenow="{{$percent}}" aria-valuemin="0" aria-valuemax="100">
-                                                <div class="label">{{$percent}}%</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                @elseif(strtolower($applicant->status) == 'admitted')
-                                <div class="card">
-                                    <div class="card-body">
-                                        <div class="d-flex align-items-center mb-5">
-                                            <div class="flex-grow-1">
-                                                <h5 class="card-title mb-0">Congratulations</h5>
-                                            </div>
-                                            <div class="flex-shrink-0">
-                                            </div>
-                                        </div>
-                                        <div class="d-flex align-items-center text-center mb-5">
-                                            <div class="flex-grow-1">
-                                                <i class="fa fa-check fa-5x text-success"></i><br>
-                                                <p class="muted">You have been granted admission, download Admission Letter from the button below and proceed to student dashboard.</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                @elseif(strtolower($applicant->status) == 'submitted')
-                                <div class="card">
-                                    <div class="card-body">
-                                        <div class="d-flex align-items-center mb-5">
-                                            <div class="flex-grow-1">
-                                                <h5 class="card-title mb-0">Application form completed submitted, Pending Admission</h5>
-                                            </div>
-                                            <div class="flex-shrink-0">
-                                            </div>
-                                        </div>
-                                        <div class="d-flex align-items-center text-center mb-5">
-                                            <div class="flex-grow-1">
-                                                <i class="fa fa-spinner fa-spin fa-5x text-danger"></i>
-                                            </div>
-                                        </div>
-                                        
-                                    </div>
-                                </div>
-                                @endif
-
-                                @if($percent >= 100 && empty($applicant->status))
-                                <div class="card">
-                                    <div class="card-body">
-                                        <div class="d-flex align-items-center mb-1">
-                                            <div class="flex-grow-1">
-                                                <h5 class="card-title mb-0">Submit Application</h5>
-                                                <hr>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <!-- Warning Alert -->
-                                            <div class="alert alert-warning alert-dismissible alert-additional shadow fade show mb-0" role="alert">
-                                                <div class="alert-body">
-                                                    <div class="d-flex">
-                                                        <div class="flex-shrink-0 me-3">
-                                                            <i class="ri-alert-line fs-16 align-middle"></i>
-                                                        </div>
-                                                        <div class="flex-grow-1">
-                                                            <h5 class="alert-heading">Ensure you have added all information</h5>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="alert-content">
-                                                    <p class="mb-0">You will not be able to update the information after clicking "Submit Application"</p>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-12">
-                                                <br>
-                                                <form action="{{ url('applicant/submitApplication') }}" method="POST" enctype="multipart/form-data">
-                                                    @csrf
-                                                    <button type="submit" id="submit-button" class="btn btn-block btn-primary">Submit Applicattion</button>
-                                                </form>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                @endif
-
-
-                                <div class="card">
-                                    <div class="card-body">
-                                        <h5 class="card-title mb-3">Info</h5>
-                                        <hr>
-                                        <div class="table-responsive">
-                                            <table class="table table-borderless mb-0">
-                                                <tbody>
-                                                    <tr>
-                                                        <th class="ps-0" scope="row">Full Name: </th>
-                                                        <td class="text-muted">{{ $applicant->lastname.' '. $applicant->othernames}}</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <th class="ps-0" scope="row">Phone Number: </th>
-                                                        <td class="text-muted">{{ $applicant->phone_number }}</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <th class="ps-0" scope="row">E-mail: </th>
-                                                        <td class="text-muted">{{ $applicant->email }}</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <th class="ps-0" scope="row">Academic session: </th>
-                                                        <td class="text-muted">{{ $applicant->academic_session }}</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <th class="ps-0" scope="row">Programmme: </th>
-                                                        <td class="text-muted">@if(!empty($applicant->programme)){{ $applicant->programme->name }}@endif</td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div><!-- end card body -->
-                                </div><!-- end card -->
-                            </div>
-
+                            @include('user.layout.applicantProgress')
 
                             <!--end col-->
                             <div class="col-xxl-8">
@@ -673,319 +548,636 @@
                         <!--end row-->
                     </div>
 
-                    <div class="tab-pane" id="programme" role="tabpanel">
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="mb-4 pb-2">
-                                    <div class="d-flex align-items-center mb-3">
-                                        <div class="flex-shrink-0 avatar-sm">
-                                            <div class="avatar-title bg-light text-primary rounded-3 fs-18 shadow">
-                                                <i class="ri-award-fill"></i>
-                                            </div>
-                                        </div>
-                                        <div class="flex-grow-1 ms-3">
-                                            <h6></h6>
-                                            <p class="text-muted mb-0"><strong>Programme:</strong> @if(!empty($applicant->programme)){{ $applicant->programme->name }}@endif</p>
-                                        </div>
-                                        <div>
-                                            
-                                        </div>
-                                    </div>
-            
-                                    <hr>
-                                    @if(empty($applicant->application_type))
-                                    <form action="{{ url('applicant/saveProgramme') }}" method="POST" enctype="multipart/form-data">
-                                        @csrf
-            
-                                        <div class="col-md-12">
-                                            <div class="mb-3">
-                                                <label for="application_type">Application Type</label>
-                                                <select class="form-select" name="application_type" id="application_type">
-                                                    <option selected>Choose...</option>
-                                                    <option value="UTME"> UTME</option>
-                                                    <option value="DE"> Direct Entry</option>
-                                                </select>
-                                            </div>
-                                        </div><!--end col-->
-
-                                        <div class="col-lg-12">
-                                            <div class="mb-3">
-                                                <label for="jamb_reg" class="form-label">Jamb Registration Number</label>
-                                                <input type="text" class="form-control" id="jamb_reg" name="jamb_reg_no" value="{{ $applicant->jamb_reg_no }}<br>" required>
-                                            </div>
-                                        </div>
-                                        <hr>
-                                        <div class="row g-2">
-                                            @if(empty($applicant->status))
-                                            <div class="col-lg-12">
-                                                <div class="text-end">
-                                                    <button type="submit" id="submit-button" class="btn btn-success">Save</button>
+                    <div class="tab-pane {{ $formSession == 'programme'?'active':null }}" id="programme" role="tabpanel">
+                        <div class="row">
+                            @include('user.layout.applicantProgress')
+                            
+                            <div class="col-xxl-8">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="mb-4 pb-2">
+                                            <div class="d-flex align-items-center mb-3">
+                                                <div class="flex-shrink-0 avatar-sm">
+                                                    <div class="avatar-title bg-light text-primary rounded-3 fs-18 shadow">
+                                                        <i class="ri-award-fill"></i>
+                                                    </div>
+                                                </div>
+                                                <div class="flex-grow-1 ms-3">
+                                                    <h6></h6>
+                                                    <p class="text-muted mb-0"><strong>Programme:</strong> @if(!empty($applicant->programme)){{ $applicant->programme->name }}@endif</p>
+                                                </div>
+                                                <div>
+                                                    
                                                 </div>
                                             </div>
-                                            @endif
-                                            <!--end col-->
+                    
+                                            <hr>
+                                            <form action="{{ url('applicant/saveProgramme') }}" method="POST" enctype="multipart/form-data">
+                                                @csrf
+                                                <div class="col-md-12">
+                                                    <div class="mb-3">
+                                                        <label for="programme_id" class="form-label">Select Programme<span class="text-danger">*</span></label>
+                                                        <select class="form-select" aria-label="programme_id" name="programme_id" required>
+                                                            <option value= "" selected>Select Programme</option>
+                                                            @foreach($programmes as $programme)
+                                                                <option value="{{ $programme->id }}">{{ $programme->name }}</option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+                                                </div>
+                    
+                                                @if(empty($applicant->application_type))
+                                                <div class="col-md-12">
+                                                    <div class="mb-3">
+                                                        <label for="application_type">Application Type</label>
+                                                        <select class="form-select" name="application_type" id="application_type">
+                                                            <option selected>Choose...</option>
+                                                            <option value="UTME"> UTME</option>
+                                                            <option value="DE"> Direct Entry</option>
+                                                        </select>
+                                                    </div>
+                                                </div><!--end col-->
+                                                @endif
+    
+                                                @if(!empty($applicant->application_type))
+                                                <div class="col-lg-12">
+                                                    <div class="mb-3">
+                                                        <label for="jamb_reg" class="form-label">Jamb Registration Number</label>
+                                                        <input type="text" class="form-control" id="jamb_reg" name="jamb_reg_no" value="{{ $applicant->jamb_reg_no }}" required>
+                                                    </div>
+                                                </div>
+                                                <hr>
+                                                @endif
+                                                <div class="row g-2">
+                                                    @if(empty($applicant->status))
+                                                    <div class="col-lg-12">
+                                                        <div class="text-end">
+                                                            <button type="submit" id="submit-button" class="btn btn-success">Save</button>
+                                                        </div>
+                                                    </div>
+                                                    @endif
+                                                    <!--end col-->
+                                                </div>
+                                                <!--end row-->
+                                            </form>
                                         </div>
-                                        <!--end row-->
-                                    </form>
-                                    @endif
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
                     <!--end tab-pane-->
-                    <div class="tab-pane fade" id="olevel" role="tabpanel">
-                        <div class="card">
-                            <div class="card-body">
-                                <h5 class="card-title mb-3">O'Level Results:</h5>
-                                    <hr>
-                                    @if(empty($applicant->sitting_no))
-                                        <form action="{{ url('applicant/saveSitting') }}" method="POST" enctype="multipart/form-data">
-                                            @csrf
-                                            <div class="row gx-3 gy-2 align-items-center">
-                                                <div class="col-sm-3">
-                                                    <label for="subject">Number of sittings</label>
-                                                    <select class="form-select" name="sitting_no" id="subject" required>
-                                                        <option selected>Choose...</option>
-                                                        <option value="1">1</option>
-                                                        <option value="2">2</option>
-                                                    </select>
-                                                </div><!--end col-->
-
-                                                <br>
-                                                <div class="col-md-12">
-                                                    <label for="schools_attended">School(s) Attended</label>
-                                                    <textarea id="schools_attended" name="schools_attended" >{!! $applicant->schools_attended !!}</textarea>
-                                                </div><!--end col-->
-
-                                                <div class="col-auto">
-                                                    <br>
-                                                    <button type="submit" id="submit-button" class="btn btn-primary">Save</button>
-                                                </div><!--end col-->
-                                            </div>
-                                        </form>
-                                    @else
-                                        @if(empty($applicant->status))
-                                        <form action="{{ url('applicant/addOlevel') }}" method="POST" enctype="multipart/form-data">
-                                            @csrf
-                                            <div class="row gx-3 gy-2 align-items-center">
-                                                <div class="col-sm-3">
-                                                    <label for="subject">Subject</label>
-                                                    <select class="form-select" name="subject" id="subject" required>
-                                                        <option selected>Choose...</option>
-                                                        <option value="Agricultural Science">Agricultural Science</option>
-                                                        <option value="Animal Husbandry">Animal Husbandry</option>
-                                                        <option value="Automobile Parts Merchandising">Automobile Parts Merchandising</option>
-                                                        <option value="Biology">Biology</option>
-                                                        <option value="Book Keeping">Book Keeping</option>
-                                                        <option value="Catering Craft Practice">Catering Craft Practice</option>
-                                                        <option value="Chemistry">Chemistry</option>
-                                                        <option value="Christian Studies">Christian Studies</option>
-                                                        <option value="Civic Education">Civic Education</option>
-                                                        <option value="Clothing & Textile">Clothing & Textile</option>
-                                                        <option value="Commerce">Commerce</option>
-                                                        <option value="Computer & IT">Computer & IT</option>
-                                                        <option value="Cosmetology">Cosmetology</option>
-                                                        <option value="Dyeing & Bleaching">Dyeing & Bleaching</option>
-                                                        <option value="Economics">Economics</option>
-                                                        <option value="English Language">English Language</option>
-                                                        <option value="Financial Accounting">Financial Accounting</option>
-                                                        <option value="Fisheries">Fisheries</option>
-                                                        <option value="Food & Nutrition">Food & Nutrition</option>
-                                                        <option value="Further Mathematics">Further Mathematics</option>
-                                                        <option value="Garment Making">Garment Making</option>
-                                                        <option value="General Mathematics">General Mathematics</option>
-                                                        <option value="Geography">Geography</option>
-                                                        <option value="Government">Government</option>
-                                                        <option value="Hausa">Hausa</option>
-                                                        <option value="Health Education">Health Education</option>
-                                                        <option value="History">History</option>
-                                                        <option value="Home Management">Home Management</option>
-                                                        <option value="Igbo">Igbo</option>
-                                                        <option value="Insurance">Insurance</option>
-                                                        <option value="Islamic Studies">Islamic Studies</option>
-                                                        <option value="Literature in English">Literature in English</option>
-                                                        <option value="Marketing">Marketing</option>
-                                                        <option value="Music">Music</option>
-                                                        <option value="Office Practice">Office Practice</option>
-                                                        <option value="Painting & Decorating">Painting & Decorating</option>
-                                                        <option value="Photography">Photography</option>
-                                                        <option value="Physical Education">Physical Education</option>
-                                                        <option value="Physics">Physics</option>
-                                                        <option value="Salesmanship">Salesmanship</option>
-                                                        <option value="Stenography">Stenography</option>
-                                                        <option value="Store Keeping">Store Keeping</option>
-                                                        <option value="Store Management">Store Management</option>
-                                                        <option value="Tourism">Tourism</option>
-                                                        <option value="Type Writing">Type Writing</option>
-                                                        <option value="Visual Art">Visual Art</option>
-                                                        <option value="Yoruba">Yoruba</option>
-                                                    </select>
-                                                </div><!--end col-->
-                                                <div class="col-sm-2">
-                                                    <label for="grade">Grade</label>
-                                                    <select class="form-select" name="grade" id="grade" required>
-                                                        <option selected>Choose...</option>
-                                                        <option value="A/R">A/R</option>
-                                                        <option value="A1">A1</option>
-                                                        <option value="B2">B2</option>
-                                                        <option value="B3">B3</option>
-                                                        <option value="C4">C4</option>
-                                                        <option value="C5">C5</option>
-                                                        <option value="C6">C6</option>
-                                                        <option value="D7">D7</option>
-                                                        <option value="E8">E8</option>
-                                                        <option value="F9">F9</option>
-                                                    </select>
-                                                </div><!--end col-->
-
-                                                <div class="col-sm-2">
-                                                    <label for="year">Year</label>
-                                                    <input type="number" min="2010" max="2099" step="1" name="year" class="form-control" id="year" required>
-                                                </div><!--end col-->
-
-                                                <div class="col-sm-3">
-                                                    <label for="reg_no">Registration Number</label>
-                                                    <input type="text" name="reg_no" class="form-control" id="reg_no" required>
-                                                </div><!--end col-->
-
-                                                <div class="col-auto">
-                                                    <br>
-                                                    <button type="submit" id="submit-button" class="btn btn-primary">Save</button>
-                                                </div><!--end col-->
-                                            </div>
-                                        </form>
-                                        @endif
-                                    @endif
-                                    <hr>
-                                    @if(!empty($applicant->olevel_1))
-                                    <div class="row mb-2">
-                                        <div class="col-sm-6 col-xl-12">
-                                            <!-- Simple card -->
-                                            <i class="bx bxs-file-jpg text-danger" style="font-size: 50px"></i><span style="font-size: 20px">Olevel Result</span>
-                                            <div class="text-end">
-                                                <a href="{{ asset($applicant->olevel_1) }}" target="blank" class="btn btn-success">View</a>
-                                            </div>
-                                            @if($applicant->sitting_no > 1)
-                                            <i class="bx bxs-file-jpg text-danger" style="font-size: 50px"></i><span style="font-size: 20px">Olevel Result (Second Sitting)</span>
-                                            <div class="text-end">
-                                                <a href="{{ asset($applicant->olevel_2) }}" target="blank"  class="btn btn-success">View</a>
+                    <div class="tab-pane {{ $formSession == 'olevel'?'active':null }}" id="olevel" role="tabpanel">
+                        <div class="row">
+                            @include('user.layout.applicantProgress')
+    
+                            <div class="col-xxl-8">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h5 class="card-title mb-3">O'Level Results:</h5>
+                                            <hr>
+                                            @if(empty($applicant->sitting_no))
+                                                <form action="{{ url('applicant/saveSitting') }}" method="POST" enctype="multipart/form-data">
+                                                    @csrf
+                                                    <div class="row gx-3 gy-2 align-items-center">
+                                                        <div class="col-sm-3">
+                                                            <label for="subject">Number of sittings</label>
+                                                            <select class="form-select" name="sitting_no" id="subject" required>
+                                                                <option selected>Choose...</option>
+                                                                <option value="1">1</option>
+                                                                <option value="2">2</option>
+                                                            </select>
+                                                        </div><!--end col-->
+    
+                                                        <br>
+                                                        <div class="col-md-12">
+                                                            <label for="schools_attended">School(s) Attended</label>
+                                                            <textarea id="schools_attended" name="schools_attended" >{!! $applicant->schools_attended !!}</textarea>
+                                                        </div><!--end col-->
+    
+                                                        <div class="col-auto">
+                                                            <br>
+                                                            <button type="submit" id="submit-button" class="btn btn-primary">Save</button>
+                                                        </div><!--end col-->
+                                                    </div>
+                                                </form>
+                                            @else
+                                                @if(empty($applicant->status))
+                                                <form action="{{ url('applicant/addOlevel') }}" method="POST" enctype="multipart/form-data">
+                                                    @csrf
+                                                    <div class="row gx-3 gy-2 align-items-center">
+                                                        <div class="col-sm-3">
+                                                            <label for="subject">Subject</label>
+                                                            <select class="form-select" name="subject" id="subject" required>
+                                                                <option selected>Choose...</option>
+                                                                <option value="Agricultural Science">Agricultural Science</option>
+                                                                <option value="Animal Husbandry">Animal Husbandry</option>
+                                                                <option value="Automobile Parts Merchandising">Automobile Parts Merchandising</option>
+                                                                <option value="Biology">Biology</option>
+                                                                <option value="Book Keeping">Book Keeping</option>
+                                                                <option value="Catering Craft Practice">Catering Craft Practice</option>
+                                                                <option value="Chemistry">Chemistry</option>
+                                                                <option value="Christian Studies">Christian Studies</option>
+                                                                <option value="Civic Education">Civic Education</option>
+                                                                <option value="Clothing & Textile">Clothing & Textile</option>
+                                                                <option value="Commerce">Commerce</option>
+                                                                <option value="Computer & IT">Computer & IT</option>
+                                                                <option value="Cosmetology">Cosmetology</option>
+                                                                <option value="Dyeing & Bleaching">Dyeing & Bleaching</option>
+                                                                <option value="Economics">Economics</option>
+                                                                <option value="English Language">English Language</option>
+                                                                <option value="Financial Accounting">Financial Accounting</option>
+                                                                <option value="Fisheries">Fisheries</option>
+                                                                <option value="Food & Nutrition">Food & Nutrition</option>
+                                                                <option value="Further Mathematics">Further Mathematics</option>
+                                                                <option value="Garment Making">Garment Making</option>
+                                                                <option value="General Mathematics">General Mathematics</option>
+                                                                <option value="Geography">Geography</option>
+                                                                <option value="Government">Government</option>
+                                                                <option value="Hausa">Hausa</option>
+                                                                <option value="Health Education">Health Education</option>
+                                                                <option value="History">History</option>
+                                                                <option value="Home Management">Home Management</option>
+                                                                <option value="Igbo">Igbo</option>
+                                                                <option value="Insurance">Insurance</option>
+                                                                <option value="Islamic Studies">Islamic Studies</option>
+                                                                <option value="Literature in English">Literature in English</option>
+                                                                <option value="Marketing">Marketing</option>
+                                                                <option value="Music">Music</option>
+                                                                <option value="Office Practice">Office Practice</option>
+                                                                <option value="Painting & Decorating">Painting & Decorating</option>
+                                                                <option value="Photography">Photography</option>
+                                                                <option value="Physical Education">Physical Education</option>
+                                                                <option value="Physics">Physics</option>
+                                                                <option value="Salesmanship">Salesmanship</option>
+                                                                <option value="Stenography">Stenography</option>
+                                                                <option value="Store Keeping">Store Keeping</option>
+                                                                <option value="Store Management">Store Management</option>
+                                                                <option value="Tourism">Tourism</option>
+                                                                <option value="Type Writing">Type Writing</option>
+                                                                <option value="Visual Art">Visual Art</option>
+                                                                <option value="Yoruba">Yoruba</option>
+                                                            </select>
+                                                        </div><!--end col-->
+                                                        <div class="col-sm-2">
+                                                            <label for="grade">Grade</label>
+                                                            <select class="form-select" name="grade" id="grade" required>
+                                                                <option selected>Choose...</option>
+                                                                <option value="A/R">A/R</option>
+                                                                <option value="A1">A1</option>
+                                                                <option value="B2">B2</option>
+                                                                <option value="B3">B3</option>
+                                                                <option value="C4">C4</option>
+                                                                <option value="C5">C5</option>
+                                                                <option value="C6">C6</option>
+                                                                <option value="D7">D7</option>
+                                                                <option value="E8">E8</option>
+                                                                <option value="F9">F9</option>
+                                                            </select>
+                                                        </div><!--end col-->
+    
+                                                        <div class="col-sm-2">
+                                                            <label for="year">Year</label>
+                                                            <input type="number" min="2010" max="2099" step="1" name="year" class="form-control" id="year" required>
+                                                        </div><!--end col-->
+    
+                                                        <div class="col-sm-3">
+                                                            <label for="reg_no">Registration Number</label>
+                                                            <input type="text" name="reg_no" class="form-control" id="reg_no" required>
+                                                        </div><!--end col-->
+    
+                                                        <div class="col-auto">
+                                                            <br>
+                                                            <button type="submit" id="submit-button" class="btn btn-primary">Save</button>
+                                                        </div><!--end col-->
+                                                    </div>
+                                                </form>
+                                                @endif
+                                            @endif
+                                            <hr>
+                                            @if(!empty($applicant->olevel_1))
+                                            <div class="row mb-2">
+                                                <div class="col-sm-6 col-xl-12">
+                                                    <!-- Simple card -->
+                                                    <i class="bx bxs-file-jpg text-danger" style="font-size: 50px"></i><span style="font-size: 20px">Olevel Result</span>
+                                                    <div class="text-end">
+                                                        <form action="{{ url('applicant/deleteFile') }}" method="POST" enctype="multipart/form-data">
+                                                            @csrf
+                                                            <input type="hidden" name="file_type" value="olevel_1">
+                                                            <button type="submit" id="submit-button" class="btn btn-danger">Delete Result</button>
+                                                            <a href="{{ asset($applicant->olevel_1) }}" target="blank" class="btn btn-success">View</a>
+                                                        </form>
+                                                    </div>
+                                                    @if($applicant->sitting_no > 1)
+                                                    <i class="bx bxs-file-jpg text-danger" style="font-size: 50px"></i><span style="font-size: 20px">Olevel Result (Second Sitting)</span>
+                                                    <div class="text-end">
+                                                        <form action="{{ url('applicant/deleteFile') }}" method="POST" enctype="multipart/form-data">
+                                                            @csrf
+                                                            <input type="hidden" name="file_type" value="olevel_2">
+                                                            <button type="submit" id="submit-button" class="btn btn-danger">Delete Result</button>
+                                                            <a href="{{ asset($applicant->olevel_2) }}" target="blank"  class="btn btn-success">View</a>
+                                                        </form>
+                                                    </div>
+                                                    @endif
+                                                </div><!-- end col -->
                                             </div>
                                             @endif
-                                        </div><!-- end col -->
-                                    </div>
-                                    @endif
-                                    <hr>
-                                    <table class="table table-borderedless table-nowrap">
-                                        <thead>
-                                            <tr>
-                                                <th scope="col">Id</th>
-                                                <th scope="col">Subject</th>
-                                                <th scope="col">Grade</th>
-                                                <th scope="col">Registration Number</th>
-                                                <th scope="col">Year</th>
-                                                <th scope="col"></th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @foreach($applicant->olevels as $olevel)
-                                            <tr>
-                                                <th scope="row">{{ $loop->iteration }}</th>
-                                                <td>{{ $olevel->subject }}</td>
-                                                <td>{{ $olevel->grade }}</td>
-                                                <td>{{ $olevel->reg_no }}</td>
-                                                <td>{{ $olevel->year }}</td>
-                                                <td>
-                                                    <div class="hstack gap-3 fs-15">
-                                                        <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#deleteGrade{{$olevel->id}}" class="link-danger"><i class="ri-delete-bin-5-line"></i></a>
-        
-                                                        <div id="deleteGrade{{$olevel->id}}" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
-                                                            <div class="modal-dialog modal-dialog-centered">
-                                                                <div class="modal-content">
-                                                                    <div class="modal-body text-center p-5">
-                                                                        <div class="text-end">
-                                                                            <button type="button" class="btn-close text-end" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                                        </div>
-                                                                        <div class="mt-2">
-                                                                            <lord-icon src="https://cdn.lordicon.com/wwneckwc.json" trigger="hover" style="width:150px;height:150px">
-                                                                            </lord-icon>
-                                                                            <h4 class="mb-3 mt-4">Are you sure you want to delete <br>{{ $olevel->subject }}?</h4>
-                                                                            <form action="{{ url('/applicant/deleteOlevel') }}" method="POST">
-                                                                                @csrf
-                                                                                <input name="olevel_id" type="hidden" value="{{$olevel->id}}">
-        
-                                                                                <hr>
-                                                                                <button type="submit" id="submit-button" class="btn btn-danger w-100">Yes, Delete</button>
-                                                                            </form>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="modal-footer bg-light p-3 justify-content-center">
-        
-                                                                    </div>
-                                                                </div><!-- /.modal-content -->
-                                                            </div><!-- /.modal-dialog -->
-                                                        </div><!-- /.modal -->
+                                            <hr>
+                                            <table class="table table-borderedless table-nowrap">
+                                                <thead>
+                                                    <tr>
+                                                        <th scope="col">Id</th>
+                                                        <th scope="col">Subject</th>
+                                                        <th scope="col">Grade</th>
+                                                        <th scope="col">Registration Number</th>
+                                                        <th scope="col">Year</th>
+                                                        <th scope="col"></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach($applicant->olevels as $olevel)
+                                                    <tr>
+                                                        <th scope="row">{{ $loop->iteration }}</th>
+                                                        <td>{{ $olevel->subject }}</td>
+                                                        <td>{{ $olevel->grade }}</td>
+                                                        <td>{{ $olevel->reg_no }}</td>
+                                                        <td>{{ $olevel->year }}</td>
+                                                        <td>
+                                                            <div class="hstack gap-3 fs-15">
+                                                                <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#deleteGrade{{$olevel->id}}" class="link-danger"><i class="ri-delete-bin-5-line"></i></a>
+                
+                                                                <div id="deleteGrade{{$olevel->id}}" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
+                                                                    <div class="modal-dialog modal-dialog-centered">
+                                                                        <div class="modal-content">
+                                                                            <div class="modal-body text-center p-5">
+                                                                                <div class="text-end">
+                                                                                    <button type="button" class="btn-close text-end" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                                                </div>
+                                                                                <div class="mt-2">
+                                                                                    <lord-icon src="https://cdn.lordicon.com/wwneckwc.json" trigger="hover" style="width:150px;height:150px">
+                                                                                    </lord-icon>
+                                                                                    <h4 class="mb-3 mt-4">Are you sure you want to delete <br>{{ $olevel->subject }}?</h4>
+                                                                                    <form action="{{ url('/applicant/deleteOlevel') }}" method="POST">
+                                                                                        @csrf
+                                                                                        <input name="olevel_id" type="hidden" value="{{$olevel->id}}">
+                
+                                                                                        <hr>
+                                                                                        <button type="submit" id="submit-button" class="btn btn-danger w-100">Yes, Delete</button>
+                                                                                    </form>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="modal-footer bg-light p-3 justify-content-center">
+                
+                                                                            </div>
+                                                                        </div><!-- /.modal-content -->
+                                                                    </div><!-- /.modal-dialog -->
+                                                                </div><!-- /.modal -->
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                    @endforeach
+                                                </tbody>
+                                            </table>
+                                            @if($applicant->olevels->count() > 4 && empty($applicant->status))
+                                            <hr>
+                                            <h5 class="card-title mb-3">Upload O'Level Results Printout:</h5>
+                                                <form action="{{ url('applicant/uploadOlevel') }}" method="POST" enctype="multipart/form-data">
+                                                    @csrf
+                                                    <div class="row ">
+            
+                                                        <div class="col-md-12 mt-3">
+                                                            <label for="olevel1">Upload Olevel @if($applicant->sitting_no > 1) (first Sitting) @endif</label>
+                                                            <input type="file" name="olevel_1" class="form-control" id="olevel1">
+                                                        </div><!--end col-->
+            
+                                                        @if($applicant->sitting_no > 1)
+                                                        <div class="col-md-12 mt-3">
+                                                            <label for="olevel2">Upload Olevel (Second Sitting)</label>
+                                                            <input type="file" name="olevel_2" class="form-control" id="olevel2">
+                                                        </div><!--end col-->
+                                                        @endif
+            
+                                                        <div class="col-auto">
+                                                            <br>
+                                                            <button type="submit" id="submit-button" class="btn btn-primary">Upload</button>
+                                                        </div><!--end col-->
                                                     </div>
-                                                </td>
-                                            </tr>
-                                            @endforeach
-                                        </tbody>
-                                    </table>
-                                    @if($applicant->olevels->count() > 4 && empty($applicant->status))
-                                    <hr>
-                                    <h5 class="card-title mb-3">Upload O'Level Results Printout:</h5>
-                                        <form action="{{ url('applicant/uploadOlevel') }}" method="POST" enctype="multipart/form-data">
-                                            @csrf
-                                            <div class="row ">
-    
-                                                <div class="col-md-12 mt-3">
-                                                    <label for="olevel1">Upload Olevel @if($applicant->sitting_no > 1) (first Sitting) @endif</label>
-                                                    <input type="file" name="olevel_1" class="form-control" id="olevel1">
-                                                </div><!--end col-->
-    
-                                                @if($applicant->sitting_no > 1)
-                                                <div class="col-md-12 mt-3">
-                                                    <label for="olevel2">Upload Olevel (Second Sitting)</label>
-                                                    <input type="file" name="olevel_2" class="form-control" id="olevel2">
-                                                </div><!--end col-->
-                                                @endif
-    
-                                                <div class="col-auto">
-                                                    <br>
-                                                    <button type="submit" id="submit-button" class="btn btn-primary">Upload</button>
-                                                </div><!--end col-->
-                                            </div>
-                                        </form>
-                                    @endif
+                                                </form>
+                                            @endif
+                                    </div>
+                                    <!--end card-body-->
+                                </div>
+                                <!--end card-->
                             </div>
-                            <!--end card-body-->
                         </div>
-                        <!--end card-->
                     </div>
 
                     <!--end tab-pane-->
-                    <div class="tab-pane fade" id="jamb" role="tabpanel">
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="mb-4 pb-2">
-                                    <h5 class="card-title mb-3">UTME Results:</h5>
-                                    <hr>
-                                    @if(empty($applicant->jamb_reg_no))
-                                        <form action="{{ url('applicant/saveUtme') }}" method="POST" enctype="multipart/form-data">
-                                            @csrf
-                                            <div class="col-lg-12">
-                                                <div class="mb-3">
-                                                    <label for="jamb_reg" class="form-label">Jamb Registration Number</label>
-                                                    <input type="text" class="form-control" id="jamb_reg" name="jamb_reg_no" value="{{ $applicant->jamb_reg_no }}<br>" required>
-                                                </div>
-                                            </div>
-
+                    <div class="tab-pane {{ $formSession == 'utme'?'active':null }}" id="jamb" role="tabpanel">
+                        <div class="row">
+                            @include('user.layout.applicantProgress')
+    
+                            <div class="col-xxl-8">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="mb-4 pb-2">
+                                            <h5 class="card-title mb-3">UTME Results:</h5>
                                             <hr>
-                                            <div class="row g-2">
+                                            @if(empty($applicant->jamb_reg_no))
+                                                <form action="{{ url('applicant/saveUtme') }}" method="POST" enctype="multipart/form-data">
+                                                    @csrf
+                                                    <div class="col-lg-12">
+                                                        <div class="mb-3">
+                                                            <label for="jamb_reg" class="form-label">Jamb Registration Number</label>
+                                                            <input type="text" class="form-control" id="jamb_reg" name="jamb_reg_no" value="{{ $applicant->jamb_reg_no }}<br>" required>
+                                                        </div>
+                                                    </div>
+    
+                                                    <hr>
+                                                    <div class="row g-2">
+                                                        @if(empty($applicant->status))
+                                                        <div class="col-lg-12">
+                                                            <div class="text-end">
+                                                                <button type="submit" id="submit-button" class="btn btn-success">Save</button>
+                                                            </div>
+                                                        </div>
+                                                        @endif
+                                                        <!--end col-->
+                                                    </div>
+                                                    <!--end row-->
+                                                </form>
+                                            @else
+                                                @if(!empty($applicant->utme))
+                                                <div class="row mb-2">
+                                                    <div class="col-sm-6 col-xl-12">
+                                                        <!-- Simple card -->
+                                                        <i class="bx bxs-file-jpg text-danger" style="font-size: 50px"></i><span style="font-size: 20px">UTME Result Printout</span>
+                                                        <div class="text-end">
+                                                            <form action="{{ url('applicant/deleteFile') }}" method="POST" enctype="multipart/form-data">
+                                                                @csrf
+                                                                <input type="hidden" name="file_type" value="utme">
+                                                                <button type="submit" id="submit-button" class="btn btn-danger">Delete UTME Printout</button>
+                                                                <a href="{{ asset($applicant->utme) }}"  target="blank" class="btn btn-success">View</a>
+                                                            </form>
+                                                        </div>
+                                                    </div><!-- end col -->
+                                                </div>
+                                                @endif
+                                                <hr>
+                                                @if(empty($applicant->status))
+                                                <form action="{{ url('applicant/addUtme') }}" method="POST" enctype="multipart/form-data">
+                                                    @csrf
+                                                    <div class="row gx-3 gy-2 align-items-center">
+                                                        <div class="col-sm-5">
+                                                            <label for="subject">Subject</label>
+                                                            <select class="form-select" name="subject" id="subject">
+                                                                <option value="Use of English">Use of English</option>
+                                                                <option value="Agricultural Science">Agricultural Science</option>
+                                                                <option value="Animal Husbandry">Animal Husbandry</option>
+                                                                <option value="Automobile Parts Merchandising">Automobile Parts Merchandising</option>
+                                                                <option value="Biology">Biology</option>
+                                                                <option value="Book Keeping">Book Keeping</option>
+                                                                <option value="Catering Craft Practice">Catering Craft Practice</option>
+                                                                <option value="Chemistry">Chemistry</option>
+                                                                <option value="Christian Studies">Christian Studies</option>
+                                                                <option value="Civic Education">Civic Education</option>
+                                                                <option value="Clothing & Textile">Clothing & Textile</option>
+                                                                <option value="Commerce">Commerce</option>
+                                                                <option value="Computer & IT">Computer & IT</option>
+                                                                <option value="Cosmetology">Cosmetology</option>
+                                                                <option value="Dyeing & Bleaching">Dyeing & Bleaching</option>
+                                                                <option value="Economics">Economics</option>
+                                                                <option value="Financial Accounting">Financial Accounting</option>
+                                                                <option value="Fisheries">Fisheries</option>
+                                                                <option value="Food & Nutrition">Food & Nutrition</option>
+                                                                <option value="Further Mathematics">Further Mathematics</option>
+                                                                <option value="Garment Making">Garment Making</option>
+                                                                <option value="General Mathematics">General Mathematics</option>
+                                                                <option value="Geography">Geography</option>
+                                                                <option value="Government">Government</option>
+                                                                <option value="Hausa">Hausa</option>
+                                                                <option value="Health Education">Health Education</option>
+                                                                <option value="History">History</option>
+                                                                <option value="Home Management">Home Management</option>
+                                                                <option value="Igbo">Igbo</option>
+                                                                <option value="Insurance">Insurance</option>
+                                                                <option value="Islamic Studies">Islamic Studies</option>
+                                                                <option value="Literature in English">Literature in English</option>
+                                                                <option value="Marketing">Marketing</option>
+                                                                <option value="Music">Music</option>
+                                                                <option value="Office Practice">Office Practice</option>
+                                                                <option value="Painting & Decorating">Painting & Decorating</option>
+                                                                <option value="Photography">Photography</option>
+                                                                <option value="Physical Education">Physical Education</option>
+                                                                <option value="Physics">Physics</option>
+                                                                <option value="Salesmanship">Salesmanship</option>
+                                                                <option value="Stenography">Stenography</option>
+                                                                <option value="Store Keeping">Store Keeping</option>
+                                                                <option value="Store Management">Store Management</option>
+                                                                <option value="Tourism">Tourism</option>
+                                                                <option value="Type Writing">Type Writing</option>
+                                                                <option value="Visual Art">Visual Art</option>
+                                                                <option value="Yoruba">Yoruba</option>
+                                                            </select>
+                                                        </div><!--end col-->
+                                                        
+                                                        <div class="col-sm-5">
+                                                            <label for="year">Score</label>
+                                                            <input type="number" min="0" max="400" step="1" name="score" class="form-control" id="year">
+                                                        </div><!--end col-->
+    
+                                                        <div class="col-auto">
+                                                            <br>
+                                                            <button type="submit" id="submit-button" class="btn btn-primary">Save</button>
+                                                        </div><!--end col-->
+                                                    </div>
+                                                </form>
+                                                @endif
+                                                <hr>
+                                                <table class="table table-borderedless table-nowrap">
+                                                    <thead>
+                                                        <tr>
+                                                            <th scope="col">Id</th>
+                                                            <th scope="col">Subject</th>
+                                                            <th scope="col">Score</th>
+                                                            <th scope="col"></th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @foreach($applicant->utmes as $utme)
+                                                        <tr>
+                                                            <th scope="row">{{ $loop->iteration }}</th>
+                                                            <td>{{ $utme->subject }}</td>
+                                                            <td>{{ $utme->score }}</td>
+                                                            <td>
+                                                                <div class="hstack gap-3 fs-15">
+                                                                    <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#deleteScore{{$utme->id}}" class="link-danger"><i class="ri-delete-bin-5-line"></i></a>
+                    
+                                                                    <div id="deleteScore{{$utme->id}}" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
+                                                                        <div class="modal-dialog modal-dialog-centered">
+                                                                            <div class="modal-content">
+                                                                                <div class="modal-body text-center p-5">
+                                                                                    <div class="text-end">
+                                                                                        <button type="button" class="btn-close text-end" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                                                    </div>
+                                                                                    <div class="mt-2">
+                                                                                        <lord-icon src="https://cdn.lordicon.com/wwneckwc.json" trigger="hover" style="width:150px;height:150px">
+                                                                                        </lord-icon>
+                                                                                        <h4 class="mb-3 mt-4">Are you sure you want to delete <br>{{ $utme->subject }}?</h4>
+                                                                                        <form action="{{ url('/applicant/deleteUtme') }}" method="POST">
+                                                                                            @csrf
+                                                                                            <input name="utme_id" type="hidden" value="{{$utme->id}}">
+                    
+                                                                                            <hr>
+                                                                                            <button type="submit" id="submit-button" class="btn btn-danger w-100">Yes, Delete</button>
+                                                                                        </form>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="modal-footer bg-light p-3 justify-content-center">
+                    
+                                                                                </div>
+                                                                            </div><!-- /.modal-content -->
+                                                                        </div><!-- /.modal-dialog -->
+                                                                    </div><!-- /.modal -->
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                        @endforeach
+                                                    </tbody>
+                                                </table>
+                                                <hr>
+                                                <h5 class="card-title mb-3">Upload UTME Results Printout:</h5>
+                                                @if($applicant->utmes->count() > 3 && empty($applicant->status))
+                                                    <form action="{{ url('applicant/uploadUtme') }}" method="POST" enctype="multipart/form-data">
+                                                        @csrf
+                                                        <div class="row ">
+                
+                                                            <div class="col-md-12 mt-3">
+                                                                <label for="utme">Upload UTME</label>
+                                                                <input type="file" name="utme" class="form-control" id="utme">
+                                                            </div><!--end col-->
+                
+                                                            <div class="col-auto">
+                                                                <br>
+                                                                <button type="submit" id="submit-button" class="btn btn-primary">Upload</button>
+                                                            </div><!--end col-->
+                                                        </div>
+                                                    </form>
+                                                @endif
+                                            @endif
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--end tab-pane-->
+                    <div class="tab-pane {{ $formSession == 'de'?'active':null }}" id="deresult" role="tabpanel">
+                        <div class="row">
+                            @include('user.layout.applicantProgress')
+                            
+                            <div class="col-xxl-8">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="mb-4 pb-2">
+                                            @if(!empty($applicant->de_result))
+                                                <div class="row mb-2">
+                                                    <div class="col-sm-6 col-xl-12">
+                                                        <!-- Simple card -->
+                                                        <i class="bx bxs-file-jpg text-danger" style="font-size: 50px"></i><span style="font-size: 20px">DE Result Printout</span>
+                                                        <div class="text-end">
+                                                            <form action="{{ url('applicant/deleteFile') }}" method="POST" enctype="multipart/form-data">
+                                                                @csrf
+                                                                <input type="hidden" name="file_type" value="de">
+                                                                <button type="submit" id="submit-button" class="btn btn-danger">Delete Result</button>
+                                                                <a href="{{ asset($applicant->de_result) }}"  target="blank" class="btn btn-success">View</a>
+                                                            </form>
+                                                        </div>
+                                                    </div><!-- end col -->
+                                                </div>
+                                                <hr>
+                                            @endif
+                                            
+                                            <form action="{{ url('applicant/saveDe') }}" method="POST" enctype="multipart/form-data">
+                                                @csrf
+    
+                                                <div class="col-md-12">
+                                                    <label for="de_school_attended">Previous Institution(s)</label>
+                                                    <textarea id="de_school_attended" name="de_school_attended" >{!! $applicant->de_school_attended !!}</textarea>
+                                                </div><!--end col-->
+                    
+                                                <div class="col-md-12 mt-3">
+                                                    <label for="de_result">Upload Result/Certificate</label>
+                                                    <input type="file" name="de_result" class="form-control" id="de_result">
+                                                </div><!--end col-->
+                                                <div class="row g-2">
+                                                    @if(empty($applicant->status))
+                                                    <div class="col-lg-12">
+                                                        <div class="text-end">
+                                                            <button type="submit" id="submit-button" class="btn btn-success">Save</button>
+                                                        </div>
+                                                    </div>
+                                                    @endif
+                                                    <!--end col-->
+                                                </div>
+                                                <!--end row-->
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane {{ $formSession == 'guardian'?'active':null }}" id="guardian" role="tabpanel">
+                        <div class="row">
+                            @include('user.layout.applicantProgress')
+    
+                            <div class="col-xxl-8">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h5 class="card-title mb-3">Guardian Information</h5>
+                                        <hr>
+                                        <form action="{{ url('applicant/guardianBioData') }}" method="POST" enctype="multipart/form-data">
+                                            @csrf
+                                            <input type="hidden" name="guardian_id" value="{{ empty($applicant->guardian)?'':$applicant->guardian->id }}">
+                                            <input type="hidden" name="user_id" value="{{ $applicant->id }}">
+    
+                                            <div class="row">
+                                                <div class="col-lg-12">
+                                                    <div class="mb-3">
+                                                        <label for="name" class="form-label">Name</label>
+                                                        <input type="text" class="form-control" id="name" name="name" value="{{ empty($applicant->guardian)?'':$applicant->guardian->name }}" required>
+                                                    </div>
+                                                </div>
+    
+                                                <div class="col-lg-6">
+                                                    <div class="mb-3">
+                                                        <label for="email" class="form-label">Email</label>
+                                                        <input type="text" class="form-control" id="email" name="email" value="{{ empty($applicant->guardian)?'':$applicant->guardian->email }}" required>
+                                                    </div>
+                                                </div>
+                                                <!--end col-->
+    
+                                                <div class="col-lg-6">
+                                                    <div class="mb-3">
+                                                        <label for="phone_number" class="form-label">Phone Number</label>
+                                                        <input type="text" class="form-control" id="phone_number" name="phone_number" value="{{ empty($applicant->guardian)?'':$applicant->guardian->phone_number }}"  required>
+                                                    </div>
+                                                </div>
+    
+                                                <div class="col-lg-12">
+                                                    <label for="address">Address</label>
+                                                    <textarea id="address" name="address" >{!! empty($applicant->guardian)?'':$applicant->guardian->address !!}</textarea>
+                                                </div><!--end col-->
+    
+                                                <hr>
                                                 @if(empty($applicant->status))
                                                 <div class="col-lg-12">
-                                                    <div class="text-end">
-                                                        <button type="submit" id="submit-button" class="btn btn-success">Save</button>
+                                                    <div class="hstack gap-2 justify-content-end">
+                                                        <button type="submit" id="submit-button" class="btn btn-primary">Save Guardian Information</button>
                                                     </div>
                                                 </div>
                                                 @endif
@@ -993,324 +1185,75 @@
                                             </div>
                                             <!--end row-->
                                         </form>
-                                    @else
-                                        @if(!empty($applicant->utme))
-                                        <div class="row mb-2">
-                                            <div class="col-sm-6 col-xl-12">
-                                                <!-- Simple card -->
-                                                <i class="bx bxs-file-jpg text-danger" style="font-size: 50px"></i><span style="font-size: 20px">UTME Result Printout</span>
-                                                <div class="text-end">
-                                                    <a href="{{ asset($applicant->utme) }}"  target="blank" class="btn btn-success">View</a>
-                                                </div>
-                                            </div><!-- end col -->
-                                        </div>
-                                        @endif
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane {{ $formSession == 'nok'?'active':null }}" id="nok" role="tabpanel">
+                        <div class="row">
+                            @include('user.layout.applicantProgress')
+    
+                            <div class="col-xxl-8">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h5 class="card-title mb-3">Next of Kin Information</h5>
                                         <hr>
-                                        @if(empty($applicant->status))
-                                        <form action="{{ url('applicant/addUtme') }}" method="POST" enctype="multipart/form-data">
+                                        <form action="{{ url('applicant/nokBioData') }}" method="POST" enctype="multipart/form-data">
                                             @csrf
-                                            <div class="row gx-3 gy-2 align-items-center">
-                                                <div class="col-sm-5">
-                                                    <label for="subject">Subject</label>
-                                                    <select class="form-select" name="subject" id="subject">
-                                                        <option value="Use of English">Use of English</option>
-                                                        <option value="Agricultural Science">Agricultural Science</option>
-                                                        <option value="Animal Husbandry">Animal Husbandry</option>
-                                                        <option value="Automobile Parts Merchandising">Automobile Parts Merchandising</option>
-                                                        <option value="Biology">Biology</option>
-                                                        <option value="Book Keeping">Book Keeping</option>
-                                                        <option value="Catering Craft Practice">Catering Craft Practice</option>
-                                                        <option value="Chemistry">Chemistry</option>
-                                                        <option value="Christian Studies">Christian Studies</option>
-                                                        <option value="Civic Education">Civic Education</option>
-                                                        <option value="Clothing & Textile">Clothing & Textile</option>
-                                                        <option value="Commerce">Commerce</option>
-                                                        <option value="Computer & IT">Computer & IT</option>
-                                                        <option value="Cosmetology">Cosmetology</option>
-                                                        <option value="Dyeing & Bleaching">Dyeing & Bleaching</option>
-                                                        <option value="Economics">Economics</option>
-                                                        <option value="Financial Accounting">Financial Accounting</option>
-                                                        <option value="Fisheries">Fisheries</option>
-                                                        <option value="Food & Nutrition">Food & Nutrition</option>
-                                                        <option value="Further Mathematics">Further Mathematics</option>
-                                                        <option value="Garment Making">Garment Making</option>
-                                                        <option value="General Mathematics">General Mathematics</option>
-                                                        <option value="Geography">Geography</option>
-                                                        <option value="Government">Government</option>
-                                                        <option value="Hausa">Hausa</option>
-                                                        <option value="Health Education">Health Education</option>
-                                                        <option value="History">History</option>
-                                                        <option value="Home Management">Home Management</option>
-                                                        <option value="Igbo">Igbo</option>
-                                                        <option value="Insurance">Insurance</option>
-                                                        <option value="Islamic Studies">Islamic Studies</option>
-                                                        <option value="Literature in English">Literature in English</option>
-                                                        <option value="Marketing">Marketing</option>
-                                                        <option value="Music">Music</option>
-                                                        <option value="Office Practice">Office Practice</option>
-                                                        <option value="Painting & Decorating">Painting & Decorating</option>
-                                                        <option value="Photography">Photography</option>
-                                                        <option value="Physical Education">Physical Education</option>
-                                                        <option value="Physics">Physics</option>
-                                                        <option value="Salesmanship">Salesmanship</option>
-                                                        <option value="Stenography">Stenography</option>
-                                                        <option value="Store Keeping">Store Keeping</option>
-                                                        <option value="Store Management">Store Management</option>
-                                                        <option value="Tourism">Tourism</option>
-                                                        <option value="Type Writing">Type Writing</option>
-                                                        <option value="Visual Art">Visual Art</option>
-                                                        <option value="Yoruba">Yoruba</option>
-                                                    </select>
-                                                </div><!--end col-->
-                                                
-                                                <div class="col-sm-5">
-                                                    <label for="year">Score</label>
-                                                    <input type="number" min="0" max="400" step="1" name="score" class="form-control" id="year">
-                                                </div><!--end col-->
-
-                                                <div class="col-auto">
-                                                    <br>
-                                                    <button type="submit" id="submit-button" class="btn btn-primary">Save</button>
-                                                </div><!--end col-->
-                                            </div>
-                                        </form>
-                                        @endif
-                                        <hr>
-                                        <table class="table table-borderedless table-nowrap">
-                                            <thead>
-                                                <tr>
-                                                    <th scope="col">Id</th>
-                                                    <th scope="col">Subject</th>
-                                                    <th scope="col">Score</th>
-                                                    <th scope="col"></th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                @foreach($applicant->utmes as $utme)
-                                                <tr>
-                                                    <th scope="row">{{ $loop->iteration }}</th>
-                                                    <td>{{ $utme->subject }}</td>
-                                                    <td>{{ $utme->score }}</td>
-                                                    <td>
-                                                        <div class="hstack gap-3 fs-15">
-                                                            <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#deleteScore{{$utme->id}}" class="link-danger"><i class="ri-delete-bin-5-line"></i></a>
-            
-                                                            <div id="deleteScore{{$utme->id}}" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
-                                                                <div class="modal-dialog modal-dialog-centered">
-                                                                    <div class="modal-content">
-                                                                        <div class="modal-body text-center p-5">
-                                                                            <div class="text-end">
-                                                                                <button type="button" class="btn-close text-end" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                                            </div>
-                                                                            <div class="mt-2">
-                                                                                <lord-icon src="https://cdn.lordicon.com/wwneckwc.json" trigger="hover" style="width:150px;height:150px">
-                                                                                </lord-icon>
-                                                                                <h4 class="mb-3 mt-4">Are you sure you want to delete <br>{{ $utme->subject }}?</h4>
-                                                                                <form action="{{ url('/applicant/deleteUtme') }}" method="POST">
-                                                                                    @csrf
-                                                                                    <input name="utme_id" type="hidden" value="{{$utme->id}}">
-            
-                                                                                    <hr>
-                                                                                    <button type="submit" id="submit-button" class="btn btn-danger w-100">Yes, Delete</button>
-                                                                                </form>
-                                                                            </div>
-                                                                        </div>
-                                                                        <div class="modal-footer bg-light p-3 justify-content-center">
-            
-                                                                        </div>
-                                                                    </div><!-- /.modal-content -->
-                                                                </div><!-- /.modal-dialog -->
-                                                            </div><!-- /.modal -->
+                                            <input type="hidden" name="nextOfKin_id" value="{{ empty($applicant->nok)?'':$applicant->nok->id }}">
+                                                <div class="row">
+                                                    <div class="col-lg-12">
+                                                        <div class="mb-3">
+                                                            <label for="name" class="form-label">Name</label>
+                                                            <input type="text" class="form-control" id="name" name="name" value="{{ empty($applicant->nok)?'':$applicant->nok->name }}" required>
+                                                        </div>    
+                                                    </div>
+    
+                                                    <div class="col-lg-6">
+                                                        <div class="mb-3">
+                                                            <label for="email" class="form-label">Email</label>
+                                                            <input type="text" class="form-control" id="email" name="email" value="{{ empty($applicant->nok)?'':$applicant->nok->email }}" required>
                                                         </div>
-                                                    </td>
-                                                </tr>
-                                                @endforeach
-                                            </tbody>
-                                        </table>
-                                        <hr>
-                                        <h5 class="card-title mb-3">Upload UTME Results Printout:</h5>
-                                        @if($applicant->utmes->count() > 3 && empty($applicant->status))
-                                            <form action="{{ url('applicant/uploadUtme') }}" method="POST" enctype="multipart/form-data">
-                                                @csrf
-                                                <div class="row ">
-        
-                                                    <div class="col-md-12 mt-3">
-                                                        <label for="utme">Upload UTME</label>
-                                                        <input type="file" name="utme" class="form-control" id="utme">
+                                                    </div>
+                                                    <!--end col-->
+    
+                                                    <div class="col-lg-6">
+                                                        <div class="mb-3">
+                                                            <label for="phone_number" class="form-label">Phone Number</label>
+                                                            <input type="text" class="form-control" id="phone_number" name="phone_number" value="{{ empty($applicant->nok)?'':$applicant->nok->phone_number }}" required>
+                                                        </div>
+                                                    </div>
+    
+                                                    <div class="col-lg-12">
+                                                        <div class="mb-3">
+                                                            <label for="address">Address</label>
+                                                            <textarea id="address" name="address" >{!! empty($applicant->nok)?'':$applicant->nok->address !!}</textarea>
+                                                        </div>
                                                     </div><!--end col-->
-        
-                                                    <div class="col-auto">
-                                                        <br>
-                                                        <button type="submit" id="submit-button" class="btn btn-primary">Upload</button>
-                                                    </div><!--end col-->
+    
+                                                    <div class="col-lg-12">
+                                                        <div class="mb-3">
+                                                            <label for="relationship" class="form-label">Relationship</label>
+                                                            <input type="text" class="form-control" id="relationship" name="relationship" value="{{ empty($applicant->nok)?'':$applicant->nok->relationship }}"  required>
+                                                        </div>
+                                                    </div>
                                                 </div>
-                                            </form>
-                                        @endif
-                                    @endif
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!--end tab-pane-->
-                    <div class="tab-pane" id="deresult" role="tabpanel">
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="mb-4 pb-2">
-                                    @if(!empty($applicant->de_result))
-                                        <div class="row mb-2">
-                                            <div class="col-sm-6 col-xl-12">
-                                                <!-- Simple card -->
-                                                <i class="bx bxs-file-jpg text-danger" style="font-size: 50px"></i><span style="font-size: 20px">DE Result Printout</span>
-                                                <div class="text-end">
-                                                    <a href="{{ asset($applicant->de_result) }}"  target="blank" class="btn btn-success">View</a>
+                                                <hr>
+                                                @if(empty($applicant->status))
+                                                <div class="col-lg-12">
+                                                    <div class="hstack gap-2 justify-content-end">
+                                                        <button type="submit" id="submit-button" class="btn btn-primary">Save Next of Kin Information</button>
+                                                    </div>
                                                 </div>
-                                            </div><!-- end col -->
-                                        </div>
-                                        <hr>
-                                    @endif
-                                    
-                                    <form action="{{ url('applicant/saveDe') }}" method="POST" enctype="multipart/form-data">
-                                        @csrf
-
-                                        <div class="col-md-12">
-                                            <label for="de_school_attended">Previous Institution(s)</label>
-                                            <textarea id="de_school_attended" name="de_school_attended" >{!! $applicant->de_school_attended !!}</textarea>
-                                        </div><!--end col-->
-            
-                                        <div class="col-md-12 mt-3">
-                                            <label for="de_result">Upload Result/Certificate</label>
-                                            <input type="file" name="de_result" class="form-control" id="de_result">
-                                        </div><!--end col-->
-                                        <div class="row g-2">
-                                            @if(empty($applicant->status))
-                                            <div class="col-lg-12">
-                                                <div class="text-end">
-                                                    <button type="submit" id="submit-button" class="btn btn-success">Save</button>
-                                                </div>
+                                                @endif
+                                                <!--end col-->
                                             </div>
-                                            @endif
-                                            <!--end col-->
-                                        </div>
-                                        <!--end row-->
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-
-                    <div class="tab-pane fade" id="guardian" role="tabpanel">
-                        <div class="card">
-                            <div class="card-body">
-                                <h5 class="card-title mb-3">Guardian Information</h5>
-                                <hr>
-                                <form action="{{ url('applicant/guardianBioData') }}" method="POST" enctype="multipart/form-data">
-                                    @csrf
-                                    <input type="hidden" name="guardian_id" value="{{ empty($applicant->guardian)?'':$applicant->guardian->id }}">
-                                    <input type="hidden" name="user_id" value="{{ $applicant->id }}">
-
-                                    <div class="row">
-                                        <div class="col-lg-12">
-                                            <div class="mb-3">
-                                                <label for="name" class="form-label">Name</label>
-                                                <input type="text" class="form-control" id="name" name="name" value="{{ empty($applicant->guardian)?'':$applicant->guardian->name }}" required>
-                                            </div>
-                                        </div>
-
-                                        <div class="col-lg-6">
-                                            <div class="mb-3">
-                                                <label for="email" class="form-label">Email</label>
-                                                <input type="text" class="form-control" id="email" name="email" value="{{ empty($applicant->guardian)?'':$applicant->guardian->email }}" required>
-                                            </div>
-                                        </div>
-                                        <!--end col-->
-
-                                        <div class="col-lg-6">
-                                            <div class="mb-3">
-                                                <label for="phone_number" class="form-label">Phone Number</label>
-                                                <input type="text" class="form-control" id="phone_number" name="phone_number" value="{{ empty($applicant->guardian)?'':$applicant->guardian->phone_number }}"  required>
-                                            </div>
-                                        </div>
-
-                                        <div class="col-lg-12">
-                                            <label for="address">Address</label>
-                                            <textarea id="address" name="address" >{!! empty($applicant->guardian)?'':$applicant->guardian->address !!}</textarea>
-                                        </div><!--end col-->
-
-                                        <hr>
-                                        @if(empty($applicant->status))
-                                        <div class="col-lg-12">
-                                            <div class="hstack gap-2 justify-content-end">
-                                                <button type="submit" id="submit-button" class="btn btn-primary">Save Guardian Information</button>
-                                            </div>
-                                        </div>
-                                        @endif
-                                        <!--end col-->
+                                            <!--end row-->
+                                        </form>
                                     </div>
-                                    <!--end row-->
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="tab-pane fade" id="nok" role="tabpanel">
-                        <div class="card">
-                            <div class="card-body">
-                                <h5 class="card-title mb-3">Next of Kin Information</h5>
-                                <hr>
-                                <form action="{{ url('applicant/nokBioData') }}" method="POST" enctype="multipart/form-data">
-                                    @csrf
-                                    <input type="hidden" name="nextOfKin_id" value="{{ empty($applicant->nok)?'':$applicant->nok->id }}">
-                                        <div class="row">
-                                            <div class="col-lg-12">
-                                                <div class="mb-3">
-                                                    <label for="name" class="form-label">Name</label>
-                                                    <input type="text" class="form-control" id="name" name="name" value="{{ empty($applicant->nok)?'':$applicant->nok->name }}" required>
-                                                </div>    
-                                            </div>
-
-                                            <div class="col-lg-6">
-                                                <div class="mb-3">
-                                                    <label for="email" class="form-label">Email</label>
-                                                    <input type="text" class="form-control" id="email" name="email" value="{{ empty($applicant->nok)?'':$applicant->nok->email }}" required>
-                                                </div>
-                                            </div>
-                                            <!--end col-->
-
-                                            <div class="col-lg-6">
-                                                <div class="mb-3">
-                                                    <label for="phone_number" class="form-label">Phone Number</label>
-                                                    <input type="text" class="form-control" id="phone_number" name="phone_number" value="{{ empty($applicant->nok)?'':$applicant->nok->phone_number }}" required>
-                                                </div>
-                                            </div>
-
-                                            <div class="col-lg-12">
-                                                <div class="mb-3">
-                                                    <label for="address">Address</label>
-                                                    <textarea id="address" name="address" >{!! empty($applicant->nok)?'':$applicant->nok->address !!}</textarea>
-                                                </div>
-                                            </div><!--end col-->
-
-                                            <div class="col-lg-12">
-                                                <div class="mb-3">
-                                                    <label for="relationship" class="form-label">Relationship</label>
-                                                    <input type="text" class="form-control" id="relationship" name="relationship" value="{{ empty($applicant->nok)?'':$applicant->nok->relationship }}"  required>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <hr>
-                                        @if(empty($applicant->status))
-                                        <div class="col-lg-12">
-                                            <div class="hstack gap-2 justify-content-end">
-                                                <button type="submit" id="submit-button" class="btn btn-primary">Save Next of Kin Information</button>
-                                            </div>
-                                        </div>
-                                        @endif
-                                        <!--end col-->
-                                    </div>
-                                    <!--end row-->
-                                </form>
+                                </div>
                             </div>
                         </div>
                     </div>
