@@ -811,6 +811,36 @@ class ApplicationController extends Controller
         
     }
 
+    public function updateOlevel(Request $request){
+        $validator = Validator::make($request->all(), [
+            'olevel_id' => 'required|min:1',
+        ]);
+
+        if($validator->fails()) {
+            
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+
+        if(!$olevel = Olevel::find($request->olevel_id)){
+            alert()->error('Oops', 'Invalid OLevel Information')->persistent('Close');
+            return redirect()->back();
+        }
+
+        $olevel->year = $request->year;
+        $olevel->subject = $request->subde;
+        $olevel->reg_no = $request-ject;
+        $olevel->grade = $request->gra>reg_no;
+
+        session()->put('previous_section', 'olevel');
+        if($olevel->save()){
+            alert()->success('Record Updated', '')->persistent('Close');
+            return redirect()->back();
+        }
+
+        alert()->error('Oops!', 'Something went wrong')->persistent('Close');
+        return redirect()->back();
+    }
 
     /**
      * Delete Olevel
@@ -847,9 +877,40 @@ class ApplicationController extends Controller
 
     public function addUtme(Request $request)
     {
+        $userId = Auth::guard('user')->user()->id;        
+
+        $subjects = $request->input('subjects');
+
+        foreach ($subjects as $subject) {
+            $validator = Validator::make($request->all(), [
+                'subjects.*.subject' => 'required|string|max:255',
+                'subjects.*.score' => 'required|integer|min:0|max:100',
+                'subjects.*.year' => 'required|integer|min:1900|max:' . date('Y'),
+                'subjects.*.reg_number' => 'required|string|max:255',
+            ]);
+    
+            if($validator->fails()) {
+                alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+                return redirect()->back();
+            }
+
+            Utme::create([
+                'subject' => $subject['subject'],
+                'score' => $subject['score'],
+                'user_id' => $userId,
+            ]);
+        }
+
+        session()->put('previous_section', 'utme');
+
+        alert()->success('Changes Saved', 'Subject saved successfully')->persistent('Close');
+        return redirect()->back();
+        
+    }
+
+    public function updateUtme(Request $request){
         $validator = Validator::make($request->all(), [
-            'subject' => 'required',
-            'score' => 'required',
+            'utme_id' => 'required|min:1',
         ]);
 
         if($validator->fails()) {
@@ -857,33 +918,23 @@ class ApplicationController extends Controller
             return redirect()->back();
         }
 
-        $userId = Auth::guard('user')->user()->id;        
 
-        if(Utme::where('user_id', $userId)->count() > 3){
-            alert()->error('oops', 'Four subject already added, you cant add more')->persistent('Close');
+        if(!$utme = Utme::find($request->utme_id)){
+            alert()->error('Oops', 'Invalid UTME Information')->persistent('Close');
             return redirect()->back();
         }
 
-        if(Utme::where('user_id', $userId)->where('subject', $request->subject)->count() > 0){
-            alert()->error('oops', 'Subject already added')->persistent('Close');
-            return redirect()->back();
-        }
-
-        $newUtme = ([
-            'subject' => $request->subject,
-            'user_id' => $userId,
-            'score' => $request->score,
-        ]);
+        $utme->subject = $request->subject;
+        $utme->score = $request->score;
 
         session()->put('previous_section', 'utme');
-        if(Utme::create($newUtme)){
-            alert()->success('Changes Saved', 'Subject saved successfully')->persistent('Close');
+        if($utme->save()){
+            alert()->success('Record updated', '')->persistent('Close');
             return redirect()->back();
         }
 
         alert()->error('Oops!', 'Something went wrong')->persistent('Close');
         return redirect()->back();
-        
     }
 
     /**

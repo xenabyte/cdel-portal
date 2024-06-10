@@ -173,7 +173,7 @@
                                                 <div class="col-lg-6">
                                                     <div class="mb-3">
                                                         <label for="dob" class="form-label">Date of Birth</label>
-                                                        <input type="date" class="form-control"  id="dob" name="dob" value="{{ $applicant->dob }}" required />
+                                                        <input type="date" class="form-control"  id="dob" name="dob" value="{{ isset($applicant->dob) ? substr($applicant->dob, 0, 10) : '' }}" required />
                                                     </div>
                                                 </div>
                                                 <!--end col-->
@@ -664,95 +664,171 @@
                                                 </form>
                                             @else
                                                 @if(empty($applicant->status))
-                                                <form action="{{ url('applicant/addOlevel') }}" method="POST" enctype="multipart/form-data">
-                                                    @csrf
-                                                    <div class="row gx-3 gy-2 align-items-center">
-                                                        <div class="col-sm-3">
-                                                            <label for="subject">Subject</label>
-                                                            <select class="form-select" name="subject" id="subject" required>
-                                                                <option selected>Choose...</option>
-                                                                <option value="Agricultural Science">Agricultural Science</option>
-                                                                <option value="Animal Husbandry">Animal Husbandry</option>
-                                                                <option value="Automobile Parts Merchandising">Automobile Parts Merchandising</option>
-                                                                <option value="Biology">Biology</option>
-                                                                <option value="Book Keeping">Book Keeping</option>
-                                                                <option value="Catering Craft Practice">Catering Craft Practice</option>
-                                                                <option value="Chemistry">Chemistry</option>
-                                                                <option value="Christian Studies">Christian Studies</option>
-                                                                <option value="Civic Education">Civic Education</option>
-                                                                <option value="Clothing & Textile">Clothing & Textile</option>
-                                                                <option value="Commerce">Commerce</option>
-                                                                <option value="Computer & IT">Computer & IT</option>
-                                                                <option value="Cosmetology">Cosmetology</option>
-                                                                <option value="Dyeing & Bleaching">Dyeing & Bleaching</option>
-                                                                <option value="Economics">Economics</option>
-                                                                <option value="English Language">English Language</option>
-                                                                <option value="Financial Accounting">Financial Accounting</option>
-                                                                <option value="Fisheries">Fisheries</option>
-                                                                <option value="Food & Nutrition">Food & Nutrition</option>
-                                                                <option value="Further Mathematics">Further Mathematics</option>
-                                                                <option value="Garment Making">Garment Making</option>
-                                                                <option value="General Mathematics">General Mathematics</option>
-                                                                <option value="Geography">Geography</option>
-                                                                <option value="Government">Government</option>
-                                                                <option value="Hausa">Hausa</option>
-                                                                <option value="Health Education">Health Education</option>
-                                                                <option value="History">History</option>
-                                                                <option value="Home Management">Home Management</option>
-                                                                <option value="Igbo">Igbo</option>
-                                                                <option value="Insurance">Insurance</option>
-                                                                <option value="Islamic Studies">Islamic Studies</option>
-                                                                <option value="Literature in English">Literature in English</option>
-                                                                <option value="Marketing">Marketing</option>
-                                                                <option value="Music">Music</option>
-                                                                <option value="Office Practice">Office Practice</option>
-                                                                <option value="Painting & Decorating">Painting & Decorating</option>
-                                                                <option value="Photography">Photography</option>
-                                                                <option value="Physical Education">Physical Education</option>
-                                                                <option value="Physics">Physics</option>
-                                                                <option value="Salesmanship">Salesmanship</option>
-                                                                <option value="Stenography">Stenography</option>
-                                                                <option value="Store Keeping">Store Keeping</option>
-                                                                <option value="Store Management">Store Management</option>
-                                                                <option value="Tourism">Tourism</option>
-                                                                <option value="Type Writing">Type Writing</option>
-                                                                <option value="Visual Art">Visual Art</option>
-                                                                <option value="Yoruba">Yoruba</option>
-                                                            </select>
-                                                        </div><!--end col-->
-                                                        <div class="col-sm-2">
-                                                            <label for="grade">Grade</label>
-                                                            <select class="form-select" name="grade" id="grade" required>
-                                                                <option selected>Choose...</option>
-                                                                <option value="A/R">A/R</option>
-                                                                <option value="A1">A1</option>
-                                                                <option value="B2">B2</option>
-                                                                <option value="B3">B3</option>
-                                                                <option value="C4">C4</option>
-                                                                <option value="C5">C5</option>
-                                                                <option value="C6">C6</option>
-                                                                <option value="D7">D7</option>
-                                                                <option value="E8">E8</option>
-                                                                <option value="F9">F9</option>
-                                                            </select>
-                                                        </div><!--end col-->
-    
-                                                        <div class="col-sm-2">
-                                                            <label for="year">Year</label>
-                                                            <input type="number" min="2010" max="2099" step="1" name="year" class="form-control" id="year" required>
-                                                        </div><!--end col-->
-    
-                                                        <div class="col-sm-3">
-                                                            <label for="reg_no">Registration Number</label>
-                                                            <input type="text" name="reg_no" class="form-control" id="reg_no" required>
-                                                        </div><!--end col-->
-    
-                                                        <div class="col-auto">
-                                                            <br>
+                                                    @if($applicant->olevels->count() < 9)
+                                                    <form action="{{ url('applicant/addOlevel') }}" method="POST" enctype="multipart/form-data">
+                                                        @csrf
+                                                        <div id="subjects-container">
+                                                            <!-- Fixed Subject: English Language -->
+                                                            <div class="row gx-3 gy-2 align-items-center subject-entry">
+                                                                <div class="col-sm-3">
+                                                                    <label for="subject_0">Subject</label>
+                                                                    <input type="text" class="form-control" name="subjects[0][subject]" id="subject_0" value="English Language" readonly required>
+                                                                </div><!--end col-->
+                                                    
+                                                                <div class="col-sm-2">
+                                                                    <label for="grade_0">Grade</label>
+                                                                    <select class="form-select" name="subjects[0][grade]" id="grade_0" required>
+                                                                        <option selected>Choose...</option>
+                                                                        <option value="A/R">A/R</option>
+                                                                        <option value="A1">A1</option>
+                                                                        <option value="B2">B2</option>
+                                                                        <option value="B3">B3</option>
+                                                                        <option value="C4">C4</option>
+                                                                        <option value="C5">C5</option>
+                                                                        <option value="C6">C6</option>
+                                                                        <option value="D7">D7</option>
+                                                                        <option value="E8">E8</option>
+                                                                        <option value="F9">F9</option>
+                                                                    </select>
+                                                                </div><!--end col-->
+                                                    
+                                                                <div class="col-sm-2">
+                                                                    <label for="year_0">Year</label>
+                                                                    <input type="number" min="2010" max="2099" step="1" name="subjects[0][year]" class="form-control" id="year_0" required>
+                                                                </div><!--end col-->
+                                                    
+                                                                <div class="col-sm-3">
+                                                                    <label for="reg_no_0">Registration Number</label>
+                                                                    <input type="text" name="subjects[0][reg_no]" class="form-control" id="reg_no_0" required>
+                                                                </div><!--end col-->
+                                                            </div><!--end row-->
+                                                            <hr>
+                                                            <!-- Fixed Subject: General Mathematics -->
+                                                            <div class="row gx-3 gy-2 align-items-center subject-entry">
+                                                                <div class="col-sm-3">
+                                                                    <label for="subject_1">Subject</label>
+                                                                    <input type="text" class="form-control" name="subjects[1][subject]" id="subject_1" value="General Mathematics" readonly required>
+                                                                </div><!--end col-->
+                                                    
+                                                                <div class="col-sm-2">
+                                                                    <label for="grade_1">Grade</label>
+                                                                    <select class="form-select" name="subjects[1][grade]" id="grade_1" required>
+                                                                        <option selected>Choose...</option>
+                                                                        <option value="A/R">A/R</option>
+                                                                        <option value="A1">A1</option>
+                                                                        <option value="B2">B2</option>
+                                                                        <option value="B3">B3</option>
+                                                                        <option value="C4">C4</option>
+                                                                        <option value="C5">C5</option>
+                                                                        <option value="C6">C6</option>
+                                                                        <option value="D7">D7</option>
+                                                                        <option value="E8">E8</option>
+                                                                        <option value="F9">F9</option>
+                                                                    </select>
+                                                                </div><!--end col-->
+                                                    
+                                                                <div class="col-sm-2">
+                                                                    <label for="year_1">Year</label>
+                                                                    <input type="number" min="2010" max="2099" step="1" name="subjects[1][year]" class="form-control" id="year_1" required>
+                                                                </div><!--end col-->
+                                                    
+                                                                <div class="col-sm-3">
+                                                                    <label for="reg_no_1">Registration Number</label>
+                                                                    <input type="text" name="subjects[1][reg_no]" class="form-control" id="reg_no_1" required>
+                                                                </div><!--end col-->
+                                                            </div><!--end row-->
+                                                            <hr>
+                                                            <!-- Editable Subjects -->
+                                                            @for ($i = 2; $i < 9; $i++)
+                                                            <div class="row gx-3 gy-2 align-items-center subject-entry">
+                                                                <div class="col-sm-3">
+                                                                    <label for="subject_{{ $i }}">Subject</label>
+                                                                    <select class="form-select" name="subjects[{{ $i }}][subject]" id="subject_{{ $i }}" required>
+                                                                        <option selected>Choose...</option>
+                                                                        <option value="Agricultural Science">Agricultural Science</option>
+                                                                        <option value="Animal Husbandry">Animal Husbandry</option>
+                                                                        <option value="Automobile Parts Merchandising">Automobile Parts Merchandising</option>
+                                                                        <option value="Biology">Biology</option>
+                                                                        <option value="Book Keeping">Book Keeping</option>
+                                                                        <option value="Catering Craft Practice">Catering Craft Practice</option>
+                                                                        <option value="Chemistry">Chemistry</option>
+                                                                        <option value="Christian Studies">Christian Studies</option>
+                                                                        <option value="Civic Education">Civic Education</option>
+                                                                        <option value="Clothing & Textile">Clothing & Textile</option>
+                                                                        <option value="Commerce">Commerce</option>
+                                                                        <option value="Computer & IT">Computer & IT</option>
+                                                                        <option value="Cosmetology">Cosmetology</option>
+                                                                        <option value="Dyeing & Bleaching">Dyeing & Bleaching</option>
+                                                                        <option value="Economics">Economics</option>
+                                                                        <option value="Financial Accounting">Financial Accounting</option>
+                                                                        <option value="Fisheries">Fisheries</option>
+                                                                        <option value="Food & Nutrition">Food & Nutrition</option>
+                                                                        <option value="Further Mathematics">Further Mathematics</option>
+                                                                        <option value="Garment Making">Garment Making</option>
+                                                                        <option value="Geography">Geography</option>
+                                                                        <option value="Government">Government</option>
+                                                                        <option value="Hausa">Hausa</option>
+                                                                        <option value="Health Education">Health Education</option>
+                                                                        <option value="History">History</option>
+                                                                        <option value="Home Management">Home Management</option>
+                                                                        <option value="Igbo">Igbo</option>
+                                                                        <option value="Insurance">Insurance</option>
+                                                                        <option value="Islamic Studies">Islamic Studies</option>
+                                                                        <option value="Literature in English">Literature in English</option>
+                                                                        <option value="Marketing">Marketing</option>
+                                                                        <option value="Music">Music</option>
+                                                                        <option value="Office Practice">Office Practice</option>
+                                                                        <option value="Painting & Decorating">Painting & Decorating</option>
+                                                                        <option value="Photography">Photography</option>
+                                                                        <option value="Physical Education">Physical Education</option>
+                                                                        <option value="Physics">Physics</option>
+                                                                        <option value="Salesmanship">Salesmanship</option>
+                                                                        <option value="Stenography">Stenography</option>
+                                                                        <option value="Store Keeping">Store Keeping</option>
+                                                                        <option value="Store Management">Store Management</option>
+                                                                        <option value="Tourism">Tourism</option>
+                                                                        <option value="Type Writing">Type Writing</option>
+                                                                        <option value="Visual Art">Visual Art</option>
+                                                                        <option value="Yoruba">Yoruba</option>
+                                                                    </select>
+                                                                </div><!--end col-->
+                                                    
+                                                                <div class="col-sm-2">
+                                                                    <label for="grade_{{ $i }}">Grade</label>
+                                                                    <select class="form-select" name="subjects[{{ $i }}][grade]" id="grade_{{ $i }}" required>
+                                                                        <option selected>Choose...</option>
+                                                                        <option value="A/R">A/R</option>
+                                                                        <option value="A1">A1</option>
+                                                                        <option value="B2">B2</option>
+                                                                        <option value="B3">B3</option>
+                                                                        <option value="C4">C4</option>
+                                                                        <option value="C5">C5</option>
+                                                                        <option value="C6">C6</option>
+                                                                        <option value="D7">D7</option>
+                                                                        <option value="E8">E8</option>
+                                                                        <option value="F9">F9</option>
+                                                                    </select>
+                                                                </div><!--end col-->
+                                                    
+                                                                <div class="col-sm-2">
+                                                                    <label for="year_{{ $i }}">Year</label>
+                                                                    <input type="number" min="2010" max="2099" step="1" name="subjects[{{ $i }}][year]" class="form-control" id="year_{{ $i }}" required>
+                                                                </div><!--end col-->
+                                                    
+                                                                <div class="col-sm-3">
+                                                                    <label for="reg_no_{{ $i }}">Registration Number</label>
+                                                                    <input type="text" name="subjects[{{ $i }}][reg_no]" class="form-control" id="reg_no_{{ $i }}" required>
+                                                                </div><!--end col-->
+                                                            </div><!--end row-->
+                                                            <hr>
+                                                            @endfor
+                                                        </div>
+                                                        
+                                                        <div class="col-auto mt-3">
                                                             <button type="submit" id="submit-button" class="btn btn-primary">Save</button>
                                                         </div><!--end col-->
-                                                    </div>
-                                                </form>
+                                                    </form>
+                                                    @endif
                                                 @endif
                                             @endif
                                             <hr>
@@ -805,8 +881,113 @@
                                                         <td>{{ $olevel->year }}</td>
                                                         <td>
                                                             <div class="hstack gap-3 fs-15">
+                                                                <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#editScore{{$olevel->id}}" class="link-primary"><i class="ri-edit-fill"></i></a>
                                                                 <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#deleteGrade{{$olevel->id}}" class="link-danger"><i class="ri-delete-bin-5-line"></i></a>
-                
+
+                                                                <div id="editScore{{$olevel->id}}" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
+                                                                    <div class="modal-dialog modal-dialog-centered">
+                                                                        <div class="modal-content">
+                                                                            <div class="modal-header p-3">
+                                                                                <h4 class="card-title mb-0">Edit Score</h4>
+                                                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                                                <hr>
+                                                                            </div>
+                                                                            <div class="modal-body">
+                                                                                <form class="mt-2"  action="{{ url('applicant/updateOlevel') }}" method="POST">
+                                                                                    @csrf
+
+                                                                                    <input name="olevel_id" type="hidden" value="{{$olevel->id}}">
+                                                                                    <div class="row">
+                                                                                        <div class="mb-3">
+                                                                                            <label for="subject">Subject</label>
+                                                                                            <select class="form-select" name="subject" id="subject" required>
+                                                                                                <option {{ $olevel->subject == "Agricultural Science" ? "selected":"" }} value="Agricultural Science">Agricultural Science</option>
+                                                                                                <option {{ $olevel->subject == "Animal Husbandry" ? "selected":"" }} value="Animal Husbandry">Animal Husbandry</option>
+                                                                                                <option {{ $olevel->subject == "Automobile Parts Merchandising" ? "selected":"" }} value="Automobile Parts Merchandising">Automobile Parts Merchandising</option>
+                                                                                                <option {{ $olevel->subject == "Biology" ? "selected":"" }} value="Biology">Biology</option>
+                                                                                                <option {{ $olevel->subject == "Book Keeping" ? "selected":"" }} value="Book Keeping">Book Keeping</option>
+                                                                                                <option {{ $olevel->subject == "Catering Craft Practice" ? "selected":"" }} value="Catering Craft Practice">Catering Craft Practice</option>
+                                                                                                <option {{ $olevel->subject == "Chemistry" ? "selected":"" }} value="Chemistry">Chemistry</option>
+                                                                                                <option {{ $olevel->subject == "Christian Studies" ? "selected":"" }} value="Christian Studies">Christian Studies</option>
+                                                                                                <option {{ $olevel->subject == "Civic Education" ? "selected":"" }} value="Civic Education">Civic Education</option>
+                                                                                                <option {{ $olevel->subject == "Clothing & Textile" ? "selected":"" }} value="Clothing & Textile">Clothing & Textile</option>
+                                                                                                <option {{ $olevel->subject == "Commerce" ? "selected":"" }} value="Commerce">Commerce</option>
+                                                                                                <option {{ $olevel->subject == "Computer & IT" ? "selected":"" }} value="Computer & IT">Computer & IT</option>
+                                                                                                <option {{ $olevel->subject == "Cosmetology" ? "selected":"" }} value="Cosmetology">Cosmetology</option>
+                                                                                                <option {{ $olevel->subject == "Dyeing & Bleaching" ? "selected":"" }} value="Dyeing & Bleaching">Dyeing & Bleaching</option>
+                                                                                                <option {{ $olevel->subject == "Economics" ? "selected":"" }} value="Economics">Economics</option>
+                                                                                                <option {{ $olevel->subject == "Financial Accounting" ? "selected":"" }} value="Financial Accounting">Financial Accounting</option>
+                                                                                                <option {{ $olevel->subject == "Fisheries" ? "selected":"" }} value="Fisheries">Fisheries</option>
+                                                                                                <option {{ $olevel->subject == "Food & Nutrition" ? "selected":"" }} value="Food & Nutrition">Food & Nutrition</option>
+                                                                                                <option {{ $olevel->subject == "Further Mathematics" ? "selected":"" }} value="Further Mathematics">Further Mathematics</option>
+                                                                                                <option {{ $olevel->subject == "Garment Making" ? "selected":"" }} value="Garment Making">Garment Making</option>
+                                                                                                <option {{ $olevel->subject == "General Mathematics" ? "selected":"" }} value="General Mathematics">General Mathematics</option>
+                                                                                                <option {{ $olevel->subject == "Geography" ? "selected":"" }} value="Geography">Geography</option>
+                                                                                                <option {{ $olevel->subject == "Government" ? "selected":"" }} value="Government">Government</option>
+                                                                                                <option {{ $olevel->subject == "Hausa" ? "selected":"" }} value="Hausa">Hausa</option>
+                                                                                                <option {{ $olevel->subject == "Health Education" ? "selected":"" }} value="Health Education">Health Education</option>
+                                                                                                <option {{ $olevel->subject == "History" ? "selected":"" }} value="History">History</option>
+                                                                                                <option {{ $olevel->subject == "Home Management" ? "selected":"" }} value="Home Management">Home Management</option>
+                                                                                                <option {{ $olevel->subject == "Igbo" ? "selected":"" }} value="Igbo">Igbo</option>
+                                                                                                <option {{ $olevel->subject == "Insurance" ? "selected":"" }} value="Insurance">Insurance</option>
+                                                                                                <option {{ $olevel->subject == "Islamic Studies" ? "selected":"" }} value="Islamic Studies">Islamic Studies</option>
+                                                                                                <option {{ $olevel->subject == "Literature in English" ? "selected":"" }} value="Literature in English">Literature in English</option>
+                                                                                                <option {{ $olevel->subject == "Marketing" ? "selected":"" }} value="Marketing">Marketing</option>
+                                                                                                <option {{ $olevel->subject == "Music" ? "selected":"" }} value="Music">Music</option>
+                                                                                                <option {{ $olevel->subject == "Office Practice" ? "selected":"" }} value="Office Practice">Office Practice</option>
+                                                                                                <option {{ $olevel->subject == "Painting & Decorating" ? "selected":"" }} value="Painting & Decorating">Painting & Decorating</option>
+                                                                                                <option {{ $olevel->subject == "Photography" ? "selected":"" }} value="Photography">Photography</option>
+                                                                                                <option {{ $olevel->subject == "Physical Education" ? "selected":"" }} value="Physical Education">Physical Education</option>
+                                                                                                <option {{ $olevel->subject == "Physics" ? "selected":"" }} value="Physics">Physics</option>
+                                                                                                <option {{ $olevel->subject == "Salesmanship" ? "selected":"" }} value="Salesmanship">Salesmanship</option>
+                                                                                                <option {{ $olevel->subject == "Stenography" ? "selected":"" }} value="Stenography">Stenography</option>
+                                                                                                <option {{ $olevel->subject == "Store Keeping" ? "selected":"" }} value="Store Keeping">Store Keeping</option>
+                                                                                                <option {{ $olevel->subject == "Store Management" ? "selected":"" }} value="Store Management">Store Management</option>
+                                                                                                <option {{ $olevel->subject == "Tourism" ? "selected":"" }} value="Tourism">Tourism</option>
+                                                                                                <option {{ $olevel->subject == "Type Writing" ? "selected":"" }} value="Type Writing">Type Writing</option>
+                                                                                                <option {{ $olevel->subject == "Visual Art" ? "selected":"" }} value="Visual Art">Visual Art</option>
+                                                                                                <option {{ $olevel->subject == "Yoruba" ? "selected":"" }} value="Yoruba">Yoruba</option>
+                                                                                            </select>
+                                                                                        </div><!--end col-->
+                                                                                        
+                                                                                        <div class="mb-3">
+                                                                                            <label for="grade">Grade</label>
+                                                                                            <select class="form-select" name="grade" id="grade" required>
+                                                                                                <option {{ $olevel->grade == "A/R" ? "selected":"" }} value="A/R">A/R</option>
+                                                                                                <option {{ $olevel->grade == "A1" ? "selected":"" }} value="A1">A1</option>
+                                                                                                <option {{ $olevel->grade == "B2" ? "selected":"" }} value="B2">B2</option>
+                                                                                                <option {{ $olevel->grade == "B3" ? "selected":"" }} value="B3">B3</option>
+                                                                                                <option {{ $olevel->grade == "C4" ? "selected":"" }} value="C4">C4</option>
+                                                                                                <option {{ $olevel->grade == "C5" ? "selected":"" }} value="C5">C5</option>
+                                                                                                <option {{ $olevel->grade == "C6" ? "selected":"" }} value="C6">C6</option>
+                                                                                                <option {{ $olevel->grade == "D7" ? "selected":"" }} value="D7">D7</option>
+                                                                                                <option {{ $olevel->grade == "E8" ? "selected":"" }} value="E8">E8</option>
+                                                                                                <option {{ $olevel->grade == "F9" ? "selected":"" }} value="F9">F9</option>
+                                                                                            </select>
+                                                                                        </div><!--end col-->
+                                    
+                                                                                        <div class="mb-3">
+                                                                                            <label for="year">Year</label>
+                                                                                            <input type="number" min="2010" max="2099" step="1" value="{{ $olevel->year }}" name="year" class="form-control" id="year" required>
+                                                                                        </div><!--end col-->
+                                    
+                                                                                        <div class="mb-3">
+                                                                                            <label for="reg_no">Registration Number</label>
+                                                                                            <input type="text" name="reg_no" class="form-control" value="{{ $olevel->reg_no }}" id="reg_no" required>
+                                                                                        </div><!--end col-->
+                                                                                    </div><!--end row-->
+
+                                                                                    <div class="modal-footer bg-light pt-3 justify-content-center">
+                                                                                        <div class="col-auto mt-3">
+                                                                                            <button type="submit" id="submit-button" class="btn btn-primary">Save Changes</button>
+                                                                                        </div><!--end col-->
+                                                                                    </div>
+                                                                                </form>
+                                                                            </div>
+                                                                        </div><!-- /.modal-content -->
+                                                                    </div><!-- /.modal-dialog -->
+                                                                </div><!-- /.modal -->
+
                                                                 <div id="deleteGrade{{$olevel->id}}" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
                                                                     <div class="modal-dialog modal-dialog-centered">
                                                                         <div class="modal-content">
@@ -926,73 +1107,94 @@
                                                 @endif
                                                 <hr>
                                                 @if(empty($applicant->status))
-                                                <form action="{{ url('applicant/addUtme') }}" method="POST" enctype="multipart/form-data">
-                                                    @csrf
-                                                    <div class="row gx-3 gy-2 align-items-center">
-                                                        <div class="col-sm-5">
-                                                            <label for="subject">Subject</label>
-                                                            <select class="form-select" name="subject" id="subject">
-                                                                <option value="Use of English">Use of English</option>
-                                                                <option value="Agricultural Science">Agricultural Science</option>
-                                                                <option value="Animal Husbandry">Animal Husbandry</option>
-                                                                <option value="Automobile Parts Merchandising">Automobile Parts Merchandising</option>
-                                                                <option value="Biology">Biology</option>
-                                                                <option value="Book Keeping">Book Keeping</option>
-                                                                <option value="Catering Craft Practice">Catering Craft Practice</option>
-                                                                <option value="Chemistry">Chemistry</option>
-                                                                <option value="Christian Studies">Christian Studies</option>
-                                                                <option value="Civic Education">Civic Education</option>
-                                                                <option value="Clothing & Textile">Clothing & Textile</option>
-                                                                <option value="Commerce">Commerce</option>
-                                                                <option value="Computer & IT">Computer & IT</option>
-                                                                <option value="Cosmetology">Cosmetology</option>
-                                                                <option value="Dyeing & Bleaching">Dyeing & Bleaching</option>
-                                                                <option value="Economics">Economics</option>
-                                                                <option value="Financial Accounting">Financial Accounting</option>
-                                                                <option value="Fisheries">Fisheries</option>
-                                                                <option value="Food & Nutrition">Food & Nutrition</option>
-                                                                <option value="Further Mathematics">Further Mathematics</option>
-                                                                <option value="Garment Making">Garment Making</option>
-                                                                <option value="General Mathematics">General Mathematics</option>
-                                                                <option value="Geography">Geography</option>
-                                                                <option value="Government">Government</option>
-                                                                <option value="Hausa">Hausa</option>
-                                                                <option value="Health Education">Health Education</option>
-                                                                <option value="History">History</option>
-                                                                <option value="Home Management">Home Management</option>
-                                                                <option value="Igbo">Igbo</option>
-                                                                <option value="Insurance">Insurance</option>
-                                                                <option value="Islamic Studies">Islamic Studies</option>
-                                                                <option value="Literature in English">Literature in English</option>
-                                                                <option value="Marketing">Marketing</option>
-                                                                <option value="Music">Music</option>
-                                                                <option value="Office Practice">Office Practice</option>
-                                                                <option value="Painting & Decorating">Painting & Decorating</option>
-                                                                <option value="Photography">Photography</option>
-                                                                <option value="Physical Education">Physical Education</option>
-                                                                <option value="Physics">Physics</option>
-                                                                <option value="Salesmanship">Salesmanship</option>
-                                                                <option value="Stenography">Stenography</option>
-                                                                <option value="Store Keeping">Store Keeping</option>
-                                                                <option value="Store Management">Store Management</option>
-                                                                <option value="Tourism">Tourism</option>
-                                                                <option value="Type Writing">Type Writing</option>
-                                                                <option value="Visual Art">Visual Art</option>
-                                                                <option value="Yoruba">Yoruba</option>
-                                                            </select>
-                                                        </div><!--end col-->
+                                                    @if($applicant->utmes->count() < 1)
+                                                        <form action="{{ url('applicant/addUtme') }}" method="POST" enctype="multipart/form-data">
+                                                            @csrf
+                                                            <div id="subjects-container">
+                                                                <!-- Fixed Subject: Use of English -->
+                                                                <div class="row gx-3 gy-2 align-items-center subject-entry">
+                                                                    <div class="col-sm-6">
+                                                                        <label for="subject_0">Subject</label>
+                                                                        <input type="text" class="form-control" name="subjects[0][subject]" id="subject_0" value="Use of English" readonly required>
+                                                                    </div><!--end col-->
                                                         
-                                                        <div class="col-sm-5">
-                                                            <label for="year">Score</label>
-                                                            <input type="number" min="0" max="400" step="1" name="score" class="form-control" id="year">
-                                                        </div><!--end col-->
-    
-                                                        <div class="col-auto">
-                                                            <br>
-                                                            <button type="submit" id="submit-button" class="btn btn-primary">Save</button>
-                                                        </div><!--end col-->
-                                                    </div>
-                                                </form>
+                                                                    <div class="col-sm-6">
+                                                                        <label for="score_0">Score</label>
+                                                                        <input type="number" min="0" max="100" step="1" name="subjects[0][score]" class="form-control" id="score_0" required>
+                                                                    </div><!--end col-->
+                                                    
+                                                                </div><!--end row-->
+                                                                <hr>
+                                                                <!-- Editable Subjects -->
+                                                                @for ($i = 1; $i < 4; $i++)
+                                                                <div class="row gx-3 gy-2 align-items-center subject-entry">
+                                                                    <div class="col-sm-6">
+                                                                        <label for="subject_{{ $i }}">Subject</label>
+                                                                        <select class="form-select" name="subjects[{{ $i }}][subject]" id="subject_{{ $i }}" required>
+                                                                            <option value="">Select a subject</option>
+                                                                            <option value="Agricultural Science">Agricultural Science</option>
+                                                                            <option value="Animal Husbandry">Animal Husbandry</option>
+                                                                            <option value="Automobile Parts Merchandising">Automobile Parts Merchandising</option>
+                                                                            <option value="Biology">Biology</option>
+                                                                            <option value="Book Keeping">Book Keeping</option>
+                                                                            <option value="Catering Craft Practice">Catering Craft Practice</option>
+                                                                            <option value="Chemistry">Chemistry</option>
+                                                                            <option value="Christian Studies">Christian Studies</option>
+                                                                            <option value="Civic Education">Civic Education</option>
+                                                                            <option value="Clothing & Textile">Clothing & Textile</option>
+                                                                            <option value="Commerce">Commerce</option>
+                                                                            <option value="Computer & IT">Computer & IT</option>
+                                                                            <option value="Cosmetology">Cosmetology</option>
+                                                                            <option value="Dyeing & Bleaching">Dyeing & Bleaching</option>
+                                                                            <option value="Economics">Economics</option>
+                                                                            <option value="Financial Accounting">Financial Accounting</option>
+                                                                            <option value="Fisheries">Fisheries</option>
+                                                                            <option value="Food & Nutrition">Food & Nutrition</option>
+                                                                            <option value="Further Mathematics">Further Mathematics</option>
+                                                                            <option value="Garment Making">Garment Making</option>
+                                                                            <option value="General Mathematics">General Mathematics</option>
+                                                                            <option value="Geography">Geography</option>
+                                                                            <option value="Government">Government</option>
+                                                                            <option value="Hausa">Hausa</option>
+                                                                            <option value="Health Education">Health Education</option>
+                                                                            <option value="History">History</option>
+                                                                            <option value="Home Management">Home Management</option>
+                                                                            <option value="Igbo">Igbo</option>
+                                                                            <option value="Insurance">Insurance</option>
+                                                                            <option value="Islamic Studies">Islamic Studies</option>
+                                                                            <option value="Literature in English">Literature in English</option>
+                                                                            <option value="Marketing">Marketing</option>
+                                                                            <option value="Music">Music</option>
+                                                                            <option value="Office Practice">Office Practice</option>
+                                                                            <option value="Painting & Decorating">Painting & Decorating</option>
+                                                                            <option value="Photography">Photography</option>
+                                                                            <option value="Physical Education">Physical Education</option>
+                                                                            <option value="Physics">Physics</option>
+                                                                            <option value="Salesmanship">Salesmanship</option>
+                                                                            <option value="Stenography">Stenography</option>
+                                                                            <option value="Store Keeping">Store Keeping</option>
+                                                                            <option value="Store Management">Store Management</option>
+                                                                            <option value="Tourism">Tourism</option>
+                                                                            <option value="Type Writing">Type Writing</option>
+                                                                            <option value="Visual Art">Visual Art</option>
+                                                                            <option value="Yoruba">Yoruba</option>
+                                                                        </select>
+                                                                    </div><!--end col-->
+                                                        
+                                                                    <div class="col-sm-6">
+                                                                        <label for="score_{{ $i }}">Score</label>
+                                                                        <input type="number" min="0" max="100" step="1" name="subjects[{{ $i }}][score]" class="form-control" id="score_{{ $i }}" required>
+                                                                    </div><!--end col-->
+                                                                </div><!--end row-->
+                                                                <hr>
+                                                                @endfor
+                                                            </div>
+                                                            
+                                                            <div class="col-auto mt-3">
+                                                                <button type="submit" id="submit-button" class="btn btn-primary">Save</button>
+                                                            </div><!--end col-->
+                                                        </form> 
+                                                    @endif                                               
                                                 @endif
                                                 <hr>
                                                 <table class="table table-borderedless table-nowrap">
@@ -1012,8 +1214,91 @@
                                                             <td>{{ $utme->score }}</td>
                                                             <td>
                                                                 <div class="hstack gap-3 fs-15">
+                                                                    <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#editScore{{$utme->id}}" class="link-primary"><i class="ri-edit-fill"></i></a>
                                                                     <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#deleteScore{{$utme->id}}" class="link-danger"><i class="ri-delete-bin-5-line"></i></a>
-                    
+
+                                                                    <div id="editScore{{$utme->id}}" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
+                                                                        <div class="modal-dialog modal-dialog-centered">
+                                                                            <div class="modal-content">
+                                                                                <div class="modal-header p-3">
+                                                                                    <h4 class="card-title mb-0">Edit Score</h4>
+                                                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                                                    <hr>
+                                                                                </div>
+                                                                                <div class="modal-body">
+                                                                                    <form class="mt-2"  action="{{ url('applicant/updateUtme') }}" method="POST">
+                                                                                        @csrf
+
+                                                                                        <input type="hidden" name="utme_id" value="{{ $utme->id }}">
+                                                                                        <div class="row">
+                                                                                            <div class="mb-3">
+                                                                                                <label for="subject">Subject</label>
+                                                                                                <select class="form-select" name="subject" id="subject" required>
+                                                                                                    <option {{ $utme->subject == "Agricultural Science" ? "selected":"" }} value="Agricultural Science">Agricultural Science</option>
+                                                                                                    <option {{ $utme->subject == "Animal Husbandry" ? "selected":"" }} value="Animal Husbandry">Animal Husbandry</option>
+                                                                                                    <option {{ $utme->subject == "Automobile Parts Merchandising" ? "selected":"" }} value="Automobile Parts Merchandising">Automobile Parts Merchandising</option>
+                                                                                                    <option {{ $utme->subject == "Biology" ? "selected":"" }} value="Biology">Biology</option>
+                                                                                                    <option {{ $utme->subject == "Book Keeping" ? "selected":"" }} value="Book Keeping">Book Keeping</option>
+                                                                                                    <option {{ $utme->subject == "Catering Craft Practice" ? "selected":"" }} value="Catering Craft Practice">Catering Craft Practice</option>
+                                                                                                    <option {{ $utme->subject == "Chemistry" ? "selected":"" }} value="Chemistry">Chemistry</option>
+                                                                                                    <option {{ $utme->subject == "Christian Studies" ? "selected":"" }} value="Christian Studies">Christian Studies</option>
+                                                                                                    <option {{ $utme->subject == "Civic Education" ? "selected":"" }} value="Civic Education">Civic Education</option>
+                                                                                                    <option {{ $utme->subject == "Clothing & Textile" ? "selected":"" }} value="Clothing & Textile">Clothing & Textile</option>
+                                                                                                    <option {{ $utme->subject == "Commerce" ? "selected":"" }} value="Commerce">Commerce</option>
+                                                                                                    <option {{ $utme->subject == "Computer & IT" ? "selected":"" }} value="Computer & IT">Computer & IT</option>
+                                                                                                    <option {{ $utme->subject == "Cosmetology" ? "selected":"" }} value="Cosmetology">Cosmetology</option>
+                                                                                                    <option {{ $utme->subject == "Dyeing & Bleaching" ? "selected":"" }} value="Dyeing & Bleaching">Dyeing & Bleaching</option>
+                                                                                                    <option {{ $utme->subject == "Economics" ? "selected":"" }} value="Economics">Economics</option>
+                                                                                                    <option {{ $utme->subject == "Financial Accounting" ? "selected":"" }} value="Financial Accounting">Financial Accounting</option>
+                                                                                                    <option {{ $utme->subject == "Fisheries" ? "selected":"" }} value="Fisheries">Fisheries</option>
+                                                                                                    <option {{ $utme->subject == "Food & Nutrition" ? "selected":"" }} value="Food & Nutrition">Food & Nutrition</option>
+                                                                                                    <option {{ $utme->subject == "Further Mathematics" ? "selected":"" }} value="Further Mathematics">Further Mathematics</option>
+                                                                                                    <option {{ $utme->subject == "Garment Making" ? "selected":"" }} value="Garment Making">Garment Making</option>
+                                                                                                    <option {{ $utme->subject == "General Mathematics" ? "selected":"" }} value="General Mathematics">General Mathematics</option>
+                                                                                                    <option {{ $utme->subject == "Geography" ? "selected":"" }} value="Geography">Geography</option>
+                                                                                                    <option {{ $utme->subject == "Government" ? "selected":"" }} value="Government">Government</option>
+                                                                                                    <option {{ $utme->subject == "Hausa" ? "selected":"" }} value="Hausa">Hausa</option>
+                                                                                                    <option {{ $utme->subject == "Health Education" ? "selected":"" }} value="Health Education">Health Education</option>
+                                                                                                    <option {{ $utme->subject == "History" ? "selected":"" }} value="History">History</option>
+                                                                                                    <option {{ $utme->subject == "Home Management" ? "selected":"" }} value="Home Management">Home Management</option>
+                                                                                                    <option {{ $utme->subject == "Igbo" ? "selected":"" }} value="Igbo">Igbo</option>
+                                                                                                    <option {{ $utme->subject == "Insurance" ? "selected":"" }} value="Insurance">Insurance</option>
+                                                                                                    <option {{ $utme->subject == "Islamic Studies" ? "selected":"" }} value="Islamic Studies">Islamic Studies</option>
+                                                                                                    <option {{ $utme->subject == "Literature in English" ? "selected":"" }} value="Literature in English">Literature in English</option>
+                                                                                                    <option {{ $utme->subject == "Marketing" ? "selected":"" }} value="Marketing">Marketing</option>
+                                                                                                    <option {{ $utme->subject == "Music" ? "selected":"" }} value="Music">Music</option>
+                                                                                                    <option {{ $utme->subject == "Office Practice" ? "selected":"" }} value="Office Practice">Office Practice</option>
+                                                                                                    <option {{ $utme->subject == "Painting & Decorating" ? "selected":"" }} value="Painting & Decorating">Painting & Decorating</option>
+                                                                                                    <option {{ $utme->subject == "Photography" ? "selected":"" }} value="Photography">Photography</option>
+                                                                                                    <option {{ $utme->subject == "Physical Education" ? "selected":"" }} value="Physical Education">Physical Education</option>
+                                                                                                    <option {{ $utme->subject == "Physics" ? "selected":"" }} value="Physics">Physics</option>
+                                                                                                    <option {{ $utme->subject == "Salesmanship" ? "selected":"" }} value="Salesmanship">Salesmanship</option>
+                                                                                                    <option {{ $utme->subject == "Stenography" ? "selected":"" }} value="Stenography">Stenography</option>
+                                                                                                    <option {{ $utme->subject == "Store Keeping" ? "selected":"" }} value="Store Keeping">Store Keeping</option>
+                                                                                                    <option {{ $utme->subject == "Store Management" ? "selected":"" }} value="Store Management">Store Management</option>
+                                                                                                    <option {{ $utme->subject == "Tourism" ? "selected":"" }} value="Tourism">Tourism</option>
+                                                                                                    <option {{ $utme->subject == "Type Writing" ? "selected":"" }} value="Type Writing">Type Writing</option>
+                                                                                                    <option {{ $utme->subject == "Visual Art" ? "selected":"" }} value="Visual Art">Visual Art</option>
+                                                                                                    <option {{ $utme->subject == "Yoruba" ? "selected":"" }} value="Yoruba">Yoruba</option>
+                                                                                                </select>
+                                                                                            </div><!--end col-->
+                                                                                            
+                                                                                            <div class="mb-3">
+                                                                                                <label for="score">Score</label>
+                                                                                                <input type="number" min="0" max="100" step="1" name="score" value="{{ $utme->score }}" class="form-control" id="score" required>
+                                                                                            </div><!--end col-->
+                                                                                        </div><!--end row-->
+                                                                                        <div class="modal-footer bg-light pt-3 justify-content-center">
+                                                                                            <div class="col-auto mt-3">
+                                                                                                <button type="submit" id="submit-button" class="btn btn-primary">Save Changes</button>
+                                                                                            </div><!--end col-->
+                                                                                        </div>
+                                                                                    </form>
+                                                                                </div>
+                                                                            </div><!-- /.modal-content -->
+                                                                        </div><!-- /.modal-dialog -->
+                                                                    </div><!-- /.modal -->
+
                                                                     <div id="deleteScore{{$utme->id}}" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
                                                                         <div class="modal-dialog modal-dialog-centered">
                                                                             <div class="modal-content">

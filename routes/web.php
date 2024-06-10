@@ -657,6 +657,9 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'applican
   Route::post('/saveSitting', [App\Http\Controllers\User\ApplicationController::class, 'saveSitting'])->middleware(['auth:user']);
   Route::post('/addOlevel', [App\Http\Controllers\User\ApplicationController::class, 'addOlevel'])->middleware(['auth:user']);
   Route::post('/addUtme', [App\Http\Controllers\User\ApplicationController::class, 'addUtme'])->middleware(['auth:user']);
+  Route::post('/updateUtme', [App\Http\Controllers\User\ApplicationController::class, 'updateUtme'])->middleware(['auth:user']);
+  Route::post('/updateOlevel', [App\Http\Controllers\User\ApplicationController::class, 'updateOlevel'])->middleware(['auth:user']);
+
   Route::post('/deleteUtme', [App\Http\Controllers\User\ApplicationController::class, 'deleteUtme'])->middleware(['auth:user']);
   Route::post('/deleteOlevel', [App\Http\Controllers\User\ApplicationController::class, 'deleteOlevel'])->middleware(['auth:user']);
   Route::post('/submitApplication', [App\Http\Controllers\User\ApplicationController::class, 'submitApplication'])->middleware(['auth:user']);
