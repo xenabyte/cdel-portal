@@ -376,7 +376,7 @@ class ApplicationController extends Controller
             $validator = Validator::make($request->all(), [
                 'email' => 'required|string|email|max:255|unique:users,email,NULL,id,academic_session,' . $applicationSession,
                 'lastname' => 'required',
-                'password' => 'required',
+                'password' => 'required|confirmed',
                 'phone_number' => 'required',
                 'othernames' => 'required',
                 'paymentGateway' => 'required',
@@ -411,9 +411,6 @@ class ApplicationController extends Controller
             alert()->error('Oops', 'Gateway not available')->persistent('Close');
             return redirect()->back();
         }
-
-        $programmeId = $request->programme_id;
-        $programmeApplied = Programme::where('id', $programmeId)->first();
         
         $accessCode = $this->generateAccessCode();
         $amount = $payment->structures->sum('amount');
@@ -444,7 +441,6 @@ class ApplicationController extends Controller
             'slug' => $slug,
             'email' => strtolower($request->email),
             'lastname' => ucwords($request->lastname),
-            'programme_id' => $programmeApplied->id,
             'phone_number' => $request->phone_number,
             'othernames' => ucwords($request->othernames),
             'password' => $request->password,
@@ -452,8 +448,6 @@ class ApplicationController extends Controller
             'referrer' => $referralCode,
             'application_type' => $applicationType == 'Inter Transfer Application'? $applicationType : null,
             'amount' => $amount,
-            'email' => $applicant->email,
-            'application_id' => $applicant->id,
             'student_id' => null,
             'payment_id' => $payment->id,
             'payment_gateway' => $paymentGateway,
@@ -466,7 +460,7 @@ class ApplicationController extends Controller
         if(strtolower($paymentGateway) == 'paystack') {
             $data = array(
                 "amount" => $this->getPaystackAmount($amount),
-                "email" => $applicant->email,
+                "email" => $request->email,
                 "currency" => "NGN",
                 "metadata" => $metaData,
             );
@@ -481,12 +475,12 @@ class ApplicationController extends Controller
                 "amount" => round($this->getRaveAmount($amount)),
                 "tx_ref" => $reference,
                 "redirect_url" => env("FLW_REDIRECT_URL"),
-                "email" => $applicant->email,
+                "email" => $request->email,
                 "currency" => "NGN",
                 "customer" => [
-                    "email" => $applicant->email,
-                    "phone_number" => $applicant->phone_number,
-                    "name" => $applicant->lastname.' '.$applicant->othernames,
+                    "email" => $request->email,
+                    "phone_number" => $request->phone_number,
+                    "name" => $request->lastname.' '.$request->othernames,
                 ],
                 "meta" => $metaData,
                 "customizations" => array(

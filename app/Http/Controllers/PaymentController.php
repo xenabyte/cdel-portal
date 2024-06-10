@@ -77,13 +77,6 @@ class PaymentController extends Controller
             $session = $paymentDetails['data']['metadata']['academic_session'];
             $amount = $paymentDetails['data']['metadata']['amount'];
 
-            // $applicant = Applicant::create($newApplicant);
-            // $code = $programmeApplied->code;
-            // $applicationNumber = env('SCHOOL_CODE').'/'.substr($applicationSession, 0, 4).sprintf("%03d", ($applicant->id + env('APPLICATION_STARTING_NUMBER')));
-            // $applicant->application_number = $applicationNumber;
-            // $applicant->save();
-    
-            // Mail::to($request->email)->send(new ApplicationMail($applicant));
 
             if($paymentDetails['status'] == true){
                 if($this->processPaystackPayment($paymentDetails)){
@@ -186,7 +179,6 @@ class PaymentController extends Controller
             if($paymentDetails['status'] == 'success'){
                 if($this->processRavePayment($paymentDetails)){
                     
-
                     if($student && !empty($studentId)){
                         $pdf = new Pdf();
                         $invoice = $pdf->generateTransactionInvoice($session, $studentId, $paymentId, 'single');
@@ -202,7 +194,7 @@ class PaymentController extends Controller
                         if($paymentType == Payment::PAYMENT_TYPE_WALLET_DEPOSIT){
                             $creditStudent = $this->creditStudentWallet($studentId, $amount);
                             if(!$creditStudent){
-                                Log::info("**********************Unable to credit student**********************: ". $amount .' - '.$student);
+                                Log::info("**********************Unable to credit student wallet**********************: ". $amount .' - '.$student);
                             }
                         }  
                         
@@ -211,13 +203,14 @@ class PaymentController extends Controller
                             $creditStudent = $this->creditBandwidth($transaction, $amount);
 
                             if(!$creditStudent){
-                                Log::info("**********************Unable to credit student**********************: ". $amount .' - '.$student);
+                                Log::info("**********************Unable to credit student bandwidth**********************: ". $amount .' - '.$student);
                             }
                         }
                     }
-
                     alert()->success('Good Job', 'Payment successful')->persistent('Close');
                     if($paymentType == Payment::PAYMENT_TYPE_GENERAl_APPLICATION || $paymentType == Payment::PAYMENT_TYPE_INTER_TRANSFER_APPLICATION){
+                        $applicantData = $paymentDetails;
+                        $this->createApplicant($applicantData);
                         return view($redirectPath, [
                             'programmes' => $this->programmes,
                             'payment' => $payment

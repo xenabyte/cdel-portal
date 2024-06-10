@@ -132,6 +132,30 @@
                     </div>
 
                     <div class="p-2 mt-4 border-top border-top-dashed pt-3" style="display: none" id="applicationForm">
+
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email <span class="text-danger">*</span></label>
+                            <input type="email" class="form-control" name="email" id="email" placeholder="Enter email address" required>
+                            <div class="invalid-feedback">
+                                Please enter email
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Password <span class="text-danger">*</span></label>
+                            <input type="password" class="form-control" name="password" id="password" placeholder="Enter password" required>
+                            <div class="invalid-feedback">
+                                Please enter password
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="confirm-password" class="form-label">Confirm Password <span class="text-danger">*</span></label>
+                            <input type="password" class="form-control" name="password_confirmation" id="confirm-password" placeholder="Confirm Password" required>
+                            <div class="invalid-feedback">
+                                Please confirm password
+                            </div>
+                        </div>
                     
                         <div class="mb-3">
                             <label for="lastname" class="form-label">Lastname(Surname) <span class="text-danger">*</span></label>
@@ -157,13 +181,6 @@
                             </div>
                         </div>
 
-                        <div class="mb-3">
-                            <label for="email" class="form-label">Email <span class="text-danger">*</span></label>
-                            <input type="email" class="form-control" name="email" id="email" placeholder="Enter email address" required>
-                            <div class="invalid-feedback">
-                                Please enter email
-                            </div>
-                        </div>
 
                         <div class="mb-3">
                             <label for="referrer" class="form-label">Referrer Code </label>

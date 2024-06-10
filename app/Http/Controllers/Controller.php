@@ -605,6 +605,7 @@ class Controller extends BaseController
         $bandwidth = new Bandwidth();
         $creditStudent = $bandwidth->addToDataBalance($bandwidthUsername, $bandwidthAmount);
         if ($creditStudent && isset($creditStudent['status']) && $creditStudent['status'] === 'success') {
+            Log::info("********************** credit student bandwidth**********************: ". $bandwidthAmount .' - '.$student);
             $transaction->status = 1;
             $transaction->update();
 
@@ -624,6 +625,7 @@ class Controller extends BaseController
         $studentNewBalance = $studentBalance + $amount;
         $student->amount_balance = $studentNewBalance;
 
+        Log::info("********************** credit student wallet**********************: ". $amount .' - '.$student);
         if($student->update()){
             return true;
         }
@@ -715,7 +717,6 @@ class Controller extends BaseController
         $slug = $paymentDetails['data']['metadata']['slug'];
         $email = $paymentDetails['data']['metadata']['email'];
         $lastname = $paymentDetails['data']['metadata']['lastname'];
-        $programmeId = $paymentDetails['data']['metadata']['programme_id'];
         $phoneNumber = $paymentDetails['data']['metadata']['phone_number'];
         $otherNames = $paymentDetails['data']['metadata']['othernames'];
         $password = $paymentDetails['data']['metadata']['password'];
@@ -723,8 +724,8 @@ class Controller extends BaseController
         $partnerId = $paymentDetails['data']['metadata']['partner_id'];
         $referralCode = $paymentDetails['data']['metadata']['referrer'];
         $applicationType = $paymentDetails['data']['metadata']['application_type'];
+        $txRef = $paymentDetails['data']['meta']['reference'];
 
-        $programmeApplied = Programme::where('id', $programmeId)->first();
 
         $newApplicant = ([
             'slug' => $slug,
@@ -740,11 +741,19 @@ class Controller extends BaseController
             'application_type' => $applicationType,
         ]);
 
+        Log::info("********************** Creating Applicant **********************: ".' - '.$lastname.' - '.$otherNames);
         $applicant = User::create($newApplicant);
-        $code = $programmeApplied->code;
         $applicationNumber = env('SCHOOL_CODE').'/'.substr($applicationSession, 0, 4).sprintf("%03d", ($applicant->id + env('APPLICATION_STARTING_NUMBER')));
         $applicant->application_number = $applicationNumber;
         $applicant->save();
+        Log::info("********************** Applicant Created **********************: ".' - '.$lastname.' - '.$otherNames .' - '.$applicationNumber);
+
+        if(!empty($txRef)){
+            if($existTx = Transaction::where('reference', $txRef)->where('status',  null)->first()){
+                $existTx->user_id = $applicant->id;
+                $existTx->save();
+            }
+        }
 
         Mail::to($applicant->email)->send(new ApplicationMail($applicant));
 

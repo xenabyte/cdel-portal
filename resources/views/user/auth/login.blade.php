@@ -29,7 +29,7 @@
                     <div class="float-end">
                         <a href="{{ url('/applicant/password/reset') }}" class="text-muted">Forgot password?</a>
                     </div>
-                    <label class="form-label" for="password-input">Access Code <small class="alert alert-borderless alert-danger p-1">Retrieve access code from your email</small></label>
+                    <label class="form-label" for="password-input">Password</label>
                     <div class="position-relative auth-pass-inputgroup mb-3">
                         <input type="password" class="form-control pe-5 password-input" name="password" placeholder="Enter password" id="password-input">
                         <button class="btn btn-link position-absolute end-0 top-0 text-decoration-none text-muted password-addon" type="button" id="password-addon"><i class="ri-eye-fill align-middle"></i></button>
