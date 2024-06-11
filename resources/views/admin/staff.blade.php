@@ -5,7 +5,7 @@
 <script src="https://cdn.ckeditor.com/4.16.0/standard/ckeditor.js"></script>
 <script>
     // Select all textarea elements and initialize CKEditor on each
-    document.querySelectorAll('textarea.ckeditor').forEach((textarea) => {
+    document.querySelectorAll('ckeditor').forEach((textarea) => {
         CKEDITOR.replace(textarea);
     });
 </script>
