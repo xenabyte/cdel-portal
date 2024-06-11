@@ -758,6 +758,7 @@
                                                                         <option value="Commerce">Commerce</option>
                                                                         <option value="Computer & IT">Computer & IT</option>
                                                                         <option value="Cosmetology">Cosmetology</option>
+                                                                        <option value="Data Processing">Data Processing</option>
                                                                         <option value="Dyeing & Bleaching">Dyeing & Bleaching</option>
                                                                         <option value="Economics">Economics</option>
                                                                         <option value="Financial Accounting">Financial Accounting</option>
@@ -914,6 +915,7 @@
                                                                                                 <option {{ $olevel->subject == "Commerce" ? "selected":"" }} value="Commerce">Commerce</option>
                                                                                                 <option {{ $olevel->subject == "Computer & IT" ? "selected":"" }} value="Computer & IT">Computer & IT</option>
                                                                                                 <option {{ $olevel->subject == "Cosmetology" ? "selected":"" }} value="Cosmetology">Cosmetology</option>
+                                                                                                <option {{ $olevel->subject == "Data Processing" ? "selected" : "" }} value="Data Processing">Data Processing</option>
                                                                                                 <option {{ $olevel->subject == "Dyeing & Bleaching" ? "selected":"" }} value="Dyeing & Bleaching">Dyeing & Bleaching</option>
                                                                                                 <option {{ $olevel->subject == "Economics" ? "selected":"" }} value="Economics">Economics</option>
                                                                                                 <option {{ $olevel->subject == "Financial Accounting" ? "selected":"" }} value="Financial Accounting">Financial Accounting</option>
@@ -1145,6 +1147,7 @@
                                                                             <option value="Commerce">Commerce</option>
                                                                             <option value="Computer & IT">Computer & IT</option>
                                                                             <option value="Cosmetology">Cosmetology</option>
+                                                                            <option value="Data Processing">Data Processing</option>
                                                                             <option value="Dyeing & Bleaching">Dyeing & Bleaching</option>
                                                                             <option value="Economics">Economics</option>
                                                                             <option value="Financial Accounting">Financial Accounting</option>
@@ -1247,6 +1250,7 @@
                                                                                                     <option {{ $utme->subject == "Commerce" ? "selected":"" }} value="Commerce">Commerce</option>
                                                                                                     <option {{ $utme->subject == "Computer & IT" ? "selected":"" }} value="Computer & IT">Computer & IT</option>
                                                                                                     <option {{ $utme->subject == "Cosmetology" ? "selected":"" }} value="Cosmetology">Cosmetology</option>
+                                                                                                    <option {{ $utme->subject == "Data Processing" ? "selected" : "" }} value="Data Processing">Data Processing</option>
                                                                                                     <option {{ $utme->subject == "Dyeing & Bleaching" ? "selected":"" }} value="Dyeing & Bleaching">Dyeing & Bleaching</option>
                                                                                                     <option {{ $utme->subject == "Economics" ? "selected":"" }} value="Economics">Economics</option>
                                                                                                     <option {{ $utme->subject == "Financial Accounting" ? "selected":"" }} value="Financial Accounting">Financial Accounting</option>

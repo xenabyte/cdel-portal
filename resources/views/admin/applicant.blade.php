@@ -29,7 +29,7 @@
                             <div class="swiper product-thumbnail-slider p-2 rounded bg-light">
                                 <div class="swiper-wrapper">
                                     <div class="swiper-slide">
-                                        <img src="{{empty($applicant->image)?asset('assets/images/users/user-dummy-img.jpg'): $applicant->image}}" alt="" class="img-fluid d-block" />
+                                        <img src="{{empty($applicant->image)?asset('assets/images/users/user-dummy-img.jpg'): asset($applicant->image) }}" alt="" class="img-fluid d-block" />
                                     </div>
                                 </div>
                             </div>
@@ -78,7 +78,6 @@
                             <br>
                             <button type="submit" id="submit-button" class="btn btn-lg btn-primary"> Submit</button>
                         </form>
-                        
                         @endif
                     </div>
                     <!-- end col -->

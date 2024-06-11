@@ -54,9 +54,13 @@ class AdmissionController extends Controller
         $globalData = $request->input('global_data');
         $academicSession = $globalData->sessionSetting['application_session'];
         $applicants = Applicant::where('academic_session', $academicSession)->orderBy('status', 'DESC')->get();
+        $programmes = Programme::get(); 
+        $levels = AcademicLevel::get();
 
         return view('admin.applicants', [
             'applicants' => $applicants,
+            'programmes' => $programmes,
+            'levels' => $levels
         ]);
     }
 

@@ -77,6 +77,208 @@
 </div>
 <!-- end row -->
 
+@foreach($applicants->where('status', '!=', 'Admitted') as $applicant)
+<div id="view{{$applicant->id}}" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content border-0 overflow-hidden">
+            <div class="modal-header p-3">
+                <h4 class="card-title mb-0">View Applicant</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <hr>
+
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-3 border-end">
+                        <div class="card-body text-center">
+                            <div class="avatar-md mb-3 mx-auto">
+                                <img src="{{empty($applicant->image)?asset('assets/images/users/user-dummy-img.jpg'): asset($applicant->image) }}" alt="" id="candidate-img" class="img-thumbnail rounded-circle shadow-none">
+                            </div>
+    
+                            <h5 id="candidate-name" class="mb-0">{{ $applicant->lastname .' '. $applicant->othernames }}</h5>
+                            <p id="candidate-position" class="text-muted">{{ $applicant->programme?$applicant->programme->name:null }}</p>
+                            <p id="candidate-position" class="text-muted">Phone Number: {{ $applicant->phone_number }}</p>
+                            <div class="vr"></div>
+                            <div class="text-muted">Application ID : <span class="text-body fw-medium"> {{ $applicant->application_number }}</span></div>
+                            @if($applicant->application_type == 'UTME')
+                            <div class="vr"></div>
+                            <div class="text-muted">UTME Scores : <span class="text-body fw-medium"> {{ $applicant->utmes->sum('score') }}</span></div>
+                            @endif
+                            <div class="vr"></div>
+                            <div class="text-muted">Application Date : <span class="text-body fw-medium">{{ $applicant->updated_at }}</span></div>
+                            <hr>
+                            <h4 class="mt-3 alert alert-info">Admission Status: {{ empty($applicant->status)? 'Processing' : ucwords($applicant->status) }}</h4>
+                        </div>
+                    </div>
+    
+                    <div class="col-md-3 border-end">
+                        <div class="card-body">
+                            @if(!empty($applicant->olevel_1))
+                            <h5 class="fs-14 mb-3"> Schools Attended</h5>
+                            {!! $applicant->schools_attended !!}
+                            <hr>
+                            <div class="row mb-2">
+                                <div class="col-sm-6 col-xl-12">
+                                    <!-- Simple card -->
+                                    <i class="bx bxs-file-jpg text-danger" style="font-size: 25px"></i><span class="fs-14">Olevel Result</span>
+                                    <div class="text-end">
+                                        <a href="{{ asset($applicant->olevel_1) }}" target="blank" class="btn btn-success">View</a>
+                                    </div>
+                                    @if($applicant->sitting_no > 1)
+                                    <i class="bx bxs-file-jpg text-danger" style="font-size: 25px"></i><span class="fs-14">Olevel Result (Second Sitting)</span>
+                                    <div class="text-end">
+                                        <a href="{{ asset($applicant->olevel_2) }}" target="blank"  class="btn btn-success">View</a>
+                                    </div>
+                                    @endif
+                                </div><!-- end col -->
+                            </div>
+                            <hr>
+                            @endif
+
+                            <div class="table-responsive">
+                                <table class="table table-borderedless table-nowrap">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">Id</th>
+                                            <th scope="col">Subject</th>
+                                            <th scope="col">Grade</th>
+                                            <th scope="col">Registration Number</th>
+                                            <th scope="col">Year</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach($applicant->olevels as $olevel)
+                                        <tr>
+                                            <th scope="row">{{ $loop->iteration }}</th>
+                                            <td>{{ $olevel->subject }}</td>
+                                            <td>{{ $olevel->grade }}</td>
+                                            <td>{{ $olevel->reg_no }}</td>
+                                            <td>{{ $olevel->year }}</td>
+                                        </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+    
+                    <div class="col-md-3 border-end">
+                        <div class="card-body">
+                            @if($applicant->application_type == 'UTME')
+                            <div>
+                                @if(!empty($applicant->utme))
+                                <div class="row mb-2">
+                                    <div class="col-sm-6 col-xl-12">
+                                        <!-- Simple card -->
+                                        <i class="bx bxs-file-jpg text-danger" style="font-size: 25px"></i><span class="fs-14">UTME Result Printout</span>
+                                        <div class="text-end">
+                                            <a href="{{ asset($applicant->utme) }}"  target="blank" class="btn btn-success">View</a>
+                                        </div>
+                                    </div><!-- end col -->
+                                </div>
+                                <hr>
+                                @endif
+                                <div class="table-responsive">
+                                    <table class="table table-borderedless table-nowrap">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">Id</th>
+                                                <th scope="col">Subject</th>
+                                                <th scope="col">Score</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach($applicant->utmes as $utme)
+                                            <tr>
+                                                <th scope="row">{{ $loop->iteration }}</th>
+                                                <td>{{ $utme->subject }}</td>
+                                                <td>{{ $utme->score }}</td>
+                                            </tr>
+                                            @endforeach
+                                            <tr>
+                                                <th scope="row"></th>
+                                                <td>Total</td>
+                                                <td><strong>{{$applicant->utmes->sum('score')}}</strong></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            @elseif($applicant->application_type != 'UTME')
+                            <div>
+                                <h5 class="fs-14 mb-3"> Institution Attended</h5>
+                                {!! $applicant->de_school_attended !!}
+                                <hr>
+                                @if(!empty($applicant->de_result))
+                                <div class="row mb-2">
+                                    <div class="col-sm-6 col-xl-12">
+                                        <!-- Simple card -->
+                                        <i class="bx bxs-file-jpg text-danger" style="font-size: 25px"></i><span class="fs-14">Direct Entry/Prev Institution/Prev Institution Result</span>
+                                        <div class="text-end">
+                                            <a href="{{ asset($applicant->de_result) }}"  target="blank" class="btn btn-success">View</a>
+                                        </div>
+                                    </div><!-- end col -->
+                                </div>
+                                @endif
+                            </div>
+                            @endif
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="card-body">
+                            <h5 class="fs-14 mb-3 border-bottom"> Manage Admission</h5>
+                            @if($applicant->status == 'submitted')
+                            <form action="{{ url('staff/manageAdmission') }}" method="POST">
+                                @csrf
+                                <input type="hidden" name="applicant_id" value="{{ $applicant->id }}">
+                                <div class="mb-3">
+                                    <label for="programme" class="form-label">Programmes</label>
+                                    <select class="form-select" name="programme_id" id="programme" data-choices data-choices-search-false required>
+                                        @foreach($programmes as $programme)<option @if($programme->id == $applicant->programme_id) selected  @endif value="{{ $programme->id }}">{{ $programme->name }}</option>@endforeach
+                                    </select>
+                                </div>
+    
+                                <div class="mb-3">
+                                    <label for="level" class="form-label">Level</label>
+                                    <select class="form-select" name="level_id" id="level" data-choices data-choices-search-false required>
+                                        <option value="" selected>Choose...</option>
+                                        @foreach($levels as $academicLevel)<option value="{{ $academicLevel->id }}">{{ $academicLevel->level }}</option>@endforeach
+                                    </select>
+                                </div>
+    
+                                <div class="mb-3">
+                                    <label for="choices-batch-input" class="form-label">Batch</label>
+                                    <select class="form-select" name="batch" id="choices-batch-input" data-choices data-choices-search-false required>
+                                        <option value="" selected>Choose...</option>
+                                        <option value="A">Batch A</option>
+                                        <option value="B">Batch B</option>
+                                        <option value="C">Batch C</option>
+                                    </select>
+                                </div>
+    
+                                <div class="mb-3">
+                                    <label for="choices-publish-status-input" class="form-label">Manage Application</label>
+                                    <select class="form-select" name="status" id="choices-publish-status-input" data-choices data-choices-search-false required>
+                                        <option value="" selected>Choose...</option>
+                                        <option value="Admitted">Admitted</option>
+                                        <option value="Declined">Declined</option>
+                                    </select>
+                                </div>
+    
+                                <hr>
+                                <button type="submit" id="submit-button" class="btn btn-lg btn-primary"> Submit</button>
+                            </form>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+@endforeach
+
 
 <div id="searchApplicant" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
     <div class="modal-dialog modal-dialog-centered">
