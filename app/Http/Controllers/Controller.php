@@ -714,18 +714,17 @@ class Controller extends BaseController
     }
 
     public function createApplicant($applicantData){
-        $slug = $paymentDetails['data']['metadata']['slug'];
-        $email = $paymentDetails['data']['metadata']['email'];
-        $lastname = $paymentDetails['data']['metadata']['lastname'];
-        $phoneNumber = $paymentDetails['data']['metadata']['phone_number'];
-        $otherNames = $paymentDetails['data']['metadata']['othernames'];
-        $password = $paymentDetails['data']['metadata']['password'];
-        $applicationSession = $paymentDetails['data']['metadata']['academic_session'];
-        $partnerId = $paymentDetails['data']['metadata']['partner_id'];
-        $referralCode = $paymentDetails['data']['metadata']['referrer'];
-        $applicationType = $paymentDetails['data']['metadata']['application_type'];
-        $txRef = $paymentDetails['data']['meta']['reference'];
-
+        $slug = isset($applicantData['data']['metadata']['slug']) ? $applicantData['data']['metadata']['slug'] : (isset($applicantData['data']['meta']['slug']) ? $applicantData['data']['meta']['slug'] : null);
+        $email = isset($applicantData['data']['metadata']['email']) ? $applicantData['data']['metadata']['email'] : (isset($applicantData['data']['meta']['email']) ? $applicantData['data']['meta']['email'] : null);
+        $lastname = isset($applicantData['data']['metadata']['lastname']) ? $applicantData['data']['metadata']['lastname'] : (isset($applicantData['data']['meta']['lastname']) ? $applicantData['data']['meta']['lastname'] : null);
+        $phoneNumber = isset($applicantData['data']['metadata']['phone_number']) ? $applicantData['data']['metadata']['phone_number'] : (isset($applicantData['data']['meta']['phone_number']) ? $applicantData['data']['meta']['phone_number'] : null);
+        $otherNames = isset($applicantData['data']['metadata']['othernames']) ? $applicantData['data']['metadata']['othernames'] : (isset($applicantData['data']['meta']['othernames']) ? $applicantData['data']['meta']['othernames'] : null);
+        $password = isset($applicantData['data']['metadata']['password']) ? $applicantData['data']['metadata']['password'] : (isset($applicantData['data']['meta']['password']) ? $applicantData['data']['meta']['password'] : null);
+        $applicationSession = isset($applicantData['data']['metadata']['academic_session']) ? $applicantData['data']['metadata']['academic_session'] : (isset($applicantData['data']['meta']['academic_session']) ? $applicantData['data']['meta']['academic_session'] : null);
+        $partnerId = isset($applicantData['data']['metadata']['partner_id']) ? $applicantData['data']['metadata']['partner_id'] : (isset($applicantData['data']['meta']['partner_id']) ? $applicantData['data']['meta']['partner_id'] : null);
+        $referralCode = isset($applicantData['data']['metadata']['referrer']) ? $applicantData['data']['metadata']['referrer'] : (isset($applicantData['data']['meta']['referrer']) ? $applicantData['data']['meta']['referrer'] : null);
+        $applicationType = isset($applicantData['data']['metadata']['application_type']) ? $applicantData['data']['metadata']['application_type'] : (isset($applicantData['data']['meta']['application_type']) ? $applicantData['data']['meta']['application_type'] : null);
+        $txRef = isset($applicantData['data']['metadata']['reference']) ? $applicantData['data']['metadata']['reference'] : (isset($applicantData['data']['meta']['reference']) ? $applicantData['data']['meta']['reference'] : null);
 
         $newApplicant = ([
             'slug' => $slug,
@@ -749,7 +748,7 @@ class Controller extends BaseController
         Log::info("********************** Applicant Created **********************: ".' - '.$lastname.' - '.$otherNames .' - '.$applicationNumber);
 
         if(!empty($txRef)){
-            if($existTx = Transaction::where('reference', $txRef)->where('status',  null)->first()){
+            if($existTx = Transaction::where('reference', $txRef)->where('status',  1)->first()){
                 $existTx->user_id = $applicant->id;
                 $existTx->save();
             }

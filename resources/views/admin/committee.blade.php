@@ -297,7 +297,7 @@
                                                 
                                                 <div class="mb-3">
                                                     <label for="venue" class="form-label">Venue</label>
-                                                    <textarea class="form-control" name="venue" id="venue" required>{!! $meeting->venue !!}</textarea>
+                                                    <textarea class="form-control ckeditor" name="venue" id="venue" required>{!! $meeting->venue !!}</textarea>
                                                 </div>
                                                 
                                                 <div class="mb-3">
@@ -389,7 +389,7 @@
 
                     <div class="mb-3">
                         <label for="duties" class="form-label">Committee Duties</label>
-                        <textarea class="form-control" name="duties" id="duties" placeholder="Enter Committee Duties"></textarea>
+                        <textarea class="form-control ckeditor" name="duties" id="duties" placeholder="Enter Committee Duties"></textarea>
                     </div>
 
                     <hr>
@@ -502,7 +502,7 @@
                     
                     <div class="mb-3">
                         <label for="venue" class="form-label">Venue</label>
-                        <textarea class="form-control" name="venue" id="venue" placeholder="Enter Venue" required></textarea>
+                        <textarea class="form-control ckeditor" name="venue" id="venue" placeholder="Enter Venue" required></textarea>
                     </div>
                     
                     <div class="mb-3">

@@ -114,7 +114,7 @@
         
                                 <div class="mb-3">
                                     <label for="description" class="form-label">Write a short descriptive Note about yourself</label>
-                                    <textarea type="text" class="form-control" name="description" id="description"></textarea>
+                                    <textarea type="text" class="form-control ckeditor" name="description" id="description"></textarea>
                                 </div>
         
                                 <!--end col-->

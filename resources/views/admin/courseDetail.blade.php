@@ -163,7 +163,7 @@
                     <input type="hidden" name="course_id" value="{{ $course->id }}">
                     <input type="hidden" name="staff_id" value="{{ $staffId }}">
                     <div class="form-floating">
-                        <textarea class="form-control" name="message"></textarea>
+                        <textarea class="form-control ckeditor" name="message"></textarea>
                         <label for="semester">Message</label>
                     </div>
 

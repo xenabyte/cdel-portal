@@ -102,7 +102,7 @@
 
                                             <div class="mb-3">
                                                 <label for="course_outline" class="form-label">Course Outline</label>
-                                                <textarea class="form-control" name="course_outline" id="course_outline" placeholder="Course Outline">{{ $course61->course_outline }}</textarea>
+                                                <textarea class="form-control ckeditor" name="course_outline" id="course_outline" placeholder="Course Outline">{{ $course61->course_outline }}</textarea>
                                             </div>
 
                                             <hr>
@@ -233,7 +233,7 @@
 
                                                 <div class="mb-3">
                                                     <label for="course_outline" class="form-label">Course Outline</label>
-                                                    <textarea class="form-control" name="course_outline" id="course_outline" placeholder="Course Outline">{{ $course62->course_outline }}</textarea>
+                                                    <textarea class="form-control ckeditor" name="course_outline" id="course_outline" placeholder="Course Outline">{{ $course62->course_outline }}</textarea>
                                                 </div>
 
                                                 <hr>

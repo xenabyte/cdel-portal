@@ -738,52 +738,53 @@ class ApplicationController extends Controller
     {
         $userId = Auth::guard('user')->user()->id;
         $sittingNo = Auth::guard('user')->user()->sitting_no;
+        $subjects = $request->input('subjects');
 
         foreach ($subjects as $subject) {
             if (!empty($subject['subject'])) {
                 $validator = Validator::make($subject, [
-                    'subjects.*.subject' => 'nullable|string|max:255',
-                    'subjects.*.grade' => 'required|string|max:2',
-                    'subjects.*.year' => 'required|integer|min:2010|max:2099',
-                    'subjects.*.reg_no' => 'required|string|max:255',
+                    'subject' => 'nullable|string|max:255',
+                    'grade' => 'required|string',
+                    'year' => 'required|integer|min:2010|max:2099',
+                    'reg_no' => 'required|string|max:255',
                 ]);
-
-                if($validator->fails()) {
+        
+                if ($validator->fails()) {
                     alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
                     return redirect()->back();
                 }
         
-                if(Olevel::where('user_id', $userId)->count() > 8){
-                    alert()->error('oops', 'Nine subject already added, you cant add more')->persistent('Close');
+                if (Olevel::where('user_id', $userId)->count() > 8) {
+                    alert()->error('oops', 'Nine subjects already added, you can\'t add more')->persistent('Close');
                     return redirect()->back();
                 }
-
-                // checks
+        
+                // Check registration numbers
                 $regNos = Olevel::where('user_id', $userId)->pluck('reg_no')->toArray();
-                $regNos[] = $request->reg_no;
-
-                $uniqueRegNos = array_unique($regNos);  
+                $regNos[] = $subject['reg_no']; // Corrected this line
+        
+                $uniqueRegNos = array_unique($regNos);
                 $uniqueRegNosCount = count($uniqueRegNos);
-
-                if($uniqueRegNosCount > $sittingNo){
-                    alert()->error('oops', 'You specified '.$sittingNo.' sittings but we are getting more than specified')->persistent('Close');
+        
+                if ($uniqueRegNosCount > $sittingNo) {
+                    alert()->error('oops', 'You specified ' . $sittingNo . ' sittings but we are getting more than specified')->persistent('Close');
                     return redirect()->back();
                 }
-
+        
+                // Check years
                 $years = Olevel::where('user_id', $userId)->pluck('year')->toArray();
-                $years[] = $request->year;
-
-                $uniqueYears= array_unique($years);  
+                $years[] = $subject['year']; // Corrected this line
+        
+                $uniqueYears = array_unique($years);
                 $uniqueYearsCount = count($uniqueYears);
-
-                if($uniqueYearsCount > $sittingNo){
-                    alert()->error('oops', 'You specified '.$sittingNo.' sittings but we are getting more than specified')->persistent('Close');
+        
+                if ($uniqueYearsCount > $sittingNo) {
+                    alert()->error('oops', 'You specified ' . $sittingNo . ' sittings but we are getting more than specified')->persistent('Close');
                     return redirect()->back();
                 }
-
-                if(Olevel::where('user_id', $userId)->where('subject', $request->subject)->count() > 0){
-                    alert()->error('oops', 'Subject already added')->persistent('Close');
-                    return redirect()->back();
+        
+                if (Olevel::where('user_id', $userId)->where('subject', $subject['subject'])->count() > 0) { 
+                    continue;
                 }
         
                 Olevel::create([
@@ -791,11 +792,13 @@ class ApplicationController extends Controller
                     'grade' => $subject['grade'],
                     'year' => $subject['year'],
                     'reg_no' => $subject['reg_no'],
-                    'user_id' => $userId, 
+                    'user_id' => $userId,
                 ]);
             }
         }
+        
         session()->put('previous_section', 'olevel');
+        alert()->success('Good Job!', 'Subjects and grades added successfully')->persistent('Close');
         return redirect()->back();
     }
 
@@ -871,8 +874,8 @@ class ApplicationController extends Controller
         foreach ($subjects as $subject) {
             if (!empty($subject['subject'])) {
                 $validator = Validator::make($subject, [
-                    'subjects.*.subject' => 'required|string|max:255',
-                    'subjects.*.score' => 'required|integer|min:0|max:100',
+                    'subject' => 'required|string|max:255',
+                    'score' => 'required|integer|min:0|max:100',
                 ]);
         
                 if($validator->fails()) {

@@ -67,7 +67,7 @@
 
                                                 <div class="mb-3">
                                                     <label for="duties" class="form-label">Committee Duties</label>
-                                                    <textarea class="form-control" name="duties" id="duties">{!! $committee->duties !!}</textarea>
+                                                    <textarea class="form-control ckeditor" name="duties" id="duties">{!! $committee->duties !!}</textarea>
                                                 </div>
 
                                                 <hr>
@@ -133,7 +133,7 @@
 
                     <div class="mb-3">
                         <label for="duties" class="form-label">Committee Duties</label>
-                        <textarea class="form-control" name="duties" id="duties" placeholder="Enter Committee Duties"></textarea>
+                        <textarea class="form-control ckeditor" name="duties" id="duties" placeholder="Enter Committee Duties"></textarea>
                     </div>
 
                     <hr>

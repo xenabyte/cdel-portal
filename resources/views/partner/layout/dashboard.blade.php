@@ -385,7 +385,7 @@
 
     <script>
         // Select all textarea elements and initialize CKEditor on each
-        document.querySelectorAll('textarea').forEach((textarea) => {
+        document.querySelectorAll('textarea.ckeditor').forEach((textarea) => {
             CKEDITOR.replace(textarea);
         });
     </script>

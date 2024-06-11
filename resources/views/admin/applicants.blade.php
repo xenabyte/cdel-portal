@@ -36,12 +36,12 @@
                             <th scope="col">Id</th>
                             <th scope="col">Application Number</th>
                             <th scope="col">Name</th>
-                            <th scope="col">Gender</th>
-                            <th scope="col">Programme</th>
-                            <th scope="col">Application Type</th>
                             <th scope="col">Email</th>
                             <th scope="col">Access Code</th>
                             <th scope="col">Phone Number</th>
+                            <th scope="col">Gender</th>
+                            <th scope="col">Programme</th>
+                            <th scope="col">Application Type</th>
                             <th scope="col">Academic Session</th>
                             <th scope="col">Application Status</th>
                             <th scope="col">Applied Date</th>
@@ -54,16 +54,17 @@
                             <th scope="row">{{ $loop->iteration }}</th>
                             <td>{{ $applicant->application_number }}</td>
                             <td>{{ $applicant->lastname .' '. $applicant->othernames }}</td>
-                            <td>{{ $applicant->gender }}</td>
-                            <td>{{ !empty($applicant->programme)?$applicant->programme->name:null }}</td>
-                            <td>{{ $applicant->application_type }}</td>
                             <td>{{ $applicant->email }} </td>
                             <td>{{ $applicant->passcode }} </td>
                             <td>{{ $applicant->phone_number }} </td>
+                            <td>{{ $applicant->gender }}</td>
+                            <td>{{ !empty($applicant->programme)?$applicant->programme->name:null }}</td>
+                            <td>{{ $applicant->application_type }}</td>
                             <td>{{ $applicant->academic_session }} </td>
                             <td>{{ ucwords($applicant->status) }} </td>
                             <td>{{ $applicant->created_at }} </td>
                             <td>
+                                @if(!empty($applicant->programme_id))<a href="#" class="btn btn-secondary m-1"><i class= "ri-eye-fill"></i> View</a>@endif
                                 @if(!empty($applicant->programme_id))<a href="{{ url('admin/applicant/'.$applicant->slug) }}" class="btn btn-primary m-1"><i class= "ri-user-6-fill"></i> View Applicant</a>@endif
                             </td>
                         </tr>

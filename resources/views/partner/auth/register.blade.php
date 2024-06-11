@@ -52,7 +52,7 @@
 
                 <div class="mb-3" class="form-group{{ $errors->has('address') ? ' has-error' : '' }}">
                     <label for="address" class="form-label">Address</label>
-                    <textarea class="form-control" id="address" name="address" placeholder="Enter address" >{{ old('address') }}</textarea>
+                    <textarea class="form-control ckeditor" id="address" name="address" placeholder="Enter address" >{{ old('address') }}</textarea>
 
                     @if ($errors->has('address'))
                         <br>

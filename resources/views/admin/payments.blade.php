@@ -122,7 +122,7 @@
             
                                             <div class="mb-3">
                                                 <label for="description" class="form-label">Description</label>
-                                                <textarea class="form-control" name="description" id="description" >{!! $payment->description !!}</textarea>
+                                                <textarea class="form-control ckeditor" name="description" id="description" >{!! $payment->description !!}</textarea>
                                             </div>
             
                                             <div class="text-end">
@@ -276,7 +276,7 @@
                                                         
                                                                                         <div class="mb-3">
                                                                                             <label for="description" class="form-label">Description</label>
-                                                                                            <textarea class="form-control" name="description" id="description" >{!! $schoolFeePayment->description !!}</textarea>
+                                                                                            <textarea class="form-control ckeditor" name="description" id="description" >{!! $schoolFeePayment->description !!}</textarea>
                                                                                         </div>
                                                         
                                                                                         <div class="text-end">
@@ -354,7 +354,7 @@
 
                     <div class="mb-3">
                         <label for="description" class="form-label">Description</label>
-                        <textarea class="form-control" name="description" id="description" ></textarea>
+                        <textarea class="form-control ckeditor" name="description" id="description" ></textarea>
                     </div>
 
                     <div class="mb-3">

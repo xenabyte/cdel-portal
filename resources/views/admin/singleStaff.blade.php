@@ -21,7 +21,7 @@ $hodRole = array_filter($singleStaffRoles, function ($staffRole) {
 <script src="https://cdn.ckeditor.com/4.16.0/standard/ckeditor.js"></script>
 <script>
     // Select all textarea elements and initialize CKEditor on each
-    document.querySelectorAll('textarea').forEach((textarea) => {
+    document.querySelectorAll('textarea.ckeditor').forEach((textarea) => {
         CKEDITOR.replace(textarea);
     });
 </script>
@@ -530,7 +530,7 @@ $hodRole = array_filter($singleStaffRoles, function ($staffRole) {
 
                         <div class="mb-3">
                             <label for="description" class="form-label">Staff Qualifications</label>
-                            <textarea type="text" class="form-control" name="description" id="description">{{ $singleStaff->description }}</textarea>
+                            <textarea type="text" class="form-control ckeditor" name="description" id="description">{{ $singleStaff->description }}</textarea>
                         </div>
 
                         <!--end col-->

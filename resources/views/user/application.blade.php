@@ -523,7 +523,7 @@
     
                                                 <div class="col-lg-12">
                                                     <label for="address">Address</label>
-                                                    <textarea id="address" name="address" >{!! $applicant->address !!}</textarea>
+                                                    <textarea class="ckeditor" id="address" name="address" >{!! $applicant->address !!}</textarea>
                                                 </div><!--end col-->
     
                                                 <hr>
@@ -599,7 +599,7 @@
                                                 </div><!--end col-->
                                                 @endif
     
-                                                @if(!empty($applicant->application_type))
+                                                @if(!empty($applicant->application_type) && strtolower($applicant->application_type) == 'de')
                                                 <div class="col-lg-12">
                                                     <div class="mb-3">
                                                         <label for="jamb_reg" class="form-label">Jamb Registration Number</label>
@@ -653,7 +653,7 @@
                                                         <br>
                                                         <div class="col-md-12">
                                                             <label for="schools_attended">School(s) Attended</label>
-                                                            <textarea id="schools_attended" name="schools_attended" >{!! $applicant->schools_attended !!}</textarea>
+                                                            <textarea class="ckeditor" id="schools_attended" name="schools_attended" >{!! $applicant->schools_attended !!}</textarea>
                                                         </div><!--end col-->
     
                                                         <div class="col-auto">
@@ -743,8 +743,8 @@
                                                             <div class="row gx-3 gy-2 align-items-center subject-entry">
                                                                 <div class="col-sm-3">
                                                                     <label for="subject_{{ $i }}">Subject</label>
-                                                                    <select class="form-select" name="subjects[{{ $i }}][subject]" id="subject_{{ $i }}" required>
-                                                                        <option selected>Choose...</option>
+                                                                    <select class="form-select" name="subjects[{{ $i }}][subject]" id="subject_{{ $i }}" >
+                                                                        <option value="">Choose...</option>
                                                                         <option value="Agricultural Science">Agricultural Science</option>
                                                                         <option value="Animal Husbandry">Animal Husbandry</option>
                                                                         <option value="Automobile Parts Merchandising">Automobile Parts Merchandising</option>
@@ -795,8 +795,8 @@
                                                     
                                                                 <div class="col-sm-2">
                                                                     <label for="grade_{{ $i }}">Grade</label>
-                                                                    <select class="form-select" name="subjects[{{ $i }}][grade]" id="grade_{{ $i }}" required>
-                                                                        <option selected>Choose...</option>
+                                                                    <select class="form-select" name="subjects[{{ $i }}][grade]" id="grade_{{ $i }}" >
+                                                                        <option value="">Choose...</option>
                                                                         <option value="A/R">A/R</option>
                                                                         <option value="A1">A1</option>
                                                                         <option value="B2">B2</option>
@@ -812,12 +812,12 @@
                                                     
                                                                 <div class="col-sm-2">
                                                                     <label for="year_{{ $i }}">Year</label>
-                                                                    <input type="number" min="2010" max="2099" step="1" name="subjects[{{ $i }}][year]" class="form-control" id="year_{{ $i }}" required>
+                                                                    <input type="number" min="2010" max="2099" step="1" name="subjects[{{ $i }}][year]" class="form-control" id="year_{{ $i }}" >
                                                                 </div><!--end col-->
                                                     
                                                                 <div class="col-sm-3">
                                                                     <label for="reg_no_{{ $i }}">Registration Number</label>
-                                                                    <input type="text" name="subjects[{{ $i }}][reg_no]" class="form-control" id="reg_no_{{ $i }}" required>
+                                                                    <input type="text" name="subjects[{{ $i }}][reg_no]" class="form-control" id="reg_no_{{ $i }}" >
                                                                 </div><!--end col-->
                                                             </div><!--end row-->
                                                             <hr>
@@ -900,7 +900,7 @@
                                                                                     <div class="row">
                                                                                         <div class="mb-3">
                                                                                             <label for="subject">Subject</label>
-                                                                                            <select class="form-select" name="subject" id="subject" required>
+                                                                                            <select class="form-select" name="subject" id="subject" >
                                                                                                 <option {{ $olevel->subject == "Agricultural Science" ? "selected":"" }} value="Agricultural Science">Agricultural Science</option>
                                                                                                 <option {{ $olevel->subject == "Animal Husbandry" ? "selected":"" }} value="Animal Husbandry">Animal Husbandry</option>
                                                                                                 <option {{ $olevel->subject == "Automobile Parts Merchandising" ? "selected":"" }} value="Automobile Parts Merchandising">Automobile Parts Merchandising</option>
@@ -952,7 +952,7 @@
                                                                                         
                                                                                         <div class="mb-3">
                                                                                             <label for="grade">Grade</label>
-                                                                                            <select class="form-select" name="grade" id="grade" required>
+                                                                                            <select class="form-select" name="grade" id="grade" >
                                                                                                 <option {{ $olevel->grade == "A/R" ? "selected":"" }} value="A/R">A/R</option>
                                                                                                 <option {{ $olevel->grade == "A1" ? "selected":"" }} value="A1">A1</option>
                                                                                                 <option {{ $olevel->grade == "B2" ? "selected":"" }} value="B2">B2</option>
@@ -968,12 +968,12 @@
                                     
                                                                                         <div class="mb-3">
                                                                                             <label for="year">Year</label>
-                                                                                            <input type="number" min="2010" max="2099" step="1" value="{{ $olevel->year }}" name="year" class="form-control" id="year" required>
+                                                                                            <input type="number" min="2010" max="2099" step="1" value="{{ $olevel->year }}" name="year" class="form-control" id="year" >
                                                                                         </div><!--end col-->
                                     
                                                                                         <div class="mb-3">
                                                                                             <label for="reg_no">Registration Number</label>
-                                                                                            <input type="text" name="reg_no" class="form-control" value="{{ $olevel->reg_no }}" id="reg_no" required>
+                                                                                            <input type="text" name="reg_no" class="form-control" value="{{ $olevel->reg_no }}" id="reg_no" >
                                                                                         </div><!--end col-->
                                                                                     </div><!--end row-->
 
@@ -1390,7 +1390,7 @@
     
                                                 <div class="col-md-12">
                                                     <label for="de_school_attended">Previous Institution(s)</label>
-                                                    <textarea id="de_school_attended" name="de_school_attended" >{!! $applicant->de_school_attended !!}</textarea>
+                                                    <textarea class="ckeditor" id="de_school_attended" name="de_school_attended" >{!! $applicant->de_school_attended !!}</textarea>
                                                 </div><!--end col-->
                     
                                                 <div class="col-md-12 mt-3">
@@ -1455,7 +1455,7 @@
     
                                                 <div class="col-lg-12">
                                                     <label for="address">Address</label>
-                                                    <textarea id="address" name="address" >{!! empty($applicant->guardian)?'':$applicant->guardian->address !!}</textarea>
+                                                    <textarea class="ckeditor" id="address" name="address" >{!! empty($applicant->guardian)?'':$applicant->guardian->address !!}</textarea>
                                                 </div><!--end col-->
     
                                                 <hr>
@@ -1514,7 +1514,7 @@
                                                     <div class="col-lg-12">
                                                         <div class="mb-3">
                                                             <label for="address">Address</label>
-                                                            <textarea id="address" name="address" >{!! empty($applicant->nok)?'':$applicant->nok->address !!}</textarea>
+                                                            <textarea class="ckeditor" id="address" name="address" >{!! empty($applicant->nok)?'':$applicant->nok->address !!}</textarea>
                                                         </div>
                                                     </div><!--end col-->
     
