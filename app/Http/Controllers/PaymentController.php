@@ -258,16 +258,17 @@ class PaymentController extends Controller
     }
 
     public function upperlinkVerifyPayment(){
-
         Log::info("**********************Upperlink Verifying Payment**********************");
+        $transactionId = $_GET['transaction_id'];
 
-        
         //Requery transaction
         $data = new \stdClass();
-        $data->transactionId = NUll;
+        $data->transactionId = $transactionId;
 
         $upperLinkPayGate = new PayGate;
         $paymentDetails =$upperLinkPayGate->verifyTransaction($data);
+
+        dd($paymentDetails);
 
         if($paymentDetails['status'] == 'success'){
             if($this->processUpperLinkPayment($paymentDetails)){
@@ -298,6 +299,7 @@ class PaymentController extends Controller
      * @return void
      */
     public function raveWebhook(Request $request){
+        Log::info("**********************Flutterwave Webhook**********************");
         $verified = Flutterwave::verifyWebhook();
 
         if ($verified && $request->event == 'charge.completed' && $request->data->status == 'successful') {
@@ -343,6 +345,8 @@ class PaymentController extends Controller
                         }
 
                         if($paymentType == Payment::PAYMENT_TYPE_GENERAl_APPLICATION || $paymentType == Payment::PAYMENT_TYPE_INTER_TRANSFER_APPLICATION){
+                            $applicantData = $paymentDetails;
+                            $this->createApplicant($applicantData);
                             return true;
                         }elseif($paymentType == Payment::PAYMENT_TYPE_ACCEPTANCE){
                             return true;
@@ -471,5 +475,17 @@ class PaymentController extends Controller
         } catch (ValidationException $e) {
             return $this->dataResponse($this->getMissingParams($e), null, 'error');
         }
+    }
+
+    public function getAllRave(){
+        $data = [
+            'page' => 1,
+            'status' => 'SUCCESSFUL'
+        ];
+    
+        // $data is optional
+        $transfers = Flutterwave::transfers()->fetchAll($data);
+    
+        dd($transfers);
     }
 }

@@ -51,7 +51,7 @@ class Paygate {
 
         $url = $upperLinkRequeryUrl.'?transaction_id='.$transactionId.'&merchant_id='.$merchantId;
     
-        $response = $this->makeCurlRequest($url, $dataok, $header, "GET");
+        $response = $this->makeCurlRequest($url, null, $header, "GET");
 
         $data = json_decode($response, true);
         return $data;
