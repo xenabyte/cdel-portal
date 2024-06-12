@@ -29,7 +29,7 @@
                             <div class="swiper product-thumbnail-slider p-2 rounded bg-light">
                                 <div class="swiper-wrapper">
                                     <div class="swiper-slide">
-                                        <img src="{{asset($student->applicant->image)}}" alt="" class="img-fluid d-block" />
+                                        <img src="{{asset($refStudent->applicant->image)}}" alt="" class="img-fluid d-block" />
                                     </div>
                                 </div>
                             </div>
@@ -59,21 +59,21 @@
                         <div class="mt-xl-0 mt-5">
                             <div class="d-flex">
                                 <div class="flex-grow-1">
-                                    <h4>{{ $student->applicant->lastname .' '. $student->applicant->othernames }}</h4>
+                                    <h4>{{ $refStudent->applicant->lastname .' '. $refStudent->applicant->othernames }}</h4>
                                     <div class="hstack gap-3 flex-wrap">
-                                        <div><a href="#" class="text-primary d-block">Applied Programme: {{ $student->programme->name }}</a></div>
+                                        <div><a href="#" class="text-primary d-block">Applied Programme: {{ $refStudent->programme->name }}</a></div>
                                         <div class="vr"></div>
-                                        <div class="text-muted">Admitted Programme : <span class="text-body fw-medium">{{ $student->programme->name }}</span></div>
+                                        <div class="text-muted">Admitted Programme : <span class="text-body fw-medium">{{ $refStudent->programme->name }}</span></div>
                                         <div class="vr"></div>
-                                        <div class="text-muted">Application ID : <span class="text-body fw-medium"> {{ $student->applicant->application_number }}</span></div>
-                                        @if($student->applicant->application_type == 'UTME')
+                                        <div class="text-muted">Application ID : <span class="text-body fw-medium"> {{ $refStudent->applicant->application_number }}</span></div>
+                                        @if($refStudent->applicant->application_type == 'UTME')
                                         <div class="vr"></div>
-                                        <div class="text-muted">UTME Scores : <span class="text-body fw-medium"> {{ $student->applicant->utmes->sum('score') }}</span></div>
+                                        <div class="text-muted">UTME Scores : <span class="text-body fw-medium"> {{ $refStudent->applicant->utmes->sum('score') }}</span></div>
                                         @endif
                                         <div class="vr"></div>
-                                        <div class="text-muted">Application Date : <span class="text-body fw-medium">{{ $student->applicant->updated_at }}</span></div>
+                                        <div class="text-muted">Application Date : <span class="text-body fw-medium">{{ $refStudent->applicant->updated_at }}</span></div>
                                         <div class="vr"></div>
-                                        <div class="text-muted">Admitted Date : <span class="text-body fw-medium">{{ $student->created_at }}</span></div>
+                                        <div class="text-muted">Admitted Date : <span class="text-body fw-medium">{{ $refStudent->created_at }}</span></div>
                                     </div>
                                 </div>
                                 <div class="flex-shrink-0">
@@ -103,43 +103,43 @@
                                                 <tbody>
                                                     <tr>
                                                         <th scope="row" style="width: 200px;">Fullname</th>
-                                                        <td>{{ $student->applicant->lastname .' '. $student->applicant->othernames }}</td>
+                                                        <td>{{ $refStudent->applicant->lastname .' '. $refStudent->applicant->othernames }}</td>
                                                     </tr>
                                                     <tr>
                                                         <th scope="row">Email</th>
-                                                        <td>{{ $student->applicant->email }}</td>
+                                                        <td>{{ $refStudent->applicant->email }}</td>
                                                     </tr>
                                                     <tr>
                                                         <th scope="row">Phone Number</th>
-                                                        <td>{{ $student->applicant->phone_number }}</td>
+                                                        <td>{{ $refStudent->applicant->phone_number }}</td>
                                                     </tr>
                                                     <tr>
                                                         <th scope="row">Gender</th>
-                                                        <td>{{ $student->applicant->gender }}</td>
+                                                        <td>{{ $refStudent->applicant->gender }}</td>
                                                     </tr>
                                                     <tr>
                                                         <th scope="row">Date of Birth</th>
-                                                        <td>{{ $student->applicant->dob }}</td>
+                                                        <td>{{ $refStudent->applicant->dob }}</td>
                                                     </tr>
                                                     <tr>
                                                         <th scope="row">Religion</th>
-                                                        <td>{{ $student->applicant->religion }}</td>
+                                                        <td>{{ $refStudent->applicant->religion }}</td>
                                                     </tr>
                                                     <tr>
                                                         <th scope="row">Marital Status</th>
-                                                        <td>{{ $student->applicant->marital_status }}</td>
+                                                        <td>{{ $refStudent->applicant->marital_status }}</td>
                                                     </tr>
                                                     <tr>
                                                         <th scope="row">Nationality</th>
-                                                        <td>{{ $student->applicant->nationality }}</td>
+                                                        <td>{{ $refStudent->applicant->nationality }}</td>
                                                     </tr>
                                                     <tr>
                                                         <th scope="row">State of Origin</th>
-                                                        <td>{{ $student->applicant->state }}</td>
+                                                        <td>{{ $refStudent->applicant->state }}</td>
                                                     </tr>
                                                     <tr>
                                                         <th scope="row">Local Government Area</th>
-                                                        <td>{{ $student->applicant->lga }}</td>
+                                                        <td>{{ $refStudent->applicant->lga }}</td>
                                                     </tr>
                                                 </tbody>
                                             </table>
@@ -169,7 +169,7 @@
                                                                     </tr>
                                                                 </thead>
                                                                 <tbody>
-                                                                    @foreach($student->transactions->where('academic_session', $student->applicant->academic_session) as $transaction)
+                                                                    @foreach($refStudent->transactions->where('academic_session', $refStudent->applicant->academic_session) as $transaction)
                                                                     <tr>
                                                                         <th scope="row">{{ $loop->iteration }}</th>
                                                                         <td>{{ $transaction->reference }}</td>

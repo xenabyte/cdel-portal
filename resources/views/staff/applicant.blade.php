@@ -1,3 +1,23 @@
+@php
+    $staff = Auth::guard('staff')->user();
+
+    $staffVCRole = false;
+    $staffRegistrarRole = false;  
+    $staffAdmissionOfficerRole = false;
+
+    foreach ($staff->staffRoles as $staffRole) {
+      
+        if (strtolower($staffRole->role->role) == 'vice chancellor') {
+            $staffVCRole = true;
+        }
+        if (strtolower($staffRole->role->role) == 'registrar') {
+            $staffRegistrarRole = true;
+        }
+        if(strtolower($staffRole->role->role) == 'admission'){
+            $staffAdmissionOfficerRole = true;
+        }  
+    }
+@endphp
 @extends('staff.layout.dashboard')
 
 @section('content')
@@ -37,48 +57,50 @@
 
                         <h4 class="mt-3 alert alert-info">Admission Status: {{ empty($applicant->status)? 'Processing' : ucwords($applicant->status) }}</h4>
                         <br>
-                        @if($applicant->status == 'submitted')
-                        <form action="{{ url('staff/manageAdmission') }}" method="POST">
-                            @csrf
-                            <input type="hidden" name="applicant_id" value="{{ $applicant->id }}">
-                            <div class="mb-3">
-                                <label for="programme" class="form-label">Programmes</label>
-                                <select class="form-select" name="programme_id" id="programme" data-choices data-choices-search-false required>
-                                    @foreach($programmes as $programme)<option @if($programme->id == $applicant->programme_id) selected  @endif value="{{ $programme->id }}">{{ $programme->name }}</option>@endforeach
-                                </select>
-                            </div>
 
-                            <div class="mb-3">
-                                <label for="level" class="form-label">Level</label>
-                                <select class="form-select" name="level_id" id="level" data-choices data-choices-search-false required>
-                                    <option value="" selected>Choose...</option>
-                                    @foreach($levels as $academicLevel)<option value="{{ $academicLevel->id }}">{{ $academicLevel->level }}</option>@endforeach
-                                </select>
-                            </div>
+                        @if($staffAdmissionOfficerRole || $staffRegistrarRole || $staffVCRole)
+                            @if($applicant->status == 'submitted')
+                            <form action="{{ url('staff/manageAdmission') }}" method="POST">
+                                @csrf
+                                <input type="hidden" name="applicant_id" value="{{ $applicant->id }}">
+                                <div class="mb-3">
+                                    <label for="programme" class="form-label">Programmes</label>
+                                    <select class="form-select" name="programme_id" id="programme" data-choices data-choices-search-false required>
+                                        @foreach($programmes as $programme)<option @if($programme->id == $applicant->programme_id) selected  @endif value="{{ $programme->id }}">{{ $programme->name }}</option>@endforeach
+                                    </select>
+                                </div>
 
-                            <div class="mb-3">
-                                <label for="choices-batch-input" class="form-label">Batch</label>
-                                <select class="form-select" name="batch" id="choices-batch-input" data-choices data-choices-search-false required>
-                                    <option value="" selected>Choose...</option>
-                                    <option value="A">Batch A</option>
-                                    <option value="B">Batch B</option>
-                                    <option value="C">Batch C</option>
-                                </select>
-                            </div>
+                                <div class="mb-3">
+                                    <label for="level" class="form-label">Level</label>
+                                    <select class="form-select" name="level_id" id="level" data-choices data-choices-search-false required>
+                                        <option value="" selected>Choose...</option>
+                                        @foreach($levels as $academicLevel)<option value="{{ $academicLevel->id }}">{{ $academicLevel->level }}</option>@endforeach
+                                    </select>
+                                </div>
 
-                            <div class="mb-3">
-                                <label for="choices-publish-status-input" class="form-label">Manage Application</label>
-                                <select class="form-select" name="status" id="choices-publish-status-input" data-choices data-choices-search-false required>
-                                    <option value="" selected>Choose...</option>
-                                    <option value="Admitted">Admitted</option>
-                                    <option value="Declined">Declined</option>
-                                </select>
-                            </div>
+                                <div class="mb-3">
+                                    <label for="choices-batch-input" class="form-label">Batch</label>
+                                    <select class="form-select" name="batch" id="choices-batch-input" data-choices data-choices-search-false required>
+                                        <option value="" selected>Choose...</option>
+                                        <option value="A">Batch A</option>
+                                        <option value="B">Batch B</option>
+                                        <option value="C">Batch C</option>
+                                    </select>
+                                </div>
 
-                            <br>
-                            <button type="submit" id="submit-button" class="btn btn-lg btn-primary"> Submit</button>
-                        </form>
-                        
+                                <div class="mb-3">
+                                    <label for="choices-publish-status-input" class="form-label">Manage Application</label>
+                                    <select class="form-select" name="status" id="choices-publish-status-input" data-choices data-choices-search-false required>
+                                        <option value="" selected>Choose...</option>
+                                        <option value="Admitted">Admitted</option>
+                                        <option value="Declined">Declined</option>
+                                    </select>
+                                </div>
+
+                                <br>
+                                <button type="submit" id="submit-button" class="btn btn-lg btn-primary"> Submit</button>
+                            </form>
+                            @endif
                         @endif
                     </div>
                     <!-- end col -->

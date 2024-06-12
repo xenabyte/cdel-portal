@@ -55,7 +55,7 @@
                             <td>{{ ucwords($applicant->status) }} </td>
                             <td>{{ $applicant->created_at }} </td>
                             <td>
-                                <a href="{{ !empty($applicant->student)? url('student/student/'.$applicant->student->slug) : url('admin/applicant/'.$applicant->slug) }}" class="btn btn-primary m-1"><i class= "ri-user-6-fill"></i> View Applicant/Student</a>
+                                <a href="{{ !empty($applicant->student)? url('student/student/'.$applicant->student->slug) : url('student/applicant/'.$applicant->slug) }}" class="btn btn-primary m-1"><i class= "ri-user-6-fill"></i> View Applicant/Student</a>
                             </td>
                         </tr>
                         @endforeach
