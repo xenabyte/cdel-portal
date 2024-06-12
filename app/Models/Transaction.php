@@ -23,7 +23,9 @@ class Transaction extends Model
         'session',
         'narration',
         'checkout_url',
-        'plan_id'
+        'redirect_url',
+        'plan_id',
+        'is_used'
     ];
 
     /**

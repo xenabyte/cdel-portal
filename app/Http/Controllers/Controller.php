@@ -161,7 +161,9 @@ class Controller extends BaseController
             return true;
         }
 
+        $fwTxId = isset($_GET['transaction_id'])? $_GET['transaction_id']: null;
         $payment = Payment::with('programme')->where('id', $paymentId)->first();
+        $redirectUrl = env('FLW_REDIRECT_URL').'?status=successful&tx_ref='.$reference.'&transaction_id='.$fwTxId;
 
         //Create new transaction
         $transaction = Transaction::create([
@@ -172,6 +174,7 @@ class Controller extends BaseController
             'payment_method' => $paymentGateway,
             'reference' => $reference,
             'session' => $session,
+            'redirect_url' => $redirectUrl,
             'status' => 1
         ]);
 
@@ -734,7 +737,7 @@ class Controller extends BaseController
         $partnerId = isset($applicantData['data']['metadata']['partner_id']) ? $applicantData['data']['metadata']['partner_id'] : (isset($applicantData['data']['meta']['partner_id']) ? $applicantData['data']['meta']['partner_id'] : null);
         $referralCode = isset($applicantData['data']['metadata']['referrer']) ? $applicantData['data']['metadata']['referrer'] : (isset($applicantData['data']['meta']['referrer']) ? $applicantData['data']['meta']['referrer'] : null);
         $applicationType = isset($applicantData['data']['metadata']['application_type']) ? $applicantData['data']['metadata']['application_type'] : (isset($applicantData['data']['meta']['application_type']) ? $applicantData['data']['meta']['application_type'] : null);
-        $txRef = isset($applicantData['data']['metadata']['reference']) ? $applicantData['data']['metadata']['reference'] : (isset($applicantData['data']['meta']['reference']) ? $applicantData['data']['meta']['reference'] : null);
+        $txRef = isset($applicantData['data']['reference']) ? $applicantData['data']['reference'] : (isset($applicantData['data']['meta']['reference']) ? $applicantData['data']['meta']['reference'] : null);
 
         $newApplicant = ([
             'slug' => $slug,
@@ -750,18 +753,26 @@ class Controller extends BaseController
             'application_type' => $applicationType,
         ]);
 
-        Log::info("********************** Creating Applicant **********************: ".' - '.$lastname.' - '.$otherNames);
-        $applicant = User::create($newApplicant);
-        $applicationNumber = env('SCHOOL_CODE').'/'.substr($applicationSession, 0, 4).sprintf("%03d", ($applicant->id + env('APPLICATION_STARTING_NUMBER')));
-        $applicant->application_number = $applicationNumber;
-        $applicant->save();
-        Log::info("********************** Applicant Created **********************: ".' - '.$lastname.' - '.$otherNames .' - '.$applicationNumber);
+        if(!$checkApplicant = User::where('email', strtolower($email))->where('academic_session', $applicationSession)->first()){
+            Log::info("********************** Creating Applicant **********************: ".' - '.$lastname.' - '.$otherNames);
+            $applicant = User::create($newApplicant);
+            $applicationNumber = env('SCHOOL_CODE').'/'.substr($applicationSession, 0, 4).sprintf("%03d", ($applicant->id + env('APPLICATION_STARTING_NUMBER')));
+            $applicant->application_number = $applicationNumber;
+            $applicant->save();
+            Log::info("********************** Applicant Created **********************: ".' - '.$lastname.' - '.$otherNames .' - '.$applicationNumber);
 
-        if(!empty($txRef)){
-            if($existTx = Transaction::where('reference', $txRef)->where('status',  1)->first()){
-                $existTx->user_id = $applicant->id;
-                $existTx->save();
+            if(!empty($txRef)){
+                if($existTx = Transaction::where('reference', $txRef)->where('status',  1)->first()){
+                    $existTx->user_id = $applicant->id;
+                    $existTx->save();
+                }
             }
+        }
+
+        if(empty($applicant)){
+            $tx = Transaction::where('reference', $txRef)->where('status',  1)->first();
+            $applicantId = $tx->user_id;
+            $applicant = User::find($applicantId);
         }
 
         Mail::to($applicant->email)->send(new ApplicationMail($applicant));
