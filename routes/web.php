@@ -47,6 +47,7 @@ Route::get('/callback', [App\Http\Controllers\PaymentController::class, 'callbac
 Route::get('/examDocket/{slug}', [App\Http\Controllers\HomeController::class, 'getExamDocket']);
 Route::get('/studentDetails/{slug}', [App\Http\Controllers\HomeController::class, 'studentDetails']);
 Route::get('/calculateStudentCGPA', [App\Http\Controllers\Admin\CronController::class, 'calculateStudentCGPA']);
+Route::get('/generateStudentReferrerCode', [App\Http\Controllers\Admin\StudentController::class, 'generateStudentReferrerCode']);
 Route::get('/sendParentOnboardingMail', [App\Http\Controllers\Admin\CronController::class, 'sendParentOnboardingMail']);
 
 Route::post('/addStaffRecord', [App\Http\Controllers\HomeController::class, 'addStaffRecord'])->name('addStaffRecord');
@@ -169,6 +170,7 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'admin'],
 
   Route::get('/students', [App\Http\Controllers\Admin\AdmissionController::class, 'students'])->name('students')->middleware(['auth:admin']);
   Route::get('/student/{slug}', [App\Http\Controllers\Admin\AdmissionController::class, 'student'])->name('student')->middleware(['auth:admin']);
+  Route::post('/resendGuardianOnboarding', [App\Http\Controllers\Admin\StudentController::class, 'resendGuardianOnboarding'])->name('resendGuardianOnboarding')->middleware(['auth:admin']);
 
   Route::get('/faculties', [App\Http\Controllers\Admin\AcademicController::class, 'faculties'])->name('faculties')->middleware(['auth:admin']);
   Route::get('/faculty/{slug}', [App\Http\Controllers\Admin\AcademicController::class, 'faculty'])->name('faculty')->middleware(['auth:admin']);
@@ -385,7 +387,10 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'student'
   Route::get('/verifyStudentExits', [App\Http\Controllers\HomeController::class, 'verifyStudentExits'])->name('verifyStudentExits');
   Route::post('/verifyStudentExit', [App\Http\Controllers\HomeController::class, 'verifyStudentExit'])->name('verifyStudentExit');
 
-  
+  Route::get('/reffs', [App\Http\Controllers\Student\StudentController::class, 'reffs'])->name('reffs')->middleware(['auth:student']);
+  Route::post('/applicantWithSession', [App\Http\Controllers\Student\StudentController::class, 'applicantWithSession'])->name('applicantWithSession')->middleware(['auth:student']);
+  Route::get('/student/{slug}', [App\Http\Controllers\Student\StudentController::class, 'student'])->name('student')->middleware(['auth:student']);
+
 });
 
 Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'staff'], function () {

@@ -57,4 +57,14 @@ class Partner extends Authenticatable
     {
         return $this->hasMany(User::class, 'partner_id',);
     }
+
+    /**
+     * Get all of the notifications for the Partner
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function notifications()
+    {
+        return $this->hasMany(Notification::class, 'partner_id');
+    }
 }

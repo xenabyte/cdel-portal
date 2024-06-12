@@ -18,8 +18,11 @@ class CreateStudentNotificationsTable extends Migration
             $table->unsignedBigInteger('student_id')->nullable();
             $table->unsignedBigInteger('staff_id')->nullable();
             $table->unsignedBigInteger('user_id')->nullable();
+            $table->unsignedBigInteger('guardian_id')->nullable();
+            $table->unsignedBigInteger('partner_id')->nullable();
             $table->text('description')->nullable();
             $table->string('status')->nullable();
+            $table->string('attachment')->nullable();
             $table->string('owner_type')->nullable();
             $table->softDeletes();
             $table->timestamps();

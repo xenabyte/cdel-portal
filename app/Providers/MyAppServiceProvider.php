@@ -11,6 +11,8 @@ use App\Models\StudentExit;
 use App\Models\LevelAdviser;
 use App\Models\Student;
 use App\Models\StudentCourseRegistration;
+use App\Models\Partner;
+
 use Illuminate\Support\Facades\Auth;
 
 use Log;
@@ -44,6 +46,7 @@ class MyAppServiceProvider extends ServiceProvider
         $setting = Setting::first();
         $examinationSetting = ExaminationSetting::first();
         $exitApplicationCount = StudentExit::where('status', 'pending')->orderBy('id', 'DESC')->count(); 
+        $pendingPartnerCount = Partner::where('status', 0)->count();
 
         $totalPendingRegistrations = 0;
         $staff = Auth::guard('staff')->user();
@@ -89,6 +92,7 @@ class MyAppServiceProvider extends ServiceProvider
         $data->examSetting = $examinationSetting;
         $data->exitApplicationCount = $exitApplicationCount;
         $data->totalPendingRegistrations = $totalPendingRegistrations;
+        $data->pendingPartnerCount = $pendingPartnerCount;
 
         return $data;
     }

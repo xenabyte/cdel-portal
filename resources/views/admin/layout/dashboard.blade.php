@@ -517,7 +517,7 @@
 
                         <li class="nav-item">
                             <a class="nav-link menu-link" href="#Partner" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="Partner">
-                                <i class="mdi mdi-account-network"></i> <span data-key="t-Partner">Partner Management</span>
+                                <i class="mdi mdi-account-network"></i> <span data-key="t-Partner">Partner Management</span> <span class="badge badge-pill bg-danger" data-key="t-hot">{{ !empty($pageGlobalData->pendingPartnerCount) ? $pageGlobalData->pendingPartnerCount : 0 }} </span>
                             </a>
                             <div class="collapse menu-dropdown" id="Partner">
                                 <ul class="nav nav-sm flex-column">
@@ -525,7 +525,7 @@
                                         <a href="{{ url('/admin/partners') }}" class="nav-link"> Partners </a>
                                     </li>
                                     <li class="nav-item">
-                                        <a href="{{('/admin/partnerApproval')}}" class="nav-link"> Partner Approval </a>
+                                        <a href="{{('/admin/partnerApproval')}}" class="nav-link"> Partner Approval <span class="badge badge-pill bg-danger" data-key="t-hot">{{ !empty($pageGlobalData->pendingPartnerCount) ? $pageGlobalData->pendingPartnerCount : 0 }} </span> </a>
                                     </li>
                                     <li class="nav-item">
                                         <a href="{{('/admin/partnerWithdrawal')}}" class="nav-link">Partner Profit Withdrawal </a>

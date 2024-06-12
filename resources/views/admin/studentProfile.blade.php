@@ -57,6 +57,11 @@ $studentRegistrations = $student->courseRegistrationDocument()->orderBy('created
                         </div>
                         <div class="col-md-auto">
                             <div class="hstack gap-1 flex-wrap">
+                                <form action="{{ url('admin/resendGuardianOnboarding') }}" method="POST">
+                                    @csrf
+                                    <input type="hidden" name="student_id" value="{{ $student->id }}">
+                                    <button type="submit" class="btn btn-success">Send Guardian Onboarding Mail</button>
+                                </form>
                                 @if(empty($student->deleted_at))
                                 <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#expelStudent">Disable Student</button>
                                 @else

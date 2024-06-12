@@ -33,6 +33,7 @@ use App\Mail\StudentActivated;
 use App\Mail\TransactionMail;
 use App\Mail\ApplicationMail;
 use App\Mail\BankDetailsMail;
+use App\Mail\GuardianOnboardingMail;
 
 use App\Models\Transaction;
 use App\Models\User;
@@ -48,6 +49,7 @@ use App\Models\Faculty;
 use App\Models\Department;
 use App\Models\CourseRegistration;
 use App\Models\Plan;
+use App\Models\Guardian;
 
 
 
@@ -260,24 +262,30 @@ class Controller extends BaseController
         return $paymentAmount;
     }
 
-    public function generateReferralCode() {
+    public function generateReferralCode($length = 8) {
         $referralCode = "";
-        $current = $this->generateRandomString();
+        $current = $this->generateRandomString($length);
         $isExist = Staff::where('referral_code', $current)->get();
         $isExistPartner = Partner::where('referral_code', $current)->get();
-        if(!($isExist->count() > 0) && !($isExistPartner->count() > 0)) {
+        $isExistStudent = Student::where('referral_code', $current)->get();
+        if(!($isExist->count() > 0) && !($isExistPartner->count() > 0) && !($isExistStudent->count() > 0)) {
             $referralCode = $current;
             return $referralCode;
         } else {
-            return $this->generateReferralCode();
+            return $this->generateReferralCode($length);
         }           
     }
 
     public function getReferralId($referralCode) {
         $isExistStaff = Staff::where('referral_code', $referralCode)->first();
-        // if($isExistStaff){
-        //     return $isExistStaff->id;
-        // }else{
+        if($isExistStaff){
+            return $isExistStaff->id;
+        }
+
+        $isExistStudent = Student::where('referral_code', $referralCode)->first();
+        if($isExistStudent){
+            return $isExistStudent->id;
+        }
         
         $isExistPartner = Partner::where('referral_code', $referralCode)->first();
         if($isExistPartner){
@@ -518,7 +526,6 @@ class Controller extends BaseController
         return $data;
     }
     
-
     public function generateMatricAndEmail($student){
         if(!$student->is_active && empty($student->matric_number)){
             $sessionSetting = SessionSetting::first();
@@ -548,6 +555,7 @@ class Controller extends BaseController
 
             $student->email = $studentEmail;
             $student->matric_number = $matricNumber;
+            $student->referral_code = $this->generateReferralCode(10);
             $student->is_active = true;
             $student->save();
 
@@ -558,6 +566,8 @@ class Controller extends BaseController
             $student = Student::find($student->id);
             
             Mail::to($studentPreviousEmail)->send(new StudentActivated($student));
+
+            $this->sendGuardianOnboardingMail($student);
 
             return true;
         }
@@ -758,4 +768,25 @@ class Controller extends BaseController
 
         return true;
     }
+
+    public function sendGuardianOnboardingMail($student) {
+        if (!empty($student->applicant) && !empty($student->applicant->guardian_id)) {
+            $guardianId = $student->applicant->guardian_id;
+            $guardian = Guardian::find($guardianId);
+            
+            if ($guardian) {
+                $guardianEmail = $guardian->email;
+                $guardianPasscode = $guardian->passcode;
+
+                Mail::to($guardianEmail)->send(new GuardianOnboardingMail($guardian));
+
+                return true;
+            }
+
+            return false;
+        }
+
+        return false;
+    }
+
 }

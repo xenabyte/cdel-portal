@@ -137,6 +137,10 @@ $studentRegistrations = $student->courseRegistrationDocument()->orderBy('created
                         <table class="table mb-0 table-borderless">
                             <tbody>
                                 <tr>
+                                    <th><span class="fw-medium">Link:</span></th>
+                                    <td><a href="{{env('ADMISSION_URL').'?ref='.$student->referral_code}}" target="_blank" id="myLink">{{env('ADMISSION_URL').'?ref='.$student->referral_code}}</a>  <button class="btn btn-sm btn-info" id="copyButton"><i class="ri-file-copy-fill"></i></button></td>
+                                </tr>
+                                <tr>
                                     <th><span class="fw-medium">Department:</span></th>
                                     <td>{{ $student->department->name }}</td>
                                 </tr>

@@ -8,6 +8,14 @@ use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Auth;
 
+use SweetAlert;
+use Mail;
+use Alert;
+use Log;
+use Carbon\Carbon;
+
+use App\Mail\NotificationMail;
+
 class RegisterController extends Controller
 {
     /*
@@ -66,8 +74,9 @@ class RegisterController extends Controller
     protected function create(array $data)
     {
         $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $data['name'])));
+        $name = $data['name'];
 
-        return Partner::create([
+        $partner = Partner::create([
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => bcrypt($data['password']),
@@ -77,6 +86,16 @@ class RegisterController extends Controller
             'status' => 0,
             'referral_code' => $this->generateReferralCode(),
         ]);
+
+        $message = 'A new partner - ('. $name .') has just registered on the portal and needs to be approved. Admin, please kindly go to the portal to verify the partner details.';
+        $senderName = env('SCHOOL_NAME');
+        $receiverName = 'Portal Admininstrator';
+        $adminEmail = env('APP_EMAIL');
+        
+        $mail = new NotificationMail($senderName, $message, $receiverName);
+        Mail::to($adminEmail)->send($mail);
+        
+        return $partner;
     }
 
     /**

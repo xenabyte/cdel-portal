@@ -12,12 +12,15 @@ use App\Http\Requests;
 use Illuminate\Support\Facades\Validator;
 
 use App\Models\Partner;
+use App\Models\Notification;
 
 use SweetAlert;
 use Mail;
 use Alert;
 use Log;
 use Carbon\Carbon;
+
+use App\Mail\NotificationMail;
 
 class PartnerController extends Controller
 {
@@ -65,6 +68,23 @@ class PartnerController extends Controller
         $partner->status = true;
         
         if($partner->save()){
+
+            $message = $partner->name . ', we are pleased to inform you that your registration details have been reviewed and approved. We appreciate your efforts in becoming a partner with us. Your commitment to this partnership is highly valued. As a token of our appreciation, we are excited to let you know that there are various incentives available for your participation. We look forward to a fruitful and successful collaboration. Thank you for choosing to be a part of our community.';
+
+            $senderName = env('SCHOOL_NAME');
+            $receiverName = $partner->name;
+            $receiverEmail = $partner->email;
+            
+            $mail = new NotificationMail($senderName, $message, $receiverName);
+            Mail::to($receiverEmail)->send($mail);
+
+            Notification::create([
+                'partner_id' => $partner->id,
+                'description' => $message,
+                'status' => 0
+            ]);
+
+
             alert()->success('Approved Successfully', '')->persistent('Close');
             return redirect()->back();
         }

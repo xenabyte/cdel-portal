@@ -10,7 +10,8 @@
 
 <tr style="font-family: 'Roboto', sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;">
     <td class="content-block" style="font-family: 'Roboto', sans-serif; color: #878a99; box-sizing: border-box; line-height: 1.5; font-size: 15px; vertical-align: top; margin: 0; padding: 0 0 10px;" valign="top">
-        We hope this email finds you well. We are excited to inform you that {{ env('SCHOOL_NAME') }} has launched a new and improved online portal to provide you with easy access to your ward's academic information and other important details. This portal is designed to enhance your overall experience and keep you updated about your ward's progress.
+        We hope this email finds you well. We are excited to welcome you to the {{ env('SCHOOL_NAME') }} Guardian Portal. This portal provides you with easy access to your ward's academic information and other important details. It is designed to enhance your overall experience and keep you updated about your ward's progress.;
+
     </td>
 </tr>
 
@@ -48,7 +49,7 @@
 
 
 <tr style="font-family: 'Roboto', sans-serif; box-sizing: border-box; font-size: 14px; margin: 0; border-top: 1px solid #e9ebec;">
-    <td class="content-block" style="font-family: 'Roboto', sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; margin: 0; padding: 0; padding-top: 15px" valign="top">
+    <td class="content-block" style="font-family: 'Roboto', sans-serif; color: #878a99; box-sizing: border-box; line-height: 1.5; font-size: 15px; vertical-align: top; margin: 0; padding: 0 0 10px;" valign="top">
         We are confident that this new portal will provide you with valuable insights into your ward's educational journey at {{ env('SCHOOL_NAME') }}. Thank you for your continued support, and we look forward to enhancing your engagement with your ward's education through this new platform.
     </td>
 </tr>

@@ -41,6 +41,7 @@ class CreateStudentsTable extends Migration
             $table->string('standing')->nullable();
             $table->string('linkedIn')->nullable();
             $table->string('dashboard_mode')->nullable();
+            $table->string('referral_code')->nullable();
             $table->softDeletes();
             $table->rememberToken();
             $table->timestamps();

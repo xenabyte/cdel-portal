@@ -275,6 +275,12 @@
                         @if(!empty($student->image) && !empty($student->linkedIn) && !empty($student->bandwidth_username))
                             @if($passTuition)
                             <li class="nav-item">
+                                <a class="nav-link menu-link" href="{{ url('student/reffs') }}">
+                                    <i class="mdi mdi-account-network-outline"></i> <span data-key="t-transaction">Referred Student(s)</span>
+                                </a>
+                            </li>
+
+                            <li class="nav-item">
                                 <a class="nav-link menu-link" href="{{ url('student/mentor') }}">
                                     <i class="mdi mdi-account-child-circle"></i> <span data-key="t-transaction">Mentor</span>
                                 </a>
@@ -646,6 +652,27 @@
             CKEDITOR.replace(textarea);
         });
     </script>
+    <script>
+        document.getElementById('copyButton').addEventListener('click', function() {
+            // Select the link text
+            var link = document.getElementById('myLink');
+            var range = document.createRange();
+            range.selectNode(link);
+            window.getSelection().removeAllRanges();
+            window.getSelection().addRange(range);
+    
+            // Copy the selected text to the clipboard
+            try {
+                document.execCommand('copy');
+                alert('Link copied to clipboard');
+            } catch (err) {
+                console.error('Unable to copy link: ', err);
+            }
+    
+            // Deselect the text
+            window.getSelection().removeAllRanges();
+        });
+    </script> 
     
 </body>
 

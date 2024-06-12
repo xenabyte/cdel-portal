@@ -1159,4 +1159,167 @@ class StudentController extends Controller
             return false;
         }
     }
+
+    public function reffs(Request $request){
+        $student = Auth::guard('student')->user();
+        $studentId = $student->id;
+        $student = Auth::guard('student')->user();
+        $studentId = $student->id;
+        $levelId = $student->level_id;
+        $globalData = $request->input('global_data');
+        $admissionSession = $globalData->sessionSetting['admission_session'];
+        $academicSession = $globalData->sessionSetting['academic_session'];
+        $referalCode = $student->referral_code;
+        $applicants = [];
+        if(!empty($referalCode)){
+            $applicants = Applicant::with('student')->where('referrer', $referalCode)->where('academic_session', $applicationSession)->get();
+        }
+
+        $paymentCheck = $this->checkSchoolFees($student, $academicSession, $levelId);
+        $bandwidthPayment = Payment::where("type", "Bandwidth Fee")->where("academic_session", $academicSession)->first();
+
+        if(!$paymentCheck->passTuitionPayment){
+            return view('student.schoolFee', [
+                'payment' => $paymentCheck->schoolPayment,
+                'passTuition' => $paymentCheck->passTuitionPayment,
+                'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
+                'passEightyTuition' => $paymentCheck->passEightyTuition,
+                'studentPendingTransactions' => $paymentCheck->studentPendingTransactions
+            ]);
+        }
+
+        if(empty($student->image)){
+            return view('student.updateImage', [
+                'payment' => $paymentCheck->schoolPayment,
+                'passTuition' => $paymentCheck->passTuitionPayment,
+                'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
+                'passEightyTuition' => $paymentCheck->passEightyTuition,
+                'studentPendingTransactions' => $paymentCheck->studentPendingTransactions
+            ]);
+        }
+
+        if(empty($student->bandwidth_username)){
+            return view('student.bandwidth', [
+                'payment' => $paymentCheck->schoolPayment,
+                'passTuition' => $paymentCheck->passTuitionPayment,
+                'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
+                'passEightyTuition' => $paymentCheck->passEightyTuition,
+                'studentPendingTransactions' => $paymentCheck->studentPendingTransactions
+            ]);
+        }
+
+
+        return view('student.reffs', [
+            'applicants' => $applicants,
+            'payment' => $paymentCheck->schoolPayment,
+            'passTuition' => $paymentCheck->passTuitionPayment,
+            'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
+            'passEightyTuition' => $paymentCheck->passEightyTuition,
+            'studentPendingTransactions' => $paymentCheck->studentPendingTransactions
+        ]);
+    }
+
+    public function applicantWithSession(Request $request){
+        $student = Auth::guard('student')->user();
+        $studentId = $student->id;
+        $levelId = $student->level_id;
+        $globalData = $request->input('global_data');
+        $admissionSession = $globalData->sessionSetting['admission_session'];
+        $academicSession = $globalData->sessionSetting['academic_session'];
+
+        $applicants = Applicant::with('programme', 'olevels', 'guardian', 'student')->where('academic_session', $request->session)->get();
+        
+        $paymentCheck = $this->checkSchoolFees($student, $academicSession, $levelId);
+        $bandwidthPayment = Payment::where("type", "Bandwidth Fee")->where("academic_session", $academicSession)->first();
+
+        if(!$paymentCheck->passTuitionPayment){
+            return view('student.schoolFee', [
+                'payment' => $paymentCheck->schoolPayment,
+                'passTuition' => $paymentCheck->passTuitionPayment,
+                'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
+                'passEightyTuition' => $paymentCheck->passEightyTuition,
+                'studentPendingTransactions' => $paymentCheck->studentPendingTransactions
+            ]);
+        }
+
+        if(empty($student->image)){
+            return view('student.updateImage', [
+                'payment' => $paymentCheck->schoolPayment,
+                'passTuition' => $paymentCheck->passTuitionPayment,
+                'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
+                'passEightyTuition' => $paymentCheck->passEightyTuition,
+                'studentPendingTransactions' => $paymentCheck->studentPendingTransactions
+            ]);
+        }
+
+        if(empty($student->bandwidth_username)){
+            return view('student.bandwidth', [
+                'payment' => $paymentCheck->schoolPayment,
+                'passTuition' => $paymentCheck->passTuitionPayment,
+                'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
+                'passEightyTuition' => $paymentCheck->passEightyTuition,
+                'studentPendingTransactions' => $paymentCheck->studentPendingTransactions
+            ]);
+        }
+        return view('student.reffs', [
+            'applicants' => $applicants,
+            'payment' => $paymentCheck->schoolPayment,
+            'passTuition' => $paymentCheck->passTuitionPayment,
+            'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
+            'passEightyTuition' => $paymentCheck->passEightyTuition,
+            'studentPendingTransactions' => $paymentCheck->studentPendingTransactions
+        ]);
+    }
+
+    public function student(Request $request, $slug){
+        $student = Student::with('applicant', 'applicant.utmes', 'programme')->where('slug', $slug)->first();
+
+        $student = Auth::guard('student')->user();
+        $studentId = $student->id;
+        $levelId = $student->level_id;
+        $globalData = $request->input('global_data');
+        $admissionSession = $globalData->sessionSetting['admission_session'];
+        $academicSession = $globalData->sessionSetting['academic_session'];
+
+        $paymentCheck = $this->checkSchoolFees($student, $academicSession, $levelId);
+        $bandwidthPayment = Payment::where("type", "Bandwidth Fee")->where("academic_session", $academicSession)->first();
+
+        if(!$paymentCheck->passTuitionPayment){
+            return view('student.schoolFee', [
+                'payment' => $paymentCheck->schoolPayment,
+                'passTuition' => $paymentCheck->passTuitionPayment,
+                'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
+                'passEightyTuition' => $paymentCheck->passEightyTuition,
+                'studentPendingTransactions' => $paymentCheck->studentPendingTransactions
+            ]);
+        }
+
+        if(empty($student->image)){
+            return view('student.updateImage', [
+                'payment' => $paymentCheck->schoolPayment,
+                'passTuition' => $paymentCheck->passTuitionPayment,
+                'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
+                'passEightyTuition' => $paymentCheck->passEightyTuition,
+                'studentPendingTransactions' => $paymentCheck->studentPendingTransactions
+            ]);
+        }
+
+        if(empty($student->bandwidth_username)){
+            return view('student.bandwidth', [
+                'payment' => $paymentCheck->schoolPayment,
+                'passTuition' => $paymentCheck->passTuitionPayment,
+                'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
+                'passEightyTuition' => $paymentCheck->passEightyTuition,
+                'studentPendingTransactions' => $paymentCheck->studentPendingTransactions
+            ]);
+        }
+        return view('student.student', [
+            'student' => $student,
+            'payment' => $paymentCheck->schoolPayment,
+            'passTuition' => $paymentCheck->passTuitionPayment,
+            'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
+            'passEightyTuition' => $paymentCheck->passEightyTuition,
+            'studentPendingTransactions' => $paymentCheck->studentPendingTransactions
+        ]);
+    }
 }

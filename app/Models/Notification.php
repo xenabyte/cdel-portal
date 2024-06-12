@@ -15,6 +15,7 @@ class Notification extends Model
         'staff_id',
         'user_id',
         'guardian_id',
+        'partner_id',
         'attachment',
         'description',
         'status',
@@ -60,4 +61,15 @@ class Notification extends Model
     {
         return $this->belongsTo(User::class, 'user_id',);
     }
+
+    /**
+     * Get the partner that owns the Notification
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function partner()
+    {
+        return $this->belongsTo(Partner::class, 'partner_id');
+    }
+
 }
