@@ -107,6 +107,53 @@ $hodRole = array_filter($singleStaffRoles, function ($staffRole) {
                             <!-- end card body -->
                         </div>
                         <!-- end card -->
+
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="text-muted">
+                                    <h4 class="card-title mb-0 flex-grow-1">Referred Student(s) for {{ $pageGlobalData->sessionSetting->application_session }} application session </h4>
+                                    <div class="border-top border-top-dashed pt-3">
+                                        <div class="table-responsive">
+                                            <!-- Bordered Tables -->
+                                            <table id="buttons-datatables" class="display table table-bordered" style="width:100%">
+                                                <thead>
+                                                    <tr>
+                                                        <th scope="col">Id</th>
+                                                        <th scope="col">Name</th>
+                                                        <th scope="col">Programme</th>
+                                                        <th scope="col">Email</th>
+                                                        <th scope="col">Phone Number</th>
+                                                        <th scope="col">Academic Session</th>
+                                                        <th scope="col">Application Status</th>
+                                                        <th scope="col">Applied Date</th>
+                                                        <th scope="col"></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach($applicants as $applicant)
+                                                    <tr>
+                                                        <th scope="row">{{ $loop->iteration }}</th>
+                                                        <td>{{ $applicant->lastname .' '. $applicant->othernames }}</td>
+                                                        <td>{{ $applicant->programme->name }}</td>
+                                                        <td>{{ $applicant->email }} </td>
+                                                        <td>{{ $applicant->phone_number }} </td>
+                                                        <td>{{ $applicant->academic_session }} </td>
+                                                        <td>{{ ucwords($applicant->status) }} </td>
+                                                        <td>{{ $applicant->created_at }} </td>
+                                                        <td>
+                                                            <a href="{{ !empty($applicant->student)? url('admin/student/'.$applicant->student->slug) : url('admin/applicant/'.$applicant->slug) }}" class="btn btn-primary m-1"><i class= "ri-user-6-fill"></i> View Applicant/Student</a>
+                                                        </td>
+                                                    </tr>
+                                                    @endforeach
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- end card body -->
+                        </div>
+                        <!-- end card -->
                     </div>
                     <!-- ene col -->
                     <div class="col-xl-3 col-lg-4">

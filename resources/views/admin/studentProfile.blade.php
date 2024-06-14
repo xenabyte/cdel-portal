@@ -83,6 +83,12 @@ $studentRegistrations = $student->courseRegistrationDocument()->orderBy('created
                                 Settings
                             </a>
                         </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link fw-semibold" data-bs-toggle="tab" href="#partners" role="tab">
+                                Referred Students
+                            </a>
+                        </li>
                     </ul>
                 </div>
                 <!-- end card body -->
@@ -321,253 +327,505 @@ $studentRegistrations = $student->courseRegistrationDocument()->orderBy('created
 
             <!-- end tab pane -->
             <div class="tab-pane fade" id="settings" role="tabpanel">
-                <!-- Accordions with Icons -->
-                <div class="accordion custom-accordionwithicon" id="accordionWithicon">
-                    <div class="accordion-item shadow">
-                        <h2 class="accordion-header" id="accordionwithiconExample1">
-                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#accor_iconExamplecollapse1" aria-expanded="true" aria-controls="accor_iconExamplecollapse1">
-                                Upload Student Image
-                            </button>
-                        </h2>
-                        <div id="accor_iconExamplecollapse1" class="accordion-collapse collapse show" aria-labelledby="accordionwithiconExample1" data-bs-parent="#accordionWithicon">
-                            <div class="accordion-body">
-                                <div class="mt-4">
-                                    <form action="{{ url('/admin/uploadStudentImage') }}" method="POST" enctype="multipart/form-data">
-                                        @csrf
-                                        <input type="hidden" name="student_id" value="{{ $student->id }}">
+               <div class="row">
+                    <div class="col-lg-8">
+                        <!-- Accordions with Icons -->
+                        <div class="accordion custom-accordionwithicon" id="accordionWithicon">
+                            <div class="accordion-item shadow">
+                                <h2 class="accordion-header" id="accordionwithiconExample1">
+                                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#accor_iconExamplecollapse1" aria-expanded="true" aria-controls="accor_iconExamplecollapse1">
+                                        Upload Student Image
+                                    </button>
+                                </h2>
+                                <div id="accor_iconExamplecollapse1" class="accordion-collapse collapse show" aria-labelledby="accordionwithiconExample1" data-bs-parent="#accordionWithicon">
+                                    <div class="accordion-body">
+                                        <div class="mt-4">
+                                            <form action="{{ url('/admin/uploadStudentImage') }}" method="POST" enctype="multipart/form-data">
+                                                @csrf
+                                                <input type="hidden" name="student_id" value="{{ $student->id }}">
 
-                                        <div class="row g-3">
+                                                <div class="row g-3">
 
-                                            <div class="row">
-                                                <div class="col-lg-12 text-center">
-                                                    <div class="profile-user position-relative d-inline-block mx-auto mb-2">
-                                                        <img src="{{empty($student->image)?asset('assets/images/users/user-dummy-img.jpg'):asset($student->image)}}" class="rounded-circle avatar-lg img-thumbnail user-profile-image" alt="user-profile-image">
-                                                        <div class="avatar-xs p-0 rounded-circle profile-photo-edit">
-                                                            <input id="profile-img-file-input" type="file" class="profile-img-file-input" accept="image/png, image/jpeg" name="image" required>
-                                                            <label for="profile-img-file-input" class="profile-photo-edit avatar-xs">
-                                                                <span class="avatar-title rounded-circle bg-light text-body">
-                                                                    <i class="ri-camera-fill"></i>
-                                                                </span>
-                                                            </label>
+                                                    <div class="row">
+                                                        <div class="col-lg-12 text-center">
+                                                            <div class="profile-user position-relative d-inline-block mx-auto mb-2">
+                                                                <img src="{{empty($student->image)?asset('assets/images/users/user-dummy-img.jpg'):asset($student->image)}}" class="rounded-circle avatar-lg img-thumbnail user-profile-image" alt="user-profile-image">
+                                                                <div class="avatar-xs p-0 rounded-circle profile-photo-edit">
+                                                                    <input id="profile-img-file-input" type="file" class="profile-img-file-input" accept="image/png, image/jpeg" name="image" required>
+                                                                    <label for="profile-img-file-input" class="profile-photo-edit avatar-xs">
+                                                                        <span class="avatar-title rounded-circle bg-light text-body">
+                                                                            <i class="ri-camera-fill"></i>
+                                                                        </span>
+                                                                    </label>
+                                                                </div>
+                                                            </div>
+                                                            <h5 class="fs-14">Add Passport Photograph</h5>
+                                                        </div>
+                                                        <hr>
+                                                    </div>
+            
+                                                    <button type="submit" id="submit-button" class="btn btn-fill btn-primary btn-lg mb-5">Upload Image</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="accordion-item shadow">
+                                <h2 class="accordion-header" id="accordionwithiconExample4">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#accor_iconExamplecollapse4" aria-expanded="false" aria-controls="accor_iconExamplecollapse3">
+                                        Update Student Name
+                                    </button>
+                                </h2>
+                                <div id="accor_iconExamplecollapse4" class="accordion-collapse collapse" data-bs-parent="#accordionWithicon">
+                                    <div class="accordion-body">
+                                        <form action="{{ url('admin/changeStudentName') }}" method="POST">
+                                            @csrf
+                                            <input type="hidden" name="student_id" value="{{ $student->id }}">
+
+                                            <div class="row g-2">
+                                                <div class="hidden-fields row mt-3 g-3">
+                                                    <div class="col-lg-6">
+                                                        <div class="form-floating">
+                                                            <input type="text" class="form-control" id="lastname" name="lastname" value="{{ $student->applicant->lastname }}">
+                                                            <label for="lastname">Lastname(Surname)</label>
                                                         </div>
                                                     </div>
-                                                    <h5 class="fs-14">Add Passport Photograph</h5>
+                            
+                                                    <div class="col-lg-6">
+                                                        <div class="form-floating">
+                                                            <input type="text" class="form-control" id="othernames" name="othernames" value="{{ $student->applicant->othernames }}">
+                                                            <label for="othernames">Othernames</label>
+                                                        </div>
+                                                    </div>
+                            
+                                                    <div class="col-lg-12">
+                                                        <div class="form-floating">
+                                                            <input type="email" class="form-control" id="email" name="email" value="{{ $student->email }}">
+                                                            <label for="email">TAU Student Email</label>
+                                                        </div>
+                                                    </div>                    
+                                                </div>     
+                
+                                                <!--end col-->
+                                                <div class="col-lg-12">
+                                                    <div class="text-end">
+                                                        <br>
+                                                        <button type="submit" id="submit-button" class="btn btn-primary btn-lg">Save Changes</button>
+                                                    </div>
                                                 </div>
-                                                <hr>
+                                                <!--end col-->
                                             </div>
-    
-                                            <button type="submit" id="submit-button" class="btn btn-fill btn-primary btn-lg mb-5">Upload Image</button>
-                                        </div>
-                                    </form>
+                                            <!--end row-->
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="accordion-item shadow">
+                                <h2 class="accordion-header" id="accordionwithiconExample5">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#accor_iconExamplecollapse5" aria-expanded="false" aria-controls="accor_iconExamplecollapse3">
+                                        Update Student Level
+                                    </button>
+                                </h2>
+                                <div id="accor_iconExamplecollapse5" class="accordion-collapse collapse" data-bs-parent="#accordionWithicon">
+                                    <div class="accordion-body">
+                                        <form action="{{ url('admin/changeStudentLevel') }}" method="POST">
+                                            @csrf
+                                            <input type="hidden" name="student_id" value="{{ $student->id }}">
+
+                                            <div class="row g-2">
+                                                <div class="mb-3">
+                                                    <label for="level" class="form-label">Level</label>
+                                                    <select class="form-select" name="level_id" id="level" data-choices data-choices-search-false required>
+                                                        <option value="" selected>Choose...</option>
+                                                        @foreach($academicLevels as $academicLevel)<option value="{{ $academicLevel->id }}">{{ $academicLevel->level }}</option>@endforeach
+                                                    </select>
+                                                </div>
+                
+                                                <!--end col-->
+                                                <div class="col-lg-12">
+                                                    <div class="text-end">
+                                                        <br>
+                                                        <button type="submit" id="submit-button" class="btn btn-primary btn-lg">Save Changes</button>
+                                                    </div>
+                                                </div>
+                                                <!--end col-->
+                                            </div>
+                                            <!--end row-->
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="accordion-item shadow">
+                                <h2 class="accordion-header" id="accordionwithiconExample2">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#accor_iconExamplecollapse2" aria-expanded="false" aria-controls="accor_iconExamplecollapse2">
+                                    Update Student Password
+                                    </button>
+                                </h2>
+                                <div id="accor_iconExamplecollapse2" class="accordion-collapse collapse" aria-labelledby="accordionwithiconExample2" data-bs-parent="#accordionWithicon">
+                                    <div class="accordion-body">
+                                        <form action="{{ url('admin/changeStudentPassword') }}" method="POST">
+                                            @csrf
+                                            <input type="hidden" name="student_id" value="{{ $student->id }}">
+
+                                            <div class="row g-2">
+                                                <div class="col-lg-4">
+                                                    <div>
+                                                        <label for="newpasswordInput" class="form-label">New Password<span class="text-danger">*</span></label>
+                                                        <input type="password"  name="password"  class="form-control" id="newpasswordInput" placeholder="Enter new password">
+                                                    </div>
+                                                </div>
+                                                <!--end col-->
+                                                <div class="col-lg-4">
+                                                    <div>
+                                                        <label for="confirmpasswordInput" class="form-label">Confirm Password<span class="text-danger">*</span></label>
+                                                        <input type="password"  name="confirm_password" class="form-control" id="confirmpasswordInput" placeholder="Confirm password">
+                                                    </div>
+                                                </div>
+                
+                                                <!--end col-->
+                                                <div class="col-lg-4">
+                                                    <div class="text-end">
+                                                        <br>
+                                                        <button type="submit" id="submit-button" class="btn btn-primary btn-lg">Change Password</button>
+                                                    </div>
+                                                </div>
+                                                <!--end col-->
+                                            </div>
+                                            <!--end row-->
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="accordion-item shadow">
+                                <h2 class="accordion-header" id="accordionwithiconExample3">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#accor_iconExamplecollapse3" aria-expanded="false" aria-controls="accor_iconExamplecollapse3">
+                                        Update Student Credit Load
+                                    </button>
+                                </h2>
+                                <div id="accor_iconExamplecollapse3" class="accordion-collapse collapse" aria-labelledby="accordionwithiconExample2" data-bs-parent="#accordionWithicon">
+                                    <div class="accordion-body">
+                                        <form action="{{ url('admin/changeStudentCreditLoad') }}" method="POST">
+                                            @csrf
+                                            <input type="hidden" name="student_id" value="{{ $student->id }}">
+
+                                            <div class="row g-2">
+                                                <div class="col-lg-12">
+                                                    <div>
+                                                        <label for="creditLoad" class="form-label">Credit Load<span class="text-danger">*</span></label>
+                                                        <input type="number"  name="credit_load"  class="form-control" id="credit_load" value="{{ $student->credit_load }}">
+                                                    </div>
+                                                </div>
+                
+                                                <!--end col-->
+                                                <div class="col-lg-12">
+                                                    <div class="text-end">
+                                                        <br>
+                                                        <button type="submit" id="submit-button" class="btn btn-primary btn-lg">Save Changes</button>
+                                                    </div>
+                                                </div>
+                                                <!--end col-->
+                                            </div>
+                                            <!--end row-->
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="accordion-item shadow">
+                                <h2 class="accordion-header" id="accordionwithiconExample4">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#accor_iconExamplecollapse4" aria-expanded="false" aria-controls="accor_iconExamplecollapse4">
+                                        Update Student Credit Load
+                                    </button>
+                                </h2>
+                                <div id="accor_iconExamplecollapse3" class="accordion-collapse collapse" aria-labelledby="accordionwithiconExample2" data-bs-parent="#accordionWithicon">
+                                    <div class="accordion-body">
+                                        <form action="{{ url('admin/changeStudentBatch') }}" method="POST">
+                                            @csrf
+                                            <input type="hidden" name="student_id" value="{{ $student->id }}">
+
+                                            <div class="row g-2">
+                                                <div class="mb-3">
+                                                    <label for="choices-batch-input" class="form-label">Student Batch</label>
+                                                    <select class="form-select" name="batch" id="choices-batch-input" data-choices data-choices-search-false required>
+                                                        <option value="" selected>Choose...</option>
+                                                        <option value="A">Batch A</option>
+                                                        <option value="B">Batch B</option>
+                                                        <option value="C">Batch C</option>
+                                                    </select>
+                                                </div>
+                
+                                                <!--end col-->
+                                                <div class="col-lg-12">
+                                                    <div class="text-end">
+                                                        <br>
+                                                        <button type="submit" id="submit-button" class="btn btn-primary btn-lg">Save Changes</button>
+                                                    </div>
+                                                </div>
+                                                <!--end col-->
+                                            </div>
+                                            <!--end row-->
+                                        </form>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <div class="accordion-item shadow">
-                        <h2 class="accordion-header" id="accordionwithiconExample4">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#accor_iconExamplecollapse4" aria-expanded="false" aria-controls="accor_iconExamplecollapse3">
-                                 Update Student Name
-                            </button>
-                        </h2>
-                        <div id="accor_iconExamplecollapse4" class="accordion-collapse collapse" data-bs-parent="#accordionWithicon">
-                            <div class="accordion-body">
-                                <form action="{{ url('admin/changeStudentName') }}" method="POST">
-                                    @csrf
-                                    <input type="hidden" name="student_id" value="{{ $student->id }}">
-
-                                    <div class="row g-2">
-                                        <div class="hidden-fields row mt-3 g-3">
-                                            <div class="col-lg-6">
-                                                <div class="form-floating">
-                                                    <input type="text" class="form-control" id="lastname" name="lastname" value="{{ $student->applicant->lastname }}">
-                                                    <label for="lastname">Lastname(Surname)</label>
-                                                </div>
-                                            </div>
-                    
-                                            <div class="col-lg-6">
-                                                <div class="form-floating">
-                                                    <input type="text" class="form-control" id="othernames" name="othernames" value="{{ $student->applicant->othernames }}">
-                                                    <label for="othernames">Othernames</label>
-                                                </div>
-                                            </div>
-                    
-                                            <div class="col-lg-12">
-                                                <div class="form-floating">
-                                                    <input type="email" class="form-control" id="email" name="email" value="{{ $student->email }}">
-                                                    <label for="email">TAU Student Email</label>
-                                                </div>
-                                            </div>                    
-                                        </div>     
-        
-                                        <!--end col-->
-                                        <div class="col-lg-12">
-                                            <div class="text-end">
-                                                <br>
-                                                <button type="submit" id="submit-button" class="btn btn-primary btn-lg">Save Changes</button>
-                                            </div>
+                    <div class="col-lg-4">
+                        <div class="card">
+                            <div class="card-body p-4">
+                                <div>
+                                    <div class="flex-shrink-0 avatar-md mx-auto">
+                                        <div class="avatar-title bg-light rounded">
+                                            <img src="{{empty($student->image)?asset('assets/images/users/user-dummy-img.jpg'):asset($student->image)}}" alt="" height="50" />
                                         </div>
-                                        <!--end col-->
                                     </div>
-                                    <!--end row-->
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="accordion-item shadow">
-                        <h2 class="accordion-header" id="accordionwithiconExample5">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#accor_iconExamplecollapse5" aria-expanded="false" aria-controls="accor_iconExamplecollapse3">
-                                 Update Student Level
-                            </button>
-                        </h2>
-                        <div id="accor_iconExamplecollapse5" class="accordion-collapse collapse" data-bs-parent="#accordionWithicon">
-                            <div class="accordion-body">
-                                <form action="{{ url('admin/changeStudentLevel') }}" method="POST">
-                                    @csrf
-                                    <input type="hidden" name="student_id" value="{{ $student->id }}">
-
-                                    <div class="row g-2">
-                                        <div class="mb-3">
-                                            <label for="level" class="form-label">Level</label>
-                                            <select class="form-select" name="level_id" id="level" data-choices data-choices-search-false required>
-                                                <option value="" selected>Choose...</option>
-                                                @foreach($academicLevels as $academicLevel)<option value="{{ $academicLevel->id }}">{{ $academicLevel->level }}</option>@endforeach
-                                            </select>
-                                        </div>
-        
-                                        <!--end col-->
-                                        <div class="col-lg-12">
-                                            <div class="text-end">
-                                                <br>
-                                                <button type="submit" id="submit-button" class="btn btn-primary btn-lg">Save Changes</button>
-                                            </div>
-                                        </div>
-                                        <!--end col-->
+                                    <div class="mt-4 text-center">
+                                        <h5 class="mb-1">{{$name}}</h5>
+                                        <p class="text-muted">{{ $student->programme->name }} <br>
+                                            <strong>Matric Number:</strong> {{ $student->matric_number }}<br>
+                                            <strong>Jamb Reg. Number:</strong> {{ $student->applicant->jamb_reg_no }}<br> <br>
+                                            <strong>Support Code:</strong> <span class="text-danger">ST{{ sprintf("%06d", $student->id) }}</span> 
+                                            <hr>
+                                            @if(env('WALLET_STATUS'))<a class="dropdown-item" href="#"><i class="mdi mdi-wallet text-muted fs-16 align-middle me-1"></i> <span class="align-middle">Balance : <b>₦{{ number_format($student->amount_balance/100, 2) }}</b></span></a>@endif
+                                        </p>
+                                        <p class="text-muted border-top border-top-dashed"><strong>CGPA:</strong> {{ $student->cgpa }} <br>
+                                            <strong>Class:</strong> {{ $student->degree_class }}<br>
+                                            <strong>Standing:</strong> {{ $student->standing }}<br>
+                                            <strong>Batch:</strong> {{ $student->batch }}<br>
+                                        </p>
                                     </div>
-                                    <!--end row-->
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="accordion-item shadow">
-                        <h2 class="accordion-header" id="accordionwithiconExample2">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#accor_iconExamplecollapse2" aria-expanded="false" aria-controls="accor_iconExamplecollapse2">
-                               Update Student Password
-                            </button>
-                        </h2>
-                        <div id="accor_iconExamplecollapse2" class="accordion-collapse collapse" aria-labelledby="accordionwithiconExample2" data-bs-parent="#accordionWithicon">
-                            <div class="accordion-body">
-                                <form action="{{ url('admin/changeStudentPassword') }}" method="POST">
-                                    @csrf
-                                    <input type="hidden" name="student_id" value="{{ $student->id }}">
-
-                                    <div class="row g-2">
-                                        <div class="col-lg-4">
-                                            <div>
-                                                <label for="newpasswordInput" class="form-label">New Password<span class="text-danger">*</span></label>
-                                                <input type="password"  name="password"  class="form-control" id="newpasswordInput" placeholder="Enter new password">
-                                            </div>
-                                        </div>
-                                        <!--end col-->
-                                        <div class="col-lg-4">
-                                            <div>
-                                                <label for="confirmpasswordInput" class="form-label">Confirm Password<span class="text-danger">*</span></label>
-                                                <input type="password"  name="confirm_password" class="form-control" id="confirmpasswordInput" placeholder="Confirm password">
-                                            </div>
-                                        </div>
-        
-                                        <!--end col-->
-                                        <div class="col-lg-4">
-                                            <div class="text-end">
-                                                <br>
-                                                <button type="submit" id="submit-button" class="btn btn-primary btn-lg">Change Password</button>
-                                            </div>
-                                        </div>
-                                        <!--end col-->
+                                    <div class="table-responsive border-top border-top-dashed">
+                                        <table class="table mb-0 table-borderless">
+                                            <tbody>
+                                                <tr>
+                                                    <th><span class="fw-medium">Department:</span></th>
+                                                    <td>{{ $student->department->name }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th><span class="fw-medium">Faculty:</span></th>
+                                                    <td>{{ $student->faculty->name }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th><span class="fw-medium">Email:</span></th>
+                                                    <td>{{ $student->email }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th><span class="fw-medium">Contact No.:</span></th>
+                                                    <td>{{ $student->applicant->phone_number }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th><span class="fw-medium">Address:</span></th>
+                                                    <td>{!! $student->applicant->address !!}</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
                                     </div>
-                                    <!--end row-->
-                                </form>
+                                </div>
                             </div>
-                        </div>
-                    </div>
-
-                    <div class="accordion-item shadow">
-                        <h2 class="accordion-header" id="accordionwithiconExample3">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#accor_iconExamplecollapse3" aria-expanded="false" aria-controls="accor_iconExamplecollapse3">
-                                Update Student Credit Load
-                            </button>
-                        </h2>
-                        <div id="accor_iconExamplecollapse3" class="accordion-collapse collapse" aria-labelledby="accordionwithiconExample2" data-bs-parent="#accordionWithicon">
-                            <div class="accordion-body">
-                                <form action="{{ url('admin/changeStudentCreditLoad') }}" method="POST">
-                                    @csrf
-                                    <input type="hidden" name="student_id" value="{{ $student->id }}">
-
-                                    <div class="row g-2">
-                                        <div class="col-lg-12">
-                                            <div>
-                                                <label for="creditLoad" class="form-label">Credit Load<span class="text-danger">*</span></label>
-                                                <input type="number"  name="credit_load"  class="form-control" id="credit_load" value="{{ $student->credit_load }}">
-                                            </div>
-                                        </div>
-        
-                                        <!--end col-->
-                                        <div class="col-lg-12">
-                                            <div class="text-end">
-                                                <br>
-                                                <button type="submit" id="submit-button" class="btn btn-primary btn-lg">Save Changes</button>
-                                            </div>
-                                        </div>
-                                        <!--end col-->
+                            <!--end card-body-->
+                            <div class="card-body p-4 border-top border-top-dashed">
+                                <div class="avatar-title bg-light rounded">
+                                    <img src="{{ $qrcode }}" style="border: 1px solid black;">
+                                </div>
+                            </div>
+                
+                            @if(!empty($student->applicant->guardian))
+                            <div class="card-body border-top border-top-dashed p-4">
+                                <div>
+                                    <h6 class="text-muted text-uppercase fw-semibold mb-4">Guardian Info</h6>
+                                    <div class="table-responsive">
+                                        <table class="table mb-0 table-borderless">
+                                            <tbody>
+                                                <tr>
+                                                    <th><span class="fw-medium">SN</span></th>
+                                                    <td class="text-danger">#{{ $student->applicant->guardian->id }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th><span class="fw-medium">Name</span></th>
+                                                    <td>{{ $student->applicant->guardian->name }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th><span class="fw-medium">Email</span></th>
+                                                    <td>{{ $student->applicant->guardian->email }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th><span class="fw-medium">Contact No.</span></th>
+                                                    <td>{{ $student->applicant->guardian->phone_number }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th><span class="fw-medium">Address</span></th>
+                                                    <td>{!! $student->applicant->guardian->address !!}</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
                                     </div>
-                                    <!--end row-->
-                                </form>
+                                </div>
                             </div>
+                            @endif
                         </div>
+                        <!-- end card -->
                     </div>
-
-                    <div class="accordion-item shadow">
-                        <h2 class="accordion-header" id="accordionwithiconExample4">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#accor_iconExamplecollapse4" aria-expanded="false" aria-controls="accor_iconExamplecollapse4">
-                                Update Student Credit Load
-                            </button>
-                        </h2>
-                        <div id="accor_iconExamplecollapse3" class="accordion-collapse collapse" aria-labelledby="accordionwithiconExample2" data-bs-parent="#accordionWithicon">
-                            <div class="accordion-body">
-                                <form action="{{ url('admin/changeStudentBatch') }}" method="POST">
-                                    @csrf
-                                    <input type="hidden" name="student_id" value="{{ $student->id }}">
-
-                                    <div class="row g-2">
-                                        <div class="mb-3">
-                                            <label for="choices-batch-input" class="form-label">Student Batch</label>
-                                            <select class="form-select" name="batch" id="choices-batch-input" data-choices data-choices-search-false required>
-                                                <option value="" selected>Choose...</option>
-                                                <option value="A">Batch A</option>
-                                                <option value="B">Batch B</option>
-                                                <option value="C">Batch C</option>
-                                            </select>
-                                        </div>
-        
-                                        <!--end col-->
-                                        <div class="col-lg-12">
-                                            <div class="text-end">
-                                                <br>
-                                                <button type="submit" id="submit-button" class="btn btn-primary btn-lg">Save Changes</button>
-                                            </div>
-                                        </div>
-                                        <!--end col-->
-                                    </div>
-                                    <!--end row-->
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                    <!-- end col -->
+               </div>
             </div>
             <!-- end tab pane -->
+
+            <div class="tab-pane fade" id="partners" role="tabpanel">
+                <div class="row">
+                    <div class="col-lg-8">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="text-muted">
+                                    <h4 class="card-title mb-0 flex-grow-1">Referred Student(s) for {{ $pageGlobalData->sessionSetting->application_session }} application session </h4>
+                                    <div class="border-top border-top-dashed pt-3">
+                                        <div class="table-responsive">
+                                            <!-- Bordered Tables -->
+                                            <table id="buttons-datatables" class="display table table-bordered" style="width:100%">
+                                                <thead>
+                                                    <tr>
+                                                        <th scope="col">Id</th>
+                                                        <th scope="col">Name</th>
+                                                        <th scope="col">Programme</th>
+                                                        <th scope="col">Email</th>
+                                                        <th scope="col">Phone Number</th>
+                                                        <th scope="col">Academic Session</th>
+                                                        <th scope="col">Application Status</th>
+                                                        <th scope="col">Applied Date</th>
+                                                        <th scope="col"></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach($applicants as $applicant)
+                                                    <tr>
+                                                        <th scope="row">{{ $loop->iteration }}</th>
+                                                        <td>{{ $applicant->lastname .' '. $applicant->othernames }}</td>
+                                                        <td>{{ $applicant->programme->name }}</td>
+                                                        <td>{{ $applicant->email }} </td>
+                                                        <td>{{ $applicant->phone_number }} </td>
+                                                        <td>{{ $applicant->academic_session }} </td>
+                                                        <td>{{ ucwords($applicant->status) }} </td>
+                                                        <td>{{ $applicant->created_at }} </td>
+                                                        <td>
+                                                            <a href="{{ !empty($applicant->student)? url('admin/student/'.$applicant->student->slug) : url('admin/applicant/'.$applicant->slug) }}" class="btn btn-primary m-1"><i class= "ri-user-6-fill"></i> View Applicant/Student</a>
+                                                        </td>
+                                                    </tr>
+                                                    @endforeach
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- end card body -->
+                        </div>
+                        <!-- end card -->
+                    </div>
+                    <!-- ene col -->
+                    <div class="col-lg-4">
+                        <div class="card">
+                            <div class="card-body p-4">
+                                <div>
+                                    <div class="flex-shrink-0 avatar-md mx-auto">
+                                        <div class="avatar-title bg-light rounded">
+                                            <img src="{{empty($student->image)?asset('assets/images/users/user-dummy-img.jpg'):asset($student->image)}}" alt="" height="50" />
+                                        </div>
+                                    </div>
+                                    <div class="mt-4 text-center">
+                                        <h5 class="mb-1">{{$name}}</h5>
+                                        <p class="text-muted">{{ $student->programme->name }} <br>
+                                            <strong>Matric Number:</strong> {{ $student->matric_number }}<br>
+                                            <strong>Jamb Reg. Number:</strong> {{ $student->applicant->jamb_reg_no }}<br> <br>
+                                            <strong>Support Code:</strong> <span class="text-danger">ST{{ sprintf("%06d", $student->id) }}</span> 
+                                            <hr>
+                                            @if(env('WALLET_STATUS'))<a class="dropdown-item" href="#"><i class="mdi mdi-wallet text-muted fs-16 align-middle me-1"></i> <span class="align-middle">Balance : <b>₦{{ number_format($student->amount_balance/100, 2) }}</b></span></a>@endif
+                                        </p>
+                                        <p class="text-muted border-top border-top-dashed"><strong>CGPA:</strong> {{ $student->cgpa }} <br>
+                                            <strong>Class:</strong> {{ $student->degree_class }}<br>
+                                            <strong>Standing:</strong> {{ $student->standing }}<br>
+                                            <strong>Batch:</strong> {{ $student->batch }}<br>
+                                        </p>
+                                    </div>
+                                    <div class="table-responsive border-top border-top-dashed">
+                                        <table class="table mb-0 table-borderless">
+                                            <tbody>
+                                                <tr>
+                                                    <th><span class="fw-medium">Department:</span></th>
+                                                    <td>{{ $student->department->name }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th><span class="fw-medium">Faculty:</span></th>
+                                                    <td>{{ $student->faculty->name }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th><span class="fw-medium">Email:</span></th>
+                                                    <td>{{ $student->email }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th><span class="fw-medium">Contact No.:</span></th>
+                                                    <td>{{ $student->applicant->phone_number }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th><span class="fw-medium">Address:</span></th>
+                                                    <td>{!! $student->applicant->address !!}</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--end card-body-->
+                            <div class="card-body p-4 border-top border-top-dashed">
+                                <div class="avatar-title bg-light rounded">
+                                    <img src="{{ $qrcode }}" style="border: 1px solid black;">
+                                </div>
+                            </div>
+                
+                            @if(!empty($student->applicant->guardian))
+                            <div class="card-body border-top border-top-dashed p-4">
+                                <div>
+                                    <h6 class="text-muted text-uppercase fw-semibold mb-4">Guardian Info</h6>
+                                    <div class="table-responsive">
+                                        <table class="table mb-0 table-borderless">
+                                            <tbody>
+                                                <tr>
+                                                    <th><span class="fw-medium">SN</span></th>
+                                                    <td class="text-danger">#{{ $student->applicant->guardian->id }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th><span class="fw-medium">Name</span></th>
+                                                    <td>{{ $student->applicant->guardian->name }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th><span class="fw-medium">Email</span></th>
+                                                    <td>{{ $student->applicant->guardian->email }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th><span class="fw-medium">Contact No.</span></th>
+                                                    <td>{{ $student->applicant->guardian->phone_number }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th><span class="fw-medium">Address</span></th>
+                                                    <td>{!! $student->applicant->guardian->address !!}</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            @endif
+                        </div>
+                        <!-- end card -->
+                    </div>
+                    <!-- end col -->
+                </div>
+                <!-- end row -->
+            </div>
         </div>
     </div>
     <!-- end col -->

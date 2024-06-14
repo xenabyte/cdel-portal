@@ -32,6 +32,7 @@ use App\Models\CourseRegistration;
 use App\Models\User;
 use App\Models\Payment;
 use App\Models\StudentExamCard;
+use App\Models\User as Applicant;
 
 use App\Mail\NotificationMail;
 
@@ -938,9 +939,12 @@ class AcademicController extends Controller
         ]);
     }
 
-    public function studentProfile($slug){
+    public function studentProfile(Request $request, $slug){
         $academicLevels = AcademicLevel::orderBy('id', 'desc')->get();
         $sessions = Session::orderBy('id', 'desc')->get();
+
+        $globalData = $request->input('global_data');
+        $applicationSession = $globalData->sessionSetting['application_session'];
 
         $student = Student::
             withTrashed()
@@ -950,11 +954,18 @@ class AcademicController extends Controller
             ->where('is_passed_out', false)
             ->where('is_rusticated', false)
             ->first();
+
+        $referalCode = $student->referral_code;
+        $applicants = [];
+        if(!empty($referalCode)){
+            $applicants = Applicant::with('student')->where('referrer', $referalCode)->where('academic_session', $applicationSession)->get();
+        }
         
         return view('admin.studentProfile', [
             'student' => $student,
             'academicLevels' => $academicLevels,
-            'sessions' => $sessions
+            'sessions' => $sessions,
+            'applicants' => $applicants
         ]);
     }
 

@@ -285,12 +285,21 @@ class StaffController extends Controller
         $allDepartments = Department::all();
         $faculties = Faculty::all();
 
+        $globalData = $request->input('global_data');
+        $applicationSession = $globalData->sessionSetting['application_session'];
+        $referalCode = $staff->referral_code;
+        
+        $applicants = Applicant::with('student')->where('referrer', $referalCode)->where('academic_session', $applicationSession)->get();
+
+
+
         return view('admin.singleStaff', [
             'singleStaff' => $staff,
             'roles' => $roles,
             'departments' => $departments,
             'allDepartments' => $allDepartments,
             'faculties' => $faculties,
+            'applicants' => $applicants
         ]);
     }
 
