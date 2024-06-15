@@ -376,7 +376,7 @@ class ProgrammeController extends Controller
     
     if($studentCourse->delete()){
         //delete all course registration with programme_course_id
-        $deleteStudentCourseReg = CourseRegistration::where('programme_course_id',$studentCourse->id)->where('academic_session', $academicSession)->delete();
+        $deleteStudentCourseReg = CourseRegistration::where('programme_course_id',$request->student_course_id)->where('academic_session', $academicSession)->delete();
 
         alert()->success('Delete Successfully', '')->persistent('Close');
         $courses = CoursePerProgrammePerAcademicSession::with('course', 'course.courseManagement', 'course.courseManagement.staff')->where('programme_id', $request->programme_id)->where('level_id', $request->level_id)->where('academic_session', $academicSession)->where('semester', $request->semester)->get();
