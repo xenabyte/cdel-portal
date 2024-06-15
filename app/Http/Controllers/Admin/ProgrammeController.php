@@ -302,7 +302,27 @@ class ProgrammeController extends Controller
             'status' => $request->status,
         ];
         
-        if(CoursePerProgrammePerAcademicSession::create($newCourses)){
+        if($coursePerProgrammePerAcademicSession = CoursePerProgrammePerAcademicSession::create($newCourses)){
+            if(strtolower($request->addToReg) == 'yes'){
+                $allStudents = Student::where('level_id', $request->level_id)->where('programme_id', $request->programme_id)->get();
+                foreach($allStudents as $student){
+                    $newCourseRegistration = ([
+                        'programme_course_id' => $coursePerProgrammePerAcademicSession->id,
+                        'student_id' => $student->id,
+                        'course_id' => $course->id,
+                        'level_id' => $request->level_id,
+                        'semester' => $request->semester,
+                        'academic_session' => $academicSession,
+                        'course_credit_unit' => $request->credit_unit,
+                        'course_code' => $course->code,
+                        'course_status' => $request->status,
+                        'status' => 'approved',
+                    ]);
+                    CourseRegistration::create($newCourseRegistration);
+                }
+            }
+
+
             alert()->success('Course added successfully', '')->persistent('Close');
             $courses = CoursePerProgrammePerAcademicSession::with('course', 'course.courseManagement', 'course.courseManagement.staff')->where('programme_id', $request->programme_id)->where('level_id', $request->level_id)->where('academic_session', $academicSession)->where('semester', $request->semester)->get();
             $defaultData = [
@@ -355,6 +375,9 @@ class ProgrammeController extends Controller
     }
     
     if($studentCourse->delete()){
+        //delete all course registration with programme_course_id
+        $deleteStudentCourseReg = CourseRegistration::where('programme_course_id',$studentCourse->id)->where('academic_session', $academicSession)->delete();
+
         alert()->success('Delete Successfully', '')->persistent('Close');
         $courses = CoursePerProgrammePerAcademicSession::with('course', 'course.courseManagement', 'course.courseManagement.staff')->where('programme_id', $request->programme_id)->where('level_id', $request->level_id)->where('academic_session', $academicSession)->where('semester', $request->semester)->get();
         $defaultData = [

@@ -66,6 +66,18 @@
                                                 <label for="semester">Semester</label>
                                             </div>
                                         </div>
+
+
+                                        <div class="col-lg-12">
+                                            <div class="form-floating">
+                                                <select class="form-select" id="addToReg" name="addToReg" aria-label="addToReg">
+                                                    <option value="" selected>--Select--</option>
+                                                    <option value="yes">Yes</option>
+                                                    <option value="no">No</option>
+                                                </select>
+                                                <label for="semester">Add to all student existing registration</label>
+                                            </div>
+                                        </div>
         
 
                                         <button type="submit" id="submit-button" class="btn btn-fill btn-primary btn-lg btn-block mb-5">Get Courses</button>
