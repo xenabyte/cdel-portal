@@ -566,26 +566,28 @@ class ResultController extends Controller
             $checkCarryOver->save();
         }
 
-        $grading = GradeScale::computeGrade($totalScore);
-        $grade = $grading->grade;
-        $points = $grading->point;
+        if(!empty($caScore) && !empty($examScore) && !empty($totalScore)){
+            $grading = GradeScale::computeGrade($totalScore);
+            $grade = $grading->grade;
+            $points = $grading->point;
 
-        $courseCode = $studentCourseReg->course_code;
+            $courseCode = $studentCourseReg->course_code;
 
-        if (strpos($courseCode, 'NSC') !== false && $student->programme_id == 15) {
-            if($totalScore < 50){
-                $grade = 'F';
-                $points = 0;
+            if (strpos($courseCode, 'NSC') !== false && $student->programme_id == 15) {
+                if($totalScore < 50){
+                    $grade = 'F';
+                    $points = 0;
+                }
             }
-        }
 
-        $studentCourseReg->ca_score = $caScore;
-        $studentCourseReg->exam_score = $examScore;
-        $studentCourseReg->total = $totalScore;
-        $studentCourseReg->grade = $grade;
-        $studentCourseReg->points = $points*$studentCourseReg->course_credit_unit;
-        $studentCourseReg->result_approval_id = $resultApprovalId;
-        $studentCourseReg->status = 'Completed';
+            $studentCourseReg->ca_score = $caScore;
+            $studentCourseReg->exam_score = $examScore;
+            $studentCourseReg->total = $totalScore;
+            $studentCourseReg->grade = $grade;
+            $studentCourseReg->points = $points*$studentCourseReg->course_credit_unit;
+            $studentCourseReg->result_approval_id = $resultApprovalId;
+            $studentCourseReg->status = 'Completed';
+        }
 
         if($studentCourseReg->save()){
             alert()->success('Result added successfully', '')->persistent('Close');
