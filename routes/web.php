@@ -190,7 +190,6 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'admin'],
   Route::post('/manageCourseReg', [App\Http\Controllers\Admin\AcademicController::class, 'manageCourseReg'])->name('manageCourseReg')->middleware(['auth:admin']);
   Route::get('/courseRegMgt', [App\Http\Controllers\Admin\AcademicController::class, 'courseRegMgt'])->name('courseRegMgt')->middleware(['auth:admin']);
   Route::post('/setCourseRegStatus', [App\Http\Controllers\Admin\AcademicController::class, 'setCourseRegStatus'])->name('setCourseRegStatus')->middleware(['auth:admin']);
-  Route::get('/applicants', [App\Http\Controllers\Admin\AdmissionController::class, 'applicants'])->name('applicants')->middleware(['auth:admin']);
   Route::get('/matriculants', [App\Http\Controllers\Admin\AdmissionController::class, 'matriculants'])->name('matriculants')->middleware(['auth:admin']);
 
   Route::get('/courseAllocation', [App\Http\Controllers\Admin\StaffController::class, 'courseAllocation'])->name('courseAllocation')->middleware(['auth:admin']);
