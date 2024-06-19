@@ -566,7 +566,7 @@ class ResultController extends Controller
             $checkCarryOver->save();
         }
 
-        if(!empty($caScore) && !empty($examScore) && !empty($totalScore)){
+        if(!empty($totalScore)){
             $grading = GradeScale::computeGrade($totalScore);
             $grade = $grading->grade;
             $points = $grading->point;
