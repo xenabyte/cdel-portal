@@ -66,10 +66,15 @@ class AdmissionController extends Controller
 
     public function applicantWithSession(Request $request){
         $applicants = Applicant::with('programme', 'olevels', 'guardian')->where('academic_session', $request->session)->orderBy('status', 'DESC')->get();
-        
+        $programmes = Programme::get(); 
+        $levels = AcademicLevel::get();
+
+
         return view('staff.applicants', [
             'applicants' => $applicants,
-            'session' => $request->session
+            'session' => $request->session,
+            'programmes' => $programmes,
+            'levels' => $levels
         ]);
     }
 

@@ -64,6 +64,7 @@
                             <td>{{ ucwords($applicant->status) }} </td>
                             <td>{{ $applicant->created_at }} </td>
                             <td>
+                                @if(!empty($applicant->programme_id))<a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#view{{$applicant->id}}" class="btn btn-secondary m-1"><i class= "ri-eye-fill"></i> View</a>@endif
                                 @if(!empty($applicant->programme_id))<a href="{{ url('staff/applicant/'.$applicant->slug) }}" class="btn btn-primary m-1"><i class= "ri-user-6-fill"></i> View Applicant</a>@endif
                             </td>
                         </tr>
