@@ -304,7 +304,7 @@ class ProgrammeController extends Controller
         
         if($coursePerProgrammePerAcademicSession = CoursePerProgrammePerAcademicSession::create($newCourses)){
             if(strtolower($request->addToReg) == 'yes'){
-                $allStudents = Student::where('level_id', $request->level_id)->where('programme_id', $request->programme_id)->get();
+                $allStudents = Student::where('level_id', $request->level_id)->where('programme_id', $request->programme_id)->where('is_active', 1)->get();
                 foreach($allStudents as $student){
                     $newCourseRegistration = ([
                         'programme_course_id' => $coursePerProgrammePerAcademicSession->id,

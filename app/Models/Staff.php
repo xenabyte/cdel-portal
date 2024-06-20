@@ -44,7 +44,8 @@ class Staff extends Authenticatable
         'category',
         'referral_code',
         'signature',
-        'change_password'
+        'change_password',
+        'unit_id',
     ];
 
     /**
@@ -138,4 +139,14 @@ class Staff extends Authenticatable
         return $this->hasMany(CommitteeMember::class);
     }
     
+
+    /**
+     * Get the unit that owns the Staff
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function unit()
+    {
+        return $this->belongsTo(Unit::class, 'unit_id');
+    }
 }

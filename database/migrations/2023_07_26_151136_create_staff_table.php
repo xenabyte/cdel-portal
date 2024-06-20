@@ -40,6 +40,10 @@ class CreateStaffTable extends Migration
             $table->text('description')->nullable();
             $table->string('slug')->nullable();
             $table->string('url')->nullable();
+            $table->string('title')->nullable();
+            $table->string('category')->nullable();
+            $table->string('change_password')->nullable();
+            $table->string('unit_id')->nullable();
             $table->softDeletes();
             $table->rememberToken();
             $table->timestamps();

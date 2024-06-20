@@ -321,6 +321,12 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'admin'],
   Route::post('/leftSchool', [App\Http\Controllers\Admin\StudentCareController::class, 'leftSchool'])->name('leftSchool')->middleware(['auth:admin']);
   Route::post('/enterSchool', [App\Http\Controllers\Admin\StudentCareController::class, 'enterSchool'])->name('enterSchool')->middleware(['auth:admin']);
   
+  Route::get('/units', [App\Http\Controllers\Admin\UnitController::class, 'units'])->name('units')->middleware(['auth:admin']);
+  Route::post('/addUnit', [App\Http\Controllers\Admin\UnitController::class, 'addUnit'])->name('addUnit')->middleware(['auth:admin']);
+  Route::post('/updateUnit', [App\Http\Controllers\Admin\UnitController::class, 'updateUnit'])->name('updateUnit')->middleware(['auth:admin']);
+  Route::post('/deleteUnit', [App\Http\Controllers\Admin\UnitController::class, 'deleteUnit'])->name('deleteUnit')->middleware(['auth:admin']);
+
+  
 });
 
 Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'student'], function () {
@@ -390,6 +396,7 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'student'
   Route::post('/applicantWithSession', [App\Http\Controllers\Student\StudentController::class, 'applicantWithSession'])->name('applicantWithSession')->middleware(['auth:student']);
   Route::get('/student/{slug}', [App\Http\Controllers\Student\StudentController::class, 'student'])->name('student')->middleware(['auth:student']);
   Route::get('/applicant/{slug}', [App\Http\Controllers\Student\StudentController::class, 'applicant'])->name('applicant')->middleware(['auth:student']);
+
 
 });
 
