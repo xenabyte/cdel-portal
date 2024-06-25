@@ -420,6 +420,9 @@
                                         <a href="{{ url('/admin/studentResult') }}" class="nav-link">Student Result</a>
                                     </li>
                                     <li class="nav-item">
+                                        <a href="{{ url('/admin/getStudentMissingResults/1') }}" class="nav-link">Student Missing Result</a>
+                                    </li>
+                                    <li class="nav-item">
                                         <a href="{{ url('/admin/demoteStudent') }}" class="nav-link">Demote Student</a>
                                     </li>
                                     <li class="nav-item">

@@ -313,6 +313,19 @@
                             @endif
 
                             <li class="nav-item">
+                                <a class="nav-link menu-link" href="#leaveMGT" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarForms">
+                                    <i class="mdi mdi-wrench-clock"></i> <span data-key="t-leaveMGT">Leave MGT</span>
+                                </a>
+                                <div class="collapse menu-dropdown" id="leaveMGT">
+                                    <ul class="nav nav-sm flex-column">
+                                        <li class="nav-item">
+                                            <a class="nav-link menu-link" href="{{ url('staff/leaveApplication') }}" data-key="t-profile">Leave Application</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+
+                            <li class="nav-item">
                                 <a class="nav-link menu-link" href="#committeeMgt" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="committeeMgt">
                                     <i class="mdi mdi-account-supervisor-circle-outline"></i> <span data-key="t-committee">Committee MGT</span><span class="badge badge-pill bg-danger" data-key="t-hot">New</span>
                                 </a>

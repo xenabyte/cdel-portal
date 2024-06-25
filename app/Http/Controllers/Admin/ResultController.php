@@ -60,6 +60,29 @@ class ResultController extends Controller
         ]);
     }
 
+    public function getStudentMissingResults(Request $request, $semester){
+        $globalData = $request->input('global_data');
+        $academicSession = $globalData->sessionSetting['academic_session'];
+
+        $courseRegistrations = CourseRegistration::with('student')->where('academic_session', $academicSession)->where('semester', $semester)->where('course_credit_unit', '>', 0)->where('grade', null)->get();
+        $studentIds = $courseRegistrations->pluck('student_id')->unique()->values()->all();
+
+        $students = Student::with(['applicant', 'programme', 'registeredCourses.course'])
+        ->whereIn('id', $studentIds)
+        ->get();
+
+        $studentsWithMissingGrades = $students->map(function ($student) use ($courseRegistrations) {
+            $student->courses_with_missing_grades = $courseRegistrations->where('student_id', $student->id)->map(function ($registration) {
+                return $registration->course;
+            });
+            return $student;
+        });
+
+        return view('admin.getStudentMissingResults',[
+            'students' => $students,
+        ]);
+    }
+
     public function getStudentResultSummary(Request $request){
         $globalData = $request->input('global_data');
         $academicSessions = Session::orderBy('id', 'desc')->get();
@@ -277,10 +300,6 @@ class ResultController extends Controller
         return \Excel::download($export, $slug);
     }
     
-    
-    
-
-
     public function approveResult(Request $request){
         $studentIds = $request->input('student_ids', []);
         $url = $request->url;
@@ -306,7 +325,6 @@ class ResultController extends Controller
             'faculties' => $faculties
         ]);
     }
-    
 
     public function generateResult(Request $request){
         $validator = Validator::make($request->all(), [
