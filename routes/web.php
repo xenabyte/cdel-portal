@@ -327,6 +327,12 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'admin'],
   Route::post('/deleteUnit', [App\Http\Controllers\Admin\UnitController::class, 'deleteUnit'])->name('deleteUnit')->middleware(['auth:admin']);
 
   Route::get('/attendance', [App\Http\Controllers\Admin\AttendanceController::class, 'attendance'])->name('attendance')->middleware(['auth:admin']);
+  Route::get('/monthlyAttendance/{slug}', [App\Http\Controllers\Admin\AttendanceController::class, 'monthlyAttendance'])->middleware(['auth:admin']);
+  Route::get('/updateAttendance/{staffId}', [App\Http\Controllers\Admin\AttendanceController::class, 'updateAttendance'])->middleware(['auth:admin']);
+  Route::post('/uploadAttendance', [App\Http\Controllers\Admin\AttendanceController::class, 'uploadAttendance'])->name('uploadAttendance')->middleware(['auth:admin']);
+
+  
+
 });
 
 Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'student'], function () {

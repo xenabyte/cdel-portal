@@ -127,8 +127,6 @@ class ResultController extends Controller
             'classifiedCourses' => $classifiedCourses,
         ]);
     }
-    
-    
 
     public function generateStudentResultSummary(Request $request){
         $academicLevels = AcademicLevel::get();

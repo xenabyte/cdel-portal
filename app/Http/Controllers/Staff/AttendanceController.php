@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Staff;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -47,7 +47,7 @@ class AttendanceController extends Controller
             $staffs[] = $staff;
         }
 
-        return view('admin.attendance', [
+        return view('staff.attendance', [
             'staff' => $staffs,
             'capturedWorkingDays' => $capturedWorkingDays
         ]);
@@ -70,7 +70,7 @@ class AttendanceController extends Controller
 
         $monthAttendance = Attendance::where('staff_id', $staff->id)->whereBetween('date', [$startDateOfPresentMonth, $endDateOfPresentMonth])->get();
 
-        return view('admin.monthlyAttendance', [
+        return view('staff.monthlyAttendance', [
             'monthAttendance' => $monthAttendance,
             'staff' => $staff,
         ]);

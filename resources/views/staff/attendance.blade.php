@@ -1,4 +1,4 @@
-@extends('admin.layout.dashboard')
+@extends('staff.layout.dashboard')
 
 @section('content')
 <!-- start page title -->
@@ -68,7 +68,7 @@
                     <div class="mt-4">
                         <h5 class="fs-15 mb-3">Upload Attendance</h5>
                         <div class="row g-3 mb-4">
-                            <form action="{{ url('/admin/uploadAttendance') }}"  method="post" enctype="multipart/form-data">
+                            <form action="{{ url('/staff/uploadAttendance') }}"  method="post" enctype="multipart/form-data">
                                 @csrf
                                 <div class="col-lg-12">
                                     <div class="input-group">
@@ -113,7 +113,7 @@
                             <td>{{ $singleStaff->title.' '.$singleStaff->lastname .' '. $singleStaff->othernames }}</td>
                             <td>{{ $singleStaff->attendance->count() }} / {{$capturedWorkingDays }} Days </td>
                             <td>
-                                <a href="{{ url('/admin/monthlyAttendance/'.$singleStaff->slug) }}" class="btn btn-primary"> <i class= "mdi mdi-monitor-eye"></i></a>
+                                <a href="{{ url('/staff/monthlyAttendance/'.$singleStaff->slug) }}" class="btn btn-primary"> <i class= "mdi mdi-monitor-eye"></i></a>
                             </td>
                         </tr>
                         @endforeach

@@ -805,6 +805,8 @@
         $(document).ready(function() {
             $('#buttons-datatables1').DataTable({
                 dom: 'Bfrtip',
+                pageLength: 20,
+                lengthMenu: [ [10, 20, 50, -1], [10, 20, 50, "All"] ],  
                 buttons: [
                     'copy', 'csv', 'excel', 'pdf', 'print'
                 ]
@@ -812,6 +814,8 @@
     
             $('#buttons-datatables2').DataTable({
                 dom: 'Bfrtip',
+                pageLength: 20,
+                lengthMenu: [ [10, 20, 50, -1], [10, 20, 50, "All"] ],  
                 buttons: [
                     'copy', 'csv', 'excel', 'pdf', 'print'
                 ]
@@ -819,6 +823,8 @@
     
             $('#buttons-datatables3').DataTable({
                 dom: 'Bfrtip',
+                pageLength: 20,  
+                lengthMenu: [ [10, 20, 50, -1], [10, 20, 50, "All"] ],
                 buttons: [
                     'copy', 'csv', 'excel', 'pdf', 'print'
                 ]
@@ -826,6 +832,8 @@
     
             $('#buttons-datatables4').DataTable({
                 dom: 'Bfrtip',
+                pageLength: 20, 
+                lengthMenu: [ [10, 20, 50, -1], [10, 20, 50, "All"] ], 
                 buttons: [
                     'copy', 'csv', 'excel', 'pdf', 'print'
                 ]
@@ -833,6 +841,8 @@
 
             $('#buttons-datatables5').DataTable({
                 dom: 'Bfrtip',
+                pageLength: 20,
+                lengthMenu: [ [10, 20, 50, -1], [10, 20, 50, "All"] ],  
                 buttons: [
                     'copy', 'csv', 'excel', 'pdf', 'print'
                 ]
@@ -840,6 +850,8 @@
 
             $('#buttons-datatables6').DataTable({
                 dom: 'Bfrtip',
+                pageLength: 20,
+                lengthMenu: [ [10, 20, 50, -1], [10, 20, 50, "All"] ],  
                 buttons: [
                     'copy', 'csv', 'excel', 'pdf', 'print'
                 ]
@@ -847,6 +859,8 @@
 
             $('#buttons-datatables7').DataTable({
                 dom: 'Bfrtip',
+                pageLength: 20, 
+                lengthMenu: [ [10, 20, 50, -1], [10, 20, 50, "All"] ], 
                 buttons: [
                     'copy', 'csv', 'excel', 'pdf', 'print'
                 ]
