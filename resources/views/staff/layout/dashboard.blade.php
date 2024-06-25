@@ -873,6 +873,14 @@
         document.querySelectorAll('ckeditor').forEach((textarea) => {
             CKEDITOR.replace(textarea);
         });
+
+        document.querySelectorAll('ckeditor1').forEach((textarea) => {
+            CKEDITOR.replace(textarea);
+        });
+
+        document.querySelectorAll('ckeditor2').forEach((textarea) => {
+            CKEDITOR.replace(textarea);
+        });
     </script>
 </body>
 
