@@ -29,6 +29,7 @@ use App\Models\LevelAdviser;
 use App\Models\CourseManagement;
 use App\Models\CoursePerProgrammePerAcademicSession;
 use App\Models\ProgrammeCategory as Category;
+use App\Models\Attendance;
 
 
 use App\Mail\NotificationMail;
@@ -54,6 +55,15 @@ class StaffController extends Controller
         $academicSession = $globalData->sessionSetting['academic_session'];
         $applicationSession = $globalData->sessionSetting['application_session'];
 
+        $year = Carbon::parse()->format('Y');
+        $month = Carbon::parse()->format('M');
+        $capturedWorkingDays = $this->capturedWorkingDays();
+
+        $startDateOfPresentMonth = Carbon::now()->startOfMonth();
+        $endDateOfPresentMonth = Carbon::now()->endOfMonth();
+
+        $monthAttendance = Attendance::where('staff_id', $staff->id)->whereBetween('date', [$startDateOfPresentMonth, $endDateOfPresentMonth])->get();
+
         if(empty($staff->change_password)){
             return view('staff.changePassword');
         }
@@ -62,6 +72,8 @@ class StaffController extends Controller
 
         return view('staff.home', [
             'applicants' => $applicants,
+            'capturedWorkingDays' => $capturedWorkingDays,
+            'monthAttendance' => $monthAttendance
         ]);
     }
 

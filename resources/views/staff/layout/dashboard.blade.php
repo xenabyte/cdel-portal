@@ -385,6 +385,11 @@
                                                 <a href="{{ url('/staff/staff') }}" class="nav-link" data-key="t-basic"> All Staff </a>
                                             </li>
                                             @endif
+                                            @if($staffRegistrarRole || $staffHRRole || $staffVCRole)
+                                            <li class="nav-item">
+                                                <a href="{{('/staff/attendance')}}" class="nav-link" data-key="t-cover"> Staff Attendance </a>
+                                            </li>
+                                            @endif
                                         </ul>
                                     </div>
                                 </li>

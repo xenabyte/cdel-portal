@@ -577,7 +577,11 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'staff'],
   Route::get('/verifyStudentExits', [App\Http\Controllers\Staff\StudentCareController::class, 'verifyStudentExits'])->name('verifyStudentExits')->middleware(['auth:staff']);
   Route::post('/verifyStudentExit', [App\Http\Controllers\Staff\StudentCareController::class, 'verifyStudentExit'])->name('verifyStudentExit')->middleware(['auth:staff']);
   
-  
+  Route::get('/attendance', [App\Http\Controllers\Staff\AttendanceController::class, 'attendance'])->name('attendance')->middleware(['auth:admin']);
+  Route::get('/monthlyAttendance/{slug}', [App\Http\Controllers\Staff\AttendanceController::class, 'monthlyAttendance'])->middleware(['auth:admin']);
+  Route::get('/updateAttendance/{staffId}', [App\Http\Controllers\Staff\AttendanceController::class, 'updateAttendance'])->middleware(['auth:admin']);
+  Route::post('/uploadAttendance', [App\Http\Controllers\Staff\AttendanceController::class, 'uploadAttendance'])->name('uploadAttendance')->middleware(['auth:admin']);
+
 });
 
 Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'bursary'], function () {
