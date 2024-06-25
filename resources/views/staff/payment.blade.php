@@ -199,6 +199,7 @@
     </div><!-- end col -->
 </div><!-- end row -->
 
+@if(!empty($students))
 <div class="row">
     <div class="col-lg-12">
         <div class="card">
@@ -248,6 +249,7 @@
     </div>
     <!-- end col -->
 </div>
+@endif
 
 
 

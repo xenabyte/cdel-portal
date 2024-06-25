@@ -800,4 +800,35 @@ class Controller extends BaseController
         return false;
     }
 
+    public function capturedWorkingDays(){
+
+        $startDateOfPresentMonth = Carbon::now()->startOfMonth();
+        $today = Carbon::now();
+        $diff = $startDateOfPresentMonth->diffInDays($today);
+        $weekendDays = $this->countWeekendDays($startDateOfPresentMonth, $today); 
+        $capturedWorkingDays = $diff - $weekendDays;
+
+        return $capturedWorkingDays;
+
+    }
+
+    public function workingDays() {
+        $startDateOfPresentMonth = Carbon::now()->startOfMonth();
+        $endDateOfPresentMonth = Carbon::now()->endOfMonth();
+        $daysOfPresentMonth = Carbon::now()->daysInMonth;
+        $weekendDays = $this->countWeekendDays($startDateOfPresentMonth, $endDateOfPresentMonth); 
+
+        $workingDays = $daysOfPresentMonth - $weekendDays;
+
+        return $workingDays;
+    }
+
+    public function countWeekendDays($startDate, $endDate) {
+        $weekendDays = $startDate->diffInDaysFiltered(function(Carbon $date) {
+            return $date->isWeekend();
+        }, $endDate);
+
+        return $weekendDays;
+    }
+
 }

@@ -27,13 +27,40 @@
 <!-- end page title -->
 
 <div class="row">
+    <div class="col-xl-6 col-md-6">
+        <div class="card card-animate bg-info">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <p class="fw-medium text-white mb-0">Total Staff</p>
+                        <hr class="text-white">
+                        <h2 class="mt-4 ff-secondary text-white fw-semibold"><span class="counter-value" data-target="{{ count($staff) }}">{{ count($staff) }}</span> Staff</h2>
+                    </div>
+                </div>
+            </div><!-- end card body -->
+        </div> <!-- end card-->
+    </div> <!-- end col-->
+
+    <div class="col-xl-6 col-md-6">
+        <div class="card card-animate bg-primary">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <p class="fw-medium text-white-50 mb-0">Captured Working Days - Today's date is {{date('d, D M, Y') }}</p>
+                        <hr class="text-white">
+                        <h2 class="mt-4 ff-secondary fw-semibold text-white"><span class="counter-value" data-target="{{$capturedWorkingDays }}">{{$capturedWorkingDays }}</span> Days</h2>
+                    </div>
+                </div>
+            </div><!-- end card body -->
+        </div> <!-- end card-->
+    </div> <!-- end col-->
+</div>
+
+<div class="row">
     <div class="col-lg-12">
         <div class="card">
             <div class="card-header align-items-center d-flex">
                 <h4 class="card-title mb-0 flex-grow-1">Staff </h4>
-                <div class="flex-shrink-0">
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addStaff"><i class="mdi mdi-account-multiple-plus"></i> Add Staff</button>
-                </div>
             </div><!-- end card header -->
 
             <div class="card-body table-responsive">
@@ -52,7 +79,7 @@
                         <tr>
                             <th scope="row">{{ $loop->iteration }}</th>
                             <td>{{ $singleStaff->title.' '.$singleStaff->lastname .' '. $singleStaff->othernames }}</td>
-                            <td>{{ $staff->attendance->count() }} Days </td>
+                            <td>{{  !empty($staff->attendance)? $staff->attendance->count() : 0 }} / {{$capturedWorkingDays }} Days </td>
                             <td>
                                 <a href="{{ url('admin/staff/'.$singleStaff->slug) }}" class="btn btn-primary"> <i class= "mdi mdi-monitor-eye"></i></a>
                                 <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#editStaff{{$singleStaff->id}}" class="btn btn-info"><i class= "mdi mdi-application-edit"></i></a>

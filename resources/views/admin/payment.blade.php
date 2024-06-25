@@ -198,7 +198,7 @@
         </div><!-- end row -->
     </div><!-- end col -->
 </div><!-- end row -->
-
+@if(!empty($students))
 <div class="row">
     <div class="col-lg-12">
         <div class="card">
@@ -248,6 +248,7 @@
     </div>
     <!-- end col -->
 </div>
+@endif
 
 <div id="charge" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
     <div class="modal-dialog modal-dialog-centered">

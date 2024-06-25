@@ -27,6 +27,7 @@ class AttendanceController extends Controller
     public function attendance(){
         $year = Carbon::parse()->format('Y');
         $month = Carbon::parse()->format('M');
+        $capturedWorkingDays = $this->capturedWorkingDays();
 
         $staffRecords = Staff::get();
         $staffs = array();
@@ -46,6 +47,7 @@ class AttendanceController extends Controller
 
         return view('admin.attendance', [
             'staff' => $staffs,
+            'capturedWorkingDays' => $capturedWorkingDays
         ]);
     }
 }
