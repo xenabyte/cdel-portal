@@ -7,6 +7,8 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+use Carbon\Carbon;
+
 class Staff extends Authenticatable
 {
     use Notifiable, SoftDeletes;
@@ -148,5 +150,15 @@ class Staff extends Authenticatable
     public function unit()
     {
         return $this->belongsTo(Unit::class, 'unit_id');
+    }
+
+    /**
+     * Get all of the attendance for the Staff
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function attendance()
+    {
+        return $this->hasMany(Attendance::class, 'staff_id')->where('status', 2)->where('month', Carbon::now()->format('M'))->orderBy('date');
     }
 }

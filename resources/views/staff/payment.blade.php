@@ -204,9 +204,11 @@
         <div class="card">
             <div class="card-header align-items-center d-flex">
                 <h4 class="card-title mb-0 flex-grow-1">Students </h4>
+                @if($payment->is_charged != 1)
                 <div class="flex-shrink-0">
                     <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#charge" style="margin: 5px" class="btn btn-success">Bill Students</a>
                 </div>
+                @endif
             </div><!-- end card header -->
 
             <div class="card-body table-responsive">

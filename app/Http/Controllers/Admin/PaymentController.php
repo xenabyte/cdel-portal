@@ -232,7 +232,7 @@ class PaymentController extends Controller
                 'reference' => $reference,
             ]);
 
-            $message = 'Dear '.$student->applicant->lastname.' '.$student->applicant->othername.', you have been charged ₦'.number_format($totalPayment/100, 2).' for '.$payment->title;
+            $message = 'Dear '.$student->applicant->lastname.' '.$student->applicant->othername.', you have been charged ₦'.number_format($totalPayment/100, 2).' for '.$payment->title .', kindly proceed to make payment';
 
             Notification::create([
                 'student_id' => $student->id,

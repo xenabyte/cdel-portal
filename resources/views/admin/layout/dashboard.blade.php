@@ -495,7 +495,7 @@
                                                     <a href="{{('/admin/units')}}" class="nav-link" data-key="t-cover"> Staff Units </a>
                                                 </li>
                                                 <li class="nav-item">
-                                                    <a href="{{('/admin/attendances')}}" class="nav-link" data-key="t-cover"> Staff Attendance </a>
+                                                    <a href="{{('/admin/attendance')}}" class="nav-link" data-key="t-cover"> Staff Attendance </a>
                                                 </li>
                                             </ul>
                                         </div>

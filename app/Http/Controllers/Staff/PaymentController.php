@@ -183,7 +183,7 @@ class PaymentController extends Controller
 
         $students = null;
         if(!empty($payment->level_id)){
-            $students = Student::with('applicant')->where('level_id', $payment->level_id)->where('academic_session', $payment->academic_session)->where('programme_id', $payment->programme_id)->get();
+            $students = Student::with('applicant')->where('level_id', $payment->level_id)->where('academic_session', $payment->academic_session)->where('programme_id', $payment->programme_id)->where('is_active', TRUE)->get();
 
             foreach($students as $student){
                 $transaction = Transaction::where('student_id', $student->id)->where('payment_id', $payment->id)->where('session', $payment->academic_session)->where('status', 1)->get();
@@ -220,7 +220,7 @@ class PaymentController extends Controller
 
         $totalPayment = $payment->structures->sum('amount');
 
-        $students = Student::where('level_id', $payment->level_id)->where('academic_session', $payment->academic_session)->where('programme_id', $payment->programme_id)->get();
+        $students = Student::where('level_id', $payment->level_id)->where('academic_session', $payment->academic_session)->where('programme_id', $payment->programme_id)->where('is_active', TRUE)->get();
 
         foreach($students as $student){
             //Create new transaction
@@ -233,7 +233,7 @@ class PaymentController extends Controller
                 'reference' => $reference,
             ]);
 
-            $message = 'Dear '.$student->applicant->lastname.' '.$student->applicant->othername.', you have been charged ₦'.number_format($totalPayment/100, 2).' for '.$payment->title;
+            $message = 'Dear '.$student->applicant->lastname.' '.$student->applicant->othername.', you have been charged ₦'.number_format($totalPayment/100, 2).' for '.$payment->title .', kindly proceed to make payment';
 
             Notification::create([
                 'student_id' => $student->id,
