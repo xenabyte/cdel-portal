@@ -23,6 +23,7 @@ use App\Models\Session;
 use App\Models\Faculty;
 use App\Models\Department;
 use App\Models\AcademicLevel;
+use App\Models\Notification;
 
 use App\Libraries\Pdf\Pdf;
 use App\Mail\TransactionMail;
