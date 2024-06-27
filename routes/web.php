@@ -584,6 +584,7 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'staff'],
   Route::post('/uploadAttendance', [App\Http\Controllers\Staff\AttendanceController::class, 'uploadAttendance'])->name('uploadAttendance')->middleware(['auth:staff']);
 
   Route::get('/leaveApplication', [App\Http\Controllers\Staff\LeaveController::class, 'leaveApplication'])->name('leaveApplication')->middleware(['auth:staff']);
+  Route::post('/applyForLeave', [App\Http\Controllers\Staff\LeaveController::class, 'applyForLeave'])->name('applyForLeave')->middleware(['auth:staff']);
 
 
   

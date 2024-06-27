@@ -23,8 +23,8 @@ class CreateLeavesTable extends Migration
             $table->integer('days')->nullable();
             $table->string('status')->nullable();
             $table->string('destination_address')->nullable();
-            $table->unsignedBigInteger('subordinate_staff_id')->nullable();
-            $table->string('subordinate_staff_status')->nullable();
+            $table->unsignedBigInteger('assisting_staff_id')->nullable();
+            $table->string('assisting_staff_status')->nullable();
             $table->unsignedBigInteger('hod_id')->nullable();
             $table->string('hod_status')->nullable();
             $table->text('hod_comment')->nullable();

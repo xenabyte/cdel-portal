@@ -59,6 +59,8 @@ $staffCourses = $staff->staffCourses;
                 </div>
                 <h3 class="mb-1">{{ $staff->attendance->count() }} / {{ $capturedWorkingDays }} Day(s)</h3>
                 <h5 class="fs-14 mb-4">{{ date('M Y') }}</h5>
+                <hr>
+                <p>Today's date is {{date('d D M, Y') }}</p>
                 <div class="hstack gap-2 justify-content-center">
                     <button href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#viewAttendance" class="btn btn-danger btn-sm"><i class="ri-stop-circle-line align-bottom me-1"></i> View Attendance</button>
                 </div>

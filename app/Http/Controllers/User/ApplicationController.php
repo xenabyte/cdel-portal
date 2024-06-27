@@ -423,6 +423,8 @@ class ApplicationController extends Controller
                 alert()->info('Oops!', $message)->persistent('Close');
                 return redirect()->back();
             }
+
+            $slug = $applicant->slug;
         }else{
             $partnerId = $this->getReferralId($referralCode);
 
