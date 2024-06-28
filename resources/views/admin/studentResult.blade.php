@@ -50,7 +50,7 @@
                             <strong>Matric Number:</strong> {{ $student->matric_number }}<br>
                             <strong>Jamb Reg. Number:</strong> {{ $student->applicant->jamb_reg_no }}<br>
                             <strong>Level:</strong> {{ $student->level_id *100 }} Level <br>
-                            <strong>Support Code:</strong> <span class="text-danger">ST{{ sprintf("%06d", $student->id) }}</span> 
+                            <strong>Support Code:</strong> <span class="text-danger">ST{{ sprintf("%06d", $student->id) }}</span> <br>
                             <strong>CGPA:</strong> <span class="text-primary">{{ $student->cgpa }}</span> 
                             <hr>
                             @if(env('WALLET_STATUS'))<a class="dropdown-item" href=#"><i class="mdi mdi-wallet text-muted fs-16 align-middle me-1"></i> <span class="align-middle">Balance : <b>₦{{ number_format($student->amount_balance/100, 2) }}</b></span></a>@endif
@@ -211,9 +211,9 @@
                                                 <input type="hidden" name='session' value="{{ $studentSession }}">
                                                 <input type="hidden" name='level_id' value="{{  $studentLevelId }}">
 
-                                                <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#edit{{$registeredCourse->id}}" class="btn btn-info p-2"><i class= "mdi mdi-application-edit"></i></a>
+                                                <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#edit{{$registeredCourse->id}}" class="btn btn-info m-2"><i class= "mdi mdi-application-edit"></i></a>
                                                 
-                                                <button type="submit" class="btn btn-danger waves-effect waves-light p-2">
+                                                <button type="submit" class="btn btn-danger waves-effect waves-light m-2">
                                                   <i class="mdi mdi-trash-can"></i>
                                                 </button>
                                             </form>
