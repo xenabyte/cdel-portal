@@ -449,25 +449,27 @@ class ResultController extends Controller
             $registeredCourse->exam_score = $request->exam_score;
         }
 
-        if(!empty($request->total) && ($request->total != $registeredCourse->total)){
-            $registeredCourse->total = $request->total;
+        $total = $request->ca_score + $request->exam_score;
 
-            $grading = GradeScale::computeGrade($request->total);
-            $grade = $grading->grade;
-            $points = $grading->point;
+        $registeredCourse->total = $total;
 
-            $courseCode = $registeredCourse->course_code;
+        $grading = GradeScale::computeGrade($total);
+        $grade = $grading->grade;
+        $points = $grading->point;
 
-            if (strpos($courseCode, 'NSC') !== false && $student->programme_id == 15) {
-                if($request->total < 50){
-                    $grade = 'F';
-                    $points = 0;
-                }
+        $courseCode = $registeredCourse->course_code;
+
+        if (strpos($courseCode, 'NSC') !== false && $student->programme_id == 15) {
+            if($total < 50){
+                $grade = 'F';
+                $points = 0;
             }
-
-            $registeredCourse->grade = $grade;
-            $registeredCourse->points = $points*$registeredCourse->course_credit_unit;
         }
+
+        $registeredCourse->grade = $grade;
+        $registeredCourse->points = $points*$registeredCourse->course_credit_unit;
+        $registeredCourse->result_approval_id = ResultApprovalStatus::getApprovalStatusId(ResultApprovalStatus::SENATE_APPROVED);
+        $registeredCourse->status = "Completed";
 
         if($registeredCourse->save()){
             alert()->success('Result details updated successfully', '')->persistent('Close');
@@ -476,7 +478,40 @@ class ResultController extends Controller
 
         alert()->error('Oops!', 'Something went wrong')->persistent('Close');
         return $this->getSingleStudent($studentIdCode, $request->url, $data);
-   }
+    }
+
+    public function deleteStudentResult(Request $request){
+        $validator = Validator::make($request->all(), [
+            'student_id' => 'required',
+            'url' => 'required',
+            'course_reg_id' => 'required'
+        ]);
+
+        if($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+
+        $studentId = $request->student_id;
+        $student = Student::find($studentId);
+        $data = new \stdClass();
+        $data->levelId = $request->level_id;
+        $data->academicSession = $request->session; 
+        $studentIdCode = $student->matric_number;
+
+        if(!$registeredCourse = CourseRegistration::with('course')->where('id', $request->course_reg_id)->first()){
+            alert()->info('Oops!', 'Record not found')->persistent('Close');
+            return redirect()->back();
+        }
+
+        if($registeredCourse->delete()){
+            alert()->success('Result details deleted successfully', '')->persistent('Close');
+            return $this->getSingleStudent($studentIdCode, $request->url, $data);
+        }
+
+        alert()->error('Oops!', 'Something went wrong')->persistent('Close');
+        return $this->getSingleStudent($studentIdCode, $request->url, $data);
+    }
 
 
    public function addStudentCourse(Request $request){
@@ -510,7 +545,7 @@ class ResultController extends Controller
         $academicSession = $request->session;
         $caScore = $request->ca_score;
         $examScore = $request->exam_score;
-        $totalScore = $request->total;
+        $totalScore = $request->ca_score + $request->exam_score;
 
 
         if(!$course = Course::where('code', $courseCode)->first()){

@@ -1,0 +1,269 @@
+@extends('staff.layout.dashboard')
+@php
+$staff = $leave->staff;
+$name = $staff->title.' '.$staff->lastname.' '.$staff->othernames;
+
+$assistingStaff = $leave->assistingStaff;
+$assistingstaffName = $assistingStaff->title.' '.$assistingStaff->lastname.' '.$assistingStaff->othernames;
+@endphp
+@section('content')
+
+<!-- start page title -->
+<div class="row">
+    <div class="col-12">
+        <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+            <h4 class="mb-sm-0">Leave Details</h4>
+
+            <div class="page-title-right">
+                <ol class="breadcrumb m-0">
+                    <li class="breadcrumb-item"><a href="javascript: void(0);">Pages</a></li>
+                    <li class="breadcrumb-item active">Leave Details</li>
+                </ol>
+            </div>
+
+        </div>
+    </div>
+</div>
+<!-- end page title -->
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card mt-n4 mx-n4">
+            <div class="bg-soft-info">
+                <div class="card-body pb-0 px-4">
+                    <div class="row mb-3">
+                        <div class="col-md">
+                            <div class="row align-items-center g-3">
+                                <div class="col-md-auto">
+                                    <div class="avatar-md">
+                                        <div class="avatar-title bg-white rounded-circle">
+                                            <img src="{{ !empty($staff->image) ? $staff->image : asset('assets/images/users/user-dummy-img.jpg') }}" alt="" class="img-thumbnail rounded-circle avatar-md">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md">
+                                    <div>
+                                        <h4 class="fw-bold">{{ $staff->title.' '.$staff->lastname .' '. $staff->othernames }}</h4>
+                                        <div class="hstack gap-3 flex-wrap">
+                                            <div><i class="ri-building-line align-bottom me-1"></i> {{  $staff->current_position }}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        @if(!empty($staffAccessLevel) && $staffAccessLevel < 6)
+                        <div class="col-md-auto">
+                            <div class="hstack gap-1 flex-wrap">
+                                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#assignRole">Assign Role</button>
+
+                                @if(!empty($staff->faculty))
+                                    @if(!empty($staffAccessLevel) && $staffAccessLevel < 2 && ($staff->id != $staff->faculty->dean_id))
+                                        <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#assignDeanToFaculty"> Assign Dean To Faculty</button>
+                                    @endif
+                                @endif
+                                @if(!empty($staff->faculty))
+                                    @if(!empty($staffAccessLevel) && $staffAccessLevel < 3 && ($staff->id != $staff->faculty->sub_dean_id) && ($staff->id != $staff->faculty->dean_id))
+                                    <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#assignSubDeanToFaculty"> Assign Sub Dean To Faculty</button>
+                                    @endif
+                                @endif
+                                @if(!empty($staff->department))
+                                    @if(!empty($staffAccessLevel) &&  $staffAccessLevel < 4 && ($staff->id != $staff->department->hod_id))
+                                    <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#assignHodToDepartment"> Assign HOD To Department</button>
+                                    @endif
+                                @endif
+
+                            </div>
+                        </div>
+                        @endif
+                    </div>
+                </div>
+                <!-- end card body -->
+            </div>
+        </div>
+        <!-- end card -->
+    </div>
+    <!-- end col -->
+</div>
+
+<div class="row">
+    <div class="col-xl-3">
+        <div class="card card-height-100">
+            <div class="card-body">
+                <div class="d-flex mb-4 align-items-center">
+                    <div class="flex-grow-1">
+                        <h5 class="text-primary fs-18 mb-0"><strong>Leave Duration:</strong><span> {{ $leave->days }} Day(s)</span></h5>
+                    </div>
+                </div>
+                <hr>   
+                <div class="row mb-3">
+                    <div class="col-xl-12">
+                        <h6 class="fs-14 mb-2">Leave Details</h6>
+                        <p class="text-muted"><strong>Purpose:</strong> {!! $leave->purpose !!}</p>
+                        <p class="text-muted"><strong>Destination:</strong> {!! $leave->destination_address !!}</p>
+                        <p class="text-muted"><strong>Start Date:</strong> {{ \Carbon\Carbon::parse($leave->start_date)->format('jS \o\f F, Y') }}</p>
+                        <p class="text-muted"><strong>Resumption Date:</strong> {{ \Carbon\Carbon::parse($leave->end_date)->format('jS \o\f F, Y') }}</p>
+
+                    </div>
+                    <!-- end col -->
+                </div>    
+                <hr>
+                <div class="d-flex align-items-center mb-3">
+                    <div class="avatar-sm me-3 flex-shrink-0">
+                        <div class="avatar-title bg-danger-subtle rounded">
+                            <img src="{{ !empty($assistingstaff->image) ? $assistingstaff->image : asset('assets/images/users/user-dummy-img.jpg') }}" alt="" class="avatar-xs">
+                        </div>
+                    </div>
+                    <div class="flex-grow-1">
+                        <p class="text-muted mb-2">Assisting Staff</p>
+                        <h5 class="fs-15 fw-semibold mb-0">{{ $assistingstaffName }}</h5>
+                    </div>
+                </div>
+                <a href="#!" class="btn {{ !empty($leave->assisting_staff_status && $leave->assisting_staff_statys=='approved')? 'btn-soft-success' : ' btn-soft-info' }} d-block">{{ !empty($leave->assisting_staff_status)? $leave->assisting_staff_status : 'Pending' }}</a> 
+            </div>
+        </div>
+
+        
+    </div>
+    <!--end col-->
+    <div class="col-xl-9">
+
+        <div class="card card-height-100">
+            <div class="card-header border-bottom-dashed align-items-center d-flex">
+                <h4 class="card-title mb-0 flex-grow-1">Leave Approval Activities</h4>
+            </div><!-- end cardheader -->
+            <div class="card-body p-0">
+                <div data-simplebar="init" style="max-height: 364px;" class="p-3 simplebar-scrollable-y"><div class="simplebar-wrapper" style="margin: -16px;"><div class="simplebar-height-auto-observer-wrapper"><div class="simplebar-height-auto-observer"></div></div><div class="simplebar-mask"><div class="simplebar-offset" style="right: 0px; bottom: 0px;"><div class="simplebar-content-wrapper" tabindex="0" role="region" aria-label="scrollable content" style="height: auto; overflow: hidden scroll;"><div class="simplebar-content" style="padding: 16px;">
+                    <div class="acitivity-timeline acitivity-main">
+                        <div class="acitivity-item d-flex">
+                            <div class="flex-shrink-0 avatar-xs acitivity-avatar">
+                                <div class="avatar-title bg-success-subtle text-success rounded-circle shadow">
+                                    <i class="ri-shopping-cart-2-line"></i>
+                                </div>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h6 class="mb-1">Purchase by James Price</h6>
+                                <p class="text-muted mb-1">Product noise evolve smartwatch
+                                </p>
+                                <small class="mb-0 text-muted">02:14 PM Today</small>
+                            </div>
+                        </div>
+                        <div class="acitivity-item py-3 d-flex">
+                            <div class="flex-shrink-0 avatar-xs acitivity-avatar">
+                                <div class="avatar-title bg-primary-subtle text-primary rounded-circle shadow">
+                                    <i class="ri-stack-fill"></i>
+                                </div>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h6 class="mb-1">Added new <span class="fw-semibold">style
+                                        collection</span></h6>
+                                <p class="text-muted mb-1">By Nesta Technologies</p>
+                                <div class="d-inline-flex gap-2 border border-dashed p-2 mb-2 w-75">
+                                    <a href="apps-ecommerce-product-details.html" class="bg-light rounded p-1">
+                                        <img src="assets/images/products/img-8.png" alt="" class="img-fluid d-block">
+                                    </a>
+                                    <a href="apps-ecommerce-product-details.html" class="bg-light rounded p-1">
+                                        <img src="assets/images/products/img-2.png" alt="" class="img-fluid d-block">
+                                    </a>
+                                    <a href="apps-ecommerce-product-details.html" class="bg-light rounded p-1">
+                                        <img src="assets/images/products/img-10.png" alt="" class="img-fluid d-block">
+                                    </a>
+                                </div>
+                                <p class="mb-0 text-muted"><small>9:47 PM Yesterday</small>
+                                </p>
+                            </div>
+                        </div>
+                        <div class="acitivity-item py-3 d-flex">
+                            <div class="flex-shrink-0">
+                                <img src="assets/images/users/avatar-2.jpg" alt="" class="avatar-xs rounded-circle acitivity-avatar shadow">
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h6 class="mb-1">Natasha Carey have liked the products</h6>
+                                <p class="text-muted mb-1">Allow users to like products in
+                                    your WooCommerce store.</p>
+                                <small class="mb-0 text-muted">25 Dec, 2021</small>
+                            </div>
+                        </div>
+                        <div class="acitivity-item py-3 d-flex">
+                            <div class="flex-shrink-0">
+                                <div class="avatar-xs acitivity-avatar">
+                                    <div class="avatar-title rounded-circle bg-secondary shadow">
+                                        <i class="mdi mdi-sale fs-14"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h6 class="mb-1">Today offers by <a href="apps-ecommerce-seller-details.html" class="link-secondary">Digitech Galaxy</a></h6>
+                                <p class="text-muted mb-2">Offer is valid on orders of
+                                    Rs.500 Or above for selected products only.</p>
+                                <small class="mb-0 text-muted">12 Dec, 2021</small>
+                            </div>
+                        </div>
+                        <div class="acitivity-item py-3 d-flex">
+                            <div class="flex-shrink-0">
+                                <div class="avatar-xs acitivity-avatar">
+                                    <div class="avatar-title rounded-circle bg-danger-subtle text-danger shadow">
+                                        <i class="ri-bookmark-fill"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h6 class="mb-1">Favoried Product</h6>
+                                <p class="text-muted mb-2">Esther James have favorited
+                                    product.</p>
+                                <small class="mb-0 text-muted">25 Nov, 2021</small>
+                            </div>
+                        </div>
+                        <div class="acitivity-item py-3 d-flex">
+                            <div class="flex-shrink-0">
+                                <div class="avatar-xs acitivity-avatar">
+                                    <div class="avatar-title rounded-circle bg-secondary shadow">
+                                        <i class="mdi mdi-sale fs-14"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h6 class="mb-1">Flash sale starting <span class="text-primary">Tomorrow.</span></h6>
+                                <p class="text-muted mb-0">Flash sale by <a href="javascript:void(0);" class="link-secondary fw-medium">Zoetic Fashion</a>
+                                </p>
+                                <small class="mb-0 text-muted">22 Oct, 2021</small>
+                            </div>
+                        </div>
+                        <div class="acitivity-item py-3 d-flex">
+                            <div class="flex-shrink-0">
+                                <div class="avatar-xs acitivity-avatar">
+                                    <div class="avatar-title rounded-circle bg-info-subtle text-info shadow">
+                                        <i class="ri-line-chart-line"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h6 class="mb-1">Monthly sales report</h6>
+                                <p class="text-muted mb-2"><span class="text-danger">2 days
+                                        left</span> notification to submit the monthly sales
+                                    report. <a href="javascript:void(0);" class="link-warning text-decoration-underline">Reports
+                                        Builder</a></p>
+                                <small class="mb-0 text-muted">15 Oct</small>
+                            </div>
+                        </div>
+                        <div class="acitivity-item d-flex">
+                            <div class="flex-shrink-0">
+                                <img src="assets/images/users/avatar-3.jpg" alt="" class="avatar-xs rounded-circle acitivity-avatar shadow">
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h6 class="mb-1">Frank Hook Commented</h6>
+                                <p class="text-muted mb-2 fst-italic">" A product that has
+                                    reviews is more likable to be sold than a product. "</p>
+                                <small class="mb-0 text-muted">26 Aug, 2021</small>
+                            </div>
+                        </div>
+                    </div>
+                </div></div></div></div><div class="simplebar-placeholder" style="width: 342px; height: 895px;"></div></div><div class="simplebar-track simplebar-horizontal" style="visibility: hidden;"><div class="simplebar-scrollbar" style="width: 0px; display: none;"></div></div><div class="simplebar-track simplebar-vertical" style="visibility: visible;"><div class="simplebar-scrollbar" style="height: 148px; transform: translate3d(0px, 0px, 0px); display: block;"></div></div></div>
+            </div><!-- end card body -->
+        </div>
+    </div>
+    <!--end col-->
+</div>
+<!--end row-->
+
+
+@endsection

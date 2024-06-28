@@ -53,6 +53,66 @@ class Leave extends Model
     }
 
     /**
+     * Get the assistingStaff that owns the Leave
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function assistingStaff()
+    {
+        return $this->belongsTo(Staff::class, 'assisting_staff_id');
+    }
+
+    /**
+     * Get the hod that owns the Leave
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function hod()
+    {
+        return $this->belongsTo(Staff::class, 'hod_id');
+    }
+
+    /**
+     * Get the dean that owns the Leave
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function dean()
+    {
+        return $this->belongsTo(Staff::class, 'dean_id');
+    }
+
+    /**
+     * Get the humanResource that owns the Leave
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function humanResource()
+    {
+        return $this->belongsTo(Staff::class, 'hr_id');
+    }
+
+    /**
+     * Get the registrar that owns the Leave
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function registrar()
+    {
+        return $this->belongsTo(Staff::class, 'registrar_id');
+    }
+
+    /**
+     * Get the viceChancellor that owns the Leave
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function viceChancellor()
+    {
+        return $this->belongsTo(Staff::class, 'vc_id');
+    }
+
+    /**
      * Get all of the attendance for the Leave
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany

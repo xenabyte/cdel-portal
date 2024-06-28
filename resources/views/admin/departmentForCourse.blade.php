@@ -146,7 +146,7 @@
                             @php
                                 $courseManagement =  $course->courseManagement->where('academic_session', $pageGlobalData->sessionSetting->academic_session);
                                 $assignedCourse = $courseManagement->where('academic_session', $pageGlobalData->sessionSetting->academic_session)->first();
-                                $staff = !empty($assignedCourse) ? $assignedCourse->staff->title.' '.$assignedCourse->staff->lastname.' '.$assignedCourse->staff->othernames :null;
+                                $staff = !empty($assignedCourse) && !empty($assignedCourse->staff) ? $assignedCourse->staff->title.' '.$assignedCourse->staff->lastname.' '.$assignedCourse->staff->othernames :null;
                                 $password = !empty($assignedCourse) ? $assignedCourse->passcode :null;
                             @endphp
                             <th scope="row">{{ $loop->iteration }}</th>

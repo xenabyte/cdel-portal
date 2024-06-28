@@ -79,6 +79,7 @@ class LeaveController extends Controller
             'start_date' => $request->start_date,
             'end_date' => $request->end_date,
             'days' => $days,
+            'destination_address' => $request->destination_address,
             'assisting_staff_id' => $request->assisting_staff_id
         ]);
 
@@ -107,4 +108,38 @@ class LeaveController extends Controller
         return redirect()->back();
 
     }
+
+    public function leaves(){
+        $staff = Auth::guard('staff')->user();
+        $leaves = Leave::where('staff_id', $staff->id)->get();
+
+        return view('staff.leaves', [
+            'leaveApplications' => $leaves,
+        ]);
+    }
+
+    public function manageLeaves(){
+        $staff = Auth::guard('staff')->user();
+
+        $leaves = Leave::where('hod_id', $staff->id)
+        ->orWhere('dean_id', $staff->id)
+        ->orWhere('hr_id', $staff->id)
+        ->orWhere('registrar_id', $staff->id)
+        ->orWhere('vc_id', $staff->id)
+        ->get();
+
+        return view('staff.manageLeaves', [
+            'leaveManagement' => $leaves,
+        ]);
+    }
+
+    public function leave($slug){
+        $leave = Leave::where('slug', $slug)->first();
+        $leaves = Leave::where('staff_id', $leave->staff_id)->get();
+
+        return view('staff.leave', [
+            'leave' => $leave,
+        ]);
+    }
+
 }

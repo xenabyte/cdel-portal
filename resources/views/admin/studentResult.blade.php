@@ -202,7 +202,19 @@
                                 <td>
                                     <div class="flex-shrink-0">
                                         <div class="flex-shrink-0">
-                                            <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#edit{{$registeredCourse->id}}" class="btn btn-info"><i class= "mdi mdi-application-edit"></i></a>
+                                            <form method="post" action="{{ url('/admin/result/deleteStudentResult') }}">
+                                                @csrf
+                                                <input type="hidden" name="url" value="admin.studentResult">
+                                                <input type="hidden" name='course_reg_id' value="{{ $registeredCourse->id }}">
+                                                <input type="hidden" name='student_id' value="{{ $student->id }}">
+                                                <input type="hidden" name='session' value="{{ $studentSession }}">
+                                                <input type="hidden" name='level_id' value="{{  $studentLevelId }}">
+
+                                                <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#edit{{$registeredCourse->id}}" class="btn btn-info"><i class= "mdi mdi-application-edit"></i></a>
+                                                <button type="submit" class="btn btn-danger waves-effect waves-light">
+                                                  <i class="mdi mdi-trash-can"></i>
+                                                </button>
+                                            </form>
                                         </div>
                                     </div>
 
@@ -236,10 +248,10 @@
                                                             <input type="number" class="form-control" name="exam_score" id="exam_score" value="{{ $registeredCourse->exam_score }}">
                                                         </div>
 
-                                                        <div class="mb-3">
+                                                        {{-- <div class="mb-3">
                                                             <label for="total" class="form-label">Total Score</label>
                                                             <input type="number" class="form-control" name="total" id="total" value="{{ $registeredCourse->total }}">
-                                                        </div>
+                                                        </div> --}}
             
                                                         <hr>
                                                         <div class="text-end">
@@ -305,10 +317,10 @@
                         <input type="number" class="form-control" name="exam_score" id="exam_score">
                     </div>
 
-                    <div class="mb-3">
+                    {{-- <div class="mb-3">
                         <label for="total" class="form-label">Total Score</label>
                         <input type="number" class="form-control" name="total" id="total">
-                    </div>
+                    </div> --}}
                     <hr>
                     <div class="text-end">
                         <button type="submit" id="submit-button" class="btn btn-primary">Add Course </button>

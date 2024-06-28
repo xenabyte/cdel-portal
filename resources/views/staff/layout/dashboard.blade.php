@@ -321,6 +321,14 @@
                                         <li class="nav-item">
                                             <a class="nav-link menu-link" href="{{ url('staff/leaveApplication') }}" data-key="t-profile">Leave Application</a>
                                         </li>
+
+                                        <li class="nav-item">
+                                            <a class="nav-link menu-link" href="{{ url('staff/leaves') }}" data-key="t-profile">My Leaves</a>
+                                        </li>
+
+                                        <li class="nav-item">
+                                            <a class="nav-link menu-link" href="{{ url('staff/manageLeaves') }}" data-key="t-profile">Manage Leaves</a>
+                                        </li>
                                     </ul>
                                 </div>
                             </li>

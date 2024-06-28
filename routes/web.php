@@ -297,6 +297,7 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'admin'],
   Route::post('/result/getStudent', [App\Http\Controllers\Admin\ResultController::class, 'getStudent'])->name('getStudent')->middleware(['auth:admin']);
   Route::post('/result/getStudentResult', [App\Http\Controllers\Admin\ResultController::class, 'getStudentResult'])->name('getStudentResult')->middleware(['auth:admin']);
   Route::post('/result/updateStudentResult', [App\Http\Controllers\Admin\ResultController::class, 'updateStudentResult'])->name('updateStudentResult')->middleware(['auth:admin']);
+  Route::post('/result/deleteStudentResult', [App\Http\Controllers\Admin\ResultController::class, 'deleteStudentResult'])->name('deleteStudentResult')->middleware(['auth:admin']);
   Route::post('/result/addStudentCourse', [App\Http\Controllers\Admin\ResultController::class, 'addStudentCourse'])->name('addStudentCourse')->middleware(['auth:admin']);
   
   Route::get('/committees', [App\Http\Controllers\Admin\CommitteeController::class, 'committees'])->name('committees')->middleware(['auth:admin']);
@@ -585,6 +586,10 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'staff'],
 
   Route::get('/leaveApplication', [App\Http\Controllers\Staff\LeaveController::class, 'leaveApplication'])->name('leaveApplication')->middleware(['auth:staff']);
   Route::post('/applyForLeave', [App\Http\Controllers\Staff\LeaveController::class, 'applyForLeave'])->name('applyForLeave')->middleware(['auth:staff']);
+  Route::get('/leaves', [App\Http\Controllers\Staff\LeaveController::class, 'leaves'])->name('leaves')->middleware(['auth:staff']);
+  Route::get('/leave/{Slug}', [App\Http\Controllers\Staff\LeaveController::class, 'leave'])->name('leave')->middleware(['auth:staff']);
+  Route::get('/manageLeaves', [App\Http\Controllers\Staff\LeaveController::class, 'manageLeaves'])->name('manageLeaves')->middleware(['auth:staff']);
+
 
 
   

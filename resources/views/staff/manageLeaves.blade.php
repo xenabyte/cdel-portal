@@ -59,19 +59,9 @@
                                 </button>
                             </td>
                             <td>
-                               
-                                @if(empty($leave->status))
-                                <form method="post" action="{{ url('/staff/deleteLeave') }}">
-                                    @csrf
-                                    <input type="hidden" name="leaveId" value="{{ $leave->id }}">
-                                    <a href="{{ url('/staff/leave/'.$leave->slug) }}" class="btn btn-primary waves-effect waves-light">
-                                        <i class="mdi mdi-timer-settings"></i> View Leave Process
-                                    </a>
-                                    <button type="submit" class="btn btn-danger waves-effect waves-light">
-                                      <i class="mdi mdi-trash-can"></i>
-                                    </button>
-                                </form>
-                                @endif
+                                <a href="{{ url('/staff/leave/'.$leave->slug) }}" class="btn btn-primary waves-effect waves-light">
+                                    <i class="mdi mdi-timer-settings"></i> View Leave Process
+                                </a>
                             </td>
                         </tr>
                         @endforeach
