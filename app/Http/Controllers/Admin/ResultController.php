@@ -617,6 +617,7 @@ class ResultController extends Controller
             $checkCarryOver->save();
         }
 
+        $studentCourseReg->status = 'approved';
         if(!empty($totalScore)){
             $grading = GradeScale::computeGrade($totalScore);
             $grade = $grading->grade;
