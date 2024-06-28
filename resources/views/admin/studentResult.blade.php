@@ -35,7 +35,7 @@
 <!-- end row -->
 @if(!empty($student))
 <div class="row">
-    <div class="col-xxl-3">
+    <div class="col-xxl-4">
         <div class="card">
             <div class="card-body p-4">
                 <div>
@@ -124,7 +124,7 @@
     </div>
     <!--end col-->
 
-    <div class="col-xxl-9">
+    <div class="col-xxl-8">
         {{-- Student Message --}}
         @if(empty($registeredCourses))
         <div class="card">
