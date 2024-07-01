@@ -17,6 +17,8 @@ use App\Models\ResultApprovalStatus;
 use App\Models\DegreeClass;
 
 
+use Log;
+
 
 class Result
 {
@@ -40,7 +42,8 @@ class Result
 
             $student = Student::with('applicant')->where('matric_number', $matricNumber)->first();
             if(!$student){
-                return "Student with ". $matricNumber ." did register for this course.";
+                Log::info("Student with ". $matricNumber ." did register for this course.");
+                continue;
             }
 
             if($testScore < 1 && $examScore < 1){
@@ -50,7 +53,8 @@ class Result
             $totalScore = round($testScore + $examScore);
 
             if($totalScore > 100){
-                return $student->applicant->lastname.' '.$student->applicant->othernames ." total score is greater than 100.";
+                Log::info($student->applicant->lastname.' '.$student->applicant->othernames ." total score is greater than 100.");
+                continue;
             }
 
             $grading = GradeScale::computeGrade($totalScore);
@@ -61,7 +65,8 @@ class Result
             $courseCode = $course->code;
 
             if($courseCode != $courseCodeMain){
-                return "Result Uploaded is not for course: " . $courseCode;
+                Log::info("Result Uploaded is not for course: " . $courseCode);
+                continue;
             }
 
             if (strpos($courseCode, 'NSC') !== false && $student->programme_id == 15) {
