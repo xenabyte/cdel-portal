@@ -49,8 +49,6 @@ class Attendance
                         $clockOut = !empty($clockIn) ? Carbon::parse('17:00')->addMinutes(rand(0, 30))->toTimeString(): $clockOut;
                     case 'TAUSSPF020':
                         $clockOut = !empty($clockIn) ? Carbon::parse('17:00')->addMinutes(rand(0, 30))->toTimeString(): $clockOut;
-                    case 'TAUSSPF092':
-                        $clockOut = !empty($clockIn) ? Carbon::parse('17:00')->addMinutes(rand(0, 30))->toTimeString(): $clockOut;
                     default;
                     $clockOut = $clockOut;
                 }
@@ -72,8 +70,6 @@ class Attendance
                     case 'TAUSSPF021':
                         $status = $status != 2 ? 2 : $status;
                     case 'TAUSSPF020':
-                        $status = $status != 2 ? 2 : $status;
-                    case 'TAUSSPF092':
                         $status = $status != 2 ? 2 : $status;
                     default;
                     $status = $status;
