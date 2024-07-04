@@ -18,7 +18,7 @@ $hodRole = array_filter($singleStaffRoles, function ($staffRole) {
 @endphp
 
 @section('content')
-<script src="https://cdn.ckeditor.com/4.24.0/standard/ckeditor.js"></script>
+<script src="{{ env('CKEDITOR_CDN') }}"></script>
 <script>
     // Select all textarea elements and initialize CKEditor on each
     document.querySelectorAll('ckeditor').forEach((textarea) => {

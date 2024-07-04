@@ -83,7 +83,7 @@
 
     </script>
 
-    <script src="https://cdn.ckeditor.com/4.24.0/standard/ckeditor.js"></script>
+    <script src="{{ env('CKEDITOR_CDN') }}"></script>
 
     <script>
         window.Laravel = {!! json_encode(['csrfToken' => csrf_token()]) !!};
