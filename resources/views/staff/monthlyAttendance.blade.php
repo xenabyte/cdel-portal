@@ -1,14 +1,6 @@
 @extends('staff.layout.dashboard')
 
 @section('content')
-<!-- start page title -->
-<script src="{{ env('CKEDITOR_CDN') }}"></script>
-<script>
-    // Select all textarea elements and initialize CKEditor on each
-    document.querySelectorAll('ckeditor').forEach((textarea) => {
-        CKEDITOR.replace(textarea);
-    });
-</script>
 <div class="row">
     <div class="col-12">
         <div class="page-title-box d-sm-flex align-items-center justify-content-between">

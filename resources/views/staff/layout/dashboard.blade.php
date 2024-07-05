@@ -95,8 +95,6 @@
     <!-- custom Css-->
     <link href="{{asset('assets/css/custom.min.css')}}" rel="stylesheet" type="text/css" />
     
-    <script src="{{ env('CKEDITOR_CDN') }}"></script>
-
     <script>
         window.Laravel = {!! json_encode(['csrfToken' => csrf_token()]) !!};
     </script>
@@ -112,6 +110,30 @@
         s1.setAttribute('crossorigin','*');
         s0.parentNode.insertBefore(s1,s0);
         })();
+    </script>
+
+    <script src="{{ env('CKEDITOR_CDN') }}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelectorAll('.ckeditor').forEach((textarea) => {
+                ClassicEditor
+                    .create(textarea, {
+                        toolbar: [
+                            'heading', '|',
+                            'bold', 'italic', 'link', '|',
+                            'bulletedList', 'numberedList', 'blockQuote', '|',
+                            'undo', 'redo', '|',
+                            'alignment:left', 'alignment:center', 'alignment:right', 'alignment:justify'
+                        ],
+                        alignment: {
+                            options: [ 'left', 'center', 'right', 'justify' ]
+                        }
+                    })
+                    .catch(error => {
+                        console.error(error);
+                    });
+            });
+        });
     </script>
 </head>
 

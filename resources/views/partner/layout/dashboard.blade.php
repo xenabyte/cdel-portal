@@ -37,7 +37,7 @@
     <!-- custom Css-->
     <link href="{{asset('assets/css/custom.min.css')}}" rel="stylesheet" type="text/css" />
 
-    <script src="{{ env('CKEDITOR_CDN') }}"></script>
+    
     <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
     <script type="text/javascript">
         var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
@@ -49,6 +49,30 @@
         s1.setAttribute('crossorigin','*');
         s0.parentNode.insertBefore(s1,s0);
         })();
+    </script>
+
+    <script src="{{ env('CKEDITOR_CDN') }}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelectorAll('.ckeditor').forEach((textarea) => {
+                ClassicEditor
+                    .create(textarea, {
+                        toolbar: [
+                            'heading', '|',
+                            'bold', 'italic', 'link', '|',
+                            'bulletedList', 'numberedList', 'blockQuote', '|',
+                            'undo', 'redo', '|',
+                            'alignment:left', 'alignment:center', 'alignment:right', 'alignment:justify'
+                        ],
+                        alignment: {
+                            options: [ 'left', 'center', 'right', 'justify' ]
+                        }
+                    })
+                    .catch(error => {
+                        console.error(error);
+                    });
+            });
+        });
     </script>
 </head>
 
@@ -460,12 +484,6 @@
                 console.error(error);
             });
         }
-    </script>
-    <script>
-        // Select all textarea elements and initialize CKEditor on each
-        document.querySelectorAll('ckeditor').forEach((textarea) => {
-            CKEDITOR.replace(textarea);
-        });
     </script>
 </body>
 

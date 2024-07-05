@@ -32,6 +32,28 @@
     <!-- custom Css-->
     <link href="{{asset('assets/css/custom.min.css')}}" rel="stylesheet" type="text/css" />
     <script src="{{ env('CKEDITOR_CDN') }}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelectorAll('.ckeditor').forEach((textarea) => {
+                ClassicEditor
+                    .create(textarea, {
+                        toolbar: [
+                            'heading', '|',
+                            'bold', 'italic', 'link', '|',
+                            'bulletedList', 'numberedList', 'blockQuote', '|',
+                            'undo', 'redo', '|',
+                            'alignment:left', 'alignment:center', 'alignment:right', 'alignment:justify'
+                        ],
+                        alignment: {
+                            options: [ 'left', 'center', 'right', 'justify' ]
+                        }
+                    })
+                    .catch(error => {
+                        console.error(error);
+                    });
+            });
+        });
+    </script>
    
     <!--Start of Tawk.to Script-->
     <script type="text/javascript">
