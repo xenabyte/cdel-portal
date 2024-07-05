@@ -27,8 +27,10 @@ class Attendance
             $date = Carbon::parse($row['Date']);
             $year = carbon::parse($date)->format('Y');
             $month = carbon::parse($date)->format('M');
-            $clockIn = $row['Clock In'];
-            $clockOut = $row['Clock Out'];
+            $clockIn = !empty($row['Clock In'])? $row['Clock In'] : null;
+            $clockOut =  !empty($row['Clock Out'])? $row['Clock Out'] : null;
+
+
 
 
             $tauStaffId = str_replace("/", "", $staffId);
