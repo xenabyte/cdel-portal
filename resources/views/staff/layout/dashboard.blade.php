@@ -332,6 +332,12 @@
                                     <i class="mdi mdi-account-group"></i> <span data-key="t-transaction">All Student</span>
                                 </a>
                             </li>
+ 
+                            <li class="nav-item  menu-link">
+                                <a href="{{ url('/staff/graduatingStudents') }}">
+                                    <i class="mdi mdi-account-group"></i> <span data-key="t-student">Graduating Student</span>
+                                </a>
+                            </li>
                             @endif
 
                             <li class="nav-item">
