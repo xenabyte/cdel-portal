@@ -414,6 +414,7 @@ class ApplicationController extends Controller
         
         $accessCode = $this->generateAccessCode();
         $amount = $payment->structures->sum('amount');
+        $partnerId = null;
 
         if($request->has('user_id')) {
             //do something
