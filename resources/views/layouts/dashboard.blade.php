@@ -34,23 +34,9 @@
     <script src="{{ env('CKEDITOR_CDN') }}"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
+            // Replace all textarea elements with class 'ckeditor' with CKEditor instances
             document.querySelectorAll('.ckeditor').forEach((textarea) => {
-                ClassicEditor
-                    .create(textarea, {
-                        toolbar: [
-                            'heading', '|',
-                            'bold', 'italic', 'link', '|',
-                            'bulletedList', 'numberedList', 'blockQuote', '|',
-                            'undo', 'redo', '|',
-                            'alignment:left', 'alignment:center', 'alignment:right', 'alignment:justify'
-                        ],
-                        alignment: {
-                            options: [ 'left', 'center', 'right', 'justify' ]
-                        }
-                    })
-                    .catch(error => {
-                        console.error(error);
-                    });
+                CKEDITOR.replace(textarea);
             });
         });
     </script>

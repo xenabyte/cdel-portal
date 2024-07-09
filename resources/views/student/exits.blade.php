@@ -104,6 +104,7 @@
                                 <div class="form-floating">
                                     <select name="transport_mode" class="form-control" id="transport" required>
                                         <option selected value="">Select Mode of Transportation</option>
+                                        <option value="Public">Public</option>
                                         <option value="Private">Private</option>
                                         <option value="School Transport">School Transport</option>
                                         <option value="Flight">Flight</option>
