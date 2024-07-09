@@ -388,7 +388,7 @@ class ApplicationController extends Controller
             ]);
         }
 
-        if($applicant = Applicant::where('email', $request->email)->where('academic_session', $applicationSession)->first()){
+        if(!$request->has('user_id') && $applicant = Applicant::where('email', $request->email)->where('academic_session', $applicationSession)->first()){
             $transaction = Transaction::where('user_id', $applicant->id)->where('session', $applicationSession)->where('payment_id', $payment->id)->where('status', 1)->first();
 
             if(!$transaction){
