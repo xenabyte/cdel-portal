@@ -646,7 +646,7 @@
     
                 // Show or hide the fields based on the selected type
                 if (selectedType === 'Holiday') {
-                    $('#exit_date, #return_date').closest('.col-lg-6').show();
+                    $('#exit_date').closest('.col-lg-6').show();
                 } else {
                     $('#exit_date, #return_date').closest('.col-lg-6').show();
                 }
