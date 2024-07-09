@@ -62,6 +62,10 @@
                                 <input type="hidden" name="user_id" value="{{ $applicant->id }}">
                                 <input type="hidden" name="programme_id" value="{{ $applicant->programme_id }}">
                                 <input type="hidden" name="applicationType" value="{{ $applicant->application_type }}">
+                                <input type="hidden" name="email" value="{{ $applicant->email }}">
+                                <input type="hidden" name="lastname" value="{{ $applicant->lastname }}">
+                                <input type="hidden" name="othernames" value="{{ $applicant->othernames }}">
+                                <input type="hidden" name="phone_number" value="{{ $applicant->phone_number }}">
 
                                 <div class="mb-3">
                                     <label for="paymentGateway" class="form-label">Select Payment Gateway<span class="text-danger">*</span></label>
