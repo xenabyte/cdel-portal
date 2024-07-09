@@ -53,13 +53,16 @@
 
     <script src="{{ env('CKEDITOR_CDN') }}"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            // Replace all textarea elements with class 'ckeditor' with CKEditor instances
-            document.querySelectorAll('.ckeditor').forEach((textarea) => {
-                CKEDITOR.replace(textarea);
-            });
+        // Select all textarea elements and initialize CKEditor on each
+        document.querySelectorAll('ckeditor').forEach((textarea) => {
+            CKEDITOR.replace(textarea);
         });
-    </script>
+    </script>    
+    <style>
+        .cke_notifications_area{
+            display: none;
+        }
+    </style>
 </head>
 
 <body>

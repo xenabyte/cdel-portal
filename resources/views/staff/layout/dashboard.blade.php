@@ -114,27 +114,16 @@
 
     <script src="{{ env('CKEDITOR_CDN') }}"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            document.querySelectorAll('.ckeditor').forEach((textarea) => {
-                ClassicEditor
-                    .create(textarea, {
-                        toolbar: [
-                            'heading', '|',
-                            'bold', 'italic', 'link', '|',
-                            'bulletedList', 'numberedList', 'blockQuote', '|',
-                            'undo', 'redo', '|',
-                            'alignment:left', 'alignment:center', 'alignment:right', 'alignment:justify'
-                        ],
-                        alignment: {
-                            options: [ 'left', 'center', 'right', 'justify' ]
-                        }
-                    })
-                    .catch(error => {
-                        console.error(error);
-                    });
-            });
+        // Select all textarea elements and initialize CKEditor on each
+        document.querySelectorAll('ckeditor').forEach((textarea) => {
+            CKEDITOR.replace(textarea);
         });
-    </script>
+    </script>    
+    <style>
+        .cke_notifications_area{
+            display: none;
+        }
+    </style>
 </head>
 
 <body>
