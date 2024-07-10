@@ -95,7 +95,7 @@ $qrcode = 'https://quickchart.io/chart?chs=300x300&cht=qr&chl='.env('APP_URL').'
                             <div><strong>Destination:</strong> {{ $exitApplication->destination }}</div>
                             <div><strong>Purpose:</strong> {{ $exitApplication->purpose }}</div>
                             <div><strong>Mode of Transportation:</strong> {{ $exitApplication->transport_mode }}</div>
-                            @if(!empty($exitApplication->exit_date))<div><strong>Outing Date:</strong> {{ empty($exitApplication->exit_date)? null : date('F j, Y \a\t g:i A', strtotime($exitApplication->exit_date)) }}</div>@endif
+                            @if(!empty($exitApplication->exit_date))<div><strong>Outing Date:</strong> {{ empty($exitApplication->exit_date)? null : date('F j, Y', strtotime($exitApplication->exit_date)) }}</div>@endif
                             @if(!empty($exitApplication->return_date))<div><strong>Returning Date:</strong> {{ empty($exitApplication->return_date)? null : date('F j, Y \a\t g:i A', strtotime($exitApplication->return_date)) }}</div>@endif
                             <div><hr></div>
                             <div><strong>Student Email:</strong> {{ $info->email }}</div>
