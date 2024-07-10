@@ -318,13 +318,13 @@
                             @if($staff->staffRoles->count() > 0)
                             <li class="nav-item">
                                 <a class="nav-link menu-link" href="{{ url('staff/allStudents') }}">
-                                    <i class="mdi mdi-account-group"></i> <span data-key="t-transaction">All Student</span>
+                                    <i class="mdi mdi-account-group"></i> <span data-key="t-transaction">All Students</span>
                                 </a>
                             </li>
- 
-                            <li class="nav-item  menu-link">
-                                <a href="{{ url('/staff/graduatingStudents') }}">
-                                    <i class="mdi mdi-account-group"></i> <span data-key="t-student">Graduating Student</span>
+
+                            <li class="nav-item">
+                                <a class="nav-link menu-link" href="{{ url('staff/graduatingStudents') }}">
+                                    <i class="mdi mdi-trophy-award"></i> <span data-key="t-student">Graduating Students</span>
                                 </a>
                             </li>
                             @endif
@@ -924,19 +924,6 @@
             // Replace the text with a spinner
             $(this).html("<i class='fa fa-spinner fa-spin'></i>");
           });
-        });
-    </script>
-    <script>
-        document.querySelectorAll('ckeditor').forEach((textarea) => {
-            CKEDITOR.replace(textarea);
-        });
-
-        document.querySelectorAll('ckeditor1').forEach((textarea) => {
-            CKEDITOR.replace(textarea);
-        });
-
-        document.querySelectorAll('ckeditor2').forEach((textarea) => {
-            CKEDITOR.replace(textarea);
         });
     </script>
 </body>

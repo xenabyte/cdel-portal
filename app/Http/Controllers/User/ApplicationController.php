@@ -452,6 +452,7 @@ class ApplicationController extends Controller
             'application_type' => $applicationType == 'Inter Transfer Application'? $applicationType : null,
             'amount' => $amount,
             'student_id' => null,
+            'user_id' => $userId,
             'payment_id' => $payment->id,
             'payment_gateway' => $paymentGateway,
             'reference' => $reference,

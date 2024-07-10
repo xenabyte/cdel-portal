@@ -126,10 +126,11 @@ class LeaveController extends Controller
         ->orWhere('hr_id', $staff->id)
         ->orWhere('registrar_id', $staff->id)
         ->orWhere('vc_id', $staff->id)
+        ->orWhere('assisting_staff_id', $staff->id)
         ->get();
 
         return view('staff.manageLeaves', [
-            'leaveManagement' => $leaves,
+            'leaveApplications' => $leaves,
         ]);
     }
 
@@ -140,6 +141,55 @@ class LeaveController extends Controller
         return view('staff.leave', [
             'leave' => $leave,
         ]);
+    }
+
+
+    public function assistingStaffMgt(Request $request){
+        $staff = Auth::guard('staff')->user();
+        
+        $validator = Validator::make($request->all(), [
+            'leave_id' => 'required',
+        ]);
+
+        if($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+        $status = $request->status;
+
+        if($leave = Leave::where('assisting_staff_id', $staff->id)->where('id', $request->leave_id)->first()){
+            $leave->assisting_staff_status = $status;
+            $leave->save();
+
+            if($status == "confirmed"){
+
+            }else{
+                $senderName = env('SCHOOL_NAME');
+                $receiverName = $staff->lastname .' ' . $staff->othernames;
+                $message = 'You have been assigned to assist in discharging duties for'.$staff->lastname.' '. $staff->othernames .' while he/she is on leave. Please log in to the staff portal to review and approve this assignment.';
+
+    
+                $mail = new NotificationMail($senderName, $message, $receiverName);
+                Mail::to($staff->email)->send($mail);
+                Notification::create([
+                    'staff_id' => $staff->id,
+                    'description' => $message,
+                    'status' => 0
+                ]);
+            }
+
+
+            alert()->success('Success', 'Assisting staff has been removed from this leave application')->persistent('Close');
+            return redirect()->back();
+        }
+
+
+        alert()->success('Success', 'Leave application process started successfully')->persistent('Close');
+        return redirect()->back();
+    
+
+    alert()->error('Error', 'Error Submitting Leave Application, Report to Administrator')->persistent('Close');
+    return redirect()->back();
     }
 
 }

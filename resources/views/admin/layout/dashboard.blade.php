@@ -40,7 +40,6 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
     <script src="{{ env('CKEDITOR_CDN') }}"></script>
     <script>
-        // Select all textarea elements and initialize CKEditor on each
         document.querySelectorAll('ckeditor').forEach((textarea) => {
             CKEDITOR.replace(textarea);
         });
@@ -611,7 +610,6 @@
 
             <div class="page-content">
                 <div class="container-fluid">
-                    <h4 class="fs-16 mb-1"><span id="greeting">Hello</span>, {{ $name }}!</h4>
                    @yield('content')
 
                 </div>

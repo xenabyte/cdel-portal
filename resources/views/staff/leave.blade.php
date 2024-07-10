@@ -1,9 +1,13 @@
 @extends('staff.layout.dashboard')
 @php
+
+$staffId = Auth::guard('staff')->user()->id;
+
 $staff = $leave->staff;
 $name = $staff->title.' '.$staff->lastname.' '.$staff->othernames;
 
 $assistingStaff = $leave->assistingStaff;
+$assistingStaffId = $leave->assistingStaff->id;
 $assistingstaffName = $assistingStaff->title.' '.$assistingStaff->lastname.' '.$assistingStaff->othernames;
 @endphp
 @section('content')
@@ -51,15 +55,10 @@ $assistingstaffName = $assistingStaff->title.' '.$assistingStaff->lastname.' '.$
                                 </div>
                             </div>
                         </div>
-                        @if(!empty($staffAccessLevel) && $staffAccessLevel < 6)
                         <div class="col-md-auto">
                             <div class="hstack gap-1 flex-wrap">
-                                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#assignRole">Assign Role</button>
-
-                                @if(!empty($staff->faculty))
-                                    @if(!empty($staffAccessLevel) && $staffAccessLevel < 2 && ($staff->id != $staff->faculty->dean_id))
-                                        <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#assignDeanToFaculty"> Assign Dean To Faculty</button>
-                                    @endif
+                                @if($assistingStaffId == $staffId)
+                                    <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#assistingStaffMgt"> Manage Leave</button>
                                 @endif
                                 @if(!empty($staff->faculty))
                                     @if(!empty($staffAccessLevel) && $staffAccessLevel < 3 && ($staff->id != $staff->faculty->sub_dean_id) && ($staff->id != $staff->faculty->dean_id))
@@ -74,7 +73,6 @@ $assistingstaffName = $assistingStaff->title.' '.$assistingStaff->lastname.' '.$
 
                             </div>
                         </div>
-                        @endif
                     </div>
                 </div>
                 <!-- end card body -->
@@ -264,6 +262,40 @@ $assistingstaffName = $assistingStaff->title.' '.$assistingStaff->lastname.' '.$
     <!--end col-->
 </div>
 <!--end row-->
+
+<div id="assistingStaffMgt" class="modal fade" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" style="display: none;">
+    <!-- Fullscreen Modals -->
+    <div class="modal-dialog modal-md">
+        <div class="modal-content border-0 overflow-hidden">
+            <div class="modal-header p-3">
+                <h4 class="card-title mb-0">Manage Leave</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <hr>
+            <div class="modal-body">
+                <form action="{{ url('/staff/assistingStaffMgt') }}" method="post" enctype="multipart/form-data">
+                    @csrf
+                    <input type="hidden" name="leave_id" value="{{ $leave->id }}">
+                    <input type="hidden" name="assisting_staff_id" value="{{ $staffId }}" >
+
+                    <div class="mb-3">
+                        <label for="role" class="form-label">Select Option</label>
+                        <select class="form-select" aria-label="role" name="status" required>
+                            <option selected value= "">Select Option </option>
+                            <option selected value="Confirm">Confirmed</option>
+                            <option selected value="Decline">Declined</option>
+                        </select>
+                    </div>
+
+                    <hr>
+                    <div class="text-end">
+                        <button type="submit" id="submit-button" class="btn btn-primary">Manage Leave</button>
+                    </div>
+                </form>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
 
 
 @endsection
