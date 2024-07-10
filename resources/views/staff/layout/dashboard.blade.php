@@ -523,6 +523,9 @@
                                             <a href="{{ url('/staff/studentExits') }}" class="nav-link">Student Exit <span class="badge badge-pill bg-danger" data-key="t-hot">{{ !empty($pageGlobalData->exitApplicationCount) ? $pageGlobalData->exitApplicationCount : 0 }}</span></a>
                                         </li>
                                         <li class="nav-item">
+                                            <a href="{{ url('/staff/verifyStudentExits') }}" class="nav-link">Verify Student Exit</a>
+                                        </li>
+                                        <li class="nav-item">
                                             <a href="{{ url('/staff/studentHostelMgt') }}" class="nav-link">Student Hostel Mgt</a>
                                         </li>
                                     </ul>

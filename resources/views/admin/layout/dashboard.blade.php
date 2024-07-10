@@ -339,6 +339,20 @@
                             </div>
                         </li> <!-- end Bursary Menu -->
 
+                        <li class="menu-title"><i class="ri-more-fill"></i> <span data-key="t-directoriates">Directoriates</span></li>
+
+                        <li class="nav-item">
+                            <a class="nav-link menu-link" href="#directoriates" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="academicSettings">
+                                <i class="mdi mdi-application-array-outline"></i> <span data-key="t-directoriates">Directoriates</span>
+                            </a>
+                            <div class="collapse menu-dropdown" id="directoriates">
+                                <ul class="nav nav-sm flex-column">
+                                    <li class="nav-item">
+                                        <a href="{{('/admin/units')}}" class="nav-link" data-key="t-cover"> Directoriates </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li> <!-- end Dashboard Menu -->
 
                         <li class="menu-title"><i class="ri-more-fill"></i> <span data-key="t-academics">Academics</span></li>
 
@@ -507,9 +521,6 @@
                                                 </li>
                                                 <li class="nav-item">
                                                     <a href="{{('/admin/staffRoles')}}" class="nav-link" data-key="t-cover"> Staff Roles </a>
-                                                </li>
-                                                <li class="nav-item">
-                                                    <a href="{{('/admin/units')}}" class="nav-link" data-key="t-cover"> Staff Units </a>
                                                 </li>
                                                 <li class="nav-item">
                                                     <a href="{{('/admin/attendance')}}" class="nav-link" data-key="t-cover"> Staff Attendance </a>

@@ -16,6 +16,7 @@ use App\Models\Attendance;
 use App\Models\Staff;
 use App\Models\Leave;
 use App\Models\Notification;
+use App\Models\Unit;
 
 use App\Mail\NotificationMail;
 
@@ -159,24 +160,65 @@ class LeaveController extends Controller
 
         if($leave = Leave::where('assisting_staff_id', $staff->id)->where('id', $request->leave_id)->first()){
             $leave->assisting_staff_status = $status;
-            $leave->save();
+            
+
+            $assistingStaff = Staff::find($leave->assisting_staff_id);
+            $receiverName = $staff->lastname .' ' . $staff->othernames;
+            $senderName = env('SCHOOL_NAME');
+
+            $staffCategory = $staff->category;
+            $preceedingOfficer = $staffCategory == "Academic" ? "Head of Department" : "Head of Unit";
+            $hodId = null;
+            $hodName = null;
+            if ($staffCategory == "Academic") {
+                $staffDepartment = Department::with('hod')->where('id', $staff->department_id)->first();
+                
+                $hodId = $staffDepartment? $staffDepartment->hod->id : null;
+            } else {
+                $staffDepartment = Unit::with('unit_head')->where('id', $staff->unit_id)->first();
+                $hodId = $staffDepartment? $staffDepartment->unit_head->id : null;
+            }
+
+            
+
 
             if($status == "confirmed"){
+                $message = 'Your standing in staff has agreed to stand in during your leave period. your leave application have been pushed to your '.$preceedingOfficer;
+
+                if($assistingStaff){
+                    $message = $assistingStaff->lastname.' '. $assistingStaff->othernames .' has agreed to stand in during your leave period. your leave application have been pushed to the '.$preceedingOfficer;
+                }
+
+                if($hodId){
+                    $leave->hod_id = $hodId;
+
+                    $hodMessage = 'You have a pending leave application to attend to. The standing-in staff has agreed to cover during the leave period. Please review the application on the staff portal.';
+                    $mail = new NotificationMail($senderName, $hodMessage, $receiverName);
+                    Mail::to($staff->email)->send($mail);
+                    Notification::create([
+                        'staff_id' => $hodId,
+                        'description' => $hodMessage,
+                        'status' => 0
+                    ]);
+                }
 
             }else{
-                $senderName = env('SCHOOL_NAME');
-                $receiverName = $staff->lastname .' ' . $staff->othernames;
-                $message = 'You have been assigned to assist in discharging duties for'.$staff->lastname.' '. $staff->othernames .' while he/she is on leave. Please log in to the staff portal to review and approve this assignment.';
+                $message = 'Your standing in staff has declined to stand in during your leave period. Please log in to update your leave and select another staff.';
 
-    
-                $mail = new NotificationMail($senderName, $message, $receiverName);
-                Mail::to($staff->email)->send($mail);
-                Notification::create([
-                    'staff_id' => $staff->id,
-                    'description' => $message,
-                    'status' => 0
-                ]);
+                if($assistingStaff){
+                    $message = $assistingStaff->lastname.' '. $assistingStaff->othernames .'\' has declined to stand in during your leave period. Please log in to update your leave and select another staff.';
+                }
             }
+
+            $leave->save();
+
+            $mail = new NotificationMail($senderName, $message, $receiverName);
+            Mail::to($staff->email)->send($mail);
+            Notification::create([
+                'staff_id' => $staff->id,
+                'description' => $message,
+                'status' => 0
+            ]);
 
 
             alert()->success('Success', 'Assisting staff has been removed from this leave application')->persistent('Close');
@@ -184,12 +226,8 @@ class LeaveController extends Controller
         }
 
 
-        alert()->success('Success', 'Leave application process started successfully')->persistent('Close');
+        alert()->error('Error', 'Invalid Leave Application, Report to Administrator')->persistent('Close');
         return redirect()->back();
-    
-
-    alert()->error('Error', 'Error Submitting Leave Application, Report to Administrator')->persistent('Close');
-    return redirect()->back();
     }
 
 }
