@@ -14,9 +14,11 @@ use Illuminate\Support\Facades\Validator;
 
 use App\Models\Attendance;
 use App\Models\Staff;
+use App\Models\StaffRole;
 use App\Models\Leave;
 use App\Models\Notification;
 use App\Models\Unit;
+use App\Models\Role;
 
 use App\Mail\NotificationMail;
 
@@ -147,87 +149,385 @@ class LeaveController extends Controller
 
     public function assistingStaffMgt(Request $request){
         $staff = Auth::guard('staff')->user();
-        
+
+        // Validate request
         $validator = Validator::make($request->all(), [
             'leave_id' => 'required',
         ]);
 
-        if($validator->fails()) {
-            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+        if ($validator->fails()) {
+            alert()->error('Error', $validator->messages()->first())->persistent('Close');
             return redirect()->back();
         }
+
         $status = $request->status;
 
-        if($leave = Leave::where('assisting_staff_id', $staff->id)->where('id', $request->leave_id)->first()){
-            $leave->assisting_staff_status = $status;
-            
-
-            $assistingStaff = Staff::find($leave->assisting_staff_id);
-            $receiverName = $staff->lastname .' ' . $staff->othernames;
-            $senderName = env('SCHOOL_NAME');
-
-            $staffCategory = $staff->category;
-            $preceedingOfficer = $staffCategory == "Academic" ? "Head of Department" : "Head of Unit";
-            $hodId = null;
-            $hodName = null;
-            if ($staffCategory == "Academic") {
-                $staffDepartment = Department::with('hod')->where('id', $staff->department_id)->first();
-                
-                $hodId = $staffDepartment? $staffDepartment->hod->id : null;
-            } else {
-                $staffDepartment = Unit::with('unit_head')->where('id', $staff->unit_id)->first();
-                $hodId = $staffDepartment? $staffDepartment->unit_head->id : null;
-            }
-
-            
-
-
-            if($status == "confirmed"){
-                $message = 'Your standing in staff has agreed to stand in during your leave period. your leave application have been pushed to your '.$preceedingOfficer;
-
-                if($assistingStaff){
-                    $message = $assistingStaff->lastname.' '. $assistingStaff->othernames .' has agreed to stand in during your leave period. your leave application have been pushed to the '.$preceedingOfficer;
-                }
-
-                if($hodId){
-                    $leave->hod_id = $hodId;
-
-                    $hodMessage = 'You have a pending leave application to attend to. The standing-in staff has agreed to cover during the leave period. Please review the application on the staff portal.';
-                    $mail = new NotificationMail($senderName, $hodMessage, $receiverName);
-                    Mail::to($staff->email)->send($mail);
-                    Notification::create([
-                        'staff_id' => $hodId,
-                        'description' => $hodMessage,
-                        'status' => 0
-                    ]);
-                }
-
-            }else{
-                $message = 'Your standing in staff has declined to stand in during your leave period. Please log in to update your leave and select another staff.';
-
-                if($assistingStaff){
-                    $message = $assistingStaff->lastname.' '. $assistingStaff->othernames .'\' has declined to stand in during your leave period. Please log in to update your leave and select another staff.';
-                }
-            }
-
-            $leave->save();
-
-            $mail = new NotificationMail($senderName, $message, $receiverName);
-            Mail::to($staff->email)->send($mail);
-            Notification::create([
-                'staff_id' => $staff->id,
-                'description' => $message,
-                'status' => 0
-            ]);
-
-
-            alert()->success('Success', 'Assisting staff has been removed from this leave application')->persistent('Close');
+        // Check if the leave exists for the assisting staff
+        $leave = Leave::where('assisting_staff_id', $staff->id)->where('id', $request->leave_id)->first();
+        if (!$leave) {
+            alert()->error('Error', 'Invalid Leave Application, Report to Administrator')->persistent('Close');
             return redirect()->back();
         }
 
+        $leave->assisting_staff_status = $status;
 
-        alert()->error('Error', 'Invalid Leave Application, Report to Administrator')->persistent('Close');
+        $assistingStaff = Staff::find($leave->assisting_staff_id);
+        $receiverName = $staff->lastname . ' ' . $staff->othernames;
+        $senderName = env('SCHOOL_NAME');
+
+        // Determine the preceding officer based on staff category
+        $staffCategory = $staff->category;
+        $precedingOfficer = $staffCategory == "Academic" ? "Head of Department" : "Head of Unit";
+
+        // Get HOD details
+        $hodId = null;
+        if ($staffCategory == "Academic") {
+            $staffDepartment = Department::with('hod')->where('id', $staff->department_id)->first();
+            $hodId = $staffDepartment ? $staffDepartment->hod->id : null;
+            $hodName =  $staffDepartment->hod? $staffDepartment->hod->lastname . ' ' . $staffDepartment->hod->othernames : null;
+            $hodEmail = $staffDepartment->hod? $staffDepartment->hod->email : null;
+        } else {
+            $staffDepartment = Unit::with('unit_head')->where('id', $staff->unit_id)->first();
+            $hodId = $staffDepartment->unit_head ? $staffDepartment->unit_head->id : null;
+            $hodName =  $staffDepartment->unit_head? $staffDepartment->unit_head->lastname . ' ' . $staffDepartment->unit_head->othernames : null;
+            $hodEmail = $staffDepartment->unit_head? $staffDepartment->unit_head->email : null;
+        }
+
+        // Construct messages based on status
+        if ($status == "confirm") {
+            $message = 'Your standing-in staff has agreed to stand in during your leave period. Your leave application has been pushed to your ' . $precedingOfficer;
+
+            if ($assistingStaff) {
+                $message = $assistingStaff->lastname . ' ' . $assistingStaff->othernames . ' has agreed to stand in during your leave period. Your leave application has been pushed to the ' . $precedingOfficer;
+            }
+
+            if ($hodId) {
+                $leave->hod_id = $hodId;
+                $hodMessage = 'You have a pending leave application to attend to. The standing-in staff has agreed to cover during the leave period. Please review the application on the staff portal.';
+                
+                // Send notification to HOD
+                $mail = new NotificationMail($senderName, $hodMessage, $hodName);
+                Mail::to($hodEmail)->send($mail);
+                Notification::create([
+                    'staff_id' => $hodId,
+                    'description' => $hodMessage,
+                    'status' => 0
+                ]);
+            }
+        } else {
+            $message = 'Your standing-in staff has declined to stand in during your leave period. Please log in to update your leave and select another staff.';
+
+            if ($assistingStaff) {
+                $message = $assistingStaff->lastname . ' ' . $assistingStaff->othernames . ' has declined to stand in during your leave period. Please log in to update your leave and select another staff.';
+            }
+        }
+
+        $leave->save();
+
+        // Send notification to the staff
+        $mail = new NotificationMail($senderName, $message, $receiverName);
+        Mail::to($staff->email)->send($mail);
+        Notification::create([
+            'staff_id' => $staff->id,
+            'description' => $message,
+            'status' => 0
+        ]);
+
+        alert()->success('Success', 'Assisting staff status has been updated successfully')->persistent('Close');
         return redirect()->back();
     }
+
+    public function hodLeaveMgt(Request $request){
+        $staff = Auth::guard('staff')->user();
+
+        // Validate request
+        $validator = Validator::make($request->all(), [
+            'leave_id' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            alert()->error('Error', $validator->messages()->first())->persistent('Close');
+            return redirect()->back();
+        }
+
+        $status = $request->status;
+
+        // Check if the leave exists for the assisting staff
+        $leave = Leave::where('hod_id', $staff->id)->where('id', $request->leave_id)->first();
+        if (!$leave) {
+            alert()->error('Error', 'Invalid Leave Application, Report to Administrator')->persistent('Close');
+            return redirect()->back();
+        }
+
+        $leave->hod_status = $status;
+        $leave->hod_comment = $request->hod_comment;
+
+        $hodStaff = Staff::find($leave->hod_id);
+        $receiverName = $staff->lastname . ' ' . $staff->othernames;
+        $senderName = env('SCHOOL_NAME');
+
+        // Determine the preceding officer based on staff category
+        $staffCategory = $staff->category;
+        $precedingOfficer = $staffCategory == "Academic" ? "Head of Faculty" : "HR";
+
+        // Get HOD details
+        $deanId = null;
+        $hrId = null;
+        if ($staffCategory == "Academic") {
+            $staffFaculty = Faculty::with('dean')->where('id', $staff->faculty_id)->first();
+            $deanId = $staffFaculty ? $staffFaculty->dean->id : null;
+            $deanName = $staffFaculty->dean->lastname . ' ' . $staffFaculty->dean->othernames;
+            $deanEmail = $staffFaculty->dean->email;
+        } else {
+            $hrRoleId = Role::getRole(Role::ROLE_HR);
+            $hr = Staff::whereHas('staffRoles', function ($query) use ($hrRoleId) {
+                $query->where('role_id', $hrRoleId);
+            })->first();
+            $hrName = $hr->lastname . ' ' . $hr->othernames;
+            $hrEmail = $hr->email;
+        }
+
+        // Construct messages based on status
+        if ($status == "confirm") {
+            $message = 'Your HOD/HOU has approve your leave application. Application has been sent to the '.$precedingOfficer.' for processing';
+
+            if ($deanId) {
+                $leave->dean_id = $deanId;
+                $deanMessage = 'You have a pending leave application to attend to. Please review the application on the staff portal.';
+                
+                // Send notification to HOD
+                $deanMail = new NotificationMail($senderName, $deanMessage, $deanName);
+                Mail::to($deanEmail)->send($deanMail);
+                Notification::create([
+                    'staff_id' => $deanId,
+                    'description' => $deanMessage,
+                    'status' => 0
+                ]);
+            }
+
+            if ($hrId) {
+                $leave->hr_id = $hrId;
+                $hrMessage = 'You have a pending leave application to attend to. Please review the application on the staff portal.';
+                
+                // Send notification to HOD
+                $hrMail = new NotificationMail($senderName, $hrMessage, $hrName);
+                Mail::to($hrEmail)->send($hrMail);
+                Notification::create([
+                    'staff_id' => $hrId,
+                    'description' => $hrMessage,
+                    'status' => 0
+                ]);
+            }
+        } else {
+            $message = 'Your HOD/HOU has declined your leave application.';
+            $leave->status = $request->status;
+        }
+
+        $leave->save();
+
+        // Send notification to the staff
+        $mail = new NotificationMail($senderName, $message, $receiverName);
+        Mail::to($staff->email)->send($mail);
+        Notification::create([
+            'staff_id' => $staff->id,
+            'description' => $message,
+            'status' => 0
+        ]);
+
+        alert()->success('Success', 'Assisting staff status has been updated successfully')->persistent('Close');
+        return redirect()->back();
+    }
+
+    public function deanLeaveMgt(Request $request){
+        $staff = Auth::guard('staff')->user();
+
+        // Validate request
+        $validator = Validator::make($request->all(), [
+            'leave_id' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            alert()->error('Error', $validator->messages()->first())->persistent('Close');
+            return redirect()->back();
+        }
+
+        $status = $request->status;
+
+        // Check if the leave exists for the assisting staff
+        $leave = Leave::where('dean_id', $staff->id)->where('id', $request->leave_id)->first();
+        if (!$leave) {
+            alert()->error('Error', 'Invalid Leave Application, Report to Administrator')->persistent('Close');
+            return redirect()->back();
+        }
+
+        $leave->dean_status = $status;
+        $leave->dean_comment = $request->hod_comment;
+
+
+        $deanStaff = Staff::find($leave->dean_id);
+        $receiverName = $staff->lastname . ' ' . $staff->othernames;
+        $senderName = env('SCHOOL_NAME');
+
+        // Determine the preceding officer based on staff category
+        $precedingOfficer = "HR";
+
+        // Get HOD details
+        $hrId = null;
+        
+        $hrRoleId = Role::getRole(Role::ROLE_HR);
+        $hr = Staff::whereHas('staffRoles', function ($query) use ($hrRoleId) {
+            $query->where('role_id', $hrRoleId);
+        })->first();
+        $hrName = $hr->lastname . ' ' . $hr->othernames;
+        $hrEmail = $hr->email;
+        
+
+        // Construct messages based on status
+        if ($status == "confirm") {
+            $message = 'Your Dean has approve your leave application. Application has been sent to the '.$precedingOfficer.' for processing';
+
+            if ($hrId) {
+                $leave->hr_id = $hrId;
+                $hrMessage = 'You have a pending leave application to attend to. Please review the application on the staff portal.';
+                
+                // Send notification to HOD
+                $hrMail = new NotificationMail($senderName, $hrMessage, $hrName);
+                Mail::to($hrEmail)->send($hrMail);
+                Notification::create([
+                    'staff_id' => $hrId,
+                    'description' => $hrMessage,
+                    'status' => 0
+                ]);
+            }
+        } else {
+            $message = 'Your Dean has declined your leave application.';
+            $leave->status = $request->status;
+        }
+
+        $leave->save();
+
+        // Send notification to the staff
+        $mail = new NotificationMail($senderName, $message, $receiverName);
+        Mail::to($staff->email)->send($mail);
+        Notification::create([
+            'staff_id' => $staff->id,
+            'description' => $message,
+            'status' => 0
+        ]);
+
+        alert()->success('Success', 'Assisting staff status has been updated successfully')->persistent('Close');
+        return redirect()->back();
+    }
+
+    public function hrLeaveMgt(Request $request){
+        $staff = Auth::guard('staff')->user();
+
+        // Validate request
+        $validator = Validator::make($request->all(), [
+            'leave_id' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            alert()->error('Error', $validator->messages()->first())->persistent('Close');
+            return redirect()->back();
+        }
+
+        $status = $request->status;
+
+        // Check if the leave exists for the assisting staff
+        $leave = Leave::where('hr_id', $staff->id)->where('id', $request->leave_id)->first();
+        if (!$leave) {
+            alert()->error('Error', 'Invalid Leave Application, Report to Administrator')->persistent('Close');
+            return redirect()->back();
+        }
+
+        $leave->hr_status = $status;
+        $leave->hr_comment = $request->hod_comment;
+
+
+        $deanStaff = Staff::find($leave->dean_id);
+        $receiverName = $staff->lastname . ' ' . $staff->othernames;
+        $senderName = env('SCHOOL_NAME');
+
+        // Determine the preceding officer based on staff category
+        $precedingOfficer = "Registrar";
+
+        // Get HOD details
+        $registrarId = null;
+        
+        $registrarRoleId = Role::getRole(Role::ROLE_REGISTRAR);
+        $registrar = Staff::whereHas('staffRoles', function ($query) use ($registrarRoleId) {
+            $query->where('role_id', $registrarRoleId);
+        })->first();
+        $registrarName = $registrar->lastname . ' ' . $registrar->othernames;
+        $registrarEmail = $registrar->email;
+        
+
+        // Construct messages based on status
+        if ($status == "confirm") {
+            $message = 'Human Resource (HR) has approve your leave application. Application has been sent to the '.$precedingOfficer.' for processing';
+
+            if ($registrarId) {
+                $leave->registrar_id = $registrarId;
+                $registrarMessage = 'You have a pending leave application to attend to. Please review the application on the staff portal.';
+                
+                // Send notification to HOD
+                $registrarMail = new NotificationMail($senderName, $registrarMessage, $registrarName);
+                Mail::to($registrarEmail)->send($registrarMail);
+                Notification::create([
+                    'staff_id' => $registrarId,
+                    'description' => $registrarMessage,
+                    'status' => 0
+                ]);
+            }
+        } else {
+            $message = 'Your Dean has declined your leave application.';
+            $leave->status = $request->status;
+        }
+
+        $leave->save();
+
+        // Send notification to the staff
+        $mail = new NotificationMail($senderName, $message, $receiverName);
+        Mail::to($staff->email)->send($mail);
+        Notification::create([
+            'staff_id' => $staff->id,
+            'description' => $message,
+            'status' => 0
+        ]);
+
+        alert()->success('Success', 'Assisting staff status has been updated successfully')->persistent('Close');
+        return redirect()->back();
+    }
+
+
+    // $hodId = null;
+    // $deanId = null;
+    // $staffCategory = $staff->category;
+    // if ($staffCategory == "Academic") {
+    //     $staffDepartment = Department::with('hod')->where('id', $staff->department_id)->first();
+    //     $staffFaculty = Faculty::with('dean')->where('id', $staff->faculty_id)->first();
+    //     $hodId = $staffDepartment ? $staffDepartment->hod->id : null;
+    //     $deanId = $staffFaculty ? $staffFaculty->dean->id : null;
+    // } else {
+    //     $staffDepartment = Unit::with('unit_head')->where('id', $staff->unit_id)->first();
+    //     $hodId = $staffDepartment ? $staffDepartment->unit_head->id : null;
+    // }
+
+    // $hrRoleId = Role::getRole(Role::ROLE_HR);
+    // $hr = Staff::whereHas('staffRoles', function ($query) use ($hrRoleId) {
+    //     $query->where('role_id', $hrRoleId);
+    // })->first();
+
+    // $vcRoleId = Role::getRole(Role::ROLE_VICE_CHANCELLOR);
+    // $vc = Staff::whereHas('staffRoles', function ($query) use ($vcRoleId) {
+    //     $query->where('role_id', $vcRoleId);
+    // })->first();
+
+    // $registrarRoleId = Role::getRole(Role::ROLE_REGISTRAR);
+    // $registrar = Staff::whereHas('staffRoles', function ($query) use ($registrarRoleId) {
+    //     $query->where('role_id', $registrarRoleId);
+    // })->first();
+
 
 }

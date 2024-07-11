@@ -58,7 +58,7 @@
                                     <td>{{ $exitApplication->purpose }} </td>
                                     <td>{{ $exitApplication->destination }} </td>
                                     <td>{{ empty($exitApplication->exit_date)? null : date('F j, Y \a\t g:i A', strtotime($exitApplication->exit_date)) }} </td>
-                                    <td>{{ empty($exitApplication->exit_date)? null : date('F j, Y \a\t g:i A', strtotime($exitApplication->return_date)) }} </td>
+                                    <td>{{ empty($exitApplication->return_date)? null : date('F j, Y \a\t g:i A', strtotime($exitApplication->return_date)) }} </td>
                                     <td>{{ ucwords($exitApplication->status) }} </td>
                                     <td>@if($exitApplication->status != 'Pending') <a href="{{ asset($exitApplication->file) }}" class="btn btn-outline-primary" target="_blank" rel="noopener noreferrer">View Document</a>@endif
                                 </tr>

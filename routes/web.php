@@ -593,6 +593,12 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'staff'],
   Route::get('/leaves', [App\Http\Controllers\Staff\LeaveController::class, 'leaves'])->name('leaves')->middleware(['auth:staff']);
   Route::get('/leave/{Slug}', [App\Http\Controllers\Staff\LeaveController::class, 'leave'])->name('leave')->middleware(['auth:staff']);
   Route::get('/manageLeaves', [App\Http\Controllers\Staff\LeaveController::class, 'manageLeaves'])->name('manageLeaves')->middleware(['auth:staff']);
+  Route::post('/assistingStaffMgt', [App\Http\Controllers\Staff\LeaveController::class, 'assistingStaffMgt'])->name('assistingStaffMgt')->middleware(['auth:staff']);
+  Route::post('/hodLeaveMgt', [App\Http\Controllers\Staff\LeaveController::class, 'hodLeaveMgt'])->name('hodLeaveMgt')->middleware(['auth:staff']);
+  Route::post('/deanLeaveMgt', [App\Http\Controllers\Staff\LeaveController::class, 'deanLeaveMgt'])->name('deanLeaveMgt')->middleware(['auth:staff']);
+  Route::post('/hrLeaveMgt', [App\Http\Controllers\Staff\LeaveController::class, 'hrLeaveMgt'])->name('hrLeaveMgt')->middleware(['auth:staff']);
+  Route::post('/registrarLeaveMgt', [App\Http\Controllers\Staff\LeaveController::class, 'registrarLeaveMgt'])->name('registrarLeaveMgt')->middleware(['auth:staff']);
+  Route::post('/vcLeaveMgt', [App\Http\Controllers\Staff\LeaveController::class, 'vcLeaveMgt'])->name('vcLeaveMgt')->middleware(['auth:staff']);
 
 
 
