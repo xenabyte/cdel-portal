@@ -53,6 +53,7 @@ Route::get('/sendParentOnboardingMail', [App\Http\Controllers\Admin\CronControll
 Route::post('/addStaffRecord', [App\Http\Controllers\HomeController::class, 'addStaffRecord'])->name('addStaffRecord');
 Route::get('/staffRecord', [App\Http\Controllers\HomeController::class, 'staffRecord'])->name('staffRecord');
 
+Route::get('/getDepartments/{id}', [App\Http\Controllers\HomeController::class, 'getDepartments'])->name('getDepartments');
 
 Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'admin'], function () {
   Route::get('/', [App\Http\Controllers\Admin\Auth\LoginController::class, 'showLoginForm'])->name('admin.login');

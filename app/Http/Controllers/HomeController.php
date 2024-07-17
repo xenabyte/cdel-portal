@@ -24,6 +24,7 @@ use App\Models\Department;
 use App\Models\Faculty;
 use App\Models\Staff;
 use App\Models\StudentExit;
+use App\Models\Unit;
 
 use App\Mail\NotificationMail;
 
@@ -212,10 +213,12 @@ class HomeController extends Controller
     {
         $departments = Department::all();
         $faculties = Faculty::all();
+        $units = Unit::all();
 
         return view('addStaff', [
             'departments' => $departments,
             'faculties' => $faculties,
+            'units' => $units
         ]);
     }
 
@@ -367,6 +370,12 @@ class HomeController extends Controller
             alert()->success('Success', '')->persistent('Close');
             return redirect()->back();
         }
+    }
+
+    public function getDepartments($id){
+        $departments = Department::where('faculty_id', $id)->get();
+
+        return $departments;
     }
 
     public function csrfErrorPage(){ 

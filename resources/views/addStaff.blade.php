@@ -85,33 +85,42 @@
                                 <span class="text-muted"> Academic Information</span><br>
                                 <div class="mb-3">
                                     <label for="category" class="form-label">Select Staff Category</label>
-                                    <select class="form-select" aria-label="category" name="category" required>
-                                        <option value= "" selected>Select Staff Category </option>
+                                    <select class="form-select" id="category" aria-label="category" name="category" required>
+                                        <option value="" selected>Select Staff Category</option>
                                         <option value="Academic">Academic</option>
                                         <option value="Non Academic">Non Academic</option>
                                     </select>
                                 </div>
-        
-                                <div class="mb-3">
+                                
+                                <div class="mb-3" id="faculty-container" style="display: none;">
                                     <label for="faculty" class="form-label">Select Staff Faculty</label>
-                                    <select class="form-select" aria-label="faculty" name="faculty_id" required>
-                                        <option value= "" selected>Select Staff Faculty </option>
+                                    <select class="form-select" id="faculty" name="faculty_id" aria-label="faculty" onchange="handleFacultyChange(event)">
+                                        <option value="" selected>--Select--</option>
                                         @foreach($faculties as $faculty)
-                                        <option value="{{ $faculty->id }}">{{ $faculty->name }}</option>
+                                            <option value="{{ $faculty->id }}">{{ $faculty->name }}</option>
                                         @endforeach
                                     </select>
                                 </div>
-            
-                                <div class="mb-3">
+                                
+                                <div class="mb-3" id="department-container" style="display: none;">
                                     <label for="department" class="form-label">Select Staff Department</label>
-                                    <select class="form-select" aria-label="department" name="department_id" required>
-                                        <option value= "" selected>Select Staff Department </option>
-                                        @foreach($departments as $department)
-                                        <option value="{{ $department->id }}">{{ $department->name }}</option>
+                                    <select class="form-select" id="department" name="department_id" aria-label="department">
+                                        <option value="" selected>--Select--</option>
+                                    </select>
+                                </div>
+
+                                 
+                                <div class="mb-3" id="unit-container" style="display: none;">
+                                    <label for="unit" class="form-label">Select Staff Directoriate/Unit</label>
+                                    <select class="form-select" id="unit" name="unit_id" aria-label="unit">
+                                        <option value="" selected>--Select--</option>
+                                        @foreach($units as $unit)
+                                            <option value="{{ $unit->id }}">{{ $unit->name }}</option>
                                         @endforeach
                                     </select>
                                 </div>
-        
+                                
+                                
                                 <div class="mb-3">
                                     <label for="description" class="form-label">Write a short descriptive Note about yourself</label>
                                     <textarea type="text" class="form-control ckeditor" name="description" id="description"></textarea>

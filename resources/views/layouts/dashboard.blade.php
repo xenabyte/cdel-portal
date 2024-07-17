@@ -360,6 +360,52 @@
             CKEDITOR.replace(textarea);
         });
     </script>
+
+<script>
+
+    document.getElementById('category').addEventListener('change', function() {
+        var selectedCategory = this.value;
+        var facultyContainer = document.getElementById('faculty-container');
+        var departmentContainer = document.getElementById('department-container');
+        var unitContainer = document.getElementById('unit-container');
+        
+        if (selectedCategory === 'Academic') {
+            facultyContainer.style.display = 'block';
+            departmentContainer.style.display = 'block';
+            unitContainer.style.display = 'none';
+        } else {
+            facultyContainer.style.display = 'none';
+            departmentContainer.style.display = 'none';
+            unitContainer.style.display = 'block';
+        }
+    });
+
+    function handleFacultyChange(event) {
+        const selectedFaculty = event.target.value;
+        const departmentSelect = $('#department');
+
+        if(selectedFaculty != ''){
+            axios.get("{{ url('/getDepartments') }}/"+selectedFaculty)
+            .then(function (response) {
+                departmentSelect.empty().append($('<option>', {
+                    value: '',
+                    text: '--Select--'
+                }));
+                $.each(response.data, function (index, department) {
+                    departmentSelect.append($('<option>', {
+                        value: department.id,
+                        text: department.name
+                    }));
+                });
+            })
+            .catch(function (error) {
+                console.error("Error fetching departments:", error);
+            });
+        }else{
+            
+        }
+    }
+</script>
 </body>
 
 </html>
