@@ -54,8 +54,6 @@ Route::post('/addStaffRecord', [App\Http\Controllers\HomeController::class, 'add
 Route::get('/staffRecord', [App\Http\Controllers\HomeController::class, 'staffRecord'])->name('staffRecord');
 
 
-
-
 Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'admin'], function () {
   Route::get('/', [App\Http\Controllers\Admin\Auth\LoginController::class, 'showLoginForm'])->name('admin.login');
   Route::get('/login', [App\Http\Controllers\Admin\Auth\LoginController::class, 'showLoginForm'])->name('login');
@@ -162,8 +160,6 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'admin'],
   Route::post('/walletTopUp', [App\Http\Controllers\Admin\PaymentController::class, 'walletTopUp'])->name('walletTopUp')->middleware(['auth:admin']);
   Route::post('/chargeStudents', [App\Http\Controllers\Admin\PaymentController::class, 'chargeStudents'])->name('chargeStudents')->middleware(['auth:admin']);
 
-
-
   Route::get('/applicants', [App\Http\Controllers\Admin\AdmissionController::class, 'applicants'])->name('applicants')->middleware(['auth:admin']);
   Route::get('/applicant/{slug}', [App\Http\Controllers\Admin\AdmissionController::class, 'applicant'])->name('applicant')->middleware(['auth:admin']);
   Route::post('/applicantWithSession', [App\Http\Controllers\Admin\AdmissionController::class, 'applicantWithSession'])->name('applicantWithSession')->middleware(['auth:admin']);
@@ -185,7 +181,6 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'admin'],
   Route::post('/saveProgramme', [App\Http\Controllers\Admin\ProgrammeController::class, 'saveProgramme'])->name('saveProgramme')->middleware(['auth:admin']);
 
   Route::post('/manageAdmission', [App\Http\Controllers\Admin\AdmissionController::class, 'manageAdmission'])->name('manageAdmission')->middleware(['auth:admin']);
-
   
   Route::post('/manageCourseReg', [App\Http\Controllers\Admin\AcademicController::class, 'manageCourseReg'])->name('manageCourseReg')->middleware(['auth:admin']);
   Route::get('/courseRegMgt', [App\Http\Controllers\Admin\AcademicController::class, 'courseRegMgt'])->name('courseRegMgt')->middleware(['auth:admin']);
@@ -223,7 +218,6 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'admin'],
   Route::get('/massPromotion', [App\Http\Controllers\Admin\AcademicController::class, 'massPromotion'])->name('massPromotion')->middleware(['auth:admin']);
   Route::get('/demoteStudent', [App\Http\Controllers\Admin\AcademicController::class, 'demoteStudent'])->name('demoteStudent')->middleware(['auth:admin']);
   Route::get('/graduatingStudents', [App\Http\Controllers\Admin\StudentController::class, 'graduatingStudents'])->name('graduatingStudents')->middleware(['auth:admin']);
-
 
   Route::post('/promoteStudent', [App\Http\Controllers\Admin\AcademicController::class, 'promoteStudent'])->name('promoteStudent')->middleware(['auth:admin']);
   Route::post('/getStudent', [App\Http\Controllers\Admin\AcademicController::class, 'getStudent'])->name('getStudent')->middleware(['auth:admin']);
@@ -271,7 +265,6 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'admin'],
   Route::post('/deletePartner', [App\Http\Controllers\Admin\PartnerController::class, 'deletePartner'])->name('deletePartner')->middleware(['auth:admin']);
   Route::get('/partner/{slug}', [App\Http\Controllers\Admin\PartnerController::class, 'partner'])->name('partner')->middleware(['auth:admin']);
 
-  
   Route::get('/departmentForCourses', [App\Http\Controllers\Admin\AcademicController::class, 'departmentForCourses'])->name('departmentForCourses')->middleware(['auth:admin']);
   Route::get('/departmentCourse/{slug}', [App\Http\Controllers\Admin\AcademicController::class, 'departmentForCourse'])->name('departmentForCourse')->middleware(['auth:admin']);
   Route::post('/addCourse', [App\Http\Controllers\Admin\AcademicController::class, 'addCourse'])->name('addCourse')->middleware(['auth:admin']);
@@ -335,7 +328,8 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'admin'],
   Route::get('/updateAttendance/{staffId}', [App\Http\Controllers\Admin\AttendanceController::class, 'updateAttendance'])->middleware(['auth:admin']);
   Route::post('/uploadAttendance', [App\Http\Controllers\Admin\AttendanceController::class, 'uploadAttendance'])->name('uploadAttendance')->middleware(['auth:admin']);
 
-  
+  Route::get('/manageLeaves', [App\Http\Controllers\Admin\LeaveController::class, 'manageLeaves'])->name('manageLeaves')->middleware(['auth:admin']);
+  Route::post('/manageLeave', [App\Http\Controllers\Admin\LeaveController::class, 'manageLeave'])->name('manageLeave')->middleware(['auth:admin']);
 
 });
 
@@ -593,12 +587,8 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'staff'],
   Route::get('/leaves', [App\Http\Controllers\Staff\LeaveController::class, 'leaves'])->name('leaves')->middleware(['auth:staff']);
   Route::get('/leave/{Slug}', [App\Http\Controllers\Staff\LeaveController::class, 'leave'])->name('leave')->middleware(['auth:staff']);
   Route::get('/manageLeaves', [App\Http\Controllers\Staff\LeaveController::class, 'manageLeaves'])->name('manageLeaves')->middleware(['auth:staff']);
-  Route::post('/assistingStaffMgt', [App\Http\Controllers\Staff\LeaveController::class, 'assistingStaffMgt'])->name('assistingStaffMgt')->middleware(['auth:staff']);
-  Route::post('/hodLeaveMgt', [App\Http\Controllers\Staff\LeaveController::class, 'hodLeaveMgt'])->name('hodLeaveMgt')->middleware(['auth:staff']);
-  Route::post('/deanLeaveMgt', [App\Http\Controllers\Staff\LeaveController::class, 'deanLeaveMgt'])->name('deanLeaveMgt')->middleware(['auth:staff']);
-  Route::post('/hrLeaveMgt', [App\Http\Controllers\Staff\LeaveController::class, 'hrLeaveMgt'])->name('hrLeaveMgt')->middleware(['auth:staff']);
-  Route::post('/registrarLeaveMgt', [App\Http\Controllers\Staff\LeaveController::class, 'registrarLeaveMgt'])->name('registrarLeaveMgt')->middleware(['auth:staff']);
-  Route::post('/vcLeaveMgt', [App\Http\Controllers\Staff\LeaveController::class, 'vcLeaveMgt'])->name('vcLeaveMgt')->middleware(['auth:staff']);
+  Route::post('/manageLeave', [App\Http\Controllers\Staff\LeaveController::class, 'manageLeave'])->name('manageLeave')->middleware(['auth:staff']);
+
 
 
 

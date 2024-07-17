@@ -1,4 +1,4 @@
-@extends('staff.layout.dashboard')
+@extends('admin.layout.dashboard')
 @php
 
 $staffId = Auth::guard('staff')->user()->id;
@@ -57,25 +57,7 @@ $assistingstaffName = $assistingStaff->title.' '.$assistingStaff->lastname.' '.$
                         </div>
                         <div class="col-md-auto">
                             <div class="hstack gap-1 flex-wrap">
-                                @if($assistingStaffId == $staffId)
-                                    <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#assistingStaffMgt"> Manage Leave</button>
-                                @endif
-                                @if($leave->hod_id == $staffId)
-                                    <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#hodMgt"> Manage Leave</button>
-                                @endif
-                                @if($leave->dean_id == $staffId)
-                                    <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#deanMgt"> Manage Leave</button>
-                                @endif
-                                @if($leave->hr_id == $staffId)
-                                    <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#hrMgt"> Manage Leave</button>
-                                @endif
-                                @if($leave->registrar_id == $staffId)
-                                    <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#registrarMgt"> Manage Leave</button>
-                                @endif
-                                @if($leave->vc_id == $staffId)
-                                    <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#vcMgt"> Manage Leave</button>
-                                @endif
-
+                                <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#manageLeave"> Manage Leave</button>
                             </div>
                         </div>
                     </div>
@@ -268,96 +250,34 @@ $assistingstaffName = $assistingStaff->title.' '.$assistingStaff->lastname.' '.$
 </div>
 <!--end row-->
 
-<div id="assistingStaffMgt" class="modal fade" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" style="display: none;">
-    <!-- Fullscreen Modals -->
-    <div class="modal-dialog modal-md">
-        <div class="modal-content border-0 overflow-hidden">
-            <div class="modal-header p-3">
-                <h4 class="card-title mb-0">Manage Leave as Assisting Staff</h4>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <hr>
-            <div class="modal-body">
-                <form action="{{ url('/staff/assistingStaffMgt') }}" method="post" enctype="multipart/form-data">
-                    @csrf
-                    <input type="hidden" name="leave_id" value="{{ $leave->id }}">
-                    <input type="hidden" name="role" value="assisting_staff">
-
-                    <div class="mb-3">
-                        <label for="role" class="form-label">Select Option</label>
-                        <select class="form-select" aria-label="role" name="status" required>
-                            <option selected value= "">Select Option </option>
-                            <option selected value="Confirm">Confirm</option>
-                            <option selected value="Decline">Declin</option>
-                        </select>
-                    </div>
-
-                    <hr>
-                    <div class="text-end">
-                        <button type="submit" id="submit-button" class="btn btn-primary">Submit</button>
-                    </div>
-                </form>
-            </div>
-        </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
-
 
 <div id="hodMgt" class="modal fade" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" style="display: none;">
     <!-- Fullscreen Modals -->
     <div class="modal-dialog modal-md">
         <div class="modal-content border-0 overflow-hidden">
             <div class="modal-header p-3">
-                <h4 class="card-title mb-0">Manage Leave as HOD/HOU</h4>
+                <h4 class="card-title mb-0">Manage Leave</h4>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <hr>
             <div class="modal-body">
-                <form action="{{ url('/staff/hodLeaveMgt') }}" method="post" enctype="multipart/form-data">
+                <form action="{{ url('/admin/manageLeave') }}" method="post" enctype="multipart/form-data">
                     @csrf
                     <input type="hidden" name="leave_id" value="{{ $leave->id }}">
-                    <input type="hidden" name="role" value="hod">
 
                     <div class="mb-3">
-                        <label for="comment" class="form-label">Comment</label>
-                        <textarea class="form-control ckeditor" name="comment" id="comment"></textarea>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="role" class="form-label">Select Option</label>
-                        <select class="form-select" aria-label="role" name="status" required>
+                        <label for="role" class="form-label"></label>
+                        <select class="form-select" aria-label="role" name="role" required>
                             <option selected value= "">Select Option </option>
-                            <option selected value="approved">Confirm</option>
-                            <option selected value="declined">Decline</option>
+                            <option value="assisting_staff">Assisting Staff</option>
+                            <option value="hod">HOD/HOU</option>
+                            <option value="dean">dean</option>
+                            <option value="hr">Human Resource</option>
+                            <option value="registrar">Registrar</option>
+                            <option value="vc">Vice Chancellor</option>
                         </select>
                     </div>
 
-                    <hr>
-                    <div class="text-end">
-                        <button type="submit" id="submit-button" class="btn btn-primary">Submit</button>
-                    </div>
-                </form>
-            </div>
-        </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
-
-
-<div id="deanMgt" class="modal fade" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" style="display: none;">
-    <!-- Fullscreen Modals -->
-    <div class="modal-dialog modal-md">
-        <div class="modal-content border-0 overflow-hidden">
-            <div class="modal-header p-3">
-                <h4 class="card-title mb-0">Manage Leave as DEAN</h4>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <hr>
-            <div class="modal-body">
-                <form action="{{ url('/staff/deanLeaveMgt') }}" method="post" enctype="multipart/form-data">
-                    @csrf
-                    <input type="hidden" name="leave_id" value="{{ $leave->id }}">
-                    <input type="hidden" name="role" value="dean">
-
                     <div class="mb-3">
                         <label for="comment" class="form-label">Comment</label>
                         <textarea class="form-control ckeditor" name="comment" id="comment"></textarea>
@@ -367,125 +287,8 @@ $assistingstaffName = $assistingStaff->title.' '.$assistingStaff->lastname.' '.$
                         <label for="role" class="form-label">Select Option</label>
                         <select class="form-select" aria-label="role" name="status" required>
                             <option selected value= "">Select Option </option>
-                            <option selected value="approved">Confirm</option>
-                            <option selected value="declined">Decline</option>
-                        </select>
-                    </div>
-
-                    <hr>
-                    <div class="text-end">
-                        <button type="submit" id="submit-button" class="btn btn-primary">Submit</button>
-                    </div>
-                </form>
-            </div>
-        </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
-
-<div id="hrMgt" class="modal fade" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" style="display: none;">
-    <!-- Fullscreen Modals -->
-    <div class="modal-dialog modal-md">
-        <div class="modal-content border-0 overflow-hidden">
-            <div class="modal-header p-3">
-                <h4 class="card-title mb-0">Manage Leave as HR</h4>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <hr>
-            <div class="modal-body">
-                <form action="{{ url('/staff/hrLeaveMgt') }}" method="post" enctype="multipart/form-data">
-                    @csrf
-                    <input type="hidden" name="leave_id" value="{{ $leave->id }}">
-                    <input type="hidden" name="role" value="hr">
-
-                    <div class="mb-3">
-                        <label for="comment" class="form-label">Comment</label>
-                        <textarea class="form-control ckeditor" name="comment" id="comment"></textarea>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="role" class="form-label">Select Option</label>
-                        <select class="form-select" aria-label="role" name="status" required>
-                            <option selected value= "">Select Option </option>
-                            <option selected value="approved">Confirm</option>
-                            <option selected value="declined">Decline</option>
-                        </select>
-                    </div>
-
-                    <hr>
-                    <div class="text-end">
-                        <button type="submit" id="submit-button" class="btn btn-primary">Submit</button>
-                    </div>
-                </form>
-            </div>
-        </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
-
-<div id="registrarMgt" class="modal fade" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" style="display: none;">
-    <!-- Fullscreen Modals -->
-    <div class="modal-dialog modal-md">
-        <div class="modal-content border-0 overflow-hidden">
-            <div class="modal-header p-3">
-                <h4 class="card-title mb-0">Manage Leave as Registrar</h4>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <hr>
-            <div class="modal-body">
-                <form action="{{ url('/staff/registrarLeaveMgt') }}" method="post" enctype="multipart/form-data">
-                    @csrf
-                    <input type="hidden" name="leave_id" value="{{ $leave->id }}">
-                    <input type="hidden" name="role" value="registrar">
-
-                    <div class="mb-3">
-                        <label for="comment" class="form-label">Comment</label>
-                        <textarea class="form-control ckeditor" name="comment" id="comment"></textarea>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="role" class="form-label">Select Option</label>
-                        <select class="form-select" aria-label="role" name="status" required>
-                            <option selected value= "">Select Option </option>
-                            <option selected value="approved">Confirm</option>
-                            <option selected value="declined">Decline</option>
-                        </select>
-                    </div>
-
-                    <hr>
-                    <div class="text-end">
-                        <button type="submit" id="submit-button" class="btn btn-primary">Submit</button>
-                    </div>
-                </form>
-            </div>
-        </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
-
-<div id="vcMgt" class="modal fade" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" style="display: none;">
-    <!-- Fullscreen Modals -->
-    <div class="modal-dialog modal-md">
-        <div class="modal-content border-0 overflow-hidden">
-            <div class="modal-header p-3">
-                <h4 class="card-title mb-0">Manage Leave as DEAN</h4>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <hr>
-            <div class="modal-body">
-                <form action="{{ url('/staff/vcLeaveMgt') }}" method="post" enctype="multipart/form-data">
-                    @csrf
-                    <input type="hidden" name="leave_id" value="{{ $leave->id }}">
-                    <input type="hidden" name="role" value="vc">
-
-                    <div class="mb-3">
-                        <label for="comment" class="form-label">Comment</label>
-                        <textarea class="form-control ckeditor" name="comment" id="comment"></textarea>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="role" class="form-label">Select Option</label>
-                        <select class="form-select" aria-label="role" name="status" required>
-                            <option selected value= "">Select Option </option>
-                            <option selected value="approved">Confirm</option>
-                            <option selected value="declined">Decline</option>
+                            <option value="approved">Confirm</option>
+                            <option value="declined">Decline</option>
                         </select>
                     </div>
 
