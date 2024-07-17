@@ -590,6 +590,7 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'staff'],
   Route::get('/manageLeaves', [App\Http\Controllers\Staff\LeaveController::class, 'manageLeaves'])->name('manageLeaves')->middleware(['auth:staff']);
   Route::post('/manageLeave', [App\Http\Controllers\Staff\LeaveController::class, 'manageLeave'])->name('manageLeave')->middleware(['auth:staff']);
 
+  Route::post('/updateStaffUnit', [App\Http\Controllers\Staff\StaffController::class, 'updateStaffUnit'])->name('updateStaffUnit')->middleware(['auth:staff']);
 
 
 

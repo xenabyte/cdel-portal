@@ -30,6 +30,7 @@ use App\Models\CourseManagement;
 use App\Models\CoursePerProgrammePerAcademicSession;
 use App\Models\ProgrammeCategory as Category;
 use App\Models\Attendance;
+use App\Models\Unit;
 
 
 use App\Mail\NotificationMail;
@@ -54,6 +55,7 @@ class StaffController extends Controller
         $admissionSession = $globalData->sessionSetting['admission_session'];
         $academicSession = $globalData->sessionSetting['academic_session'];
         $applicationSession = $globalData->sessionSetting['application_session'];
+        $units = Unit::get();
 
         $year = Carbon::parse()->format('Y');
         $month = Carbon::parse()->format('M');
@@ -66,6 +68,12 @@ class StaffController extends Controller
 
         if(empty($staff->change_password)){
             return view('staff.changePassword');
+        }
+
+        if((strtolower($staff->category) != 'academic') && empty($staff->unit_id)){
+            return view('staff.updateUnit', [
+                'units' => $units
+            ]);
         }
 
         $applicants = Applicant::with('student')->where('referrer', $referalCode)->where('academic_session', $applicationSession)->get();
@@ -211,6 +219,32 @@ class StaffController extends Controller
         }else{
             alert()->error('Oops', 'Wrong old password, Try again with the right one')->persistent('Close');
             return redirect()->back();
+        }
+
+        if($staff->update()) {
+            alert()->success('Success', 'Save Changes')->persistent('Close');
+            return redirect()->back();
+        }
+
+        alert()->error('Oops!', 'An Error Occurred')->persistent('Close');
+        return redirect()->back();
+    }
+
+    public function updateStaffUnit(Request $request){
+        $validator = Validator::make($request->all(), [
+            'unit_id' => 'required',
+        ]);
+
+
+        if($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+
+        $staff = Auth::guard('staff')->user();
+
+        if(!empty($request->unit_id) && $request->unit_id != $staff->unit_id){
+            $staff->unit_id = $request->unit_id;
         }
 
         if($staff->update()) {
