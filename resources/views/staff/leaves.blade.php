@@ -35,6 +35,7 @@
                     <thead>
                         <tr>
                             <th scope="col">Id</th>
+                            <th scope="col">Name</th>
                             <th scope="col">Leave Purpose</th>
                             <th scope="col">Destination</th>
                             <th scope="col">Start Date</th>
@@ -48,6 +49,7 @@
                         @foreach($leaveApplications as $leave)
                         <tr>
                             <td>{{ $loop->iteration }}</td>
+                            <td>{{  $leave->staff->title.' '.$leave->staff->lastname.' '. $leave->staff->othernames }}
                             <td>{!!  $leave->purpose !!}</td>
                             <td>{!!  $leave->destination_address !!}</td>
                             <td>{{ \Carbon\Carbon::parse($leave->start_date)->format('jS \o\f F, Y') }}</td>

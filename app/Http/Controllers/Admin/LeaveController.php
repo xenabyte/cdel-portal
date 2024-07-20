@@ -48,6 +48,7 @@ class LeaveController extends Controller
         ]);
     }
 
+    
     public function manageLeave(Request $request){
         $staff = Auth::guard('staff')->user();
     
@@ -79,9 +80,7 @@ class LeaveController extends Controller
         $nextSteps = [];
     
         // Start with assisting staff approval
-        if ($role == 'assisting_staff') {
-            $nextApprover = (strtolower($leave->staff->category) == 'academic')? $this->getDepartmentHOD($leave->staff->department_id):$this->getUnitHOD($leave->staff->unit_id);
-        } elseif ($staffRole == 'Dean') {
+        if ($staffRole == 'Dean') {
             // Skip Dean approval, go to HR, then Registrar, then VC
             $leave->dean_status = 'approved';
             $leave->dean_comment = 'Skipped approval as the applicant is a Dean.';
@@ -94,14 +93,16 @@ class LeaveController extends Controller
             // Skip HOD approval, go to Dean, then HR, then Registrar, then VC
             $leave->hod_status = 'approved';
             $leave->hod_comment = 'Skipped approval as the applicant is a HOD.';
-            $nextApprover = $this->getNextApprover(Role::ROLE_DEAN);
+            $nextApprover = strtolower($leave->staff->category) == 'academic'? $this->getNextApprover(Role::ROLE_DEAN):$this->getNextApprover(Role::ROLE_HR);
+
             $nextSteps = [
-                $this->getNextApprover(Role::ROLE_HR),
                 $this->getNextApprover(Role::ROLE_REGISTRAR),
                 $this->getNextApprover(Role::ROLE_VC)
             ];
         } elseif ($staffRole == 'Other') {
-            if ($role == 'HOD') {
+            if ($role == 'assisting_staff') {
+                $nextApprover = strtolower($leave->staff->category) == 'academic'? $this->getDepartmentHOD($leave->staff->department_id):$this->getUnitHOD($leave->staff->unit_id);
+            } elseif ($role == 'HOD') {
                 if ($leave->staff->category == 'academic') {
                     $nextApprover = $this->getFacultyDean($leave->staff->faculty_id);
                 } else {
@@ -113,14 +114,17 @@ class LeaveController extends Controller
                 $nextApprover = $this->getNextApprover(Role::ROLE_REGISTRAR);
             }
         }
+
+        $leave->save();
     
-        if ($nextApprover) {
+        if ($nextApprover && $status == 'approved') {
             // Update leave with next approver
             $this->updateLeaveApprover($leave, $nextApprover);
             $this->notifyApprover($nextApprover);
     
             // Process remaining steps if any
             foreach ($nextSteps as $approver) {
+                $leave->refresh();
                 $this->updateLeaveApproverSequential($leave, $approver);
             }
         }
@@ -205,13 +209,13 @@ class LeaveController extends Controller
         } elseif ($approver->roleName == 'Dean') {
             $leave->dean_id = $approver->id;
             $leave->dean_status = 'pending';
-        } elseif($approver->roleName == 'HR') {
+        } elseif($approver->roleName == 'Human Resource') {
             $leave->hr_id = $approver->id;
             $leave->hr_status = 'pending';
         } elseif ($approver->roleName == 'Registrar') {
             $leave->registrar_id = $approver->id;
             $leave->registrar_status = 'pending';
-        } elseif ($approver->roleName == 'VC') {
+        } elseif ($approver->roleName == 'Vice Chancellor') {
             $leave->vc_id = $approver->id;
             $leave->vc_status = 'pending';
         }
@@ -219,26 +223,26 @@ class LeaveController extends Controller
     }
 
     private function updateLeaveStatus($leave, $role, $status, $comment){
-        if (strolower($role) == 'assisting_staff') {
+        if (strtolower($role) == 'assisting_staff') {
             $leave->assisting_staff_status = $status;
-        } elseif (strolower($role) == 'hod') {
+        } elseif (strtolower($role) == 'hod') {
             $leave->hod_status = $status;
             $leave->hod_comment = $comment;
             $leave->status = $status;
-        } elseif (strolower($role) == 'dean') {
+        } elseif (strtolower($role) == 'dean') {
             $leave->dean_status = $status;
             $leave->dean_comment = $comment;
             $leave->status = $status;
-        } elseif(strolower($role) == 'hr') {
+        } elseif(strtolower($role) == 'hr') {
             $leave->hr_status = $status;
             $leave->hr_comment = $comment;
             $leave->status = $status;
-        } elseif (strolower($role) == 'registrar') {
+        } elseif (strtolower($role) == 'registrar') {
             $leave->registrar_status = $status;
             $leave->registrar_comment = $comment;
             $leave->registrar_approval_date = Carbon::now();
             $leave->status = $status;
-        } elseif (strolower($role) == 'vc') {
+        } elseif (strtolower($role) == 'vc') {
             $leave->vc_status = $status;
             $leave->vc_comment = $comment;
             $leave->vc_approval_date = Carbon::now();
@@ -260,11 +264,11 @@ class LeaveController extends Controller
     
     private function getPreviousStatusField($roleName, $category){
         switch ($roleName) {
-            case 'HR':
+            case 'Human Resource':
                 return ($category == 'academic') ? 'dean_status' : 'hod_status';
             case 'Registrar':
                 return 'hr_status';
-            case 'VC':
+            case 'Vice Chancellor':
                 return 'registrar_status';
             default:
                 return null;
@@ -276,6 +280,9 @@ class LeaveController extends Controller
         $staff = $leave->staff;
 
         $isHod = Department::where('hod_id', $staff->id)->exists();
+        if(strtolower($leave->staff->category) != 'academic'){
+            $isHod = Unit::where('unit_head_id', $staff->id)->exists();
+        }
 
         $isDean = Faculty::where('dean_id', $staff->id)->exists();
 

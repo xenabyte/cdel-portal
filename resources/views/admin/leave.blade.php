@@ -119,134 +119,83 @@ $assistingstaffName = $assistingStaff->title.' '.$assistingStaff->lastname.' '.$
             <div class="card-body p-0">
                 <div data-simplebar="init" style="max-height: 364px;" class="p-3 simplebar-scrollable-y"><div class="simplebar-wrapper" style="margin: -16px;"><div class="simplebar-height-auto-observer-wrapper"><div class="simplebar-height-auto-observer"></div></div><div class="simplebar-mask"><div class="simplebar-offset" style="right: 0px; bottom: 0px;"><div class="simplebar-content-wrapper" tabindex="0" role="region" aria-label="scrollable content" style="height: auto; overflow: hidden scroll;"><div class="simplebar-content" style="padding: 16px;">
                     <div class="acitivity-timeline acitivity-main">
-                        <div class="acitivity-item d-flex">
-                            <div class="flex-shrink-0 avatar-xs acitivity-avatar">
-                                <div class="avatar-title bg-success-subtle text-success rounded-circle shadow">
-                                    <i class="ri-shopping-cart-2-line"></i>
-                                </div>
-                            </div>
-                            <div class="flex-grow-1 ms-3">
-                                <h6 class="mb-1">Purchase by James Price</h6>
-                                <p class="text-muted mb-1">Product noise evolve smartwatch
-                                </p>
-                                <small class="mb-0 text-muted">02:14 PM Today</small>
-                            </div>
-                        </div>
-                        <div class="acitivity-item py-3 d-flex">
-                            <div class="flex-shrink-0 avatar-xs acitivity-avatar">
-                                <div class="avatar-title bg-primary-subtle text-primary rounded-circle shadow">
-                                    <i class="ri-stack-fill"></i>
-                                </div>
-                            </div>
-                            <div class="flex-grow-1 ms-3">
-                                <h6 class="mb-1">Added new <span class="fw-semibold">style
-                                        collection</span></h6>
-                                <p class="text-muted mb-1">By Nesta Technologies</p>
-                                <div class="d-inline-flex gap-2 border border-dashed p-2 mb-2 w-75">
-                                    <a href="apps-ecommerce-product-details.html" class="bg-light rounded p-1">
-                                        <img src="assets/images/products/img-8.png" alt="" class="img-fluid d-block">
-                                    </a>
-                                    <a href="apps-ecommerce-product-details.html" class="bg-light rounded p-1">
-                                        <img src="assets/images/products/img-2.png" alt="" class="img-fluid d-block">
-                                    </a>
-                                    <a href="apps-ecommerce-product-details.html" class="bg-light rounded p-1">
-                                        <img src="assets/images/products/img-10.png" alt="" class="img-fluid d-block">
-                                    </a>
-                                </div>
-                                <p class="mb-0 text-muted"><small>9:47 PM Yesterday</small>
-                                </p>
-                            </div>
-                        </div>
-                        <div class="acitivity-item py-3 d-flex">
+                       
+                        @if(!empty($leave->vc_id) && $leave->viceChancellor)
+                        <div class="acitivity-item d-flex mb-3">
                             <div class="flex-shrink-0">
-                                <img src="assets/images/users/avatar-2.jpg" alt="" class="avatar-xs rounded-circle acitivity-avatar shadow">
+                                <img src="{{ $leave->viceChancellor->image }}" alt="" class="avatar-xs rounded-circle acitivity-avatar shadow">
                             </div>
                             <div class="flex-grow-1 ms-3">
-                                <h6 class="mb-1">Natasha Carey have liked the products</h6>
-                                <p class="text-muted mb-1">Allow users to like products in
-                                    your WooCommerce store.</p>
-                                <small class="mb-0 text-muted">25 Dec, 2021</small>
+                                <h6 class="mb-1">{{ $leave->viceChancellor->title.' '.$leave->viceChancellor->lastname.' '.$leave->viceChancellor->othernames }}</h6>
+                                <p class="text-muted mb-2 fst-italic">{{ ucwords($leave->vc_status) }}</p>
+                                <small class="mb-0 text-muted">{{ $leave->vc_comment }}</small>
                             </div>
                         </div>
-                        <div class="acitivity-item py-3 d-flex">
+                        @endif
+                        @if(!empty($leave->registrar_id) && $leave->registrar)
+                        <div class="acitivity-item d-flex mb-3">
                             <div class="flex-shrink-0">
-                                <div class="avatar-xs acitivity-avatar">
-                                    <div class="avatar-title rounded-circle bg-secondary shadow">
-                                        <i class="mdi mdi-sale fs-14"></i>
-                                    </div>
-                                </div>
+                                <img src="{{ $leave->registrar->image }}" alt="" class="avatar-xs rounded-circle acitivity-avatar shadow">
                             </div>
                             <div class="flex-grow-1 ms-3">
-                                <h6 class="mb-1">Today offers by <a href="apps-ecommerce-seller-details.html" class="link-secondary">Digitech Galaxy</a></h6>
-                                <p class="text-muted mb-2">Offer is valid on orders of
-                                    Rs.500 Or above for selected products only.</p>
-                                <small class="mb-0 text-muted">12 Dec, 2021</small>
+                                <h6 class="mb-1">{{ $leave->registrar->title.' '.$leave->registrar->lastname.' '.$leave->registrar->othernames }}</h6>
+                                <p class="text-muted mb-2 fst-italic">{{ ucwords($leave->registrar_status) }}</p>
+                                <small class="mb-0 text-muted">{{ $leave->registrar_comment }}</small>
                             </div>
                         </div>
-                        <div class="acitivity-item py-3 d-flex">
+                        @endif
+                        @if(!empty($leave->hr_id) && $leave->humanResource)
+                        <div class="acitivity-item d-flex mb-3">
                             <div class="flex-shrink-0">
-                                <div class="avatar-xs acitivity-avatar">
-                                    <div class="avatar-title rounded-circle bg-danger-subtle text-danger shadow">
-                                        <i class="ri-bookmark-fill"></i>
-                                    </div>
-                                </div>
+                                <img src="{{ $leave->humanResource->image }}" alt="" class="avatar-xs rounded-circle acitivity-avatar shadow">
                             </div>
                             <div class="flex-grow-1 ms-3">
-                                <h6 class="mb-1">Favoried Product</h6>
-                                <p class="text-muted mb-2">Esther James have favorited
-                                    product.</p>
-                                <small class="mb-0 text-muted">25 Nov, 2021</small>
+                                <h6 class="mb-1">{{ $leave->humanResource->title.' '.$leave->humanResource->lastname.' '.$leave->humanResource->othernames }}</h6>
+                                <p class="text-muted mb-2 fst-italic">{{ ucwords($leave->hr_status) }}</p>
+                                <small class="mb-0 text-muted">{{ $leave->hr_comment }}</small>
                             </div>
                         </div>
-                        <div class="acitivity-item py-3 d-flex">
+                        @endif
+                        @if(!empty($leave->dean_id) && $leave->dean)
+                        <div class="acitivity-item d-flex mb-3">
                             <div class="flex-shrink-0">
-                                <div class="avatar-xs acitivity-avatar">
-                                    <div class="avatar-title rounded-circle bg-secondary shadow">
-                                        <i class="mdi mdi-sale fs-14"></i>
-                                    </div>
-                                </div>
+                                <img src="{{ $leave->dean->image }}" alt="" class="avatar-xs rounded-circle acitivity-avatar shadow">
                             </div>
                             <div class="flex-grow-1 ms-3">
-                                <h6 class="mb-1">Flash sale starting <span class="text-primary">Tomorrow.</span></h6>
-                                <p class="text-muted mb-0">Flash sale by <a href="javascript:void(0);" class="link-secondary fw-medium">Zoetic Fashion</a>
-                                </p>
-                                <small class="mb-0 text-muted">22 Oct, 2021</small>
+                                <h6 class="mb-1">{{ $leave->dean->title.' '.$leave->dean->lastname.' '.$leave->dean->othernames }}</h6>
+                                <p class="text-muted mb-2 fst-italic">{{ ucwords($leave->dean_status) }}</p>
+                                <small class="mb-0 text-muted">{{ $leave->dean_comment }}</small>
                             </div>
                         </div>
-                        <div class="acitivity-item py-3 d-flex">
+                        @endif
+                        @if(!empty($leave->hod_id) && $leave->hod)
+                        <div class="acitivity-item d-flex mb-3">
                             <div class="flex-shrink-0">
-                                <div class="avatar-xs acitivity-avatar">
-                                    <div class="avatar-title rounded-circle bg-info-subtle text-info shadow">
-                                        <i class="ri-line-chart-line"></i>
-                                    </div>
-                                </div>
+                                <img src="{{ $leave->hod->image }}" alt="" class="avatar-xs rounded-circle acitivity-avatar shadow">
                             </div>
                             <div class="flex-grow-1 ms-3">
-                                <h6 class="mb-1">Monthly sales report</h6>
-                                <p class="text-muted mb-2"><span class="text-danger">2 days
-                                        left</span> notification to submit the monthly sales
-                                    report. <a href="javascript:void(0);" class="link-warning text-decoration-underline">Reports
-                                        Builder</a></p>
-                                <small class="mb-0 text-muted">15 Oct</small>
+                                <h6 class="mb-1">{{ $leave->hod->title.' '.$leave->hod->lastname.' '.$leave->hod->othernames }}</h6>
+                                <p class="text-muted mb-2 fst-italic">{{ ucwords($leave->hod_status) }}</p>
+                                <small class="mb-0 text-muted">{{ $leave->hod_comment }}</small>
                             </div>
                         </div>
-                        <div class="acitivity-item d-flex">
+                        @endif
+                        @if(!empty($leave->assisting_staff_id) && $leave->assistingStaff)
+                        <div class="acitivity-item d-flex mb-3">
                             <div class="flex-shrink-0">
-                                <img src="assets/images/users/avatar-3.jpg" alt="" class="avatar-xs rounded-circle acitivity-avatar shadow">
+                                <img src="{{ $leave->assistingStaff->image }}" alt="" class="avatar-xs rounded-circle acitivity-avatar shadow">
                             </div>
                             <div class="flex-grow-1 ms-3">
-                                <h6 class="mb-1">Frank Hook Commented</h6>
-                                <p class="text-muted mb-2 fst-italic">" A product that has
-                                    reviews is more likable to be sold than a product. "</p>
-                                <small class="mb-0 text-muted">26 Aug, 2021</small>
+                                <h6 class="mb-1">{{ $leave->assistingStaff->title.' '.$leave->assistingStaff->lastname.' '.$leave->assistingStaff->othernames }}</h6>
+                                <p class="text-muted mb-2 fst-italic">{{ ucwords($leave->assisting_staff_status) }}</p>
                             </div>
                         </div>
+                        @endif
                     </div>
                 </div></div></div></div><div class="simplebar-placeholder" style="width: 342px; height: 895px;"></div></div><div class="simplebar-track simplebar-horizontal" style="visibility: hidden;"><div class="simplebar-scrollbar" style="width: 0px; display: none;"></div></div><div class="simplebar-track simplebar-vertical" style="visibility: visible;"><div class="simplebar-scrollbar" style="height: 148px; transform: translate3d(0px, 0px, 0px); display: block;"></div></div></div>
             </div><!-- end card body -->
         </div>
     </div>
-    <!--end col-->
 </div>
 <!--end row-->
 
@@ -271,7 +220,7 @@ $assistingstaffName = $assistingStaff->title.' '.$assistingStaff->lastname.' '.$
                             <option selected value= "">Select Option </option>
                             <option value="assisting_staff">Assisting Staff</option>
                             <option value="hod">HOD/HOU</option>
-                            <option value="dean">dean</option>
+                            <option value="dean">Dean</option>
                             <option value="hr">Human Resource</option>
                             <option value="registrar">Registrar</option>
                             <option value="vc">Vice Chancellor</option>
