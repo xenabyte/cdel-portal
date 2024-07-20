@@ -58,7 +58,7 @@ class AcademicController extends Controller
             ]);
         }
 
-        $coursePerProgrammePerAcademicSession = CoursePerProgrammePerAcademicSession::where('programme_id', $student->programme_id)->where('level_id', $student->level_id)->where('academic_session', $academicSession)->get();
+        $coursePerProgrammePerAcademicSession = CoursePerProgrammePerAcademicSession::where('programme_id', $student->programme_id)->where('level_id', $student->level_id)->where('academic_session', $academicSession)->where('dap_approval_status', 'approved')->get();
         $existingRegistration = CourseRegistration::where([
             'student_id' => $studentId,
             'academic_session' => $academicSession

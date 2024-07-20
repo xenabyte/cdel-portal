@@ -67,7 +67,7 @@ Class Pdf {
             'faculty_name' => $student->faculty->name,
             'student_name' => $student->applicant->lastname .' '. $student->applicant->othernames,
             'academic_session' => $student->academic_session,
-            'application_type' => $student->application_type,
+            'application_type' => $student->applicant->application_type,
             'acceptance_amount' => $acceptanceAmount,
             'school_amount' => $schoolAmount,
             'logo' => asset($setting->logo)

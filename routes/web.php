@@ -592,7 +592,10 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'staff'],
 
   Route::post('/updateStaffUnit', [App\Http\Controllers\Staff\StaffController::class, 'updateStaffUnit'])->name('updateStaffUnit')->middleware(['auth:staff']);
 
+  Route::post('/requestCourseApproval', [App\Http\Controllers\Staff\AcademicController::class, 'requestCourseApproval'])->name('requestCourseApproval')->middleware(['auth:staff']);
+  Route::post('/courseApproval', [App\Http\Controllers\Staff\AcademicController::class, 'courseApproval'])->name('courseApproval')->middleware(['auth:staff']);
 
+  
 
   
 });

@@ -20,7 +20,8 @@ class CreateCoursePerProgrammePerAcademicSessionsTable extends Migration
             $table->unsignedBigInteger('credit_unit');
             $table->integer('semester')->nullable();
             $table->unsignedBigInteger('level_id')->nullable();
-            $table->string('status');
+            $table->string('status')->nullable();
+            $table->string('dap_approval_status')->nullable();
             $table->string('academic_session')->nullable();
             $table->softDeletes();
             $table->timestamps();

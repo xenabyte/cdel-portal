@@ -150,5 +150,45 @@ class AcademicController extends Controller
         alert()->error('Oops!', 'Something went wrong')->persistent('Close');
         return redirect()->back();
     }
+
+    public function requestCourseApproval() {
+        $globalData = $request->input('global_data');
+        $academicSession = $globalData->sessionSetting['academic_session'];
+
+        $courses = Course::where('programme_id', $request->programme_id)
+        ->where('level_id', $request->level_id)
+        ->where('semester', $request->semester)
+        ->where('academic_session', $academicSession)
+        ->update(['dap_approval_status' => 'pending']);
+
+        if($course->save()){
+            alert()->success('Changes Saved', '')->persistent('Close');
+            return redirect()->back();
+        }
+
+        alert()->error('Oops!', 'Something went wrong')->persistent('Close');
+        return redirect()->back();
+    }
+
+    public function courseApproval() {
+        $globalData = $request->input('global_data');
+        $academicSession = $globalData->sessionSetting['academic_session'];
+
+        $courses = Course::where('programme_id', $request->programme_id)
+        ->where('level_id', $request->level_id)
+        ->where('semester', $request->semester)
+        ->where('academic_session', $academicSession)
+        ->update(['dap_approval_status' => 'approved']);
+
+        if($course->save()){
+            alert()->success('Changes Saved', '')->persistent('Close');
+            return redirect()->back();
+        }
+
+        alert()->error('Oops!', 'Something went wrong')->persistent('Close');
+        return redirect()->back();
+    }
+
+    
     
 }

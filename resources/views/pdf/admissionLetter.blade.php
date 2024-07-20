@@ -45,10 +45,10 @@
             </tr>
             <tr>
                 <td style="width: 135pt;border-right: 1pt solid black;border-bottom: 1pt solid black;border-left: 1pt solid black;border-image: initial;border-top: none;padding: 5pt;vertical-align: top;">
-                    <p style='margin:0cm;font-size:16px;font-family:"Calibri",sans-serif;text-align:justify;border:none;'><span style='font-size:15px;font-family:"Times New Roman",serif;'>8 bed spaces</span></p>
+                    <p style='margin:0cm;font-size:16px;font-family:"Calibri",sans-serif;text-align:justify;border:none;'><span style='font-size:15px;font-family:"Times New Roman",serif;'>12 bed spaces</span></p>
                 </td>
                 <td style="width: 130.5pt;border-top: none;border-left: none;border-bottom: 1pt solid black;border-right: 1pt solid black;padding: 5pt;vertical-align: top;">
-                    <p style='margin:0cm;font-size:16px;font-family:"Calibri",sans-serif;text-align:justify;border:none;'><span style='font-size:15px;font-family:"Times New Roman",serif;'>N60,000</span></p>
+                    <p style='margin:0cm;font-size:16px;font-family:"Calibri",sans-serif;text-align:justify;border:none;'><span style='font-size:15px;font-family:"Times New Roman",serif;'>N60,000(Silver)</span></p>
                 </td>
                 <td style="width: 117pt;border-top: none;border-left: none;border-bottom: 1pt solid black;border-right: 1pt solid black;padding: 5pt;vertical-align: top;">
                     <p style='margin:0cm;font-size:16px;font-family:"Calibri",sans-serif;text-align:justify;'><span style='font-size:15px;font-family:"Times New Roman",serif;'>Not available</span></p>
@@ -59,21 +59,21 @@
                     <p style='margin:0cm;font-size:16px;font-family:"Calibri",sans-serif;text-align:justify;border:none;'><span style='font-size:15px;font-family:"Times New Roman",serif;'>6 bed spaces</span></p>
                 </td>
                 <td style="width: 130.5pt;border-top: none;border-left: none;border-bottom: 1pt solid black;border-right: 1pt solid black;padding: 5pt;vertical-align: top;">
-                    <p style='margin:0cm;font-size:16px;font-family:"Calibri",sans-serif;text-align:justify;'><span style='font-size:15px;font-family:"Times New Roman",serif;'>N75,000</span></p>
+                    <p style='margin:0cm;font-size:16px;font-family:"Calibri",sans-serif;text-align:justify;border:none;'><span style='font-size:15px;font-family:"Times New Roman",serif;'>N100,000(Silver)</span></p>
                 </td>
                 <td style="width: 117pt;border-top: none;border-left: none;border-bottom: 1pt solid black;border-right: 1pt solid black;padding: 5pt;vertical-align: top;">
-                    <p style='margin:0cm;font-size:16px;font-family:"Calibri",sans-serif;text-align:justify;'><span style='font-size:15px;font-family:"Times New Roman",serif;'>N100,000</span></p>
+                    <p style='margin:0cm;font-size:16px;font-family:"Calibri",sans-serif;text-align:justify;'><span style='font-size:15px;font-family:"Times New Roman",serif;'>N150,000(Silver)</span></p>
                 </td>
             </tr>
             <tr>
                 <td style="width: 135pt;border-right: 1pt solid black;border-bottom: 1pt solid black;border-left: 1pt solid black;border-image: initial;border-top: none;padding: 5pt;vertical-align: top;">
-                    <p style='margin:0cm;font-size:16px;font-family:"Calibri",sans-serif;text-align:justify;'><span style='font-size:15px;font-family:"Times New Roman",serif;'>4 bed spaces</span></p>
+                    <p style='margin:0cm;font-size:16px;font-family:"Calibri",sans-serif;text-align:justify;border:none;'><span style='font-size:15px;font-family:"Times New Roman",serif;'>4 bed spaces</span></p>
                 </td>
                 <td style="width: 130.5pt;border-top: none;border-left: none;border-bottom: 1pt solid black;border-right: 1pt solid black;padding: 5pt;vertical-align: top;">
-                    <p style='margin:0cm;font-size:16px;font-family:"Calibri",sans-serif;text-align:justify;'><span style='font-size:15px;font-family:"Times New Roman",serif;'>N100,000</span></p>
+                    <p style='margin:0cm;font-size:16px;font-family:"Calibri",sans-serif;text-align:justify;'><span style='font-size:15px;font-family:"Times New Roman",serif;'>N200,000(Gold)</span></p>
                 </td>
                 <td style="width: 117pt;border-top: none;border-left: none;border-bottom: 1pt solid black;border-right: 1pt solid black;padding: 5pt;vertical-align: top;">
-                    <p style='margin:0cm;font-size:16px;font-family:"Calibri",sans-serif;text-align:justify;'><span style='font-size:15px;font-family:"Times New Roman",serif;'>N150,000</span></p>
+                    <p style='margin:0cm;font-size:16px;font-family:"Calibri",sans-serif;text-align:justify;'><span style='font-size:15px;font-family:"Times New Roman",serif;'>N200,000(Silver)</span></p>
                 </td>
             </tr>
             <tr>
@@ -81,10 +81,21 @@
                     <p style='margin:0cm;font-size:16px;font-family:"Calibri",sans-serif;text-align:justify;'><span style='font-size:15px;font-family:"Times New Roman",serif;'>3 bed spaces</span></p>
                 </td>
                 <td style="width: 130.5pt;border-top: none;border-left: none;border-bottom: 1pt solid black;border-right: 1pt solid black;padding: 5pt;vertical-align: top;">
-                    <p style='margin:0cm;font-size:16px;font-family:"Calibri",sans-serif;text-align:justify;'><span style='font-size:15px;font-family:"Times New Roman",serif;'>Not Available</span></p>
+                    <p style='margin:0cm;font-size:16px;font-family:"Calibri",sans-serif;text-align:justify;'><span style='font-size:15px;font-family:"Times New Roman",serif;'>N300,000(Gold)</span></p>
                 </td>
                 <td style="width: 117pt;border-top: none;border-left: none;border-bottom: 1pt solid black;border-right: 1pt solid black;padding: 5pt;vertical-align: top;">
-                    <p style='margin:0cm;font-size:16px;font-family:"Calibri",sans-serif;text-align:justify;'><span style='font-size:15px;font-family:"Times New Roman",serif;'>N200,000</span></p>
+                    <p style='margin:0cm;font-size:16px;font-family:"Calibri",sans-serif;text-align:justify;'><span style='font-size:15px;font-family:"Times New Roman",serif;'>N500,000(Gold)</span></p>
+                </td>
+            </tr>
+            <tr>
+                <td style="width: 135pt;border-right: 1pt solid black;border-bottom: 1pt solid black;border-left: 1pt solid black;border-image: initial;border-top: none;padding: 5pt;vertical-align: top;">
+                    <p style='margin:0cm;font-size:16px;font-family:"Calibri",sans-serif;text-align:justify;'><span style='font-size:15px;font-family:"Times New Roman",serif;'>4 bed spaces</span></p>
+                </td>
+                <td style="width: 130.5pt;border-top: none;border-left: none;border-bottom: 1pt solid black;border-right: 1pt solid black;padding: 5pt;vertical-align: top;">
+                    <p style='margin:0cm;font-size:16px;font-family:"Calibri",sans-serif;text-align:justify;'><span style='font-size:15px;font-family:"Times New Roman",serif;'>N150,000(Silver)</span></p>
+                </td>
+                <td style="width: 117pt;border-top: none;border-left: none;border-bottom: 1pt solid black;border-right: 1pt solid black;padding: 5pt;vertical-align: top;">
+                    <p style='margin:0cm;font-size:16px;font-family:"Calibri",sans-serif;text-align:justify;'><span style='font-size:15px;font-family:"Times New Roman",serif;'>N375,000</span></p>
                 </td>
             </tr>
             <tr>
@@ -92,21 +103,10 @@
                     <p style='margin:0cm;font-size:16px;font-family:"Calibri",sans-serif;text-align:justify;'><span style='font-size:15px;font-family:"Times New Roman",serif;'>2 bed spaces</span></p>
                 </td>
                 <td style="width: 130.5pt;border-top: none;border-left: none;border-bottom: 1pt solid black;border-right: 1pt solid black;padding: 5pt;vertical-align: top;">
-                    <p style='margin:0cm;font-size:16px;font-family:"Calibri",sans-serif;text-align:justify;'><span style='font-size:15px;font-family:"Times New Roman",serif;'>N200,000</span></p>
-                </td>
-                <td style="width: 117pt;border-top: none;border-left: none;border-bottom: 1pt solid black;border-right: 1pt solid black;padding: 5pt;vertical-align: top;">
-                    <p style='margin:0cm;font-size:16px;font-family:"Calibri",sans-serif;text-align:justify;'><span style='font-size:15px;font-family:"Times New Roman",serif;'>N300,000</span></p>
-                </td>
-            </tr>
-            <tr>
-                <td style="width: 135pt;border-right: 1pt solid black;border-bottom: 1pt solid black;border-left: 1pt solid black;border-image: initial;border-top: none;padding: 5pt;vertical-align: top;">
-                    <p style='margin:0cm;font-size:16px;font-family:"Calibri",sans-serif;text-align:justify;'><span style='font-size:15px;font-family:"Times New Roman",serif;'>1 bed space</span></p>
-                </td>
-                <td style="width: 130.5pt;border-top: none;border-left: none;border-bottom: 1pt solid black;border-right: 1pt solid black;padding: 5pt;vertical-align: top;">
-                    <p style='margin:0cm;font-size:16px;font-family:"Calibri",sans-serif;text-align:justify;'><span style='font-size:15px;font-family:"Times New Roman",serif;'>N300,000</span></p>
-                </td>
-                <td style="width: 117pt;border-top: none;border-left: none;border-bottom: 1pt solid black;border-right: 1pt solid black;padding: 5pt;vertical-align: top;">
                     <p style='margin:0cm;font-size:16px;font-family:"Calibri",sans-serif;text-align:justify;'><span style='font-size:15px;font-family:"Times New Roman",serif;'>Not available</span></p>
+                </td>
+                <td style="width: 117pt;border-top: none;border-left: none;border-bottom: 1pt solid black;border-right: 1pt solid black;padding: 5pt;vertical-align: top;">
+                    <p style='margin:0cm;font-size:16px;font-family:"Calibri",sans-serif;text-align:justify;'><span style='font-size:15px;font-family:"Times New Roman",serif;'>N750,000 (Gold) <br> N350,000 (Silver)</span></p>
                 </td>
             </tr>
         </tbody>
