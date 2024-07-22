@@ -82,7 +82,7 @@
     <br>
     <div class="row">
         <div class="col-md-12 text-center">
-            <h4>First Semester Courses</h4>
+            <h4>Harmattan Semester Courses</h4>
         </div>
         <div class="col-md-12">
             <div class="table-responsive">
@@ -100,9 +100,14 @@
                         @php
                             $firstSemester = 1;
                             $secondSemester = 1;
+                            $totalFirstSemesterCreditUnits = 0;
+                            $totalSecondSemesterCreditUnits = 0;
                         @endphp
                         @foreach($registeredCourses as $firstSemsRegisteredCourse)
                             @if($firstSemsRegisteredCourse->semester == 1)
+                            @php
+                                $totalFirstSemesterCreditUnits += $firstSemsRegisteredCourse->course_credit_unit;
+                            @endphp
                                 <tr>
                                     <td>{{ $firstSemester++ }}</td>
                                     <td>{{ $firstSemsRegisteredCourse->course->code }}</td>
@@ -112,6 +117,11 @@
                                 </tr>
                             @endif
                         @endforeach
+                        <tr>
+                            <td colspan="3"><strong>Total Credit Units</strong></td>
+                            <td><strong>{{ $totalFirstSemesterCreditUnits }}</strong></td>
+                            <td></td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
@@ -120,7 +130,7 @@
     <br>
     <div class="row">
         <div class="col-md-12 text-center">
-            <h4>Second Semester Courses</h4>
+            <h4>Rain Semester Courses</h4>
         </div>
         <div class="col-md-12">
             <div class="table-responsive">
@@ -137,6 +147,9 @@
                     <tbody>
                         @foreach($registeredCourses as $secondSemsRegisteredCourse)
                             @if($secondSemsRegisteredCourse->semester == 2)
+                                @php
+                                    $totalSecondSemesterCreditUnits += $secondSemsRegisteredCourse->course_credit_unit;
+                                @endphp
                                 <tr>
                                     <td>{{ $secondSemester++ }}</td>
                                     <td>{{ $secondSemsRegisteredCourse->course->code }}</td>
@@ -146,6 +159,11 @@
                                 </tr>
                             @endif
                         @endforeach
+                        <tr>
+                            <td colspan="3"><strong>Total Credit Units</strong></td>
+                            <td><strong>{{ $totalSecondSemesterCreditUnits }}</strong></td>
+                            <td></td>
+                        </tr>
                     </tbody>
                 </table>
             </div>

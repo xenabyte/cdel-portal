@@ -393,6 +393,9 @@
                                     <li class="nav-item">
                                         <a href="{{ url('/admin/getCourseResult') }}" class="nav-link">Course Per Semester</a>
                                     </li>
+                                    <li class="nav-item">
+                                        <a href="{{ url('/admin/adviserProgrammes') }}" class="nav-link">Level Adviser(s) <span class="badge badge-pill bg-danger" data-key="t-hot">{{ $pageGlobalData->totalPendingRegistrations }} </span></a>
+                                    </li>
                                     @if(env('POPULATE_DATA'))
                                     <li class="nav-item">
                                         <a href="{{ url('/admin/populateCourse') }}" class="nav-link">Populate Course</a>

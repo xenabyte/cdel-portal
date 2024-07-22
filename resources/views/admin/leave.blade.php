@@ -200,7 +200,7 @@ $assistingstaffName = $assistingStaff->title.' '.$assistingStaff->lastname.' '.$
 <!--end row-->
 
 
-<div id="hodMgt" class="modal fade" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" style="display: none;">
+<div id="manageLeave" class="modal fade" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" style="display: none;">
     <!-- Fullscreen Modals -->
     <div class="modal-dialog modal-md">
         <div class="modal-content border-0 overflow-hidden">

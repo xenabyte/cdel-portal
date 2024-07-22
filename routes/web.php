@@ -332,6 +332,12 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'admin'],
   Route::get('/manageLeaves', [App\Http\Controllers\Admin\LeaveController::class, 'manageLeaves'])->name('manageLeaves')->middleware(['auth:admin']);
   Route::post('/manageLeave', [App\Http\Controllers\Admin\LeaveController::class, 'manageLeave'])->name('manageLeave')->middleware(['auth:admin']);
 
+  Route::get('/adviserProgrammes', [App\Http\Controllers\Admin\ProgrammeController::class, 'adviserProgrammes'])->name('adviserProgrammes')->middleware(['auth:admin']);
+  Route::get('/levelCourseReg/{id}', [App\Http\Controllers\Admin\ProgrammeController::class, 'levelCourseReg'])->name('levelCourseReg')->middleware(['auth:admin']);
+  Route::get('/levelStudents/{id}', [App\Http\Controllers\Admin\ProgrammeController::class, 'levelStudents'])->name('levelStudents')->middleware(['auth:admin']);
+  Route::post('/courseApproval', [App\Http\Controllers\Admin\ProgrammeController::class, 'courseApproval'])->name('courseApproval')->middleware(['auth:admin']);
+
+
 });
 
 Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'student'], function () {

@@ -25,6 +25,7 @@ use App\Models\StudentDemotion;
 use App\Models\Course;
 use App\Models\Notification;
 use App\Models\Unit;
+use App\MOdels\LevelAdviser;
 
 use SweetAlert;
 use Mail;
@@ -155,7 +156,7 @@ class AcademicController extends Controller
         return redirect()->back();
     }
 
-    public function requestCourseApproval() {
+    public function requestCourseApproval(Request $request) {
         $globalData = $request->input('global_data');
         $academicSession = $globalData->sessionSetting['academic_session'];
 
@@ -196,17 +197,60 @@ class AcademicController extends Controller
         return redirect()->back();
     }
 
-    public function courseApproval() {
+    public function courseApproval(Request $request) {
         $globalData = $request->input('global_data');
         $academicSession = $globalData->sessionSetting['academic_session'];
 
-        $courses = Course::where('programme_id', $request->programme_id)
-        ->where('level_id', $request->level_id)
-        ->where('semester', $request->semester)
-        ->where('academic_session', $academicSession)
-        ->update(['dap_approval_status' => 'approved']);
+        $comment = $request->comment;
+        $status = $request->status == 'request changes'?null:$request->status;
 
-        if($course->save()){
+        $levelAdviser = LevelAdviser::find($request->level_adviser_id);
+        if(!$levelAdviser){
+            alert()->error('Oops', 'Invalid Level Adviser ')->persistent('Close');
+            return redirect()->back();
+        }
+
+        $programme = $levelAdviser->programme->name;
+        $level = $levelAdviser->level->level .' Level ';
+
+        $levelAdviser->comment = $comment;
+        $levelAdviser->status = $status;
+        $senderName = env('SCHOOL_NAME');
+
+
+        if($status == null){
+            
+            $message = 'You have been requested to make changes to '. $level.$programme .' courses. Please review on the staff portal.';
+            
+            if($levelAdviser->staff){
+                $mail = new NotificationMail($senderName, $message, $levelAdviser->staff->title.' '.$levelAdviser->staff->lastname.' '.$levelAdviser->staff->othernames);
+
+                Mail::to($levelAdviser->staff->email)->send($mail);
+                Notification::create([
+                    'staff_id' => $levelAdviser->staff->id,
+                    'description' => $message,
+                    'status' => 0
+                ]);
+            }
+        }
+
+        if($status == 'approved'){
+            $courses = Course::where('programme_id', $request->programme_id)
+            ->where('level_id', $request->level_id)
+            ->where('academic_session', $academicSession)
+            ->update(['dap_approval_status' => 'approved']);
+
+            $message = 'Courses for'. $level.$programme .'students have been approved by DAP. Kindly proceed to open course registration for students.';
+            
+            $senderName = env('SCHOOL_NAME');
+            $receiverName = 'Portal Admininstrator';
+            $adminEmail = env('APP_EMAIL');
+            
+            $mail = new NotificationMail($senderName, $message, $receiverName);
+            Mail::to($adminEmail)->send($mail);
+        }
+
+        if($levelAdviser->save()){
             alert()->success('Changes Saved', '')->persistent('Close');
             return redirect()->back();
         }
@@ -215,6 +259,4 @@ class AcademicController extends Controller
         return redirect()->back();
     }
 
-    
-    
 }
