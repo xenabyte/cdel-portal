@@ -18,6 +18,9 @@ class CreateLevelAdvisersTable extends Migration
             $table->unsignedBigInteger('programme_id')->nullable();
             $table->unsignedBigInteger('level_id')->nullable();
             $table->unsignedBigInteger('staff_id')->nullable();
+            $table->string('academic_session')->nullable();
+            $table->string('course_approval_status')->nullable();
+            $table->text('comment')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

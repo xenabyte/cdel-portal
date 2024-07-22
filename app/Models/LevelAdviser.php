@@ -13,7 +13,10 @@ class LevelAdviser extends Model
     protected $fillable = [
         'programme_id',
         'level_id',
-        'staff_id'
+        'staff_id',
+        'academic_session',
+        'course_approval_status',
+        'comment'
     ];
 
     /**

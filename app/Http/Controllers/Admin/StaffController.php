@@ -501,6 +501,9 @@ class StaffController extends Controller
     }
 
     public function addAdviser(Request $request){
+        $globalData = $request->input('global_data');
+        $academicSession = $globalData->sessionSetting['academic_session'];
+
         $validator = Validator::make($request->all(), [
             'staff_id' => 'required',
             'programme_id' => 'required',
@@ -520,7 +523,10 @@ class StaffController extends Controller
             return redirect()->back();
         }
 
-        $levelAdviser = LevelAdviser::where('programme_id', $request->programme_id)->where('level_id', $request->level_id)->first();
+        $levelAdviser = LevelAdviser::where('programme_id', $request->programme_id)
+                        ->where('level_id', $request->level_id)
+                        ->where('academic_session', $academicSession)
+                        ->first();
 
         if ($levelAdviser) {
             $levelAdviser->update([
@@ -531,7 +537,8 @@ class StaffController extends Controller
             LevelAdviser::create([
                 'staff_id' => $staff->id,
                 'programme_id' => $programme->id,
-                'level_id' => $request->level_id
+                'level_id' => $request->level_id,
+                'academic_session' => $academicSession
             ]);
 
             if(!$staffRole = StaffRole::where('staff_id', $staff->id)->where('role_id', 1)->first()) {
@@ -549,7 +556,7 @@ class StaffController extends Controller
             ]);
         }
 
-        alert()->success('Level advicer assigned to programme and level', '')->persistent('Close');
+        alert()->success('Level adviser assigned to programme and level', '')->persistent('Close');
         return redirect()->back();
     }
 

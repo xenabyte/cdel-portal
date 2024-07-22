@@ -290,7 +290,7 @@
                         </thead>
                         <tbody>
                             @foreach($department->programmes as $programmes)
-                                @foreach($programmes->academicAdvisers as $academicAdviser)
+                                @foreach($programmes->academicAdvisers->where('academic_session', $pageGlobalData->sessionSetting->academic_session) as $academicAdviser)
                                 <tr>
                                     <td class="d-flex">
                                         <img src="{{ $academicAdviser->staff->image }}" alt="" class="avatar-xs rounded-3 shadow me-2">

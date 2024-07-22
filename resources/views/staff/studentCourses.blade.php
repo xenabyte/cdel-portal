@@ -161,38 +161,7 @@
         <div class="card">
             <div class="card-header align-items-center d-flex">
                 <h4 class="card-title mb-0 flex-grow-1">{{ $semester == 1? 'First':'Second'}} Semester Course(s) for {{ $academiclevel->level }} Level,  {{ $programme->name }}</h4>
-                <div class="flex-shrink-0">
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#submitCourses">Submit For DAP Approval</button>
-                </div>
             </div><!-- end card header -->
-
-            <div id="submitCourses" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
-                <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content">
-                        <div class="modal-body text-center p-5">
-                            <div class="text-end">
-                                <button type="button" class="btn-close text-end" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <div class="mt-2">
-                                <lord-icon src="https://cdn.lordicon.com/tqywkdcz.json" trigger="hover" style="width:150px;height:150px">
-                                </lord-icon>
-                                <h4 class="mb-3 mt-4">Are you sure you want to submit this courses for approval?</h4>
-                                <form action="{{ url('/staff/requestCourseApproval') }}" method="POST">
-                                    @csrf
-                                    <input type="hidden" name="level_id" value="{{ $academiclevel->id }}">
-                                    <input type="hidden" name="programme_id" value="{{ $programme->id }}">
-                                    <input type="hidden" name="semester" value="{{$semester}}">
-                                    <hr>
-                                    <button type="submit" id="submit-button" class="btn btn-danger w-100">Yes, Proceed</button>
-                                </form>
-                            </div>
-                        </div>
-                        <div class="modal-footer bg-light p-3 justify-content-center">
-
-                        </div>
-                    </div><!-- /.modal-content -->
-                </div><!-- /.modal-dialog -->
-            </div><!-- /.modal -->
 
             {{-- <div id="approveResult" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
                 <div class="modal-dialog modal-dialog-centered">

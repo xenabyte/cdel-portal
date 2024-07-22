@@ -23,6 +23,8 @@ use App\Models\Programme;
 use App\Models\Student;
 use App\Models\StudentDemotion;
 use App\Models\Course;
+use App\Models\Notification;
+use App\Models\Unit;
 
 use SweetAlert;
 use Mail;
@@ -31,6 +33,8 @@ use Log;
 use Carbon\Carbon;
 
 use App\Libraries\Pdf\Pdf;
+
+use App\Mail\NotificationMail;
 
 class AcademicController extends Controller
 {
@@ -155,13 +159,35 @@ class AcademicController extends Controller
         $globalData = $request->input('global_data');
         $academicSession = $globalData->sessionSetting['academic_session'];
 
-        $courses = Course::where('programme_id', $request->programme_id)
-        ->where('level_id', $request->level_id)
-        ->where('semester', $request->semester)
-        ->where('academic_session', $academicSession)
-        ->update(['dap_approval_status' => 'pending']);
+        $levelAdviser = LevelAdviser::find($request->level_adviser_id);
+        if(!$levelAdviser){
+            alert()->error('Oops', 'Invalid Level Adviser ')->persistent('Close');
+            return redirect()->back();
+        }
 
-        if($course->save()){
+        $levelAdviser->course_approval_status = 'pending';
+        $programme = $levelAdviser->programme->name;
+        $level = $levelAdviser->level->level .' Level ';
+
+        if($levelAdviser->save()){
+            $senderName = env('SCHOOL_NAME');
+            $message = 'You have a pending courses from '. $level.$programme .' level adviser for review. Please review the application on the staff portal.';
+            $unitId = env("ACADEMIC_PLANNING");
+
+            $unit = Unit::with('unit_head')->where('id', $unitId)->first();
+            $unitHead =  $unit ? $unit->unit_head : null;
+            
+            if($unitHead){
+                $mail = new NotificationMail($senderName, $message, $unitHead->title.' '.$unitHead->lastname.' '.$unitHead->othernames);
+
+                Mail::to($unitHead->email)->send($mail);
+                Notification::create([
+                    'staff_id' => $unitHead->id,
+                    'description' => $message,
+                    'status' => 0
+                ]);
+            }
+
             alert()->success('Changes Saved', '')->persistent('Close');
             return redirect()->back();
         }

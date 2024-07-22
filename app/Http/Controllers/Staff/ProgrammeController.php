@@ -184,18 +184,27 @@ class ProgrammeController extends Controller
         $globalData = $request->input('global_data');
         $academicSession = $globalData->sessionSetting['academic_session'];
 
-        // $staffHod = false;
-        // if($staff->id == $staff->acad_department->hod_id){
-        //     $staffHod = true;
-        // }
+        $staffHod = false;
+        if($staff->id == $staff->acad_department->hod_id){
+            $staffHod = true;
+        }
 
-        $adviserProgrammes = LevelAdviser::with('programme', 'level')
-        ->where(function ($query) use ($staff) {
-            $query->whereHas('programme', function ($query) use ($staff) {
-                $query->where('department_id', $staff->department_id);
-            })->orWhere('staff_id', $staff->id);
-        })
-        ->get();
+        $adviserProgrammesQuery = LevelAdviser::with('programme', 'level')->where('academic_session', $academicSession);
+        if ($staffHod) {
+            $adviserProgrammesQuery->where(function ($query) use ($staff) {
+                $query->whereHas('programme', function ($query) use ($staff) {
+                    $query->where('department_id', $staff->department_id);
+                })->orWhere('staff_id', $staff->id);
+            });
+        } else {
+            $adviserProgrammesQuery->where(function ($query) use ($staff) {
+                $query->whereHas('programme', function ($query) use ($staff) {
+                    $query->where('department_id', $staff->department_id);
+                })->where('staff_id', $staff->id);
+            });
+        }
+        $adviserProgrammes = $adviserProgrammesQuery->get();
+
 
         foreach ($adviserProgrammes as $adviserProgramme) {
             $levelId = $adviserProgramme->level_id;
