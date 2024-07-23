@@ -36,132 +36,146 @@
                     <div class="card-header align-items-center">
                         <h4 class="card-title mb-0 flex-grow-1">Other Bills</h4>
                     </div><!-- end card header -->
-                    @foreach($payments->where('type', '!=', 'School Fee')->where('type', '!=', 'DE School Fee') as $payment)
-                    <div class="col-sm-6 col-xl-4">
-                        <!-- Simple card -->
-                        <div class="card">
-                            <div class="card-body">
-                                <h4 class="card-title mb-2">{{ $payment->title }}</h4>
-                                <p class="card-text">Programme: {{ $payment->programme ? $payment->programme->name : null }}</p>
-                                <p class="text-muted">Bill Type: {{ $payment->type }} </p>
-                                <p class="text-muted">Bill Academic Session: {{ $payment->academic_session }}  Academic Session</p>
-                                <p class="text-muted">Total Amount: ₦{{ number_format($payment->structures->sum('amount')/100, 2) }} </p>
-                                <hr>
-                                <div class="text-start">
-                                    <a href="{{ url('admin/payment/'.$payment->slug) }}" class="btn btn-warning">View</a>
-                                    <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#editPayment{{$payment->id}}" style="margin: 5px" class="btn btn-primary">Edit</a>
-                                    <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#deletePayment{{$payment->id}}" style="margin: 5px" class="btn btn-danger btn-block">Delete</a>
-                                </div>
-                            </div>
-                        </div><!-- end card -->
-                        <div id="editPayment{{$payment->id}}" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
-                            <div class="modal-dialog modal-xl modal-dialog-centered">
-                                <div class="modal-content border-0 overflow-hidden">
-                                    <div class="modal-header p-3">
-                                        <h4 class="card-title mb-0">Update Bill</h4>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                    </div>
-                                    <hr>
-                                    <div class="modal-body">
-                                        <form action="{{ url('/admin/updatePayment') }}" method="post" enctype="multipart/form-data">
-                                            @csrf
-                                            <input type="hidden" name='payment_id' value="{{ $payment->id }}">
-                                            
-                                            <div class="mb-3">
-                                                <label for="paymentTitle" class="form-label">Bill Name</label>
-                                                <input type="text" class="form-control" name="title" id="paymentTitle" value="{{ $payment->title }}">
+                    <div class="table-responsive">
+                        <table id="buttons-datatables" class="display table table-bordered" style="width:100%">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Id</th>
+                                    <th scope="col">Title</th>
+                                    <th scope="col">Programme</th>
+                                    <th scope="col">Bill Type</th>
+                                    <th scope="col">Academic Session</th>
+                                    <th scope="col">Total Amount</th>
+                                    <th scope="col">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($payments->where('type', '!=', 'School Fee')->where('type', '!=', 'DE School Fee') as $payment)
+                                    <tr>
+                                        <th scope="row">{{ $loop->iteration }}</th>
+                                        <td>{{ $payment->title }}</td>
+                                        <td>{{ $payment->programme ? $payment->programme->name : null }}</td>
+                                        <td>{{ $payment->type }}</td>
+                                        <td>{{ $payment->academic_session }}</td>
+                                        <td>₦{{ number_format($payment->structures->sum('amount')/100, 2) }}</td>
+                                        <td>
+                                            <div class="text-start">
+                                                <a href="{{ url('admin/payment/'.$payment->slug) }}" class="btn btn-warning">View</a>
+                                                <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#editPayment{{$payment->id}}" style="margin: 5px" class="btn btn-primary">Edit</a>
+                                                <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#deletePayment{{$payment->id}}" style="margin: 5px" class="btn btn-danger btn-block">Delete</a>
                                             </div>
-
-                                            <div class="mb-3">
-                                                <label for="type" class="form-label">Select Bill Type</label>
-                                                <select class="form-select" aria-label="type" name="type">
-                                                    <option selected value= "">Select type </option>
-                                                    <option value="General Application Fee">General Application Fee</option>
-                                                    <option value="Inter Transfer Application Fee">Inter Transfer Application Fee</option>
-                                                    <option value="Acceptance Fee">Acceptance Fee</option>
-                                                    <option value="School Fee">School Fee</option>
-                                                    <option value="DE School Fee">Direct Entry School Fee</option>
-                                                    <option value="General Fee">General Fee</option>
-                                                   <option value="Other Fee">Other Fee</option>
-                                                    <option value="Bandwidth Fee">Bandwidth Fee</option>
-                                                    <option value="Course Reg">Modify Course Reg Fee</option>
-                                                </select>
-                                            </div>
-
-                                            @if($payment->type == 'School Fee'  && $payment->type == 'General Fee')
-                                            <div class="mb-3">
-                                                <label for="category" class="form-label">Select Programme</label>
-                                                <select class="form-select" aria-label="category" name="programme_id">
-                                                    <option selected value= "">Select Programme </option>
-                                                    @foreach($programmes as $programme)
-                                                    <option value="{{ $programme->id }}">{{ $programme->name }}</option>
-                                                    @endforeach
-                                                </select>
-                                            </div>
-                                            @endif
-
-                                            <div class="mb-3">
-                                                <label for="academic_session" class="form-label">Select Academic Session</label>
-                                                <select class="form-select" aria-label="academic_session" name="academic_session">
-                                                    <option selected value= "">Select Select Academic Session </option>
-                                                    @foreach($sessions as $session)
-                                                    <option value="{{ $session->year }}">{{ $session->year }}</option>
-                                                    @endforeach
-                                                </select>
-                                            </div>
-
-                                            <div class="mb-3">
-                                                <label for="level" class="form-label">Select Level</label>
-                                                <select class="form-select" aria-label="level" name="level_id">
-                                                    <option selected value= "">Select Level </option>
-                                                    @foreach($levels as $acadlevel)
-                                                    <option value="{{ $acadlevel->id }}">{{ $acadlevel->level }}</option>
-                                                    @endforeach
-                                                </select>
-                                            </div>
-            
-                                            <div class="mb-3">
-                                                <label for="description" class="form-label">Description</label>
-                                                <textarea class="form-control ckeditor" name="description" id="description" >{!! $payment->description !!}</textarea>
-                                            </div>
-            
-                                            <div class="text-end">
-                                                <button type="submit" id="submit-button" class="btn btn-primary">Save Changes</button>
-                                            </div>
-                                        </form>
-                                    </div>
-                                </div><!-- /.modal-content -->
-                            </div><!-- /.modal-dialog -->
-                        </div><!-- /.modal -->
-
-                        <div id="deletePayment{{$payment->id}}" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
-                            <div class="modal-dialog modal-dialog-centered">
-                                <div class="modal-content">
-                                    <div class="modal-body text-center p-5">
-                                        <div class="text-end">
-                                            <button type="button" class="btn-close text-end" data-bs-dismiss="modal" aria-label="Close"></button>
-                                        </div>
-                                        <div class="mt-2">
-                                            <lord-icon src="https://cdn.lordicon.com/wwneckwc.json" trigger="hover" style="width:150px;height:150px">
-                                            </lord-icon>
-                                            <h4 class="mb-3 mt-4">Are you sure you want to delete <br>{{ $payment->title }}?</h4>
-                                            <form action="{{ url('/admin/deletePayment') }}" method="POST">
-                                                @csrf
-                                                <input name="payment_id" type="hidden" value="{{$payment->id}}">
-
-                                                <hr>
-                                                <button type="submit" id="submit-button" class="btn btn-danger w-100">Yes, Delete</button>
-                                            </form>
-                                        </div>
-                                    </div>
-                                    <div class="modal-footer bg-light p-3 justify-content-center">
-
-                                    </div>
-                                </div><!-- /.modal-content -->
-                            </div><!-- /.modal-dialog -->
-                        </div><!-- /.modal -->
-                    </div><!-- end col -->
-                @endforeach
+                        
+                                            <!-- Edit Modal -->
+                                            <div id="editPayment{{$payment->id}}" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
+                                                <div class="modal-dialog modal-xl modal-dialog-centered">
+                                                    <div class="modal-content border-0 overflow-hidden">
+                                                        <div class="modal-header p-3">
+                                                            <h4 class="card-title mb-0">Update Bill</h4>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                        </div>
+                                                        <hr>
+                                                        <div class="modal-body">
+                                                            <form action="{{ url('/admin/updatePayment') }}" method="post" enctype="multipart/form-data">
+                                                                @csrf
+                                                                <input type="hidden" name='payment_id' value="{{ $payment->id }}">
+                        
+                                                                <div class="mb-3">
+                                                                    <label for="paymentTitle" class="form-label">Bill Name</label>
+                                                                    <input type="text" class="form-control" name="title" id="paymentTitle" value="{{ $payment->title }}">
+                                                                </div>
+                        
+                                                                <div class="mb-3">
+                                                                    <label for="type" class="form-label">Select Bill Type</label>
+                                                                    <select class="form-select" aria-label="type" name="type">
+                                                                        <option selected value="">Select type</option>
+                                                                        <option value="General Application Fee">General Application Fee</option>
+                                                                        <option value="Inter Transfer Application Fee">Inter Transfer Application Fee</option>
+                                                                        <option value="Acceptance Fee">Acceptance Fee</option>
+                                                                        <option value="School Fee">School Fee</option>
+                                                                        <option value="DE School Fee">Direct Entry School Fee</option>
+                                                                        <option value="General Fee">General Fee</option>
+                                                                        <option value="Other Fee">Other Fee</option>
+                                                                        <option value="Bandwidth Fee">Bandwidth Fee</option>
+                                                                        <option value="Course Reg">Modify Course Reg Fee</option>
+                                                                    </select>
+                                                                </div>
+                        
+                                                                @if($payment->type == 'School Fee' && $payment->type == 'General Fee')
+                                                                <div class="mb-3">
+                                                                    <label for="category" class="form-label">Select Programme</label>
+                                                                    <select class="form-select" aria-label="category" name="programme_id">
+                                                                        <option selected value="">Select Programme</option>
+                                                                        @foreach($programmes as $programme)
+                                                                        <option value="{{ $programme->id }}">{{ $programme->name }}</option>
+                                                                        @endforeach
+                                                                    </select>
+                                                                </div>
+                                                                @endif
+                        
+                                                                <div class="mb-3">
+                                                                    <label for="academic_session" class="form-label">Select Academic Session</label>
+                                                                    <select class="form-select" aria-label="academic_session" name="academic_session">
+                                                                        <option selected value="">Select Academic Session</option>
+                                                                        @foreach($sessions as $session)
+                                                                        <option value="{{ $session->year }}">{{ $session->year }}</option>
+                                                                        @endforeach
+                                                                    </select>
+                                                                </div>
+                        
+                                                                <div class="mb-3">
+                                                                    <label for="level" class="form-label">Select Level</label>
+                                                                    <select class="form-select" aria-label="level" name="level_id">
+                                                                        <option selected value="">Select Level</option>
+                                                                        @foreach($levels as $acadlevel)
+                                                                        <option value="{{ $acadlevel->id }}">{{ $acadlevel->level }}</option>
+                                                                        @endforeach
+                                                                    </select>
+                                                                </div>
+                        
+                                                                <div class="mb-3">
+                                                                    <label for="description" class="form-label">Description</label>
+                                                                    <textarea class="form-control ckeditor" name="description" id="description">{!! $payment->description !!}</textarea>
+                                                                </div>
+                        
+                                                                <div class="text-end">
+                                                                    <button type="submit" id="submit-button" class="btn btn-primary">Save Changes</button>
+                                                                </div>
+                                                            </form>
+                                                        </div>
+                                                    </div><!-- /.modal-content -->
+                                                </div><!-- /.modal-dialog -->
+                                            </div><!-- /.modal -->
+                        
+                                            <!-- Delete Modal -->
+                                            <div id="deletePayment{{$payment->id}}" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
+                                                <div class="modal-dialog modal-dialog-centered">
+                                                    <div class="modal-content">
+                                                        <div class="modal-body text-center p-5">
+                                                            <div class="text-end">
+                                                                <button type="button" class="btn-close text-end" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                            </div>
+                                                            <div class="mt-2">
+                                                                <lord-icon src="https://cdn.lordicon.com/wwneckwc.json" trigger="hover" style="width:150px;height:150px"></lord-icon>
+                                                                <h4 class="mb-3 mt-4">Are you sure you want to delete <br>{{ $payment->title }}?</h4>
+                                                                <form action="{{ url('/admin/deletePayment') }}" method="POST">
+                                                                    @csrf
+                                                                    <input name="payment_id" type="hidden" value="{{ $payment->id }}">
+                                                                    <hr>
+                                                                    <button type="submit" id="submit-button" class="btn btn-danger w-100">Yes, Delete</button>
+                                                                </form>
+                                                            </div>
+                                                        </div>
+                                                        <div class="modal-footer bg-light p-3 justify-content-center"></div>
+                                                    </div><!-- /.modal-content -->
+                                                </div><!-- /.modal-dialog -->
+                                            </div><!-- /.modal -->
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                    
                 </div>
 
                 <div class="row">
