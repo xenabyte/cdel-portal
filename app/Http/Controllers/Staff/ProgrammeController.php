@@ -224,9 +224,15 @@ class ProgrammeController extends Controller
                           ->orWhere('hod_status', null);
                 })
                 ->count();
+
+            $coursesForReg = CoursePerProgrammePerAcademicSession::where('programme_id', $programmeId)
+            ->where('academic_session', $academicSession)
+            ->where('level_id', $levelId)
+            ->get();
         
             // Add studentRegistrationsCount to the object
             $adviserProgramme->studentRegistrationsCount = $studentRegistrationsCount;
+            $adviserProgramme->coursesForReg = $coursesForReg;
         }
 
         // if($staffHod){
