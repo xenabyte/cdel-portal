@@ -368,7 +368,7 @@
 
                     <div class="mb-3">
                         <label for="description" class="form-label">Description</label>
-                        <textarea class="form-control ckeditor" name="description" id="description" ></textarea>
+                        <textarea class="form-control ckeditor2" name="description" id="description" ></textarea>
                     </div>
 
                     <div class="mb-3">
