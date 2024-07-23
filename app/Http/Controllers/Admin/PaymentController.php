@@ -63,6 +63,27 @@ class PaymentController extends Controller
         ]);
     }
 
+    public function billsForSessions(Request $request) {
+        $globalData = $request->input('global_data');
+        $academicSession = $request->academic_session;
+
+
+        $payments = Payment::with(['structures', 'programme'])->where('academic_session', $academicSession)->get();
+        $programmes = Programme::get();
+        $levels = Level::get();
+        $sessions = Session::orderBy('id', 'DESC')->get();
+
+        return view('admin.otherSessionPayments', [
+            'payments' => $payments,
+            'programmes' => $programmes,
+            'levels' => $levels,
+            'sessions' => $sessions,
+            'academicSession' => $academicSession
+        ]);
+    }
+
+    
+
     public function addPayment(Request $request){
         $validator = Validator::make($request->all(), [
             'description' => 'required',

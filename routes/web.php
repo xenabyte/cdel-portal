@@ -142,6 +142,7 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'admin'],
   Route::post('/deletePayment', [App\Http\Controllers\Admin\PaymentController::class, 'deletePayment'])->name('deletePayment')->middleware(['auth:admin']);
   Route::post('/uploadBulkPayment', [App\Http\Controllers\Admin\PaymentController::class, 'uploadBulkPayment'])->name('uploadBulkPayment')->middleware(['auth:admin']);
   Route::post('/generateInvoice', [App\Http\Controllers\Admin\PaymentController::class, 'generateInvoice'])->name('generateInvoice')->middleware(['auth:admin']);
+  Route::post('/billsForSessions', [App\Http\Controllers\Admin\PaymentController::class, 'billsForSessions'])->name('billsForSessions')->middleware(['auth:admin']);
 
   Route::get('/transactions', [App\Http\Controllers\Admin\PaymentController::class, 'transactions'])->name('transactions')->middleware(['auth:admin']);
   Route::get('/transactionReport', [App\Http\Controllers\Admin\PaymentController::class, 'transactionReport'])->name('transactionReport')->middleware(['auth:admin']);
