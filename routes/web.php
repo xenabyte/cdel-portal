@@ -519,6 +519,8 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'staff'],
   Route::post('/addPayment', [App\Http\Controllers\Staff\PaymentController::class, 'addPayment'])->name('addPayment')->middleware(['auth:staff']);
   Route::post('/updatePayment', [App\Http\Controllers\Staff\PaymentController::class, 'updatePayment'])->name('updatePayment')->middleware(['auth:staff']);
   Route::post('/deletePayment', [App\Http\Controllers\Staff\PaymentController::class, 'deletePayment'])->name('deletePayment')->middleware(['auth:staff']);
+  Route::post('/billsForSessions', [App\Http\Controllers\Staff\PaymentController::class, 'billsForSessions'])->name('billsForSessions')->middleware(['auth:staff']);
+
 
   Route::get('/transactions', [App\Http\Controllers\Staff\PaymentController::class, 'transactions'])->name('transactions')->middleware(['auth:staff']);
   Route::get('/transactionReport', [App\Http\Controllers\Staff\PaymentController::class, 'transactionReport'])->name('transactionReport')->middleware(['auth:staff']);

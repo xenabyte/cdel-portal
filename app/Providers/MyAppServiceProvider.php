@@ -55,7 +55,7 @@ class MyAppServiceProvider extends ServiceProvider
             $academicSession = !empty($sessionSetting)? $sessionSetting->academic_session : null;
 
             $staffHod = false;
-            if($staff->id == $staff->acad_department->hod_id){
+            if($staff->acad_department && $staff->id == $staff->acad_department->hod_id){
                 $staffHod = true;
             }
     
