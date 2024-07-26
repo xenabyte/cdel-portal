@@ -50,7 +50,7 @@
                     <p style='margin:0cm;font-size:16px;font-family:"Calibri",sans-serif;text-align:justify;border:none;'><span style='font-size:15px;font-family:"Times New Roman",serif;'>N60,000(Silver)</span></p>
                 </td>
                 <td style="width: 117pt;border-top: none;border-left: none;border-bottom: 1pt solid black;border-right: 1pt solid black;padding: 5pt;vertical-align: top;">
-                    <p style='margin:0cm;font-size:16px;font-family:"Calibri",sans-serif;text-align:justify;'><span style='font-size:15px;font-family:"Times New Roman",serif;'>Not available</span></p>
+                    <p style='margin:0cm;font-size:16px;font-family:"Calibri",sans-serif;text-align:justify;'><span style='font-size:15px;font-family:"Times New Roman",serif;'>N100000(Boy's Hostely Only)</span></p>
                 </td>
             </tr>
             <tr>
