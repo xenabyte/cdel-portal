@@ -87,7 +87,7 @@ class Result
             ])->first();
 
             if($studentRegistration){
-                Log::info("Course registration not found");
+                Log::info($student->applicant->lastname."  ".$student->applicant->othernames."Course registration not found for ".$courseCode);
                 continue;
             }
 
