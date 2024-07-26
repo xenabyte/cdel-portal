@@ -58,6 +58,7 @@ Class Pdf {
         } 
         
         $studentData = [
+            'applicant_number' => $student->applicant->application_number,
             'levelId' => $student->level_id,
             'created_at' => $student->created_at,
             'jamb_reg_no' => $student->applicant->jamb_reg_no,

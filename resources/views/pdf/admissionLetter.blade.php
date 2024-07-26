@@ -13,21 +13,20 @@
                 href="mailto:registrar@tau.edu.ng">registrar@tau.edu.ng</a></span></strong></p>
 <p style="text-align: right;"><strong>Date:</strong> {{date('F j, Y', strtotime($created_at))}}</p>
 
+<p>Our Ref:<strong>{{ $applicant_number }}</strong></p>
 <p>Dear <strong>{{ $student_name }}</strong>,</p>
 
 <p style="text-align: center;"><strong><span style="font-size: 16px;">Congratulations and Welcome to the {{
             $academic_session }} Undergraduate Degree Programme at TAU</span></strong></p>
 
-<p style="font-family:'Calibri',sans-serif; text-align:justify"> On behalf of Thomas Adewumi University, I am excited to offer you a Provisional Admission to the {{ $academic_session }} academic year. This admission recognizes you as an excellent prospect, admitted through the <strong>{{ $application_type }}</strong> option. Your provisional admission will soon be available for your acceptance on JAMB Caps. <br>
+<p style="font-family:'Calibri',sans-serif; text-align:justify"> On behalf of Thomas Adewumi University, I am excited to offer you a Provisional Admission to the <strong>{{ $programme_name }}</strong>, in the {{ $faculty_name }} for the {{ $academic_session }} academic session.  This admission is granted for a full-time study period of <strong>{{ $duration + 1 - $levelId  }} Years</strong> and   acknowledges your potential as an outstanding candidate. Please note that your JAMB admission letter will soon be available for your acceptance on the Central Admissions Processing System (CAPS).<br>
     
-    <strong>Programme:</strong> {{ $programme_name }}<br>
-    <strong>Duration:</strong> {{ $duration + 1 - $levelId  }} Years<br>
 
     Kindly visit the university&rsquo;s portal <a data-fr-linked="true"  href="{{ env('STUDENT_URL')  }}">{{ env('STUDENT_URL')  }}</a> to:<br>
     <ul>
-        <li>	Pay the non-refundable acceptance fee of N{{ number_format($acceptance_amount/100, 2) }} </li>
-        <li>	Pay your school fees (N{{ number_format($school_amount/100, 2) }}) in full or at least a first installment of 50% before resumption </li>
-        <li>	Prepare for resumption. Please note that the resumption date for {{ $pageGlobalData->sessionSetting->admission_session }} Academic Session is {{date('l, jS F, Y', strtotime($pageGlobalData->sessionSetting->resumption_date))}} </li>
+        <li>	Pay the non-refundable acceptance fee of <strong>N{{ number_format($acceptance_amount/100, 2) }}</strong> </li>
+        <li>	Pay your school fees <strong>(N{{ number_format($school_amount/100, 2) }})</strong> in full or at least a first installment of 40% before resumption </li>
+        <li>	Prepare for resumption. Please note that the resumption date for {{ $pageGlobalData->sessionSetting->admission_session }} Academic Session is <strong>{{date('l, jS F, Y', strtotime($pageGlobalData->sessionSetting->resumption_date))}}</strong></li>
         <li>	Book and pay for your accommodation. The following accommodation facilities are available </li>
     </ul>
     <table style="width: 3.8e+2pt;margin-left:36.0pt;border-collapse:collapse;border:none;">
@@ -113,7 +112,8 @@
     </table>
 </p>
 
-<p style="font-family:'Calibri',sans-serif; text-align:justify">At Thomas Adewumi University, we guarantee you an internationally recognized degree through the delivery of a world-class education that prepares you for a life-long excellence. Kindly contact the following if you have any questions about your next steps, reach out to <strong>Admission Office:</strong> 09053929899, <a data-fr-linked="true" href="mailto:admissions@tau.edu.ng">admissions@tau.edu.ng</a> <br>Accept our congratulations and we look forward to welcoming you to our beautiful campus!</p>
+<p style="font-family:'Calibri',sans-serif; text-align:justify">At Thomas Adewumi University, we guarantee you an internationally recognized degree by delivering a world-class education that prepares you for life-long excellence. You can contact the following if you have any questions about your next steps by reaching out to the<strong>Admission Office:</strong> 09053929899, <a data-fr-linked="true" href="mailto:admissions@tau.edu.ng">admissions@tau.edu.ng</a> <br>Accept our congratulations and we look forward to welcoming you to our beautiful campus!</p>
+<p style="font-family:'Calibri',sans-serif;">Yours Faithfully,</p>
 <p><img src="{{ asset($pageGlobalData->sessionSetting->registrar_signature ) }}" width="10%"></p>
 <p style="font-family:'Calibri',sans-serif;">{{ $pageGlobalData->sessionSetting->registrar_name }} <br>
 <strong>Registrar</strong></p>
