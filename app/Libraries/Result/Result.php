@@ -86,6 +86,10 @@ class Result
                 'academic_session' => $academicSession
             ])->first();
 
+            if($studentRegistration){
+                Log::info("Course registration not found");
+                continue;
+            }
 
             if ($studentRegistration) {
                 $studentRegistration->ca_score = $testScore;
