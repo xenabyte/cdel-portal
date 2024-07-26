@@ -1,119 +1,154 @@
-<table style="width: 40%;">
-    <tbody>
-        <tr>
-            <td><img style="text-align:center;" src="{{env('SCHOOL_LOGO')}}" width="40%"></td>
-        </tr>
-    </tbody>
-</table>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admission Letter</title>
+    <style>
+        body {
+            font-family: "Calibri", sans-serif;
+            margin: 0;
+            padding: 0;
+            font-size: 12px; /* Reduced font size */
+        }
+        .container {
+            width: 90%; /* Increased width */
+            margin: 0 auto;
+            padding: 10px; /* Reduced padding */
+            border: none;
+        }
+        .header {
+            text-align: center;
+        }
 
-<p style='margin:0cm;font-size:14px;font-family:"Calibri",sans-serif;text-align:center;'><strong><span
-            style="font-size: 22px; color: rgb(226, 80, 65);">Office of the Registrar</span></strong></p>
-<p style='margin:0cm;font-size:14px;font-family:"Calibri",sans-serif;text-align:center;'><strong><span
-            style="font-size: 14px; color: rgb(0, 0, 0);">Email: <a
-                href="mailto:registrar@tau.edu.ng">registrar@tau.edu.ng</a></span></strong></p>
-<p style="text-align: right;"><strong>Date:</strong> {{date('F j, Y', strtotime($created_at))}}</p>
-
-<p>Our Ref:<strong>{{ $applicant_number }}</strong></p>
-<p>Dear <strong>{{ $student_name }}</strong>,</p>
-
-<p style="text-align: center;"><strong><span style="font-size: 16px;">Congratulations and Welcome to the {{
-            $academic_session }} Undergraduate Degree Programme at TAU</span></strong></p>
-
-<p style="font-family:'Calibri',sans-serif; text-align:justify"> On behalf of Thomas Adewumi University, I am excited to offer you a Provisional Admission to the <strong>{{ $programme_name }}</strong>, in the {{ $faculty_name }} for the {{ $academic_session }} academic session.  This admission is granted for a full-time study period of <strong>{{ $duration + 1 - $levelId  }} Years</strong> and   acknowledges your potential as an outstanding candidate. Please note that your JAMB admission letter will soon be available for your acceptance on the Central Admissions Processing System (CAPS).<br>
-    
-
-    Kindly visit the university&rsquo;s portal <a data-fr-linked="true"  href="{{ env('STUDENT_URL')  }}">{{ env('STUDENT_URL')  }}</a> to:<br>
-    <ul>
-        <li>	Pay the non-refundable acceptance fee of <strong>N{{ number_format($acceptance_amount/100, 2) }}</strong> </li>
-        <li>	Pay your school fees <strong>(N{{ number_format($school_amount/100, 2) }})</strong> in full or at least a first installment of 40% before resumption </li>
-        <li>	Prepare for resumption. Please note that the resumption date for {{ $pageGlobalData->sessionSetting->admission_session }} Academic Session is <strong>{{date('l, jS F, Y', strtotime($pageGlobalData->sessionSetting->resumption_date))}}</strong></li>
-        <li>	Book and pay for your accommodation. The following accommodation facilities are available </li>
-    </ul>
-    <table style="width: 3.8e+2pt;margin-left:36.0pt;border-collapse:collapse;border:none;">
-        <tbody>
-            <tr>
-                <td style="width: 135pt;border: 1pt solid black;padding: 5pt;vertical-align: top;">
-                    <p style='margin:0cm;font-size:16px;font-family:"Calibri",sans-serif;text-align:justify;border:none;'><strong><span style='font-size:15px;font-family:"Times New Roman",serif;'>Occupancy</span></strong></p>
-                </td>
-                <td style="width: 130.5pt;border-top: 1pt solid black;border-right: 1pt solid black;border-bottom: 1pt solid black;border-image: initial;border-left: none;padding: 5pt;vertical-align: top;">
-                    <p style='margin:0cm;font-size:16px;font-family:"Calibri",sans-serif;text-align:justify;border:none;'><strong><span style='font-size:15px;font-family:"Times New Roman",serif;'>West Campus</span></strong></p>
-                </td>
-                <td style="width: 117pt;border-top: 1pt solid black;border-right: 1pt solid black;border-bottom: 1pt solid black;border-image: initial;border-left: none;padding: 5pt;vertical-align: top;">
-                    <p style='margin:0cm;font-size:16px;font-family:"Calibri",sans-serif;text-align:justify;border:none;'><strong><span style='font-size:15px;font-family:"Times New Roman",serif;'>East Campus</span></strong></p>
-                </td>
-            </tr>
-            <tr>
-                <td style="width: 135pt;border-right: 1pt solid black;border-bottom: 1pt solid black;border-left: 1pt solid black;border-image: initial;border-top: none;padding: 5pt;vertical-align: top;">
-                    <p style='margin:0cm;font-size:16px;font-family:"Calibri",sans-serif;text-align:justify;border:none;'><span style='font-size:15px;font-family:"Times New Roman",serif;'>12 bed spaces</span></p>
-                </td>
-                <td style="width: 130.5pt;border-top: none;border-left: none;border-bottom: 1pt solid black;border-right: 1pt solid black;padding: 5pt;vertical-align: top;">
-                    <p style='margin:0cm;font-size:16px;font-family:"Calibri",sans-serif;text-align:justify;border:none;'><span style='font-size:15px;font-family:"Times New Roman",serif;'>N60,000(Silver)</span></p>
-                </td>
-                <td style="width: 117pt;border-top: none;border-left: none;border-bottom: 1pt solid black;border-right: 1pt solid black;padding: 5pt;vertical-align: top;">
-                    <p style='margin:0cm;font-size:16px;font-family:"Calibri",sans-serif;text-align:justify;'><span style='font-size:15px;font-family:"Times New Roman",serif;'>N100000(Boy's Hostel Only)</span></p>
-                </td>
-            </tr>
-            <tr>
-                <td style="width: 135pt;border-right: 1pt solid black;border-bottom: 1pt solid black;border-left: 1pt solid black;border-image: initial;border-top: none;padding: 5pt;vertical-align: top;">
-                    <p style='margin:0cm;font-size:16px;font-family:"Calibri",sans-serif;text-align:justify;border:none;'><span style='font-size:15px;font-family:"Times New Roman",serif;'>6 bed spaces</span></p>
-                </td>
-                <td style="width: 130.5pt;border-top: none;border-left: none;border-bottom: 1pt solid black;border-right: 1pt solid black;padding: 5pt;vertical-align: top;">
-                    <p style='margin:0cm;font-size:16px;font-family:"Calibri",sans-serif;text-align:justify;border:none;'><span style='font-size:15px;font-family:"Times New Roman",serif;'>N100,000(Silver)</span></p>
-                </td>
-                <td style="width: 117pt;border-top: none;border-left: none;border-bottom: 1pt solid black;border-right: 1pt solid black;padding: 5pt;vertical-align: top;">
-                    <p style='margin:0cm;font-size:16px;font-family:"Calibri",sans-serif;text-align:justify;'><span style='font-size:15px;font-family:"Times New Roman",serif;'>N150,000(Silver)</span></p>
-                </td>
-            </tr>
-            <tr>
-                <td style="width: 135pt;border-right: 1pt solid black;border-bottom: 1pt solid black;border-left: 1pt solid black;border-image: initial;border-top: none;padding: 5pt;vertical-align: top;">
-                    <p style='margin:0cm;font-size:16px;font-family:"Calibri",sans-serif;text-align:justify;border:none;'><span style='font-size:15px;font-family:"Times New Roman",serif;'>4 bed spaces</span></p>
-                </td>
-                <td style="width: 130.5pt;border-top: none;border-left: none;border-bottom: 1pt solid black;border-right: 1pt solid black;padding: 5pt;vertical-align: top;">
-                    <p style='margin:0cm;font-size:16px;font-family:"Calibri",sans-serif;text-align:justify;'><span style='font-size:15px;font-family:"Times New Roman",serif;'>N200,000(Gold)</span></p>
-                </td>
-                <td style="width: 117pt;border-top: none;border-left: none;border-bottom: 1pt solid black;border-right: 1pt solid black;padding: 5pt;vertical-align: top;">
-                    <p style='margin:0cm;font-size:16px;font-family:"Calibri",sans-serif;text-align:justify;'><span style='font-size:15px;font-family:"Times New Roman",serif;'>N200,000(Silver)</span></p>
-                </td>
-            </tr>
-            <tr>
-                <td style="width: 135pt;border-right: 1pt solid black;border-bottom: 1pt solid black;border-left: 1pt solid black;border-image: initial;border-top: none;padding: 5pt;vertical-align: top;">
-                    <p style='margin:0cm;font-size:16px;font-family:"Calibri",sans-serif;text-align:justify;'><span style='font-size:15px;font-family:"Times New Roman",serif;'>3 bed spaces</span></p>
-                </td>
-                <td style="width: 130.5pt;border-top: none;border-left: none;border-bottom: 1pt solid black;border-right: 1pt solid black;padding: 5pt;vertical-align: top;">
-                    <p style='margin:0cm;font-size:16px;font-family:"Calibri",sans-serif;text-align:justify;'><span style='font-size:15px;font-family:"Times New Roman",serif;'>N300,000(Gold)</span></p>
-                </td>
-                <td style="width: 117pt;border-top: none;border-left: none;border-bottom: 1pt solid black;border-right: 1pt solid black;padding: 5pt;vertical-align: top;">
-                    <p style='margin:0cm;font-size:16px;font-family:"Calibri",sans-serif;text-align:justify;'><span style='font-size:15px;font-family:"Times New Roman",serif;'>N500,000(Gold)</span></p>
-                </td>
-            </tr>
-            <tr>
-                <td style="width: 135pt;border-right: 1pt solid black;border-bottom: 1pt solid black;border-left: 1pt solid black;border-image: initial;border-top: none;padding: 5pt;vertical-align: top;">
-                    <p style='margin:0cm;font-size:16px;font-family:"Calibri",sans-serif;text-align:justify;'><span style='font-size:15px;font-family:"Times New Roman",serif;'>4 bed spaces</span></p>
-                </td>
-                <td style="width: 130.5pt;border-top: none;border-left: none;border-bottom: 1pt solid black;border-right: 1pt solid black;padding: 5pt;vertical-align: top;">
-                    <p style='margin:0cm;font-size:16px;font-family:"Calibri",sans-serif;text-align:justify;'><span style='font-size:15px;font-family:"Times New Roman",serif;'>N150,000(Silver)</span></p>
-                </td>
-                <td style="width: 117pt;border-top: none;border-left: none;border-bottom: 1pt solid black;border-right: 1pt solid black;padding: 5pt;vertical-align: top;">
-                    <p style='margin:0cm;font-size:16px;font-family:"Calibri",sans-serif;text-align:justify;'><span style='font-size:15px;font-family:"Times New Roman",serif;'>N375,000</span></p>
-                </td>
-            </tr>
-            <tr>
-                <td style="width: 135pt;border-right: 1pt solid black;border-bottom: 1pt solid black;border-left: 1pt solid black;border-image: initial;border-top: none;padding: 5pt;vertical-align: top;">
-                    <p style='margin:0cm;font-size:16px;font-family:"Calibri",sans-serif;text-align:justify;'><span style='font-size:15px;font-family:"Times New Roman",serif;'>2 bed spaces</span></p>
-                </td>
-                <td style="width: 130.5pt;border-top: none;border-left: none;border-bottom: 1pt solid black;border-right: 1pt solid black;padding: 5pt;vertical-align: top;">
-                    <p style='margin:0cm;font-size:16px;font-family:"Calibri",sans-serif;text-align:justify;'><span style='font-size:15px;font-family:"Times New Roman",serif;'>Not available</span></p>
-                </td>
-                <td style="width: 117pt;border-top: none;border-left: none;border-bottom: 1pt solid black;border-right: 1pt solid black;padding: 5pt;vertical-align: top;">
-                    <p style='margin:0cm;font-size:16px;font-family:"Calibri",sans-serif;text-align:justify;'><span style='font-size:15px;font-family:"Times New Roman",serif;'>N750,000 (Gold) <br> N350,000 (Silver)</span></p>
-                </td>
-            </tr>
-        </tbody>
-    </table>
-</p>
-
-<p style="font-family:'Calibri',sans-serif; text-align:justify">At Thomas Adewumi University, we guarantee you an internationally recognized degree by delivering a world-class education that prepares you for life-long excellence. You can contact the following if you have any questions about your next steps by reaching out to the <strong>Admission Office:</strong> 09053929899, <a data-fr-linked="true" href="mailto:admissions@tau.edu.ng">admissions@tau.edu.ng</a> <br>Accept our congratulations and we look forward to welcoming you to our beautiful campus!</p>
-<p style="font-family:'Calibri',sans-serif;">Yours Faithfully,</p>
-<p><img src="{{ asset($pageGlobalData->sessionSetting->registrar_signature ) }}" width="10%"></p>
-<p style="font-family:'Calibri',sans-serif;">{{ $pageGlobalData->sessionSetting->registrar_name }} <br>
-<strong>Registrar</strong></p>
+        .footer {
+            text-align: left;
+        }
+        .header img {
+            width: 30%; /* Reduced image width */
+        }
+        .header strong {
+            font-size: 20px; /* Slightly reduced font size */
+            color: #E25041;
+        }
+        .header .email {
+            font-size: 12px; /* Reduced font size */
+            color: #000;
+        }
+        .content {
+            line-height: 1.4; /* Reduced line height */
+        }
+        .content p {
+            margin: 8px 0; /* Reduced margin */
+            text-align: justify;
+        }
+        .content .date {
+            text-align: right;
+            margin-bottom: 10px; /* Reduced margin */
+        }
+        .content .congratulations {
+            text-align: center;
+            font-size: 14px; /* Slightly reduced font size */
+        }
+        .content ul {
+            list-style-type: disc;
+            margin-left: 20px;
+        }
+        .content table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px; /* Reduced margin */
+        }
+        .content table, .content th, .content td {
+            border: 1px solid #000;
+        }
+        .content th, .content td {
+            padding: 4px; /* Reduced padding */
+            text-align: left;
+            font-size: 12px; /* Reduced font size */
+        }
+        .footer {
+            margin-top: 20px; /* Reduced margin */
+        }
+        .footer img {
+            width: 8%; /* Reduced image width */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <img src="{{ env('SCHOOL_LOGO') }}" alt="School Logo">
+            <p><strong>Office of the Registrar</strong></p>
+            <p class="email">Email: <a href="mailto:registrar@tau.edu.ng">registrar@tau.edu.ng</a></p>
+        </div>
+        
+        <div class="content">
+            <p class="date"><strong>Date:</strong> {{ date('F j, Y', strtotime($created_at)) }}</p>
+            <p>Dear <strong>{{ $student_name }}</strong>,</p>
+            
+            <p class="congratulations"><strong>Congratulations and Welcome to the {{ $academic_session }} Undergraduate Degree Programme at TAU</strong></p>
+            
+            <p>On behalf of Thomas Adewumi University, I am excited to offer you a Provisional Admission to the <strong>{{ $programme_name }}</strong> in the {{ $faculty_name }} for the {{ $academic_session }} academic session. This admission is granted for a full-time study period of <strong>{{ $duration + 1 - $levelId }} Years</strong> and acknowledges your potential as an outstanding candidate. Please note that your JAMB admission letter will soon be available for your acceptance on the Central Admissions Processing System (CAPS).</p>
+            
+            <p>Kindly visit the university’s portal <a href="{{ env('STUDENT_URL') }}">{{ env('STUDENT_URL') }}</a> to:</p>
+            <ul>
+                <li>Pay the non-refundable acceptance fee of <strong>N{{ number_format($acceptance_amount/100, 2) }}</strong></li>
+                <li>Pay your school fees <strong>(N{{ number_format($school_amount/100, 2) }})</strong> in full or at least a first installment of 40% before resumption</li>
+                <li>Prepare for resumption. Please note that the resumption date for {{ $pageGlobalData->sessionSetting->admission_session }} Academic Session is <strong>{{ date('l, jS F, Y', strtotime($pageGlobalData->sessionSetting->resumption_date)) }}</strong></li>
+                <li>Book and pay for your accommodation. The following accommodation facilities are available:</li>
+            </ul>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>Occupancy</th>
+                        <th>West Campus</th>
+                        <th>East Campus</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>12 bed spaces</td>
+                        <td>N60,000 (Silver)</td>
+                        <td>N100,000 (Boy's Hostel Only)</td>
+                    </tr>
+                    <tr>
+                        <td>6 bed spaces</td>
+                        <td>N100,000 (Silver)</td>
+                        <td>N150,000 (Silver)</td>
+                    </tr>
+                    <tr>
+                        <td>4 bed spaces</td>
+                        <td>N200,000 (Gold)</td>
+                        <td>N200,000 (Silver)</td>
+                    </tr>
+                    <tr>
+                        <td>3 bed spaces</td>
+                        <td>N300,000 (Gold)</td>
+                        <td>N500,000 (Gold)</td>
+                    </tr>
+                    <tr>
+                        <td>4 bed spaces</td>
+                        <td>N150,000 (Silver)</td>
+                        <td>N375,000</td>
+                    </tr>
+                    <tr>
+                        <td>2 bed spaces</td>
+                        <td>Not available</td>
+                        <td>N750,000 (Gold) <br> N350,000 (Silver)</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <p>At Thomas Adewumi University, we guarantee you an internationally recognized degree by delivering a world-class education that prepares you for life-long excellence. You can contact the Admission Office at 09053929899 or <a href="mailto:admissions@tau.edu.ng">admissions@tau.edu.ng</a> if you have any questions about your next steps. Accept our congratulations, and we look forward to welcoming you to our beautiful campus!</p>
+        </div>
+        
+        <div class="footer">
+            <p>Yours Faithfully,</p>
+            <img src="{{ asset($pageGlobalData->sessionSetting->registrar_signature) }}" alt="Registrar Signature">
+            <p>{{ $pageGlobalData->sessionSetting->registrar_name }}<br><strong>Registrar</strong></p>
+        </div>
+    </div>
+</body>
+</html>
