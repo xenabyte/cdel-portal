@@ -112,7 +112,7 @@
     </table>
 </p>
 
-<p style="font-family:'Calibri',sans-serif; text-align:justify">At Thomas Adewumi University, we guarantee you an internationally recognized degree by delivering a world-class education that prepares you for life-long excellence. You can contact the following if you have any questions about your next steps by reaching out to the<strong>Admission Office:</strong> 09053929899, <a data-fr-linked="true" href="mailto:admissions@tau.edu.ng">admissions@tau.edu.ng</a> <br>Accept our congratulations and we look forward to welcoming you to our beautiful campus!</p>
+<p style="font-family:'Calibri',sans-serif; text-align:justify">At Thomas Adewumi University, we guarantee you an internationally recognized degree by delivering a world-class education that prepares you for life-long excellence. You can contact the following if you have any questions about your next steps by reaching out to the <strong>Admission Office:</strong> 09053929899, <a data-fr-linked="true" href="mailto:admissions@tau.edu.ng">admissions@tau.edu.ng</a> <br>Accept our congratulations and we look forward to welcoming you to our beautiful campus!</p>
 <p style="font-family:'Calibri',sans-serif;">Yours Faithfully,</p>
 <p><img src="{{ asset($pageGlobalData->sessionSetting->registrar_signature ) }}" width="10%"></p>
 <p style="font-family:'Calibri',sans-serif;">{{ $pageGlobalData->sessionSetting->registrar_name }} <br>
