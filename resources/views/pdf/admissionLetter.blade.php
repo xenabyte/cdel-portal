@@ -10,19 +10,18 @@
             margin: 0;
             padding: 0;
             font-size: 12px; /* Reduced font size */
+            position: relative;
         }
         .container {
             width: 90%; /* Increased width */
             margin: 0 auto;
             padding: 10px; /* Reduced padding */
             border: none;
+            position: relative;
+            z-index: 1;
         }
         .header {
             text-align: center;
-        }
-
-        .footer {
-            text-align: left;
         }
         .header img {
             width: 30%; /* Reduced image width */
@@ -37,6 +36,8 @@
         }
         .content {
             line-height: 1.4; /* Reduced line height */
+            position: relative;
+            z-index: 2;
         }
         .content p {
             margin: 8px 0; /* Reduced margin */
@@ -72,6 +73,14 @@
         }
         .footer img {
             width: 8%; /* Reduced image width */
+        }
+        .watermark {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            opacity: 0.1;
+            z-index: 0;
         }
     </style>
 </head>
@@ -145,9 +154,12 @@
         </div>
         
         <div class="footer">
-            <p>Yours Faithfully,</p>
             <img src="{{ asset($pageGlobalData->sessionSetting->registrar_signature) }}" alt="Registrar Signature">
             <p>{{ $pageGlobalData->sessionSetting->registrar_name }}<br><strong>Registrar</strong></p>
+        </div>
+        
+        <div class="watermark">
+            <img src="{{ env('SCHOOL_LOGO') }}" alt="Watermark Logo">
         </div>
     </div>
 </body>
