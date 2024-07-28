@@ -47,7 +47,9 @@ class Student extends Authenticatable
         'dashboard_mode',
         'bandwidth_username',
         'onesignal_id ',
-        'batch'
+        'batch',
+        'graduation_date',
+        'graduation_session'
     ];
 
     /**

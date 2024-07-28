@@ -61,8 +61,36 @@
                             </td>
                             <td>
                                 <a href="{{ url('admin/student/'.$student->slug) }}" class="btn btn-primary m-1"><i class= "ri-user-6-fill"></i> View Student</a>
+                                <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#delete{{$student->id}}" class="link-danger"><i class="ri-delete-bin-5-line"></i> Reverse Admission</a>
                             </td>
                         </tr>
+
+                        <div id="delete{{$student->id}}" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
+                            <div class="modal-dialog modal-dialog-centered modal-lg">
+                                <div class="modal-content">
+                                    <div class="modal-body text-center p-5">
+                                        <div class="text-end">
+                                            <button type="button" class="btn-close text-end" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="mt-2">
+                                            <lord-icon src="https://cdn.lordicon.com/wwneckwc.json" trigger="hover" style="width:150px;height:150px">
+                                            </lord-icon>
+                                            <h4 class="mb-3 mt-4">Are you sure you want to reverse admission for <br/> {{ $student->applicant->lastname .' '. $student->applicant->othernames }}?</h4>
+                                            <form action="{{ url('staff/manageAdmission') }}" method="POST">
+                                                @csrf
+                                                <input name="applicant_id" type="hidden" value="{{$student->user_id}}">
+                                                <input name="status" type="hidden" value="reverse_admission" />
+                                                <hr>
+                                                <button type="submit" id="submit-button" class="btn btn-danger w-100">Yes, Reverse Admission</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer bg-light p-3 justify-content-center">
+
+                                    </div>
+                                </div><!-- /.modal-content -->
+                            </div><!-- /.modal-dialog -->
+                        </div><!-- /.modal -->
                         @endforeach
                     </tbody>
                 </table>

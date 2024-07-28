@@ -141,12 +141,16 @@ $studentPendingTransaction = $studentPendingTransactions->first();
                     <div class="row justify-content-center">
                         <div class="col-lg-9">
                             <h4 class="mt-4 fw-semibold">School Fee</h4>
+                            @if($pageGlobalData->sessionSetting->academic_session != $pageGlobalData->sessionSetting->admission_session)
+                            <p class="text-muted mt-3">Please note: Payment not available yet, stay tuned.</p>
+                            @else
                             <p class="text-muted mt-3">Please note: Access to the dashboard requires prior payment of school fees for the {{ $pageGlobalData->sessionSetting->academic_session  }} session.</p>
                             <div class="mt-4">
                                 <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
                                     Click here to pay
                                 </button>
                             </div>
+                            @endif
                         </div>
                     </div>
 

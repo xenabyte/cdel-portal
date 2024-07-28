@@ -101,18 +101,20 @@ class AdmissionController extends Controller
     }
 
     public function manageAdmission(Request $request){
-        $validator = Validator::make($request->all(), [
-            'applicant_id' => 'required',
-            'programme_id' => 'required',
-            'level_id' => 'required',
-            'status' => 'required',
-            'batch' => 'required',
-        ]);
+        if(strtolower($status) == 'admitted'){
+            $validator = Validator::make($request->all(), [
+                'applicant_id' => 'required',
+                'programme_id' => 'required',
+                'level_id' => 'required',
+                'status' => 'required',
+                'batch' => 'required',
+            ]);
 
 
-        if($validator->fails()) {
-            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
-            return redirect()->back();
+            if($validator->fails()) {
+                alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+                return redirect()->back();
+            }
         }
 
         if(!$applicant = Applicant::with('programme')->where('id', $request->applicant_id)->first()){
@@ -125,19 +127,20 @@ class AdmissionController extends Controller
         $admissionSession = $globalData->sessionSetting['admission_session'];
 
         $applicantId = $applicant->id;
-        $programmeId = $request->programme_id;
-        $programme = Programme::with('department', 'department.faculty')->where('id', $programmeId)->first();
-        $parts = explode("/", $admissionSession);
-        $entryYear = $parts[1];
-
-        $status = $request->status;
-        $accessCode = $applicant->passcode;
-        $email = $applicant->email;
-        $name = $applicant->lastname.' '.$applicant->othernames;
-        $nameParts = explode(' ', $applicant->othernames);
-        $firstName = $nameParts[0];        
-
+                
         if(strtolower($status) == 'admitted'){
+            $programmeId = $request->programme_id;
+            $programme = Programme::with('department', 'department.faculty')->where('id', $programmeId)->first();
+            $parts = explode("/", $admissionSession);
+            $entryYear = $parts[1];
+
+            $status = $request->status;
+            $accessCode = $applicant->passcode;
+            $email = $applicant->email;
+            $name = $applicant->lastname.' '.$applicant->othernames;
+            $nameParts = explode(' ', $applicant->othernames);
+            $firstName = $nameParts[0];
+
             //create student records
             $studentId = Student::create([
                 'slug' => $applicant->slug,
@@ -167,6 +170,17 @@ class AdmissionController extends Controller
         }
 
         $applicant->status = $status;
+
+
+        if(strtolower($status) == 'reverse_admission'){
+            $student = Student::where('user_id', $applicantId)->first();
+            unlink($student->admission_letter);
+            $student->forceDelete();
+
+
+            $applicant->status = 'submitted';
+        }
+
 
         if($applicant->save()){
             alert()->success('Changes Saved', '')->persistent('Close');

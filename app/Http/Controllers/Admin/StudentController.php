@@ -126,4 +126,28 @@ class StudentController extends Controller
             'classifiedStudents' => $classifiedStudents,
         ]);
     }
+
+    public function graduateStudents(Request $request){
+        $selectedStudents = $request->input('selected_students');
+
+        if (empty($selectedStudents)) {
+            alert()->error('Oops!', 'No selected students')->persistent('Close');
+            return redirect()->back();
+        }
+
+        foreach ($selectedStudents as $studentId) {
+            $student = Student::find($studentId);
+
+            if ($student) {
+                $student->update([
+                    'is_passed_out' => true,  // Assuming you have a 'graduated' field in your students table
+                    'graduation_date' => Carbon::now(),
+                    'graduation_session' => $student->academic_session
+                ]);
+            }
+        }
+
+        alert()->success('Success', 'Students status set to graduated.')->persistent('Close');
+        return redirect()->back();
+    }
 }
