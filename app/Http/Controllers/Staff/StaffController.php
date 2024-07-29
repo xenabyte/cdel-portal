@@ -283,6 +283,29 @@ class StaffController extends Controller
             $programmes = Programme::with('department', 'department.faculty')->get();
         }
 
+        $staffDean = false;
+        if(!empty($staff->faculty) && $staff->id == $staff->faculty->dean_id){
+            $staffDean = true;
+        }
+
+        if ($staffDean) {
+            $faculty = Faculty::with('departments.programmes')
+                ->where('id', $staff->faculty_id)
+                ->first();
+        
+            $programmes = $faculty->departments->flatMap(function($department) {
+                return $department->programmes;
+            });
+        }
+
+
+        if($staffHod){
+            $departmentId = $staff->department_id;
+            $programmesIDs= Programme::where('department_id', $departmentId)->pluck('id')->toArray();
+
+            $programmes = Programme::with('department', 'department.faculty')->whereIn('id', $programmesIDs)->get();
+        }
+
         $staffHod = false;
         if(!empty($staff->acad_department) && $staff->id == $staff->acad_department->hod_id){
             $staffHod = true;
@@ -295,6 +318,7 @@ class StaffController extends Controller
             $programmes = Programme::with('department', 'department.faculty')->whereIn('id', $programmesIDs)->get();
         }
         
+
         $academicLevels = AcademicLevel::get();
 
 

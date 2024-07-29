@@ -61,7 +61,7 @@
                             </td>
                             <td>
                                 <a href="{{ url('admin/student/'.$student->slug) }}" class="btn btn-primary m-1"><i class= "ri-user-6-fill"></i> View Student</a>
-                                <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#delete{{$student->id}}" class="link-danger"><i class="ri-delete-bin-5-line"></i> Reverse Admission</a>
+                                <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#delete{{$student->id}}" class="btn btn-danger"><i class="ri-delete-bin-5-line"></i> Reverse Admission</a>
                             </td>
                         </tr>
 
@@ -76,7 +76,7 @@
                                             <lord-icon src="https://cdn.lordicon.com/wwneckwc.json" trigger="hover" style="width:150px;height:150px">
                                             </lord-icon>
                                             <h4 class="mb-3 mt-4">Are you sure you want to reverse admission for <br/> {{ $student->applicant->lastname .' '. $student->applicant->othernames }}?</h4>
-                                            <form action="{{ url('staff/manageAdmission') }}" method="POST">
+                                            <form action="{{ url('admin/manageAdmission') }}" method="POST">
                                                 @csrf
                                                 <input name="applicant_id" type="hidden" value="{{$student->user_id}}">
                                                 <input name="status" type="hidden" value="reverse_admission" />

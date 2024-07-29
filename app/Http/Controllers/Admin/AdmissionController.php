@@ -101,7 +101,7 @@ class AdmissionController extends Controller
     }
 
     public function manageAdmission(Request $request){
-        if(strtolower($status) == 'admitted'){
+        if(strtolower($request->status) == 'admitted'){
             $validator = Validator::make($request->all(), [
                 'applicant_id' => 'required',
                 'programme_id' => 'required',
@@ -127,6 +127,8 @@ class AdmissionController extends Controller
         $admissionSession = $globalData->sessionSetting['admission_session'];
 
         $applicantId = $applicant->id;
+        $status = $request->status;
+
                 
         if(strtolower($status) == 'admitted'){
             $programmeId = $request->programme_id;
@@ -134,7 +136,6 @@ class AdmissionController extends Controller
             $parts = explode("/", $admissionSession);
             $entryYear = $parts[1];
 
-            $status = $request->status;
             $accessCode = $applicant->passcode;
             $email = $applicant->email;
             $name = $applicant->lastname.' '.$applicant->othernames;

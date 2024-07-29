@@ -61,7 +61,7 @@
                             </td>
                             <td>
                                 <a href="{{ url('staff/student/'.$student->slug) }}" class="btn btn-primary m-1"><i class= "ri-user-6-fill"></i> View Student</a>
-                                <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#delete{{$student->id}}" class="link-danger"><i class="ri-delete-bin-5-line"></i>Reverse Admission</a>
+                                <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#delete{{$student->id}}" class="btn btn-danger"><i class="ri-delete-bin-5-line"></i> Reverse Admission</a>
 
                             </td>
                         </tr>
