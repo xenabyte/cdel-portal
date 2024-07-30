@@ -747,7 +747,7 @@
                                     <td>{{ $CGPA }}</td>
                                     @foreach($classifiedCourses as $courseName => $students)
                                         @php
-                                            $courseDetails = $student->registeredCourses->where('course_code', $courseName)->first();
+                                            $courseDetails = $student->registeredCourses->where('course_code', $courseName)->where('semester', $semester)->where('level_id', $academiclevel->id)->where('academic_session', $academicSession)->first();
                                         @endphp
                                         <td>
                                             @if($courseDetails)
