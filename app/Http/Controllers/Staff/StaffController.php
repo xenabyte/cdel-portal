@@ -298,14 +298,6 @@ class StaffController extends Controller
             });
         }
 
-
-        if($staffHod){
-            $departmentId = $staff->department_id;
-            $programmesIDs= Programme::where('department_id', $departmentId)->pluck('id')->toArray();
-
-            $programmes = Programme::with('department', 'department.faculty')->whereIn('id', $programmesIDs)->get();
-        }
-
         $staffHod = false;
         if(!empty($staff->acad_department) && $staff->id == $staff->acad_department->hod_id){
             $staffHod = true;
