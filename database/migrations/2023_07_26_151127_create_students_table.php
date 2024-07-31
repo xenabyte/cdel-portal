@@ -44,6 +44,7 @@ class CreateStudentsTable extends Migration
             $table->string('referral_code')->nullable();
             $table->string('graduation_session')->nullable();
             $table->datetime('graduation_date')->nullable();
+            $table->integer('clearance_status')->nullable();
             $table->softDeletes();
             $table->rememberToken();
             $table->timestamps();

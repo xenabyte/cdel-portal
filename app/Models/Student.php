@@ -49,7 +49,8 @@ class Student extends Authenticatable
         'onesignal_id ',
         'batch',
         'graduation_date',
-        'graduation_session'
+        'graduation_session',
+        'clearance_status'
     ];
 
     /**

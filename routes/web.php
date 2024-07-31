@@ -340,6 +340,8 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'admin'],
   Route::get('/levelStudents/{id}', [App\Http\Controllers\Admin\ProgrammeController::class, 'levelStudents'])->name('levelStudents')->middleware(['auth:admin']);
   Route::post('/courseApproval', [App\Http\Controllers\Admin\ProgrammeController::class, 'courseApproval'])->name('courseApproval')->middleware(['auth:admin']);
 
+  Route::post('/manageClearanceApplication', [App\Http\Controllers\Admin\StudentController::class, 'manageClearanceApplication'])->name('manageClearanceApplication')->middleware(['auth:admin']);
+
 });
 
 Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'student'], function () {
@@ -408,8 +410,28 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'student'
   Route::get('/reffs', [App\Http\Controllers\Student\StudentController::class, 'reffs'])->name('reffs')->middleware(['auth:student']);
   Route::post('/applicantWithSession', [App\Http\Controllers\Student\StudentController::class, 'applicantWithSession'])->name('applicantWithSession')->middleware(['auth:student']);
   Route::get('/student/{slug}', [App\Http\Controllers\Student\StudentController::class, 'student'])->name('student')->middleware(['auth:student']);
-  Route::get('/applicant/{slug}', [App\Http\Controllers\Student\StudentController::class, 'applicant'])->name('applicant')->middleware(['auth:student']);
+  
+  Route::post('/submitClearanceApplication', [App\Http\Controllers\Student\ClearanceController::class, 'submitClearanceApplication'])->name('submitClearanceApplication')->middleware(['auth:student']);
+  Route::post('/saveBioData', [App\Http\Controllers\Student\ClearanceController::class, 'saveBioData'])->middleware(['auth:student']);
+  Route::post('/guardianBioData', [App\Http\Controllers\Student\ClearanceController::class, 'guardianBioData'])->middleware(['auth:student']);
+  Route::post('/saveUtme', [App\Http\Controllers\Student\ClearanceController::class, 'saveUtme'])->middleware(['auth:student']);
+  Route::post('/saveSitting', [App\Http\Controllers\Student\ClearanceController::class, 'saveSitting'])->middleware(['auth:student']);
+  Route::post('/addOlevel', [App\Http\Controllers\Student\ClearanceController::class, 'addOlevel'])->middleware(['auth:student']);
+  Route::post('/addUtme', [App\Http\Controllers\Student\ClearanceController::class, 'addUtme'])->middleware(['auth:student']);
+  Route::post('/updateUtme', [App\Http\Controllers\Student\ClearanceController::class, 'updateUtme'])->middleware(['auth:student']);
+  Route::post('/updateOlevel', [App\Http\Controllers\Student\ClearanceController::class, 'updateOlevel'])->middleware(['auth:student']);
 
+  Route::post('/deleteUtme', [App\Http\Controllers\Student\ClearanceController::class, 'deleteUtme'])->middleware(['auth:student']);
+  Route::post('/deleteOlevel', [App\Http\Controllers\Student\ClearanceController::class, 'deleteOlevel'])->middleware(['auth:student']);
+  Route::post('/nokBioData', [App\Http\Controllers\Student\ClearanceController::class, 'nokBioData'])->middleware(['auth:student']);
+
+  Route::post('/saveDe', [App\Http\Controllers\Student\ClearanceController::class, 'saveDe'])->middleware(['auth:student']);
+  Route::post('/saveProgramme', [App\Http\Controllers\Student\ClearanceController::class, 'saveProgramme'])->middleware(['auth:student']);
+  Route::post('/uploadOlevel', [App\Http\Controllers\Student\ClearanceController::class, 'uploadOlevel'])->middleware(['auth:student']);
+  Route::post('/uploadUtme', [App\Http\Controllers\Student\ClearanceController::class, 'uploadUtme'])->middleware(['auth:student']);
+  Route::post('/deleteFile', [App\Http\Controllers\Student\ClearanceController::class, 'deleteFile'])->middleware(['auth:student']);
+  
+  
 
 });
 
@@ -604,6 +626,8 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'staff'],
 
   Route::post('/requestCourseApproval', [App\Http\Controllers\Staff\AcademicController::class, 'requestCourseApproval'])->name('requestCourseApproval')->middleware(['auth:staff']);
   Route::post('/courseApproval', [App\Http\Controllers\Staff\AcademicController::class, 'courseApproval'])->name('courseApproval')->middleware(['auth:staff']);
+
+  Route::post('/manageClearanceApplication', [App\Http\Controllers\Staff\StudentController::class, 'manageClearanceApplication'])->name('manageClearanceApplication')->middleware(['auth:staff']);
 
   
 

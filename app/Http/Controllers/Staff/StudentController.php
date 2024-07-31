@@ -71,4 +71,20 @@ class StudentController extends Controller
             'classifiedStudents' => $classifiedStudents,
         ]);
     }
+
+    public function manageClearanceApplication(Request $request){
+        $student = Student::find($request->student_id);
+
+        $status = $request->status == 1? $request->status:null;
+
+        $student->clearance_status = $status;
+
+        if($student->save()){
+            alert()->success('Good Job', 'Application reviewed')->persistent('Close');
+            return redirect()->back();
+        }
+
+        alert()->error('Oops!', 'Something went wrong')->persistent('Close');
+        return redirect()->back();
+    }
 }

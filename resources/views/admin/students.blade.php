@@ -41,6 +41,7 @@
                             <th scope="col">Academic Session</th>
                             <th scope="col">Admitted Date</th>
                             <th scope="col">Admission Letter</th>
+                            <th scope="col">Clearance Status</th>
                             <th scope="col"></th>
                         </tr>
                     </thead>
@@ -60,8 +61,12 @@
                                 <a href="{{ asset($student->admission_letter) }}" class="btn btn-danger m-1"> Download Admission Letter</a>
                             </td>
                             <td>
+                                @if($student->clearance_status == 1)Cleared @else Not Cleared @endif
+                            </td>
+                            <td>
+                                @if(!empty($student->clearance_status))<a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#view{{$student->applicant->id}}" class="btn btn-secondary m-1"><i class= "ri-eye-fill"></i> View Clearance</a>@endif
                                 <a href="{{ url('admin/student/'.$student->slug) }}" class="btn btn-primary m-1"><i class= "ri-user-6-fill"></i> View Student</a>
-                                <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#delete{{$student->id}}" class="btn btn-danger"><i class="ri-delete-bin-5-line"></i> Reverse Admission</a>
+                                <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#delete{{$student->id}}" class="btn btn-danger m-1"><i class="ri-delete-bin-5-line"></i> Reverse Admission</a>
                             </td>
                         </tr>
 
@@ -99,7 +104,184 @@
     </div>
     <!-- end col -->
 </div>
-<!-- end row -
+<!-- end row -->
 
+@foreach($students as $student)
+<div id="view{{$student->applicant->id}}" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content border-0 overflow-hidden">
+            <div class="modal-header p-3">
+                <h4 class="card-title mb-0">View Clearance Application</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <hr>
+
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-3 border-end">
+                        <div class="card-body text-center">
+                            <div class="avatar-md mb-3 mx-auto">
+                                <img src="{{empty($student->applicant->image)?asset('assets/images/users/user-dummy-img.jpg'): asset($student->applicant->image) }}" alt="" id="candidate-img" class="img-thumbnail rounded-circle shadow-none">
+                            </div>
+    
+                            <h5 id="candidate-name" class="mb-0">{{ $student->applicant->lastname .' '. $student->applicant->othernames }}</h5>
+                            <p id="candidate-position" class="text-muted">{{ $student->applicant->programme?$student->applicant->programme->name:null }}</p>
+                            <p id="candidate-position" class="text-muted">Phone Number: {{ $student->applicant->phone_number }}</p>
+                            <div class="vr"></div>
+                            <div class="text-muted">Application ID : <span class="text-body fw-medium"> {{ $student->applicant->application_number }}</span></div>
+                            @if($student->applicant->application_type == 'UTME')
+                            <div class="vr"></div>
+                            <div class="text-muted">UTME Scores : <span class="text-body fw-medium"> {{ $student->applicant->utmes->sum('score') }}</span></div>
+                            @endif
+                            <div class="vr"></div>
+                            <div class="text-muted">Application Date : <span class="text-body fw-medium">{{ $student->applicant->updated_at }}</span></div>
+                            <hr>
+                            <h4 class="mt-3 alert alert-info">Admission Status: {{ empty($student->applicant->status)? 'Processing' : ucwords($student->applicant->status) }}</h4>
+                        </div>
+                    </div>
+    
+                    <div class="col-md-3 border-end">
+                        <div class="card-body">
+                            @if(!empty($student->applicant->olevel_1))
+                            <h5 class="fs-14 mb-3"> Schools Attended</h5>
+                            {!! $student->applicant->schools_attended !!}
+                            <hr>
+                            <div class="row mb-2">
+                                <div class="col-sm-6 col-xl-12">
+                                    <!-- Simple card -->
+                                    <i class="bx bxs-file-jpg text-danger" style="font-size: 25px"></i><span class="fs-14">Olevel Result</span>
+                                    <div class="text-end">
+                                        <a href="{{ asset($student->applicant->olevel_1) }}" target="blank" class="btn btn-success">View</a>
+                                    </div>
+                                    @if($student->applicant->sitting_no > 1)
+                                    <i class="bx bxs-file-jpg text-danger" style="font-size: 25px"></i><span class="fs-14">Olevel Result (Second Sitting)</span>
+                                    <div class="text-end">
+                                        <a href="{{ asset($student->applicant->olevel_2) }}" target="blank"  class="btn btn-success">View</a>
+                                    </div>
+                                    @endif
+                                </div><!-- end col -->
+                            </div>
+                            <hr>
+                            @endif
+
+                            <div class="table-responsive">
+                                <table class="table table-borderedless table-nowrap">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">Id</th>
+                                            <th scope="col">Subject</th>
+                                            <th scope="col">Grade</th>
+                                            <th scope="col">Registration Number</th>
+                                            <th scope="col">Year</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach($student->applicant->olevels as $olevel)
+                                        <tr>
+                                            <th scope="row">{{ $loop->iteration }}</th>
+                                            <td>{{ $olevel->subject }}</td>
+                                            <td>{{ $olevel->grade }}</td>
+                                            <td>{{ $olevel->reg_no }}</td>
+                                            <td>{{ $olevel->year }}</td>
+                                        </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+    
+                    <div class="col-md-3 border-end">
+                        <div class="card-body">
+                            @if($student->applicant->application_type == 'UTME')
+                            <div>
+                                @if(!empty($student->applicant->utme))
+                                <div class="row mb-2">
+                                    <div class="col-sm-6 col-xl-12">
+                                        <!-- Simple card -->
+                                        <i class="bx bxs-file-jpg text-danger" style="font-size: 25px"></i><span class="fs-14">UTME Result Printout</span>
+                                        <div class="text-end">
+                                            <a href="{{ asset($student->applicant->utme) }}"  target="blank" class="btn btn-success">View</a>
+                                        </div>
+                                    </div><!-- end col -->
+                                </div>
+                                <hr>
+                                @endif
+                                <div class="table-responsive">
+                                    <table class="table table-borderedless table-nowrap">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">Id</th>
+                                                <th scope="col">Subject</th>
+                                                <th scope="col">Score</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach($student->applicant->utmes as $utme)
+                                            <tr>
+                                                <th scope="row">{{ $loop->iteration }}</th>
+                                                <td>{{ $utme->subject }}</td>
+                                                <td>{{ $utme->score }}</td>
+                                            </tr>
+                                            @endforeach
+                                            <tr>
+                                                <th scope="row"></th>
+                                                <td>Total</td>
+                                                <td><strong>{{$student->applicant->utmes->sum('score')}}</strong></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            @elseif($student->applicant->application_type != 'UTME')
+                            <div>
+                                <h5 class="fs-14 mb-3"> Institution Attended</h5>
+                                {!! $student->applicant->de_school_attended !!}
+                                <hr>
+                                @if(!empty($student->applicant->de_result))
+                                <div class="row mb-2">
+                                    <div class="col-sm-6 col-xl-12">
+                                        <!-- Simple card -->
+                                        <i class="bx bxs-file-jpg text-danger" style="font-size: 25px"></i><span class="fs-14">Direct Entry/Prev Institution/Prev Institution Result</span>
+                                        <div class="text-end">
+                                            <a href="{{ asset($student->applicant->de_result) }}"  target="blank" class="btn btn-success">View</a>
+                                        </div>
+                                    </div><!-- end col -->
+                                </div>
+                                @endif
+                            </div>
+                            @endif
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="card-body">
+                            <h5 class="fs-14 mb-3 border-bottom"> Manage Clearance Application</h5>
+                            @if($student->clearance_status == 2)
+                            <form action="{{ url('admin/manageClearanceApplication') }}" method="POST">
+                                @csrf
+                                <input type="hidden" name="student_id" value="{{ $student->id }}">
+    
+                                <div class="mb-3">
+                                    <label for="choices-publish-status-input" class="form-label">Manage Application</label>
+                                    <select class="form-select" name="status" id="choices-publish-status-input" data-choices data-choices-search-false required>
+                                        <option value="" selected>Choose...</option>
+                                        <option value="1">Cleared</option>
+                                        <option value="3">Not Cleared/Reverse Clearance Application </option>
+                                    </select>
+                                </div>
+    
+                                <hr>
+                                <button type="submit" id="submit-button" class="btn btn-lg btn-primary"> Submit</button>
+                            </form>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+@endforeach
 
 @endsection

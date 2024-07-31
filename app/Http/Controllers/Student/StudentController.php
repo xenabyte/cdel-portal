@@ -49,6 +49,7 @@ class StudentController extends Controller
         $globalData = $request->input('global_data');
         $admissionSession = $globalData->sessionSetting['admission_session'];
         $academicSession = $globalData->sessionSetting['academic_session'];
+        $applicationType = $student->applicant->application_type;
 
         $acceptancePayment = Payment::with('structures')->where('type', Payment::PAYMENT_TYPE_ACCEPTANCE)->where('academic_session', $academicSession)->first();
         $acceptancePaymentId = $acceptancePayment->id;
@@ -57,12 +58,21 @@ class StudentController extends Controller
         $totalExpenditure = Transaction::where('student_id', $studentId)->where('status', 1)->where('payment_method', 'Wallet')->sum('amount_payed');
         $totalDeposit = Transaction::where('student_id', $studentId)->where('status', 1)->where('payment_id', 0)->sum('amount_payed');
 
-
         $paymentCheck = $this->checkSchoolFees($student, $academicSession, $levelId);
 
         if(!$acceptanceTransaction && $student->is_active == 0){
             return view('student.acceptanceFee', [
                 'payment' => $acceptancePayment,
+                'passTuition' => $paymentCheck->passTuitionPayment,
+                'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
+                'passEightyTuition' => $paymentCheck->passEightyTuition,
+                'studentPendingTransactions' => $paymentCheck->studentPendingTransactions
+            ]);
+        }
+
+        if($student->clearance_status != 1 ){
+            return view('student.clearance', [
+                'payment' => $paymentCheck->schoolPayment,
                 'passTuition' => $paymentCheck->passTuitionPayment,
                 'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
                 'passEightyTuition' => $paymentCheck->passEightyTuition,
@@ -1382,4 +1392,5 @@ class StudentController extends Controller
             'studentPendingTransactions' => $paymentCheck->studentPendingTransactions
         ]);
     }
+
 }
