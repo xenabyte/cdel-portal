@@ -100,7 +100,7 @@ class PaymentController extends Controller
                     }
 
                     alert()->success('Good Job', 'Payment successful')->persistent('Close');
-                    if($paymentType == Payment::PAYMENT_TYPE_GENERAl_APPLICATION || $paymentType == Payment::PAYMENT_TYPE_INTER_TRANSFER_APPLICATION){
+                    if($paymentType == Payment::PAYMENT_TYPE_GENERAL_APPLICATION || $paymentType == Payment::PAYMENT_TYPE_INTER_TRANSFER_APPLICATION){
                         $applicantData = $paymentDetails;
                         $this->createApplicant($applicantData);
                         return view($redirectPath, [ 
@@ -117,7 +117,7 @@ class PaymentController extends Controller
                     }
                 }else{
                     alert()->info('oops!!!', 'Something happpened, contact administrator')->persistent('Close');
-                    if($paymentType == Payment::PAYMENT_TYPE_GENERAl_APPLICATION || $paymentType == Payment::PAYMENT_TYPE_INTER_TRANSFER_APPLICATION){
+                    if($paymentType == Payment::PAYMENT_TYPE_GENERAL_APPLICATION || $paymentType == Payment::PAYMENT_TYPE_INTER_TRANSFER_APPLICATION){
                         return view($redirectPath, [
                             'programmes' => $this->programmes,
                             'payment' => $payment
@@ -132,7 +132,7 @@ class PaymentController extends Controller
             }
 
             alert()->error('Error', 'Payment not successful')->persistent('Close');
-            if($paymentType == Payment::PAYMENT_TYPE_GENERAl_APPLICATION || $paymentType == Payment::PAYMENT_TYPE_INTER_TRANSFER_APPLICATION){
+            if($paymentType == Payment::PAYMENT_TYPE_GENERAL_APPLICATION || $paymentType == Payment::PAYMENT_TYPE_INTER_TRANSFER_APPLICATION){
                 return view($redirectPath, [
                     'programmes' => $this->programmes,
                     'payment' => $payment
@@ -149,8 +149,7 @@ class PaymentController extends Controller
         }
     }
 
-    public function raveVerifyPayment()
-    {
+    public function raveVerifyPayment(){
         Log::info("**********************Flutterwave Verifying Payment**********************");
 
         try{
@@ -208,7 +207,7 @@ class PaymentController extends Controller
                         }
                     }
                     alert()->success('Good Job', 'Payment successful')->persistent('Close');
-                    if($paymentType == Payment::PAYMENT_TYPE_GENERAl_APPLICATION || $paymentType == Payment::PAYMENT_TYPE_INTER_TRANSFER_APPLICATION){
+                    if($paymentType == Payment::PAYMENT_TYPE_GENERAL_APPLICATION || $paymentType == Payment::PAYMENT_TYPE_INTER_TRANSFER_APPLICATION){
                         $applicantData = $paymentDetails;
                         $this->createApplicant($applicantData);
                         return view($redirectPath, [
@@ -225,7 +224,7 @@ class PaymentController extends Controller
                     }
                 }else{
                     alert()->info('oops!!!', 'Something happpened, contact administrator')->persistent('Close');
-                    if($paymentType == Payment::PAYMENT_TYPE_GENERAl_APPLICATION || $paymentType == Payment::PAYMENT_TYPE_INTER_TRANSFER_APPLICATION){
+                    if($paymentType == Payment::PAYMENT_TYPE_GENERAL_APPLICATION || $paymentType == Payment::PAYMENT_TYPE_INTER_TRANSFER_APPLICATION){
                         return view($redirectPath, [
                             'programmes' => $this->programmes,
                             'payment' => $payment
@@ -240,7 +239,7 @@ class PaymentController extends Controller
             }
 
             alert()->error('Error', 'Payment not successful')->persistent('Close');
-            if($paymentType == Payment::PAYMENT_TYPE_GENERAl_APPLICATION || $paymentType == Payment::PAYMENT_TYPE_INTER_TRANSFER_APPLICATION){
+            if($paymentType == Payment::PAYMENT_TYPE_GENERAL_APPLICATION || $paymentType == Payment::PAYMENT_TYPE_INTER_TRANSFER_APPLICATION){
                 return view($redirectPath, [
                     'programmes' => $this->programmes,
                     'payment' => $payment
@@ -257,22 +256,106 @@ class PaymentController extends Controller
         }
     }
 
-    public function upperlinkVerifyPayment(){
+    public function upperlinkVerifyPayment($paymentReference){
         Log::info("**********************Upperlink Verifying Payment**********************");
-        $transactionId = $_GET['transaction_id'];
+        $ref = null;
+        if (isset($_GET['reference'])) {
+            $ref = $_GET['reference'];
+        }
+        
+        if(!empty($paymentReference)){
+            $ref = $paymentReference;
+        }
 
-        //Requery transaction
-        $data = new \stdClass();
-        $data->transactionId = $transactionId;
+        if(empty($ref)){
+            $redirectPath = 'student/transactions';
+            alert()->info('oops!!!', 'Something happpened, contact administrator')->persistent('Close');
+            return redirect($redirectPath);
+        }
 
         $upperLinkPayGate = new PayGate;
-        $paymentDetails =$upperLinkPayGate->verifyTransaction($data);
+        $paymentDetails =$upperLinkPayGate->verifyTransaction($ref);
 
-        dd($paymentDetails);
+        $data = $paymentDetails['meta'];
+        $paymentData = json_decode($data, true);
 
-        if($paymentDetails['status'] == 'success'){
+        $paymentId = $paymentData['payment_id'];
+        $studentId = !empty($paymentData['student_id'])?$paymentData['student_id']:null;
+        $redirectPath = $paymentData['redirect_path'];
+        $txRef = $paymentData['reference'];
+
+
+        $paymentType = Payment::PAYMENT_TYPE_WALLET_DEPOSIT;
+        if($paymentId > 0){
+            $payment = Payment::where('id', $paymentId)->first();
+            $paymentType = $payment->type;
+        }
+
+        $student = Student::with('applicant', 'programme')->where('id', $studentId)->first();
+        $amount = $paymentDetails['amount']*100;
+        $session = $paymentData['academic_session'];
+
+
+        if($paymentDetails['transactionStatus'] == '00'){
+            
             if($this->processUpperLinkPayment($paymentDetails)){
 
+                if($student && !empty($studentId)){
+                    $pdf = new Pdf();
+                    $invoice = $pdf->generateTransactionInvoice($session, $studentId, $paymentId, 'single');
+                            
+                    $data = new \stdClass();
+                    $data->lastname = $student->applicant->lastname;
+                    $data->othernames = $student->applicant->othernames;
+                    $data->amount = $amount;
+                    $data->invoice = $invoice;
+                    
+                    Mail::to($student->email)->send(new TransactionMail($data));
+
+                    if($paymentType == Payment::PAYMENT_TYPE_WALLET_DEPOSIT){
+                        $creditStudent = $this->creditStudentWallet($studentId, $amount);
+                        if(!$creditStudent){
+                            Log::info("**********************Unable to credit student wallet**********************: ". $amount .' - '.$student);
+                        }
+                    }  
+                    
+                    if($paymentType == Payment::PAYMENT_TYPE_BANDWIDTH){
+                        $transaction = Transaction::where('reference', $txRef)->first();
+                        $creditStudent = $this->creditBandwidth($transaction, $amount);
+
+                        if(!$creditStudent){
+                            Log::info("**********************Unable to credit student bandwidth**********************: ". $amount .' - '.$student);
+                        }
+                    }
+                }
+                alert()->success('Good Job', 'Payment successful')->persistent('Close');
+                if($paymentType == Payment::PAYMENT_TYPE_GENERAL_APPLICATION || $paymentType == Payment::PAYMENT_TYPE_INTER_TRANSFER_APPLICATION){
+                    $applicantData = $paymentDetails;
+                    $this->createApplicant($applicantData);
+                    return view($redirectPath, [
+                        'programmes' => $this->programmes,
+                        'payment' => $payment
+                    ]);
+                }elseif($paymentType == Payment::PAYMENT_TYPE_ACCEPTANCE){
+                    return redirect($redirectPath);
+                }elseif($paymentType == Payment::PAYMENT_TYPE_SCHOOL || $paymentType == Payment::PAYMENT_TYPE_SCHOOL_DE){
+                    $this->generateMatricAndEmail($student);
+                    return redirect($redirectPath);
+                }else{
+                    return redirect($redirectPath);
+                }
+            }else{
+                alert()->info('oops!!!', 'Something happpened, contact administrator')->persistent('Close');
+                if($paymentType == Payment::PAYMENT_TYPE_GENERAL_APPLICATION || $paymentType == Payment::PAYMENT_TYPE_INTER_TRANSFER_APPLICATION){
+                    return view($redirectPath, [
+                        'programmes' => $this->programmes,
+                        'payment' => $payment
+                    ]);
+                }elseif($paymentType == Payment::PAYMENT_TYPE_ACCEPTANCE){
+                    return redirect($redirectPath);
+                }else{
+                    return redirect($redirectPath);
+                }
             }
         }
     }
@@ -344,7 +427,7 @@ class PaymentController extends Controller
                             }     
                         }
 
-                        if($paymentType == Payment::PAYMENT_TYPE_GENERAl_APPLICATION || $paymentType == Payment::PAYMENT_TYPE_INTER_TRANSFER_APPLICATION){
+                        if($paymentType == Payment::PAYMENT_TYPE_GENERAL_APPLICATION || $paymentType == Payment::PAYMENT_TYPE_INTER_TRANSFER_APPLICATION){
                             $applicantData = $paymentDetails;
                             $this->createApplicant($applicantData);
                             return true;
@@ -357,7 +440,7 @@ class PaymentController extends Controller
                             return true;
                         }
                     }else{
-                        if($paymentType == Payment::PAYMENT_TYPE_GENERAl_APPLICATION || $paymentType == Payment::PAYMENT_TYPE_INTER_TRANSFER_APPLICATION){
+                        if($paymentType == Payment::PAYMENT_TYPE_GENERAL_APPLICATION || $paymentType == Payment::PAYMENT_TYPE_INTER_TRANSFER_APPLICATION){
                             return false;
                         }elseif($paymentType == Payment::PAYMENT_TYPE_ACCEPTANCE){
                             return false;
@@ -368,7 +451,7 @@ class PaymentController extends Controller
 
                 }
 
-                if($paymentType == Payment::PAYMENT_TYPE_GENERAl_APPLICATION || $paymentType == Payment::PAYMENT_TYPE_INTER_TRANSFER_APPLICATION){
+                if($paymentType == Payment::PAYMENT_TYPE_GENERAL_APPLICATION || $paymentType == Payment::PAYMENT_TYPE_INTER_TRANSFER_APPLICATION){
                     return false;
                 }elseif($paymentType == Payment::PAYMENT_TYPE_ACCEPTANCE){
                     return false;
@@ -455,9 +538,10 @@ class PaymentController extends Controller
                     return $this->dataResponse('Transaction not found', null, 'error');
                 }
 
+                $monnifyAmount = $this->getMonnifyAmount($transaction->amount_payed);
                 if ($paymentReference == $transaction->reference) {
                     $newAmount = $amountPaid * 100;
-                    $amountDiff = round(($newAmount - $transaction->amount_payed) / 100);
+                    $amountDiff = round(($newAmount - $monnifyAmount) / 100);
 
                     if ($amountDiff >= 0) {
                         // Credit bandwidth and update transaction status if the payment is valid
@@ -476,6 +560,29 @@ class PaymentController extends Controller
             return $this->dataResponse($this->getMissingParams($e), null, 'error');
         }
     }
+
+     
+    public function requeryUpperlinkPayment(Request $request){
+        
+        $validator = Validator::make($request->all(), [
+            'transaction_id' => 'required',
+        ]);
+
+        if($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+
+        if(!$transaction = Transaction::find($request->transaction_id)){
+            alert()->error('Oops', 'Invalid Session ')->persistent('Close');
+            return redirect()->back();
+        }
+
+        $paymentReference = $transaction->reference;
+
+        return $this->upperlinkVerifyPayment($paymentReference);
+    }
+
 
     public function getAllRave(){
         $data = [

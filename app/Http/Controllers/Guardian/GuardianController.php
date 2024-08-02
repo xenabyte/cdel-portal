@@ -101,17 +101,33 @@ class GuardianController extends Controller
                 alert()->error('Oops', 'Invalid Payment Initialization, contact ICT')->persistent('Close');
                 return redirect()->back();
             }
-            $redirectLocation = 'student/transactions';
+            $redirectLocation = 'guardian/transactions';
             $amount = $request->amount;
 
             $paymentClass = new Payment();
             $paymentType = $paymentClass->classifyPaymentType($payment->type);
         }
         
+        $reference = $this->generateAccessCode();
+
+        $bandwidthPlan = !empty($request->plan_id)?Plan::find($request->plan_id):null;
+        if(!empty($bandwidthPlan)){
+            $amount = $bandwidthPlan->amount;
+            $reference = $this->generateRandomString(25);
+        }
 
         $paymentGateway = $request->paymentGateway;
 
-        $reference = $this->generateAccessCode();
+        //Create new transaction
+        $transaction = Transaction::create([
+            'student_id' => $studentId,
+            'payment_id' => $paymentId,
+            'amount_payed' => $amount,
+            'payment_method' => $paymentGateway,
+            'reference' => $reference,
+            'session' => $student->academic_session,
+            'plan_id' => !empty($bandwidthPlan)?$bandwidthPlan->id:null,
+        ]);
        
 
         if(strtolower($paymentGateway) == 'paystack') {
@@ -182,7 +198,79 @@ class GuardianController extends Controller
             }
 
             return redirect($payment['data']['link']);
+        } 
+        
+        if(strtolower($paymentGateway) == 'upperlink') {
+            Log::info("Upperlink Amount ****************: ". round($this->getUpperlinkAmount($amount)));
+
+            $meta = array(
+                "student_id" => $studentId,
+                "payment_id" => $paymentId,
+                "payment_gateway" => $paymentGateway,
+                "reference" => $reference,
+                "academic_session" => $student->academic_session,
+                "redirect_path" => $redirectLocation,
+                "payment_Type" => $paymentType,
+                "plan_id" => !empty($bandwidthPlan)?$bandwidthPlan->id:null,
+            );
+
+
+            $data = array(
+                "amount" => round($this->getUpperlinkAmount($amount)/100),
+                "email" => $student->email,
+                "payGateRef" => $reference,
+                "merchantId" => env('UPPERLINK_REF'),
+                "countryCode" =>  "NG",
+                "currency" => "NGN",
+                "logoUrl" => env('SCHOOL_LOGO'),
+                "firstName" => $student->applicant->othernames,
+                "lastName" => $student->applicant->lastname,
+                "redirectUrl" => env("UPPERLINK_REDIRECT_URL"),
+                "meta" => json_encode($meta),
+            );
+
+            $paygate = new Paygate();
+            $paymentData = $paygate->initializeTransaction($data);
+            if($paymentData['code'] != "200"){
+                Log::info($paymentData);
+                $message = 'Payment Gateway not available, try again.';
+                alert()->info('Opps!', $message)->persistent('Close');
+                return redirect()->back();
+            }
+
+            $paymentUrl = $paymentData['data']['checkOutUrl'];
+
+            return redirect($paymentUrl);
         }
+
+        if(strtolower($paymentGateway) ==  "monnify"){
+            $now = Carbon::now();
+            $future = $now->addHours(48);
+            $invoiceExpire = $future->format('Y-m-d H:i:s');
+
+            $monnifyPaymentdata = array(
+                'amount' => ceil($newTx->amount_payed/100),
+                'invoiceReference' => $newTx->reference,
+                'description' =>  $newTx->narration,
+                'currencyCode' => "NGN",
+                'contractCode' => env('MONNIFY_CONTRACT_CODE'),
+                'customerEmail' => $student->email,
+                'customerName' => $student->applicant->lastname. ' '.$student->applicant->othernames,
+                'expiryDate' => $invoiceExpire,
+                'paymentMethods' => ["ACCOUNT_TRANSFER"],
+                "redirectUrl"=> env("MONNIFY_REDIRECT_URL"),
+            );
+
+            $monnify = new Monnify();
+            $createInvoice = $monnify->initiateInvoice($monnifyPaymentdata);
+            $checkoutUrl = $createInvoice->responseBody->checkoutUrl;
+
+            $transaction->checkout_url = $checkoutUrl;
+            $transaction->save();
+
+            return redirect($checkoutUrl);
+        }
+
 
         $message = 'Invalid Payment Gateway';
         alert()->info('Opps!', $message)->persistent('Close');

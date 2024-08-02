@@ -10,46 +10,54 @@ use GuzzleHttp\Handler\CurlHandler;
 use GuzzleHttp\RequestOptions as _JSON;
 
 
+use Log;
+
 class Paygate {
-    protected $apiEndpoint;
-    protected $apiToken;
+    protected $paymentEndPoint;
+    protected $username;
+    protected $password;
+    
 
     public function __construct(){
-        // $this->apiEndpoint = getenv('SMSLIVE_BASE_URL');
-        // $this->apiToken = getenv('SMSLIVE_BASE_URL');
+        $this->paymentEndPoint = env('UPPERLINK_CHECKOUT_URL');
+        $this->username = env('UPPERLINK_CHECKOUT_USERNAME');
+        $this->password = env('UPPERLINK_CHECKOUT_PASSWORD');
+        $this->merchantId = env("UPPERLINK_REF");
+        $this->requeryEndPoint = env('UPPERLINK_REQUERY_URL');
+
     }
 
     public function initializeTransaction($data)
     {
-        $client = new Client();
+        $dataok = json_encode($data);
 
-        try {
-            $response = $client->post($this->apiEndpoint, [
-                'form_params' => $data,
-                'headers' => [
-                    'Authorization' => 'Bearer ' . $this->apiToken,
-                    'Content-Type' => 'application/x-www-form-urlencoded',
-                ],
-            ]);
-
-            return json_decode($response->getBody(), true);
-        } catch (\Exception $e) {
-            // Log or handle the exception as needed
-            return ['error' => $e->getMessage()];
-        }
-    }
-
-    public function verifyTransaction($data){
-
-        $upperLinkRequeryUrl = env('UPPERLINK_REQUERY_URL');
-        $transactionId = $data->transactionId;
-        $merchantId = env("UPPERLINK_MERCHANT_ID");
-
+        $url = $this->paymentEndPoint;
         $header= array(
-            "content-type: application/json"
+            "content-type: application/json",
+            "Authorization: Basic ". base64_encode($this->username . ":" . $this->password),
         );
 
-        $url = $upperLinkRequeryUrl.'?transaction_id='.$transactionId.'&merchant_id='.$merchantId;
+        try {
+            $response = $this->makeCurlRequest($url, $dataok, $header);
+
+            $data = json_decode($response, true);
+            return $data;
+        } catch (Exception $e) {
+            Log::info("Message Upperlink paygate payment: ". $e->getMessage());
+            return false;
+        }
+
+    }
+    
+
+    public function verifyTransaction($ref){
+
+        $header= array(
+            "content-type: application/json",
+            "Authorization: Basic ". base64_encode($this->username . ":" . $this->password),
+        );
+
+        $url = $this->requeryEndPoint.'?merchantId='.$this->merchantId.'&ref='.$ref;
     
         $response = $this->makeCurlRequest($url, null, $header, "GET");
 

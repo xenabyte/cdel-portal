@@ -481,7 +481,24 @@
                                         <a href="{{ url('/admin/verifyStudentExits') }}" class="nav-link">Verify Student Exit</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a href="{{ url('/admin/studentHostelMgt') }}" class="nav-link">Student Hostel Mgt</a>
+                                        <a href="#studentHostelMgt" class="nav-link" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="studentHostelMgt" data-key="t-studentHostelMgt"> Student Hostel Mgt
+                                        </a>
+                                        <div class="collapse menu-dropdown" id="studentHostelMgt">
+                                            <ul class="nav nav-sm flex-column">
+                                                <li class="nav-item">
+                                                    <a href="{{ url('/admin/hostelType') }}" class="nav-link" data-key="t-basic"> Hostel Type </a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a href="{{('/admin/staffRoles')}}" class="nav-link" data-key="t-cover"> Staff Roles </a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a href="{{('/admin/attendance')}}" class="nav-link" data-key="t-cover"> Staff Attendance </a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a href="{{('/admin/leaveApplications')}}" class="nav-link" data-key="t-cover"> Staff Leave Applications </a>
+                                                </li>
+                                            </ul>
+                                        </div>
                                     </li>
                                 </ul>
                             </div>

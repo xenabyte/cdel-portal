@@ -55,6 +55,10 @@ Route::get('/staffRecord', [App\Http\Controllers\HomeController::class, 'staffRe
 
 Route::get('/getDepartments/{id}', [App\Http\Controllers\HomeController::class, 'getDepartments'])->name('getDepartments');
 
+Route::get('google/auth', [App\Http\Controllers\GoogleController::class, 'redirectToGoogle'])->name('google.auth');
+Route::get('google/callback', [App\Http\Controllers\GoogleController::class, 'handleGoogleCallback'])->name('google.callback');
+
+
 Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'admin'], function () {
   Route::get('/', [App\Http\Controllers\Admin\Auth\LoginController::class, 'showLoginForm'])->name('admin.login');
   Route::get('/login', [App\Http\Controllers\Admin\Auth\LoginController::class, 'showLoginForm'])->name('login');
@@ -342,6 +346,10 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'admin'],
 
   Route::post('/manageClearanceApplication', [App\Http\Controllers\Admin\StudentController::class, 'manageClearanceApplication'])->name('manageClearanceApplication')->middleware(['auth:admin']);
 
+  Route::get('/hostelType', [App\Http\Controllers\Admin\HostelController::class, 'hostelType'])->name('hostelType')->middleware(['auth:admin']);
+
+  
+
 });
 
 Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'student'], function () {
@@ -430,6 +438,10 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'student'
   Route::post('/uploadOlevel', [App\Http\Controllers\Student\ClearanceController::class, 'uploadOlevel'])->middleware(['auth:student']);
   Route::post('/uploadUtme', [App\Http\Controllers\Student\ClearanceController::class, 'uploadUtme'])->middleware(['auth:student']);
   Route::post('/deleteFile', [App\Http\Controllers\Student\ClearanceController::class, 'deleteFile'])->middleware(['auth:student']);
+  
+
+  Route::post('/requeryUpperlinkPayment', [App\Http\Controllers\PaymentController::class, 'requeryUpperlinkPayment'])->middleware(['auth:student']);
+
   
   
 

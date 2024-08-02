@@ -583,7 +583,7 @@ class PaymentController extends Controller
         }
 
 
-        if($type == Payment::PAYMENT_TYPE_GENERAl_APPLICATION || $type == Payment::PAYMENT_TYPE_ACCEPTANCE || $type == Payment::PAYMENT_TYPE_INTER_TRANSFER_APPLICATION){
+        if($type == Payment::PAYMENT_TYPE_GENERAL_APPLICATION || $type == Payment::PAYMENT_TYPE_ACCEPTANCE || $type == Payment::PAYMENT_TYPE_INTER_TRANSFER_APPLICATION){
             $validator = Validator::make($request->all(), [
                 'amountAcceptance' => 'required',
             ],[
@@ -619,7 +619,7 @@ class PaymentController extends Controller
 
         if($payment->type == Payment::PAYMENT_TYPE_ACCEPTANCE){
             $amount = $request->amountAcceptance;
-        }elseif($payment->type == Payment::PAYMENT_TYPE_GENERAl_APPLICATION){
+        }elseif($payment->type == Payment::PAYMENT_TYPE_GENERAL_APPLICATION){
             $amount = $request->amountAcceptance;
         }elseif($payment->type == Payment::PAYMENT_TYPE_INTER_TRANSFER_APPLICATION){
             $amount = $request->amountAcceptance;

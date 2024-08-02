@@ -144,12 +144,17 @@ class Controller extends BaseController
         $reference = $paymentDetails['data']['meta']['reference'];
         $session = $paymentDetails['data']['meta']['academic_session'];
 
+        $fwTxId = isset($_GET['transaction_id'])? $_GET['transaction_id']: null;
+        $payment = Payment::with('programme')->where('id', $paymentId)->first();
+        $redirectUrl = env('FLW_REDIRECT_URL').'?status=successful&tx_ref='.$reference.'&transaction_id='.$fwTxId;
+
 
         if(!empty($txRef)){
             if($existTx = Transaction::where('reference', $txRef)->where('status',  null)->first()){
                 $existTx->reference = $reference;
                 $existTx->status = 1;
                 $existTx->payment_method = $paymentGateway;
+                $existTx->redirect_url = $redirectUrl;
                 $existTx->save();
                 
                 return true;
@@ -160,10 +165,6 @@ class Controller extends BaseController
         if(Transaction::where('reference', $reference)->where('status', 1)->first()){
             return true;
         }
-
-        $fwTxId = isset($_GET['transaction_id'])? $_GET['transaction_id']: null;
-        $payment = Payment::with('programme')->where('id', $paymentId)->first();
-        $redirectUrl = env('FLW_REDIRECT_URL').'?status=successful&tx_ref='.$reference.'&transaction_id='.$fwTxId;
 
         //Create new transaction
         $transaction = Transaction::create([
@@ -181,11 +182,63 @@ class Controller extends BaseController
        return true;
     }
 
-    public function processUpperlinkPayment($transactionId){
+    public function processUpperlinkPayment($paymentDetails){
         $sessionSetting = SessionSetting::first();
         $academicSession = $sessionSetting['academic_session'];
         $applicationSession = $sessionSetting['application_session'];
         $admissionSession = $sessionSetting['admission_session'];
+
+        log::info("Processing payment:" . json_encode($paymentDetails));
+
+        $data = $paymentDetails['meta'];
+        $paymentData = json_decode($data, true);
+        $merchantId = $paymentDetails['merchantId'];
+
+
+        //get active editions
+        $applicationId = !empty($paymentData['application_id'])?$paymentData['application_id']:null;
+        $studentId = !empty($paymentData['student_id'])?$paymentData['student_id']:null;
+        $paymentId = $paymentData['payment_id'];
+        $paymentGateway = $paymentData['payment_gateway'];
+        $amount = $paymentDetails['amount'];
+        $txRef = $paymentData['reference'];
+        $reference = $paymentData['reference'];
+        $session = $paymentData['academic_session'];
+
+        $redirectUrl = env('UPPERLINK_REDIRECT_URL').'?reference='.$reference.'&merchantId='.$merchantId;
+
+
+        if(!empty($txRef)){
+            if($existTx = Transaction::where('reference', $txRef)->where('status',  null)->first()){
+                $existTx->reference = $reference;
+                $existTx->status = 1;
+                $existTx->payment_method = $paymentGateway;
+                $existTx->redirect_url = $redirectUrl;
+                $existTx->save();
+                
+                return true;
+            }
+        }
+
+        //check if payment have been added
+        if(Transaction::where('reference', $reference)->where('status', 1)->first()){
+            return true;
+        }
+
+        //Create new transaction
+        $transaction = Transaction::create([
+            'user_id' => !empty($applicationId)?$applicationId:null,
+            'student_id' => !empty($studentId)?$studentId:null,
+            'payment_id' => $paymentId,
+            'amount_payed' => $amount,
+            'payment_method' => $paymentGateway,
+            'reference' => $reference,
+            'session' => $session,
+            'redirect_url' => $redirectUrl,
+            'status' => 1
+        ]);
+
+       return true;
 
 
         log::info("Processing payment:" . $transactionId);
@@ -555,6 +608,7 @@ class Controller extends BaseController
 
             $google = new Google();
             $createStudentEmail = $google->createUser($studentEmail, $student->applicant->othernames, $student->applicant->lastname, $accessCode);
+            log::info($createStudentEmail);
 
             $student->email = $studentEmail;
             $student->matric_number = $matricNumber;
@@ -570,7 +624,7 @@ class Controller extends BaseController
             
             Mail::to($studentPreviousEmail)->send(new StudentActivated($student));
 
-            $this->sendGuardianOnboardingMail($student);
+            // $this->sendGuardianOnboardingMail($student);
 
             return true;
         }
@@ -649,24 +703,35 @@ class Controller extends BaseController
 
         $student = Student::with('applicant')->where('id', $transactionData->student_id)->first();
         
-         if(empty($transactionData->transaction_id)){
-            //Create new transaction
-            $transaction = Transaction::create([
-                'student_id' => $transactionData->student_id,
-                'payment_id' => $transactionData->payment_id,
-                'amount_payed' => $transactionData->amount,
-                'payment_method' => $transactionData->payment_gateway,
-                'reference' => $transactionData->reference,
-                'session' => $transactionData->academic_session,
-                'status' => 1
-            ]);
-         }else{
+        if(empty($transactionData->transaction_id)){
+            if($transaction = Transaction::where('reference',  $transactionData->reference)->where('status',  null)->first()){
+                $transaction->status = 1;
+                $transaction->save();                
+            }else{
+                //Create new transaction
+                $transaction = Transaction::create([
+                    'student_id' => $transactionData->student_id,
+                    'payment_id' => $transactionData->payment_id,
+                    'amount_payed' => $transactionData->amount,
+                    'payment_method' => $transactionData->payment_gateway,
+                    'reference' => $transactionData->reference,
+                    'session' => $transactionData->academic_session,
+                    'plan_id' => $transactionData->plan_id,
+                    'status' => 1
+                ]);
+            }
+        }else{
             $transaction = Transaction::find($transactionData->transaction_id);
-         }
+        }
 
+        $paymentId = $transactionData->payment_id;
+        $paymentType = Payment::PAYMENT_TYPE_WALLET_DEPOSIT;
+        if($paymentId > 0){
+            $payment = Payment::where('id', $paymentId)->first();
+            $paymentType = $payment->type;
+        }
 
-       
-
+        $amount = $transactionData->amount;
         $studentBalance = $student->amount_balance;
         $studentNewBalance = $studentBalance - $transactionData->amount;
         $student->amount_balance = $studentNewBalance;
@@ -687,7 +752,26 @@ class Controller extends BaseController
             
             Mail::to($student->email)->send(new TransactionMail($data));   
         }
+
+        if($paymentType == Payment::PAYMENT_TYPE_WALLET_DEPOSIT){
+            $creditStudent = $this->creditStudentWallet($studentId, $amount);
+            if(!$creditStudent){
+                Log::info("**********************Unable to credit student wallet**********************: ". $amount .' - '.$student);
+            }
+        }  
         
+        if($paymentType == Payment::PAYMENT_TYPE_BANDWIDTH){
+            $transaction = Transaction::where('reference',  $transactionData->reference)->first();
+            $creditStudent = $this->creditBandwidth($transaction, $amount);
+
+            if(!$creditStudent){
+                Log::info("**********************Unable to credit student bandwidth**********************: ". $amount .' - '.$student);
+            }
+        }
+
+        if($paymentType == Payment::PAYMENT_TYPE_SCHOOL || $paymentType == Payment::PAYMENT_TYPE_SCHOOL_DE){
+            $this->generateMatricAndEmail($student);
+        }
 
         alert()->success('Good Job', 'Payment successful')->persistent('Close');
         return redirect($transactionData->redirect_path);

@@ -259,7 +259,7 @@ class ClearanceController extends Controller
         $applicationSession = $globalData->sessionSetting['application_session'];
         $applicationType = $request->input('applicationType');
 
-        $applicationPayment = Payment::with('structures')->where('academic_session', $applicationSession)->where('type', Payment::PAYMENT_TYPE_GENERAl_APPLICATION)->first();
+        $applicationPayment = Payment::with('structures')->where('academic_session', $applicationSession)->where('type', Payment::PAYMENT_TYPE_GENERAL_APPLICATION)->first();
         $interApplicationPayment = Payment::with('structures')->where('academic_session', $applicationSession)->where('type', Payment::PAYMENT_TYPE_INTER_TRANSFER_APPLICATION)->first();
 
 

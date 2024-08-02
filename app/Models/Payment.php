@@ -10,7 +10,7 @@ class Payment extends Model
 {
     use HasFactory, SoftDeletes;
 
-    const PAYMENT_TYPE_GENERAl_APPLICATION = 'General Application Fee';
+    const PAYMENT_TYPE_GENERAL_APPLICATION = 'General Application Fee';
     const PAYMENT_TYPE_INTER_TRANSFER_APPLICATION = 'Inter Transfer Application Fee';
     const PAYMENT_TYPE_ACCEPTANCE = 'Acceptance Fee';
     const PAYMENT_TYPE_SCHOOL = 'School Fee';
@@ -91,7 +91,7 @@ class Payment extends Model
             case 'DE School Fee':
                 return 'Tuition Fee';
             default:
-                return 'Unknown';
+                return 'Other Fee';
         }
     }
 }

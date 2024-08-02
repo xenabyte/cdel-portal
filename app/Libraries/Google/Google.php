@@ -4,34 +4,70 @@ namespace App\Libraries\Google;
 
 use Google\Client as GoogleClient;
 use Google\Service\Directory;
-use Log;
-
 use Google\Service\Calendar;
+use Log;
 use Config;
 
 class Google
 {
     protected $client;
-    protected $service;
+    protected $directoryService;
+    protected $calendarService;
 
     public function __construct()
     {
-        $path = base_path('public/google/tau-core-api-2551c52d28f8.json');
         $this->client = new GoogleClient();
-        $this->client->setAuthConfig($path);
-        $this->client->setSubject(env('GOOGLE_CLIENT_SUBJECT'));
-        $this->client->addScope('https://www.googleapis.com/auth/admin.directory.user');
-        $this->client->setApplicationName('Your Application Name');
-
-        $this->service = new Directory($this->client);
-        $this->client->setScopes([
+        $this->client->setClientId(env('GOOGLE_CLIENT_ID'));
+        $this->client->setClientSecret(env('GOOGLE_CLIENT_SECRET'));
+        $this->client->setRedirectUri(env('GOOGLE_REDIRECT_URI'));
+        $this->client->setAuthConfig(base_path('public/google/tau-core-api-2551c52d28f8.json'));
+        $this->client->addScope([
+            'https://www.googleapis.com/auth/admin.directory.user',
             'https://www.googleapis.com/auth/admin.directory.group',
-            'https://www.googleapis.com/auth/admin.directory.group.member'
+            'https://www.googleapis.com/auth/admin.directory.group.member',
+            Calendar::CALENDAR_EVENTS
         ]);
+        $this->client->setAccessType('offline');
+        $this->client->setApprovalPrompt('force');
+        $this->client->setIncludeGrantedScopes(true);
+    }
+
+    public function getAuthUrl()
+    {
+        return $this->client->createAuthUrl();
+    }
+
+    public function handleCallback($code)
+    {
+        $accessToken = $this->client->fetchAccessTokenWithAuthCode($code);
+        $this->client->setAccessToken($accessToken);
+
+        // Save the access token for future use
+        session(['google_access_token' => $accessToken]);
+    }
+
+    protected function getClient()
+    {
+        if (session()->has('google_access_token')) {
+            $this->client->setAccessToken(session('google_access_token'));
+
+            // Refresh the token if it's expired
+            if ($this->client->isAccessTokenExpired()) {
+                $this->client->fetchAccessTokenWithRefreshToken($this->client->getRefreshToken());
+                session(['google_access_token' => $this->client->getAccessToken()]);
+            }
+        } else {
+            throw new \Exception('User not authenticated with Google.');
+        }
+
+        return $this->client;
     }
 
     public function createUser($email, $firstName, $lastName, $password)
     {
+        $client = $this->getClient();
+        $this->directoryService = new Directory($client);
+
         $user = new Directory\User();
         $user->setPrimaryEmail($email);
         $user->setName(new Directory\UserName());
@@ -41,62 +77,58 @@ class Google
         $user->setChangePasswordAtNextLogin(true);
 
         try {
-            $result = $this->service->users->insert($user);
+            $result = $this->directoryService->users->insert($user);
             return $result;
-        }catch (\Google\Service\Exception $e) {
-            // Log or print the error message for debugging
-            Log::info("Message: ". $e->getMessage());
+        } catch (\Google\Service\Exception $e) {
+            Log::info("Message: " . $e->getMessage());
             return false;
         }
     }
 
     public function generateGoogleMeetLink($title, $date, $time)
     {
-        $path = base_path('public/google/tau-core-api-d3dd9b502e4d');
+        $client = $this->getClient();
+        $this->calendarService = new Calendar($client);
 
-        $client = new GoogleClient();
-        $client->setScopes(Calendar::CALENDAR_EVENTS);
-        $client->setAuthConfig($path);
-        $service = new Calendar($client);
+        $requestId = uniqid();
 
-        $requestId = uniqid(); 
-
-        $event = new CalendarEvent(array(
+        $event = new Calendar\Event([
             'summary' => $title,
-            'start' => array(
+            'start' => [
                 'dateTime' => $date . 'T' . $time . ':00',
                 'timeZone' => Config::get('app.timezone'),
-            ),
-            'end' => array(
+            ],
+            'end' => [
                 'dateTime' => $date . 'T' . $time . ':00',
                 'timeZone' => Config::get('app.timezone'),
-            ),
-            'conferenceData' => array(
-                'createRequest' => array(
+            ],
+            'conferenceData' => [
+                'createRequest' => [
                     'requestId' => $requestId,
-                ),
-            ),
-        ));
+                ],
+            ],
+        ]);
 
         $calendarId = 'primary'; // Or your specific calendar ID
-        $event = $service->events->insert($calendarId, $event, ['conferenceDataVersion' => 1]);
+        $event = $this->calendarService->events->insert($calendarId, $event, ['conferenceDataVersion' => 1]);
 
         return $event->getHangoutLink();
     }
 
     public function addMemberToGroup($email, $groupEmail)
     {
-        $service = new Google_Service_Directory($this->client);
+        $client = $this->getClient();
+        $this->directoryService = new Directory($client);
 
-        $member = new Google_Service_Directory_Member();
+        $member = new Directory\Member();
         $member->setEmail($email);
         $member->setRole('MEMBER');
 
         try {
-            $service->members->insert($groupEmail, $member);
+            $this->directoryService->members->insert($groupEmail, $member);
             return true;
-        } catch (Exception $e) {
-            Log::error($e->getMessage);
+        } catch (\Google\Service\Exception $e) {
+            Log::error($e->getMessage());
             return false;
         }
     }

@@ -56,7 +56,7 @@ class ApplicationController extends Controller
         
         $applicant = Applicant::with('programme', 'olevels', 'guardian')->where('id', $userId)->first();
 
-        $applicationPayment = Payment::with('structures')->where('type', Payment::PAYMENT_TYPE_GENERAl_APPLICATION)->where('academic_session', $applicationSession)->first();
+        $applicationPayment = Payment::with('structures')->where('type', Payment::PAYMENT_TYPE_GENERAL_APPLICATION)->where('academic_session', $applicationSession)->first();
         $interApplicationPayment = Payment::with('structures')->where('type', Payment::PAYMENT_TYPE_INTER_TRANSFER_APPLICATION)->where('academic_session', $applicationSession)->first();
 
         $paymentId = $applicationPayment->id;
@@ -137,7 +137,7 @@ class ApplicationController extends Controller
         $globalData = $request->input('global_data');
         $applicationSession = $globalData->sessionSetting['application_session'];
 
-        $applicationPayment = Payment::with('structures')->where('type', Payment::PAYMENT_TYPE_GENERAl_APPLICATION)->where('academic_session', $applicationSession)->first();
+        $applicationPayment = Payment::with('structures')->where('type', Payment::PAYMENT_TYPE_GENERAL_APPLICATION)->where('academic_session', $applicationSession)->first();
         $interApplicationPayment = Payment::with('structures')->where('type', Payment::PAYMENT_TYPE_INTER_TRANSFER_APPLICATION)->where('academic_session', $applicationSession)->first();
 
         return view('user.auth.register', [
@@ -358,7 +358,7 @@ class ApplicationController extends Controller
         $applicationSession = $globalData->sessionSetting['application_session'];
         $applicationType = $request->input('applicationType');
 
-        $applicationPayment = Payment::with('structures')->where('academic_session', $applicationSession)->where('type', Payment::PAYMENT_TYPE_GENERAl_APPLICATION)->first();
+        $applicationPayment = Payment::with('structures')->where('academic_session', $applicationSession)->where('type', Payment::PAYMENT_TYPE_GENERAL_APPLICATION)->first();
         $interApplicationPayment = Payment::with('structures')->where('academic_session', $applicationSession)->where('type', Payment::PAYMENT_TYPE_INTER_TRANSFER_APPLICATION)->first();
 
 
