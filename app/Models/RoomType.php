@@ -15,6 +15,9 @@ class RoomType extends Model
     const EAST_CAMPUS = 'East';
     const WEST_CAMPUS = 'West';
 
+    const GENDER_MALE = 'Male';
+    const GENDER_FEMALE = 'Female';
+
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
@@ -22,6 +25,7 @@ class RoomType extends Model
         'capacity',
         'amount',
         'campus',
+        'gender',
     ];
 
     public static function getTypePerCampus ($name, $campus) {

@@ -486,16 +486,10 @@
                                         <div class="collapse menu-dropdown" id="studentHostelMgt">
                                             <ul class="nav nav-sm flex-column">
                                                 <li class="nav-item">
-                                                    <a href="{{ url('/admin/hostelType') }}" class="nav-link" data-key="t-basic"> Hostel Type </a>
+                                                    <a href="{{ url('/admin/hostel') }}" class="nav-link" data-key="t-basic"> Hostel </a>
                                                 </li>
                                                 <li class="nav-item">
-                                                    <a href="{{('/admin/staffRoles')}}" class="nav-link" data-key="t-cover"> Staff Roles </a>
-                                                </li>
-                                                <li class="nav-item">
-                                                    <a href="{{('/admin/attendance')}}" class="nav-link" data-key="t-cover"> Staff Attendance </a>
-                                                </li>
-                                                <li class="nav-item">
-                                                    <a href="{{('/admin/leaveApplications')}}" class="nav-link" data-key="t-cover"> Staff Leave Applications </a>
+                                                    <a href="{{ url('/admin/hostelType') }}" class="nav-link" data-key="t-basic"> Room Type </a>
                                                 </li>
                                             </ul>
                                         </div>

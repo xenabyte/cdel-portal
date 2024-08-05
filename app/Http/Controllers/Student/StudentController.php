@@ -71,7 +71,9 @@ class StudentController extends Controller
             ]);
         }
 
-        if($student->clearance_status != 1 ){
+        if (($levelId == 1 && $applicationType == 'UTME') || 
+            ($levelId == 2 && $applicationType != 'UTME') && 
+            $student->clearance_status != 1) {
             return view('student.clearance', [
                 'payment' => $paymentCheck->schoolPayment,
                 'passTuition' => $paymentCheck->passTuitionPayment,
@@ -80,6 +82,7 @@ class StudentController extends Controller
                 'studentPendingTransactions' => $paymentCheck->studentPendingTransactions
             ]);
         }
+
 
         if(!$paymentCheck->passTuitionPayment){
             return view('student.schoolFee', [

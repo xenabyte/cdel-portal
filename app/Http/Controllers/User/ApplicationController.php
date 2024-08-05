@@ -823,9 +823,9 @@ class ApplicationController extends Controller
         }
 
         $olevel->year = $request->year;
-        $olevel->subject = $request->subde;
-        $olevel->reg_no = $request-ject;
-        $olevel->grade = $request->gra>reg_no;
+        $olevel->subject = $request->subject;
+        $olevel->reg_no = $request->reg_no;
+        $olevel->grade = $request->grade;
 
         session()->put('previous_section', 'olevel');
         if($olevel->save()){

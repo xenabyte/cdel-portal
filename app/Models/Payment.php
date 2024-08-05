@@ -91,7 +91,7 @@ class Payment extends Model
             case 'DE School Fee':
                 return 'Tuition Fee';
             default:
-                return 'Other Fee';
+            return 'Other Fee';
         }
     }
 }

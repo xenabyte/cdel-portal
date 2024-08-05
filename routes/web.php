@@ -347,8 +347,17 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'admin'],
   Route::post('/manageClearanceApplication', [App\Http\Controllers\Admin\StudentController::class, 'manageClearanceApplication'])->name('manageClearanceApplication')->middleware(['auth:admin']);
 
   Route::get('/hostelType', [App\Http\Controllers\Admin\HostelController::class, 'hostelType'])->name('hostelType')->middleware(['auth:admin']);
+  Route::post('/addRoomType', [App\Http\Controllers\Admin\HostelController::class, 'addRoomType'])->name('addRoomType')->middleware(['auth:admin']);
+  Route::post('/updateRoomType', [App\Http\Controllers\Admin\HostelController::class, 'updateRoomType'])->name('updateRoomType')->middleware(['auth:admin']);
+  Route::post('/deleteRoomType', [App\Http\Controllers\Admin\HostelController::class, 'deleteRoomType'])->name('deleteRoomType')->middleware(['auth:admin']);
 
-  
+  Route::get('/hostel', [App\Http\Controllers\Admin\HostelController::class, 'hostel'])->name('hostel')->middleware(['auth:admin']);
+  Route::post('/addHostel', [App\Http\Controllers\Admin\HostelController::class, 'addHostel'])->name('addHostel')->middleware(['auth:admin']);
+  Route::post('/updateHostel', [App\Http\Controllers\Admin\HostelController::class, 'updateHostel'])->name('updateHostel')->middleware(['auth:admin']);
+  Route::post('/deleteHostel', [App\Http\Controllers\Admin\HostelController::class, 'deleteHostel'])->name('deleteHostel')->middleware(['auth:admin']);
+  Route::get('/viewHostel/{slug}', [App\Http\Controllers\Admin\HostelController::class, 'viewHostel'])->name('viewHostel')->middleware(['auth:admin']);
+
+
 
 });
 

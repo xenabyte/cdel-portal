@@ -13,6 +13,8 @@ class Hostel extends Model
 
     protected $fillable = [
         'name',
+        'slug',
+        'gender',
         'campus',
     ];
 
