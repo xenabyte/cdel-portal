@@ -358,6 +358,18 @@ class PaymentController extends Controller
                 }
             }
         }
+
+        alert()->error('Error', 'Payment not successful')->persistent('Close');
+        if($paymentType == Payment::PAYMENT_TYPE_GENERAL_APPLICATION || $paymentType == Payment::PAYMENT_TYPE_INTER_TRANSFER_APPLICATION){
+            return view($redirectPath, [
+                'programmes' => $this->programmes,
+                'payment' => $payment
+            ]);
+        }elseif($paymentType == Payment::PAYMENT_TYPE_ACCEPTANCE){
+            return redirect($redirectPath);
+        }else{
+            return redirect($redirectPath);
+        }    
     }
 
     public function paystackWebhook (Request $request) {   
