@@ -276,27 +276,26 @@ class PaymentController extends Controller
         $upperLinkPayGate = new PayGate;
         $paymentDetails =$upperLinkPayGate->verifyTransaction($ref);
 
-        $data = $paymentDetails['meta'];
-        $paymentData = json_decode($data, true);
-
-        $paymentId = $paymentData['payment_id'];
-        $studentId = !empty($paymentData['student_id'])?$paymentData['student_id']:null;
-        $redirectPath = $paymentData['redirect_path'];
-        $txRef = $paymentData['reference'];
-
-
-        $paymentType = Payment::PAYMENT_TYPE_WALLET_DEPOSIT;
-        if($paymentId > 0){
-            $payment = Payment::where('id', $paymentId)->first();
-            $paymentType = $payment->type;
-        }
-
-        $student = Student::with('applicant', 'programme')->where('id', $studentId)->first();
-        $amount = $paymentDetails['amount']*100;
-        $session = $paymentData['academic_session'];
-
-
         if($paymentDetails['transactionStatus'] == '00'){
+
+            $data = $paymentDetails['meta'];
+            $paymentData = json_decode($data, true);
+
+            $paymentId = $paymentData['payment_id'];
+            $studentId = !empty($paymentData['student_id'])?$paymentData['student_id']:null;
+            $redirectPath = $paymentData['redirect_path'];
+            $txRef = $paymentData['reference'];
+
+
+            $paymentType = Payment::PAYMENT_TYPE_WALLET_DEPOSIT;
+            if($paymentId > 0){
+                $payment = Payment::where('id', $paymentId)->first();
+                $paymentType = $payment->type;
+            }
+
+            $student = Student::with('applicant', 'programme')->where('id', $studentId)->first();
+            $amount = $paymentDetails['amount']*100;
+            $session = $paymentData['academic_session'];
             
             if($this->processUpperLinkPayment($paymentDetails)){
 
