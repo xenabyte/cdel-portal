@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Requests;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
+
 
 use App\Models\Hostel;
 use App\Models\RoomType;
@@ -27,15 +29,18 @@ class HostelController extends Controller
 {
     //
 
-    public function hostelType(){
+    public function hostelType() {
         $roomTypes = RoomType::all();
-
-        $roomTypesByCampus = $roomTypes->groupBy('campus');
-
+    
+        $roomTypesByCampus = $roomTypes->groupBy('campus')->map(function ($group) {
+            return $group->sortByDesc('capacity');
+        });
+    
         return view('admin.hostelType', [
             'roomTypesByCampus' => $roomTypesByCampus
         ]);
     }
+    
 
     public function addRoomType(Request $request){
 
@@ -215,13 +220,113 @@ class HostelController extends Controller
     }
 
     public function viewHostel($slug){
-        $hostel = Hostel::with('rooms', 'rooms.type')->where('slug', $slug)->first();
-        $roomTypes = RoomType::where('campus', $hostel->campus)->get();
+        $hostel = Hostel::with('rooms', 'rooms.type', 'rooms.allocations')->where('slug', $slug)->first();
+        
+        $roomTypes = RoomType::where('campus', $hostel->campus)
+        ->orderByRaw('CAST(capacity AS UNSIGNED) DESC')
+        ->get();
+    
 
         return view('admin.hostelDetails', [
             'hostel' => $hostel,
             'roomTypes' => $roomTypes
         ]);
     }
+
+    public function addRoom(Request $request){
+        $validator = Validator::make($request->all(), [
+            'number' => 'required',
+            'type_id' => 'required|exists:room_types,id',
+            'hostel_id' => 'required|exists:hostels,id',
+        ]);
+    
+        if ($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+    
+        $globalData = $request->input('global_data');
+        $academicSession = $globalData->sessionSetting['academic_session'];
+    
+        $hostel = Hostel::findOrFail($request->hostel_id);
+        $roomType = RoomType::findOrFail($request->type_id);
+    
+        $roomExists = Room::where('number', $request->number)
+                          ->where('hostel_id', $request->hostel_id)
+                          ->exists();
+    
+        if ($roomExists) {
+            alert()->error('Error', 'Room with the same number already exists in this hostel')->persistent('Close');
+            return redirect()->back();
+        }
+    
+        $roomCapacity = $roomType->capacity;
+    
+        $room = [
+            'number' => $request->number,
+            'type_id' => $request->type_id,
+            'hostel_id' => $request->hostel_id,
+        ];
+    
+        if ($createRoom = Room::create($room)) {
+            for ($i = 1; $i <= $roomCapacity; $i++) {
+                RoomBedSpace::create([
+                    'room_id' => $createRoom->id,
+                    'space' => $i,
+                ]);
+            }
+    
+            alert()->success('Room added successfully', '')->persistent('Close');
+            return redirect()->back();
+        }
+    }
+    
+
+    public function deleteRoom(Request $request){
+        $validator = Validator::make($request->all(), [
+            'room_id' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+
+        $globalData = $request->input('global_data');
+        $academicSession = $globalData->sessionSetting['academic_session'];
+
+        $roomId = $request->room_id;
+        $room = Room::findOrFail($roomId);
+
+
+        $roomAllocationExists = Allocation::where('room_id', $roomId)
+                                ->where('academic_session', $academicSession)
+                                ->exists();
+
+        if ($roomAllocationExists) {
+            alert()->error('Error', 'Room cannot be deleted as it is allocated for the current academic session')->persistent('Close');
+            return redirect()->back();
+        }
+
+        DB::beginTransaction();
+
+        try {
+            RoomBedSpace::where('room_id', $room->id)->forceDelete();
+
+            $room->forceDelete();
+
+            DB::commit();
+
+            alert()->success('Room and associated bed spaces deleted successfully', '')->persistent('Close');
+            return redirect()->back();
+        } catch (\Exception $e) {
+            DB::rollback();
+
+            alert()->error('Error', 'Failed to delete room. Please try again.')->persistent('Close');
+            return redirect()->back();
+        }
+    }
+
+    
 }
 

@@ -135,6 +135,10 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'admin'],
   Route::get('/sessionSetup', [App\Http\Controllers\Admin\AcademicController::class, 'sessionSetup'])->name('sessionSetup')->middleware(['auth:admin']);
   Route::post('/setSession', [App\Http\Controllers\Admin\AcademicController::class, 'setSession'])->name('setSession')->middleware(['auth:admin']);
   Route::post('/setRegistrarSetting', [App\Http\Controllers\Admin\AcademicController::class, 'setRegistrarSetting'])->name('setRegistrarSetting')->middleware(['auth:admin']);
+  Route::post('/setFeeStatus', [App\Http\Controllers\Admin\AcademicController::class, 'setFeeStatus'])->name('setFeeStatus')->middleware(['auth:admin']);
+  Route::post('/setCampusWideMessage', [App\Http\Controllers\Admin\AcademicController::class, 'setCampusWideMessage'])->name('setCampusWideMessage')->middleware(['auth:admin']);
+
+  
 
   Route::post('/addSession', [App\Http\Controllers\Admin\AcademicController::class, 'addSession'])->name('addSession')->middleware(['auth:admin']);
   Route::post('/updateSession', [App\Http\Controllers\Admin\AcademicController::class, 'updateSession'])->name('updateSession')->middleware(['auth:admin']);
@@ -356,7 +360,15 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'admin'],
   Route::post('/updateHostel', [App\Http\Controllers\Admin\HostelController::class, 'updateHostel'])->name('updateHostel')->middleware(['auth:admin']);
   Route::post('/deleteHostel', [App\Http\Controllers\Admin\HostelController::class, 'deleteHostel'])->name('deleteHostel')->middleware(['auth:admin']);
   Route::get('/viewHostel/{slug}', [App\Http\Controllers\Admin\HostelController::class, 'viewHostel'])->name('viewHostel')->middleware(['auth:admin']);
+  Route::post('/addRoom', [App\Http\Controllers\Admin\HostelController::class, 'addRoom'])->name('addRoom')->middleware(['auth:admin']);
+  Route::post('/deleteRoom', [App\Http\Controllers\Admin\HostelController::class, 'deleteRoom'])->name('deleteRoom')->middleware(['auth:admin']);
 
+  
+
+  Route::get('/bankAccounts', [App\Http\Controllers\Admin\PaymentController::class, 'bankAccounts'])->name('bankAccounts')->middleware(['auth:admin']);
+  Route::post('/addBankAccount', [App\Http\Controllers\Admin\PaymentController::class, 'addBankAccount'])->name('addBankAccount')->middleware(['auth:admin']);
+  Route::post('/updateBankAccount', [App\Http\Controllers\Admin\PaymentController::class, 'updateBankAccount'])->name('updateBankAccount')->middleware(['auth:admin']);
+  Route::post('/deleteBankAccount', [App\Http\Controllers\Admin\PaymentController::class, 'deleteBankAccount'])->name('deleteBankAccount')->middleware(['auth:admin']);
 
 
 });

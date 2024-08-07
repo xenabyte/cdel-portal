@@ -18,6 +18,7 @@ class CreateAllocationsTable extends Migration
             $table->unsignedBigInteger('student_id')->nullable();
             $table->unsignedBigInteger('room_id')->nullable();
             $table->unsignedBigInteger('bed_id')->nullable();
+            $table->string('academic_session')->nullable();
             $table->date('allocation_date')->nullable();
             $table->date('release_date')->nullable();
             $table->timestamps();

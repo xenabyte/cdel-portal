@@ -281,6 +281,14 @@
                                 <i class="mdi mdi-view-dashboard"></i> <span>Dashboard</span>
                             </a>
                         </li>
+
+                        @if(!empty($pageGlobalData->setting) && strtolower($pageGlobalData->sessionSetting->accomondation_booking_status) == 'start')
+                            <li class="nav-item">
+                                <a class="nav-link menu-link" href="{{ url('/student/hostelBooking') }}">
+                                    <i class="mdi mdi-view-dashboard"></i> <span>HostelBooking</span>
+                                </a>
+                            </li>
+                        @endif
                         
                         @if(!empty($student->image) && !empty($student->linkedIn) && !empty($student->bandwidth_username))
                             @if($passTuition)

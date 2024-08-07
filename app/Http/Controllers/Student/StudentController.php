@@ -20,6 +20,7 @@ use App\Models\StudentExit;
 use App\Models\Plan;
 use App\Models\StudentCourseRegistration;
 use App\Models\Programme;
+use App\Models\BankAccount;
 
 use App\Libraries\Pdf\Pdf;
 use App\Libraries\Bandwidth\Bandwidth;
@@ -52,6 +53,7 @@ class StudentController extends Controller
         $academicSession = $globalData->sessionSetting['academic_session'];
         $applicationType = $student->applicant->application_type;
 
+
         $acceptancePayment = Payment::with('structures')->where('type', Payment::PAYMENT_TYPE_ACCEPTANCE)->where('academic_session', $academicSession)->first();
         $acceptancePaymentId = $acceptancePayment->id;
         $acceptanceTransaction = Transaction::where('student_id', $studentId)->where('payment_id', $acceptancePaymentId)->where('status', 1)->first();
@@ -71,8 +73,8 @@ class StudentController extends Controller
             ]);
         }
 
-        if (($levelId == 1 && $applicationType == 'UTME') || 
-            ($levelId == 2 && $applicationType != 'UTME') && 
+        if (($levelId == 1 && strtolower($applicationType) == 'UTME') || 
+            ($levelId == 2 && strtolower($applicationType) != 'UTME') && 
             $student->clearance_status != 1) {
             return view('student.clearance', [
                 'payment' => $paymentCheck->schoolPayment,
@@ -275,7 +277,7 @@ class StudentController extends Controller
         $redirectLocation = 'student/walletTransactions';
         $amount = $request->amount * 100;
         $transaction = Transaction::find($request->transaction_id);
-        $paymentType = 'Tuition';
+        $paymentType = 'Other Fee';
 
         if($paymentId > 0){
             if(!$payment = Payment::with('structures')->where('id', $paymentId)->first()){
@@ -313,7 +315,6 @@ class StudentController extends Controller
             'payment_method' => $paymentGateway,
             'reference' => $reference,
             'session' => $student->academic_session,
-            'plan_id' => !empty($bandwidthPlan)?$bandwidthPlan->id:null,
         ]);
 
         if(strtolower($paymentGateway) == 'paystack') {
@@ -447,6 +448,7 @@ class StudentController extends Controller
                 "firstName" => $student->applicant->othernames,
                 "lastName" => $student->applicant->lastname,
                 "redirectUrl" => env("UPPERLINK_REDIRECT_URL"),
+                "accountCode" => BankAccount::getBankAccountCode($paymentType),
                 "meta" => json_encode($meta),
             );
 

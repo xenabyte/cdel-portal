@@ -24,6 +24,7 @@ use App\Models\Faculty;
 use App\Models\Department;
 use App\Models\AcademicLevel;
 use App\Models\Notification;
+use App\Models\BankAccount;
 
 use App\Libraries\Pdf\Pdf;
 use App\Mail\TransactionMail;
@@ -1068,6 +1069,93 @@ class PaymentController extends Controller
 
         alert()->info('Oops!', 'Something went wrong')->persistent('Close');
         return $this->getSingleStudent($studentIdCode, 'admin.chargeStudent');
+    }
+
+    public function bankAccounts(){
+        $bankAccounts = BankAccount::all();
+
+        return view('admin.bankAccounts', [
+            'bankAccounts' => $bankAccounts
+        ]);
+    }
+
+    public function addBankAccount(Request $request){
+
+        $validator = Validator::make($request->all(), [
+            'bank_name' => 'required|string|max:255',
+            'account_number' => 'required|string',
+            'account_name' => 'required|string',
+            'account_purpose' => 'required|string',
+            'account_code' => 'required|string',
+        ]);
+
+        if($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+
+        $bankAccount = ([
+            'bank_name' => $request->bank_name,
+            'account_number' => $request->account_number,
+            'account_name' => $request->account_name,
+            'account_purpose' => $request->account_purpose,
+            'account_code' => $request->account_code
+        ]);
+
+        if(BankAccount::create($bankAccount)){
+            alert()->success('Room Type added successfully', '')->persistent('Close');
+            return redirect()->back();
+        }
+
+        alert()->error('Oops!', 'Something went wrong')->persistent('Close');
+        return redirect()->back();
+    }
+
+    public function updateBankAccount(Request $request){
+        $validator = Validator::make($request->all(), [
+            'bank_account_id' => 'required|exists:bank_accounts,id',
+        ]);
+
+        if ($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+
+        $bankAccount = BankAccount::findOrFail($request->bank_account_id);
+
+        $bankAccountData = array_filter([
+            'bank_name' => $request->bank_name,
+            'account_number' => $request->account_number,
+            'account_name' => $request->account_name,
+            'account_purpose' => $request->account_purpose,
+            'account_code' => $request->account_code
+        ]);
+
+        if ($bankAccount->update($bankAccountData)) {
+            alert()->success('Changes saved successfully', '')->persistent('Close');
+            return redirect()->back();
+        }
+
+        alert()->error('Oops!', 'Something went wrong')->persistent('Close');
+        return redirect()->back();
+    }
+
+
+    public function deleteBankAccount(Request $request){
+
+        $validatedData = $request->validate([
+            'bank_account_id' => 'required|exists:bank_accounts,id',
+        ]);
+
+        $bankAccount = BankAccount::findOrFail($request->bank_account_id);
+
+        if($bankAccount->delete()){
+            alert()->success('Record deleted successfully', '')->persistent('Close');
+            return redirect()->back();
+        }
+
+        alert()->error('Oops!', 'Something went wrong')->persistent('Close');
+        return redirect()->back();
     }
 
 }

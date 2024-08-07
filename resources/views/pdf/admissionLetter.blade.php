@@ -129,13 +129,13 @@
                     </tr>
                     <tr>
                         <td>4 bed spaces</td>
-                        <td>N200,000 (Gold)</td>
-                        <td>N200,000 (Silver)</td>
+                        <td>N150,000 (Silver) <br> N200,000 (Gold)</td>
+                        <td>N200,000 (Silver) <br> N375,000 (Gold) </td>
                     </tr>
                     <tr>
                         <td>3 bed spaces</td>
                         <td>N300,000 (Gold)</td>
-                        <td>N500,000 (Gold)</td>
+                        <td>N250,000 (Silver) <br> N500,000 (Gold)</td>
                     </tr>
                     <tr>
                         <td>4 bed spaces</td>
@@ -144,8 +144,13 @@
                     </tr>
                     <tr>
                         <td>2 bed spaces</td>
+                        <td>N150,000 (Silver) (Boy's Hostel Only)</td>
+                        <td>N350,000 (Silver) <br> N750,000 (Gold)</td>
+                    </tr>
+                    <tr>
+                        <td>1 bed spaces</td>
                         <td>Not available</td>
-                        <td>N750,000 (Gold) <br> N350,000 (Silver)</td>
+                        <td>N800,000 (Silver) <br> N1,500,000 (Gold)</td>
                     </tr>
                 </tbody>
             </table>

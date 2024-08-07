@@ -141,6 +141,60 @@ class AcademicController extends Controller
         return redirect()->back();
     }
 
+    public function setFeeStatus(Request $request){
+        $validator = Validator::make($request->all(), [
+            'school_fee_status' => 'required',
+            'accomondation_booking_status' => 'required',
+        ]);
+
+
+        $sessionSetting = new SessionSetting;
+        if(!empty($request->sessionSetting_id) && !$sessionSetting = SessionSetting::find($request->sessionSetting_id)){
+            alert()->error('Oops', 'Invalid Session Setting Information')->persistent('Close');
+            return redirect()->back();
+        }
+
+        if(!empty($request->school_fee_status) &&  $request->school_fee_status != $sessionSetting->school_fee_status){
+            $sessionSetting->school_fee_status = $request->school_fee_status;
+        }
+
+        if(!empty($request->accomondation_booking_status) &&  $request->accomondation_booking_status != $sessionSetting->accomondation_booking_status){
+            $sessionSetting->accomondation_booking_status = $request->accomondation_booking_status;
+        }
+
+        if($sessionSetting->save()){
+            alert()->success('Changes Saved', 'Fee(s) status saved successfully')->persistent('Close');
+            return redirect()->back();
+        }
+
+        alert()->error('Oops!', 'Something went wrong')->persistent('Close');
+        return redirect()->back();
+    }
+
+    public function setCampusWideMessage(Request $request){
+        $validator = Validator::make($request->all(), [
+            'campus_wide_message' => 'required',
+        ]);
+
+        $sessionSetting = new SessionSetting;
+        if(!empty($request->sessionSetting_id) && !$sessionSetting = SessionSetting::find($request->sessionSetting_id)){
+            alert()->error('Oops', 'Invalid Session Setting Information')->persistent('Close');
+            return redirect()->back();
+        }
+
+        if(!empty($request->campus_wide_message) &&  $request->campus_wide_message != $sessionSetting->campus_wide_message){
+            $sessionSetting->campus_wide_message = $request->campus_wide_message;
+        }
+
+        if($sessionSetting->save()){
+            alert()->success('Changes Saved', 'Message set successfully')->persistent('Close');
+            return redirect()->back();
+        }
+
+        alert()->error('Oops!', 'Something went wrong')->persistent('Close');
+        return redirect()->back();
+    }
+
     public function addSession(Request $request){
         $validator = Validator::make($request->all(), [
             'year' => 'required|string|unique:sessions',

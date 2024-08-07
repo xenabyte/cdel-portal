@@ -256,7 +256,7 @@ class PaymentController extends Controller
         }
     }
 
-    public function upperlinkVerifyPayment($paymentReference){
+    public function upperlinkVerifyPayment($paymentReference = null){
         Log::info("**********************Upperlink Verifying Payment**********************");
         $ref = null;
         if (isset($_GET['reference'])) {
@@ -330,7 +330,7 @@ class PaymentController extends Controller
                 }
                 alert()->success('Good Job', 'Payment successful')->persistent('Close');
                 if($paymentType == Payment::PAYMENT_TYPE_GENERAL_APPLICATION || $paymentType == Payment::PAYMENT_TYPE_INTER_TRANSFER_APPLICATION){
-                    $applicantData = $paymentDetails;
+                    $applicantData = $paymentData;
                     $this->createApplicant($applicantData);
                     return view($redirectPath, [
                         'programmes' => $this->programmes,

@@ -50,6 +50,7 @@ use App\Models\Department;
 use App\Models\CourseRegistration;
 use App\Models\Plan;
 use App\Models\Guardian;
+use App\Models\TestApplicant;
 
 
 
@@ -526,6 +527,8 @@ class Controller extends BaseController
         $applicant = User::find($applicantId);
         $applicationType = $applicant->application_type;
 
+        $sessionSetting = SessionSetting::first();
+
         $type = Payment::PAYMENT_TYPE_SCHOOL;
 
         if($applicationType != 'UTME' && ($student->level_id == 2|| $student->level_id == 3)){
@@ -568,6 +571,10 @@ class Controller extends BaseController
             $passTuitionPayment = true;
             $passEightyTuition = true;
             $fullTuitionPayment = true;
+        }
+
+        if(strtolower($sessionSetting->school_fee_status) == 'stop'){
+            $passTuitionPayment = true;
         }
 
         $data = new \stdClass();
@@ -624,7 +631,7 @@ class Controller extends BaseController
             
             Mail::to($studentPreviousEmail)->send(new StudentActivated($student));
 
-            // $this->sendGuardianOnboardingMail($student);
+            $this->sendGuardianOnboardingMail($student);
 
             return true;
         }
@@ -822,6 +829,23 @@ class Controller extends BaseController
         $referralCode = isset($applicantData['data']['metadata']['referrer']) ? $applicantData['data']['metadata']['referrer'] : (isset($applicantData['data']['meta']['referrer']) ? $applicantData['data']['meta']['referrer'] : null);
         $applicationType = isset($applicantData['data']['metadata']['application_type']) ? $applicantData['data']['metadata']['application_type'] : (isset($applicantData['data']['meta']['application_type']) ? $applicantData['data']['meta']['application_type'] : null);
         $txRef = isset($applicantData['data']['reference']) ? $applicantData['data']['reference'] : (isset($applicantData['data']['meta']['reference']) ? $applicantData['data']['meta']['reference'] : null);
+
+        if(isset($applicantData['test_applicant_id'])){
+            $testApplicant = TestApplicant::find($applicantData['test_applicant_id']);
+
+            $slug = $testApplicant->slug;
+            $email = $testApplicant->email;
+            $lastname = $testApplicant->lastname;
+            $phoneNumber = $testApplicant->phone_number;
+            $otherNames = $testApplicant->othernames;
+            $password = $testApplicant->passcode;
+            $applicationSession = $testApplicant->academic_session;
+            $partnerId = $testApplicant->partner_id;
+            $referralCode = $testApplicant->referral_code;
+            $applicationType = $testApplicant->application_type;
+            $txRef = $testApplicant->reference;
+        }
+        
 
         $newApplicant = ([
             'slug' => $slug,

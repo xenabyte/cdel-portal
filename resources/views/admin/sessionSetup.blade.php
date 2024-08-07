@@ -241,6 +241,96 @@
             </div>
         </div><!-- end card -->
     </div>
+
+
+    <div class="col-lg-7">
+        <div class="card">
+            <div class="card-header align-items-center d-flex">
+                <h4 class="card-title mb-0 flex-grow-1">Fees Settings</h4>
+            </div><!-- end card header -->
+
+            <div class="card-body">
+                <div class="row mb-2">
+                    <div class="col-sm-6 col-xl-12">
+                        <form action="{{ url('/admin/setFeeStatus') }}" method="POST" enctype="multipart/form-data">
+                            @csrf
+                            <input type="hidden" name="sessionSetting_id" value="{{ !empty($pageGlobalData->sessionSetting)?$pageGlobalData->sessionSetting->id:null }}">
+                            <div class="row g-3">
+
+                                <div class="col-lg-6">
+                                    <h4 class="card-title mb-0 flex-grow-1">School Fee Payment Status: {{ !empty($pageGlobalData->sessionSetting)?$pageGlobalData->sessionSetting->school_fee_status:'Not Set' }}</h4>
+                                    <br>
+                                    <div class="form-floating">
+                                        <select class="form-select" id="school_fee_status" name="school_fee_status" aria-label="school_fee_status">
+                                            <option value="" selected>--Select--</option>
+                                            <option value="start">Start</option>
+                                            <option value="stop">Stop</option>
+                                        </select>
+                                        <label for="school_fee_status">School Fee Payment Status</label>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-6">
+                                    <h4 class="card-title mb-0 flex-grow-1">Accomondation Booking Status: {{ !empty($pageGlobalData->sessionSetting)?$pageGlobalData->sessionSetting->accomondation_booking_status:'Not Set' }} </h4>
+                                        <br>
+                                        <div class="form-floating">
+                                            <select class="form-select" id="accomondation_booking_status" name="accomondation_booking_status" aria-label="accomondation_booking_status">
+                                                <option value="" selected>--Select--</option>
+                                                <option value="start">Start</option>
+                                                <option value="stop">Stop</option>
+                                            </select>
+                                            <label for="accomondation_booking_status">Accomondation Booking Status</label>
+                                        </div>
+                                </div>
+
+                                <hr>
+                                <div class="col-lg-12">
+                                    <div class="text-end">
+                                        <button type="submit" id="submit-button" class="btn btn-primary">Update Settings</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div><!-- end col -->
+                </div>
+            </div>
+        </div><!-- end card -->
+    </div>
+
+    <div class="col-lg-5">
+        <div class="card">
+            <div class="card-header align-items-center d-flex">
+                <h4 class="card-title mb-0 flex-grow-1">Campus Wide Message</h4>
+            </div><!-- end card header -->
+
+            <div class="card-body">
+                <div class="row mb-2">
+                    <div class="col-sm-6 col-xl-12">
+                        <form action="{{ url('/admin/setCampusWideMessage') }}" method="POST" enctype="multipart/form-data">
+                            @csrf
+                            <input type="hidden" name="sessionSetting_id" value="{{ !empty($pageGlobalData->sessionSetting)?$pageGlobalData->sessionSetting->id:null }}">
+                            <div class="row g-3">
+
+                                <div class="col-lg-12">
+                                    <br>
+                                    <div class="col-lg-12">
+                                        <label for="campus_wide_message">Campus Wide Message</label>
+                                        <textarea class="ckeditor" id="campus_wide_message" name="campus_wide_message" >{!! !empty($pageGlobalData->sessionSetting)?$pageGlobalData->sessionSetting->campus_wide_message:null !!}</textarea>
+                                    </div><!--end col-->
+                                </div>
+                                <hr>
+                                <div class="col-lg-12">
+                                    <div class="text-end">
+                                        <button type="submit" id="submit-button" class="btn btn-primary">Update Message</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div><!-- end col -->
+                </div>
+            </div>
+        </div><!-- end card -->
+    </div>
 </div>
 <!-- end row -->
 

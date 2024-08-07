@@ -36,4 +36,15 @@ class Room extends Model
     {
         return $this->belongsTo(RoomType::class, 'type_id');
     }
+
+    
+    /**
+     * Get all of the allocations for the Room
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function allocations()
+    {
+        return $this->hasMany(Allocation::class);
+    }
 }

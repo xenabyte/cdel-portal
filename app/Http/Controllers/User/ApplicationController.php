@@ -21,10 +21,15 @@ use App\Models\Payment;
 use App\Models\Utme;
 use App\Models\Faculty;
 use App\Models\Department;
+use App\Models\BankAccount;
+use App\Models\TestApplicant;
 
 
 use App\Mail\ApplicationMail;
 use App\Mail\BankDetailsMail;
+
+use App\Libraries\Paygate\Paygate;
+
 
 use SweetAlert;
 use Mail;
@@ -407,7 +412,7 @@ class ApplicationController extends Controller
         }
 
         $paymentGateway = $request->paymentGateway;
-        if((strtolower($paymentGateway) != 'paystack') &&  strtolower($paymentGateway) != 'rave' && strtolower($paymentGateway) != 'banktransfer') {
+        if((strtolower($paymentGateway) != 'upperlink') && (strtolower($paymentGateway) != 'paystack') &&  strtolower($paymentGateway) != 'rave' && strtolower($paymentGateway) != 'banktransfer') {
             alert()->error('Oops', 'Gateway not available')->persistent('Close');
             return redirect()->back();
         }
@@ -435,7 +440,7 @@ class ApplicationController extends Controller
             }
         }
 
-        $reference = NULL;
+        $reference = $this->generateAccessCode();
         if(strtolower($paymentGateway) == 'rave'){
             $reference = Flutterwave::generateReference();
         }
@@ -518,6 +523,71 @@ class ApplicationController extends Controller
             $message = 'Kindly proceed to your email to complete application';
             alert()->info('Nice Work!', $message)->persistent('Close');
             return redirect()->back();
+        }
+
+        if(strtolower($paymentGateway) == 'upperlink') {
+            Log::info("Upperlink Amount ****************: ". round($this->getUpperlinkAmount($amount)));
+
+            $testApplicantId = TestApplicant::create([
+                'slug' => $slug,
+                'email' => strtolower($request->email),
+                'lastname' => ucwords($request->lastname),
+                'phone_number' => $request->phone_number,
+                'othernames' => ucwords($request->othernames),
+                'passcode' => $request->password,
+                'partner_id' => $partnerId,
+                'referrer' => $referralCode,
+                'application_type' => $applicationType == 'Inter Transfer Application'? $applicationType : null,
+                'academic_session' => $applicationSession,
+                'reference' => $reference,
+            ])->id;
+
+            $metaData = [
+                'test_applicant_id' => $testApplicantId,
+                'user_id' => $userId,
+                'payment_id' => $payment->id,
+                'reference' => $reference,
+                "payment_gateway" => $paymentGateway,
+                'academic_session' => $applicationSession,
+                'redirect_path' => 'user.auth.login',
+                'payment_Type' => $paymentType,
+            ];
+
+            $data = array(
+                "amount" => round($this->getUpperlinkAmount($amount)/100),
+                "email" => $request->email,
+                "payGateRef" => $reference,
+                "merchantId" => env('UPPERLINK_REF'),
+                "countryCode" =>  "NG",
+                "currency" => "NGN",
+                "logoUrl" => env('SCHOOL_LOGO'),
+                "firstName" => ucwords($request->othernames),
+                "lastName" => ucwords($request->lastname),
+                "redirectUrl" => env("UPPERLINK_REDIRECT_URL"),
+                "accountCode" => BankAccount::getBankAccountCode($paymentType),
+                "meta" => json_encode($metaData),
+            );
+
+            $paygate = new Paygate();
+            $paymentData = $paygate->initializeTransaction($data);
+            if($paymentData['code'] != "200"){
+                Log::info($paymentData);
+                $message = 'Payment Gateway not available, try again.';
+                alert()->info('Opps!', $message)->persistent('Close');
+                return redirect()->back();
+            }
+
+            $transaction = Transaction::create([
+                'payment_id' =>  $payment->id,
+                'amount_payed' => $amount,
+                'payment_method' => $paymentGateway,
+                'reference' => $reference,
+                'session' => $applicationSession,
+            ]);
+
+            $paymentUrl = $paymentData['data']['checkOutUrl'];
+
+            return redirect($paymentUrl);
         }
     }
 

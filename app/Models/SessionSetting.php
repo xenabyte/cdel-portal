@@ -17,5 +17,8 @@ class SessionSetting extends Model
         'resumption_date',
         'registrar_signature',
         'registrar_name',
+        'school_fee_status',
+        'accomondation_booking_status',
+        'campus_wide_message',
     ];
 }

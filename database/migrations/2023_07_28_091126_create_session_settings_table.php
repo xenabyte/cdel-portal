@@ -21,6 +21,9 @@ class CreateSessionSettingsTable extends Migration
             $table->string('resumption_date')->nullable();
             $table->string('registrar_signature')->nullable();
             $table->string('registrar_name')->nullable();
+            $table->string('school_fee_status')->nullable();
+            $table->string('accomondation_booking_status')->nullable();
+            $table->text('campus_wide_message')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

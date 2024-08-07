@@ -109,7 +109,7 @@ $applicants = $partner->applicants->where('academic_session', $pageGlobalData->s
                             <td>{{ $applicant->academic_session }} </td>
                             <td>{{ ucwords($applicant->status) }} </td>
                             <td>
-                                <a href="{{ url('partner/applicant/'.$applicant->slug) }}" class="btn btn-primary m-1"><i class= "ri-user-6-fill"></i> View Applicant</a>
+                                <a href="{{ url('admin/applicant/'.$applicant->slug) }}" class="btn btn-primary m-1"><i class= "ri-user-6-fill"></i> View Applicant</a>
                             </td>
                         </tr>
                         @endforeach

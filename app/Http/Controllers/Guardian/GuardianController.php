@@ -226,6 +226,7 @@ class GuardianController extends Controller
                 "firstName" => $student->applicant->othernames,
                 "lastName" => $student->applicant->lastname,
                 "redirectUrl" => env("UPPERLINK_REDIRECT_URL"),
+                "accountCode" => BankAccount::getBankAccountCode($paymentType),
                 "meta" => json_encode($meta),
             );
 

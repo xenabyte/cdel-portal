@@ -595,6 +595,9 @@
                             <div class="collapse menu-dropdown" id="bursary">
                                 <ul class="nav nav-sm flex-column">
                                     <li class="nav-item">
+                                        <a href="{{url('/admin/bankAccounts')}}" class="nav-link" data-key="t-calendar">Bank Account(s) </a>
+                                    </li>
+                                    <li class="nav-item">
                                         <a href="{{ url('/admin/payments') }}" class="nav-link"> Bills </a>
                                     </li>
                                     <li class="nav-item">
@@ -648,7 +651,7 @@
                         <div class="col-sm-6">
                             <script>document.write(new Date().getFullYear())</script> © {{ env('APP_NAME') }}.
                         </div>
-                        <div class="col-sm-6">
+                        <div class="col-sm-6"
                             <div class="text-sm-end d-none d-sm-block">
                                 Design & Develop by TAU ICT
                             </div>
