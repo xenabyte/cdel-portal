@@ -228,7 +228,7 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'admin'],
   Route::get('/massPromotion', [App\Http\Controllers\Admin\AcademicController::class, 'massPromotion'])->name('massPromotion')->middleware(['auth:admin']);
   Route::get('/demoteStudent', [App\Http\Controllers\Admin\AcademicController::class, 'demoteStudent'])->name('demoteStudent')->middleware(['auth:admin']);
   Route::get('/graduatingStudents', [App\Http\Controllers\Admin\StudentController::class, 'graduatingStudents'])->name('graduatingStudents')->middleware(['auth:admin']);
-  Route::post('/graduateStudents', [App\Http\Controllers\Admin\StudentController::class, 'graduatedStudents'])->name('graduatedStudents')->middleware(['auth:admin']);
+  Route::post('/graduateStudents', [App\Http\Controllers\Admin\StudentController::class, 'graduateStudents'])->name('graduateStudents')->middleware(['auth:admin']);
 
 
   Route::post('/promoteStudent', [App\Http\Controllers\Admin\AcademicController::class, 'promoteStudent'])->name('promoteStudent')->middleware(['auth:admin']);
