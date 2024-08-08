@@ -126,7 +126,8 @@ $studentRegistrations = $student->courseRegistrationDocument()->orderBy('created
                         <p class="text-muted">{{ $student->programme->name }} <br>
                             <strong>Matric Number:</strong> {{ $student->matric_number }}<br>
                             <strong>Jamb Reg. Number:</strong> {{ $student->applicant->jamb_reg_no }} <br>
-                            <strong>Academic Level:</strong> <span class="text-primary">{{ $student->level_id * 100 }} Level</span>
+                            <strong>Academic Level:</strong> <span class="text-primary">{{ $student->level_id * 100 }} Level</span><br>
+                            <strong>Academic session:</strong> {{ $student->academic_session }}</span>
                             <br><br>
                             @if($student->level_id >= $student->programme->duration && !$student->is_passed_out)
                             <span class="text-warning"><strong>Graduating Set</strong></span> <br><br>
