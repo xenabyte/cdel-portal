@@ -573,7 +573,7 @@ class Controller extends BaseController
             $fullTuitionPayment = true;
         }
 
-        if(strtolower($sessionSetting->school_fee_status) == 'start'){
+        if(strtolower($sessionSetting->school_fee_status) == 'stop'){
             $passTuitionPayment = true;
         }
 
