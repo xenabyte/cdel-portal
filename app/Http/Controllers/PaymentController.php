@@ -267,6 +267,8 @@ class PaymentController extends Controller
             $ref = $paymentReference;
         }
 
+        $redirectPath = '/';
+
         if(empty($ref)){
             $redirectPath = 'student/transactions';
             alert()->info('oops!!!', 'Something happpened, contact administrator')->persistent('Close');
@@ -276,7 +278,7 @@ class PaymentController extends Controller
         $upperLinkPayGate = new PayGate;
         $paymentDetails =$upperLinkPayGate->verifyTransaction($ref);
 
-        if($paymentDetails['transactionStatus'] == '00'){
+        if(isset($paymentDetails['transactionStatus']) && $paymentDetails['transactionStatus'] == '00'){
 
             $data = $paymentDetails['meta'];
             $paymentData = json_decode($data, true);
@@ -359,16 +361,8 @@ class PaymentController extends Controller
         }
 
         alert()->error('Error', 'Payment not successful')->persistent('Close');
-        if($paymentType == Payment::PAYMENT_TYPE_GENERAL_APPLICATION || $paymentType == Payment::PAYMENT_TYPE_INTER_TRANSFER_APPLICATION){
-            return view($redirectPath, [
-                'programmes' => $this->programmes,
-                'payment' => $payment
-            ]);
-        }elseif($paymentType == Payment::PAYMENT_TYPE_ACCEPTANCE){
-            return redirect($redirectPath);
-        }else{
-            return redirect($redirectPath);
-        }    
+        return redirect($redirectPath);
+   
     }
 
     public function paystackWebhook (Request $request) {   

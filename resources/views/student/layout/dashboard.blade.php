@@ -335,6 +335,7 @@
                                 </div>
                             </li> 
 
+                            @if(!$student->is_passed_out)
                             <li class="nav-item">
                                 <a class="nav-link menu-link" href="#courseManagement" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="courseManagement">
                                     <i class="mdi mdi-bookshelf"></i> <span data-key="t-courseManagement">Course Management</span>
@@ -353,7 +354,9 @@
                                     </ul>
                                 </div>
                             </li> 
+                            @endif
 
+                            @if(!$student->is_passed_out)
                             <li class="nav-item">
                                 <a class="nav-link menu-link" href="#examManagement" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="examManagement">
                                     <i class="mdi mdi-facebook-gaming"></i> <span data-key="t-examManagement">Exam Management</span>
@@ -369,6 +372,7 @@
                                     </ul>
                                 </div>
                             </li> 
+                            @endif
 
                             <li class="nav-item">
                                 <a class="nav-link menu-link" href="#resultManagement" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="resultManagement">

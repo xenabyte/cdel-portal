@@ -125,15 +125,42 @@ $studentRegistrations = $student->courseRegistrationDocument()->orderBy('created
                         <h5 class="mb-1">{{$name}}</h5>
                         <p class="text-muted">{{ $student->programme->name }} <br>
                             <strong>Matric Number:</strong> {{ $student->matric_number }}<br>
-                            <strong>Jamb Reg. Number:</strong> {{ $student->applicant->jamb_reg_no }}<br><br>
+                            <strong>Jamb Reg. Number:</strong> {{ $student->applicant->jamb_reg_no }} <br>
+                            <strong>Academic Level:</strong> <span class="text-primary">{{ $student->level_id * 100 }} Level</span>
+                            <br><br>
+                            @if($student->level_id >= $student->programme->duration && !$student->is_passed_out)
+                            <span class="text-warning"><strong>Graduating Set</strong></span> <br><br>
+                            @endif
                             <strong>Support Code:</strong> <span class="text-danger">ST{{ sprintf("%06d", $student->id) }}</span> 
                         </p>
-                        <p class="text-muted border-top border-top-dashed"><strong>CGPA:</strong> {{ $student->cgpa }} <br>
+                        <p class="text-muted border-top border-top-dashed pt-2"><strong>CGPA:</strong> {{ $student->cgpa }} <br>
                             <strong>Class:</strong> {{ $student->degree_class }}<br>
                             <strong>Standing:</strong> {{ $student->standing }}<br>
                         </p>
+
+                        @if($student->level_id >= $student->programme->duration && $student->is_passed_out)
+                            <div class="alert alert-success alert-dismissible alert-additional shadow fade show mb-0" role="alert">
+                                <div class="alert-body">
+                                    <div class="d-flex">
+                                        <div class="flex-shrink-0 me-3">
+                                            <i class="ri-alert-line fs-16 align-middle"></i>
+                                        </div>
+                                        <div class="flex-grow-1">
+                                            <h5 class="alert-heading">Congratulations!!!</h5>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="alert-content">
+                                    <p class="mb-0">You are have come to the end of your programme and been prepared for graduation</p>
+                                </div>
+                            </div>
+                        @endif
+                       
                     </div>
-                    <div class="table-responsive border-top border-top-dashed">
+
+
+
+                    <div class="table-responsive border-top border-top-dashed mt-4">
                         <table class="table mb-0 table-borderless">
                             <tbody>
                                 <tr>
