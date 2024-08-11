@@ -285,7 +285,7 @@
                         @if(!empty($pageGlobalData->setting) && strtolower($pageGlobalData->sessionSetting->accomondation_booking_status) == 'start')
                             <li class="nav-item">
                                 <a class="nav-link menu-link" href="{{ url('/student/hostelBooking') }}">
-                                    <i class="mdi mdi-view-dashboard"></i> <span>HostelBooking</span>
+                                    <i class="mdi mdi-warehouse"></i> <span>Hostel Booking</span>
                                 </a>
                             </li>
                         @endif
@@ -688,7 +688,116 @@
             // Deselect the text
             window.getSelection().removeAllRanges();
         });
-    </script> 
+    </script>
+    <script>
+         function handleCampusChange(event) {
+            const selectedCampus = event.target.value;
+            const gender = "{{ $student->applicant->gender }}";
+            const hostelSelect = $('#hostel');
+
+            if (selectedCampus !== '') {
+                axios.post("{{ url('/student/getHostels') }}", {
+                    campus: selectedCampus, 
+                    gender: gender
+                })
+                .then(function (response) {
+                    hostelSelect.empty().append($('<option>', {
+                        value: '',
+                        text: '--Select--'
+                    }));
+
+                    $.each(response.data, function (index, hostel) {
+                        hostelSelect.append($('<option>', {
+                            value: hostel.id,
+                            text: hostel.name
+                        }));
+                    });
+                })
+                .catch(function (error) {
+                    console.error("Error fetching hostels:", error);
+                });
+            } else {
+                hostelSelect.empty().append($('<option>', {
+                    value: '',
+                    text: '--Select--'
+                }));
+            }
+        }
+
+        function handleHostelChange(event) {
+            const selectedCampus = $('#campus').val(); 
+            const gender = "{{ $student->applicant->gender }}"; 
+            const roomTypeSelect = $('#roomType');
+
+            if (selectedCampus !== '') {
+                axios.post("{{ url('/student/getRoomTypes') }}", {
+                    campus: selectedCampus, 
+                    gender: gender
+                })
+                .then(function (response) {
+                    roomTypeSelect.empty().append($('<option>', {
+                        value: '',
+                        text: '--Select--'
+                    }));
+
+                    $.each(response.data, function (index, roomType) {
+                        const formattedAmount = (roomType.amount / 100).toLocaleString('en-NG', { style: 'currency', currency: 'NGN' });
+
+                        roomTypeSelect.append($('<option>', {
+                            value: roomType.id,  
+                            text: `${roomType.name} (${roomType.capacity} Bed Spaces) (${formattedAmount})`
+                        }));
+                    });
+                })
+                .catch(function (error) {
+                    console.error("Error fetching room types:", error);
+                });
+            } else {
+                roomTypeSelect.empty().append($('<option>', {
+                    value: '',
+                    text: '--Select--'
+                }));
+            }
+        }
+
+        function handleRoomTypeChange(event) {
+            const hostel = $('#hostel').val(); 
+            const typeId = event.target.value;
+            const roomSelect = $('#room');
+
+            if (typeId !== '') {
+                axios.post("{{ url('/student/getRooms') }}", {
+                    typeId: typeId, 
+                    hostelId: hostel
+                })
+                .then(function (response) {
+                    roomSelect.empty().append($('<option>', {
+                        value: '',
+                        text: '--Select--'
+                    }));
+
+                    $.each(response.data, function (index, room) {
+                        roomSelect.append($('<option>', {
+                            value: room.id,  
+                            text: room.number
+                        }));
+                    });
+                })
+                .catch(function (error) {
+                    console.error("Error fetching room types:", error);
+                });
+            } else {
+                roomTypeSelect.empty().append($('<option>', {
+                    value: '',
+                    text: '--Select--'
+                }));
+            }
+        }
+
+        selectWithSearch
+
+    </script>
+    
     
 </body>
 

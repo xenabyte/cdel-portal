@@ -98,6 +98,7 @@
                                                                         <option value="Other Fee">Other Fee</option>
                                                                         <option value="Bandwidth Fee">Bandwidth Fee</option>
                                                                         <option value="Course Reg">Modify Course Reg Fee</option>
+                                                                        <option value="Accomondation Fee">Accomondation Fee</option>
                                                                     </select>
                                                                 </div>
                         
@@ -256,6 +257,7 @@
                                                                                                <option value="Other Fee">Other Fee</option>
                                                                                                 <option value="Bandwidth Fee">Bandwidth Fee</option>
                                                                                                 <option value="Course Reg">Modify Course Reg Fee</option>
+                                                                                                <option value="Accomondation Fee">Accomondation Fee</option>
                                                                                             </select>
                                                                                         </div>
                                             
@@ -385,6 +387,7 @@
                             <option value="Other Fee">Other Fee</option>
                             <option value="Bandwidth Fee">Bandwidth Fee</option>
                             <option value="Course Reg">Modify Course Reg Fee</option>
+                            <option value="Accomondation Fee">Accomondation Fee</option>
                         </select>
                     </div>
 

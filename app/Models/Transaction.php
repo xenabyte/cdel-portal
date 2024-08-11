@@ -25,7 +25,8 @@ class Transaction extends Model
         'checkout_url',
         'redirect_url',
         'plan_id',
-        'is_used'
+        'is_used',
+        'additional_data',
     ];
 
     /**

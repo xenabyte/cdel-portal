@@ -230,7 +230,6 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'admin'],
   Route::get('/graduatingStudents', [App\Http\Controllers\Admin\StudentController::class, 'graduatingStudents'])->name('graduatingStudents')->middleware(['auth:admin']);
   Route::post('/graduateStudents', [App\Http\Controllers\Admin\StudentController::class, 'graduateStudents'])->name('graduateStudents')->middleware(['auth:admin']);
 
-
   Route::post('/promoteStudent', [App\Http\Controllers\Admin\AcademicController::class, 'promoteStudent'])->name('promoteStudent')->middleware(['auth:admin']);
   Route::post('/getStudent', [App\Http\Controllers\Admin\AcademicController::class, 'getStudent'])->name('getStudent')->middleware(['auth:admin']);
   Route::post('/makeDemoteStudent', [App\Http\Controllers\Admin\AcademicController::class, 'makeDemoteStudent'])->name('makeDemoteStudent')->middleware(['auth:admin']);
@@ -423,7 +422,6 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'student'
 
   Route::get('/transcript', [App\Http\Controllers\Student\AcademicController::class, 'transcript'])->name('transcript')->middleware(['auth:student']);
   Route::post('/generateInvoice', [App\Http\Controllers\Student\StudentController::class, 'generateInvoice'])->name('generateInvoice')->middleware(['auth:student']);
-  
 
   Route::get('/mentor', [App\Http\Controllers\Student\StudentController::class, 'mentor'])->name('mentor')->middleware(['auth:student']);
   Route::get('/exits', [App\Http\Controllers\Student\StudentController::class, 'exits'])->name('exits')->middleware(['auth:student']);
@@ -459,9 +457,13 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'student'
   Route::post('/uploadOlevel', [App\Http\Controllers\Student\ClearanceController::class, 'uploadOlevel'])->middleware(['auth:student']);
   Route::post('/uploadUtme', [App\Http\Controllers\Student\ClearanceController::class, 'uploadUtme'])->middleware(['auth:student']);
   Route::post('/deleteFile', [App\Http\Controllers\Student\ClearanceController::class, 'deleteFile'])->middleware(['auth:student']);
-  
 
   Route::post('/requeryUpperlinkPayment', [App\Http\Controllers\PaymentController::class, 'requeryUpperlinkPayment'])->middleware(['auth:student']);
+
+  Route::get('/hostelBooking', [App\Http\Controllers\Student\StudentController::class, 'hostelBooking'])->name('hostelBooking')->middleware(['auth:student']); 
+  Route::post('/getHostels', [App\Http\Controllers\Student\HostelController::class, 'getHostels'])->name('getHostels'); 
+  Route::post('/getRoomTypes', [App\Http\Controllers\Student\HostelController::class, 'getRoomTypes'])->name('getRoomTypes'); 
+  Route::post('/getRooms', [App\Http\Controllers\Student\HostelController::class, 'getRooms'])->name('getRooms'); 
 
   
   

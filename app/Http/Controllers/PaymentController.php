@@ -328,6 +328,11 @@ class PaymentController extends Controller
                             Log::info("**********************Unable to credit student bandwidth**********************: ". $amount .' - '.$student);
                         }
                     }
+
+                    if($paymentType == PAYMENT_TYPE_ACCOMONDAITON){
+                        $transaction = Transaction::where('reference', $txRef)->first();
+                        $creditStudent = $this->creditAccommodation($transaction, $amount);
+                    }
                 }
                 alert()->success('Good Job', 'Payment successful')->persistent('Close');
                 if($paymentType == Payment::PAYMENT_TYPE_GENERAL_APPLICATION || $paymentType == Payment::PAYMENT_TYPE_INTER_TRANSFER_APPLICATION){

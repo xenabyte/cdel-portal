@@ -27,6 +27,12 @@ use App\Libraries\Bandwidth\Bandwidth;
 use App\Libraries\Monnify\Monnify;
 use App\Libraries\Paygate\Paygate;
 
+use App\Models\Hostel;
+use App\Models\RoomType;
+use App\Models\RoomBedSpace;
+use App\Models\Room;
+use App\Models\Allocation;
+
 use SweetAlert;
 use Mail;
 use Alert;
@@ -75,7 +81,7 @@ class StudentController extends Controller
 
         if (($levelId == 1 && strtolower($applicationType) == 'UTME') || 
             ($levelId == 2 && strtolower($applicationType) != 'UTME') && 
-            $student->clearance_status != 1 && $student->status != 1) {
+            ($student->clearance_status != 1 && $student->is_active != 1)) {
             return view('student.clearance', [
                 'payment' => $paymentCheck->schoolPayment,
                 'passTuition' => $paymentCheck->passTuitionPayment,
@@ -304,6 +310,61 @@ class StudentController extends Controller
             $redirectLocation = 'student/purchaseBandwidth';
         }
 
+        if(strtolower($paymentType) == "accomondation") {
+            $validator = Validator::make($request->all(), [
+                'campus' => 'required',
+                'hostel_id' => 'required',
+                'type_id' => 'required',
+                'room_id' => 'required',
+            ]);
+        
+            if($validator->fails()) {
+                alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+                return redirect()->back();
+            }
+        
+            $campus = $request->campus;
+            $hostelId = $request->hostel_id;
+            $typeId = $request->type_id;
+            $roomId = $request->room_id;
+        
+            $roomType = RoomType::find($typeId);
+            $amount = $roomType->amount;
+
+            if(!$roomType) {
+                alert()->error('Error', 'Selected room type not found.')->persistent('Close');
+                return redirect()->back();
+            }
+
+            $room = Room::with('allocations', 'type', 'hostel')->find($roomId);
+        
+            if(!$room) {
+                alert()->error('Error', 'Selected room not found.')->persistent('Close');
+                return redirect()->back();
+            }
+        
+            $totalBedSpaces = RoomBedSpace::where('room_id', $roomId)->count();
+        
+            $occupiedSpaces = Allocation::where('room_id', $roomId)
+                                         ->whereNull('release_date')
+                                         ->count();
+        
+            if($occupiedSpaces >= $totalBedSpaces) {
+                alert()->error('Error', 'No available bed spaces in the selected room.')->persistent('Close');
+                return redirect()->back();
+            }
+
+            $hostelData = array(
+                "room_id" => $roomId,
+                "hostel_id" => $hostelId,
+                "campus" => $campus,
+                "type_id" => $typeId,
+            );
+        
+            $hostelMeta = json_encode($hostelData);
+        }
+        
+
         $paymentGateway = $request->paymentGateway;
 
 
@@ -315,6 +376,7 @@ class StudentController extends Controller
             'payment_method' => $paymentGateway,
             'reference' => $reference,
             'session' => $student->academic_session,
+            'additional_data' => !empty($hostelMeta)?$hostelMeta:null
         ]);
 
         if(strtolower($paymentGateway) == 'paystack') {
@@ -418,6 +480,7 @@ class StudentController extends Controller
             $transactionData->payment_gateway = $paymentGateway;
             $transactionData->transaction_id = $request->transaction_id;
             $transactionData->plan_id = !empty($bandwidthPlan)?$bandwidthPlan->id:null;
+            $transactionData->hostel_meta =!empty($hostelMeta)?$hostelMeta:null;
 
             return $this->billStudent($transactionData);
         }
@@ -448,7 +511,7 @@ class StudentController extends Controller
                 "firstName" => $student->applicant->othernames,
                 "lastName" => $student->applicant->lastname,
                 "redirectUrl" => env("UPPERLINK_REDIRECT_URL"),
-                "accountCode" => BankAccount::getBankAccountCode($paymentType),
+                "accountCode" => BankAccount::getBankAccountCode($paymentType.'12'),
                 "meta" => json_encode($meta),
             );
 
@@ -494,7 +557,6 @@ class StudentController extends Controller
 
             return redirect($checkoutUrl);
         }
-
 
         $message = 'Invalid Payment Gateway';
         alert()->info('Opps!', $message)->persistent('Close');
@@ -950,8 +1012,13 @@ class StudentController extends Controller
         }
 
         $student = Auth::guard('student')->user();
-        $student->dashboard_mode = $request->dashboard_mode;
-        $student->linkedIn = $request->linkedIn;
+        if(!empty($request->dashboard_mode)){
+            $student->dashboard_mode = $request->dashboard_mode;
+        }
+        
+        if(!empty($request->linkedIn)){
+            $student->linkedIn = $request->linkedIn;
+        }
 
         if($student->update()){
             alert()->success('Success', 'Save Changes')->persistent('Close');
@@ -1492,4 +1559,57 @@ class StudentController extends Controller
             'studentPendingTransactions' => $paymentCheck->studentPendingTransactions
         ]);
     }
+
+    public function hostelBooking(Request $request) {
+        $student = Auth::guard('student')->user();
+        $studentId = $student->id;
+        $levelId = $student->level_id;
+        $globalData = $request->input('global_data');
+        $admissionSession = $globalData->sessionSetting['admission_session'];
+        $academicSession = $globalData->sessionSetting['academic_session'];
+
+        $paymentCheck = $this->checkSchoolFees($student, $academicSession, $levelId);
+        $hostelPayment = Payment::where("type", "Accomondation Fee")->where("academic_session", $academicSession)->first();
+
+        if(!$paymentCheck->passTuitionPayment){
+            return view('student.schoolFee', [
+                'payment' => $paymentCheck->schoolPayment,
+                'passTuition' => $paymentCheck->passTuitionPayment,
+                'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
+                'passEightyTuition' => $paymentCheck->passEightyTuition,
+                'studentPendingTransactions' => $paymentCheck->studentPendingTransactions
+            ]);
+        }
+
+        if(empty($student->image)){
+            return view('student.updateImage', [
+                'payment' => $paymentCheck->schoolPayment,
+                'passTuition' => $paymentCheck->passTuitionPayment,
+                'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
+                'passEightyTuition' => $paymentCheck->passEightyTuition,
+                'studentPendingTransactions' => $paymentCheck->studentPendingTransactions
+            ]);
+        }
+
+        if(empty($student->bandwidth_username)){
+            return view('student.bandwidth', [
+                'payment' => $paymentCheck->schoolPayment,
+                'passTuition' => $paymentCheck->passTuitionPayment,
+                'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
+                'passEightyTuition' => $paymentCheck->passEightyTuition,
+                'studentPendingTransactions' => $paymentCheck->studentPendingTransactions
+            ]);
+        }
+        
+        return view('student.hostelBooking', [
+            'hostelPayment' => $hostelPayment,
+            'payment' => $paymentCheck->schoolPayment,
+            'passTuition' => $paymentCheck->passTuitionPayment,
+            'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
+            'passEightyTuition' => $paymentCheck->passEightyTuition,
+            'studentPendingTransactions' => $paymentCheck->studentPendingTransactions
+        ]);
+    }
+
+    
 }

@@ -20,6 +20,7 @@ class Payment extends Model
     const PAYMENT_MODIFY_COURSE_REG = 'Course Reg';
     const PAYMENT_TYPE_WALLET_DEPOSIT = 'Wallet Deposit';
     const PAYMENT_TYPE_BANDWIDTH = 'Bandwidth Fee';
+    const PAYMENT_TYPE_ACCOMONDAITON = 'Accomondation Fee';
 
 
     protected $fillable = [
@@ -82,8 +83,8 @@ class Payment extends Model
             case 'Course Reg':
             case 'Bandwidth Fee':
                 return 'ICT';
-            case 'Accommodation':
-                return 'Accommodation';
+            case 'Accomondation Fee':
+                return 'Accomondation';
             case 'General Application Fee':
             case 'Inter Transfer Application Fee':
             case 'Acceptance Fee':

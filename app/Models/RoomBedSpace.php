@@ -25,4 +25,15 @@ class RoomBedSpace extends Model
     {
         return $this->belongsTo(Room::class, 'room_id');
     }
+
+     /**
+     * Get the current allocation for this bed space
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function currentAllocation()
+    {
+        return $this->hasOne(Allocation::class, 'bed_id', 'id')
+                    ->whereNull('release_date');
+    }
 }

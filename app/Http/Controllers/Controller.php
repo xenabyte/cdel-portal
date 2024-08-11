@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Hash;
 use App\Http\Requests;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
 
 use Log;
 use SweetAlert;
@@ -51,6 +52,11 @@ use App\Models\CourseRegistration;
 use App\Models\Plan;
 use App\Models\Guardian;
 use App\Models\TestApplicant;
+use App\Models\Hostel;
+use App\Models\RoomType;
+use App\Models\RoomBedSpace;
+use App\Models\Room;
+use App\Models\Allocation;
 
 
 
@@ -945,4 +951,80 @@ class Controller extends BaseController
         return $weekendDays;
     }
 
+    public function creditAccommodation(Transaction $transaction, $amount){
+        $allocationData = json_decode($transaction->additional_data, true);
+
+        if (!$allocationData || !isset($allocationData['room_id'], $allocationData['hostel_id'], $allocationData['campus'], $allocationData['type_id'])) {
+            return 'Invalid allocation data.';
+        }
+
+        $roomId = $allocationData['room_id'];
+        $hostelId = $allocationData['hostel_id'];
+        $campus = $allocationData['campus'];
+        $typeId = $allocationData['type_id'];
+
+        $room = $this->findRoomWithVacancy($roomId, $typeId);
+
+        if (!$room) {
+            return 'No available bed spaces in the selected room type.';
+        }
+
+        $availableBedSpace = RoomBedSpace::where('room_id', $room->id)
+            ->whereDoesntHave('currentAllocation')
+            ->first();
+
+        if (!$availableBedSpace) {
+            return 'No available bed spaces found.';
+        }
+
+        // Create the allocation record
+        DB::beginTransaction();
+
+        try {
+            Allocation::create([
+                'student_id' => $transaction->student_id,
+                'room_id' => $room->id,
+                'bed_id' => $availableBedSpace->id,
+                'academic_session' => $transaction->session,
+                'allocation_date' => Carbon::now(),
+            ]);
+
+            DB::commit();
+
+            return true; // Indicating success
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return 'Failed to allocate accommodation: ' . $e->getMessage();
+        }
+    }
+
+    
+    protected function findRoomWithVacancy($initialRoomId, $typeId){
+        // Check the initial room first
+        $room = Room::with('allocations')->find($initialRoomId);
+
+        if ($room) {
+            $totalBedSpaces = RoomBedSpace::where('room_id', $room->id)->count();
+            $occupiedSpaces = Allocation::where('room_id', $room->id)
+                ->whereNull('release_date')
+                ->count();
+
+            if ($occupiedSpaces < $totalBedSpaces) {
+                return $room;
+            }
+        }
+
+        // If the initial room is full, find another room of the same type with vacancies
+        $roomWithVacancy = Room::where('type_id', $typeId)
+        ->whereHas('bedSpaces', function($query) {
+            $query->whereDoesntHave('currentAllocation');  // Only consider bed spaces without a current allocation
+        })
+        ->first();
+
+
+        return $roomWithVacancy;
+    }
+
+    
 }

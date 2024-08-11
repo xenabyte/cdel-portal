@@ -37,7 +37,7 @@ class Room extends Model
         return $this->belongsTo(RoomType::class, 'type_id');
     }
 
-    
+
     /**
      * Get all of the allocations for the Room
      *
@@ -46,5 +46,15 @@ class Room extends Model
     public function allocations()
     {
         return $this->hasMany(Allocation::class);
+    }
+
+    /**
+     * Get all of the bedSpaces for the Room
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function bedSpaces()
+    {
+        return $this->hasMany(RoomBedSpace::class, 'room_id');
     }
 }

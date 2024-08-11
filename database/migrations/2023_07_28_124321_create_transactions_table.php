@@ -27,6 +27,7 @@ class CreateTransactionsTable extends Migration
             $table->string('redirect_url')->nullable();
             $table->string('checkout_url')->nullable();
             $table->string('plan_id')->nullable();
+            $table->text('additional_data')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

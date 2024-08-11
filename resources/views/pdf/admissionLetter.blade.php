@@ -105,7 +105,7 @@
                 <li>Pay the non-refundable acceptance fee of <strong>N{{ number_format($acceptance_amount/100, 2) }}</strong></li>
                 <li>Pay your school fees <strong>(N{{ number_format($school_amount/100, 2) }})</strong> in full or at least a first installment of 40% before resumption</li>
                 <li>Prepare for resumption. Please note that the resumption date for {{ $pageGlobalData->sessionSetting->admission_session }} Academic Session is <strong>{{ date('l, jS F, Y', strtotime($pageGlobalData->sessionSetting->resumption_date)) }}</strong></li>
-                <li>Book and pay for your accommodation. The following accommodation facilities are available:</li>
+                <li>Book and pay for your accomondation. The following accomondation facilities are available:</li>
             </ul>
             
             <table>
