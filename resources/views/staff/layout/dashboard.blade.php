@@ -526,7 +526,7 @@
                                             <a href="{{ url('/staff/verifyStudentExits') }}" class="nav-link">Verify Student Exit</a>
                                         </li>
                                         <li class="nav-item">
-                                            <a href="{{ url('/staff/studentHostelMgt') }}" class="nav-link">Student Hostel Mgt</a>
+                                            <a href="{{ url('/staff/allocations') }}" class="nav-link">Student Hostel Mgt</a>
                                         </li>
                                     </ul>
                                 </div>

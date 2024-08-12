@@ -301,6 +301,7 @@ class PaymentController extends Controller
             
             if($this->processUpperLinkPayment($paymentDetails)){
 
+                alert()->success('Good Job', 'Payment successful')->persistent('Close');
                 if($student && !empty($studentId)){
                     $pdf = new Pdf();
                     $invoice = $pdf->generateTransactionInvoice($session, $studentId, $paymentId, 'single');
@@ -329,12 +330,14 @@ class PaymentController extends Controller
                         }
                     }
 
-                    if($paymentType == PAYMENT_TYPE_ACCOMONDAITON){
+                    if($paymentType == Payment::PAYMENT_TYPE_ACCOMONDATION){
                         $transaction = Transaction::where('reference', $txRef)->first();
-                        $creditStudent = $this->creditAccommodation($transaction, $amount);
+                        $creditStudent = $this->creditAccommodation($transaction);
+                        if (is_string($creditStudent)) {
+                            alert()->error('Oops', $creditStudent)->persistent('Close');
+                        }
                     }
                 }
-                alert()->success('Good Job', 'Payment successful')->persistent('Close');
                 if($paymentType == Payment::PAYMENT_TYPE_GENERAL_APPLICATION || $paymentType == Payment::PAYMENT_TYPE_INTER_TRANSFER_APPLICATION){
                     $applicantData = $paymentData;
                     $this->createApplicant($applicantData);

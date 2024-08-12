@@ -27,6 +27,8 @@
 
     <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.2.2/css/buttons.dataTables.min.css">
 
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet">
+
     <!-- Layout config Js -->
     <script src="{{asset('assets/js/layout.js')}}"></script>
     <!-- Bootstrap Css -->
@@ -282,13 +284,12 @@
                             </a>
                         </li>
 
-                        @if(!empty($pageGlobalData->setting) && strtolower($pageGlobalData->sessionSetting->accomondation_booking_status) == 'start')
-                            <li class="nav-item">
-                                <a class="nav-link menu-link" href="{{ url('/student/hostelBooking') }}">
-                                    <i class="mdi mdi-warehouse"></i> <span>Hostel Booking</span>
-                                </a>
-                            </li>
-                        @endif
+                        <li class="nav-item">
+                            <a class="nav-link menu-link" href="{{ url('/student/hostelBooking') }}">
+                                <i class="mdi mdi-warehouse"></i> <span>Hostel Booking</span>
+                            </a>
+                        </li>
+
                         
                         @if(!empty($student->image) && !empty($student->linkedIn) && !empty($student->bandwidth_username))
                             @if($passTuition)
@@ -523,6 +524,15 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.32/vfs_fonts.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            // Initialize Select2
+            $('.selectRoom').select2();
+        });
+    </script>
 
     
     <script>
@@ -793,8 +803,6 @@
                 }));
             }
         }
-
-        selectWithSearch
 
     </script>
     

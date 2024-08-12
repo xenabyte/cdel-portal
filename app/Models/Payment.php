@@ -20,7 +20,7 @@ class Payment extends Model
     const PAYMENT_MODIFY_COURSE_REG = 'Course Reg';
     const PAYMENT_TYPE_WALLET_DEPOSIT = 'Wallet Deposit';
     const PAYMENT_TYPE_BANDWIDTH = 'Bandwidth Fee';
-    const PAYMENT_TYPE_ACCOMONDAITON = 'Accomondation Fee';
+    const PAYMENT_TYPE_ACCOMONDATION = 'Accomondation Fee';
 
 
     protected $fillable = [

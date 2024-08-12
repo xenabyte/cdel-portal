@@ -491,6 +491,9 @@
                                                 <li class="nav-item">
                                                     <a href="{{ url('/admin/hostelType') }}" class="nav-link" data-key="t-basic"> Room Type </a>
                                                 </li>
+                                                <li class="nav-item">
+                                                    <a href="{{ url('/admin/allocations') }}" class="nav-link" data-key="t-basic"> Allocations </a>
+                                                </li>
                                             </ul>
                                         </div>
                                     </li>
@@ -762,183 +765,338 @@
             window.getSelection().removeAllRanges();
         });
     </script> 
-<script>
-    function handleFacultyChange(event) {
-        const selectedFaculty = event.target.value;
-        const departmentSelect = $('#department');
+    <script>
+        function handleFacultyChange(event) {
+            const selectedFaculty = event.target.value;
+            const departmentSelect = $('#department');
 
-        if(selectedFaculty != ''){
-            axios.get("{{ url('/admin/getDepartments') }}/"+selectedFaculty)
-            .then(function (response) {
-                departmentSelect.empty().append($('<option>', {
-                    value: '',
-                    text: '--Select--'
-                }));
-                $.each(response.data, function (index, department) {
-                    departmentSelect.append($('<option>', {
-                        value: department.id,
-                        text: department.name
+            if(selectedFaculty != ''){
+                axios.get("{{ url('/admin/getDepartments') }}/"+selectedFaculty)
+                .then(function (response) {
+                    departmentSelect.empty().append($('<option>', {
+                        value: '',
+                        text: '--Select--'
                     }));
+                    $.each(response.data, function (index, department) {
+                        departmentSelect.append($('<option>', {
+                            value: department.id,
+                            text: department.name
+                        }));
+                    });
+                })
+                .catch(function (error) {
+                    console.error("Error fetching departments:", error);
                 });
-            })
-            .catch(function (error) {
-                console.error("Error fetching departments:", error);
-            });
-        }else{
-            
+            }else{
+                
+            }
         }
-    }
 
-    function handleDepartmentChange(event) {
-        const selectedDepartment = event.target.value;
-        const programmeSelect = $('#programme');
+        function handleDepartmentChange(event) {
+            const selectedDepartment = event.target.value;
+            const programmeSelect = $('#programme');
 
-        if(selectedDepartment != ''){
-            axios.get("{{ url('/admin/getProgrammes') }}/"+selectedDepartment)
-            .then(function (response) {
+            if(selectedDepartment != ''){
+                axios.get("{{ url('/admin/getProgrammes') }}/"+selectedDepartment)
+                .then(function (response) {
 
-                programmeSelect.empty().append($('<option>', {
-                    value: '',
-                    text: '--Select--'
-                }));
-                $.each(response.data, function (index, programme) {
-                    programmeSelect.append($('<option>', {
-                        value: programme.id,
-                        text: programme.name
+                    programmeSelect.empty().append($('<option>', {
+                        value: '',
+                        text: '--Select--'
                     }));
+                    $.each(response.data, function (index, programme) {
+                        programmeSelect.append($('<option>', {
+                            value: programme.id,
+                            text: programme.name
+                        }));
+                    });
+                })
+                .catch(function (error) {
+                    console.error("Error fetching departments:", error);
                 });
-            })
-            .catch(function (error) {
-                console.error("Error fetching departments:", error);
-            });
-        }else{
-            
+            }else{
+                
+            }
         }
-    }
-</script>
-<script>
-    // Get the current time
-    var currentTime = new Date();
-    var currentHour = currentTime.getHours();
+    </script>
+    <script>
+        // Get the current time
+        var currentTime = new Date();
+        var currentHour = currentTime.getHours();
 
-    // Define the greeting messages
-    var morningGreeting = "Good morning";
-    var afternoonGreeting = "Good afternoon";
-    var eveningGreeting = "Good evening";
+        // Define the greeting messages
+        var morningGreeting = "Good morning";
+        var afternoonGreeting = "Good afternoon";
+        var eveningGreeting = "Good evening";
 
-    // Get the DOM element to display the greeting
-    var greetingElement = document.getElementById("greeting");
+        // Get the DOM element to display the greeting
+        var greetingElement = document.getElementById("greeting");
 
-    // Determine the appropriate greeting based on the time of day
-    var greeting;
-    if (currentHour >= 0 && currentHour < 12) {
-        greeting = morningGreeting;
-    } else if (currentHour >= 12 && currentHour < 18) {
-        greeting = afternoonGreeting;
-    } else {
-        greeting = eveningGreeting;
-    }
+        // Determine the appropriate greeting based on the time of day
+        var greeting;
+        if (currentHour >= 0 && currentHour < 12) {
+            greeting = morningGreeting;
+        } else if (currentHour >= 12 && currentHour < 18) {
+            greeting = afternoonGreeting;
+        } else {
+            greeting = eveningGreeting;
+        }
 
-    // Display the greeting
-    greetingElement.innerHTML = greeting;
-</script>
-<script>
-    $(document).ready(function() {
-        // Initialize Select2
-        $('#selectWithSearch').select2();
-    });
-</script>
-<script type="text/javascript">
-    $(document).ready(function() {
-        $('#buttons-result').DataTable({
-            dom: 'Bfrtip',
-            pageLength: 20, 
-            lengthMenu: [ [10, 20, 50, -1], [10, 20, 50, "All"] ], 
-            buttons: [
-                'copy', 'csv', 'excel', 'pdf', 'print'
-            ],
+        // Display the greeting
+        greetingElement.innerHTML = greeting;
+    </script>
+    <script>
+        $(document).ready(function() {
+            $('#selectWithSearch').select2();
         });
+    </script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('#buttons-result').DataTable({
+                dom: 'Bfrtip',
+                pageLength: 20, 
+                lengthMenu: [ [10, 20, 50, -1], [10, 20, 50, "All"] ], 
+                buttons: [
+                    'copy', 'csv', 'excel', 'pdf', 'print'
+                ],
+            });
 
-        $('#buttons-datatables1').DataTable({
-            dom: 'Bfrtip',
-            pageLength: 20, 
-            lengthMenu: [ [10, 20, 50, -1], [10, 20, 50, "All"] ],
-            buttons: [
-                'copy', 'csv', 'excel', 'pdf', 'print'
-            ]
+            $('#buttons-datatables1').DataTable({
+                dom: 'Bfrtip',
+                pageLength: 20, 
+                lengthMenu: [ [10, 20, 50, -1], [10, 20, 50, "All"] ],
+                buttons: [
+                    'copy', 'csv', 'excel', 'pdf', 'print'
+                ]
+            });
+
+            $('#buttons-datatables2').DataTable({
+                dom: 'Bfrtip',
+                pageLength: 20,
+                lengthMenu: [ [10, 20, 50, -1], [10, 20, 50, "All"] ],
+                buttons: [
+                    'copy', 'csv', 'excel', 'pdf', 'print'
+                ]
+            });
+
+            $('#buttons-datatables3').DataTable({
+                dom: 'Bfrtip',
+                pageLength: 20,  
+                lengthMenu: [ [10, 20, 50, -1], [10, 20, 50, "All"] ],
+                buttons: [
+                    'copy', 'csv', 'excel', 'pdf', 'print'
+                ]
+            });
+
+            $('#buttons-datatables4').DataTable({
+                dom: 'Bfrtip',
+                pageLength: 20,  
+                lengthMenu: [ [10, 20, 50, -1], [10, 20, 50, "All"] ],
+                buttons: [
+                    'copy', 'csv', 'excel', 'pdf', 'print'
+                ]
+            });
+
+            $('#buttons-datatables5').DataTable({
+                dom: 'Bfrtip',
+                pageLength: 20, 
+                lengthMenu: [ [10, 20, 50, -1], [10, 20, 50, "All"] ], 
+                buttons: [
+                    'copy', 'csv', 'excel', 'pdf', 'print'
+                ]
+            });
+
+            $('#buttons-datatables6').DataTable({
+                dom: 'Bfrtip',
+                pageLength: 20, 
+                lengthMenu: [ [10, 20, 50, -1], [10, 20, 50, "All"] ], 
+                buttons: [
+                    'copy', 'csv', 'excel', 'pdf', 'print'
+                ]
+            });
+
+            $('#buttons-datatables7').DataTable({
+                dom: 'Bfrtip',
+                pageLength: 20,  
+                lengthMenu: [ [10, 20, 50, -1], [10, 20, 50, "All"] ],
+                buttons: [
+                    'copy', 'csv', 'excel', 'pdf', 'print'
+                ]
+            });
         });
+    </script>
+    <script>
+        $(document).ready(function() {
+        $("#submit-button").click(function() {
+            // Disable the button
+            $(this.form).submit();
 
-        $('#buttons-datatables2').DataTable({
-            dom: 'Bfrtip',
-            pageLength: 20,
-            lengthMenu: [ [10, 20, 50, -1], [10, 20, 50, "All"] ],
-            buttons: [
-                'copy', 'csv', 'excel', 'pdf', 'print'
-            ]
+            $(this).prop("disabled", true);
+        
+            // Remove the text
+            $(this).text("");
+        
+            // Replace the text with a spinner
+            $(this).html("<i class='fa fa-spinner fa-spin'></i>");
         });
-
-        $('#buttons-datatables3').DataTable({
-            dom: 'Bfrtip',
-            pageLength: 20,  
-            lengthMenu: [ [10, 20, 50, -1], [10, 20, 50, "All"] ],
-            buttons: [
-                'copy', 'csv', 'excel', 'pdf', 'print'
-            ]
         });
+    </script>
 
-        $('#buttons-datatables4').DataTable({
-            dom: 'Bfrtip',
-            pageLength: 20,  
-            lengthMenu: [ [10, 20, 50, -1], [10, 20, 50, "All"] ],
-            buttons: [
-                'copy', 'csv', 'excel', 'pdf', 'print'
-            ]
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const validateButton = document.querySelector('.validate-button');
+            const hiddenFields = document.querySelector('.hidden-fields');
+            const studentIdInput = document.querySelector('#student_id');
+            const StudentGender = document.querySelector('#studentGender')
+            const matricNumberInput = document.querySelector('#matricNumber');
+
+            hiddenFields.style.display = 'none';
+
+            validateButton.addEventListener('click', function () {
+                const matricNumber = document.querySelector('#matricNumber').value;
+
+                if(matricNumber === '') {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Matric Number is required',
+                        text: 'Fill in your matric number',
+                    });
+
+                    return false;
+                }
+
+                // Send a POST request to the Laravel route
+                axios.post('/student/getStudent', { matric_number: matricNumber })
+                    .then(function (response) {
+                        if (response.data.status === 'record_not_found') {
+                            // Show a SweetAlert for record not found
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Record Not Found',
+                                text: 'The student record was not found.',
+                            });
+                        } else {
+                            // Set the student ID and show the hidden fields
+                            studentIdInput.value = response.data.student.id;
+                            StudentGender.value = response.data.student.applicant.gender;
+                            hiddenFields.style.display = 'flex';
+                            validateButton.style.display = 'none';
+                            matricNumberInput.setAttribute('disabled', 'disabled');
+                        }
+                    })
+                    .catch(function (error) {
+                        console.error(error);
+                    });
+            });
         });
+    </script>
+    <script>
+        function handleCampusChange(event) {
+           const selectedCampus = event.target.value;
+           const gender = $('.gender').val();;
+           const hostelSelect = $('#hostel');
 
-        $('#buttons-datatables5').DataTable({
-            dom: 'Bfrtip',
-            pageLength: 20, 
-            lengthMenu: [ [10, 20, 50, -1], [10, 20, 50, "All"] ], 
-            buttons: [
-                'copy', 'csv', 'excel', 'pdf', 'print'
-            ]
-        });
+           if (selectedCampus !== '') {
+               axios.post("{{ url('/student/getHostels') }}", {
+                   campus: selectedCampus, 
+                   gender: gender
+               })
+               .then(function (response) {
+                   hostelSelect.empty().append($('<option>', {
+                       value: '',
+                       text: '--Select--'
+                   }));
 
-        $('#buttons-datatables6').DataTable({
-            dom: 'Bfrtip',
-            pageLength: 20, 
-            lengthMenu: [ [10, 20, 50, -1], [10, 20, 50, "All"] ], 
-            buttons: [
-                'copy', 'csv', 'excel', 'pdf', 'print'
-            ]
-        });
+                   $.each(response.data, function (index, hostel) {
+                       hostelSelect.append($('<option>', {
+                           value: hostel.id,
+                           text: hostel.name
+                       }));
+                   });
+               })
+               .catch(function (error) {
+                   console.error("Error fetching hostels:", error);
+               });
+           } else {
+               hostelSelect.empty().append($('<option>', {
+                   value: '',
+                   text: '--Select--'
+               }));
+           }
+       }
 
-        $('#buttons-datatables7').DataTable({
-            dom: 'Bfrtip',
-            pageLength: 20,  
-            lengthMenu: [ [10, 20, 50, -1], [10, 20, 50, "All"] ],
-            buttons: [
-                'copy', 'csv', 'excel', 'pdf', 'print'
-            ]
-        });
-    });
-</script>
-<script>
-    $(document).ready(function() {
-      $("#submit-button").click(function() {
-        // Disable the button
-        $(this.form).submit();
+       function handleHostelChange(event) {
+           const selectedCampus = $('#campus').val(); 
+           const gender = $('.gender').val();;
+           const roomTypeSelect = $('#roomType');
 
-        $(this).prop("disabled", true);
-    
-        // Remove the text
-        $(this).text("");
-    
-        // Replace the text with a spinner
-        $(this).html("<i class='fa fa-spinner fa-spin'></i>");
-      });
-    });
-</script>
+           if (selectedCampus !== '') {
+               axios.post("{{ url('/student/getRoomTypes') }}", {
+                   campus: selectedCampus, 
+                   gender: gender
+               })
+               .then(function (response) {
+                   roomTypeSelect.empty().append($('<option>', {
+                       value: '',
+                       text: '--Select--'
+                   }));
+
+                   $.each(response.data, function (index, roomType) {
+                       const formattedAmount = (roomType.amount / 100).toLocaleString('en-NG', { style: 'currency', currency: 'NGN' });
+
+                       roomTypeSelect.append($('<option>', {
+                           value: roomType.id,  
+                           text: `${roomType.name} (${roomType.capacity} Bed Spaces) (${formattedAmount})`
+                       }));
+                   });
+               })
+               .catch(function (error) {
+                   console.error("Error fetching room types:", error);
+               });
+           } else {
+               roomTypeSelect.empty().append($('<option>', {
+                   value: '',
+                   text: '--Select--'
+               }));
+           }
+       }
+
+       function handleRoomTypeChange(event) {
+           const hostel = $('#hostel').val(); 
+           const typeId = event.target.value;
+           const roomSelect = $('#room');
+
+           if (typeId !== '') {
+               axios.post("{{ url('/student/getRooms') }}", {
+                   typeId: typeId, 
+                   hostelId: hostel
+               })
+               .then(function (response) {
+                   roomSelect.empty().append($('<option>', {
+                       value: '',
+                       text: '--Select--'
+                   }));
+
+                   $.each(response.data, function (index, room) {
+                       roomSelect.append($('<option>', {
+                           value: room.id,  
+                           text: room.number
+                       }));
+                   });
+               })
+               .catch(function (error) {
+                   console.error("Error fetching room types:", error);
+               });
+           } else {
+               roomTypeSelect.empty().append($('<option>', {
+                   value: '',
+                   text: '--Select--'
+               }));
+           }
+       }
+
+   </script>
+
 </body>
 
 </html>

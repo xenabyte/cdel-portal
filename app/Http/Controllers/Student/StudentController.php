@@ -778,7 +778,7 @@ class StudentController extends Controller
     public function getStudent(Request $request) {
         $matricNumber = $request->matric_number;
 
-        $student = Student::where('matric_number', $matricNumber)
+        $student = Student::with('applicant')->where('matric_number', $matricNumber)
             ->where('is_active', true)
             ->where('is_passed_out', false)
             ->where('is_rusticated', false)
@@ -1571,6 +1571,8 @@ class StudentController extends Controller
         $paymentCheck = $this->checkSchoolFees($student, $academicSession, $levelId);
         $hostelPayment = Payment::where("type", "Accomondation Fee")->where("academic_session", $academicSession)->first();
 
+        $allocatedRoom = Allocation::where('student_id', $studentId)->where('academic_session', $academicSession)->first();
+
         if(!$paymentCheck->passTuitionPayment){
             return view('student.schoolFee', [
                 'payment' => $paymentCheck->schoolPayment,
@@ -1602,6 +1604,7 @@ class StudentController extends Controller
         }
         
         return view('student.hostelBooking', [
+            'allocatedRoom' => $allocatedRoom,
             'hostelPayment' => $hostelPayment,
             'payment' => $paymentCheck->schoolPayment,
             'passTuition' => $paymentCheck->passTuitionPayment,

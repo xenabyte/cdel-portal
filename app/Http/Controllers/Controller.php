@@ -951,7 +951,7 @@ class Controller extends BaseController
         return $weekendDays;
     }
 
-    public function creditAccommodation(Transaction $transaction, $amount){
+    public function creditAccommodation(Transaction $transaction){
         $allocationData = json_decode($transaction->additional_data, true);
 
         if (!$allocationData || !isset($allocationData['room_id'], $allocationData['hostel_id'], $allocationData['campus'], $allocationData['type_id'])) {
@@ -977,6 +977,11 @@ class Controller extends BaseController
             return 'No available bed spaces found.';
         }
 
+        $checkStudentAllocationCount = Allocation::where('student_id', $transaction->student_id)->where('academic_session', $transaction->session)->count();
+        if($checkStudentAllocationCount > 0){
+            return 'Student already assigned to a room for this academic session';
+        }
+
         // Create the allocation record
         DB::beginTransaction();
 
@@ -991,7 +996,7 @@ class Controller extends BaseController
 
             DB::commit();
 
-            return true; // Indicating success
+            return true; 
 
         } catch (\Exception $e) {
             DB::rollBack();
