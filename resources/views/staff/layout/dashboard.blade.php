@@ -315,19 +315,28 @@
                                 </a>
                             </li>
 
-                            @if($staff->staffRoles->count() > 0)
+                            {{-- @if($staff->staffRoles->count() > 0) --}}
                             <li class="nav-item">
-                                <a class="nav-link menu-link" href="{{ url('staff/allStudents') }}">
-                                    <i class="mdi mdi-account-group"></i> <span data-key="t-transaction">All Students</span>
+                                <a class="nav-link menu-link" href="#student" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarForms">
+                                    <i class="mdi mdi-account-group"></i> <span data-key="t-leaveMGT">Student MGT</span>
                                 </a>
-                            </li>
+                                <div class="collapse menu-dropdown" id="student">
+                                    <ul class="nav nav-sm flex-column">
+                                        <li class="nav-item">
+                                            <a class="nav-link menu-link" href="{{ url('staff/allStudents') }}" data-key="t-profile">All Students</a>
+                                        </li>
 
-                            <li class="nav-item">
-                                <a class="nav-link menu-link" href="{{ url('staff/graduatingStudents') }}">
-                                    <i class="mdi mdi-trophy-award"></i> <span data-key="t-student">Graduating Students</span>
-                                </a>
+                                        <li class="nav-item">
+                                            <a class="nav-link menu-link" href="{{ url('staff/graduatingStudents') }}" data-key="t-profile">Graduating Students</a>
+                                        </li>
+
+                                        <li class="nav-item">
+                                            <a class="nav-link menu-link" href="{{ url('staff/alumni') }}" data-key="t-profile">Alumni (Graduated Students)</a>
+                                        </li>
+                                    </ul>
+                                </div>
                             </li>
-                            @endif
+                            {{-- @endif --}}
 
                             <li class="nav-item">
                                 <a class="nav-link menu-link" href="#leaveMGT" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarForms">

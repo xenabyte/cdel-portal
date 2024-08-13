@@ -59,6 +59,12 @@
                             <td>{{ $student->created_at }} </td>
                             <td>
                                 <a href="{{ asset($student->admission_letter) }}" class="btn btn-danger m-1"> Download Admission Letter</a>
+                                <form action="{{ url('admin/generateAdmissionLetter') }}" method="POST">
+                                    @csrf
+                                    <input name="applicant_id" type="hidden" value="{{$student->user_id}}">
+                                    <hr>
+                                    <button type="submit" id="submit-button" class="btn btn-primary w-100">Regenerate Admission Letter</button>
+                                </form>
                             </td>
                             <td>
                                 @if($student->clearance_status == 1)Cleared @else Not Cleared @endif

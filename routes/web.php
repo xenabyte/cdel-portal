@@ -194,6 +194,8 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'admin'],
   Route::get('/courseRegMgt', [App\Http\Controllers\Admin\AcademicController::class, 'courseRegMgt'])->name('courseRegMgt')->middleware(['auth:admin']);
   Route::post('/setCourseRegStatus', [App\Http\Controllers\Admin\AcademicController::class, 'setCourseRegStatus'])->name('setCourseRegStatus')->middleware(['auth:admin']);
   Route::get('/matriculants', [App\Http\Controllers\Admin\AdmissionController::class, 'matriculants'])->name('matriculants')->middleware(['auth:admin']);
+  Route::post('/generateAdmissionLetter', [App\Http\Controllers\Admin\AdmissionController::class, 'generateAdmissionLetter'])->name('generateAdmissionLetter')->middleware(['auth:admin']);
+
 
   Route::get('/courseAllocation', [App\Http\Controllers\Admin\StaffController::class, 'courseAllocation'])->name('courseAllocation')->middleware(['auth:admin']);
   Route::post('/getCourses', [App\Http\Controllers\Admin\StaffController::class, 'getCourses'])->name('getCourses')->middleware(['auth:admin']);
@@ -363,13 +365,13 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'admin'],
   Route::get('/allocations', [App\Http\Controllers\Admin\HostelController::class, 'allocations'])->name('allocations')->middleware(['auth:admin']);
   Route::post('/deleteAllocation', [App\Http\Controllers\Admin\HostelController::class, 'deleteAllocation'])->name('deleteAllocation')->middleware(['auth:admin']);
   Route::post('/allocateRoom', [App\Http\Controllers\Admin\HostelController::class, 'allocateRoom'])->name('allocateRoom')->middleware(['auth:admin']);
-
   
   Route::get('/bankAccounts', [App\Http\Controllers\Admin\PaymentController::class, 'bankAccounts'])->name('bankAccounts')->middleware(['auth:admin']);
   Route::post('/addBankAccount', [App\Http\Controllers\Admin\PaymentController::class, 'addBankAccount'])->name('addBankAccount')->middleware(['auth:admin']);
   Route::post('/updateBankAccount', [App\Http\Controllers\Admin\PaymentController::class, 'updateBankAccount'])->name('updateBankAccount')->middleware(['auth:admin']);
   Route::post('/deleteBankAccount', [App\Http\Controllers\Admin\PaymentController::class, 'deleteBankAccount'])->name('deleteBankAccount')->middleware(['auth:admin']);
 
+  Route::get('/alumni', [App\Http\Controllers\Admin\StudentController::class, 'alumni'])->name('alumni')->middleware(['auth:admin']);
 
 });
 
@@ -465,9 +467,6 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'student'
   Route::post('/getHostels', [App\Http\Controllers\Student\HostelController::class, 'getHostels'])->name('getHostels'); 
   Route::post('/getRoomTypes', [App\Http\Controllers\Student\HostelController::class, 'getRoomTypes'])->name('getRoomTypes'); 
   Route::post('/getRooms', [App\Http\Controllers\Student\HostelController::class, 'getRooms'])->name('getRooms'); 
-
-  
-  
 
 });
 
@@ -573,13 +572,11 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'staff'],
   Route::post('/changeStudentCreditLoad', [App\Http\Controllers\Staff\StaffController::class, 'changeStudentCreditLoad'])->name('changeStudentCreditLoad')->middleware(['auth:staff']);
   Route::post('/changeStudentBatch', [App\Http\Controllers\Staff\StaffController::class, 'changeStudentBatch'])->name('changeStudentBatch')->middleware(['auth:staff']);
 
-
   Route::get('/payments', [App\Http\Controllers\Staff\PaymentController::class, 'payments'])->name('payments')->middleware(['auth:staff']);
   Route::post('/addPayment', [App\Http\Controllers\Staff\PaymentController::class, 'addPayment'])->name('addPayment')->middleware(['auth:staff']);
   Route::post('/updatePayment', [App\Http\Controllers\Staff\PaymentController::class, 'updatePayment'])->name('updatePayment')->middleware(['auth:staff']);
   Route::post('/deletePayment', [App\Http\Controllers\Staff\PaymentController::class, 'deletePayment'])->name('deletePayment')->middleware(['auth:staff']);
   Route::post('/billsForSessions', [App\Http\Controllers\Staff\PaymentController::class, 'billsForSessions'])->name('billsForSessions')->middleware(['auth:staff']);
-
 
   Route::get('/transactions', [App\Http\Controllers\Staff\PaymentController::class, 'transactions'])->name('transactions')->middleware(['auth:staff']);
   Route::get('/transactionReport', [App\Http\Controllers\Staff\PaymentController::class, 'transactionReport'])->name('transactionReport')->middleware(['auth:staff']);
@@ -615,7 +612,6 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'staff'],
   Route::get('/student/{slug}', [App\Http\Controllers\Staff\AdmissionController::class, 'student'])->name('student')->middleware(['auth:staff']);
   Route::get('/allStudents', [App\Http\Controllers\Staff\AdmissionController::class, 'allStudents'])->name('allStudents')->middleware(['auth:staff']);
   Route::get('/graduatingStudents', [App\Http\Controllers\Staff\StudentController::class, 'graduatingStudents'])->name('graduatingStudents')->middleware(['auth:staff']);
-
 
   Route::get('/departmentForCourses', [App\Http\Controllers\Staff\AcademicController::class, 'departmentForCourses'])->name('departmentForCourses')->middleware(['auth:staff']);
   Route::get('/departmentCourse/{slug}', [App\Http\Controllers\Staff\AcademicController::class, 'departmentForCourse'])->name('departmentForCourse')->middleware(['auth:staff']);
@@ -668,6 +664,8 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'staff'],
   Route::get('/allocations', [App\Http\Controllers\Staff\HostelController::class, 'allocations'])->name('allocations')->middleware(['auth:staff']);
   Route::post('/deleteAllocation', [App\Http\Controllers\Staff\HostelController::class, 'deleteAllocation'])->name('deleteAllocation')->middleware(['auth:staff']);
   Route::post('/allocateRoom', [App\Http\Controllers\Staff\HostelController::class, 'allocateRoom'])->name('allocateRoom')->middleware(['auth:staff']);
+
+  Route::get('/alumni', [App\Http\Controllers\Staff\StudentController::class, 'alumni'])->name('alumni')->middleware(['auth:staff']);
 
 
   

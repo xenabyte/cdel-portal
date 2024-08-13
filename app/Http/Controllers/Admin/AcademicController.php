@@ -1005,7 +1005,6 @@ class AcademicController extends Controller
             ->with(['applicant', 'programme', 'transactions', 'courseRegistrationDocument', 'registeredCourses', 'partner', 'academicLevel', 'department', 'faculty'])
             ->where('slug', $slug)
             ->where('is_active', true)
-            ->where('is_passed_out', false)
             ->where('is_rusticated', false)
             ->first();
 
@@ -1029,7 +1028,6 @@ class AcademicController extends Controller
 
         $programmes = Programme::with(['students' => function ($query) {
             $query->where('is_active', true)
-                  ->where('is_passed_out', false)
                   ->where('is_rusticated', false);
         }, 'programmeCategory'])
         ->where(function ($query) use ($academicSession) {

@@ -166,4 +166,23 @@ class StudentController extends Controller
         alert()->error('Oops!', 'Something went wrong')->persistent('Close');
         return redirect()->back();
     }
+
+
+    public function alumni($academicSession = null) {
+        $alumni = Student::where('is_passed_out', true)->get();
+
+        $academicSessions = Student::where('is_passed_out', true)->select('academic_session')->distinct()->get();
+    
+        if ($academicSession) {
+            $alumni = Student::where('is_passed_out', true)
+                            ->where('academic_session', $academicSession)
+                            ->get();
+        }
+    
+        return view('admin.alumni', [
+            'alumni' => $alumni,
+            'academicSessions' => $academicSessions,
+        ]);
+    }
+    
 }

@@ -217,5 +217,38 @@ class AdmissionController extends Controller
         ]);
     }
 
+    public function generateAdmissionLetter(Request $request){
+        $validator = Validator::make($request->all(), [
+            'applicant_id' => 'required',
+        ]);
+
+        if($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+        
+        if(!$applicant = Applicant::with('programme')->where('id', $request->applicant_id)->first()){
+            alert()->error('Oops', 'Invalid Applicant Information')->persistent('Close');
+            return redirect()->back();
+        }
+
+        $pdf = new Pdf();
+        $admissionLetter = $pdf->generateAdmissionLetter($applicant->slug);
+
+        if($admissionLetter){
+            $student = Student::with('programme', 'applicant')->where('user_id', $applicant->id)->first();
+            $student->admission_letter = $admissionLetter;
+            $student->save();
+    
+            //In the email, create and provide student portal login information
+            Mail::to($student->email)->send(new AdmissionMail($student));
+    
+            alert()->success('Changes Saved', '')->persistent('Close');
+            return redirect()->back();
+        }
+
+        alert()->error('Oops!', 'Something went wrong')->persistent('Close');
+        return redirect()->back();
+    }
     
 }
