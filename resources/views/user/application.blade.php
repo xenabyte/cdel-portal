@@ -881,142 +881,145 @@
                                                         <td>{{ $olevel->reg_no }}</td>
                                                         <td>{{ $olevel->year }}</td>
                                                         <td>
-                                                            <div class="hstack gap-3 fs-15">
-                                                                <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#editScore{{$olevel->id}}" class="link-primary"><i class="ri-edit-fill"></i></a>
-                                                                <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#deleteGrade{{$olevel->id}}" class="link-danger"><i class="ri-delete-bin-5-line"></i></a>
+                                                            @if(empty($applicant->status))
+                                                                <div class="hstack gap-3 fs-15">
+                                                                    <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#editScore{{$olevel->id}}" class="link-primary"><i class="ri-edit-fill"></i></a>
+                                                                    <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#deleteGrade{{$olevel->id}}" class="link-danger"><i class="ri-delete-bin-5-line"></i></a>
 
-                                                                <div id="editScore{{$olevel->id}}" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
-                                                                    <div class="modal-dialog modal-dialog-centered">
-                                                                        <div class="modal-content">
-                                                                            <div class="modal-header p-3">
-                                                                                <h4 class="card-title mb-0">Edit Score</h4>
-                                                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                                                <hr>
-                                                                            </div>
-                                                                            <div class="modal-body">
-                                                                                <form class="mt-2"  action="{{ url('applicant/updateOlevel') }}" method="POST">
-                                                                                    @csrf
-
-                                                                                    <input name="olevel_id" type="hidden" value="{{$olevel->id}}">
-                                                                                    <div class="row">
-                                                                                        <div class="mb-3">
-                                                                                            <label for="subject">Subject</label>
-                                                                                            <select class="form-select" name="subject" id="subject" >
-                                                                                                <option {{ $olevel->subject == "Agricultural Science" ? "selected":"" }} value="Agricultural Science">Agricultural Science</option>
-                                                                                                <option {{ $olevel->subject == "Animal Husbandry" ? "selected":"" }} value="Animal Husbandry">Animal Husbandry</option>
-                                                                                                <option {{ $olevel->subject == "Automobile Parts Merchandising" ? "selected":"" }} value="Automobile Parts Merchandising">Automobile Parts Merchandising</option>
-                                                                                                <option {{ $olevel->subject == "Biology" ? "selected":"" }} value="Biology">Biology</option>
-                                                                                                <option {{ $olevel->subject == "Book Keeping" ? "selected":"" }} value="Book Keeping">Book Keeping</option>
-                                                                                                <option {{ $olevel->subject == "Catering Craft Practice" ? "selected":"" }} value="Catering Craft Practice">Catering Craft Practice</option>
-                                                                                                <option {{ $olevel->subject == "Chemistry" ? "selected":"" }} value="Chemistry">Chemistry</option>
-                                                                                                <option {{ $olevel->subject == "Christian Studies" ? "selected":"" }} value="Christian Studies">Christian Studies</option>
-                                                                                                <option {{ $olevel->subject == "Civic Education" ? "selected":"" }} value="Civic Education">Civic Education</option>
-                                                                                                <option {{ $olevel->subject == "Clothing & Textile" ? "selected":"" }} value="Clothing & Textile">Clothing & Textile</option>
-                                                                                                <option {{ $olevel->subject == "Commerce" ? "selected":"" }} value="Commerce">Commerce</option>
-                                                                                                <option {{ $olevel->subject == "Computer & IT" ? "selected":"" }} value="Computer & IT">Computer & IT</option>
-                                                                                                <option {{ $olevel->subject == "Cosmetology" ? "selected":"" }} value="Cosmetology">Cosmetology</option>
-                                                                                                <option {{ $olevel->subject == "Data Processing" ? "selected" : "" }} value="Data Processing">Data Processing</option>
-                                                                                                <option {{ $olevel->subject == "Dyeing & Bleaching" ? "selected":"" }} value="Dyeing & Bleaching">Dyeing & Bleaching</option>
-                                                                                                <option {{ $olevel->subject == "Economics" ? "selected":"" }} value="Economics">Economics</option>
-                                                                                                <option {{ $olevel->subject == "Financial Accounting" ? "selected":"" }} value="Financial Accounting">Financial Accounting</option>
-                                                                                                <option {{ $olevel->subject == "Fisheries" ? "selected":"" }} value="Fisheries">Fisheries</option>
-                                                                                                <option {{ $olevel->subject == "Food & Nutrition" ? "selected":"" }} value="Food & Nutrition">Food & Nutrition</option>
-                                                                                                <option {{ $olevel->subject == "Further Mathematics" ? "selected":"" }} value="Further Mathematics">Further Mathematics</option>
-                                                                                                <option {{ $olevel->subject == "Garment Making" ? "selected":"" }} value="Garment Making">Garment Making</option>
-                                                                                                <option {{ $olevel->subject == "General Mathematics" ? "selected":"" }} value="General Mathematics">General Mathematics</option>
-                                                                                                <option {{ $olevel->subject == "Geography" ? "selected":"" }} value="Geography">Geography</option>
-                                                                                                <option {{ $olevel->subject == "Government" ? "selected":"" }} value="Government">Government</option>
-                                                                                                <option {{ $olevel->subject == "Hausa" ? "selected":"" }} value="Hausa">Hausa</option>
-                                                                                                <option {{ $olevel->subject == "Health Education" ? "selected":"" }} value="Health Education">Health Education</option>
-                                                                                                <option {{ $olevel->subject == "History" ? "selected":"" }} value="History">History</option>
-                                                                                                <option {{ $olevel->subject == "Home Management" ? "selected":"" }} value="Home Management">Home Management</option>
-                                                                                                <option {{ $olevel->subject == "Igbo" ? "selected":"" }} value="Igbo">Igbo</option>
-                                                                                                <option {{ $olevel->subject == "Insurance" ? "selected":"" }} value="Insurance">Insurance</option>
-                                                                                                <option {{ $olevel->subject == "Islamic Studies" ? "selected":"" }} value="Islamic Studies">Islamic Studies</option>
-                                                                                                <option {{ $olevel->subject == "Literature in English" ? "selected":"" }} value="Literature in English">Literature in English</option>
-                                                                                                <option {{ $olevel->subject == "Marketing" ? "selected":"" }} value="Marketing">Marketing</option>
-                                                                                                <option {{ $olevel->subject == "Music" ? "selected":"" }} value="Music">Music</option>
-                                                                                                <option {{ $olevel->subject == "Office Practice" ? "selected":"" }} value="Office Practice">Office Practice</option>
-                                                                                                <option {{ $olevel->subject == "Painting & Decorating" ? "selected":"" }} value="Painting & Decorating">Painting & Decorating</option>
-                                                                                                <option {{ $olevel->subject == "Photography" ? "selected":"" }} value="Photography">Photography</option>
-                                                                                                <option {{ $olevel->subject == "Physical Education" ? "selected":"" }} value="Physical Education">Physical Education</option>
-                                                                                                <option {{ $olevel->subject == "Physics" ? "selected":"" }} value="Physics">Physics</option>
-                                                                                                <option {{ $olevel->subject == "Salesmanship" ? "selected":"" }} value="Salesmanship">Salesmanship</option>
-                                                                                                <option {{ $olevel->subject == "Stenography" ? "selected":"" }} value="Stenography">Stenography</option>
-                                                                                                <option {{ $olevel->subject == "Store Keeping" ? "selected":"" }} value="Store Keeping">Store Keeping</option>
-                                                                                                <option {{ $olevel->subject == "Store Management" ? "selected":"" }} value="Store Management">Store Management</option>
-                                                                                                <option {{ $olevel->subject == "Tourism" ? "selected":"" }} value="Tourism">Tourism</option>
-                                                                                                <option {{ $olevel->subject == "Type Writing" ? "selected":"" }} value="Type Writing">Type Writing</option>
-                                                                                                <option {{ $olevel->subject == "Visual Art" ? "selected":"" }} value="Visual Art">Visual Art</option>
-                                                                                                <option {{ $olevel->subject == "Yoruba" ? "selected":"" }} value="Yoruba">Yoruba</option>
-                                                                                            </select>
-                                                                                        </div><!--end col-->
-                                                                                        
-                                                                                        <div class="mb-3">
-                                                                                            <label for="grade">Grade</label>
-                                                                                            <select class="form-select" name="grade" id="grade" >
-                                                                                                <option {{ $olevel->grade == "A/R" ? "selected":"" }} value="A/R">A/R</option>
-                                                                                                <option {{ $olevel->grade == "A1" ? "selected":"" }} value="A1">A1</option>
-                                                                                                <option {{ $olevel->grade == "B2" ? "selected":"" }} value="B2">B2</option>
-                                                                                                <option {{ $olevel->grade == "B3" ? "selected":"" }} value="B3">B3</option>
-                                                                                                <option {{ $olevel->grade == "C4" ? "selected":"" }} value="C4">C4</option>
-                                                                                                <option {{ $olevel->grade == "C5" ? "selected":"" }} value="C5">C5</option>
-                                                                                                <option {{ $olevel->grade == "C6" ? "selected":"" }} value="C6">C6</option>
-                                                                                                <option {{ $olevel->grade == "D7" ? "selected":"" }} value="D7">D7</option>
-                                                                                                <option {{ $olevel->grade == "E8" ? "selected":"" }} value="E8">E8</option>
-                                                                                                <option {{ $olevel->grade == "F9" ? "selected":"" }} value="F9">F9</option>
-                                                                                            </select>
-                                                                                        </div><!--end col-->
-                                    
-                                                                                        <div class="mb-3">
-                                                                                            <label for="year">Year</label>
-                                                                                            <input type="number" min="2010" max="2099" step="1" value="{{ $olevel->year }}" name="year" class="form-control" id="year" >
-                                                                                        </div><!--end col-->
-                                    
-                                                                                        <div class="mb-3">
-                                                                                            <label for="reg_no">Registration Number</label>
-                                                                                            <input type="text" name="reg_no" class="form-control" value="{{ $olevel->reg_no }}" id="reg_no" >
-                                                                                        </div><!--end col-->
-                                                                                    </div><!--end row-->
-
-                                                                                    <div class="modal-footer bg-light pt-3 justify-content-center">
-                                                                                        <div class="col-auto mt-3">
-                                                                                            <button type="submit" id="submit-button" class="btn btn-primary">Save Changes</button>
-                                                                                        </div><!--end col-->
-                                                                                    </div>
-                                                                                </form>
-                                                                            </div>
-                                                                        </div><!-- /.modal-content -->
-                                                                    </div><!-- /.modal-dialog -->
-                                                                </div><!-- /.modal -->
-
-                                                                <div id="deleteGrade{{$olevel->id}}" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
-                                                                    <div class="modal-dialog modal-dialog-centered">
-                                                                        <div class="modal-content">
-                                                                            <div class="modal-body text-center p-5">
-                                                                                <div class="text-end">
-                                                                                    <button type="button" class="btn-close text-end" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                                    <div id="editScore{{$olevel->id}}" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
+                                                                        <div class="modal-dialog modal-dialog-centered">
+                                                                            <div class="modal-content">
+                                                                                <div class="modal-header p-3">
+                                                                                    <h4 class="card-title mb-0">Edit Score</h4>
+                                                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                                                    <hr>
                                                                                 </div>
-                                                                                <div class="mt-2">
-                                                                                    <lord-icon src="https://cdn.lordicon.com/wwneckwc.json" trigger="hover" style="width:150px;height:150px">
-                                                                                    </lord-icon>
-                                                                                    <h4 class="mb-3 mt-4">Are you sure you want to delete <br>{{ $olevel->subject }}?</h4>
-                                                                                    <form action="{{ url('/applicant/deleteOlevel') }}" method="POST">
+                                                                                <div class="modal-body">
+                                                                                    <form class="mt-2"  action="{{ url('applicant/updateOlevel') }}" method="POST">
                                                                                         @csrf
+
                                                                                         <input name="olevel_id" type="hidden" value="{{$olevel->id}}">
-                
-                                                                                        <hr>
-                                                                                        <button type="submit" id="submit-button" class="btn btn-danger w-100">Yes, Delete</button>
+                                                                                        <div class="row">
+                                                                                            <div class="mb-3">
+                                                                                                <label for="subject">Subject</label>
+                                                                                                <select class="form-select" name="subject" id="subject" >
+                                                                                                    <option {{ $olevel->subject == "Agricultural Science" ? "selected":"" }} value="Agricultural Science">Agricultural Science</option>
+                                                                                                    <option {{ $olevel->subject == "Animal Husbandry" ? "selected":"" }} value="Animal Husbandry">Animal Husbandry</option>
+                                                                                                    <option {{ $olevel->subject == "Automobile Parts Merchandising" ? "selected":"" }} value="Automobile Parts Merchandising">Automobile Parts Merchandising</option>
+                                                                                                    <option {{ $olevel->subject == "Biology" ? "selected":"" }} value="Biology">Biology</option>
+                                                                                                    <option {{ $olevel->subject == "Book Keeping" ? "selected":"" }} value="Book Keeping">Book Keeping</option>
+                                                                                                    <option {{ $olevel->subject == "Catering Craft Practice" ? "selected":"" }} value="Catering Craft Practice">Catering Craft Practice</option>
+                                                                                                    <option {{ $olevel->subject == "Chemistry" ? "selected":"" }} value="Chemistry">Chemistry</option>
+                                                                                                    <option {{ $olevel->subject == "Christian Studies" ? "selected":"" }} value="Christian Studies">Christian Studies</option>
+                                                                                                    <option {{ $olevel->subject == "Civic Education" ? "selected":"" }} value="Civic Education">Civic Education</option>
+                                                                                                    <option {{ $olevel->subject == "Clothing & Textile" ? "selected":"" }} value="Clothing & Textile">Clothing & Textile</option>
+                                                                                                    <option {{ $olevel->subject == "Commerce" ? "selected":"" }} value="Commerce">Commerce</option>
+                                                                                                    <option {{ $olevel->subject == "Computer & IT" ? "selected":"" }} value="Computer & IT">Computer & IT</option>
+                                                                                                    <option {{ $olevel->subject == "Cosmetology" ? "selected":"" }} value="Cosmetology">Cosmetology</option>
+                                                                                                    <option {{ $olevel->subject == "Data Processing" ? "selected" : "" }} value="Data Processing">Data Processing</option>
+                                                                                                    <option {{ $olevel->subject == "Dyeing & Bleaching" ? "selected":"" }} value="Dyeing & Bleaching">Dyeing & Bleaching</option>
+                                                                                                    <option {{ $olevel->subject == "Economics" ? "selected":"" }} value="Economics">Economics</option>
+                                                                                                    <option {{ $olevel->subject == "English Language" ? "selected":"" }} value="English Language">English Language</option>
+                                                                                                    <option {{ $olevel->subject == "Financial Accounting" ? "selected":"" }} value="Financial Accounting">Financial Accounting</option>
+                                                                                                    <option {{ $olevel->subject == "Fisheries" ? "selected":"" }} value="Fisheries">Fisheries</option>
+                                                                                                    <option {{ $olevel->subject == "Food & Nutrition" ? "selected":"" }} value="Food & Nutrition">Food & Nutrition</option>
+                                                                                                    <option {{ $olevel->subject == "Further Mathematics" ? "selected":"" }} value="Further Mathematics">Further Mathematics</option>
+                                                                                                    <option {{ $olevel->subject == "Garment Making" ? "selected":"" }} value="Garment Making">Garment Making</option>
+                                                                                                    <option {{ $olevel->subject == "General Mathematics" ? "selected":"" }} value="General Mathematics">General Mathematics</option>
+                                                                                                    <option {{ $olevel->subject == "Geography" ? "selected":"" }} value="Geography">Geography</option>
+                                                                                                    <option {{ $olevel->subject == "Government" ? "selected":"" }} value="Government">Government</option>
+                                                                                                    <option {{ $olevel->subject == "Hausa" ? "selected":"" }} value="Hausa">Hausa</option>
+                                                                                                    <option {{ $olevel->subject == "Health Education" ? "selected":"" }} value="Health Education">Health Education</option>
+                                                                                                    <option {{ $olevel->subject == "History" ? "selected":"" }} value="History">History</option>
+                                                                                                    <option {{ $olevel->subject == "Home Management" ? "selected":"" }} value="Home Management">Home Management</option>
+                                                                                                    <option {{ $olevel->subject == "Igbo" ? "selected":"" }} value="Igbo">Igbo</option>
+                                                                                                    <option {{ $olevel->subject == "Insurance" ? "selected":"" }} value="Insurance">Insurance</option>
+                                                                                                    <option {{ $olevel->subject == "Islamic Studies" ? "selected":"" }} value="Islamic Studies">Islamic Studies</option>
+                                                                                                    <option {{ $olevel->subject == "Literature in English" ? "selected":"" }} value="Literature in English">Literature in English</option>
+                                                                                                    <option {{ $olevel->subject == "Marketing" ? "selected":"" }} value="Marketing">Marketing</option>
+                                                                                                    <option {{ $olevel->subject == "Music" ? "selected":"" }} value="Music">Music</option>
+                                                                                                    <option {{ $olevel->subject == "Office Practice" ? "selected":"" }} value="Office Practice">Office Practice</option>
+                                                                                                    <option {{ $olevel->subject == "Painting & Decorating" ? "selected":"" }} value="Painting & Decorating">Painting & Decorating</option>
+                                                                                                    <option {{ $olevel->subject == "Photography" ? "selected":"" }} value="Photography">Photography</option>
+                                                                                                    <option {{ $olevel->subject == "Physical Education" ? "selected":"" }} value="Physical Education">Physical Education</option>
+                                                                                                    <option {{ $olevel->subject == "Physics" ? "selected":"" }} value="Physics">Physics</option>
+                                                                                                    <option {{ $olevel->subject == "Salesmanship" ? "selected":"" }} value="Salesmanship">Salesmanship</option>
+                                                                                                    <option {{ $olevel->subject == "Stenography" ? "selected":"" }} value="Stenography">Stenography</option>
+                                                                                                    <option {{ $olevel->subject == "Store Keeping" ? "selected":"" }} value="Store Keeping">Store Keeping</option>
+                                                                                                    <option {{ $olevel->subject == "Store Management" ? "selected":"" }} value="Store Management">Store Management</option>
+                                                                                                    <option {{ $olevel->subject == "Tourism" ? "selected":"" }} value="Tourism">Tourism</option>
+                                                                                                    <option {{ $olevel->subject == "Type Writing" ? "selected":"" }} value="Type Writing">Type Writing</option>
+                                                                                                    <option {{ $olevel->subject == "Visual Art" ? "selected":"" }} value="Visual Art">Visual Art</option>
+                                                                                                    <option {{ $olevel->subject == "Yoruba" ? "selected":"" }} value="Yoruba">Yoruba</option>
+                                                                                                </select>
+                                                                                            </div><!--end col-->
+                                                                                            
+                                                                                            <div class="mb-3">
+                                                                                                <label for="grade">Grade</label>
+                                                                                                <select class="form-select" name="grade" id="grade" >
+                                                                                                    <option {{ $olevel->grade == "A/R" ? "selected":"" }} value="A/R">A/R</option>
+                                                                                                    <option {{ $olevel->grade == "A1" ? "selected":"" }} value="A1">A1</option>
+                                                                                                    <option {{ $olevel->grade == "B2" ? "selected":"" }} value="B2">B2</option>
+                                                                                                    <option {{ $olevel->grade == "B3" ? "selected":"" }} value="B3">B3</option>
+                                                                                                    <option {{ $olevel->grade == "C4" ? "selected":"" }} value="C4">C4</option>
+                                                                                                    <option {{ $olevel->grade == "C5" ? "selected":"" }} value="C5">C5</option>
+                                                                                                    <option {{ $olevel->grade == "C6" ? "selected":"" }} value="C6">C6</option>
+                                                                                                    <option {{ $olevel->grade == "D7" ? "selected":"" }} value="D7">D7</option>
+                                                                                                    <option {{ $olevel->grade == "E8" ? "selected":"" }} value="E8">E8</option>
+                                                                                                    <option {{ $olevel->grade == "F9" ? "selected":"" }} value="F9">F9</option>
+                                                                                                </select>
+                                                                                            </div><!--end col-->
+                                        
+                                                                                            <div class="mb-3">
+                                                                                                <label for="year">Year</label>
+                                                                                                <input type="number" min="2010" max="2099" step="1" value="{{ $olevel->year }}" name="year" class="form-control" id="year" >
+                                                                                            </div><!--end col-->
+                                        
+                                                                                            <div class="mb-3">
+                                                                                                <label for="reg_no">Registration Number</label>
+                                                                                                <input type="text" name="reg_no" class="form-control" value="{{ $olevel->reg_no }}" id="reg_no" >
+                                                                                            </div><!--end col-->
+                                                                                        </div><!--end row-->
+
+                                                                                        <div class="modal-footer bg-light pt-3 justify-content-center">
+                                                                                            <div class="col-auto mt-3">
+                                                                                                <button type="submit" id="submit-button" class="btn btn-primary">Save Changes</button>
+                                                                                            </div><!--end col-->
+                                                                                        </div>
                                                                                     </form>
                                                                                 </div>
-                                                                            </div>
-                                                                            <div class="modal-footer bg-light p-3 justify-content-center">
-                
-                                                                            </div>
-                                                                        </div><!-- /.modal-content -->
-                                                                    </div><!-- /.modal-dialog -->
-                                                                </div><!-- /.modal -->
-                                                            </div>
+                                                                            </div><!-- /.modal-content -->
+                                                                        </div><!-- /.modal-dialog -->
+                                                                    </div><!-- /.modal -->
+
+                                                                    <div id="deleteGrade{{$olevel->id}}" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
+                                                                        <div class="modal-dialog modal-dialog-centered">
+                                                                            <div class="modal-content">
+                                                                                <div class="modal-body text-center p-5">
+                                                                                    <div class="text-end">
+                                                                                        <button type="button" class="btn-close text-end" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                                                    </div>
+                                                                                    <div class="mt-2">
+                                                                                        <lord-icon src="https://cdn.lordicon.com/wwneckwc.json" trigger="hover" style="width:150px;height:150px">
+                                                                                        </lord-icon>
+                                                                                        <h4 class="mb-3 mt-4">Are you sure you want to delete <br>{{ $olevel->subject }}?</h4>
+                                                                                        <form action="{{ url('/applicant/deleteOlevel') }}" method="POST">
+                                                                                            @csrf
+                                                                                            <input name="olevel_id" type="hidden" value="{{$olevel->id}}">
+                    
+                                                                                            <hr>
+                                                                                            <button type="submit" id="submit-button" class="btn btn-danger w-100">Yes, Delete</button>
+                                                                                        </form>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="modal-footer bg-light p-3 justify-content-center">
+                    
+                                                                                </div>
+                                                                            </div><!-- /.modal-content -->
+                                                                        </div><!-- /.modal-dialog -->
+                                                                    </div><!-- /.modal -->
+                                                                </div>
+                                                            @endif
                                                         </td>
                                                     </tr>
                                                     @endforeach
