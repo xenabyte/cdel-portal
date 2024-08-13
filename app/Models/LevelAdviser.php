@@ -16,7 +16,8 @@ class LevelAdviser extends Model
         'staff_id',
         'academic_session',
         'course_approval_status',
-        'comment'
+        'comment',
+        'course_registration'
     ];
 
     /**

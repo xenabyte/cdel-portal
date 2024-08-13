@@ -21,6 +21,7 @@ class CreateLevelAdvisersTable extends Migration
             $table->string('academic_session')->nullable();
             $table->string('course_approval_status')->nullable();
             $table->text('comment')->nullable();
+            $table->string('course_registration')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

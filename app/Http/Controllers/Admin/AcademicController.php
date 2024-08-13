@@ -33,6 +33,8 @@ use App\Models\User;
 use App\Models\Payment;
 use App\Models\StudentExamCard;
 use App\Models\User as Applicant;
+use App\Models\Allocation;
+use App\Models\LevelAdviser;
 
 use App\Mail\NotificationMail;
 
@@ -736,6 +738,7 @@ class AcademicController extends Controller
         ]);
     }
 
+    // rather obsolete
     public function manageCourseReg(Request $request){
         $validator = Validator::make($request->all(), [
             'programme_id' => 'required',
@@ -764,6 +767,105 @@ class AcademicController extends Controller
         return redirect()->back();
     }
 
+    public function setStudentCourseRegStatus(Request $request){
+        $validator = Validator::make($request->all(), [
+            'level_adviser_id' => 'required',
+            'course_registration' => 'required',
+        ]);
+
+        $courseRegistration = $request->course_registration;
+
+        $levelAdviser = LevelAdviser::find($request->level_adviser_id);
+        if(!$levelAdviser){
+            alert()->error('Oops', 'Invalid Level Adviser ')->persistent('Close');
+            return redirect()->back();
+        }
+
+        $levelAdviser->course_registration = $courseRegistration;
+
+        if($levelAdviser->save()){
+            alert()->success('Changes Saved', 'Course registration changes saved successfully')->persistent('Close');
+            return redirect()->back();
+        }
+
+        alert()->error('Oops!', 'Something went wrong')->persistent('Close');
+        return redirect()->back();
+    }
+
+    public function resetStudentCourseReg(Request $request){
+        $validator = Validator::make($request->all(), [
+            'level_adviser_id' => 'required',
+        ]);
+
+        $levelAdviser = LevelAdviser::find($request->level_adviser_id);
+        if(!$levelAdviser){
+            alert()->error('Oops', 'Invalid Level Adviser ')->persistent('Close');
+            return redirect()->back();
+        }
+
+        
+        $programmeId = $levelAdviser->programme_id;
+        $levelId = $levelAdviser->level_id;
+
+        $programmeStudents = Student::where('programme_id', $programmeId)->where('level_id', $levelId)->get();
+        $programmeStudentIds = $programmeStudents->pluck('id')->toArray();
+        $studentCourseRegistrations = StudentCourseRegistration::whereIn('student_id', $programmeStudentIds)->get();
+        
+        foreach ($studentCourseRegistrations as $studentCourseReg){
+            $studentId = $studentCourseReg->student_id;
+            $academicSession = $studentCourseReg->academic_session;
+
+            $courseRegistrations = CourseRegistration::where('student_id', $studentId)->where('academic_session', $academicSession)->get();
+            foreach ($courseRegistrations as $courseReg){
+                $courseId = $courseReg->course_id;
+
+                $carryOver = CourseRegistration::where([
+                    'student_id' => $studentId,
+                    'course_id' => $courseId,
+                    'grade' => 'F',
+                ])
+                ->where('academic_session', '!=', $academicSession)
+                ->first();
+
+                if ($carryOver) {
+                    $carryOver->re_reg = null;
+                    $carryOver->save();
+                }
+            }
+
+            // Delete registered courses
+            CourseRegistration::where([
+                'student_id' => $studentId,
+                'academic_session' => $academicSession
+            ])->forceDelete();
+    
+            $fileDirectory = $studentCourseReg->file;
+            if (file_exists($fileDirectory)) {
+                unlink($fileDirectory);
+            }
+
+            if($studentCourseReg->forceDelete()){
+                $student = Student::find($studentId); 
+
+                $senderName = env('SCHOOL_NAME');
+                $receiverName = $student->applicant->lastname .' ' . $student->applicant->othernames;
+                $message = 'Your course registration has been successfully reset. Please proceed to re-register as soon as possible.';
+
+                $mail = new NotificationMail($senderName, $message, $receiverName);
+                Mail::to($student->email)->send($mail);
+                Notification::create([
+                    'student_id' => $student->id,
+                    'description' => $message,
+                    'status' => 0
+                ]);
+            }
+        }
+
+        alert()->success('Good Job', 'Course registration reset successfully')->persistent('Close');
+        return redirect()->back();
+    }
+
+    //rather obsolete
     public function resetCourseReg(Request $request){
         $validator = Validator::make($request->all(), [
             'programme_id' => 'required',
@@ -800,6 +902,7 @@ class AcademicController extends Controller
         return redirect()->back();
     }
 
+    // rather obsolete
     public function setCourseRegStatus(Request $request){
         
         $courseRegMgt = new CourseRegistrationSetting;
@@ -1078,6 +1181,8 @@ class AcademicController extends Controller
                 return redirect()->back();
             }
 
+            Allocation::where('student_id', $student->id)->where('academic_session', $student->academic_session)->update(['release_date' => Carbon::now()]);
+
             if(!$checkStudentPayment->fullTuitionPayment){
                 $amountPaid = $checkStudentPayment->schoolPaymentTransaction->sum('amount_payed');
                 $amountToPay = $checkStudentPayment->schoolPayment->structures->sum('amount');
@@ -1102,6 +1207,7 @@ class AcademicController extends Controller
                 'academic_session' => $academicSession,
                 'credit_load' => null
             ]);
+
         }
         
         if($programme->save()){

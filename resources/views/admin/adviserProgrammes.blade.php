@@ -36,6 +36,7 @@
                             <th scope="col">Level</th>
                             <th scope="col">Comment</th>
                             <th scope="col"></th>
+                            <th scope="col"></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -54,6 +55,33 @@
                                 @elseif($adviserProgramme->course_approval_status != '')
                                 <a href="#" class="btn btn-info">{{ ucwords($adviserProgramme->course_approval_status) }}</a>
                                 @endif
+                            </td>
+                            <td>
+                                <div class="hstack gap-3 fs-15">
+                                    <form action="{{ url('/admin/setStudentCourseRegStatus') }}" method="post" enctype="multipart/form-data">
+                                         @csrf
+                                         <input name="level_adviser_id" type="hidden" value="{{$adviserProgramme->id}}">
+                                         <div class="text-end">
+                                             @if($adviserProgramme->course_registration == 'start')
+                                             <input name="course_registration" type="hidden" value="stop">
+                                             <button type="submit" id="submit-button" class="btn btn-danger">Stop</button>
+                                             @else
+                                             <input name="course_registration" type="hidden" value="start">
+                                             <button type="submit" id="submit-button" class="btn btn-success">Start</button>
+                                             @endif
+                                         </div>
+                                     </form>
+
+                                     @if($adviserProgramme->course_registration != 'start')
+                                     <form action="{{ url('/admin/resetStudentCourseReg') }}" method="post" enctype="multipart/form-data">
+                                         @csrf
+                                         <input name="level_adviser_id" type="hidden" value="{{$adviserProgramme->id}}">
+                                         <div class="text-end">
+                                             <button type="submit" id="submit-button" class="btn btn-warning">Reset</button>
+                                         </div>
+                                     </form>
+                                     @endif
+                                </div>
                             </td>
                         </tr>
                         @endforeach

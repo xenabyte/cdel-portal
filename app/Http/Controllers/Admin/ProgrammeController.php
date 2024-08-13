@@ -952,10 +952,10 @@ class ProgrammeController extends Controller
         $academicSession = $globalData->sessionSetting['academic_session'];
 
         $adviserProgramme = LevelAdviser::with('programme', 'level')
-        ->where('id', $id)
-        ->first();
+            ->where('id', $id)
+            ->first();
 
-        if(!$adviserProgramme){
+        if (!$adviserProgramme) {
             alert()->error('Oops!', 'Record not found')->persistent('Close');
             return redirect()->back();
         }
@@ -963,16 +963,33 @@ class ProgrammeController extends Controller
         $levelId = $adviserProgramme->level_id;
         $programmeId = $adviserProgramme->programme_id;
 
-        $students = Student::
-        with(['applicant', 'programme', 'transactions', 'courseRegistrationDocument', 'registeredCourses', 'partner', 'academicLevel', 'department', 'faculty'])
-        ->where([
-            'level_id' => $levelId,
-            'programme_id' => $programmeId,
-            'is_active' => true,
-            'is_passed_out' => false,
-            'is_rusticated' => false
-        ])
-        ->get();
+        $students = Student::with([
+                'applicant', 
+                'programme', 
+                'transactions', 
+                'courseRegistrationDocument', 
+                'registeredCourses', 
+                'partner', 
+                'academicLevel', 
+                'department', 
+                'faculty'
+            ])
+            ->where([
+                'level_id' => $levelId,
+                'programme_id' => $programmeId,
+                'is_active' => true,
+                'is_passed_out' => false,
+                'is_rusticated' => false
+            ])
+            ->get();
+
+        foreach ($students as $student) {
+            $hasRegistered = $student->courseRegistrationDocument()
+                ->where('academic_session', $academicSession)
+                ->exists();
+
+            $student->courseRegistrationStatus = $hasRegistered ? true : false;
+        }
 
         return view('admin.levelStudents', [
             'students' => $students

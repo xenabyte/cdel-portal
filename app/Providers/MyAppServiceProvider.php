@@ -49,6 +49,7 @@ class MyAppServiceProvider extends ServiceProvider
         $pendingPartnerCount = Partner::where('status', 0)->count();
 
         $totalPendingRegistrations = 0;
+        $adviserProgrammesCount = 0;
         $staff = Auth::guard('staff')->user();
 
         if ($staff) {
@@ -60,6 +61,8 @@ class MyAppServiceProvider extends ServiceProvider
             }
     
             $adviserProgrammesQuery = LevelAdviser::with('programme', 'level')->where('academic_session', $academicSession);
+            $adviserProgrammesCount = $adviserProgrammesQuery->where('course_approval_status', 'pending')->count();
+
             if ($staffHod) {
                 $adviserProgrammesQuery->where(function ($query) use ($staff) {
                     $query->whereHas('programme', function ($query) use ($staff) {
@@ -74,7 +77,7 @@ class MyAppServiceProvider extends ServiceProvider
                 });
             }
             $adviserProgrammes = $adviserProgrammesQuery->get();
-    
+
             foreach ($adviserProgrammes as $adviserProgramme) {
                 $levelId = $adviserProgramme->level_id;
                 $programmeId = $adviserProgramme->programme_id;
@@ -97,6 +100,7 @@ class MyAppServiceProvider extends ServiceProvider
     
                 $totalPendingRegistrations += $studentRegistrationsCount;
             }
+
         }
         
 
@@ -107,6 +111,7 @@ class MyAppServiceProvider extends ServiceProvider
         $data->exitApplicationCount = $exitApplicationCount;
         $data->totalPendingRegistrations = $totalPendingRegistrations;
         $data->pendingPartnerCount = $pendingPartnerCount;
+        $data->adviserProgrammesCount = $adviserProgrammesCount;
 
         return $data;
     }

@@ -1,3 +1,13 @@
+@php
+    $staff = Auth::guard('staff')->user();
+    $staffAcademicPlannerRole = false;
+    foreach ($staff->staffRoles as $staffRole) {
+        if(strtolower($staffRole->role->role) == 'academic planning'){
+            $staffAcademicPlannerRole = true;
+        }   
+    }
+
+@endphp
 @extends('staff.layout.dashboard')
 
 @section('content')
@@ -32,8 +42,14 @@
                     <thead>
                         <tr>
                             <th scope="col">ID</th>
+                            @if($staffAcademicPlannerRole)
+                                <th scope="col">Level Adviser</th>
+                            @endif
                             <th scope="col">Programme</th>
                             <th scope="col">Level</th>
+                            <th scope="col">DAP Comment</th>
+                            <th scope="col">DAP Approval Status</th>
+                            <th scope="col">Course(s)</th>
                             <th scope="col"></th>
                         </tr>
                     </thead>
@@ -41,18 +57,40 @@
                         @foreach($adviserProgrammes as $adviserProgramme)
                         <tr>
                             <td scope="row"> {{ $loop->iteration }}</td>
+                            @if($staffAcademicPlannerRole)
+                            <td>{{$adviserProgramme->staff? $adviserProgramme->staff->title.' '.$adviserProgramme->staff->lastname.' '.$adviserProgramme->staff->othernames: null}}</td>
+                            @endif
                             <td>{{$adviserProgramme->programme->name}}</td>
-                            <td>{{$adviserProgramme->level->level}} Level <span class="badge badge-pill bg-danger" data-key="t-hot">{{ $adviserProgramme->studentRegistrationsCount }} </span></td>
                             <td>
-                                @if($adviserProgramme->course_approval_status == 'approved')
-                                <a href="#" data-bs-toggle="modal" data-bs-target="#viewCourses{{ $adviserProgramme->id }}" class="btn btn-primary">Courses</a>
-                                <a href="{{ url('/staff/levelCourseReg/'.$adviserProgramme->id) }}" class="btn btn-info">Course Registrations</a>
-                                <a href="{{ url('/staff/levelStudents/'.$adviserProgramme->id) }}" class="btn btn-dark">All Students</a>
+                                {{$adviserProgramme->level->level}} Level <span class="badge badge-pill bg-danger" data-key="t-hot">{{ $adviserProgramme->studentRegistrationsCount }} </span>
+                            </td>
+                            <td>{!! $adviserProgramme->comment !!}</td>
+                            <td>
+                                @if(!empty($adviserProgramme->course_approval_status))
+                                    @if(strtolower($adviserProgramme->course_approval_status) == 'success')
+                                        <span class="badge bg-success p-2 rounded-pill">Approved</span>
+                                    @else
+                                        <span class="badge bg-warning p-2 rounded-pill">Pending</span>
+                                    @endif
                                 @endif
-                                @if($adviserProgramme->course_approval_status == null)
-                                <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#submitCourses{{ $adviserProgramme->id }}">Submit For DAP Approval</button>
+                            </td>
+                            <td><a href="#" data-bs-toggle="modal" data-bs-target="#viewCourses{{ $adviserProgramme->id }}" class="btn btn-primary">Courses</a></td>
+                            <td>
+                                @if(!$staffAcademicPlannerRole)
+                                    @if($adviserProgramme->course_approval_status == 'approved')
+                                    <a href="#" data-bs-toggle="modal" data-bs-target="#viewCourses{{ $adviserProgramme->id }}" class="btn btn-primary">Courses</a>
+                                    <a href="{{ url('/staff/levelCourseReg/'.$adviserProgramme->id) }}" class="btn btn-info">Course Registrations</a>
+                                    <a href="{{ url('/staff/levelStudents/'.$adviserProgramme->id) }}" class="btn btn-dark">All Students</a>
+                                    @endif
+                                    @if($adviserProgramme->course_approval_status == null)
+                                    <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#submitCourses{{ $adviserProgramme->id }}">Submit For DAP Approval</button>
+                                    @else
+                                    <span class="p-2 badge btn btn-primary-subtle text-primary badge-border">{{ ucwords($adviserProgramme->course_approval_status) }}</span>
+                                    @endif
                                 @else
-                                <span class="p-2 badge btn btn-primary-subtle text-primary badge-border">{{ ucwords($adviserProgramme->course_approval_status) }}</span>
+                                    @if(strtolower($adviserProgramme->course_approval_status) == 'pending')
+                                        <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#manage{{ $adviserProgramme->id }}">Manage Level Adviser Request</button>
+                                    @endif
                                 @endif
                             </td>
                         </tr>

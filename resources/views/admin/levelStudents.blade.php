@@ -38,6 +38,7 @@
                             <th scope="col">Programme</th>
                             <th scope="col">Email</th>
                             <th scope="col">Phone Number</th>
+                            <th scope="col">Course Registration Status</th>
                             <th scope="col"></th>
                         </tr>
                     </thead>
@@ -51,6 +52,13 @@
                             <td>{{ $student->programme->name }}</td>
                             <td>{{ $student->email }} </td>
                             <td>{{ $student->applicant->phone_number }} </td>
+                            <td>
+                                @if(strtolower($student->courseRegistrationStatus))
+                                    <span class="badge bg-success p-2 rounded-pill">Done</span>
+                                @else
+                                    <span class="badge bg-warning p-2 rounded-pill">Not Yet Done</span>
+                                @endif
+                            </td>
                             <td>
                                 <a href="{{ url('staff/studentProfile/'.$student->slug) }}" class="btn btn-primary m-1"><i class= "ri-user-6-fill"></i> View Student</a>
                             </td>

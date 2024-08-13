@@ -23,6 +23,7 @@ use App\Models\CoursePerProgrammePerAcademicSession;
 use App\Models\Course;
 use App\Models\CourseRegistrationSetting;
 use App\Models\Notification;
+use App\Models\Unit;
 
 
 
@@ -189,6 +190,11 @@ class ProgrammeController extends Controller
             $staffHod = true;
         }
 
+        $unitId = env("ACADEMIC_PLANNING");
+        $unit = Unit::with('unit_head')->where('id', $unitId)->first();
+        $unitHead =  $unit ? $unit->unit_head : null;
+        
+
         $adviserProgrammesQuery = LevelAdviser::with('programme', 'level')->where('academic_session', $academicSession);
         if ($staffHod) {
             $adviserProgrammesQuery->where(function ($query) use ($staff) {
@@ -203,6 +209,12 @@ class ProgrammeController extends Controller
                 })->where('staff_id', $staff->id);
             });
         }
+
+
+        if($unit->unit_head_id == $staff->id){
+            $adviserProgrammesQuery = LevelAdviser::with('programme', 'level')->where('academic_session', $academicSession);
+        }
+
         $adviserProgrammes = $adviserProgrammesQuery->get();
 
 
@@ -540,10 +552,10 @@ class ProgrammeController extends Controller
         $academicSession = $globalData->sessionSetting['academic_session'];
 
         $adviserProgramme = LevelAdviser::with('programme', 'level')
-        ->where('id', $id)
-        ->first();
+            ->where('id', $id)
+            ->first();
 
-        if(!$adviserProgramme){
+        if (!$adviserProgramme) {
             alert()->error('Oops!', 'Record not found')->persistent('Close');
             return redirect()->back();
         }
@@ -551,16 +563,33 @@ class ProgrammeController extends Controller
         $levelId = $adviserProgramme->level_id;
         $programmeId = $adviserProgramme->programme_id;
 
-        $students = Student::
-        with(['applicant', 'programme', 'transactions', 'courseRegistrationDocument', 'registeredCourses', 'partner', 'academicLevel', 'department', 'faculty'])
-        ->where([
-            'level_id' => $levelId,
-            'programme_id' => $programmeId,
-            'is_active' => true,
-            'is_passed_out' => false,
-            'is_rusticated' => false
-        ])
-        ->get();
+        $students = Student::with([
+                'applicant', 
+                'programme', 
+                'transactions', 
+                'courseRegistrationDocument', 
+                'registeredCourses', 
+                'partner', 
+                'academicLevel', 
+                'department', 
+                'faculty'
+            ])
+            ->where([
+                'level_id' => $levelId,
+                'programme_id' => $programmeId,
+                'is_active' => true,
+                'is_passed_out' => false,
+                'is_rusticated' => false
+            ])
+            ->get();
+
+        foreach ($students as $student) {
+            $hasRegistered = $student->courseRegistrationDocument()
+                ->where('academic_session', $academicSession)
+                ->exists();
+
+            $student->courseRegistrationStatus = $hasRegistered ? true : false;
+        }
 
         return view('staff.levelStudents', [
             'students' => $students

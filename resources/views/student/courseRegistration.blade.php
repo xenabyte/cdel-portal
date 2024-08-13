@@ -3,6 +3,7 @@
     $student = Auth::guard('student')->user();
     $programme = $student->programme;
     $maxUnit = !empty($student->credit_load)?$student->credit_load:24;
+    $levelAdviser = $programme->academicAdvisers->firstWhere('level_id', $student->level_id);
 ?>
 @section('content')
 <style>
@@ -69,7 +70,7 @@
     <!--end col-->
 </div>
 @else
-    @if($programme->course_registration != 'start')
+    @if($levelAdviser && $levelAdviser->course_registration_status != 'start')        
         <div class="row justify-content-center">
             <div class="col-lg-6">
                 <div class="card">

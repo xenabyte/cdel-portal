@@ -477,13 +477,13 @@
                             @if($staffLevelAdviserRole || $staffHODRole || $staffDeanRole || $staffSubDeanRole || $staffAcademicPlannerRole)
                             <li class="nav-item">
                                 <a class="nav-link menu-link" href="#courseSettings" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="courseSettings">
-                                    <i class="mdi mdi-card"></i> <span  data-key="t-hot">Prog. Management </span><span class="badge badge-pill bg-danger" data-key="t-hot">{{ $pageGlobalData->totalPendingRegistrations }} </span>
+                                    <i class="mdi mdi-card"></i> <span  data-key="t-hot">Prog. Management </span><span class="badge badge-pill bg-danger" data-key="t-hot">{{ $staffAcademicPlannerRole ? $pageGlobalData->adviserProgrammesCount : $pageGlobalData->totalPendingRegistrations }} </span>
                                 </a>
                                 <div class="collapse menu-dropdown" id="courseSettings">
                                     <ul class="nav nav-sm flex-column">
                                         @if($staffLevelAdviserRole || $staffHODRole)
                                         <li class="nav-item">
-                                            <a href="{{ url('/staff/adviserProgrammes') }}" class="nav-link">Programmes <span class="badge badge-pill bg-danger" data-key="t-hot">{{ $pageGlobalData->totalPendingRegistrations }} </span></a>
+                                            <a href="{{ url('/staff/adviserProgrammes') }}" class="nav-link">Programmes <span class="badge badge-pill bg-danger" data-key="t-hot">{{  $staffAcademicPlannerRole ? $pageGlobalData->adviserProgrammesCount : $pageGlobalData->totalPendingRegistrations }} </span></a>
                                         </li>
 
                                         <li class="nav-item">
@@ -494,6 +494,11 @@
                                         <li class="nav-item">
                                             <a href="{{ url('/staff/studentCourses') }}" class="nav-link">Student Courses</a>
                                         </li>
+                                        @if($staffAcademicPlannerRole)
+                                        <li class="nav-item">
+                                            <a href="{{ url('/staff/adviserProgrammes') }}" class="nav-link">Level Advisers <span class="badge badge-pill bg-danger" data-key="t-hot">{{ $pageGlobalData->adviserProgrammesCount }} </span></a>
+                                        </li>
+                                        @endif
                                     </ul>
                                 </div>
                             </li>

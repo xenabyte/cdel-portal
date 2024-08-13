@@ -293,9 +293,9 @@
                                     <li class="nav-item">
                                         <a href="{{url('/admin/sessionSetup')}}" class="nav-link" data-key="t-calendar">Academic Session Setup </a>
                                     </li>
-                                    <li class="nav-item">
+                                    {{-- <li class="nav-item">
                                         <a href="{{ url('/admin/courseRegMgt') }}" class="nav-link">Course Reg. Mgt</a>
-                                    </li>
+                                    </li> --}}
                                     <li class="nav-item">
                                         <a href="{{ url('/admin/examDocketMgt') }}" class="nav-link">Exam Docket Mgt</a>
                                     </li>
@@ -385,6 +385,9 @@
                                         <a href="{{ url('/admin/departmentForCourses') }}" class="nav-link">All Courses</a>
                                     </li>
                                     <li class="nav-item">
+                                        <a href="{{ url('/admin/adviserProgrammes') }}" class="nav-link">Course Reg MGT</a>
+                                    </li>
+                                    <li class="nav-item">
                                         <a href="{{ url('/admin/studentCourses') }}" class="nav-link">Student Courses</a>
                                     </li>
                                     <li class="nav-item">
@@ -392,9 +395,6 @@
                                     </li>
                                     <li class="nav-item">
                                         <a href="{{ url('/admin/getCourseResult') }}" class="nav-link">Course Per Semester</a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a href="{{ url('/admin/adviserProgrammes') }}" class="nav-link">Level Adviser(s)</a>
                                     </li>
                                     @if(env('POPULATE_DATA'))
                                     <li class="nav-item">
