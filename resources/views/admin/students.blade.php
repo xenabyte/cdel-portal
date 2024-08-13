@@ -40,8 +40,9 @@
                             <th scope="col">Phone Number</th>
                             <th scope="col">Academic Session</th>
                             <th scope="col">Admitted Date</th>
-                            <th scope="col">Admission Letter</th>
                             <th scope="col">Clearance Status</th>
+                            <th scope="col">Acceptance Fee Status</th>
+                            <th scope="col">Admission Letter</th>
                             <th scope="col"></th>
                         </tr>
                     </thead>
@@ -58,6 +59,17 @@
                             <td>{{ $student->academic_session }} </td>
                             <td>{{ $student->created_at }} </td>
                             <td>
+                                @if($student->clearance_status == 1)Cleared @else Not Cleared @endif
+                            </td>
+                            <td>
+                                @if($student->acceptanceFeeStatus)
+                                    <span class="badge bg-success p-2 rounded-pill">Paid</span>
+                                @else
+                                    <span class="badge bg-danger p-2 rounded-pill">Not Yet Paid</span>
+                                @endif
+
+                            </td>
+                            <td>
                                 <a href="{{ asset($student->admission_letter) }}" class="btn btn-danger m-1"> Download Admission Letter</a>
                                 <form action="{{ url('admin/generateAdmissionLetter') }}" method="POST">
                                     @csrf
@@ -65,9 +77,6 @@
                                     <hr>
                                     <button type="submit" id="submit-button" class="btn btn-primary w-100">Regenerate Admission Letter</button>
                                 </form>
-                            </td>
-                            <td>
-                                @if($student->clearance_status == 1)Cleared @else Not Cleared @endif
                             </td>
                             <td>
                                 @if(!empty($student->clearance_status))<a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#view{{$student->applicant->id}}" class="btn btn-secondary m-1"><i class= "ri-eye-fill"></i> View Clearance</a>@endif

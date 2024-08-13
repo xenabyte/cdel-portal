@@ -20,6 +20,8 @@ use App\Models\Guardian;
 use App\Models\NextOfKin;
 use App\Models\AcademicLevel;
 use App\Models\Student;
+use App\Models\Payment;
+
 
 
 use App\Mail\ApplicationMail;
@@ -195,14 +197,28 @@ class AdmissionController extends Controller
         $globalData = $request->input('global_data');
         $applicationSession = $globalData->sessionSetting['application_session'];
         $admissionSession = $globalData->sessionSetting['admission_session'];
-
+    
         $students = Student::with('applicant', 'programme')
-        ->where('academic_session', $admissionSession)
-        ->whereHas('applicant', function ($query) use ($admissionSession) {
-            $query->where('academic_session', $admissionSession);
-        })
-        ->get();
-
+            ->where('academic_session', $admissionSession)
+            ->whereHas('applicant', function ($query) use ($admissionSession) {
+                $query->where('academic_session', $admissionSession);
+            })
+            ->get();
+    
+        $acceptancePaymentTypeId = Payment::where('type', Payment::PAYMENT_TYPE_ACCEPTANCE)
+            ->where('academic_session', $applicationSession)
+            ->value('id');
+    
+        foreach ($students as $student) {
+            $acceptanceFee = Transaction::where('student_id', $student->id)
+                ->where('payment_id', $acceptancePaymentTypeId)
+                ->where('session', $admissionSession)
+                ->where('status', 1)
+                ->first();
+    
+            $student->acceptanceFeeStatus = $acceptanceFee ? true : false;
+        }
+    
         return view('staff.students', [
             'students' => $students
         ]);

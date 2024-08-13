@@ -39,9 +39,9 @@
                             <th scope="col">Access Code</th>
                             <th scope="col">Phone Number</th>
                             <th scope="col">Academic Session</th>
+                            <th scope="col">Clearance Status</th>
                             <th scope="col">Admitted Date</th>
                             <th scope="col">Admission Letter</th>
-                            <th scope="col">Clearance Status</th>
                             <th scope="col"></th>
                         </tr>
                     </thead>
@@ -58,6 +58,9 @@
                             <td>{{ $student->academic_session }} </td>
                             <td>{{ $student->created_at }} </td>
                             <td>
+                                @if($student->clearance_status == 1) Cleared @else Not Cleared @endif
+                            </td>
+                            <td>
                                 <a href="{{ asset($student->admission_letter) }}" class="btn btn-danger m-1"> Download Admission Letter</a>
                                 <form action="{{ url('staff/generateAdmissionLetter') }}" method="POST">
                                     @csrf
@@ -67,13 +70,9 @@
                                 </form>
                             </td>
                             <td>
-                                @if($student->clearance_status == 1) Cleared @else Not Cleared @endif
-                            </td>
-                            <td>
                                 @if(!empty($student->clearance_status))<a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#view{{$student->applicant->id}}" class="btn btn-secondary m-1"><i class= "ri-eye-fill"></i> View Clearance</a>@endif
                                 <a href="{{ url('staff/student/'.$student->slug) }}" class="btn btn-primary m-1"><i class= "ri-user-6-fill"></i> View Student</a>
                                 <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#delete{{$student->id}}" class="btn btn-danger m-1"><i class="ri-delete-bin-5-line"></i> Reverse Admission</a>
-
                             </td>
                         </tr>
 
