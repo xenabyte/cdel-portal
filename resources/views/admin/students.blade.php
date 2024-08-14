@@ -54,7 +54,16 @@
                             <td>{{ $student->applicant->application_number }}</td>
                             <td>{{ $student->programme->name }}</td>
                             <td>{{ $student->email }} </td>
-                            <td>{{ $student->passcode }} </td>
+                            <td> 
+                                {{ $student->passcode }} 
+                                <form action="{{ url('admin/refreshPasscode') }}" style="display:inline" method="POST">
+                                    @csrf
+                                    <input name="student_id" type="hidden" value="{{ $student->id }}">
+                                    <button type="submit" id="submit-button" class="btn btn-danger">
+                                        <i class="ri-refresh-line"></i>
+                                    </button>
+                                </form>
+                            </td>
                             <td>{{ $student->applicant->phone_number }} </td>
                             <td>{{ $student->academic_session }} </td>
                             <td>{{ $student->created_at }} </td>

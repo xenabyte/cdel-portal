@@ -266,5 +266,5 @@ class AdmissionController extends Controller
         alert()->error('Oops!', 'Something went wrong')->persistent('Close');
         return redirect()->back();
     }
-    
+
 }

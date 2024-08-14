@@ -175,6 +175,9 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'admin'],
   Route::get('/students', [App\Http\Controllers\Admin\AdmissionController::class, 'students'])->name('students')->middleware(['auth:admin']);
   Route::get('/student/{slug}', [App\Http\Controllers\Admin\AdmissionController::class, 'student'])->name('student')->middleware(['auth:admin']);
   Route::post('/resendGuardianOnboarding', [App\Http\Controllers\Admin\StudentController::class, 'resendGuardianOnboarding'])->name('resendGuardianOnboarding')->middleware(['auth:admin']);
+  Route::post('/refreshPasscode', [App\Http\Controllers\Admin\StudentController::class, 'refreshPasscode'])->name('refreshPasscode')->middleware(['auth:admin']);
+
+  
 
   Route::get('/faculties', [App\Http\Controllers\Admin\AcademicController::class, 'faculties'])->name('faculties')->middleware(['auth:admin']);
   Route::get('/faculty/{slug}', [App\Http\Controllers\Admin\AcademicController::class, 'faculty'])->name('faculty')->middleware(['auth:admin']);

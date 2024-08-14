@@ -184,5 +184,21 @@ class StudentController extends Controller
             'academicSessions' => $academicSessions,
         ]);
     }
+
+    public function refreshPasscode(Request $request){
+        $student = Student::find($request->student_id);
+
+        $passcode = $student->passcode;
+
+        $student->password = bcrypt($passcode);
+
+        if($student->save()){
+            alert()->success('Good Job', 'Passcode refreshed successfully')->persistent('Close');
+            return redirect()->back();
+        }
+
+        alert()->error('Oops!', 'Something went wrong')->persistent('Close');
+        return redirect()->back();
+    }
     
 }
