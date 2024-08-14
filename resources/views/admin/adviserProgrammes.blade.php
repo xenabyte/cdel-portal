@@ -32,6 +32,7 @@
                     <thead>
                         <tr>
                             <th scope="col">ID</th>
+                            <th scope="col">Level Adviser</th>
                             <th scope="col">Programme</th>
                             <th scope="col">Level</th>
                             <th scope="col">Comment</th>
@@ -43,6 +44,7 @@
                         @foreach($adviserProgrammes as $adviserProgramme)
                         <tr>
                             <td scope="row"> {{ $loop->iteration }}</td>
+                            <td>{{$adviserProgramme->staff? $adviserProgramme->staff->title.' '.$adviserProgramme->staff->lastname.' '.$adviserProgramme->staff->othernames: null}}</td>
                             <td>{{$adviserProgramme->programme->name}}</td>
                             <td>{{$adviserProgramme->level->level}} Level <span class="badge badge-pill bg-danger" data-key="t-hot">{{ $adviserProgramme->studentRegistrationsCount }} </span></td>
                             <td>{!! $adviserProgramme->comment !!}</td>
