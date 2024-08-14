@@ -788,6 +788,15 @@ class Controller extends BaseController
             }
         }
 
+        
+        if($paymentType == Payment::PAYMENT_TYPE_ACCOMONDATION){
+            $transaction = Transaction::where('reference',  $transactionData->reference)->first();
+            $creditStudent = $this->creditAccommodation($transaction);
+            if (is_string($creditStudent)) {
+                alert()->error('Oops', $creditStudent)->persistent('Close');
+            }
+        }
+
         if($paymentType == Payment::PAYMENT_TYPE_SCHOOL || $paymentType == Payment::PAYMENT_TYPE_SCHOOL_DE){
             $this->generateMatricAndEmail($student);
         }
@@ -841,6 +850,8 @@ class Controller extends BaseController
         $referralCode = isset($applicantData['data']['metadata']['referrer']) ? $applicantData['data']['metadata']['referrer'] : (isset($applicantData['data']['meta']['referrer']) ? $applicantData['data']['meta']['referrer'] : null);
         $applicationType = isset($applicantData['data']['metadata']['application_type']) ? $applicantData['data']['metadata']['application_type'] : (isset($applicantData['data']['meta']['application_type']) ? $applicantData['data']['meta']['application_type'] : null);
         $txRef = isset($applicantData['data']['reference']) ? $applicantData['data']['reference'] : (isset($applicantData['data']['meta']['reference']) ? $applicantData['data']['meta']['reference'] : null);
+        $applicant = null;
+
 
         if(isset($applicantData['test_applicant_id'])){
             $testApplicant = TestApplicant::find($applicantData['test_applicant_id']);
@@ -890,9 +901,10 @@ class Controller extends BaseController
         }
 
         if(empty($applicant)){
+            $applicant = User::find($checkApplicant->id);
             $tx = Transaction::where('reference', $txRef)->where('status',  1)->first();
-            $applicantId = $tx->user_id;
-            $applicant = User::find($applicantId);
+            $tx->user_id = $checkApplicant->id;
+            $tx->save();
         }
 
         Mail::to($applicant->email)->send(new ApplicationMail($applicant));
@@ -1003,7 +1015,6 @@ class Controller extends BaseController
             return 'Failed to allocate accommodation: ' . $e->getMessage();
         }
     }
-
     
     protected function findRoomWithVacancy($initialRoomId, $typeId){
         // Check the initial room first

@@ -78,9 +78,9 @@ class StudentController extends Controller
                 'studentPendingTransactions' => $paymentCheck->studentPendingTransactions
             ]);
         }
-
-        if (($levelId == 1 && strtolower($applicationType) == 'utme') || 
-            ($levelId == 2 && strtolower($applicationType) != 'utme') && 
+        
+        if ((($levelId == 1 && strtolower($applicationType) == 'utme') || 
+            ($levelId == 2 && strtolower($applicationType) != 'utme')) && 
             ($student->clearance_status != 1 && $student->is_active != 1)) {
             return view('student.clearance', [
                 'payment' => $paymentCheck->schoolPayment,

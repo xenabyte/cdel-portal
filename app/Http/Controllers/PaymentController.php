@@ -66,6 +66,8 @@ class PaymentController extends Controller
             $paymentId = $paymentDetails['data']['metadata']['payment_id'];
             $studentId = $paymentDetails['data']['metadata']['student_id'];
             $redirectPath = $paymentDetails['data']['metadata']['redirect_path'];
+            $txRef = $paymentDetails['data']['metadata']['reference'];
+
 
             $paymentType = Payment::PAYMENT_TYPE_WALLET_DEPOSIT;
             if($paymentId > 0){
@@ -95,6 +97,30 @@ class PaymentController extends Controller
                             $creditStudent = $this->creditStudentWallet($studentId, $amount);
                             if(!$creditStudent){
                                 Log::info("**********************Unable to credit student**********************: ". $amount .' - '.$student);
+                            }
+                        }
+
+                        if($paymentType == Payment::PAYMENT_TYPE_WALLET_DEPOSIT){
+                            $creditStudent = $this->creditStudentWallet($studentId, $amount);
+                            if(!$creditStudent){
+                                Log::info("**********************Unable to credit student wallet**********************: ". $amount .' - '.$student);
+                            }
+                        }  
+                        
+                        if($paymentType == Payment::PAYMENT_TYPE_BANDWIDTH){
+                            $transaction = Transaction::where('reference', $txRef)->first();
+                            $creditStudent = $this->creditBandwidth($transaction, $amount);
+
+                            if(!$creditStudent){
+                                Log::info("**********************Unable to credit student bandwidth**********************: ". $amount .' - '.$student);
+                            }
+                        }
+
+                        if($paymentType == Payment::PAYMENT_TYPE_ACCOMONDATION){
+                            $transaction = Transaction::where('reference', $txRef)->first();
+                            $creditStudent = $this->creditAccommodation($transaction);
+                            if (is_string($creditStudent)) {
+                                alert()->error('Oops', $creditStudent)->persistent('Close');
                             }
                         }
                     }
@@ -177,7 +203,7 @@ class PaymentController extends Controller
             
             if($paymentDetails['status'] == 'success'){
                 if($this->processRavePayment($paymentDetails)){
-                    
+                    alert()->success('Good Job', 'Payment successful')->persistent('Close');
                     if($student && !empty($studentId)){
                         $pdf = new Pdf();
                         $invoice = $pdf->generateTransactionInvoice($session, $studentId, $paymentId, 'single');
@@ -205,8 +231,15 @@ class PaymentController extends Controller
                                 Log::info("**********************Unable to credit student bandwidth**********************: ". $amount .' - '.$student);
                             }
                         }
+
+                        if($paymentType == Payment::PAYMENT_TYPE_ACCOMONDATION){
+                            $transaction = Transaction::where('reference', $txRef)->first();
+                            $creditStudent = $this->creditAccommodation($transaction);
+                            if (is_string($creditStudent)) {
+                                alert()->error('Oops', $creditStudent)->persistent('Close');
+                            }
+                        }
                     }
-                    alert()->success('Good Job', 'Payment successful')->persistent('Close');
                     if($paymentType == Payment::PAYMENT_TYPE_GENERAL_APPLICATION || $paymentType == Payment::PAYMENT_TYPE_INTER_TRANSFER_APPLICATION){
                         $applicantData = $paymentDetails;
                         $this->createApplicant($applicantData);
