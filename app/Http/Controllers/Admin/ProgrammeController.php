@@ -199,10 +199,12 @@ class ProgrammeController extends Controller
 
         $programmes = Programme::get();
         $academicLevels = AcademicLevel::get();
+        $academicSessions = Session::orderBy('id', 'DESC')->get();
 
         return view('admin.studentCourses',[
             'programmes' => $programmes,
-            'academicLevels' => $academicLevels
+            'academicLevels' => $academicLevels,
+            'academicSessions' => $academicSessions
         ]);
     }
 
@@ -212,6 +214,7 @@ class ProgrammeController extends Controller
             'programme_id' => 'required',
             'level_id' => 'required',
             'semester' => 'required',
+            'academic_session' => 'required'
         ]);
 
         if($validator->fails()) {
@@ -219,8 +222,7 @@ class ProgrammeController extends Controller
             return redirect()->back();
         }
 
-        $globalData = $request->input('global_data');
-        $academicSession = $globalData->sessionSetting['academic_session'];
+        $academicSession = $request->academic_session;
 
         $courses = CoursePerProgrammePerAcademicSession::with('course')->where('programme_id', $request->programme_id)->where('level_id', $request->level_id)->where('academic_session', $academicSession)->where('semester', $request->semester)->get();
         $allCourses = Course::all();
@@ -229,10 +231,13 @@ class ProgrammeController extends Controller
 
         $programmes = Programme::get();
         $academicLevels = AcademicLevel::get();
+        $academicSessions = Session::orderBy('id', 'DESC')->get();
+
 
         return view('admin.studentCourses',[
             'programmes' => $programmes,
             'academicLevels' => $academicLevels,
+            'academicSessions' => $academicSessions,
             'courses' => $courses,
             'academiclevel' => $academicLevel,
             'programme' => $programme,

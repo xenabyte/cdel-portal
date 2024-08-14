@@ -66,6 +66,16 @@
                                                 <label for="semester">Semester</label>
                                             </div>
                                         </div>
+
+                                        <div class="col-lg-12">
+                                            <div class="form-floating">
+                                                <select class="form-select" id="session" name="session" aria-label="Academic Session">
+                                                    <option value="" selected>--Select--</option>
+                                                    @foreach($academicSessions as $session)<option value="{{ $session->year }}">{{ $session->year }}</option>@endforeach
+                                                </select>
+                                                <label for="session">Academic Session</label>
+                                            </div>
+                                        </div>
     
                                         <button type="submit" id="submit-button" class="btn btn-fill btn-primary btn-lg btn-block mb-5">Get Courses</button>
                                     </div>
