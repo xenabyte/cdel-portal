@@ -217,6 +217,9 @@ class GuardianController extends Controller
 
             $data = array(
                 "amount" => round($this->getUpperlinkAmount($amount)/100),
+                "phone" => $student->applicant->phone_number,
+                "city" => "Lagos",
+                "address" =>  strip_tags($student->applicant->address),
                 "email" => $student->email,
                 "payGateRef" => $reference,
                 "merchantId" => env('UPPERLINK_REF'),

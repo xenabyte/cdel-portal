@@ -555,6 +555,9 @@ class ApplicationController extends Controller
 
             $data = array(
                 "amount" => round($this->getUpperlinkAmount($amount)/100),
+                "phone" => $request->phone_number,
+                "city" => "Lagos",
+                "address" => env('SCHOOL_NAME'),
                 "email" => $request->email,
                 "payGateRef" => $reference,
                 "merchantId" => env('UPPERLINK_REF'),
