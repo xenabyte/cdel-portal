@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Validator;
 use League\Csv\Reader;
 
 use App\Models\CourseManagement;
+use App\Models\Transaction;
 
 
 use SweetAlert;
@@ -46,6 +47,23 @@ class CronController extends Controller
 
         return $this->dataResponse('Passcode Updated', null);
 
+    }
+
+
+    public function deletePendingTransactions(){
+
+        $transactions = Transaction::where('status', '!=', 1)
+                                    ->where('payment_method', '!=', 'Manual/BankTransfer')
+                                    ->where('payment_method', '!=', NULL)
+                                    ->get();
+
+        if ($transactions->isEmpty()) {
+            return $this->dataResponse('No pending transactions found that can be deleted.', null);
+        }
+
+        $deletedCount = $transactions->each->forceDelete();
+
+        return $this->dataResponse('Pending transactions deleted successfully.', null);
     }
 
 }

@@ -49,6 +49,7 @@ Route::get('/studentDetails/{slug}', [App\Http\Controllers\HomeController::class
 Route::get('/calculateStudentCGPA', [App\Http\Controllers\Admin\CronController::class, 'calculateStudentCGPA']);
 Route::get('/generateStudentReferrerCode', [App\Http\Controllers\Admin\StudentController::class, 'generateStudentReferrerCode']);
 Route::get('/sendParentOnboardingMail', [App\Http\Controllers\Admin\CronController::class, 'sendParentOnboardingMail']);
+Route::get('/deletePendingTransactions', [App\Http\Controllers\CronController::class, 'deletePendingTransactions']);
 
 Route::post('/addStaffRecord', [App\Http\Controllers\HomeController::class, 'addStaffRecord'])->name('addStaffRecord');
 Route::get('/staffRecord', [App\Http\Controllers\HomeController::class, 'staffRecord'])->name('staffRecord');
