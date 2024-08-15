@@ -357,7 +357,7 @@
                             <div class="progress progress-lg rounded-pill">
                                 @foreach($degreeClassCounts as $degreeClass => $count)
                                 @php
-                                    $percentage = number_format(($count / $totalStudents) * 100, 2);
+                                    $percentage = $totalStudents > 0 ? number_format(($count / $totalStudents) * 100, 2) : 0;
                                 @endphp
                                     <div class="progress-bar @switch($degreeClass)
                                             @case('First Class')
@@ -411,7 +411,7 @@
                                     </div>
                                     <div class="flex-shrink-0">
                                         @php
-                                            $percentage = ($count / $totalStudents) * 100;
+                                            $percentage = $totalStudents > 0 ? number_format(($count / $totalStudents) * 100, 2):0;
                                         @endphp
                                         <p class="mb-0">{{ number_format($percentage, 2) }}%</p>
                                     </div>

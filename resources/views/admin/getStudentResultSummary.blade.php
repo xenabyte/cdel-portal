@@ -168,119 +168,121 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($classifiedStudents[$academicLevel->level] as $programName => $students)
-                                @php
-                                    $totalStudents = count($students);
-                                    $goodStandingCount = 0;
-                                    $notInGoodStandingCount = 0;
-                
-                                    $totalStudentsWithNullGrades = 0;
-                
-                                    $semesterGoodStandingCount = 0;
-                                    $semesterNotInGoodStandingCount =0;
-                
-                                    $degreeClassCounts = (object) [
-                                        'First Class' => 0,
-                                        'Second Class Upper' => 0,
-                                        'Second Class Lower' => 0,
-                                        'Third Class' => 0,
-                                        'Pass' => 0,
-                                        'Fail' => 0,
-                                    ];
-                
-                                    $degreeClass = new \App\Models\DegreeClass;
-                
-                                    foreach($students as $student){
-                                        $semesterRegisteredCourses = $student->registeredCourses
-                                            ->where('semester', $semester)
-                                            ->where('level_id', $academicLevel->id)
-                                            ->where('academic_session', $academicSession);
-                
-                                        $nullGradeCount = $semesterRegisteredCourses->where('grade', null)->count();
-                
-                                        $totalCoursesCount = $semesterRegisteredCourses->count();
-                                        $eightyPercent = 0.8 * $totalCoursesCount;
-                
-                                        if ($nullGradeCount >= $eightyPercent) {
-                                            $totalStudentsWithNullGrades++;
+                            @if(isset($classifiedStudents[$academicLevel->level]))
+                                @foreach($classifiedStudents[$academicLevel->level] as $programName => $students)
+                                    @php
+                                        $totalStudents = count($students);
+                                        $goodStandingCount = 0;
+                                        $notInGoodStandingCount = 0;
+                    
+                                        $totalStudentsWithNullGrades = 0;
+                    
+                                        $semesterGoodStandingCount = 0;
+                                        $semesterNotInGoodStandingCount =0;
+                    
+                                        $degreeClassCounts = (object) [
+                                            'First Class' => 0,
+                                            'Second Class Upper' => 0,
+                                            'Second Class Lower' => 0,
+                                            'Third Class' => 0,
+                                            'Pass' => 0,
+                                            'Fail' => 0,
+                                        ];
+                    
+                                        $degreeClass = new \App\Models\DegreeClass;
+                    
+                                        foreach($students as $student){
+                                            $semesterRegisteredCourses = $student->registeredCourses
+                                                ->where('semester', $semester)
+                                                ->where('level_id', $academicLevel->id)
+                                                ->where('academic_session', $academicSession);
+                    
+                                            $nullGradeCount = $semesterRegisteredCourses->where('grade', null)->count();
+                    
+                                            $totalCoursesCount = $semesterRegisteredCourses->count();
+                                            $eightyPercent = 0.8 * $totalCoursesCount;
+                    
+                                            if ($nullGradeCount >= $eightyPercent) {
+                                                $totalStudentsWithNullGrades++;
+                                            }
+                    
+                                            $semesterRegisteredCourses = $student->registeredCourses->where('semester', $semester)->where('level_id', $academicLevel->id)->where('academic_session', $academicSession)->where('grade', '!=', null);
+                                            $currentRegisteredCreditUnits =  $semesterRegisteredCourses->sum('course_credit_unit');
+                                            $currentRegisteredGradePoints = $semesterRegisteredCourses->sum('points');
+                                            $currentGPA = $currentRegisteredGradePoints > 0 ? number_format($currentRegisteredGradePoints / $currentRegisteredCreditUnits, 2) : 0;
+                    
+                                            $allRegisteredCourses = $student->registeredCourses->where('grade', '!=', null);
+                                            $allRegisteredCreditUnits =  $allRegisteredCourses->sum('course_credit_unit');
+                                            $allRegisteredGradePoints = $allRegisteredCourses->sum('points');
+                                            $CGPA = $allRegisteredGradePoints > 0 ? number_format($allRegisteredGradePoints / $allRegisteredCreditUnits, 2) : 0;
+                    
+                                            $semesterClassGrade = $degreeClass->computeClass($currentGPA);
+                                            $semesterClass = $semesterClassGrade->degree_class;
+                                            $semesterStanding = $semesterClassGrade->id > 4? 'NGS' : 'GS'; 
+                    
+                                            if ($semesterStanding === 'GS') {
+                                                $semesterGoodStandingCount++;
+                                            } else {
+                                                $semesterNotInGoodStandingCount++;
+                                            }
+                    
+                                            $classGrade = $degreeClass->computeClass($CGPA);
+                                            $class = $classGrade->degree_class;
+                                            $standing = $classGrade->id > 4? 'NGS' : 'GS'; 
+                    
+                                            if ($standing === 'GS') {
+                                                $goodStandingCount++;
+                                            } else {
+                                                $notInGoodStandingCount++;
+                                            }
+                    
+                                            switch ($class) {
+                                                case 'First Class':
+                                                    $degreeClassCounts->{'First Class'}++;
+                                                    break;
+                                                case 'Second Class Upper':
+                                                    $degreeClassCounts->{'Second Class Upper'}++;
+                                                    break;
+                                                case 'Second Class Lower':
+                                                    $degreeClassCounts->{'Second Class Lower'}++;
+                                                    break;
+                                                case 'Third Class':
+                                                    $degreeClassCounts->{'Third Class'}++;
+                                                    break;
+                                                case 'Pass':
+                                                    $degreeClassCounts->{'Pass'}++;
+                                                    break;
+                                                default:
+                                                    $degreeClassCounts->{'Fail'}++;
+                                                    break;
+                                            }
                                         }
-                
-                                        $semesterRegisteredCourses = $student->registeredCourses->where('semester', $semester)->where('level_id', $academicLevel->id)->where('academic_session', $academicSession)->where('grade', '!=', null);
-                                        $currentRegisteredCreditUnits =  $semesterRegisteredCourses->sum('course_credit_unit');
-                                        $currentRegisteredGradePoints = $semesterRegisteredCourses->sum('points');
-                                        $currentGPA = $currentRegisteredGradePoints > 0 ? number_format($currentRegisteredGradePoints / $currentRegisteredCreditUnits, 2) : 0;
-                
-                                        $allRegisteredCourses = $student->registeredCourses->where('grade', '!=', null);
-                                        $allRegisteredCreditUnits =  $allRegisteredCourses->sum('course_credit_unit');
-                                        $allRegisteredGradePoints = $allRegisteredCourses->sum('points');
-                                        $CGPA = $allRegisteredGradePoints > 0 ? number_format($allRegisteredGradePoints / $allRegisteredCreditUnits, 2) : 0;
-                
-                                        $semesterClassGrade = $degreeClass->computeClass($currentGPA);
-                                        $semesterClass = $semesterClassGrade->degree_class;
-                                        $semesterStanding = $semesterClassGrade->id > 4? 'NGS' : 'GS'; 
-                
-                                        if ($semesterStanding === 'GS') {
-                                            $semesterGoodStandingCount++;
-                                        } else {
-                                            $semesterNotInGoodStandingCount++;
-                                        }
-                
-                                        $classGrade = $degreeClass->computeClass($CGPA);
-                                        $class = $classGrade->degree_class;
-                                        $standing = $classGrade->id > 4? 'NGS' : 'GS'; 
-                
-                                        if ($standing === 'GS') {
-                                            $goodStandingCount++;
-                                        } else {
-                                            $notInGoodStandingCount++;
-                                        }
-                
-                                        switch ($class) {
-                                            case 'First Class':
-                                                $degreeClassCounts->{'First Class'}++;
-                                                break;
-                                            case 'Second Class Upper':
-                                                $degreeClassCounts->{'Second Class Upper'}++;
-                                                break;
-                                            case 'Second Class Lower':
-                                                $degreeClassCounts->{'Second Class Lower'}++;
-                                                break;
-                                            case 'Third Class':
-                                                $degreeClassCounts->{'Third Class'}++;
-                                                break;
-                                            case 'Pass':
-                                                $degreeClassCounts->{'Pass'}++;
-                                                break;
-                                            default:
-                                                $degreeClassCounts->{'Fail'}++;
-                                                break;
-                                        }
-                                    }
-                
-                                    $goodStandingPercentage = $totalStudents > 0 ? ($goodStandingCount / $totalStudents) * 100 : 0;
-                                    $notInGoodStandingPercentage = $totalStudents > 0 ? ($notInGoodStandingCount / $totalStudents) * 100 : 0;
-                
-                                    $semesterGoodStandingPercentage = $totalStudents > 0 ? ($semesterGoodStandingCount / $totalStudents) * 100 : 0;
-                                    $semesterNotInGoodStandingPercentage = $totalStudents > 0 ? ($semesterNotInGoodStandingCount / $totalStudents) * 100 : 0;
+                    
+                                        $goodStandingPercentage = $totalStudents > 0 ? ($goodStandingCount / $totalStudents) * 100 : 0;
+                                        $notInGoodStandingPercentage = $totalStudents > 0 ? ($notInGoodStandingCount / $totalStudents) * 100 : 0;
+                    
+                                        $semesterGoodStandingPercentage = $totalStudents > 0 ? ($semesterGoodStandingCount / $totalStudents) * 100 : 0;
+                                        $semesterNotInGoodStandingPercentage = $totalStudents > 0 ? ($semesterNotInGoodStandingCount / $totalStudents) * 100 : 0;
+                                        
+                                    @endphp
                                     
-                                @endphp
-                                
-                                <tr>
-                                    <td>{{ $loop->iteration }}</td>
-                                    <td>{{ $programName }}</td>
-                                    <td>{{ $academicLevel->level }}</td>
-                                    <td>{{ $totalStudents }}</td>
-                                    <td class="bg bg-soft-success">{{ $semesterGoodStandingCount }}</td>
-                                    <td class="bg bg-soft-warning">{{ $semesterNotInGoodStandingCount }}</td>
-                                    <td class="bg bg-soft-primary"> @foreach($degreeClassCounts as $degreeClass => $count) @if($degreeClass == 'First Class') {{ $count }}  @endif @endforeach</td>
-                                    <td class="bg bg-soft-secondary"> @foreach($degreeClassCounts as $degreeClass => $count) @if($degreeClass == 'Second Class Upper') {{ $count }}  @endif @endforeach</td>
-                                    <td class="bg bg-soft-dark"> @foreach($degreeClassCounts as $degreeClass => $count) @if($degreeClass == 'Second Class Lower') {{ $count }}  @endif @endforeach</td>
-                                    <td class="bg bg-soft-info"> @foreach($degreeClassCounts as $degreeClass => $count) @if($degreeClass == 'Third Class') {{ $count }}  @endif @endforeach</td>
-                                    <td class="bg bg-soft-warning"> @foreach($degreeClassCounts as $degreeClass => $count) @if($degreeClass == 'Pass') {{ $count }}  @endif @endforeach</td>
-                                    <td class="bg bg-soft-danger"> @foreach($degreeClassCounts as $degreeClass => $count) @if($degreeClass == 'Fail') {{ $count }}  @endif @endforeach</td>
+                                    <tr>
+                                        <td>{{ $loop->iteration }}</td>
+                                        <td>{{ $programName }}</td>
+                                        <td>{{ $academicLevel->level }}</td>
+                                        <td>{{ $totalStudents }}</td>
+                                        <td class="bg bg-soft-success">{{ $semesterGoodStandingCount }}</td>
+                                        <td class="bg bg-soft-warning">{{ $semesterNotInGoodStandingCount }}</td>
+                                        <td class="bg bg-soft-primary"> @foreach($degreeClassCounts as $degreeClass => $count) @if($degreeClass == 'First Class') {{ $count }}  @endif @endforeach</td>
+                                        <td class="bg bg-soft-secondary"> @foreach($degreeClassCounts as $degreeClass => $count) @if($degreeClass == 'Second Class Upper') {{ $count }}  @endif @endforeach</td>
+                                        <td class="bg bg-soft-dark"> @foreach($degreeClassCounts as $degreeClass => $count) @if($degreeClass == 'Second Class Lower') {{ $count }}  @endif @endforeach</td>
+                                        <td class="bg bg-soft-info"> @foreach($degreeClassCounts as $degreeClass => $count) @if($degreeClass == 'Third Class') {{ $count }}  @endif @endforeach</td>
+                                        <td class="bg bg-soft-warning"> @foreach($degreeClassCounts as $degreeClass => $count) @if($degreeClass == 'Pass') {{ $count }}  @endif @endforeach</td>
+                                        <td class="bg bg-soft-danger"> @foreach($degreeClassCounts as $degreeClass => $count) @if($degreeClass == 'Fail') {{ $count }}  @endif @endforeach</td>
 
-                                </tr>
-                            @endforeach
+                                    </tr>
+                                @endforeach
+                            @endif
                         </tbody>
                     </table>
                     @endif
