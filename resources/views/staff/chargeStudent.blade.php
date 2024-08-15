@@ -237,7 +237,7 @@
                     <div class="mb-3">
                         <label for="type" class="form-label">Select Payment Type </label>
                         <select class="form-select" aria-label="type" name="type" required onchange="handlePaymentTypeChange(event)">
-                            <option selected value= "">Select Type </option>
+                            <option selected value= "">Select type </option>
                             <option value="General Application Fee">General Application Fee</option>
                             <option value="Inter Transfer Application Fee">Inter Transfer Application Fee</option>
                             <option value="Acceptance Fee">Acceptance Fee</option>
@@ -245,6 +245,8 @@
                             <option value="DE School Fee">Direct Entry School Fee</option>
                             <option value="General Fee">General Fee</option>
                             <option value="Other Fee">Other Fee</option>
+                            <option value="Course Reg">Modify Course Reg Fee</option>
+                            <option value="Accomondation Fee">Accomondation Fee</option>
                         </select>
                     </div>
 
@@ -498,13 +500,16 @@
                     <div class="mb-3">
                         <label for="type" class="form-label">Select Payment Type </label>
                         <select class="form-select" aria-label="type" name="type" required onchange="handlePaymentTypeChange(event)">
-                            <option selected value= "">Select Type </option>
+                            <option selected value= "">Select type </option>
                             <option value="General Application Fee">General Application Fee</option>
                             <option value="Inter Transfer Application Fee">Inter Transfer Application Fee</option>
                             <option value="Acceptance Fee">Acceptance Fee</option>
                             <option value="School Fee">School Fee</option>
                             <option value="DE School Fee">Direct Entry School Fee</option>
+                            <option value="General Fee">General Fee</option>
                             <option value="Other Fee">Other Fee</option>
+                            <option value="Course Reg">Modify Course Reg Fee</option>
+                            <option value="Accomondation Fee">Accomondation Fee</option>
                         </select>
                     </div>
                     
