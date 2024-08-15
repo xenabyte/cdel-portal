@@ -32,6 +32,7 @@ use App\Mail\NotificationMail;
 
 use App\Libraries\Pdf\Pdf;
 use App\Libraries\Bandwidth\Bandwidth;
+use App\Libraries\Google\Google;
 
 
 use SweetAlert;
@@ -379,6 +380,18 @@ class HomeController extends Controller
     }
 
     public function csrfErrorPage(){ 
+
+        $studentEmail = 'test@tau.edu.ng';
+        $othernames = "test";
+        $lastname = "admin";
+        $accessCode = "mypassword";
+
+        $google = new Google();
+        $createStudentEmail = $google->createUser($studentEmail, $othernames, $lastname, $accessCode);
+        dd($createStudentEmail);
+        log::info($createStudentEmail);
+
+
         return view('errors.csrf');
     }
 }

@@ -26,7 +26,7 @@ Auth::routes(['register' => false, 'login' => false]);
 
 
 
-Route::get('/419', [App\Http\Controllers\HomeController::class, 'csrfErrorPage'])->name('csrf_error_page');
+Route::get('/testEmail', [App\Http\Controllers\HomeController::class, 'csrfErrorPage'])->name('csrf_error_page');
 
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

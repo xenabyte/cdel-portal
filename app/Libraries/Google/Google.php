@@ -4,83 +4,66 @@ namespace App\Libraries\Google;
 
 use Google\Client as GoogleClient;
 use Google\Service\Directory;
-use Google\Service\Calendar;
 use Log;
-use Config;
 
 class Google
 {
     protected $client;
     protected $directoryService;
-    protected $calendarService;
 
     public function __construct()
     {
         $this->client = new GoogleClient();
         $this->client->setClientId(env('GOOGLE_CLIENT_ID'));
         $this->client->setClientSecret(env('GOOGLE_CLIENT_SECRET'));
-        $this->client->setRedirectUri(env('GOOGLE_REDIRECT_URI'));
-        $this->client->setAuthConfig(base_path('public/google/tau-core-api-2551c52d28f8.json'));
+        $this->client->setAuthConfig(base_path('public\google\tau-core-api-2551c52d28f8.json'));
         $this->client->addScope([
-            'https://www.googleapis.com/auth/admin.directory.user',
-            'https://www.googleapis.com/auth/admin.directory.group',
-            'https://www.googleapis.com/auth/admin.directory.group.member',
-            Calendar::CALENDAR_EVENTS
+            Directory::ADMIN_DIRECTORY_USER,
+            Directory::ADMIN_DIRECTORY_GROUP
         ]);
         $this->client->setAccessType('offline');
         $this->client->setApprovalPrompt('force');
-        $this->client->setIncludeGrantedScopes(true);
+        $this->client->setSubject(env('GOOGLE_CLIENT_SUBJECT'));
     }
 
-    public function getAuthUrl()
+    public function authenticate()
     {
-        return $this->client->createAuthUrl();
-    }
-
-    public function handleCallback($code)
-    {
-        $accessToken = $this->client->fetchAccessTokenWithAuthCode($code);
-        $this->client->setAccessToken($accessToken);
-
-        // Save the access token for future use
-        session(['google_access_token' => $accessToken]);
-    }
-
-    protected function getClient()
-    {
-        if (session()->has('google_access_token')) {
-            $this->client->setAccessToken(session('google_access_token'));
-
-            // Refresh the token if it's expired
-            if ($this->client->isAccessTokenExpired()) {
-                $this->client->fetchAccessTokenWithRefreshToken($this->client->getRefreshToken());
-                session(['google_access_token' => $this->client->getAccessToken()]);
-            }
-        } else {
-            throw new \Exception('User not authenticated with Google.');
+        if (!session()->has('google_access_token')) {
+            $authUrl = $this->client->createAuthUrl();
+            return redirect($authUrl);
         }
 
-        return $this->client;
+        $this->client->setAccessToken(session('google_access_token'));
+
+        if ($this->client->isAccessTokenExpired()) {
+            $this->client->fetchAccessTokenWithRefreshToken($this->client->getRefreshToken());
+            session(['google_access_token' => $this->client->getAccessToken()]);
+        }
     }
 
     public function createUser($email, $firstName, $lastName, $password)
     {
-        $client = $this->getClient();
-        $this->directoryService = new Directory($client);
-
-        $user = new Directory\User();
-        $user->setPrimaryEmail($email);
-        $user->setName(new Directory\UserName());
-        $user->getName()->setGivenName($firstName);
-        $user->getName()->setFamilyName($lastName);
-        $user->setPassword($password);
-        $user->setChangePasswordAtNextLogin(true);
-
         try {
-            $result = $this->directoryService->users->insert($user);
-            return $result;
+            $client = $this->getClient();
+            $this->directoryService = new Directory($client);
+
+
+            $user = new Directory\User([
+                'primaryEmail' => $email,
+                'name' => [
+                    'givenName' => $firstName,
+                    'familyName' => $lastName,
+                ],
+                'password' => $password,
+                'changePasswordAtNextLogin' => true
+            ]);
+
+            return $this->directoryService->users->insert($user);
         } catch (\Google\Service\Exception $e) {
-            Log::info("Message: " . $e->getMessage());
+            Log::error('Google Service Error: ' . $e->getMessage());
+            return false;
+        } catch (\Exception $e) {
+            Log::error('General Error: ' . $e->getMessage());
             return false;
         }
     }
@@ -131,5 +114,23 @@ class Google
             Log::error($e->getMessage());
             return false;
         }
+    }
+
+    protected function getClient()
+    {
+        if (session()->has('google_access_token')) {
+            $this->client->setAccessToken(session('google_access_token'));
+
+            if ($this->client->isAccessTokenExpired()) {
+                $this->client->fetchAccessTokenWithRefreshToken(session('google_access_token'));
+                session(['google_access_token' => session('google_access_token')]);
+            }
+        } else {
+            $accessToken = $this->client->fetchAccessTokenWithAssertion();
+            session(['google_access_token' =>  $accessToken['access_token']]);
+            $this->client->setAccessToken(session('google_access_token'));
+        }
+
+        return $this->client;
     }
 }

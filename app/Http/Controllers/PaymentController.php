@@ -232,13 +232,7 @@ class PaymentController extends Controller
                             }
                         }
 
-                        if($paymentType == Payment::PAYMENT_TYPE_ACCOMONDATION){
-                            $transaction = Transaction::where('reference', $txRef)->first();
-                            $creditStudent = $this->creditAccommodation($transaction);
-                            if (is_string($creditStudent)) {
-                                alert()->error('Oops', $creditStudent)->persistent('Close');
-                            }
-                        }
+                        
                     }
                     if($paymentType == Payment::PAYMENT_TYPE_GENERAL_APPLICATION || $paymentType == Payment::PAYMENT_TYPE_INTER_TRANSFER_APPLICATION){
                         $applicantData = $paymentDetails;
