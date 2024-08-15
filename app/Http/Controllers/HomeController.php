@@ -160,7 +160,7 @@ class HomeController extends Controller
         // }
 
         if(empty(strpos($request->staffId, 'AU'))) {
-            alert()->error('Error', 'Invalid staff ID, please kindly follow the format(TAU/SSPF/ID)')->persistent('Close');
+            alert()->error('Error', 'Invalid staff ID, please kindly follow the format(TAUSSPFID)')->persistent('Close');
             return redirect()->back();
         }
 
@@ -201,7 +201,15 @@ class HomeController extends Controller
             'referral_code' => $this->generateReferralCode()
         ]);
 
-        if(Staff::create($newAddStaff)){
+        if($staff = Staff::create($newAddStaff)){
+            $google = new Google();
+            $google->addMemberToGroup($staff->email, env('GOOGLE_STAFF_GROUP'));
+            if(strtolower($staff->category) == 'academic'){
+                $google->addMemberToGroup($staff->email, env('GOOGLE_ACADEMIC_STAFF_GROUP'));
+            }else{
+                $google->addMemberToGroup($staff->email, env('GOOGLE_NON_ACADEMIC_STAFF_GROUP'));
+            }
+
             alert()->success('Staff added', 'A staff have been added')->persistent('Close');
             return redirect()->back();
         }
@@ -381,13 +389,13 @@ class HomeController extends Controller
 
     public function csrfErrorPage(){ 
 
-        $studentEmail = 'test@tau.edu.ng';
+        $studentEmail = 'test@st.tau.edu.ng';
         $othernames = "test";
         $lastname = "admin";
         $accessCode = "mypassword";
 
         $google = new Google();
-        $createStudentEmail = $google->createUser($studentEmail, $othernames, $lastname, $accessCode);
+        $createStudentEmail = $google->createUser($studentEmail, $othernames, $lastname, $accessCode, env('GOOGLE_STUDENT_GROUP'));
         dd($createStudentEmail);
         log::info($createStudentEmail);
 

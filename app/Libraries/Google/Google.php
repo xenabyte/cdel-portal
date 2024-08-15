@@ -41,7 +41,7 @@ class Google
         }
     }
 
-    public function createUser($email, $firstName, $lastName, $password)
+    public function createUser($email, $firstName, $lastName, $password, $groupEmail=null)
     {
         try {
             $client = $this->getClient();
@@ -58,7 +58,11 @@ class Google
                 'changePasswordAtNextLogin' => true
             ]);
 
-            return $this->directoryService->users->insert($user);
+            $user = $this->directoryService->users->insert($user);
+            if($user){
+                $this->addMemberToGroup($email, $groupEmail);
+            }
+            return $user;
         } catch (\Google\Service\Exception $e) {
             Log::error('Google Service Error: ' . $e->getMessage());
             return false;
@@ -102,19 +106,35 @@ class Google
     {
         $client = $this->getClient();
         $this->directoryService = new Directory($client);
-
+    
         $member = new Directory\Member();
         $member->setEmail($email);
         $member->setRole('MEMBER');
-
+    
         try {
-            $this->directoryService->members->insert($groupEmail, $member);
-            return true;
+            $existingMember = $this->directoryService->members->get($groupEmail, $email);
+    
+            if ($existingMember) {
+                return true;
+            }
         } catch (\Google\Service\Exception $e) {
-            Log::error($e->getMessage());
-            return false;
+            if ($e->getCode() == 404) {
+                try {
+                    $this->directoryService->members->insert($groupEmail, $member);
+                    return true;
+                } catch (\Google\Service\Exception $insertException) {
+                    Log::error('Failed to add member to group: ' . $insertException->getMessage());
+                    return false;
+                }
+            } else {
+                Log::error('Error checking if member exists: ' . $e->getMessage());
+                return false;
+            }
         }
+    
+        return false;
     }
+    
 
     protected function getClient()
     {

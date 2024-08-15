@@ -26,6 +26,7 @@ use App\Libraries\Pdf\Pdf;
 use App\Libraries\Bandwidth\Bandwidth;
 use App\Libraries\Monnify\Monnify;
 use App\Libraries\Paygate\Paygate;
+use App\Libraries\Google\Google;
 
 use App\Models\Hostel;
 use App\Models\RoomType;
@@ -41,6 +42,7 @@ use Carbon\Carbon;
 use Paystack;
 use KingFlamez\Rave\Facades\Rave as Flutterwave;
 use OneSignal;
+
 
 
 class StudentController extends Controller
@@ -122,6 +124,11 @@ class StudentController extends Controller
             ]);
         }
 
+        if($student->is_active != 1){
+            $google = new Google();
+            $google->addMemberToGroup($student->email, env('GOOGLE_STUDENT_GROUP'));
+        }
+      
         return view('student.home', [
             'payment' => $paymentCheck->schoolPayment,
             'passTuition' => $paymentCheck->passTuitionPayment,

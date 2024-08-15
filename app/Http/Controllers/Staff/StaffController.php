@@ -78,6 +78,14 @@ class StaffController extends Controller
 
         $applicants = Applicant::with('student')->where('referrer', $referalCode)->where('academic_session', $applicationSession)->get();
 
+        $google = new Google();
+        $google->addMemberToGroup($staff->email, env('GOOGLE_STAFF_GROUP'));
+        if(strtolower($staff->category) == 'academic'){
+            $google->addMemberToGroup($staff->email, env('GOOGLE_ACADEMIC_STAFF_GROUP'));
+        }else{
+            $google->addMemberToGroup($staff->email, env('GOOGLE_NON_ACADEMIC_STAFF_GROUP'));
+        }
+
         return view('staff.home', [
             'applicants' => $applicants,
             'capturedWorkingDays' => $capturedWorkingDays,
