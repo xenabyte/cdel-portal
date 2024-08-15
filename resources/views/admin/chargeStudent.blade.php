@@ -691,6 +691,16 @@
                             selectElement.appendChild(option);
                         });
 
+                    } else if (selectedPaymentType === 'Accomondation Fee') {
+                        paymentId.value = data.id;
+                        
+                        document.getElementById('payment-options-acceptance').style.display = 'none';
+                        document.getElementById('payment-options-tuition').style.display = 'block';
+                        document.getElementById('payment-options-general').style.display = 'none';
+                        document.getElementById('payment-for').style.display = 'none';
+                        paymentSelect.disabled = true;
+                        paymentHidden.disabled = false;
+
                     } else {
                         paymentId.value = data.id;
 

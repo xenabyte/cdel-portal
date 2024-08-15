@@ -589,7 +589,7 @@ class PaymentController extends Controller
             ],[
                 'amountAcceptance.required' => 'The amount field is required.',
             ]);
-        }elseif($type == Payment::PAYMENT_TYPE_SCHOOL || $type == Payment::PAYMENT_TYPE_SCHOOL_DE){
+        }elseif($type == Payment::PAYMENT_TYPE_SCHOOL || $type == Payment::PAYMENT_TYPE_SCHOOL_DE || $type == Payment::PAYMENT_TYPE_ACCOMONDATION){
             $validator = Validator::make($request->all(), [
                 'amountTuition' => 'required',
             ],[
@@ -625,6 +625,8 @@ class PaymentController extends Controller
             $amount = $request->amountAcceptance;
         }elseif($payment->type == Payment::PAYMENT_TYPE_SCHOOL || $payment->type == Payment::PAYMENT_TYPE_SCHOOL_DE){
             $amount = env('PAYMENT_TYPE')=='Percentage'?$request->amountTuition:$request->amountTuition*100;
+        }elseif($payment->type == Payment::PAYMENT_TYPE_ACCOMONDATION) {
+            $amount = $request->amountTuition*100;
         }else{
             $amount = $request->amountGeneral * 100;
         }
@@ -638,7 +640,8 @@ class PaymentController extends Controller
             ->get();
 
             $totatAmountPaid = $paymentTransactions->sum('amount_payed');
-            if(($amount+$totatAmountPaid) > $totalPayment){
+
+            if($totalPayment> 0 && ($amount+$totatAmountPaid) > $totalPayment){
                 alert()->error('Oops!!!', 'Amount to be paid seems to be an overpayment, student is not charged')->persistent('Close');
                 if(!empty($request->student_id)){
                     if($validator->fails()) {

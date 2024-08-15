@@ -1,0 +1,16 @@
+{
+    "web": {
+      "client_id": "813487146994-smnsnbmos7jgpj8gv17oguo5qs5ll6vl.apps.googleusercontent.com",
+      "project_id": "tau-core-api",
+      "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+      "token_uri": "https://oauth2.googleapis.com/token",
+      "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+      "client_secret": "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",
+      "javascript_origins": [
+        "https://tau.edu.ng",
+        "https://portal.tau.edu.ng",
+        "http://localhost:8000"
+      ]
+    }
+  }
+  
