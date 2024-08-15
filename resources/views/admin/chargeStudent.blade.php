@@ -150,7 +150,7 @@
                             @foreach($paymentType as $filteredTransaction)
                             @php
                                 $payment = new \App\Models\Payment;
-                                $paymentAmount = $payment->getTotalStructureAmount($filteredTransaction['id']);
+                                $paymentAmount = $payment->getTotalStructureAmount($filteredTransaction['id']) < 1?$filteredTransaction['totalAmount']:$payment->getTotalStructureAmount($filteredTransaction['id']);
                                 $balance = $paymentAmount>0? $paymentAmount - $filteredTransaction['totalPaid'] : 0;
                             @endphp
                                 <tr>

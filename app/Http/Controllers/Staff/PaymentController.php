@@ -909,29 +909,41 @@ class PaymentController extends Controller
         $levels = AcademicLevel::orderBy('id', 'DESC')->get();
         $sessions = Session::orderBy('id', 'DESC')->get();
 
-        $transactions = Transaction::where([
+        $transactionsQuery = Transaction::where([
             'session' => $session,
             'student_id' => $studentId,
-            'payment_id' => $paymentId,
-        ])->orderBy('id', 'DESC')->get();
-
-        if($paymentId > 0){
+        ]);
+        
+        if ($paymentId > 0) {
             $payment = Payment::with('structures')->where('id', $paymentId)->first();
             $amountBilled = $payment->structures->sum('amount');
 
-            $paymentType = $payment->type;
+            if ($payment) {
+                $paymentType = $payment->type;
+        
+                $transactionsQuery->whereHas('paymentType', function ($query) use ($paymentType) {
+                    $query->where('type', $paymentType);
+                });
+            }
+        } else {
+            $amountBilled = $transactionsQuery->sum('amount_payed');
         }
+        
+        $transactions = $transactionsQuery->orderBy('id', 'DESC')->get();
 
-        if(!$paymentId > 0){
+        if ($amountBilled == 0) {
             $amountBilled = $transactions->sum('amount_payed');
         }
+        
 
         $student = Student::with('applicant')->where('id', $studentId)->first();
+
 
         $student->session = $session;
         $student->paymentType = $paymentType;
         $student->amountBilled = $amountBilled;
         $student->paymentId = $paymentId;
+
         
         return view('staff.getStudentPayment', [
             'student' => $student,

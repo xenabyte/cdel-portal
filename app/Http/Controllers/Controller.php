@@ -425,19 +425,23 @@ class Controller extends BaseController
         $filteredTransactions = [];
         foreach ($transactions as $transaction) {
             $paymentType = !empty($transaction->paymentType) ? $transaction->paymentType->type : Payment::PAYMENT_TYPE_WALLET_DEPOSIT;
-            $session = $transaction->session;
-            $totalPaid = $transaction->status == 1 ? $transaction->amount_payed : 0; // Fixed the condition and property name
             
-            // Using the payment_id as the array key for easy access
+            $session = $transaction->session;
             $paymentId = $transaction->payment_id;
+            
+            $totalPaid = ($transaction->status == 1) ? $transaction->amount_payed : 0;
         
+            $totalAmount = $transaction->amount_payed;
+            
             if (isset($filteredTransactions[$paymentType][$session])) {
                 $filteredTransactions[$paymentType][$session]['totalPaid'] += $totalPaid;
+                $filteredTransactions[$paymentType][$session]['totalAmount'] += $totalAmount;
             } else {
                 $filteredTransactions[$paymentType][$session] = [
                     'id' => $paymentId,
                     'paymentType' => $paymentType,
                     'totalPaid' => $totalPaid,
+                    'totalAmount' => $totalAmount,
                     'session' => $session,
                 ];
             }

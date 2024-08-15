@@ -36,7 +36,7 @@
 @if(!empty($student))
 @php
 $payment = new \App\Models\Payment;
-$paymentAmount = $payment->getTotalStructureAmount($student->paymentId);
+$paymentAmount =  $student->amountBilled; //$payment->getTotalStructureAmount($student->paymentId);
 $totalPaid = $transactions->where('status', 1)->sum('amount_payed');
 $balance = $paymentAmount>0? $paymentAmount - $totalPaid : 0;
 @endphp
