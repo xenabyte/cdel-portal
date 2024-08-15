@@ -16,7 +16,7 @@ class Google
         $this->client = new GoogleClient();
         $this->client->setClientId(env('GOOGLE_CLIENT_ID'));
         $this->client->setClientSecret(env('GOOGLE_CLIENT_SECRET'));
-        $this->client->setAuthConfig(base_path('public\google\tau-core-api-2551c52d28f8.json'));
+        $this->client->setAuthConfig(base_path('public\google\tau-core-api-d3dd9b502e4d.json'));
         $this->client->addScope([
             Directory::ADMIN_DIRECTORY_USER,
             Directory::ADMIN_DIRECTORY_GROUP
