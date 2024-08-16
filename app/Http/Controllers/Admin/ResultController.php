@@ -110,7 +110,6 @@ class ResultController extends Controller
         with(['applicant', 'programme', 'registeredCourses', 'registeredCourses.course'])
         ->where([
             'is_active' => true,
-            'is_passed_out' => false,
             'is_rusticated' => false,
             'programme_id' => $request->programme_id,
             'department_id' => $request->department_id,
@@ -163,7 +162,6 @@ class ResultController extends Controller
         with(['applicant', 'programme', 'registeredCourses', 'registeredCourses.course', 'academicLevel', 'department', 'faculty'])
         ->where([
             'is_active' => true,
-            'is_passed_out' => false,
             'is_rusticated' => false,
             'faculty_id' => $request->faculty_id,
         ])
