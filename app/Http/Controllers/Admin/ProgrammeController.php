@@ -645,6 +645,47 @@ class ProgrammeController extends Controller
         return redirect()->back();
     }
 
+    public function uploadVocationResult(Request $request){
+        $globalData = $request->input('global_data');
+        $admissionSession = $globalData->sessionSetting['admission_session'];
+        $academicSession = $globalData->sessionSetting['academic_session'];
+        $applicationSession = $globalData->sessionSetting['application_session'];
+
+        $validator = Validator::make($request->all(), [
+            'result' => 'required|file',
+        ]);
+
+        if($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+
+        $file = $request->file('result');
+        $fileExtension = $file->getClientOriginalExtension();
+        
+        if ($fileExtension != 'csv') {
+            alert()->error('Invalid file format, only CSV is allowed', '')->persistent('Close');
+            return redirect()->back();
+        }
+
+    
+        $file = $request->file('result');
+        $processResult = Result::processVocationResult($file, $globalData);
+
+        if($processResult != 'success'){
+            alert()->error('oops!', $processResult)->persistent('Close');
+            return redirect()->back();
+        }
+
+        if($processResult){
+            alert()->success('Student scores updated successfully!', '')->persistent('Close');
+            return redirect()->back();
+        }
+
+        alert()->error('No file uploaded. Result not processed', '')->persistent('Close');
+        return redirect()->back();
+    }
+
     public function changeProgramme(){
         return view('admin.changeProgramme');
     }

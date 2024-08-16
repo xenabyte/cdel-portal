@@ -42,7 +42,7 @@ class Result
 
             $student = Student::with('applicant')->where('matric_number', $matricNumber)->first();
             if(!$student){
-                Log::info("Student with ". $matricNumber ." did register for this course.");
+                Log::info("Student with ". $matricNumber ." didnt register for this course.");
                 continue;
             }
 
@@ -129,4 +129,75 @@ class Result
 
         return true;
     }
+
+    public static function processVocationResult(UploadedFile $file,  $globalSettings){
+        $csv = Reader::createFromPath($file->getPathname());
+        $csv->setHeaderOffset(0);
+
+        $records = $csv->getRecords();
+        $academicSession = $globalSettings->sessionSetting['academic_session'];
+        $academicSession = '2023/2024';
+
+        foreach ($records as $row) {
+            $email = $row['email'];
+            $courseCode = $row['Course Code'];
+            $examScore = $row['Exam Score'];
+            $examScore = floatval($examScore);
+            $examScore =  number_format($examScore, 2);
+
+            $student = Student::with('applicant')->where('email', $email)->first();
+            if(!$student){
+                Log::info("Student with ". $email ." not found");
+                continue;
+            }
+
+            if( $examScore < 1){
+                continue;
+            }
+            
+            $totalScore = round($examScore);
+
+            if($totalScore > 100){
+                Log::info($student->applicant->lastname.' '.$student->applicant->othernames ." total score is greater than 100.");
+                continue;
+            }
+
+            $grading = GradeScale::computeGrade($totalScore);
+            $grade = $grading->grade;
+            $points = $grading->point;
+
+            $course = Course::where('code', $courseCode)->first();
+
+            if(!$course){
+                Log::info("course not found: " . $courseCode);
+                continue;
+            }
+
+            $studentId = $student->id;
+
+            $studentRegistration = CourseRegistration::where([
+                'student_id' => $studentId,
+                'course_id' => $course->id,
+                'result_approval_id' => null,
+                'academic_session' => $academicSession
+            ])->first();
+
+            if(!$studentRegistration){
+                Log::info($student->applicant->lastname."  ".$student->applicant->othernames."Course registration not found for ".$courseCode." @ ".$academicSession);
+                continue;
+            }
+
+            if ($studentRegistration) {
+                $studentRegistration->exam_score = $examScore;
+                $studentRegistration->total = $totalScore;
+                $studentRegistration->grade = $grade;
+                $studentRegistration->points = $points * $studentRegistration->course_credit_unit;
+                $studentRegistration->save();
+            }
+        }
+
+        return 'success';
+
+    }
+    
 }

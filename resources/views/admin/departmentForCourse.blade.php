@@ -87,6 +87,15 @@
                             </div>
                         </div>
 
+                        @if($department->id == env('VOCATION_ID'))
+                        <div class="align-items-center d-flex mt-3 pt-3">
+                            <p class="mb-0 flex-grow-1">Upload Result</p>
+                            <div class="flex-shrink-0">
+                                <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#uploadResult" class="btn btn-primary">Upload Result</a>
+                            </div>
+                        </div>
+                        @endif
+
                     </div><!-- end card body -->
                 </div><!-- end card -->
             </div><!-- end col -->
@@ -294,6 +303,37 @@
 
                     <div class="text-end border-top border-top-dashed p-3 p-3">
                         <button type="submit" id="submit-button" class="btn btn-primary">Add Course</button>
+                    </div>
+                </form>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+
+<div id="uploadResult" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 overflow-hidden">
+            <div class="modal-header p-3">
+                <h4 class="card-title mb-0">Upload Result</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <hr>
+            <div class="modal-body">
+                <form action="{{ url('/admin/uploadVocationResult') }}" method="post" enctype="multipart/form-data">
+                    @csrf
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div>
+                                <label for="formSizeLarge" class="form-label">Result (CSV)</label>
+                                <input name="result"  class="form-control form-control-lg" id="formSizeLarge" type="file" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr>
+                    <div class="text-end">
+                        <button type="submit" id="submit-button" class="btn btn-primary">Upload Result</button>
                     </div>
                 </form>
             </div>
