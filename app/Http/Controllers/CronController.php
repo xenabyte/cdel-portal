@@ -52,12 +52,12 @@ class CronController extends Controller
 
     public function deletePendingTransactions(){
 
-        $transactions = Transaction::where('status', '!=', 1)
+        $transactions = Transaction::where('status', null)
                                     ->where('payment_method', '!=', 'Manual/BankTransfer')
-                                    ->where('payment_method', '!=', NULL)
+                                    ->where('payment_method', '!=', null)
                                     ->get();
 
-        if ($transactions->isEmpty()) {
+        if (!$transactions) {
             return $this->dataResponse('No pending transactions found that can be deleted.', null);
         }
 
@@ -65,5 +65,36 @@ class CronController extends Controller
 
         return $this->dataResponse('Pending transactions deleted successfully.', null);
     }
+
+    public function exportDatabase(){
+        $backupDir = public_path('backups');
+        if (!file_exists($backupDir)) {
+            mkdir($backupDir, 0755, true);
+        }
+
+        $fileName = 'database_backup_' . date('Y-m-d_H-i-s') . '.sql';
+        $exportPath = $backupDir . '/' . $fileName;
+
+        $databaseName = env('DB_DATABASE');
+        $username = env('DB_USERNAME');
+        $password = env('DB_PASSWORD');
+
+        exec("mysqldump --user={$username} --password={$password} {$databaseName} > {$exportPath}");
+
+        if (!file_exists($exportPath)) {
+            return response()->json(['error' => 'Failed to create the backup file.'], 500);
+        }
+
+        Mail::send([], [], function ($message) use ($exportPath, $fileName) {
+            $message->to(env('BACKUP_EMAIL'))
+                ->subject('Database Backup ' . date('Y-m-d H:i:s'))
+                ->attach($exportPath, ['as' => $fileName]);
+        });
+
+        unlink($exportPath);
+
+        return response()->json(['message' => 'Database exported and email sent successfully.']);
+    }
+
 
 }
