@@ -29,6 +29,8 @@ use App\Mail\ApplicationMail;
 use App\Mail\BankDetailsMail;
 
 use App\Libraries\Paygate\Paygate;
+use App\Libraries\AdvanceStudy\AdvanceStudy;
+
 
 
 use SweetAlert;
@@ -142,13 +144,18 @@ class ApplicationController extends Controller
         $globalData = $request->input('global_data');
         $applicationSession = $globalData->sessionSetting['application_session'];
 
+        $advanceStudy = new AdvanceStudy();
+        $advanceStudyProgrammes = $advanceStudy->getProgrammes();
+
+
         $applicationPayment = Payment::with('structures')->where('type', Payment::PAYMENT_TYPE_GENERAL_APPLICATION)->where('academic_session', $applicationSession)->first();
         $interApplicationPayment = Payment::with('structures')->where('type', Payment::PAYMENT_TYPE_INTER_TRANSFER_APPLICATION)->where('academic_session', $applicationSession)->first();
 
         return view('user.auth.register', [
             'programmes' => $this->programmes,
             'payment' => $applicationPayment,
-            'interPayment' => $interApplicationPayment
+            'interPayment' => $interApplicationPayment,
+            'advanceStudyProgrammes' => $advanceStudyProgrammes,
         ]);
     }
 
@@ -366,7 +373,6 @@ class ApplicationController extends Controller
         $applicationPayment = Payment::with('structures')->where('academic_session', $applicationSession)->where('type', Payment::PAYMENT_TYPE_GENERAL_APPLICATION)->first();
         $interApplicationPayment = Payment::with('structures')->where('academic_session', $applicationSession)->where('type', Payment::PAYMENT_TYPE_INTER_TRANSFER_APPLICATION)->first();
 
-
         $payment = $applicationPayment;
         if($applicationType == 'Inter Transfer Application'){
             $payment = $interApplicationPayment;
@@ -401,7 +407,7 @@ class ApplicationController extends Controller
                     'programmes' => $this->programmes,
                     'applicant' => $applicant,
                     'payment' => $applicationPayment,
-                    'interPayment' => $interApplicationPayment
+                    'interPayment' => $interApplicationPayment,
                 ]);
             }
         }

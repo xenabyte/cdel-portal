@@ -118,6 +118,18 @@ class AdmissionController extends Controller
             }
         }
 
+        if(strtolower($request->status) == 'advanceStudies'){
+            $validator = Validator::make($request->all(), [
+                'advanceStudiesProgrammeType' => 'required',
+            ]);
+
+
+            if($validator->fails()) {
+                alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+                return redirect()->back();
+            }
+        }
+
         if(!$applicant = Applicant::with('programme')->where('id', $request->applicant_id)->first()){
             alert()->error('Oops', 'Invalid Applicant Information')->persistent('Close');
             return redirect()->back();
@@ -129,6 +141,9 @@ class AdmissionController extends Controller
 
         $applicantId = $applicant->id;
         $status = $request->status;
+
+
+        $applicant->status = $status;
 
                 
         if(strtolower($status) == 'admitted'){
@@ -167,11 +182,13 @@ class AdmissionController extends Controller
             $student->admission_letter = $admissionLetter;
             $student->save();
 
-            //In the email, create and provide student portal login information
             Mail::to($student->email)->send(new AdmissionMail($student));
         }
 
-        $applicant->status = $status;
+        if(strtolower($status) == 'advanceStudies'){
+            $advanceStudiesProgrammeType = $request('advanceStudiesProgrammeType');
+
+        }
 
 
         if(strtolower($status) == 'reverse_admission'){

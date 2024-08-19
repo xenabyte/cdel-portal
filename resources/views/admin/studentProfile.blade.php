@@ -385,7 +385,7 @@ $studentRegistrations = $student->courseRegistrationDocument()->orderBy('created
                                             <input type="hidden" name="student_id" value="{{ $student->id }}">
 
                                             <div class="row g-2">
-                                                <div class="hidden-fields row mt-3 g-3">
+                                                <div class="row mt-3 g-3">
                                                     <div class="col-lg-6">
                                                         <div class="form-floating">
                                                             <input type="text" class="form-control" id="lastname" name="lastname" value="{{ $student->applicant->lastname }}">

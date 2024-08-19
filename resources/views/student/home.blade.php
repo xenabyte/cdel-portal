@@ -294,6 +294,22 @@ $studentRegistrations = $student->courseRegistrationDocument()->orderBy('created
         @endif
 
         <div class="card">
+            <div class="card-header border-0 align-items-center d-flex bg-info text-light">
+                <h4 class="card-title mb-0 flex-grow-1">University Information Board</h4>
+            </div><!-- end card header -->
+
+            <div class="card-body border-top border-top-dashed">
+                <div class="vstack gap-2">
+                   
+
+
+
+                </div>
+            </div>
+        </div>
+
+
+        <div class="card">
             <div class="card-header border-0 align-items-center d-flex">
                 <h4 class="card-title mb-0 flex-grow-1">Documents</h4>
             </div><!-- end card header -->

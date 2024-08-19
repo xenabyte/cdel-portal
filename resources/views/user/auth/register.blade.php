@@ -123,7 +123,7 @@
         <div class="p-lg-5">
 
             <div>
-                <h5>Kindly fill the form below</h5>
+                <h5>Kindly fill the form below<h5>
                 <form class="needs-validation" method="POST" novalidate action="{{ url('applicant/register') }}">
                     @csrf
                     <div class="p-2 mt-4">
@@ -133,6 +133,11 @@
                                 <option value= "" selected>Select Application Type</option>
                                 <option value="General Application">General Application(UTME & DE)</option>
                                 <option value="Inter Transfer Application">Inter Transfer Application</option>
+                                @if(!empty($advanceStudyProgrammes))
+                                    @foreach($advanceStudyProgrammes as $advanceStudyProgramme)
+                                    <option value="{{ $advanceStudyProgramme['title'] }}">{{ $advanceStudyProgramme['title'] }}</option>
+                                    @endforeach
+                                @endif
                             </select>
                         </div>
                     </div>
@@ -289,6 +294,12 @@
             applicationForm.style.display = "block";
             generalAlert.style.display = "none";
             interTransferAlert.style.display = "block";
+
+        } else if (selectedValue === "IJMB") {
+            window.location.href = "{{env('ADVANCED_STUDIES_URL')}}?programme="+selectedValue;
+
+        } else if (selectedValue === "Preliminary Studies") {
+            window.location.href = "{{env('ADVANCED_STUDIES_URL')}}?programme="+selectedValue;
         } else {
             generalAlert.style.display = "block";
             interTransferAlert.style.display = "none";
