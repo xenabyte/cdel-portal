@@ -357,9 +357,7 @@
                                         <li class="nav-item">
                                             <a class="nav-link menu-link" href="{{ url('staff/studentFinalClearance') }}" data-key="t-profile">Final Year Student Clearance <span class="badge badge-pill bg-danger" data-key="t-hot">{{  $pendingStudentClearanceCount }} </span></a>
                                         </li>
-                                        @endif
-                                        
-
+                                        @endif                                      
                                     </ul>
                                 </div>
                             </li>
@@ -423,7 +421,7 @@
                             </li>
                             @endif
 
-                            @if($staffAdmissionOfficerRole || $staffPublicRelationRole || $staffRegistrarRole || $staffVCRole)
+                            @if($staffAdmissionOfficerRole || $staffPublicRelationRole || $staffRegistrarRole || $staffVCRole || $staffBursaryRole)
                             <li class="nav-item">
                                 <a class="nav-link menu-link" href="#admission" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="admission">
                                     <i class="mdi mdi-account-box-multiple"></i> <span data-key="t-admission">Admission</span>
