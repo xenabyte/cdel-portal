@@ -27,7 +27,7 @@
             <div class="card-header align-items-center d-flex">
                 <h4 class="card-title mb-0 flex-grow-1">Bandwidth Transactions </h4>
                 <div class="flex-shrink-0">
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addTransaction">Create Transaction</button>
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addTransaction">Purchase Bandwidth(Internet Data)</button>
                 </div>
             </div><!-- end card header -->
 

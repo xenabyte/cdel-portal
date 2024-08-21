@@ -15,6 +15,7 @@ use App\Models\Staff;
 use App\Models\User as Applicant;
 use App\Models\Student;
 use App\Models\Guardian;
+use App\Models\FinalClearance;
 
 use App\Mail\NotificationMail;
 
@@ -200,5 +201,34 @@ class StudentController extends Controller
         alert()->error('Oops!', 'Something went wrong')->persistent('Close');
         return redirect()->back();
     }
+
     
+    public function manageFinalYearStudentClearance(Request $request){
+    
+        $validator = Validator::make($request->all(), [
+            'clearance_id' => 'required',
+        ]);
+    
+        if($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+    
+        $studentFinalClearance = FinalClearance::find($request->clearance_id);
+        if(!$studentFinalClearance){
+            alert()->error('Error', 'Student Clearance not found')->persistent('Close');
+            return redirect()->back();
+        }
+        
+        $studentFinalClearance->status = 'approved';
+    
+        if($studentFinalClearance->save()){
+            alert()->success('Success', 'Clearance updated successfully')->persistent('Close');
+            return redirect()->back();
+        }
+
+        alert()->error('Error', 'Failed to update clearance status')->persistent('Close');
+        return redirect()->back();
+    
+    }
 }

@@ -192,4 +192,14 @@ class Student extends Authenticatable
     {
         return $this->hasMany(StudentExit::class, 'student_id');
     }
+
+    /**
+     * Get the finalClearance associated with the Student
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function finalClearance()
+    {
+        return $this->hasOne(FinalClearance::class, 'student_id', 'id');
+    }
 }

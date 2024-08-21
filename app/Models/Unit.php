@@ -10,6 +10,11 @@ class Unit extends Model
 {
     use HasFactory, SoftDeletes;
 
+    const UNIT_REGISTRY = 'Registry';
+    const UNIT_BURSARY = 'Bursary';
+    const UNIT_STUDENT_CARE = 'Student Care Services';
+    const UNIT_LIBRARY = 'Library';
+
     protected $fillable = [
         'name',
         'unit_head_id',

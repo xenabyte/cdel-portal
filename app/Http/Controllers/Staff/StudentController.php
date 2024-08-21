@@ -15,6 +15,8 @@ use App\Models\Staff;
 use App\Models\User as Applicant;
 use App\Models\Student;
 use App\Models\Guardian;
+use App\Models\FinalClearance;
+
 
 use App\Mail\NotificationMail;
 
@@ -104,4 +106,110 @@ class StudentController extends Controller
             'academicSessions' => $academicSessions,
         ]);
     }
+
+    public function studentFinalClearance(){
+
+        $students = FinalClearance::with('student', 'librarian', 'hod', 'dean', 'bursary', 'registrar', 'student_care_dean')->where('status', null)->get();
+
+        return view('staff.studentFinalClearance', [
+            'students' => $students,
+        ]);
+    }
+
+    public function manageFinalYearStudentClearance(Request $request){
+        $staff = Auth::guard('staff')->user();
+    
+        $validator = Validator::make($request->all(), [
+            'clearance_id' => 'required',
+            'status' => 'required',
+            'comment' => 'required',
+        ]);
+    
+        if($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+    
+        $studentFinalClearance = FinalClearance::find($request->clearance_id);
+        if(!$studentFinalClearance){
+            alert()->error('Error', 'Student Clearance not found')->persistent('Close');
+            return redirect()->back();
+        }
+    
+        if ($staff->id == $studentFinalClearance->hod_id) {
+            $role = 'hod';
+        } elseif ($staff->id == $studentFinalClearance->dean_id) {
+            $role = 'dean';
+        } elseif ($staff->id == $studentFinalClearance->student_care_dean_id) {
+            $role = 'student_care_dean';
+        } elseif ($staff->id == $studentFinalClearance->registrar_id) {
+            $role = 'registrar';
+        } elseif ($staff->id == $studentFinalClearance->bursary_id) {
+            $role = 'bursary';
+        } elseif ($staff->id == $studentFinalClearance->library_id) {
+            $role = 'library';
+        } else {
+            alert()->error('Error', 'You do not have permission to manage this clearance')->persistent('Close');
+            return redirect()->back();
+        }
+    
+        switch ($role) {
+            case 'hod':
+                $studentFinalClearance->hod_status = $request->status;
+                $studentFinalClearance->hod_comment = $request->comment;
+                $studentFinalClearance->hod_approval_date = now();
+                break;
+            case 'dean':
+                $studentFinalClearance->dean_status = $request->status;
+                $studentFinalClearance->dean_comment = $request->comment;
+                $studentFinalClearance->dean_approval_date = now();
+                break;
+            case 'student_care_dean':
+                $studentFinalClearance->student_care_dean_status = $request->status;
+                $studentFinalClearance->student_care_dean_comment = $request->comment;
+                $studentFinalClearance->student_care_dean_approval_date = now();
+                break;
+            case 'registrar':
+                $studentFinalClearance->registrar_status = $request->status;
+                $studentFinalClearance->registrar_comment = $request->comment;
+                $studentFinalClearance->registrar_approval_date = now();
+                break;
+            case 'bursary':
+                $studentFinalClearance->bursary_status = $request->status;
+                $studentFinalClearance->bursary_comment = $request->comment;
+                $studentFinalClearance->bursary_approval_date = now();
+                break;
+            case 'library':
+                $studentFinalClearance->library_status = $request->status;
+                $studentFinalClearance->library_comment = $request->comment;
+                $studentFinalClearance->library_approval_date = now();
+                break;
+        }
+        $studentFinalClearance->save();
+
+        $studentFinalClearance->refresh();
+
+        // Check if all roles have approved the clearance
+        if (
+            $studentFinalClearance->hod_status === 'approved' &&
+            $studentFinalClearance->dean_status === 'approved' &&
+            $studentFinalClearance->student_care_dean_status === 'approved' &&
+            $studentFinalClearance->registrar_status === 'approved' &&
+            $studentFinalClearance->bursary_status === 'approved' &&
+            $studentFinalClearance->library_status === 'approved'
+        ) {
+            // All roles have approved, set the clearance status to approved
+            $studentFinalClearance->status = 'approved';
+        }
+    
+        if($studentFinalClearance->save()){
+            alert()->success('Success', 'Clearance updated successfully')->persistent('Close');
+            return redirect()->back();
+        }
+
+        alert()->error('Error', 'Failed to update clearance status')->persistent('Close');
+        return redirect()->back();
+    
+    }
+    
 }

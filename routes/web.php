@@ -384,6 +384,7 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'admin'],
   Route::post('/deleteBankAccount', [App\Http\Controllers\Admin\PaymentController::class, 'deleteBankAccount'])->name('deleteBankAccount')->middleware(['auth:admin']);
 
   Route::get('/alumni', [App\Http\Controllers\Admin\StudentController::class, 'alumni'])->name('alumni')->middleware(['auth:admin']);
+  Route::post('/manageFinalYearStudentClearance', [App\Http\Controllers\Admin\StudentController::class, 'manageFinalYearStudentClearance'])->name('manageFinalYearStudentClearance')->middleware(['auth:admin']);
 
 });
 
@@ -480,6 +481,9 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'student'
   Route::post('/getRoomTypes', [App\Http\Controllers\Student\HostelController::class, 'getRoomTypes'])->name('getRoomTypes'); 
   Route::post('/getRooms', [App\Http\Controllers\Student\HostelController::class, 'getRooms'])->name('getRooms'); 
 
+  Route::post('/startClearance', [App\Http\Controllers\Student\ClearanceController::class, 'startClearance'])->name('startClearance')->middleware(['auth:student']); 
+  Route::post('/downloadClearance', [App\Http\Controllers\Student\ClearanceController::class, 'downloadClearance'])->name('downloadClearance')->middleware(['auth:student']);
+
 });
 
 Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'staff'], function () {
@@ -528,7 +532,6 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'staff'],
   Route::post('/staffUploadResult', [App\Http\Controllers\Staff\StaffController::class, 'staffUploadResult'])->name('staffUploadResult')->middleware(['auth:staff']);
   Route::post('/updateStudentResult', [App\Http\Controllers\Staff\StaffController::class, 'updateStudentResult'])->name('updateStudentResult')->middleware(['auth:staff']);
   Route::post('/uploadVocationResult', [App\Http\Controllers\Staff\StaffController::class, 'uploadVocationResult'])->name('uploadVocationResult')->middleware(['auth:staff']);
-
 
   Route::get('/staff', [App\Http\Controllers\Staff\StaffController::class, 'staff'])->name('staff')->middleware(['auth:staff']);
   Route::get('/staff/{slug}', [App\Http\Controllers\Staff\StaffController::class, 'singleStaff'])->name('singleStaff')->middleware(['auth:staff']);
@@ -681,8 +684,9 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'staff'],
 
   Route::get('/alumni', [App\Http\Controllers\Staff\StudentController::class, 'alumni'])->name('alumni')->middleware(['auth:staff']);
 
+  Route::get('/studentFinalClearance', [App\Http\Controllers\Staff\StudentController::class, 'studentFinalClearance'])->name('studentFinalClearance')->middleware(['auth:staff']);
+  Route::post('/manageFinalYearStudentClearance', [App\Http\Controllers\Staff\StudentController::class, 'manageFinalYearStudentClearance'])->name('manageFinalYearStudentClearance')->middleware(['auth:staff']);
 
-  
 });
 
 Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'bursary'], function () {

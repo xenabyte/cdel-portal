@@ -311,4 +311,38 @@ Class Pdf {
 
         return $fileDirectory;
     }
+
+    public function generateDownloadClearance($studentId){
+        $options = [
+            'isRemoteEnabled' => true,
+            'encryption' => '128',
+            'no_modify' => true,
+        ];
+
+        $student = Student::with('finalClearance', 'applicant')->where('id', $studentId)->first();
+        $name = $student->applicant->lastname.' '.$student->applicant->othernames;
+        $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $name .' final clearance')));
+
+
+        $clearance = $student->finalClearance;
+
+        $backupDir = public_path('uploads/files/final_clearance');
+        if (!file_exists($backupDir)) {
+            mkdir($backupDir, 0755, true);
+        }
+
+        $fileDirectory = 'uploads/files/final_clearance/'.$slug.'.pdf';
+        if (file_exists($fileDirectory)) {
+            unlink($fileDirectory);
+        }   
+             
+        $data = ['info'=>$student, 'finalClearance' => $clearance];
+
+        $pdf = PDFDocument::loadView('pdf.finalClearance', $data)
+        ->setOptions($options)
+        ->save($fileDirectory);
+
+        return $fileDirectory;
+    }
+    
 }

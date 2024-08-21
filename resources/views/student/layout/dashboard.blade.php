@@ -291,8 +291,8 @@
                         </li>
 
                         
-                        @if(!empty($student->image) && !empty($student->linkedIn) && !empty($student->bandwidth_username))
-                            @if($passTuition)
+                        {{-- @if(!empty($student->image) && !empty($student->linkedIn) && !empty($student->bandwidth_username))
+                            @if($passTuition) --}}
                             <li class="nav-item">
                                 <a class="nav-link menu-link" href="{{ url('student/reffs') }}">
                                     <i class="mdi mdi-account-network-outline"></i> <span data-key="t-transaction">Referred Student(s)</span>
@@ -307,12 +307,12 @@
 
                             <li class="nav-item">
                                 <a class="nav-link menu-link" href="#bandwidth" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="transaction">
-                                    <i class="mdi mdi-bank-transfer"></i> <span data-key="t-transaction">Bandwidth</span>
+                                    <i class="mdi mdi-bank-transfer"></i> <span data-key="t-transaction">Internet Data</span>
                                 </a>
                                 <div class="collapse menu-dropdown" id="bandwidth">
                                     <ul class="nav nav-sm flex-column">
                                         <li class="nav-item">
-                                            <a href="{{ url('/student/purchaseBandwidth') }}" class="nav-link">Purchase Bandwidth</a>
+                                            <a href="{{ url('/student/purchaseBandwidth') }}" class="nav-link">Purchase Internet Data</a>
                                         </li>
                                     </ul>
                                 </div>
@@ -396,8 +396,8 @@
                                     <i class="mdi mdi-arrow-top-right-bold-box"></i> <span data-key="t-transaction">Exit(s)</span>
                                 </a>
                             </li>
-                            @endif
-                        @endif
+                            {{-- @endif
+                        @endif --}}
                        
                         <li class="nav-item">
                             <a class="nav-link menu-link" href="{{ url('user/logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">

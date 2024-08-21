@@ -155,8 +155,15 @@ $studentRegistrations = $student->courseRegistrationDocument()->orderBy('created
                                     <p class="mb-0">You are have come to the end of your programme and been prepared for graduation</p>
                                 </div>
                             </div>
+
+                            <hr>
+                            @if(empty($student->finalClearance))
+                            <button type="button" class="btn btn-primary btn-label right ms-auto nexttab" data-nexttab="pills-bill-address-tab" data-bs-toggle="modal" data-bs-target="#startClearance"><i class="ri-arrow-right-line label-icon align-middle fs-16 ms-2"></i> Start Final Clearance Process</button>
+                            @else
+                            <button type="button" class="btn btn-info btn-label right ms-auto nexttab" data-nexttab="pills-bill-address-tab" data-bs-toggle="modal" data-bs-target="#clearanceStatus"><i class="ri-arrow-right-line label-icon align-middle fs-16 ms-2"></i>Check Clearance Status</button>
+                            @endif
+
                         @endif
-                       
                     </div>
 
 
@@ -294,16 +301,13 @@ $studentRegistrations = $student->courseRegistrationDocument()->orderBy('created
         @endif
 
         <div class="card">
-            <div class="card-header border-0 align-items-center d-flex bg-info text-light">
-                <h4 class="card-title mb-0 flex-grow-1">University Information Board</h4>
+            <div class="card-header border-0 align-items-center d-flex bg-info">
+                <h4 class="card-title mb-0 flex-grow-1 text-white">University Information Board</h4>
             </div><!-- end card header -->
 
-            <div class="card-body border-top border-top-dashed">
+           <div class="card-body border-top border-top-dashed">
                 <div class="vstack gap-2">
-                   
-
-
-
+                    <marquee behavior="alternate">{!! strip_tags($pageGlobalData->sessionSetting->campus_wide_message) !!}</marquee>
                 </div>
             </div>
         </div>
@@ -576,94 +580,162 @@ $studentRegistrations = $student->courseRegistrationDocument()->orderBy('created
 <!--end row-->
 @endif
 
-<div class="modal fade" id="read" tabindex="-1" role="dialog" aria-labelledby="read" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-scrollable">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="read">More about LinkedIn</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                </button>
+
+
+<div id="startClearance" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content border-0 overflow-hidden">
+            <div class="modal-header p-3">
+                <h4 class="card-title mb-0">Start Your Clearance Process</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body">
-                <h6 class="fs-15">Here are a few benefits of having a LinkedIn profile:</h6>
-                <div class="d-flex">
-                    <div class="flex-shrink-0">
-                        <i class="ri-checkbox-circle-fill text-success"></i>
+
+            <div class="modal-body border-top border-top-dashed">
+                <form action="{{ url('/student/startClearance') }}" method="post" enctype="multipart/form-data">
+                    @csrf
+                    <div class="mb-3">
+                        <label for="experience" class="form-label">Share Your TAU Experience</label>
+                        <textarea class="form-control ckeditor" name="experience" id="experience" ></textarea>
                     </div>
-                    <div class="flex-grow-1 ms-2">
-                        <p class="text-muted mb-0"><strong>Professional Networking:</strong> Connect with alumni, professors, and professionals in your field of interest.</p>
+
+                    <div>
+                        <button type="submit" id='submit-button-main' class="btn btn-primary">Proceed</button>
                     </div>
-                </div>
-                <div class="d-flex mt-2">
-                    <div class="flex-shrink-0">
-                        <i class="ri-checkbox-circle-fill text-success"></i>
-                    </div>
-                    <div class="flex-grow-1 ms-2 ">
-                        <p class="text-muted mb-0"><strong>Career Opportunities:</strong> Discover job and internship opportunities tailored to your skills and interests.</p>
-                    </div>
-                </div>
-                <div class="d-flex mt-2">
-                    <div class="flex-shrink-0">
-                        <i class="ri-checkbox-circle-fill text-success"></i>
-                    </div>
-                    <div class="flex-grow-1 ms-2 ">
-                        <p class="text-muted mb-0"><strong>Skill Development:</strong> Join groups and follow influencers to stay updated on industry trends and enhance your knowledge.</p>
-                    </div>
-                </div>
-                <div class="d-flex mt-2">
-                    <div class="flex-shrink-0">
-                        <i class="ri-checkbox-circle-fill text-success"></i>
-                    </div>
-                    <div class="flex-grow-1 ms-2 ">
-                        <p class="text-muted mb-0"><strong>Showcase Your Achievements:</strong> Highlight your academic achievements, projects, and extracurricular activities to potential employers.</p>
-                    </div>
-                </div>
-                <div class="d-flex mt-2">
-                    <div class="flex-shrink-0">
-                        <i class="ri-checkbox-circle-fill text-success"></i>
-                    </div>
-                    <div class="flex-grow-1 ms-2 ">
-                        <p class="text-muted mb-0"><strong>Recommendations:</strong> Request recommendations from teachers, mentors, or colleagues to strengthen your profile.</p>
-                    </div>
-                </div>
-                <h6 class="fs-16 my-3">Action Required:</h6>
-                <div class="d-flex mt-2">
-                    <div class="flex-shrink-0">
-                        <i class="ri-checkbox-circle-fill text-success"></i>
-                    </div>
-                    <div class="flex-grow-1 ms-2 ">
-                        <p class="text-muted mb-0"><strong>Create Your LinkedIn Profile:</strong> If you don't already have one, visit <a href="https://www.linkedin.com">LinkedIn</a> and create your profile. Make sure to add a professional profile picture and complete all relevant sections, including your education, skills, and experiences.</p>
-                    </div>
-                </div>
-                <div class="d-flex mt-2">
-                    <div class="flex-shrink-0">
-                        <i class="ri-checkbox-circle-fill text-success"></i>
-                    </div>
-                    <div class="flex-grow-1 ms-2 ">
-                        <p class="text-muted mb-0"><strong>Add Your LinkedIn Profile Link:</strong> Once your LinkedIn profile is complete, copy the URL of your profile page.</p>
-                    </div>
-                </div>
-                <div class="d-flex mt-2">
-                    <div class="flex-shrink-0">
-                        <i class="ri-checkbox-circle-fill text-success"></i>
-                    </div>
-                    <div class="flex-grow-1 ms-2 ">
-                        <p class="text-muted mb-0"><strong>Paste the Link in the URL Below:</strong> Click on the link provided below to access your student profile on our university website. There, you'll find a field to add your LinkedIn profile URL. Paste the link and save your changes.</p>
-                    </div>
-                </div>
-                <div class="d-flex mt-5">
-                    <div class="flex-grow-1 ms-2 ">
-                        <p class="text-muted mb-0">Having an active LinkedIn profile will not only expand your professional network but also open doors to various opportunities.</p>
-                        <p class="text-muted mb-0">Thank you for your attention and proactive participation in building your professional identity. We look forward to seeing your LinkedIn profiles grow and flourish.</p>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                </form>
             </div>
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
 
 
+<div id="clearanceStatus" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content border-0 overflow-hidden">
+            <div class="modal-header p-3">
+                <h4 class="card-title mb-0">Clearance Status</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body border-top border-top-dashed">
+                <div class="row">
+                    <div class="col-md-6 border-end">
+                        <div class="card-body p-0" style="height: 400px">
+                            <div class="simplebar-mask">
+                                <div class="simplebar-offset" style="right: 0px; bottom: 0px;">
+                                    <div class="simplebar-content-wrapper" tabindex="0" role="region" aria-label="scrollable content">
+                                        <div class="simplebar-content" style="padding: 16px;">
+                                            <div class="acitivity-timeline acitivity-main">
+                                                <!-- HOD Activity -->
+                                                @if(!empty($student->finalClearance->hod_id) && $student->finalClearance->hod)
+                                                <div class="acitivity-item d-flex mb-3">
+                                                    <div class="flex-shrink-0">
+                                                        <img src="{{ $student->finalClearance->hod->image }}" alt="" class="avatar-xs rounded-circle acitivity-avatar shadow">
+                                                    </div>
+                                                    <div class="flex-grow-1 ms-3">
+                                                        <h6 class="mb-1">{{ $student->finalClearance->hod->title.' '.$student->finalClearance->hod->lastname.' '.$student->finalClearance->hod->othernames }}</h6>
+                                                        <p class="text-muted mb-2 fst-italic">{{ ucwords($student->finalClearance->hod_status) }}</p>
+                                                        <small class="mb-0 text-muted">Comment: {!! strip_tags($student->finalClearance->hod_comment) !!}</small>
+                                                    </div>
+                                                </div>
+                                                @endif
+                
+                                                <!-- Dean Activity -->
+                                                @if(!empty($student->finalClearance->dean_id) && $student->finalClearance->dean)
+                                                <div class="acitivity-item d-flex mb-3">
+                                                    <div class="flex-shrink-0">
+                                                        <img src="{{ $student->finalClearance->dean->image }}" alt="" class="avatar-xs rounded-circle acitivity-avatar shadow">
+                                                    </div>
+                                                    <div class="flex-grow-1 ms-3">
+                                                        <h6 class="mb-1">{{ $student->finalClearance->dean->title.' '.$student->finalClearance->dean->lastname.' '.$student->finalClearance->dean->othernames }}</h6>
+                                                        <p class="text-muted mb-2 fst-italic">{{ ucwords($student->finalClearance->dean_status) }}</p>
+                                                        <small class="mb-0 text-muted">Comment: {!! strip_tags($student->finalClearance->dean_comment) !!}</small>
+                                                    </div>
+                                                </div>
+                                                @endif
+                
+                                                <!-- Registrar Activity -->
+                                                @if(!empty($student->finalClearance->registrar_id) && $student->finalClearance->registrar)
+                                                <div class="acitivity-item d-flex mb-3">
+                                                    <div class="flex-shrink-0">
+                                                        <img src="{{ $student->finalClearance->registrar->image }}" alt="" class="avatar-xs rounded-circle acitivity-avatar shadow">
+                                                    </div>
+                                                    <div class="flex-grow-1 ms-3">
+                                                        <h6 class="mb-1">{{ $student->finalClearance->registrar->title.' '.$student->finalClearance->registrar->lastname.' '.$student->finalClearance->registrar->othernames }}</h6>
+                                                        <p class="text-muted mb-2 fst-italic">{{ ucwords($student->finalClearance->registrar_status) }}</p>
+                                                        <small class="mb-0 text-muted">Comment: {!! strip_tags($student->finalClearance->registrar_comment) !!}</small>
+                                                    </div>
+                                                </div>
+                                                @endif
+                
+                                                <!-- Bursary Activity -->
+                                                @if(!empty($student->finalClearance->bursary_id) && $student->finalClearance->bursary)
+                                                <div class="acitivity-item d-flex mb-3">
+                                                    <div class="flex-shrink-0">
+                                                        <img src="{{ $student->finalClearance->bursary->image }}" alt="" class="avatar-xs rounded-circle acitivity-avatar shadow">
+                                                    </div>
+                                                    <div class="flex-grow-1 ms-3">
+                                                        <h6 class="mb-1">{{ $student->finalClearance->bursary->title.' '.$student->finalClearance->bursary->lastname.' '.$student->finalClearance->bursary->othernames }}</h6>
+                                                        <p class="text-muted mb-2 fst-italic">{{ ucwords($student->finalClearance->bursary_status) }}</p>
+                                                        <small class="mb-0 text-muted">Comment: {!! strip_tags($student->finalClearance->bursary_comment) !!}</small>
+                                                    </div>
+                                                </div>
+                                                @endif
+                
+                                                <!-- Library Activity -->
+                                                @if(!empty($student->finalClearance->library_id) && $student->finalClearance->librarian)
+                                                <div class="acitivity-item d-flex mb-3">
+                                                    <div class="flex-shrink-0">
+                                                        <img src="{{ $student->finalClearance->librarian->image }}" alt="" class="avatar-xs rounded-circle acitivity-avatar shadow">
+                                                    </div>
+                                                    <div class="flex-grow-1 ms-3">
+                                                        <h6 class="mb-1">{{ $student->finalClearance->librarian->title.' '.$student->finalClearance->librarian->lastname.' '.$student->finalClearance->librarian->othernames }}</h6>
+                                                        <p class="text-muted mb-2 fst-italic">{{ ucwords($student->finalClearance->library_status) }}</p>
+                                                        <small class="mb-0 text-muted">Comment: {!! strip_tags($student->finalClearance->library_comment) !!}</small>
+                                                    </div>
+                                                </div>
+                                                @endif
+                
+                                                <!-- Student Care Dean Activity -->
+                                                @if(!empty($student->finalClearance->student_care_dean_id) && $student->finalClearance->student_care_dean)
+                                                <div class="acitivity-item d-flex mb-3">
+                                                    <div class="flex-shrink-0">
+                                                        <img src="{{ $student->finalClearance->student_care_dean->image }}" alt="" class="avatar-xs rounded-circle acitivity-avatar shadow">
+                                                    </div>
+                                                    <div class="flex-grow-1 ms-3">
+                                                        <h6 class="mb-1">{{ $student->finalClearance->student_care_dean->title.' '.$student->finalClearance->student_care_dean->lastname.' '.$student->finalClearance->student_care_dean->othernames }}</h6>
+                                                        <p class="text-muted mb-2 fst-italic">{{ ucwords($student->finalClearance->student_care_dean_status) }}</p>
+                                                        <small class="mb-0 text-muted">Comment: {!! strip_tags($student->finalClearance->student_care_dean_comment) !!}</small>
+                                                    </div>
+                                                </div>
+                                                @endif
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        {!! $student->finalClearance->experience !!}
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                    @if(!empty($student->finalClearance) && $student->finalClearance->status == 'approved')
+                    <form action="{{ url('/student/downloadClearance') }}" method="post" enctype="multipart/form-data">
+                        @csrf
+                        <div>
+                            <button type="submit" id='submit-button-main' class="btn btn-primary">Download Clearance</button>
+                        </div>
+                    </form>
+                    @endif
+                    </div>
+                </div>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
 @endsection
+ s

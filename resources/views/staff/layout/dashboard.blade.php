@@ -1,6 +1,8 @@
 <!doctype html>
 <html lang="en" data-layout="vertical" data-layout-style="default" data-layout-position="fixed" data-topbar="light" data-sidebar="dark" data-sidebar-size="lg" data-layout-width="fluid" data-preloader="disable">
 @php
+    use App\Models\Unit;
+
     $staff = Auth::guard('staff')->user();
     $staffDeanRole = false;
     $staffSubDeanRole = false;
@@ -61,6 +63,20 @@
             $staffAcademicPlannerRole = true;
         }   
     }
+
+
+    $unitNames = ['UNIT_REGISTRY', 'UNIT_BURSARY', 'UNIT_STUDENT_CARE', 'UNIT_LIBRARY'];
+
+    $units = [];
+    foreach ($unitNames as $unitName) {
+        $units[] = constant("App\Models\Unit::$unitName");
+    }
+
+    $isUnitHead = Unit::whereIn('name', $units)
+                    ->where('unit_head_id', $staff->id)
+                    ->exists();
+
+    $pendingStudentClearanceCount = \App\Models\FinalClearance::where('status', null)->count();
 @endphp
 
 <head>
@@ -318,7 +334,10 @@
                             {{-- @if($staff->staffRoles->count() > 0) --}}
                             <li class="nav-item">
                                 <a class="nav-link menu-link" href="#student" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarForms">
-                                    <i class="mdi mdi-account-group"></i> <span data-key="t-leaveMGT">Student MGT</span>
+                                    <i class="mdi mdi-account-group"></i> <span data-key="t-leaveMGT">Student MGT</span> 
+                                    @if($staffDeanRole || $staffHODRole || $staffRegistrarRole || $isUnitHead)
+                                    <span class="badge badge-pill bg-danger" data-key="t-hot">{{ $pendingStudentClearanceCount }}</span>
+                                    @endif
                                 </a>
                                 <div class="collapse menu-dropdown" id="student">
                                     <ul class="nav nav-sm flex-column">
@@ -333,6 +352,14 @@
                                         <li class="nav-item">
                                             <a class="nav-link menu-link" href="{{ url('staff/alumni') }}" data-key="t-profile">Alumni (Graduated Students)</a>
                                         </li>
+
+                                        @if($staffDeanRole || $staffHODRole || $staffRegistrarRole || $isUnitHead)
+                                        <li class="nav-item">
+                                            <a class="nav-link menu-link" href="{{ url('staff/studentFinalClearance') }}" data-key="t-profile">Final Year Student Clearance <span class="badge badge-pill bg-danger" data-key="t-hot">{{  $pendingStudentClearanceCount }} </span></a>
+                                        </li>
+                                        @endif
+                                        
+
                                     </ul>
                                 </div>
                             </li>

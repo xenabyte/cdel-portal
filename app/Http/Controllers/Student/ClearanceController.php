@@ -21,10 +21,17 @@ use App\Models\Payment;
 use App\Models\Utme;
 use App\Models\Faculty;
 use App\Models\Department;
-
+use App\Models\StaffRole;
+use App\Models\Leave;
+use App\Models\Notification;
+use App\Models\Unit;
+use App\Models\Role;
+use App\Models\FinalClearance;
 
 use App\Mail\ApplicationMail;
 use App\Mail\BankDetailsMail;
+
+use App\Libraries\Pdf\Pdf;
 
 use SweetAlert;
 use Mail;
@@ -932,6 +939,75 @@ class ClearanceController extends Controller
 
         alert()->error('Oops!', 'Something went wrong')->persistent('Close');
         return redirect()->back();
+    }
+
+    public function startClearance(Request $request){
+           
+        $validator = Validator::make($request->all(), [
+            'experience' => 'required',
+        ]);
+
+
+        if($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+
+        $student = Auth::guard('student')->user();
+        $hodId = $student->department->hod_id;
+        $deanId = $student->faculty->dean_id;
+
+        $unitNames = ['UNIT_REGISTRY', 'UNIT_BURSARY', 'UNIT_STUDENT_CARE', 'UNIT_LIBRARY'];
+        $unitHeadIds = [];
+
+        foreach ($unitNames as $unitName) {
+            $unitConstant = constant("App\Models\Unit::$unitName");
+            $unit = Unit::where('name', $unitConstant)->first();
+            if ($unit) {
+                $unitHeadIds[$unitName] = $unit->unit_head_id;
+            } else {
+                $unitHeadIds[$unitName] = null; 
+            }
+        }
+       
+        $clearanceData = ([
+            'student_id' => $student->id,
+            'experience' => $request->experience,
+            'hod_id' => $hodId,
+            'dean_id' => $deanId,
+            'library_id' => $unitHeadIds['UNIT_LIBRARY'],
+            'student_care_dean_id' => $unitHeadIds['UNIT_STUDENT_CARE'],
+            'registrar_id' => $unitHeadIds['UNIT_REGISTRY'],
+            'bursary_id' => $unitHeadIds['UNIT_BURSARY'],
+        ]);
+
+        if($clearance = FinalClearance::create($clearanceData)){
+            alert()->success('Good Job', 'Application Submitted')->persistent('Close');
+            return redirect()->back();
+        }
+
+        alert()->error('Oops!', 'Something went wrong')->persistent('Close');
+        return redirect()->back();
+
+    }
+
+
+    public function downloadClearance(Request $request){
+        $student = Auth::guard('student')->user();
+
+        $clearance = FinalClearance::where('student_id', $student->id)->first();
+
+        if(!empty($clearance->file)){
+            return redirect(asset($clearance->file));
+        }
+
+        $pdf = new Pdf();
+        $file = $pdf->generateDownloadClearance($student->id);
+
+        $clearance->file = $file;
+        $clearance->save();
+
+        return redirect(asset($file));        
     }
 
 }
