@@ -26,6 +26,7 @@ use App\Models\Course;
 use App\Models\Notification;
 use App\Models\Unit;
 use App\MOdels\LevelAdviser;
+use App\MOdels\CoursePerProgrammePerAcademicSession;
 
 use SweetAlert;
 use Mail;
@@ -214,7 +215,7 @@ class AcademicController extends Controller
         $level = $levelAdviser->level->level .' Level ';
 
         $levelAdviser->comment = $comment;
-        $levelAdviser->status = $status;
+        $levelAdviser->course_approval_status = $status;
         $senderName = env('SCHOOL_NAME');
 
 
@@ -235,7 +236,7 @@ class AcademicController extends Controller
         }
 
         if($status == 'approved'){
-            $courses = Course::where('programme_id', $request->programme_id)
+            $courses = CoursePerProgrammePerAcademicSession::where('programme_id', $request->programme_id)
             ->where('level_id', $request->level_id)
             ->where('academic_session', $academicSession)
             ->update(['dap_approval_status' => 'approved']);

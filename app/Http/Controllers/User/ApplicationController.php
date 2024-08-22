@@ -438,7 +438,7 @@ class ApplicationController extends Controller
 
             $slug = $applicant->slug;
         }else{
-            $partnerId = $this->getReferralId($referralCode);
+            $partnerId = $this->getPartnerId($referralCode);
 
             $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $request->lastname .' '. $request->othernames)));
             if($existingApplicant = Applicant::where('slug', $slug)->first()) {

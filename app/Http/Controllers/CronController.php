@@ -14,6 +14,9 @@ use League\Csv\Reader;
 
 use App\Models\CourseManagement;
 use App\Models\Transaction;
+use App\Models\TestApplicant;
+use App\Models\User;
+use App\Models\Partner;
 
 
 use SweetAlert;
@@ -96,5 +99,30 @@ class CronController extends Controller
         return response()->json(['message' => 'Database exported and email sent successfully.']);
     }
 
+    public function updateReferrers(){
+        $testApplicants = TestApplicant::where('referrer', '!=', null)->get();
+        foreach ($testApplicants as $testApplicant){
+            $referrer = $testApplicant->referrer;
+            $email = $testApplicant->email;
+
+            $user = User::where('email', $email)->first();
+            $partnerId = null;
+
+            
+            $isExistPartner = Partner::where('referral_code', $referrer)->first();
+            if($isExistPartner){
+                $partnerId = $isExistPartner->id;
+            }
+
+            if($user){
+                $user->referrer = $referrer;
+                $user->partner_id = $partnerId;
+                $user->save();
+            }
+        }
+
+        return response()->json(['message' => 'record updated.']);
+    
+    }
 
 }

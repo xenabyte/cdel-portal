@@ -3,7 +3,7 @@
     $student = Auth::guard('student')->user();
     $programme = $student->programme;
     $maxUnit = !empty($student->credit_load)?$student->credit_load:24;
-    $levelAdviser = $programme->academicAdvisers->firstWhere('level_id', $student->level_id);
+    $levelAdviser = $programme->academicAdvisers->where('level_id', $student->level_id)->where('academic_session', $student->academic_session)->first();
 ?>
 @section('content')
 <style>
@@ -41,7 +41,7 @@
                 <div class="text-center">
                     <div class="row justify-content-center">
                         <div class="col-lg-9">
-                            <h4 class="mt-4 fw-semibold">Course Registration for {{ $pageGlobalData->sessionSetting->academic_session }} academic session</h4>
+                            <h4 class="mt-4 fw-semibold">Course Registration for {{ $pageGlobalData->sessionSetting->academic_session }} academic session </h4>
                             <p class="text-muted mt-3"></p>
                             <div class="mt-4">
                               Your <strong>Course Registration</strong> is complete! Click the button below to print your course review.
@@ -70,7 +70,7 @@
     <!--end col-->
 </div>
 @else
-    @if($levelAdviser && $levelAdviser->course_registration_status != 'start')        
+    @if($levelAdviser && $levelAdviser->course_registration != 'start')        
         <div class="row justify-content-center">
             <div class="col-lg-6">
                 <div class="card">
@@ -99,7 +99,7 @@
             <!--end col-->
         </div>
     @else
-        <div class="row">
+        <div class="row">   
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-header align-items-center">
@@ -221,7 +221,7 @@
                                             </td>
                                         </tr>
                                     @endforeach
-                                    {{-- @foreach($unregisteredRequiredCourses->where('semester', 2) as $unregisteredCourse2)
+                                    @foreach($unregisteredRequiredCourses->where('semester', 2) as $unregisteredCourse2)
                                         <tr>
                                             <td>{{ $secondSemester++ }}</td>
                                             <td>{{ $unregisteredCourse2->course->code }}</td>
@@ -232,7 +232,7 @@
                                                 <input type="checkbox" name="selected_courses[]" value="{{ $unregisteredCourse2->id }}">
                                             </td>
                                         </tr>
-                                    @endforeach --}}
+                                    @endforeach
                                     @foreach($courses->where('semester', 2) as $course12)
                                         <tr>
                                             <td>{{ $secondSemester++ }}</td>

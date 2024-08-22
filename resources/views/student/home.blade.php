@@ -607,7 +607,7 @@ $studentRegistrations = $student->courseRegistrationDocument()->orderBy('created
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
 
-
+@if($student->finalClearance)
 <div id="clearanceStatus" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
     <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content border-0 overflow-hidden">
@@ -736,6 +736,5 @@ $studentRegistrations = $student->courseRegistrationDocument()->orderBy('created
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
-
+@endif
 @endsection
- s

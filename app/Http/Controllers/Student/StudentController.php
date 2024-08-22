@@ -93,11 +93,18 @@ class StudentController extends Controller
             ]);
         }
 
-
-        if($student->is_active != 1){
-            $google = new Google();
-            $google->addMemberToGroup($student->email, env('GOOGLE_STUDENT_GROUP'));
+        if($student->is_active != 1 && !$paymentCheck->passTuitionPayment){
+            return view('student.schoolFee', [
+                'payment' => $paymentCheck->schoolPayment,
+                'passTuition' => $paymentCheck->passTuitionPayment,
+                'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
+                'passEightyTuition' => $paymentCheck->passEightyTuition,
+                'studentPendingTransactions' => $paymentCheck->studentPendingTransactions
+            ]);
         }
+
+        $google = new Google();
+        $google->addMemberToGroup($student->email, env('GOOGLE_STUDENT_GROUP'));
       
         return view('student.home', [
             'payment' => $paymentCheck->schoolPayment,

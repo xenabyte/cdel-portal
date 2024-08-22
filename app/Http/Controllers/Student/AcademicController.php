@@ -139,8 +139,7 @@ class AcademicController extends Controller
         ]);
     }
 
-    public function registerCourses(Request $request)
-    {
+    public function registerCourses(Request $request){
         $selectedCourses = $request->input('selected_courses', []);
         $failedSelectedCourses = $request->input('failed_selected_courses', []);
         
@@ -371,7 +370,7 @@ class AcademicController extends Controller
         $globalData = $request->input('global_data');
         $admissionSession = $globalData->sessionSetting['admission_session'];
         $academicSession = $globalData->sessionSetting['academic_session'];
-        $addOrRemoveTxPay = Payment::with('structures')->where('type', Payment::PAYMENT_MODIFY_COURSE_REG)->first();
+        $addOrRemoveTxPay = Payment::with('structures')->where('type', Payment::PAYMENT_MODIFY_COURSE_REG)->where('academic_session', $academicSession)->first();
         $addOrRemoveTxId = $addOrRemoveTxPay->id;
         $addOrRemoveTxs = Transaction::where('student_id', $studentId)->where('payment_id', $addOrRemoveTxId)->where('status', 1)->orderBy('id', 'DESC')->get();
 

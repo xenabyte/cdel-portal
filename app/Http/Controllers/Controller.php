@@ -339,16 +339,16 @@ class Controller extends BaseController
         }           
     }
 
-    public function getReferralId($referralCode) {
-        $isExistStaff = Staff::where('referral_code', $referralCode)->first();
-        if($isExistStaff){
-            return $isExistStaff->id;
-        }
+    public function getPartnerId($referralCode) {
+        // $isExistStaff = Staff::where('referral_code', $referralCode)->first();
+        // if($isExistStaff){
+        //     return $isExistStaff->id;
+        // }
 
-        $isExistStudent = Student::where('referral_code', $referralCode)->first();
-        if($isExistStudent){
-            return $isExistStudent->id;
-        }
+        // $isExistStudent = Student::where('referral_code', $referralCode)->first();
+        // if($isExistStudent){
+        //     return $isExistStudent->id;
+        // }
         
         $isExistPartner = Partner::where('referral_code', $referralCode)->first();
         if($isExistPartner){
@@ -868,7 +868,7 @@ class Controller extends BaseController
             $password = $testApplicant->passcode;
             $applicationSession = $testApplicant->academic_session;
             $partnerId = $testApplicant->partner_id;
-            $referralCode = $testApplicant->referral_code;
+            $referralCode = $testApplicant->referrer;
             $applicationType = $testApplicant->application_type;
             $txRef = $testApplicant->reference;
         }

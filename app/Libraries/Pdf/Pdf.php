@@ -97,7 +97,7 @@ Class Pdf {
         $name = $student->applicant->lastname.' '.$student->applicant->othernames;
         $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $name .' course registration '. $academicSession)));
 
-        $fileDirectory = 'uploads/files/course_registration/'.$slug.'.pdf';
+        $fileDirectory = 'uploads/files/course_registration/'.$slug.time().'.pdf';
         $courseReg = CourseRegistration::with('course')->where('student_id', $studentId)->where('academic_session', $academicSession)->get();
         
         $studentCourseReg = null;
@@ -142,11 +142,6 @@ Class Pdf {
         }
 
         $data = ['info'=>$student, 'registeredCourses' => $courseReg, 'staffData' => $staffData];
-
-        $fileDirectory = 'uploads/files/course_registration/'.$slug.'.pdf';
-        if (file_exists($fileDirectory)) {
-            unlink($fileDirectory);
-        } 
 
         $pdf = PDFDocument::loadView('pdf.courseRegistration', $data)
         ->setOptions($options)

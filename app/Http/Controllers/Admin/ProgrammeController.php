@@ -274,8 +274,16 @@ class ProgrammeController extends Controller
         }
 
 
-        $courseRegistrationSetting = Programme::where('id', $request->programme_id)->value('course_registration');
-        if(!empty($courseRegistrationSetting) && $courseRegistrationSetting != 'stop'){
+        
+        $levelAdviser = LevelAdviser::where('programme_id', $request->programme_id)->where('level_id', $request->level_id)->where('academic_session', $academicSession)->first();
+        if(!$levelAdviser){
+            alert()->error('Oops', 'Invalid Level Adviser or not set ')->persistent('Close');
+            return view('admin.studentCourses',$defaultData);
+        }
+
+        $courseRegistration = $levelAdviser->course_registration;
+
+        if(!empty($courseRegistration) && $courseRegistration != 'stop'){
             alert()->error('Oops', 'Course Registration already started')->persistent('Close');
             return view('admin.studentCourses', $defaultData);
         }

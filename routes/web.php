@@ -51,6 +51,7 @@ Route::get('/generateStudentReferrerCode', [App\Http\Controllers\Admin\StudentCo
 Route::get('/sendParentOnboardingMail', [App\Http\Controllers\Admin\CronController::class, 'sendParentOnboardingMail']);
 Route::get('/deletePendingTransactions', [App\Http\Controllers\CronController::class, 'deletePendingTransactions']);
 Route::get('/exportDatabase', [App\Http\Controllers\CronController::class, 'exportDatabase']);
+Route::get('/updateReferrers', [App\Http\Controllers\CronController::class, 'updateReferrers']);
 
 
 

@@ -36,6 +36,7 @@
                             <th scope="col">Programme</th>
                             <th scope="col">Level</th>
                             <th scope="col">Comment</th>
+                            <th scope="col">Status</th>
                             <th scope="col"></th>
                             <th scope="col"></th>
                         </tr>
@@ -49,13 +50,18 @@
                             <td>{{$adviserProgramme->level->level}} Level <span class="badge badge-pill bg-danger" data-key="t-hot">{{ $adviserProgramme->studentRegistrationsCount }} </span></td>
                             <td>{!! $adviserProgramme->comment !!}</td>
                             <td>
+                                @if(strtolower($adviserProgramme->course_approval_status) == 'approved')
+                                    <span class="badge bg-success p-2 rounded-pill">Approved</span>
+                                @else
+                                    <span class="badge bg-warning p-2 rounded-pill">Pending</span>
+                                @endif
+                            </td>
+                            <td>
                                 <a href="#" data-bs-toggle="modal" data-bs-target="#viewCourses{{ $adviserProgramme->id }}" class="btn btn-primary">Courses</a>
                                 <a href="{{ url('/admin/levelCourseReg/'.$adviserProgramme->id) }}" class="btn btn-info">Course Registrations</a>
                                 <a href="{{ url('/admin/levelStudents/'.$adviserProgramme->id) }}" class="btn btn-dark">All Students</a>
                                 @if($adviserProgramme->course_approval_status == 'pending')
-                                <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#manage{{ $adviserProgramme->id }}">Manage Approval</button>
-                                @elseif($adviserProgramme->course_approval_status != '')
-                                <a href="#" class="btn btn-info">{{ ucwords($adviserProgramme->course_approval_status) }}</a>
+                                <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#manage{{ $adviserProgramme->id }}">Manage Approval</button>                                   
                                 @endif
                             </td>
                             <td>

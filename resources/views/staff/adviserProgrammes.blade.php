@@ -67,7 +67,7 @@
                             <td>{!! $adviserProgramme->comment !!}</td>
                             <td>
                                 @if(!empty($adviserProgramme->course_approval_status))
-                                    @if(strtolower($adviserProgramme->course_approval_status) == 'success')
+                                    @if(strtolower($adviserProgramme->course_approval_status) == 'approved')
                                         <span class="badge bg-success p-2 rounded-pill">Approved</span>
                                     @else
                                         <span class="badge bg-warning p-2 rounded-pill">Pending</span>
