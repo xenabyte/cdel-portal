@@ -31,6 +31,8 @@ use App\Models\CoursePerProgrammePerAcademicSession;
 use App\Models\ProgrammeCategory as Category;
 use App\Models\Attendance;
 use App\Models\Unit;
+use App\Models\CourseLecture;
+
 
 
 use App\Mail\NotificationMail;
@@ -455,11 +457,13 @@ class StaffController extends Controller
 
         $lecturerDetails = CourseManagement::with('staff')->where('course_id', $id)->where('academic_session', $academicSession)->first(); 
         $registrations = CourseRegistration::where('course_id', $id)->where('academic_session', $academicSession)->get();
+        $courseLectures = CourseLecture::with('lectureAttendance')->where('academic_session', $academicSession)->first();
         $course = Course::find($id);
 
         return view('staff.courseDetail', [
             'registrations' => $registrations,
             'lecturerDetails' => $lecturerDetails,
+            'courseLectures' => $courseLectures,
             'course' => $course,
         ]);
     }

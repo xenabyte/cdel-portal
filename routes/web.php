@@ -387,6 +387,10 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'admin'],
   Route::get('/alumni', [App\Http\Controllers\Admin\StudentController::class, 'alumni'])->name('alumni')->middleware(['auth:admin']);
   Route::post('/manageFinalYearStudentClearance', [App\Http\Controllers\Admin\StudentController::class, 'manageFinalYearStudentClearance'])->name('manageFinalYearStudentClearance')->middleware(['auth:admin']);
 
+  Route::post('/createLecture', [App\Http\Controllers\Admin\ProgrammeController::class, 'createLecture'])->name('createLecture')->middleware(['auth:admin']);
+  Route::post('/updateLecture', [App\Http\Controllers\Admin\ProgrammeController::class, 'updateLecture'])->name('updateLecture')->middleware(['auth:admin']);
+
+  
 });
 
 Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'student'], function () {

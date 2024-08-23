@@ -30,6 +30,7 @@ use App\Models\Payment;
 use App\Models\Session;
 use App\Models\LevelAdviser;
 use App\Models\StudentCourseRegistration;
+use App\Models\CourseLecture;
 
 
 use App\Mail\NotificationMail;
@@ -478,13 +479,101 @@ class ProgrammeController extends Controller
 
         $lecturerDetails = CourseManagement::where('course_id', $id)->where('academic_session', $academicSession)->first(); 
         $registrations = CourseRegistration::where('course_id', $id)->where('academic_session', $academicSession)->get();
+        $courseLectures = CourseLecture::with('lectureAttendance')->where('academic_session', $academicSession)->get();
         $course = Course::find($id);
 
         return view('admin.courseDetail', [
             'registrations' => $registrations,
             'lecturerDetails' => $lecturerDetails,
+            'courseLectures' => $courseLectures,
             'course' => $course,
         ]);
+    }
+
+    public function createLecture(Request $request){
+        $globalData = $request->input('global_data');
+        $admissionSession = $globalData->sessionSetting['admission_session'];
+        $academicSession = $globalData->sessionSetting['academic_session'];
+        $applicationSession = $globalData->sessionSetting['application_session'];
+
+        $validator = Validator::make($request->all(), [
+            'topic' => 'required',
+            'duration' => 'required',
+            'date' => 'required'
+        ]);
+
+        if($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+
+        if(!$course = Course::find($request->course_id)){
+            alert()->error('Oops', 'Course not found')->persistent('Close');
+            return redirect()->back();
+        }
+
+        $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $course->code.$request->topic)));
+
+        $createLectureData = ([
+            'topic' => $request->topic,
+            'duration' => $request->duration,
+            'date' => $request->date,
+            'slug' => $slug,
+            'academic_session' => $academicSession
+        ]);
+
+        if(CourseLecture::create($createLectureData)){
+            alert()->success('Lecture created successfully!', '')->persistent('Close');
+            return redirect()->back();
+        }
+
+        alert()->error('Error while creating lecture', '')->persistent('Close');
+        return redirect()->back();
+       
+    }
+
+    public function updateLecture(Request $request){
+        $globalData = $request->input('global_data');
+        $admissionSession = $globalData->sessionSetting['admission_session'];
+        $academicSession = $globalData->sessionSetting['academic_session'];
+        $applicationSession = $globalData->sessionSetting['application_session'];
+
+        $validator = Validator::make($request->all(), [
+            'lecture_id' => 'required',
+        ]);
+
+        if($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+
+        if(!$lecture = CourseLecture::find($request->lecture_id)){
+            alert()->error('Oops', 'Course lecture not found')->persistent('Close');
+            return redirect()->back();
+        }
+
+        if(!$course = Course::find($lecture->course_id)){
+            alert()->error('Oops', 'Course not found')->persistent('Close');
+            return redirect()->back();
+        }
+
+        $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $course->code.$request->topic)));
+
+        $createLectureData = ([
+            'topic' => $request->topic,
+            'duration' => $request->duration,
+            'date' => $request->date,
+            'slug' => $slug,
+        ]);
+
+        if(CourseLecture::update($createLectureData)){
+            alert()->success('Lecture updated successfully!', '')->persistent('Close');
+            return redirect()->back();
+        }
+
+        alert()->error('Error while updating lecture', '')->persistent('Close');
+        return redirect()->back();
+       
     }
     
 

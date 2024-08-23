@@ -90,6 +90,53 @@
         <!-- end card -->
     </div>
     <!-- end col -->
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-body">
+                <div class="card-header align-items-center d-flex">
+                    <h4 class="card-title mb-0 flex-grow-1">Lectures </h4>
+                    <div class="flex-shrink-0">
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createLecture">Create Lecture</button>
+                    </div>
+                </div><!-- end card header -->
+    
+                <div class="table-responsive mt-5">
+                    <table id="buttons-datatables2" class="display table table-bordered" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th scope="col">Id</th>
+                                <th scope="col">Course Code</th>
+                                <th scope="col">Topic</th>
+                                <th scope="col">Date</th>
+                                <th scope="col">Duration</th>
+                                <th scope="col">Student Attendance(s)</th>
+                                <th scope="col"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($courseLectures as $courseLecture)
+                                <tr>
+                                    <th scope="row">{{ $loop->iteration }}</th>
+                                    <td>{{ $course->code }}</td>
+                                    <td>{{ $courseLecture->topic }}</td>
+                                    <td>{{ $courseLecture->date }}</td>
+                                    <td>{{ $courseLecture->duration }}</td>
+                                    <td>
+                                        {{ $courseLecture->lectureAttendance->count() }}  student(s) 
+                                        <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#view{{$courseLecture->id}}" class="btn btn-secondary m-1"><i class= "ri-eye-fill"></i> View</a>
+
+                                    </td>
+                                    <td></td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div><!-- end col -->
+
+
 
     <div class="col-lg-12">
         <div class="card">
@@ -247,5 +294,49 @@
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
+
+<div id="createLecture" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 overflow-hidden">
+            <div class="modal-header p-3">
+                <h4 class="card-title mb-0">Create Lecture</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <hr>
+            <div class="modal-body">
+                <form action="{{ url('/admin/createLecture') }}" method="post" enctype="multipart/form-data">
+                    @csrf
+                    <input type="hidden" name="course_id" value="{{ $course->id }}">
+
+                    <div class="form-floating mb-3">
+                        <input type="text" name="topic" id="topic" class="form-control" required>
+                        <label for="topic">Lecture Topic</label>
+                    </div>
+
+                    <div class="form-floating mb-3">
+                        <input type="text" name="duration" id="duration" class="form-control">
+                        <label for="test">Duration</label>
+                    </div>
+
+                    <div class="form-floating mb-3">
+                        <input type="date" name="date" id="date" class="form-control">
+                        <label for="date">Lecture Date</label>
+                    </div>
+
+                    <hr>
+                    <div class="text-end">
+                        <button type="submit" id="submit-button" class="btn btn-primary">Create Lecture</button>
+                    </div>
+                </form>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+@foreach($courseLectures as $courseLecture)
+
+
+
+@endforeach 
 
 @endsection

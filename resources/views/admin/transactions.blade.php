@@ -47,18 +47,36 @@
                         @foreach($transactions as $transaction)
                         <tr>
                             <th scope="row">{{ $loop->iteration }}</th>
-                            <td>{{ !empty($transaction->student_id)? $transaction->student->applicant->lastname .' '. $transaction->student->applicant->othernames :  $transaction->applicant->lastname .' '. $transaction->applicant->othernames }}</td>
-                            <td>{{ !empty($transaction->student_id)? 'Student' : 'Applicant' }}</td>
+                            <td>
+                                @if (!empty($transaction->student_id) && !empty($transaction->student->applicant))
+                                    {{ $transaction->student->applicant->lastname .' '. $transaction->student->applicant->othernames }}
+                                @elseif (!empty($transaction->applicant))
+                                    {{ $transaction->applicant->lastname .' '. $transaction->applicant->othernames }}
+                                @else
+                                    N/A
+                                @endif
+                            </td>
+                            <td>{{ !empty($transaction->student_id) ? 'Student' : 'Applicant' }}</td>
                             <td>{{ $transaction->reference }}</td>
-                            <td>₦{{ number_format($transaction->amount_payed/100, 2) }} </td>
-                            <td>{{ !empty($transaction->paymentType) ? ($transaction->paymentType->type == 'General Fee' ? $transaction->paymentType->title : $transaction->paymentType->type) : 'Wallet Deposit' }} </td>
+                            <td>₦{{ number_format($transaction->amount_payed / 100, 2) }}</td>
+                            <td>
+                                {{ !empty($transaction->paymentType) ? 
+                                    ($transaction->paymentType->type == 'General Fee' ? 
+                                    $transaction->paymentType->title : 
+                                    $transaction->paymentType->type) : 
+                                    'Wallet Deposit' 
+                                }} 
+                            </td>
                             <td>{{ $transaction->session }}</td>
                             <td>{{ $transaction->payment_method }}</td>
-                            <td><span class="badge badge-soft-{{ $transaction->status == 1 ? 'success' : 'warning' }}">{{ $transaction->status == 1 ? 'Paid' : 'Pending' }}</span></td>
-                            <td>{{ $transaction->status == 1 ? $transaction->updated_at : null }} </td>
+                            <td>
+                                <span class="badge badge-soft-{{ $transaction->status == 1 ? 'success' : 'warning' }}">
+                                    {{ $transaction->status == 1 ? 'Paid' : 'Pending' }}
+                                </span>
+                            </td>
+                            <td>{{ $transaction->status == 1 ? $transaction->updated_at : null }}</td>
                         </tr>
-
-                        @endforeach
+                    @endforeach                    
                     </tbody>
                 </table>
             </div>
