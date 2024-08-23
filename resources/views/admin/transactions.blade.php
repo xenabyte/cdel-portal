@@ -32,6 +32,7 @@
                     <thead>
                         <tr>
                             <th scope="col">Id</th>
+                            <th scope="col">Application/Matric Number</th>
                             <th scope="col">Paid By</th>
                             <th scope="col">Payer Type</th>
                             <th scope="col">Reference</th>
@@ -47,6 +48,15 @@
                         @foreach($transactions as $transaction)
                         <tr>
                             <th scope="row">{{ $loop->iteration }}</th>
+                            <td>
+                                @if (!empty($transaction->student_id) && !empty($transaction->student))
+                                    {{ $transaction->student->matric_number }}
+                                @elseif (!empty($transaction->applicant))
+                                    {{ $transaction->applicant->application_number }}
+                                @else
+                                    N/A
+                                @endif
+                            </td>
                             <td>
                                 @if (!empty($transaction->student_id) && !empty($transaction->student->applicant))
                                     {{ $transaction->student->applicant->lastname .' '. $transaction->student->applicant->othernames }}
