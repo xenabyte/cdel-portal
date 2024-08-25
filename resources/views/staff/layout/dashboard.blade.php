@@ -882,8 +882,7 @@
     </script> 
     <script>
         $(document).ready(function() {
-            // Initialize Select2
-            $('#selectWithSearch').select2();
+            $('.selectWithSearch').select2();
         });
     </script>
     <script type="text/javascript">

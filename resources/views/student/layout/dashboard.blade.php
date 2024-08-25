@@ -344,6 +344,9 @@
                                 <div class="collapse menu-dropdown" id="courseManagement">
                                     <ul class="nav nav-sm flex-column">
                                         <li class="nav-item">
+                                            <a href="{{ url('/student/registeredCourses') }}" class="nav-link">Registered Courses</a>
+                                        </li>
+                                        <li class="nav-item">
                                             <a href="{{ url('/student/courseRegistration') }}" class="nav-link">Course Registration</a>
                                         </li>
                                         <li class="nav-item">

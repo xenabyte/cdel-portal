@@ -5,12 +5,12 @@
         <ul class="nav nav-tabs nav-justified mb-3" role="tablist">
             <li class="nav-item">
                 <a class="nav-link active" data-bs-toggle="tab" href="#year6first" role="tab" aria-selected="false">
-                    First Semester
+                    Harmattan Semester
                 </a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" data-bs-toggle="tab" href="#year6second" role="tab" aria-selected="false">
-                    Second Semester
+                    Rain Semester
                 </a>
             </li>
         </ul>
@@ -71,8 +71,8 @@
                                                 <label class="form-label">Select Semester</label>
                                                 <select class="form-select" aria-label="semester" name="semester">
                                                     <option value= "" >Select Semester</option>
-                                                    <option {{ $course61->semester == 1? 'selected' : ''  }} value="1">First Semester</option>
-                                                    <option {{ $course61->semester == 2? 'selected' : ''  }} value="2">Second Semester</option>
+                                                    <option {{ $course61->semester == 1? 'selected' : ''  }} value="1">Harmattan Semester</option>
+                                                    <option {{ $course61->semester == 2? 'selected' : ''  }} value="2">Rain Semester</option>
                                                 </select>
                                             </div>
 
@@ -202,8 +202,8 @@
                                                     <label class="form-label">Select Semester</label>
                                                     <select class="form-select" aria-label="semester" name="semester">
                                                         <option value= "" >Select Semester</option>
-                                                        <option {{ $course62->semester == 1? 'selected' : ''  }} value="1">First Semester</option>
-                                                        <option {{ $course62->semester == 2? 'selected' : ''  }} value="2">Second Semester</option>
+                                                        <option {{ $course62->semester == 1? 'selected' : ''  }} value="1">Harmattan Semester</option>
+                                                        <option {{ $course62->semester == 2? 'selected' : ''  }} value="2">Rain Semester</option>
                                                     </select>
                                                 </div>
 

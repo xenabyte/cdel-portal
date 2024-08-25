@@ -850,7 +850,7 @@
     </script>
     <script>
         $(document).ready(function() {
-            $('#selectWithSearch').select2();
+            $('.selectWithSearch').select2();
         });
     </script>
     <script type="text/javascript">

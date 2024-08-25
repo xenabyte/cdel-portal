@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-
+use Log;
 class CourseRegistration extends Model
 {
     use HasFactory, SoftDeletes;
@@ -58,5 +58,39 @@ class CourseRegistration extends Model
     public function academicLevel()
     {
         return $this->belongsTo(AcademicLevel::class, 'level_id');
+    }
+
+
+    /**
+     * Calculate the attendance percentage for this registration.
+     *
+     * @return float
+     */
+    public function attendancePercentage()
+    {
+        // Get all lectures for the course
+        $totalLectures = CourseLecture::where('course_id', $this->course_id)
+                                      ->where('academic_session', $this->academic_session)
+                                      ->count();
+
+        // Get the number of lectures the student attended
+        $attendedLectures = LectureAttendance::whereIn('course_lecture_id', function ($query) {
+            $query->select('id')
+                  ->from('course_lectures')
+                  ->where('course_id', $this->course_id)
+                  ->where('academic_session', $this->academic_session);
+        })
+        ->where('student_id', $this->student_id)
+        ->where('status', 1) // Assuming 1 means present
+        ->count();        
+
+        log::info($totalLectures);
+
+        // Calculate the attendance percentage
+        if ($totalLectures > 0) {
+            return ($attendedLectures / $totalLectures) * 100;
+        } else {
+            return 0;
+        }
     }
 }

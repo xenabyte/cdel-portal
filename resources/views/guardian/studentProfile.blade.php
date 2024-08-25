@@ -24,6 +24,18 @@ $studentRegistrations = $student->courseRegistrationDocument()->orderBy('created
     </div>
 </div>
 <!-- end page title -->
+<style>
+    /* Adjust the width of the ID column */
+    .table th:nth-child(1),
+    .table td:nth-child(1) {
+        width: 10px; /* Adjust the width as needed */
+    }
+    .semester-heading {
+        font-weight: bold;
+        font-size: 1.2em;
+        padding: 10px 0;
+    }
+</style>
 
 <div class="row">
     <div class="col-lg-12">
@@ -65,6 +77,13 @@ $studentRegistrations = $student->courseRegistrationDocument()->orderBy('created
                                 Overview
                             </a>
                         </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link fw-semibold" data-bs-toggle="tab" href="#courses" role="tab">
+                                Registered Course(s)
+                            </a>
+                        </li>
+
                     </ul>
                 </div>
                 <!-- end card body -->
@@ -254,8 +273,8 @@ $studentRegistrations = $student->courseRegistrationDocument()->orderBy('created
                                                             <div class="form-floating">
                                                                 <select class="form-select" id="semester" name="semester" aria-label="semester">
                                                                     <option value="" selected>--Select--</option>
-                                                                    <option value="1">First Semester</option>
-                                                                    <option value="2">Second Semester</option>
+                                                                    <option value="1">Harmattan Semester</option>
+                                                                    <option value="2">Rain Semester</option>
                                                                 </select>
                                                                 <label for="semester">Semester</label>
                                                             </div>
@@ -376,6 +395,230 @@ $studentRegistrations = $student->courseRegistrationDocument()->orderBy('created
                 <!-- end row -->
             </div>
             <!-- end tab pane -->
+
+            <div class="tab-pane fade" id="courses" role="tabpanel">
+                <div class="row">
+                    <div class="col-lg-8">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="text-muted">
+                                    <h4 class="card-title mb-0 flex-grow-1">Registered Courses(s) for {{ $pageGlobalData->sessionSetting->academic_session }} academic session</h4>
+                                    <div class="border-top border-top-dashed pt-3">
+                                        <div class="table-responsive">
+                                            <!-- Bordered Tables -->
+                                            @php
+                                            $courseRegs = $student->registeredCourses->where('academic_session', $pageGlobalData->sessionSetting->academic_session);
+                                            @endphp
+                                            <div class="row">   
+                                                <div class="col-lg-12">
+                                                    <div class="card">
+                                                        <div class="card-header align-items-center">
+                                                            <br/>
+                                                            <p class=""><strong>Programme:</strong> {{ $student->programme->name }}
+                                                            <br/><strong>Academic Session:</strong> {{ $student->academic_session }}
+                                                            <br/><strong>Level:</strong> {{ $student->academicLevel->level }} Level</p>
+                                            
+                                                        </div><!-- end card header -->
+                                            
+                                                        <div class="card-body table-responsive">
+                                                            <table class="table table-borderless table-nowrap">
+                                                                
+                                                                <tbody class="first-semester">
+                                                                    <tr>
+                                                                        <td colspan="6" class="semester-heading">
+                                                                            
+                                                                            <div class="card-header align-items-center">
+                                                                                <h4 class="card-title mb-0 flex-grow-1">Harmattan Semester Courses</h4>
+                                                                            </div><!-- end card header -->
+                                            
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <th scope="col">ID</th>
+                                                                        <th scope="col">Attendance Percentage</th>
+                                                                        <th scope="col">Course Code</th>
+                                                                        <th scope="col">Course Title</th>
+                                                                        <th scope="col">Course Unit</th>
+                                                                    </tr>
+                                                                    @php
+                                                                        $firstSemester = 1;
+                                                                        $secondSemester = 1;
+                                                                        $firstCreditUnits = $courseRegs->where('semester', 1)->sum('course_credit_unit');
+                                                                        $secondCreditUnits = $courseRegs->where('semester', 2)->sum('course_credit_unit');
+                                                                    @endphp
+                                                                    @foreach($courseRegs->where('semester', 1) as $course11)
+                                                                        <tr>
+                                                                            <td>{{ $firstSemester++ }}</td>
+                                                                            <td>{{ $course11->attendancePercentage() }}% </td>
+                                                                            <td>{{ $course11->course->code }}</td>
+                                                                            <td>{{ $course11->course->name }}</td>
+                                                                            <td>{{ $course11->course_credit_unit }}</td>
+                                                                        </tr>
+                                                                    @endforeach
+                                                                </tbody>
+                                                                <tbody>
+                                                                    <tr class="first-semester-total">
+                                                                        <td>Total Harmattan Semester Credit Unit</td>
+                                                                        <td></td>
+                                                                        <td></td>
+                                                                        <td></td>
+                                                                        <td>{{ $firstCreditUnits }}</td>
+                                                                    </tr>
+                                                                </tbody>
+                                                                
+                                                                <tbody class="second-semester">
+                                                                    <tr>
+                                                                        <td colspan="6" class="semester-heading">
+                                                                            
+                                                                            <div class="card-header align-items-center">
+                                                                                <h4 class="card-title mb-0 flex-grow-1">Rain Semester Courses</h4>
+                                                                            </div><!-- end card header -->
+                                            
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <th scope="col">ID</th>
+                                                                        <th scope="col">Attendance Percentage</th>
+                                                                        <th scope="col">Course Code</th>
+                                                                        <th scope="col">Course Title</th>
+                                                                        <th scope="col">Course Unit</th>
+                                                                    </tr>
+                                                                    @foreach($courseRegs->where('semester', 2) as $course12)
+                                                                        <tr>
+                                                                            <td>{{ $secondSemester++ }}</td>
+                                                                            <td>{{ $course12->attendancePercentage() }}% </td>
+                                                                            <td>{{ $course12->course->code }}</td>
+                                                                            <td>{{ $course12->course->name }}</td>
+                                                                            <td>{{ $course12->course_credit_unit }}</td>
+                                                                        </tr>
+                                                                    @endforeach
+                                                                </tbody>
+                                                                <tbody>
+                                                                    <tr class="second-semester-total">
+                                                                        <td>Total Rain Semester Credit Unit</td>
+                                                                        <td></td>
+                                                                        <td></td>
+                                                                        <td></td>
+                                                                        <td>{{ $secondCreditUnits }}</td>
+                                                                    
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>               
+                                                        </div>
+                                                    </div><!-- end card -->
+                                                </div>
+                                                <!-- end col -->
+                                            </div>
+                                           
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- end card body -->
+                        </div>
+                        <!-- end card -->
+                    </div>
+                    <!-- ene col -->
+                    <div class="col-lg-4">
+                        <div class="card">
+                            <div class="card-body p-4">
+                                <div>
+                                    <div class="flex-shrink-0 avatar-md mx-auto">
+                                        <div class="avatar-title bg-light rounded">
+                                            <img src="{{empty($student->image)?asset('assets/images/users/user-dummy-img.jpg'):asset($student->image)}}" alt="" height="50" />
+                                        </div>
+                                    </div>
+                                    <div class="mt-4 text-center">
+                                        <h5 class="mb-1">{{$name}}</h5>
+                                        <p class="text-muted">{{ $student->programme->name }} <br>
+                                            <strong>Matric Number:</strong> {{ $student->matric_number }}<br>
+                                            <strong>Jamb Reg. Number:</strong> {{ $student->applicant->jamb_reg_no }}<br> <br>
+                                            <strong>Support Code:</strong> <span class="text-danger">ST{{ sprintf("%06d", $student->id) }}</span> 
+                                            <hr>
+                                            @if(env('WALLET_STATUS'))<a class="dropdown-item" href="#"><i class="mdi mdi-wallet text-muted fs-16 align-middle me-1"></i> <span class="align-middle">Balance : <b>₦{{ number_format($student->amount_balance/100, 2) }}</b></span></a>@endif
+                                        </p>
+                                        <p class="text-muted border-top border-top-dashed"><strong>CGPA:</strong> {{ $student->cgpa }} <br>
+                                            <strong>Class:</strong> {{ $student->degree_class }}<br>
+                                            <strong>Standing:</strong> {{ $student->standing }}<br>
+                                            <strong>Batch:</strong> {{ $student->batch }}<br>
+                                        </p>
+                                    </div>
+                                    <div class="table-responsive border-top border-top-dashed">
+                                        <table class="table mb-0 table-borderless">
+                                            <tbody>
+                                                <tr>
+                                                    <th><span class="fw-medium">Department:</span></th>
+                                                    <td>{{ $student->department->name }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th><span class="fw-medium">Faculty:</span></th>
+                                                    <td>{{ $student->faculty->name }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th><span class="fw-medium">Email:</span></th>
+                                                    <td>{{ $student->email }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th><span class="fw-medium">Contact No.:</span></th>
+                                                    <td>{{ $student->applicant->phone_number }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th><span class="fw-medium">Address:</span></th>
+                                                    <td>{!! $student->applicant->address !!}</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--end card-body-->
+                            <div class="card-body p-4 border-top border-top-dashed">
+                                <div class="avatar-title bg-light rounded">
+                                    <img src="{{ $qrcode }}" style="border: 1px solid black;">
+                                </div>
+                            </div>
+                
+                            @if(!empty($student->applicant->guardian))
+                            <div class="card-body border-top border-top-dashed p-4">
+                                <div>
+                                    <h6 class="text-muted text-uppercase fw-semibold mb-4">Guardian Info</h6>
+                                    <div class="table-responsive">
+                                        <table class="table mb-0 table-borderless">
+                                            <tbody>
+                                                <tr>
+                                                    <th><span class="fw-medium">SN</span></th>
+                                                    <td class="text-danger">#{{ $student->applicant->guardian->id }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th><span class="fw-medium">Name</span></th>
+                                                    <td>{{ $student->applicant->guardian->name }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th><span class="fw-medium">Email</span></th>
+                                                    <td>{{ $student->applicant->guardian->email }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th><span class="fw-medium">Contact No.</span></th>
+                                                    <td>{{ $student->applicant->guardian->phone_number }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th><span class="fw-medium">Address</span></th>
+                                                    <td>{!! $student->applicant->guardian->address !!}</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            @endif
+                        </div>
+                        <!-- end card -->
+                    </div>
+                    <!-- end col -->
+                </div>
+                <!-- end row -->
+            </div>
+
         </div>
     </div>
     <!-- end col -->

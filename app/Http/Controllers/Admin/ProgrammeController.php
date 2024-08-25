@@ -31,10 +31,12 @@ use App\Models\Session;
 use App\Models\LevelAdviser;
 use App\Models\StudentCourseRegistration;
 use App\Models\CourseLecture;
+use App\Models\LectureAttendance;
 
 
 use App\Mail\NotificationMail;
 use App\Libraries\Result\Result;
+use App\Libraries\Attendance\Attendance;
 
 use SweetAlert;
 use Mail;
@@ -515,6 +517,7 @@ class ProgrammeController extends Controller
         $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $course->code.$request->topic)));
 
         $createLectureData = ([
+            'course_id' => $request->course_id,
             'topic' => $request->topic,
             'duration' => $request->duration,
             'date' => $request->date,
@@ -575,7 +578,116 @@ class ProgrammeController extends Controller
         return redirect()->back();
        
     }
+
+    public function staffUploadAttendance(Request $request){
+        $globalData = $request->input('global_data');
+        $admissionSession = $globalData->sessionSetting['admission_session'];
+        $academicSession = $globalData->sessionSetting['academic_session'];
+        $applicationSession = $globalData->sessionSetting['application_session'];
+
+        $validator = Validator::make($request->all(), [
+            'attendance' => 'required|file',
+            'course_id' => 'required',
+            'lecture_id' => 'required'
+        ]);
+
+        if($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+        $file = $request->file('attendance');
+        $fileExtension = $file->getClientOriginalExtension();
+        
+        if ($fileExtension != 'csv') {
+            alert()->error('Invalid file format, only CSV is allowed', '')->persistent('Close');
+            return redirect()->back();
+        }
+
+        $courseId = $request->course_id;
+        $lectureId = $request->lecture_id;
+
     
+        $file = $request->file('attendance');
+        $processAttendance = Attendance::processLectureAttendance($file, $lectureId, $globalData);
+
+        if($processAttendance != 'success'){
+            alert()->error('oops!', $processAttendance)->persistent('Close');
+            return redirect()->back();
+        }
+
+        if($processAttendance ){
+            alert()->success('Student lecture attendance uploaded successfully!', '')->persistent('Close');
+            return redirect()->back();
+        }
+
+        alert()->error('No file uploaded. Attendance not processed', '')->persistent('Close');
+        return redirect()->back();
+    }
+
+    public function deleteStudentAttendance(Request $request){
+        $validator = Validator::make($request->all(), [
+            'attendance_id' => 'required',
+        ]);
+
+        if($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+        if(!$lectureAttendance = LectureAttendance::find($request->attendance_id)){
+            alert()->error('Oops', 'Invalid Student Lecture Attendance')->persistent('Close');
+            return redirect()->back();
+        }
+        
+        if($lectureAttendance->delete()){
+            alert()->success('Delete Successfully', '')->persistent('Close');
+            return redirect()->back();
+        }
+
+        alert()->error('Oops!', 'Something went wrong')->persistent('Close');
+        return redirect()->back();
+        
+    }
+
+    public function markStudentAttendance(Request $request){
+        $validator = Validator::make($request->all(), [
+            'lecture_id' => 'required',
+        ]);
+
+        if($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+        if(!$courseLecture = CourseLecture::find($request->lecture_id)){
+            alert()->error('Oops', 'Invalid Lecture')->persistent('Close');
+            return redirect()->back();
+        }
+
+        $studentIds = $request->student_id;
+        $lectureId = $request->lecture_id;
+
+        foreach ($studentIds as $studentId) {
+            $student = Student::with('applicant')->where('id', $studentId)->first();
+            if(!$student){
+                continue;
+            }
+
+            if($exist = LectureAttendance::where('course_lecture_id', $lectureId)->where('student_id', $student->id)->first()){
+                continue;
+            }
+
+            $attendanceData = ([
+                'course_lecture_id' => $lectureId,
+                'student_id' => $student->id,
+                'status' => 1
+            ]);
+
+            LectureAttendance::create($attendanceData);
+        }
+
+        alert()->success('Student lecture attendance uploaded successfully!', '')->persistent('Close');
+        return redirect()->back();
+    }
+
 
     public function sendMessage(Request $request){
         $globalData = $request->input('global_data');

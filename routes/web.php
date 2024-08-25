@@ -389,7 +389,9 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'admin'],
 
   Route::post('/createLecture', [App\Http\Controllers\Admin\ProgrammeController::class, 'createLecture'])->name('createLecture')->middleware(['auth:admin']);
   Route::post('/updateLecture', [App\Http\Controllers\Admin\ProgrammeController::class, 'updateLecture'])->name('updateLecture')->middleware(['auth:admin']);
-
+  Route::post('/staffUploadAttendance', [App\Http\Controllers\Admin\ProgrammeController::class, 'staffUploadAttendance'])->name('staffUploadAttendance')->middleware(['auth:admin']);
+  Route::post('/markStudentAttendance', [App\Http\Controllers\Admin\ProgrammeController::class, 'markStudentAttendance'])->name('markStudentAttendance')->middleware(['auth:admin']);
+  Route::post('/deleteStudentAttendance', [App\Http\Controllers\Admin\ProgrammeController::class, 'deleteStudentAttendance'])->name('deleteStudentAttendance')->middleware(['auth:admin']);
   
 });
 
@@ -488,6 +490,8 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'student'
 
   Route::post('/startClearance', [App\Http\Controllers\Student\ClearanceController::class, 'startClearance'])->name('startClearance')->middleware(['auth:student']); 
   Route::post('/downloadClearance', [App\Http\Controllers\Student\ClearanceController::class, 'downloadClearance'])->name('downloadClearance')->middleware(['auth:student']);
+
+  Route::get('/registeredCourses', [App\Http\Controllers\Student\AcademicController::class, 'registeredCourses'])->name('registeredCourses')->middleware(['auth:student']); 
 
 });
 
@@ -691,6 +695,13 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'staff'],
 
   Route::get('/studentFinalClearance', [App\Http\Controllers\Staff\StudentController::class, 'studentFinalClearance'])->name('studentFinalClearance')->middleware(['auth:staff']);
   Route::post('/manageFinalYearStudentClearance', [App\Http\Controllers\Staff\StudentController::class, 'manageFinalYearStudentClearance'])->name('manageFinalYearStudentClearance')->middleware(['auth:staff']);
+
+  Route::post('/createLecture', [App\Http\Controllers\Staff\StaffController::class, 'createLecture'])->name('createLecture')->middleware(['auth:staff']);
+  Route::post('/updateLecture', [App\Http\Controllers\Staff\StaffController::class, 'updateLecture'])->name('updateLecture')->middleware(['auth:staff']);
+  Route::post('/staffUploadAttendance', [App\Http\Controllers\Staff\StaffController::class, 'staffUploadAttendance'])->name('staffUploadAttendance')->middleware(['auth:staff']);
+  Route::post('/markStudentAttendance', [App\Http\Controllers\Staff\StaffController::class, 'markStudentAttendance'])->name('markStudentAttendance')->middleware(['auth:staff']);
+  Route::post('/deleteStudentAttendance', [App\Http\Controllers\Staff\StaffController::class, 'deleteStudentAttendance'])->name('deleteStudentAttendance')->middleware(['auth:staff']);
+  
 
 });
 

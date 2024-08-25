@@ -222,7 +222,12 @@ class HostelController extends Controller
     }
 
     public function viewHostel($slug){
-        $hostel = Hostel::with('rooms', 'rooms.type', 'rooms.allocations')->where('slug', $slug)->first();
+        $hostel = Hostel::with(['rooms' => function ($query) {
+            $query->orderBy('id', 'desc');
+        }, 'rooms.type', 'rooms.allocations'])
+        ->where('slug', $slug)
+        ->first();
+        
         
         $roomTypes = RoomType::where('campus', $hostel->campus)
         ->orderByRaw('CAST(capacity AS UNSIGNED) DESC')

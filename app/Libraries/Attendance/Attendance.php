@@ -9,13 +9,16 @@ use League\Csv\Reader;
 use App\Models\Staff;
 use App\Models\Attendance as StaffAttandance;
 use App\Models\Leave;
+use App\Models\LectureAttendance;
+use App\Models\Student;
+
 
 use Carbon\Carbon;
 
 class Attendance
 {
-    public static function processStaffAttendance(UploadedFile $file)
-    {
+    public static function processStaffAttendance(UploadedFile $file){
+
         $csv = Reader::createFromPath($file->getPathname());
         $csv->setHeaderOffset(0);
 
@@ -104,6 +107,39 @@ class Attendance
 
                 $addAttendance = StaffAttandance::create($newAttendance);
             } 
+        }
+
+        return 'success';
+    }
+    
+    public static function processLectureAttendance(UploadedFile $file, $lectureId, $globalSettings){
+        $csv = Reader::createFromPath($file->getPathname());
+        $csv->setHeaderOffset(0);
+
+        $records = $csv->getRecords();
+        $academicSession = $globalSettings->sessionSetting['academic_session'];
+
+        foreach ($records as $row) {
+            $matricNumber = $row['Matric No'];
+
+            $student = Student::with('applicant')->where('matric_number', $matricNumber)->first();
+            if(!$student){
+                Log::info("Student with ". $matricNumber ." didnt register for this course.");
+                continue;
+            }
+
+            //check if student record dosent exist for the same lecture id
+            if($exist = LectureAttendance::where('course_lecture_id', $lectureId)->where('student_id', $student->id)->first()){
+                continue;
+            }
+
+            $attendanceData = ([
+                'course_lecture_id' => $lectureId,
+                'student_id' => $student->id,
+                'status' => 1
+            ]);
+
+            LectureAttendance::create($attendanceData);
         }
 
         return 'success';

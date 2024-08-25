@@ -5,7 +5,7 @@
         <ul class="nav nav-tabs nav-justified mb-3" role="tablist">
             <li class="nav-item">
                 <a class="nav-link active" data-bs-toggle="tab" href="#year1first" role="tab" aria-selected="false">
-                    First Semester
+                    Harmattan Semester
                 </a>
 
                 <br>
@@ -16,7 +16,7 @@
             </li>
             <li class="nav-item">
                 <a class="nav-link" data-bs-toggle="tab" href="#year1second" role="tab" aria-selected="false">
-                    Second Semester
+                    Rain Semester
                 </a>
             </li>
         </ul>

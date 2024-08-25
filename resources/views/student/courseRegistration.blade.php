@@ -123,7 +123,7 @@
                                         <td colspan="6" class="semester-heading">
                                             
                                             <div class="card-header align-items-center">
-                                                <h4 class="card-title mb-0 flex-grow-1">First Semester Courses</h4>
+                                                <h4 class="card-title mb-0 flex-grow-1">Harmattan Semester Courses</h4>
                                             </div><!-- end card header -->
 
                                         </td>
@@ -181,7 +181,7 @@
                                 </tbody>
                                 <tbody>
                                     <tr class="first-semester-total">
-                                        <td>Total First Semester Credit Unit</td>
+                                        <td>Total Harmattan Semester Credit Unit</td>
                                         <td></td>
                                         <td></td>
                                         <td>0</td>
@@ -194,7 +194,7 @@
                                         <td colspan="6" class="semester-heading">
                                             
                                             <div class="card-header align-items-center">
-                                                <h4 class="card-title mb-0 flex-grow-1">Second Semester Courses</h4>
+                                                <h4 class="card-title mb-0 flex-grow-1">Rain Semester Courses</h4>
                                             </div><!-- end card header -->
 
                                         </td>
@@ -248,7 +248,7 @@
                                 </tbody>
                                 <tbody>
                                     <tr class="second-semester-total">
-                                        <td>Total Second Semester Credit Unit</td>
+                                        <td>Total Rain Semester Credit Unit</td>
                                         <td></td>
                                         <td></td>
                                         <td>0</td>

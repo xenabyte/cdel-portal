@@ -36,6 +36,35 @@ use Paystack;
 class AcademicController extends Controller
 {
     //
+    public function registeredCourses(Request $request){
+        $student = Auth::guard('student')->user();
+        $studentId = $student->id;
+        $levelId = $student->level_id;
+        $globalData = $request->input('global_data');
+        $admissionSession = $globalData->sessionSetting['admission_session'];
+        $academicSession = $globalData->sessionSetting['academic_session'];
+
+        $paymentCheck = $this->checkSchoolFees($student, $academicSession, $levelId);
+        if(!$paymentCheck->passTuitionPayment){
+            return view('student.schoolFee', [
+                'payment' => $paymentCheck->schoolPayment,
+                'passTuition' => $paymentCheck->passTuitionPayment,
+                'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
+                'passEightyTuition' => $paymentCheck->passEightyTuition,
+            ]);
+        }
+
+        $courseRegs = CourseRegistration::where('student_id', $studentId)->where('academic_session', $academicSession)->get();
+
+
+        return view('student.registeredCourses', [
+            'courseRegs' => $courseRegs,
+            'payment' => $paymentCheck->schoolPayment,
+            'passTuition' => $paymentCheck->passTuitionPayment,
+            'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
+            'passEightyTuition' => $paymentCheck->passEightyTuition,
+        ]);
+    }
 
     public function courseRegistration(Request $request){
         $student = Auth::guard('student')->user();
@@ -286,8 +315,8 @@ class AcademicController extends Controller
         }
     }
 
-    public function printCourseReg(Request $request)
-    {
+    public function printCourseReg(Request $request){
+
         $student = Auth::guard('student')->user();
         $studentId = $student->id;
         $levelId = $student->level_id;
@@ -330,8 +359,8 @@ class AcademicController extends Controller
         return redirect(asset($studentRegistration->file));
     }
 
-    public function allCourseRegs(Request $request)
-    {
+    public function allCourseRegs(Request $request){
+
         $student = Auth::guard('student')->user();
         $studentId = $student->id;
         $levelId = $student->level_id;
@@ -362,8 +391,8 @@ class AcademicController extends Controller
         ]);
     }
 
-    public function editCourseReg(Request $request)
-    {
+    public function editCourseReg(Request $request){
+
         $student = Auth::guard('student')->user();
         $studentId = $student->id;
         $levelId = $student->level_id;

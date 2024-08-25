@@ -91,6 +91,78 @@
     </div>
     <!-- end col -->
 
+<div class="col-lg-12">
+        <div class="card">
+            <div class="card-body">
+                <div class="card-header align-items-center d-flex">
+                    <h4 class="card-title mb-0 flex-grow-1">Lectures </h4>
+                    <div class="flex-shrink-0">
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createLecture">Create Lecture</button>
+                    </div>
+                </div><!-- end card header -->
+    
+                <div class="table-responsive mt-5">
+                    <table id="buttons-datatables2" class="display table table-bordered" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th scope="col">Id</th>
+                                <th scope="col">Course Code</th>
+                                <th scope="col">Topic</th>
+                                <th scope="col">Date</th>
+                                <th scope="col">Duration</th>
+                                <th scope="col">Student Attendance(s)</th>
+                                <th scope="col"></th>
+                                <th scope="col"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($courseLectures as $courseLecture)
+                                <tr>
+                                    <th scope="row">{{ $loop->iteration }}</th>
+                                    <td>{{ $course->code }}</td>
+                                    <td>{{ $courseLecture->topic }}</td>
+                                    <td>{{ $courseLecture->date }}</td>
+                                    <td>{{ $courseLecture->duration }}</td>
+                                    <td>
+                                        {{ $courseLecture->lectureAttendance->count() }}  student(s) 
+                                        <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#viewLectureAttendance{{$courseLecture->id}}" class="btn btn-secondary m-1"><i class= "ri-eye-fill"></i> View</a>
+                                    </td>
+                                    <td>
+                                        <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#uploadAttendance{{$courseLecture->id}}">Bulk upload attendance</button>
+                                        <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#updateLecture{{$courseLecture->id}}" class="btn btn-secondary m-1"><i class="ri-edit-circle-fill"></i> Edit Lecture</a>
+                                    </td>
+                                    <td>
+                                        <form action="{{ url('/staff/markStudentAttendance') }}" method="post" enctype="multipart/form-data">
+                                            @csrf
+                                        
+                                            <input name="lecture_id" type="hidden" value="{{$courseLecture->id}}">
+                                            <div class="mb-3 d-flex align-items-end">
+                                                <div class="me-2 flex-grow-1">
+                                                    <label>Select Students Present</label>
+                                                    <select class="form-select select2 selectWithSearch" name="student_id[]" multiple aria-label="cstatus">
+                                                        @foreach($registrations as $studentReg)
+                                                            @if($studentReg->student)
+                                                                <option value="{{$studentReg->student->id}}">{{$studentReg->student->matric_number}} - {{ $studentReg->student->applicant->lastname .' '. $studentReg->student->applicant->othernames }}</option>
+                                                            @endif
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                                <div>
+                                                    <button type="submit" id="submit-button" class="btn btn-primary">Save</button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                        
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div><!-- end col -->
+
     <div class="col-lg-12">
         <div class="card">
             <div class="card-body">
@@ -112,6 +184,7 @@
                             <tr>
                                 <th scope="col">Id</th>
                                 <th scope="col">Course Code</th>
+                                <th scope="col">Attendance Percentage</th>
                                 <th scope="col">Name</th>
                                 <th scope="col">Matric No</th>
                                 <th scope="col">Programme</th>
@@ -129,6 +202,7 @@
                                 <tr>
                                     <th scope="row">{{ $loop->iteration }}</th>
                                     <td>{{ $course->code }}</td>
+                                    <td>{{ $registration->attendancePercentage() }}% </td>
                                     <td>{{ $registration->student->applicant->lastname .' '. $registration->student->applicant->othernames }}</td>
                                     <td>{{ $registration->student->matric_number }}</td>
                                     <td>{{ $registration->student->programme->name }}</td>
@@ -257,5 +331,174 @@
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
+
+<div id="createLecture" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 overflow-hidden">
+            <div class="modal-header p-3">
+                <h4 class="card-title mb-0">Create Lecture</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <hr>
+            <div class="modal-body">
+                <form action="{{ url('/admin/createLecture') }}" method="post" enctype="multipart/form-data">
+                    @csrf
+                    <input type="hidden" name="course_id" value="{{ $course->id }}">
+
+                    <div class="form-floating mb-3">
+                        <input type="text" name="topic" id="topic" class="form-control" required>
+                        <label for="topic">Lecture Topic</label>
+                    </div>
+
+                    <div class="form-floating mb-3">
+                        <input type="text" name="duration" id="duration" class="form-control">
+                        <label for="test">Duration</label>
+                    </div>
+
+                    <div class="form-floating mb-3">
+                        <input type="date" name="date" id="date" class="form-control">
+                        <label for="date">Lecture Date</label>
+                    </div>
+
+                    <hr>
+                    <div class="text-end">
+                        <button type="submit" id="submit-button" class="btn btn-primary">Create Lecture</button>
+                    </div>
+                </form>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+@foreach($courseLectures as $courseLecture)
+<div id="viewLectureAttendance{{ $courseLecture->id }}" class="modal fade" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" style="display: none;">
+    <!-- Fullscreen Modals -->
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content border-0 overflow-hidden">
+            <div class="modal-header p-3">
+                <h4 class="card-title mb-0">Student(s) in Attendance</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <hr>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12 text-center">
+                        <h4>Students</h4>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="table-responsive">
+                            <table id="buttons-datatables3" class="table table-bordered table-striped">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Id</th>
+                                        <th scope="col">Name</th>
+                                        <th scope="col">Matric No</th>
+                                        <th scope="col">Programme</th>
+                                        <th scope="col">Email</th>
+                                        <th scope="col"></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach($courseLecture->lectureAttendance as $attendance)
+                                    <tr>
+                                        <th scope="row">{{ $loop->iteration }}</th>
+                                        <td>{{ $attendance->student->applicant->lastname .' '. $attendance->student->applicant->othernames }}</td>
+                                        <td>{{ $attendance->student->matric_number }}</td>
+                                        <td>{{ $attendance->student->programme->name }}</td>
+                                        <td>{{ $attendance->student->email }} </td>
+                                        <td>
+                                            <form action="{{ url('/staff/deleteStudentAttendance') }}" method="POST">
+                                                @csrf
+                                                <input name="attendance_id" type="hidden" value="{{$attendance->id}}">
+                                                <button type="submit" id="submit-button" class="btn btn-danger w-100"><i class="ri-delete-bin-5-line"></i></button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+
+<div id="uploadAttendance{{ $courseLecture->id }}" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 overflow-hidden">
+            <div class="modal-header p-3">
+                <h4 class="card-title mb-0">Upload Attendance</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <hr>
+            <div class="modal-body">
+                <form action="{{ url('/staff/staffUploadAttendance') }}" method="post" enctype="multipart/form-data">
+                    @csrf
+                    <input type="hidden" name="course_id" value="{{ $course->id }}">
+                    <input type="hidden" name="staff_id" value="{{ $staffId }}">
+                    <input type="hidden" name="lecture_id" value="{{ $courseLecture->id }}">
+
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div>
+                                <label for="formSizeLarge" class="form-label">Attendance (CSV)</label>
+                                <input name="attendance"  class="form-control form-control-lg" id="formSizeLarge" type="file" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr>
+                    <div class="text-end">
+                        <button type="submit" id="submit-button" class="btn btn-primary">Upload Attendance</button>
+                    </div>
+                </form>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<div id="updateLecture{{ $courseLecture->id }}" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 overflow-hidden">
+            <div class="modal-header p-3">
+                <h4 class="card-title mb-0">Update Lecture</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <hr>
+            <div class="modal-body">
+                <form action="{{ url('/staff/updatedLecture') }}" method="post" enctype="multipart/form-data">
+                    @csrf
+                    <input type="hidden" name="course_id" value="{{ $course->id }}">
+                    <input type="hidden" name="lecture_id" value="{{ $courseLecture->id }}">
+
+
+                    <div class="form-floating mb-3">
+                        <input type="text" name="topic" id="topic" class="form-control" value="{{ $courseLecture->topic }}" required>
+                        <label for="topic">Lecture Topic</label>
+                    </div>
+
+                    <div class="form-floating mb-3">
+                        <input type="text" name="duration" id="duration" value="{{ $courseLecture->duration }}" class="form-control">
+                        <label for="test">Duration</label>
+                    </div>
+
+                    <div class="form-floating mb-3">
+                        <input type="date" name="date" id="date" value="{{ $courseLecture->date }}" class="form-control">
+                        <label for="date">Lecture Date</label>
+                    </div>
+
+                    <hr>
+                    <div class="text-end">
+                        <button type="submit" id="submit-button" class="btn btn-primary">Save Changes</button>
+                    </div>
+                </form>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+@endforeach
 
 @endsection

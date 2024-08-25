@@ -304,8 +304,8 @@
                         <label for="semester">Semester</label>
                         <select class="form-select" id="semester" name="semester" aria-label="semester">
                             <option value="" selected>--Select--</option>
-                            <option value="1">First Semester</option>
-                            <option value="2">Second Semester</option>
+                            <option value="1">Harmattan Semester</option>
+                            <option value="2">Rain Semester</option>
                         </select>
                     </div>
 

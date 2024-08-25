@@ -26,4 +26,14 @@ class LectureAttendance extends Model
     {
         return $this->belongsTo(User::class, 'foreign_key', 'other_key');
     }
+
+    /**
+     * Get the student that owns the LectureAttendance
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function student()
+    {
+        return $this->belongsTo(Student::class, 'student_id', 'id');
+    }
 }

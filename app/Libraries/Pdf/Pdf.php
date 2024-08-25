@@ -52,6 +52,11 @@ Class Pdf {
         $schoolAmount = $schoolPayment->structures->sum('amount');
         $acceptanceAmount = $acceptancePayment->structures->sum('amount');
 
+        $dir = public_path('uploads/files/admission');
+        if (!file_exists($dir)) {
+            mkdir($dir, 0755, true);
+        }
+
         $fileDirectory = 'uploads/files/admission/'.$slug.'.pdf';
         if (file_exists($fileDirectory)) {
             unlink($fileDirectory);
@@ -96,6 +101,11 @@ Class Pdf {
         $student = Student::with('applicant', 'academicLevel', 'faculty', 'department', 'programme')->where('id', $studentId)->first();
         $name = $student->applicant->lastname.' '.$student->applicant->othernames;
         $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $name .' course registration '. $academicSession)));
+
+        $dir = public_path('uploads/files/course_registration');
+        if (!file_exists($dir)) {
+            mkdir($dir, 0755, true);
+        }
 
         $fileDirectory = 'uploads/files/course_registration/'.$slug.time().'.pdf';
         $courseReg = CourseRegistration::with('course')->where('student_id', $studentId)->where('academic_session', $academicSession)->get();
@@ -169,6 +179,10 @@ Class Pdf {
             ->where('status', 'approved')
             ->get();
 
+        $dir = public_path('uploads/files/exam_card');
+        if (!file_exists($dir)) {
+            mkdir($dir, 0755, true);
+        }
 
         $fileDirectory = 'uploads/files/exam_card/'.$slug.'.pdf';
         if (file_exists($fileDirectory)) {
@@ -207,6 +221,11 @@ Class Pdf {
         $student->resultSession = $academicSession;
         $student->resultSemester = $semester;
         $student->resultLevel = $level;
+
+        $dir = public_path('uploads/files/result_card');
+        if (!file_exists($dir)) {
+            mkdir($dir, 0755, true);
+        }
 
         $fileDirectory = 'uploads/files/result_card/'.$slug.'.pdf';
         if (file_exists($fileDirectory)) {
@@ -266,6 +285,11 @@ Class Pdf {
         $student->paymentType = $paymentType;
         $student->amountBilled = $amountBilled;
 
+        $dir = public_path('uploads/files/invoice');
+        if (!file_exists($dir)) {
+            mkdir($dir, 0755, true);
+        }
+
         $fileDirectory = 'uploads/files/invoice/'.$slug.'.pdf';
         if (file_exists($fileDirectory)) {
             unlink($fileDirectory);
@@ -292,6 +316,11 @@ Class Pdf {
 
 
         $exitApplication = StudentExit::find($newExitId);
+
+        $dir = public_path('uploads/files/exit_applications');
+        if (!file_exists($dir)) {
+            mkdir($dir, 0755, true);
+        }
 
         $fileDirectory = 'uploads/files/exit_applications/'.$slug.'.pdf';
         if (file_exists($fileDirectory)) {
