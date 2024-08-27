@@ -941,6 +941,7 @@ class AcademicController extends Controller
             'exam_docket_status' => 'required',
             'academic_session' => 'required',
             'result_processing_status' => 'required',
+            'test_processing_status' => 'required',
             'semester' => 'required',
         ]);
 
@@ -965,6 +966,10 @@ class AcademicController extends Controller
 
         if(!empty($request->result_processing_status) &&  $request->result_processing_status != $examSettting->result_processing_status){
             $examSettting->result_processing_status = $request->result_processing_status;
+        }
+
+        if(!empty($request->test_processing_status) && $request->test_processing_status != $examSettting->test_processing_status){
+            $examSettting->test_processing_status = $request->test_processing_status;
         }
 
         if($examSettting->save()){

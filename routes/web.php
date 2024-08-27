@@ -820,3 +820,18 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'applican
   Route::get('/departmentById/{id}', [App\Http\Controllers\User\ApplicationController::class, 'departmentById'])->name('departmentById');
 
 });
+
+Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'career'], function () {
+  Route::get('/', [App\Http\Controllers\Career\Auth\LoginController::class, 'showLoginForm'])->name('bursary.login');
+  Route::get('/login', [App\Http\Controllers\Career\Auth\LoginController::class, 'showLoginForm'])->name('login');
+  Route::post('/login', [App\Http\Controllers\Career\Auth\LoginController::class, 'login']);
+  Route::post('/logout', [App\Http\Controllers\Career\Auth\LoginController::class, 'logout'])->name('logout');
+
+  Route::get('/register', [App\Http\Controllers\Career\Auth\RegisterController::class, 'showRegistrationForm'])->name('register');
+  Route::post('/register', [App\Http\Controllers\Career\Auth\RegisterController::class, 'register']);
+
+  Route::post('/password/email', [App\Http\Controllers\Career\Auth\ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.request');
+  Route::post('/password/reset', [App\Http\Controllers\Career\Auth\ResetPasswordController::class, 'reset'])->name('password.email');
+  Route::get('/password/reset', [App\Http\Controllers\Career\Auth\ForgotPasswordController::class, 'showLinkRequestForm'])->name('password.reset');
+  Route::get('/password/reset/{token}', [App\Http\Controllers\Career\Auth\ResetPasswordController::class, 'showResetForm']);
+});

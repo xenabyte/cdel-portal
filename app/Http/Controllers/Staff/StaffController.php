@@ -702,10 +702,20 @@ class StaffController extends Controller
         $academicSession = $globalData->sessionSetting['academic_session'];
         $applicationSession = $globalData->sessionSetting['application_session'];
         $resultProcessStatus = $globalData->examSetting['result_processing_status'];
+        $testProcessStatus = $globalData->examSetting['test_processing_status'];
 
-        if(strtolower($resultProcessStatus) != 'start'){
-            alert()->error('Result Processing has not started yet', 'Contact ICT')->persistent('Close');
-            return redirect()->back();
+        $uploadType = $request->type;
+
+        if(strtolower($uploadType) != 'test'){
+            if(strtolower($resultProcessStatus) != 'start'){
+                alert()->error('Result Processing has not started yet', 'Contact ICT')->persistent('Close');
+                return redirect()->back();
+            }
+        }else{
+            if(strtolower($testProcessStatus) != 'start'){
+                alert()->error('Test Processing has not started yet', 'Contact ICT')->persistent('Close');
+                return redirect()->back();
+            }
         }
 
         $validator = Validator::make($request->all(), [
@@ -749,7 +759,7 @@ class StaffController extends Controller
 
     
         $file = $request->file('result');
-        $processResult = Result::processResult($file, $courseId, $globalData);
+        $processResult = Result::processResult($file, $courseId, $uploadType, $globalData);
 
         if($processResult != 'success'){
             alert()->error('oops!', $processResult)->persistent('Close');
@@ -924,16 +934,24 @@ class StaffController extends Controller
 
         $globalData = $request->input('global_data');
         $resultProcessStatus = $globalData->examSetting['result_processing_status'];
+        $testProcessStatus = $globalData->examSetting['test_processing_status'];
         $academicSession = $globalData->sessionSetting['academic_session'];
 
-        if(strtolower($resultProcessStatus) != 'start'){
-            alert()->error('Result Processing has not started yet', 'Contact ICT')->persistent('Close');
-            return redirect()->back();
+        $uploadType = $request->type;
+
+        if(strtolower($uploadType) != 'test'){
+            if(strtolower($resultProcessStatus) != 'start'){
+                alert()->error('Result Processing has not started yet', 'Contact ICT')->persistent('Close');
+                return redirect()->back();
+            }
+        }else{
+            if(strtolower($testProcessStatus) != 'start'){
+                alert()->error('Test Processing has not started yet', 'Contact ICT')->persistent('Close');
+                return redirect()->back();
+            }
         }
 
         $validator = Validator::make($request->all(), [
-            'test' => 'required',
-            'exam' => 'required',
             'course_id' => 'required',
             'matric_number' => 'required',
         ]);
@@ -980,33 +998,45 @@ class StaffController extends Controller
             return redirect()->back();
         }
 
-        $testScore = $request->test;
-        $examScore = $request->exam;
-        $totalScore = $testScore + $examScore;
+        $testScore = $studentRegistration->ca_score;
+        $examScore = $studentRegistration->exam_score;
 
-        if($totalScore > 100){
-            alert()->success('Oops', 'Total score is greater than 100.')->persistent('Close');
-            return redirect()->back();
+        if(strtolower($uploadType) != 'test'){
+            $examScore = $request->exam;
+        }else{
+            $testScore = $request->test;
         }
 
-        $grading = GradeScale::computeGrade($totalScore);
-        $grade = $grading->grade;
-        $points = $grading->point;
-
-        $courseCode = $studentRegistration->course_code;
-
-        if (strpos($courseCode, 'NSC') !== false && $student->programme_id == 15) {
-            if($totalScore < 50){
-                $grade = 'F';
-                $points = 0;
-            }
-        }
-    
         $studentRegistration->ca_score = $testScore;
-        $studentRegistration->exam_score = $examScore;
-        $studentRegistration->total = $totalScore;
-        $studentRegistration->grade = $grade;
-        $studentRegistration->points = $studentRegistration->course_credit_unit * $points;
+
+
+        if($examScore > 0 && strtolower($uploadType) != 'test'){
+            $totalScore = $testScore + $examScore;
+
+            if($totalScore > 100){
+                alert()->success('Oops', 'Total score is greater than 100.')->persistent('Close');
+                return redirect()->back();
+            }
+    
+            $grading = GradeScale::computeGrade($totalScore);
+            $grade = $grading->grade;
+            $points = $grading->point;
+    
+            $courseCode = $studentRegistration->course_code;
+    
+            if (strpos($courseCode, 'NSC') !== false && $student->programme_id == 15) {
+                if($totalScore < 50){
+                    $grade = 'F';
+                    $points = 0;
+                }
+            }
+
+            $studentRegistration->exam_score = $examScore;
+            $studentRegistration->total = $totalScore;
+            $studentRegistration->grade = $grade;
+            $studentRegistration->points = $studentRegistration->course_credit_unit * $points;
+        }
+
         if($studentRegistration->save()){
             alert()->success('Student scores updated successfully!', '')->persistent('Close');
             return redirect()->back();

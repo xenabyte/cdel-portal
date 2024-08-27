@@ -537,7 +537,8 @@ class StudentController extends Controller
             'payment' => $paymentCheck->schoolPayment,
             'passTuition' => $paymentCheck->passTuitionPayment,
             'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
-            'passEightyTuition' => $paymentCheck->passEightyTuition
+            'passEightyTuition' => $paymentCheck->passEightyTuition,
+            'studentPendingTransactions' => $paymentCheck->studentPendingTransactions
         ]);
     }
 
@@ -893,7 +894,14 @@ class StudentController extends Controller
         if($validator->fails()) {
             alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
             return redirect()->back();
-        }        
+        }     
+        
+        $checkPendingExit = StudentExit::where('student_id', $student->id)->where(status, null)->first();
+
+        if($checkPendingExit){
+            alert()->error('Oops!', 'You have a pending exit application, you cant apply for another unless that is attended to, check with student care services')->persistent('Close');
+            return redirect()->back();
+        }
 
         $newExitApplication = ([
             'student_id' => $student->id,

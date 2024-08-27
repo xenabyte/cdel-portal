@@ -281,6 +281,17 @@
                         <label for="exam">Exam Score</label>
                     </div>
 
+                    <div class="col-lg-12">
+                        <div class="form-floating">
+                            <select class="form-select" id="type" name="type" aria-label="type" required>
+                                <option value="" selected>--Select--</option>
+                                <option value="test">Test</option>
+                                <option value="exam">Exam</option>
+                            </select>
+                            <label for="type">Result Type</label>
+                        </div>
+                    </div>
+
                     <hr>
                     <div class="text-end">
                         <button type="submit" id="submit-button" class="btn btn-primary">Save Changes</button>
@@ -306,11 +317,22 @@
                     <input type="hidden" name="course_id" value="{{ $course->id }}">
                     <input type="hidden" name="staff_id" value="{{ $staffId }}">
                     <div class="row">
-                        <div class="col-lg-12">
+                        <div class="col-lg-12 mb-3">
                             <div>
                                 <label for="formSizeLarge" class="form-label">Result (CSV)</label>
                                 <input name="result"  class="form-control form-control-lg" id="formSizeLarge" type="file" required>
                             </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-12">
+                        <div class="form-floating">
+                            <select class="form-select" id="type" name="type" aria-label="type" required>
+                                <option value="" selected>--Select--</option>
+                                <option value="test">Test</option>
+                                <option value="exam">Exam</option>
+                            </select>
+                            <label for="type">Result Type</label>
                         </div>
                     </div>
 

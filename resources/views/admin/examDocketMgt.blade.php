@@ -37,7 +37,7 @@
                             <input type="hidden" name="academic_session" value="{{ $pageGlobalData->sessionSetting->academic_session }}">
                             <div class="row g-3">
 
-                                <div class="col-lg-4">
+                                <div class="col-lg-6">
                                     <h4 class="card-title mb-0 flex-grow-1">Semester: {{ !empty($pageGlobalData->examSetting) ? ($pageGlobalData->examSetting->semester == 1 ? env('FIRST_SEMESTER') : env('SECOND_SEMESTER')) : 'Not Set' }}</h4>
                                     <br>
                                     <div class="form-floating">
@@ -51,7 +51,7 @@
                                 </div>
 
 
-                                <div class="col-lg-4">
+                                <div class="col-lg-6">
                                     <h4 class="card-title mb-0 flex-grow-1">Exam Docket Status: {{ !empty($pageGlobalData->examSetting)?$pageGlobalData->examSetting->exam_docket_status:'Not Set' }}</h4>
                                     <br>
                                     <div class="form-floating">
@@ -64,7 +64,20 @@
                                     </div>
                                 </div>
 
-                                <div class="col-lg-4">
+                                <div class="col-lg-6">
+                                    <h4 class="card-title mb-0 flex-grow-1">Test Processing Status: {{ !empty($pageGlobalData->examSetting)?$pageGlobalData->examSetting->test_processing_status:'Not Set' }}</h4>
+                                    <br>
+                                    <div class="form-floating">
+                                        <select class="form-select" id="test_processing_status" name="test_processing_status" aria-label="Test Processing Status">
+                                            <option value="" selected>--Select--</option>
+                                            <option value="Start">Start</option>
+                                            <option value="Stop">Stop</option>
+                                        </select>
+                                        <label for="test_processing_status">Test Processing Status</label>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-6">
                                     <h4 class="card-title mb-0 flex-grow-1">Result Processing Status: {{ !empty($pageGlobalData->examSetting)?$pageGlobalData->examSetting->result_processing_status:'Not Set' }}</h4>
                                     <br>
                                     <div class="form-floating">
@@ -76,6 +89,7 @@
                                         <label for="result_processing_status">Result Processing Status</label>
                                     </div>
                                 </div>
+
                                 <hr>
                                 <div class="col-lg-12">
                                     <div class="text-end">

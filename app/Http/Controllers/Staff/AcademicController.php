@@ -241,7 +241,7 @@ class AcademicController extends Controller
             ->where('academic_session', $academicSession)
             ->update(['dap_approval_status' => 'approved']);
 
-            $message = 'Courses for'. $level.$programme .'students have been approved by DAP. Kindly proceed to open course registration for students.';
+            $message = 'Courses for '. $level.$programme .' students have been approved by DAP. Kindly proceed to open course registration for students.';
             
             $senderName = env('SCHOOL_NAME');
             $receiverName = 'Portal Admininstrator';

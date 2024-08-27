@@ -10,6 +10,7 @@ use App\Models\Staff;
 use App\Models\Attendance as StaffAttandance;
 use App\Models\Leave;
 use App\Models\LectureAttendance;
+use App\Models\CourseLecture;
 use App\Models\Student;
 
 
@@ -118,6 +119,9 @@ class Attendance
 
         $records = $csv->getRecords();
         $academicSession = $globalSettings->sessionSetting['academic_session'];
+        $courseLecture = CourseLecture::find($lectureId);
+        $courseId = $courseLecture->course_id;
+
 
         foreach ($records as $row) {
             $matricNumber = $row['Matric No'];
@@ -125,6 +129,17 @@ class Attendance
             $student = Student::with('applicant')->where('matric_number', $matricNumber)->first();
             if(!$student){
                 Log::info("Student with ". $matricNumber ." didnt register for this course.");
+                continue;
+            }
+
+            $studentCourseRegistration = CourseRegistration::where([
+                'student_id' => $student->id,
+                'course_id' => $courseId,
+                'academic_session' => $academicSession
+            ])->first();
+
+            if(!$studentCourseRegistration){
+                Log::info($student->applicant->lastname."  ".$student->applicant->othernames." didnt register for the course ");
                 continue;
             }
 

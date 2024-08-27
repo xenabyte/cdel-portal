@@ -22,7 +22,7 @@ use Log;
 
 class Result
 {
-    public static function processResult(UploadedFile $file, $courseId, $globalSettings)
+    public static function processResult(UploadedFile $file, $courseId, $type, $globalSettings)
     {
         $csv = Reader::createFromPath($file->getPathname());
         $csv->setHeaderOffset(0);
@@ -46,20 +46,7 @@ class Result
                 continue;
             }
 
-            if($testScore < 1 && $examScore < 1){
-                continue;
-            }
-            
-            $totalScore = round($testScore + $examScore);
-
-            if($totalScore > 100){
-                Log::info($student->applicant->lastname.' '.$student->applicant->othernames ." total score is greater than 100.");
-                continue;
-            }
-
-            $grading = GradeScale::computeGrade($totalScore);
-            $grade = $grading->grade;
-            $points = $grading->point;
+            $studentId = $student->id;
 
             $course = Course::find($courseId);
             $courseCode = $course->code;
@@ -69,16 +56,6 @@ class Result
                 continue;
             }
 
-            if (strpos($courseCode, 'NSC') !== false && $student->programme_id == 15) {
-                if($totalScore < 50){
-                    $grade = 'F';
-                    $points = 0;
-                }
-            }
-
-
-            $studentId = $student->id;
-
             $studentRegistration = CourseRegistration::where([
                 'student_id' => $studentId,
                 'course_id' => $courseId,
@@ -87,18 +64,49 @@ class Result
             ])->first();
 
             if(!$studentRegistration){
-                Log::info($student->applicant->lastname."  ".$student->applicant->othernames."Course registration not found for ".$courseCode." @ ".$academicSession);
+                Log::info($student->applicant->lastname."  ".$student->applicant->othernames." course registration not found for ".$courseCode." @ ".$academicSession);
                 continue;
             }
 
-            if ($studentRegistration) {
-                $studentRegistration->ca_score = $testScore;
+            $testScore = $studentRegistration->ca_score;
+            $examScore = $studentRegistration->exam_score;
+
+            if(strtolower($type) != 'test'){
+                $examScore = $request->exam;
+            }else{
+                $testScore = $request->test;
+            }
+
+            $studentRegistration->ca_score = $testScore;
+
+            if($examScore > 0 && strtolower($uploadType) != 'test'){
+                $totalScore = $testScore + $examScore;
+
+                if($totalScore > 100){
+                    alert()->success('Oops', 'Total score is greater than 100.')->persistent('Close');
+                    return redirect()->back();
+                }
+        
+                $grading = GradeScale::computeGrade($totalScore);
+                $grade = $grading->grade;
+                $points = $grading->point;
+        
+                $courseCode = $studentRegistration->course_code;
+        
+                if (strpos($courseCode, 'NSC') !== false && $student->programme_id == 15) {
+                    if($totalScore < 50){
+                        $grade = 'F';
+                        $points = 0;
+                    }
+                }
+
                 $studentRegistration->exam_score = $examScore;
                 $studentRegistration->total = $totalScore;
                 $studentRegistration->grade = $grade;
-                $studentRegistration->points = $points * $studentRegistration->course_credit_unit;
-                $studentRegistration->save();
+                $studentRegistration->points = $studentRegistration->course_credit_unit * $points;
             }
+
+            $studentRegistration->save();
         }
 
         return 'success';

@@ -277,6 +277,17 @@
                         <label for="exam">Exam Score</label>
                     </div>
 
+                    <div class="col-lg-12">
+                        <div class="form-floating">
+                            <select class="form-select" id="type" name="type" aria-label="type" required>
+                                <option value="" selected>--Select--</option>
+                                <option value="test">Test</option>
+                                <option value="exam">Exam</option>
+                            </select>
+                            <label for="type">Result Type</label>
+                        </div>
+                    </div>
+
                     @if(!empty($registrations->grade))
                     <div class="form-floating mb-3 mt-3">
                         <input type="password" name="passcode" id="passcode" class="form-control" required>
@@ -313,6 +324,17 @@
                                 <label for="formSizeLarge" class="form-label">Result (CSV)</label>
                                 <input name="result"  class="form-control form-control-lg" id="formSizeLarge" type="file" required>
                             </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-12">
+                        <div class="form-floating">
+                            <select class="form-select" id="type" name="type" aria-label="type" required>
+                                <option value="" selected>--Select--</option>
+                                <option value="test">Test</option>
+                                <option value="exam">Exam</option>
+                            </select>
+                            <label for="type">Result Type</label>
                         </div>
                     </div>
 

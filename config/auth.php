@@ -36,6 +36,11 @@ return [
     */
 
     'guards' => [
+        'career' => [
+            'driver' => 'session',
+            'provider' => 'careers',
+        ],
+
         'user' => [
             'driver' => 'session',
             'provider' => 'users',
@@ -95,6 +100,11 @@ return [
     */
 
     'providers' => [
+        'careers' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Career::class,
+        ],
+
         'guardians' => [
             'driver' => 'eloquent',
             'model' => App\Models\Guardian::class,
@@ -152,6 +162,12 @@ return [
     */
 
     'passwords' => [
+        'careers' => [
+            'provider' => 'careers',
+            'table' => 'career_password_resets',
+            'expire' => 60,
+        ],
+
         'users' => [
             'provider' => 'users',
             'table' => 'user_password_resets',

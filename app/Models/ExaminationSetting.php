@@ -15,6 +15,7 @@ class ExaminationSetting extends Model
         'academic_session',
         'semester',
         'result_processing_status',
+        'test_processing_status',
         'status'
     ];
 }

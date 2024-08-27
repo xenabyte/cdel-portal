@@ -746,6 +746,7 @@ class ProgrammeController extends Controller
         $validator = Validator::make($request->all(), [
             'result' => 'required|file',
             'course_id' => 'required',
+            'type' => 'required'
         ]);
 
         if($validator->fails()) {
@@ -761,10 +762,11 @@ class ProgrammeController extends Controller
         }
 
         $courseId = $request->course_id;
+        $uploadType = $request->type;
 
     
         $file = $request->file('result');
-        $processResult = Result::processResult($file, $courseId, $globalData);
+        $processResult = Result::processResult($file, $courseId, $uploadType, $globalData);
 
         if($processResult != 'success'){
             alert()->error('oops!', $processResult)->persistent('Close');
@@ -791,9 +793,12 @@ class ProgrammeController extends Controller
             'exam' => 'required',
             'course_id' => 'required',
             'matric_number' => 'required',
+            'type' => 'required'
         ]);
 
         $matricNumber = $request->matric_number;
+        $uploadType = $request->type;
+
 
         if(!$student = Student::where('matric_number', $matricNumber)->first()){
             alert()->error('Invalid Matric Number', '')->persistent('Close');
@@ -818,33 +823,45 @@ class ProgrammeController extends Controller
             return redirect()->back();
         }
 
-        $testScore = $request->test;
-        $examScore = $request->exam;
-        $totalScore = round($testScore + $examScore);
+        $testScore = $studentRegistration->ca_score;
+        $examScore = $studentRegistration->exam_score;
 
-        if($totalScore > 100){
-            alert()->success('Oops', 'Total score is greater than 100.')->persistent('Close');
-            return redirect()->back();
+        if(strtolower($uploadType) != 'test'){
+            $examScore = $request->exam;
+        }else{
+            $testScore = $request->test;
         }
-        
-        $grading = GradeScale::computeGrade($totalScore);
-        $grade = $grading->grade;
-        $points = $grading->point;
 
-        $courseCode = $studentRegistration->course_code;
-
-        if (strpos($courseCode, 'NSC') !== false && $student->programme_id == 15) {
-            if($totalScore < 50){
-                $grade = 'F';
-                $points = 0;
-            }
-        }
-        
         $studentRegistration->ca_score = $testScore;
-        $studentRegistration->exam_score = $examScore;
-        $studentRegistration->total = $totalScore;
-        $studentRegistration->grade = $grade;
-        $studentRegistration->points = $points * $studentRegistration->course_credit_unit;
+
+
+        if($examScore > 0 && strtolower($uploadType) != 'test'){
+            $totalScore = $testScore + $examScore;
+
+            if($totalScore > 100){
+                alert()->success('Oops', 'Total score is greater than 100.')->persistent('Close');
+                return redirect()->back();
+            }
+    
+            $grading = GradeScale::computeGrade($totalScore);
+            $grade = $grading->grade;
+            $points = $grading->point;
+    
+            $courseCode = $studentRegistration->course_code;
+    
+            if (strpos($courseCode, 'NSC') !== false && $student->programme_id == 15) {
+                if($totalScore < 50){
+                    $grade = 'F';
+                    $points = 0;
+                }
+            }
+
+            $studentRegistration->exam_score = $examScore;
+            $studentRegistration->total = $totalScore;
+            $studentRegistration->grade = $grade;
+            $studentRegistration->points = $studentRegistration->course_credit_unit * $points;
+        }
+
         if($studentRegistration->save()){
             alert()->success('Student scores updated successfully!', '')->persistent('Close');
             return redirect()->back();
