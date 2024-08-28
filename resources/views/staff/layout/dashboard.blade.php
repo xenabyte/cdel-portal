@@ -967,6 +967,160 @@
           });
         });
     </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const validateButton = document.querySelector('.validate-button');
+            const hiddenFields = document.querySelector('.hidden-fields');
+            const studentIdInput = document.querySelector('#student_id');
+            const StudentGender = document.querySelector('#studentGender')
+            const matricNumberInput = document.querySelector('#matricNumber');
+
+            hiddenFields.style.display = 'none';
+
+            validateButton.addEventListener('click', function () {
+                const matricNumber = document.querySelector('#matricNumber').value;
+
+                if(matricNumber === '') {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Matric Number is required',
+                        text: 'Fill in your matric number',
+                    });
+
+                    return false;
+                }
+
+                // Send a POST request to the Laravel route
+                axios.post('/student/getStudent', { matric_number: matricNumber })
+                    .then(function (response) {
+                        if (response.data.status === 'record_not_found') {
+                            // Show a SweetAlert for record not found
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Record Not Found',
+                                text: 'The student record was not found.',
+                            });
+                        } else {
+                            // Set the student ID and show the hidden fields
+                            studentIdInput.value = response.data.student.id;
+                            StudentGender.value = response.data.student.applicant.gender;
+                            hiddenFields.style.display = 'flex';
+                            validateButton.style.display = 'none';
+                            matricNumberInput.setAttribute('disabled', 'disabled');
+                        }
+                    })
+                    .catch(function (error) {
+                        console.error(error);
+                    });
+            });
+        });
+    </script>
+    <script>
+        function handleCampusChange(event) {
+            const selectedCampus = event.target.value;
+            const gender = $('.gender').val();;
+            const hostelSelect = $('#hostel');
+
+            if (selectedCampus !== '') {
+                axios.post("{{ url('/student/getHostels') }}", {
+                    campus: selectedCampus, 
+                    gender: gender
+                })
+                .then(function (response) {
+                    hostelSelect.empty().append($('<option>', {
+                        value: '',
+                        text: '--Select--'
+                    }));
+
+                    $.each(response.data, function (index, hostel) {
+                        hostelSelect.append($('<option>', {
+                            value: hostel.id,
+                            text: hostel.name
+                        }));
+                    });
+                })
+                .catch(function (error) {
+                    console.error("Error fetching hostels:", error);
+                });
+            } else {
+                hostelSelect.empty().append($('<option>', {
+                    value: '',
+                    text: '--Select--'
+                }));
+            }
+        }
+
+        function handleHostelChange(event) {
+            const selectedCampus = $('#campus').val(); 
+            const gender = $('.gender').val();;
+            const roomTypeSelect = $('#roomType');
+
+            if (selectedCampus !== '') {
+                axios.post("{{ url('/student/getRoomTypes') }}", {
+                    campus: selectedCampus, 
+                    gender: gender
+                })
+                .then(function (response) {
+                    roomTypeSelect.empty().append($('<option>', {
+                        value: '',
+                        text: '--Select--'
+                    }));
+
+                    $.each(response.data, function (index, roomType) {
+                        const formattedAmount = (roomType.amount / 100).toLocaleString('en-NG', { style: 'currency', currency: 'NGN' });
+
+                        roomTypeSelect.append($('<option>', {
+                            value: roomType.id,  
+                            text: `${roomType.name} (${roomType.capacity} Bed Spaces) (${formattedAmount})`
+                        }));
+                    });
+                })
+                .catch(function (error) {
+                    console.error("Error fetching room types:", error);
+                });
+            } else {
+                roomTypeSelect.empty().append($('<option>', {
+                    value: '',
+                    text: '--Select--'
+                }));
+            }
+        }
+
+        function handleRoomTypeChange(event) {
+            const hostel = $('#hostel').val(); 
+            const typeId = event.target.value;
+            const roomSelect = $('#room');
+
+            if (typeId !== '') {
+                axios.post("{{ url('/student/getRooms') }}", {
+                    typeId: typeId, 
+                    hostelId: hostel
+                })
+                .then(function (response) {
+                    roomSelect.empty().append($('<option>', {
+                        value: '',
+                        text: '--Select--'
+                    }));
+
+                    $.each(response.data, function (index, room) {
+                        roomSelect.append($('<option>', {
+                            value: room.id,  
+                            text: room.number
+                        }));
+                    });
+                })
+                .catch(function (error) {
+                    console.error("Error fetching room types:", error);
+                });
+            } else {
+                roomTypeSelect.empty().append($('<option>', {
+                    value: '',
+                    text: '--Select--'
+                }));
+            }
+        }
+    </script>
 </body>
 
 </html>
