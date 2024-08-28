@@ -788,23 +788,33 @@
                         text: '--Select--'
                     }));
 
-                    $.each(response.data, function (index, room) {
-                        roomSelect.append($('<option>', {
-                            value: room.id,  
-                            text: room.number
-                        }));
-                    });
+                    if (response.data.length === 0) {
+                        // Trigger SweetAlert when no rooms are found
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'No Rooms Available',
+                            text: 'No rooms available for the selected room type.',
+                        });
+                    } else {
+                        $.each(response.data, function (index, room) {
+                            roomSelect.append($('<option>', {
+                                value: room.id,  
+                                text: room.number
+                            }));
+                        });
+                    }
                 })
                 .catch(function (error) {
-                    console.error("Error fetching room types:", error);
+                    console.error("Error fetching rooms:", error);
                 });
             } else {
-                roomTypeSelect.empty().append($('<option>', {
+                roomSelect.empty().append($('<option>', {
                     value: '',
                     text: '--Select--'
                 }));
             }
         }
+
 
     </script>
     
