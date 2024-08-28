@@ -31,8 +31,9 @@ class HostelController extends Controller
 
     public function getHostels(Request $request) {
         $campus = $request->campus;
+        $gender = $request->gender;
         $student = Auth::guard('student')->user();
-        $applicantGender = $student->applicant->gender;
+        $applicantGender = !empty($student)? $student->applicant->gender : $gender;
 
         $hostels = Hostel::where('gender', $applicantGender)->where('campus', $campus)->get();
 
