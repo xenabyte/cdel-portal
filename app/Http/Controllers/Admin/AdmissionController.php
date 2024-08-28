@@ -27,6 +27,7 @@ use App\Mail\ApplicationMail;
 use App\Mail\AdmissionMail;
 
 use App\Libraries\Pdf\Pdf;
+use App\Libraries\Sms\Sms;
 
 use SweetAlert;
 use Mail;
@@ -181,13 +182,18 @@ class AdmissionController extends Controller
             $student = Student::with('programme', 'applicant')->where('id', $studentId)->first();
             $student->admission_letter = $admissionLetter;
             $student->save();
-
             Mail::to($student->email)->send(new AdmissionMail($student));
+
+            $smsInstance = new Sms();
+            $file = asset($admissionLetter);
+            $fileUrl = $this->shortURL($file);
+            $message = "Congratulations, Dear ".$name." you have been granted admission to ".env('SCHOOL_NAME')." Welcome to our community of scholars, where your journey towards excellence begins. Download your admission letter using this link: ".$fileUrl;
+            $phoneNumber= $student->applicant->phone_number;
+            $smsInstance->sendSms($message, $phoneNumber);
         }
 
         if(strtolower($status) == 'advanceStudies'){
             $advanceStudiesProgrammeType = $request('advanceStudiesProgrammeType');
-
         }
 
 

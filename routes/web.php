@@ -63,6 +63,10 @@ Route::get('/getDepartments/{id}', [App\Http\Controllers\HomeController::class, 
 Route::get('google/auth', [App\Http\Controllers\GoogleController::class, 'redirectToGoogle'])->name('google.auth');
 Route::get('google/callback', [App\Http\Controllers\GoogleController::class, 'handleGoogleCallback'])->name('google.callback');
 
+Route::group(['prefix' => 's'], function () {
+  Route::get('/{code}', [App\Http\Controllers\UrlShortenerController::class, 'redirect']);
+});
+
 
 Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'admin'], function () {
   Route::get('/', [App\Http\Controllers\Admin\Auth\LoginController::class, 'showLoginForm'])->name('admin.login');

@@ -57,6 +57,7 @@ use App\Models\RoomType;
 use App\Models\RoomBedSpace;
 use App\Models\Room;
 use App\Models\Allocation;
+use App\Models\ShortUrl;
 
 
 
@@ -77,6 +78,17 @@ class Controller extends BaseController
             'message' => $message,
             'data' => $data,
         ], $statusCode);
+    }
+
+    public function shortURL($url){
+        $code = $this->generateShortUrlCode();
+
+        ShortUrl::create([
+            'code' => $code,
+            'url' => $url
+        ]);
+
+        return env('APP_URL')."/s/".$code;
     }
     
     public function processPaystackPayment($paymentDetails){
@@ -273,6 +285,18 @@ class Controller extends BaseController
             return $applicationAccessCode;
         } else {
             return $this->generateAccessCode();
+        }           
+    }
+
+    public function generateShortUrlCode () {
+        $shortUrlCode = "";
+        $current = $this->generateRandomString();
+        $isExist = ShortUrl::where('code', $current)->get();
+        if(!($isExist->count() > 0)) {
+            $shortUrlCode = $current;
+            return $shortUrlCode;
+        } else {
+            return $this->generateShortUrlCode();
         }           
     }
 
