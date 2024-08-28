@@ -532,7 +532,6 @@
 
     <script>
         $(document).ready(function() {
-            // Initialize Select2
             $('.selectRoom').select2();
         });
     </script>

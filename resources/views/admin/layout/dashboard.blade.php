@@ -852,6 +852,9 @@
         $(document).ready(function() {
             $('.selectWithSearch').select2();
         });
+        $(document).ready(function() {
+            $('.selectRoom').select2();
+        });
     </script>
     <script type="text/javascript">
         $(document).ready(function() {
