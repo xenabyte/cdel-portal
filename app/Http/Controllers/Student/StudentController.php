@@ -468,7 +468,7 @@ class StudentController extends Controller
                 "firstName" => $student->applicant->othernames,
                 "lastName" => $student->applicant->lastname,
                 "redirectUrl" => env("UPPERLINK_REDIRECT_URL"),
-                "accountCode" => BankAccount::getBankAccountCode($paymentType.'12'),
+                "accountCode" => BankAccount::getBankAccountCode($paymentType),
                 "meta" => json_encode($meta),
             );
 
