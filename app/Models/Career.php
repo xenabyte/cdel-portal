@@ -22,6 +22,7 @@ class Career extends Authenticatable
         'othernames', 
         'email', 
         'password',
+        'phone_number',
     ];
 
     /**

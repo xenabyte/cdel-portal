@@ -16,7 +16,7 @@
         <div class="card-body">
             <div class="d-flex align-items-center mb-5">
                 <div class="flex-grow-1">
-                    <h5 class="card-title mb-0">Complete Your Clearance</h5>
+                    <h5 class="card-title mb-0">Complete Your Screening</h5>
                 </div>
                 <div class="flex-shrink-0">
                 </div>
@@ -33,7 +33,7 @@
         <div class="card-body">
             <div class="d-flex align-items-center mb-5">
                 <div class="flex-grow-1">
-                    <h5 class="card-title mb-0">Clearance form submitted, Review is ongoing</h5>
+                    <h5 class="card-title mb-0">Screening form submitted, Review is ongoing</h5>
                 </div>
                 <div class="flex-shrink-0">
                 </div>
@@ -52,7 +52,7 @@
         <div class="card-body">
             <div class="d-flex align-items-center mb-1">
                 <div class="flex-grow-1">
-                    <h5 class="card-title mb-0">Submit Clearance Form</h5>
+                    <h5 class="card-title mb-0">Submit Screening Form</h5>
                     <hr>
                 </div>
             </div>

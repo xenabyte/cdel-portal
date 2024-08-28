@@ -8,6 +8,11 @@ use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Auth;
 
+use SweetAlert;
+use Mail;
+use Alert;
+use Log;
+
 class RegisterController extends Controller
 {
     /*
@@ -48,13 +53,21 @@ class RegisterController extends Controller
      */
     protected function validator(array $data)
     {
-        return Validator::make($data, [
+
+        $validator = Validator::make($data, [
             'lastname' => 'required|max:255',
-            'othername' => 'required|max:255',
+            'othernames' => 'required|max:255',
             'phone_number' => 'required|min:10|max:15',
             'email' => 'required|email|max:255|unique:careers',
             'password' => 'required|min:6|confirmed',
         ]);
+
+
+        if ($validator->fails()) {
+            alert()->error('Error', $validator->errors()->first())->persistent('Close');
+        }
+
+        return $validator;
     }
 
     /**

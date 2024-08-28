@@ -64,7 +64,7 @@
                     </div>
 
                     <div class="mt-4 border-top border-top-dashed pt-3">
-                        <button class="btn btn-success w-100" id='submit-button' disabled type="submit">Make Payment</button>
+                        <button class="btn btn-success w-100" id='submit-button' type="submit">Register</button>
                     </div>
                 </div>
 
@@ -77,4 +77,14 @@
 
     </div>
 </div>
+
+@if ($errors->any())
+<script>
+    Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        html: '<ul>@foreach ($errors->all() as $error)<li>{{ $error }}</li>@endforeach</ul>',
+    });
+</script>
+@endif
 @endsection

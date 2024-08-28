@@ -14,9 +14,11 @@ class CreateCareersTable extends Migration
     {
         Schema::create('careers', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('name');
+            $table->string('lastname')->nullable();
+            $table->string('othername')->nullable();
             $table->string('email')->unique();
             $table->string('password');
+            $table->string('phone_number')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });
