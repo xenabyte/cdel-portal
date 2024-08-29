@@ -1298,35 +1298,35 @@ class StudentController extends Controller
 
         $allocatedRoom = Allocation::where('student_id', $studentId)->where('academic_session', $academicSession)->first();
 
-        if(!$paymentCheck->passTuitionPayment){
-            return view('student.schoolFee', [
-                'payment' => $paymentCheck->schoolPayment,
-                'passTuition' => $paymentCheck->passTuitionPayment,
-                'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
-                'passEightyTuition' => $paymentCheck->passEightyTuition,
-                'studentPendingTransactions' => $paymentCheck->studentPendingTransactions
-            ]);
-        }
+        // if(!$paymentCheck->passTuitionPayment){
+        //     return view('student.schoolFee', [
+        //         'payment' => $paymentCheck->schoolPayment,
+        //         'passTuition' => $paymentCheck->passTuitionPayment,
+        //         'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
+        //         'passEightyTuition' => $paymentCheck->passEightyTuition,
+        //         'studentPendingTransactions' => $paymentCheck->studentPendingTransactions
+        //     ]);
+        // }
 
-        if(empty($student->image)){
-            return view('student.updateImage', [
-                'payment' => $paymentCheck->schoolPayment,
-                'passTuition' => $paymentCheck->passTuitionPayment,
-                'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
-                'passEightyTuition' => $paymentCheck->passEightyTuition,
-                'studentPendingTransactions' => $paymentCheck->studentPendingTransactions
-            ]);
-        }
+        // if(empty($student->image)){
+        //     return view('student.updateImage', [
+        //         'payment' => $paymentCheck->schoolPayment,
+        //         'passTuition' => $paymentCheck->passTuitionPayment,
+        //         'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
+        //         'passEightyTuition' => $paymentCheck->passEightyTuition,
+        //         'studentPendingTransactions' => $paymentCheck->studentPendingTransactions
+        //     ]);
+        // }
 
-        if(empty($student->bandwidth_username)){
-            return view('student.bandwidth', [
-                'payment' => $paymentCheck->schoolPayment,
-                'passTuition' => $paymentCheck->passTuitionPayment,
-                'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
-                'passEightyTuition' => $paymentCheck->passEightyTuition,
-                'studentPendingTransactions' => $paymentCheck->studentPendingTransactions
-            ]);
-        }
+        // if(empty($student->bandwidth_username)){
+        //     return view('student.bandwidth', [
+        //         'payment' => $paymentCheck->schoolPayment,
+        //         'passTuition' => $paymentCheck->passTuitionPayment,
+        //         'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
+        //         'passEightyTuition' => $paymentCheck->passEightyTuition,
+        //         'studentPendingTransactions' => $paymentCheck->studentPendingTransactions
+        //     ]);
+        // }
         
         return view('student.hostelBooking', [
             'allocatedRoom' => $allocatedRoom,

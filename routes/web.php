@@ -840,5 +840,7 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'career']
   Route::get('/password/reset/{token}', [App\Http\Controllers\Career\Auth\ResetPasswordController::class, 'showResetForm']);
 
   Route::get('/home', [App\Http\Controllers\Career\CareerController::class, 'index'])->middleware(['auth:career']);
+  Route::get('/profile', [App\Http\Controllers\Career\CareerController::class, 'profile'])->name('profile')->middleware(['auth:career']);
+
 
 });

@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class CareerProfile extends Model
 {
-    use HasFactory, SoftDelete;
+    use HasFactory, SoftDeletes;
 
     protected $fillable = [
         'career_id', 

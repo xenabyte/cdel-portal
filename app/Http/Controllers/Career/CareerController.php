@@ -23,8 +23,12 @@ class CareerController extends Controller
     //
 
     public function index(Request $request){
-        $career = Auth::guard('career')->user();
-
+        
         return view('career.home');
+    }
+
+    public function profile(Request $request){
+
+        return view('career.profile');
     }
 }

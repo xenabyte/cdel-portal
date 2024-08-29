@@ -44,4 +44,14 @@ class Career extends Authenticatable
     {
         $this->notify(new CareerResetPassword($token));
     }
+
+    /**
+     * Get the profile associated with the Career
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function profile()
+    {
+        return $this->hasOne(CareerProfile::class, 'career_id', 'id');
+    }
 }
