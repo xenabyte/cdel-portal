@@ -3,7 +3,7 @@
     $career = Auth::guard('career')->user();
 
     $percent = 1;
-        $total = 7;
+        $total = 8;
 
         if(!empty($career->lastname)){
             $percent = $percent + 1;
@@ -101,31 +101,31 @@
                     <ul class="nav nav-pills animation-nav profile-nav gap-2 gap-lg-3 flex-grow-1" role="tablist">
                         <li class="nav-item">
                             <a class="nav-link fs-14 {{ $formSession == 'bio-data'?'active':null }} {{ $formSession == ''?'active':null }}" data-bs-toggle="tab" href="#overview-tab" role="tab">
-                                <i class="ri-airplay-fill d-inline-block d-md-none"></i> <span class="d-none d-md-inline-block">Overview</span>
+                                <i class="ri-airplay-fill d-inline-block d-md-none"></i> <span class="d-none d-md-inline-block">Bio-Data</span>
                             </a>
                         </li>
 
                         <li class="nav-item">
-                            <a class="nav-link fs-14 {{ $formSession == 'olevel'?'active':null }}" data-bs-toggle="tab" href="#olevel" role="tab">
-                                <i class="ri-price-tag-line d-inline-block d-md-none"></i> <span class="d-none d-md-inline-block">Olevel Result</span>
+                            <a class="nav-link fs-14 {{ $formSession == 'educationHistory'?'active':null }}" data-bs-toggle="tab" href="#educationHistory" role="tab">
+                                <i class="ri-price-tag-line d-inline-block d-md-none"></i> <span class="d-none d-md-inline-block">Education History</span>
                             </a>
                         </li>
 
                         <li class="nav-item">
-                            <a class="nav-link fs-14 {{ $formSession == 'utme'?'active':null }}" data-bs-toggle="tab" href="#jamb" role="tab">
-                                <i class="ri-folder-4-line d-inline-block d-md-none"></i> <span class="d-none d-md-inline-block">Jamb Result</span>
+                            <a class="nav-link fs-14 {{ $formSession == 'professionalInformation'?'active':null }}" data-bs-toggle="tab" href="#professionalInformation" role="tab">
+                                <i class="ri-folder-4-line d-inline-block d-md-none"></i> <span class="d-none d-md-inline-block">Professional Information</span>
                             </a>
                         </li>
                         
                         <li class="nav-item">
-                            <a class="nav-link fs-14 {{ $formSession == 'guardian'?'active':null }}" data-bs-toggle="tab" href="#guardian" role="tab">
-                                <i class="ri-folder-4-line d-inline-block d-md-none"></i> <span class="d-none d-md-inline-block">Guardian</span>
+                            <a class="nav-link fs-14 {{ $formSession == 'publications'?'active':null }}" data-bs-toggle="tab" href="#publications" role="tab">
+                                <i class="ri-folder-4-line d-inline-block d-md-none"></i> <span class="d-none d-md-inline-block">Publications</span>
                             </a>
                         </li>
 
                         <li class="nav-item">
-                            <a class="nav-link fs-14 {{ $formSession == 'nok'?'active':null }}" data-bs-toggle="tab" href="#nok" role="tab">
-                                <i class="ri-folder-4-line d-inline-block d-md-none"></i> <span class="d-none d-md-inline-block">Next of Kin</span>
+                            <a class="nav-link fs-14 {{ $formSession == 'CV'?'active':null }}" data-bs-toggle="tab" href="#CV" role="tab">
+                                <i class="ri-folder-4-line d-inline-block d-md-none"></i> <span class="d-none d-md-inline-block">CV</span>
                             </a>
                         </li>
 
@@ -200,8 +200,8 @@
                                                 <hr>
     
                                                 <div class="col-lg-12">
-                                                    <label for="address">Address</label>
-                                                    <textarea class="ckeditor" id="address" name="address" ></textarea>
+                                                    <label for="biodata">Bio Data (Including above information, date of birth, address, etc.)</label>
+                                                    <textarea class="ckeditor" id="biodata" name="biodata">{!! $career->profile? $career->profile->biodata: null !!} </textarea>
                                                 </div><!--end col-->
     
                                                 <hr>
@@ -226,77 +226,173 @@
 
 
                     <!--end tab-pane-->
-                    <div class="tab-pane {{ $formSession == 'olevel'?'active':null }}" id="olevel" role="tabpanel">
+                    <div class="tab-pane {{ $formSession == 'educationHistory' ? 'active' : '' }}" id="educationHistory" role="tabpanel">
                         <div class="row">
                             @include('career.layout.clearanceProgress')
-    
+                    
                             <div class="col-xxl-8">
                                 <div class="card">
                                     <div class="card-body">
-                                        <h5 class="card-title mb-3">O'Level Results:</h5>
+                                        <h5 class="card-title mb-3">Education History</h5>
+                                        <form action="{{ url('career/manageProfile') }}" method="POST">
+                                            @csrf
+                                            <div class="row">
+                                                <div class="col-lg-12">
+                                                    <div class="mb-3">
+                                                        <label for="education_history" class="form-label">Education History</label>
+                                                        <textarea class="ckeditor" id="education_history" name="education_history">
+                                                            {{ $career->profile->education_history ?? '' }}
+                                                        </textarea>
+                                                    </div>
+                                                </div>
+                                            </div>
                                             <hr>
-                                          
-                                    </div>
-                                    <!--end card-body-->
-                                </div>
-                                <!--end card-->
-                            </div>
-                        </div>
-                    </div>
-
-                    <!--end tab-pane-->
-                    <div class="tab-pane {{ $formSession == 'utme'?'active':null }}" id="jamb" role="tabpanel">
-                        <div class="row">
-                            @include('career.layout.clearanceProgress')
-    
-                            <div class="col-xxl-8">
-                                <div class="card">
-                                    <div class="card-body">
-                                        <div class="mb-4 pb-2">
-                                            <h5 class="card-title mb-3">UTME Results:</h5>
-                                            <hr>
-                                           
+                                            <div class="col-lg-12">
+                                                <div class="hstack gap-2 justify-content-end">
+                                                    <button type="submit" class="btn btn-primary">Save</button>
+                                                </div>
+                                            </div>
+                                        </form>
+                    
+                                        <!-- Display the saved Education History -->
+                                        @if(!empty($career->profile->education_history))
+                                        <div class="mt-4">
+                                            <h5>Saved Information:</h5>
+                                            {!! $career->profile->education_history !!}
                                         </div>
+                                        @endif
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
+                    
+
+                    <div class="tab-pane {{ $formSession == 'professionalInformation' ? 'active' : '' }}" id="professionalInformation" role="tabpanel">
+                        <div class="row">
+                            @include('career.layout.clearanceProgress')
+                    
+                            <div class="col-xxl-8">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h5 class="card-title mb-3">Professional Information</h5>
+                                        <form action="{{ url('career/manageProfile') }}" method="POST">
+                                            @csrf
+                                            <div class="row">
+                                                <div class="col-lg-12">
+                                                    <div class="mb-3">
+                                                        <label for="professional_information" class="form-label">Professional Information</label>
+                                                        <textarea class="ckeditor" id="professional_information" name="professional_information">
+                                                            {{ $career->profile->professional_information ?? '' }}
+                                                        </textarea>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <hr>
+                                            <div class="col-lg-12">
+                                                <div class="hstack gap-2 justify-content-end">
+                                                    <button type="submit" class="btn btn-primary">Save</button>
+                                                </div>
+                                            </div>
+                                        </form>
+                    
+                                        <!-- Display the saved Professional Information -->
+                                        @if(!empty($career->profile->professional_information))
+                                        <div class="mt-4">
+                                            <h5>Saved Information:</h5>
+                                            {!! $career->profile->professional_information !!}
+                                        </div>
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
 
                     
 
-                    <div class="tab-pane {{ $formSession == 'guardian'?'active':null }}" id="guardian" role="tabpanel">
+                    <div class="tab-pane {{ $formSession == 'publications' ? 'active' : '' }}" id="publications" role="tabpanel">
                         <div class="row">
                             @include('career.layout.clearanceProgress')
-    
+                    
                             <div class="col-xxl-8">
                                 <div class="card">
                                     <div class="card-body">
-                                        <h5 class="card-title mb-3">Guardian Information</h5>
-                                        <hr>
-                                       
+                                        <h5 class="card-title mb-3">Publications</h5>
+                                        <form action="{{ url('career/manageProfile') }}" method="POST">
+                                            @csrf
+                                            <div class="row">
+                                                <div class="col-lg-12">
+                                                    <div class="mb-3">
+                                                        <label for="publications" class="form-label">Publications</label>
+                                                        <textarea class="ckeditor" id="publications" name="publications">
+                                                            {{ $career->profile->publications ?? '' }}
+                                                        </textarea>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <hr>
+                                            <div class="col-lg-12">
+                                                <div class="hstack gap-2 justify-content-end">
+                                                    <button type="submit" class="btn btn-primary">Save</button>
+                                                </div>
+                                            </div>
+                                        </form>
+                    
+                                        <!-- Display the saved Publications -->
+                                        @if(!empty($career->profile->publications))
+                                        <div class="mt-4">
+                                            <h5>Saved Information:</h5>
+                                            {!! $career->profile->publications !!}
+                                        </div>
+                                        @endif
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
+                    
 
-                    <div class="tab-pane {{ $formSession == 'nok'?'active':null }}" id="nok" role="tabpanel">
+                    <div class="tab-pane {{ $formSession == 'CV' ? 'active' : '' }}" id="CV" role="tabpanel">
                         <div class="row">
                             @include('career.layout.clearanceProgress')
-    
+                    
                             <div class="col-xxl-8">
                                 <div class="card">
                                     <div class="card-body">
-                                        <h5 class="card-title mb-3">Next of Kin Information</h5>
-                                        <hr>
-                                        
+                                        <h5 class="card-title mb-3">CV Upload <small>File should be CV and your credentials in a single file</small></h5>
+                                        <form action="{{ url('career/manageProfile') }}" method="POST" enctype="multipart/form-data">
+                                            @csrf
+                                            <div class="row">
+                                                <div class="col-lg-12">
+                                                    <div class="mb-3">
+                                                        <label for="cv_path" class="form-label">Upload CV</label>
+                                                        <input type="file" class="form-control" id="cv_path" name="cv_path" accept=".pdf,.doc,.docx" required>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <hr>
+                                            <div class="col-lg-12">
+                                                <div class="hstack gap-2 justify-content-end">
+                                                    <button type="submit" class="btn btn-primary">Save</button>
+                                                </div>
+                                            </div>
+                                        </form>
+                    
+                                        <!-- Display the uploaded CV -->
+                                        @if(!empty($career->profile->cv_path))
+                                        <div class="mt-4">
+                                            <h5>Uploaded CV:</h5>
+                                            <a href="{{ asset($career->profile->cv_path) }}" target="_blank">Download CV</a>
+                                        </div>
+                                        @endif
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                    
                 <!--end tab-content-->
             </div>
         </div>

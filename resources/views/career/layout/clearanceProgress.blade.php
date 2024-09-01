@@ -1,13 +1,32 @@
 @php
     $imageStatus = !empty($career->image)?1:0;
     $educationHistory = !empty($career->profile->education_history)?1:0;
-    $professionalInformation = !empty($career->professional_information)?1:0;
+    $professionalInformation = !empty($career->profile->professional_information)?1:0;
     $publications = !empty($career->profile->publications)?1:0;
     $cvPath = !empty($career->profile->cv_path)?1:0;  
 
 @endphp
 <div class="col-xxl-4">
-    @if($percent != 100)
+    @if($percent >= 100)
+    <div class="card">
+        <div class="card-body">
+            <div class="d-flex align-items-center mb-5">
+                <div class="flex-grow-1">
+                    <h5 class="card-title mb-0">Complete Your profile</h5>
+                </div>
+                <div class="flex-shrink-0">
+                </div>
+            </div>
+            <div class="d-flex align-items-center text-center mb-5">
+                <div class="flex-grow-1">
+                    <i class="fa fa-check fa-5x text-success"></i><br>
+                    <p class="muted">Profile is completely filled</p>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    @elseif($percent < 100)
     <div class="card">
         <div class="card-body">
             <div class="d-flex align-items-center mb-5">

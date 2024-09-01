@@ -54,4 +54,14 @@ class Career extends Authenticatable
     {
         return $this->hasOne(CareerProfile::class, 'career_id', 'id');
     }
+
+    /**
+     * Get all of the notifications for the Career
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function notifications()
+    {
+        return $this->hasMany(Notification::class, 'career_id', 'id');
+    }
 }

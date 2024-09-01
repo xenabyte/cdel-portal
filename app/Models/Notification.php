@@ -16,6 +16,7 @@ class Notification extends Model
         'user_id',
         'guardian_id',
         'partner_id',
+        'career_id',
         'attachment',
         'description',
         'status',
@@ -70,6 +71,16 @@ class Notification extends Model
     public function partner()
     {
         return $this->belongsTo(Partner::class, 'partner_id');
+    }
+
+    /**
+     * Get the career that owns the Notification
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function career()
+    {
+        return $this->belongsTo(Career::class, 'career_id');
     }
 
 }

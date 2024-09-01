@@ -4,7 +4,7 @@
 <html lang="en" data-layout="vertical" data-layout-style="default" data-layout-position="fixed" data-topbar="light" data-sidebar="dark" data-sidebar-size="lg" data-layout-width="fluid" data-preloader="disable">
 @php
     $career = Auth::guard('career')->user();
-    $notifications = 0;
+    $notifications = $career->notifications()->orderBy('created_at', 'desc')->get();    
 @endphp
 
 <head>
@@ -174,7 +174,7 @@
                         <div class="dropdown ms-sm-3 header-item topbar-user">
                             <button type="button" class="btn shadow-none" id="page-header-user-dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <span class="d-flex align-items-center">
-                                    <img class="rounded-circle header-profile-user" src="{{asset('assets/images/users/user-dummy-img.jpg')}}" alt="Header Avatar">
+                                    <img class="rounded-circle header-profile-user" src="{{ !empty($career->image)? asset($career->image) : asset('assets/images/users/user-dummy-img.jpg') }}" alt="Header Avatar">
                                     <span class="text-start ms-xl-2">
                                         <span class="d-none d-xl-inline-block ms-1 fw-medium user-name-text">{{ $career->lastname.' '.$career->othernames }}</span>
                                         <span class="d-none d-xl-block ms-1 fs-12 text-muted user-name-sub-text">Career</span>
@@ -239,6 +239,12 @@
                         <li class="nav-item">
                             <a class="nav-link menu-link" href="{{ url('/career/profile') }}">
                                 <i class="mdi mdi-account-cog"></i> <span>Profile</span>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link menu-link" href="{{ url('/career/applications') }}">
+                                <i class="mdi mdi-view-grid-plus"></i> <span>Applications</span>
                             </a>
                         </li>
 
@@ -396,53 +402,6 @@
     greetingElement.innerHTML = greeting;
 </script>
 <script>
-    function handlePaymentMethodChange(event) {
-        const selectedPaymentMethod = event.target.value;
-        console.log(selectedPaymentMethod);
-        const submitButton = document.getElementById('submit-button');
-        if(selectedPaymentMethod != ''){
-            if(selectedPaymentMethod == 'Remita' || selectedPaymentMethod == 'Zenith') {
-                submitButton.disabled = true;
-            }else{
-                submitButton.disabled = false;
-            }
-
-            if(selectedPaymentMethod == 'BankTransfer'){
-                document.getElementById('transferInfo').style.display = 'block';
-                document.getElementById('submit-button').style.display = 'none';
-            }else{
-                document.getElementById('transferInfo').style.display = 'none';
-                document.getElementById('submit-button').style.display = 'block';
-            }
-           
-        }else{
-            submitButton.disabled = true;
-        }
-    }
-
-    function handlePaymentMainMethodChange(event) {
-        const selectedPaymentMethod = event.target.value;
-        console.log(selectedPaymentMethod);
-        const submitButton = document.getElementById('submit-button-main');
-        if(selectedPaymentMethod != ''){
-            if(selectedPaymentMethod == 'Remita' || selectedPaymentMethod == 'Zenith') {
-                submitButton.disabled = true;
-            }else{
-                submitButton.disabled = false;
-            }
-
-            if(selectedPaymentMethod == 'BankTransfer'){
-                document.getElementById('transferInfoMain').style.display = 'block';
-                document.getElementById('submit-button-main').style.display = 'none';
-            }else{
-                document.getElementById('transferInfoMain').style.display = 'none';
-                document.getElementById('submit-button-main').style.display = 'block';
-            }
-           
-        }else{
-            submitButton.disabled = true;
-        }
-    }
     function updateNotificationStatus(event) {
         event.preventDefault();
         

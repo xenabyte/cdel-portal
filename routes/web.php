@@ -842,5 +842,7 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'career']
   Route::get('/home', [App\Http\Controllers\Career\CareerController::class, 'index'])->middleware(['auth:career']);
   Route::get('/profile', [App\Http\Controllers\Career\CareerController::class, 'profile'])->name('profile')->middleware(['auth:career']);
 
+  Route::post('/manageProfile', [App\Http\Controllers\Career\CareerController::class, 'manageProfile'])->name('manageProfile')->middleware(['auth:career']);
 
+  
 });
