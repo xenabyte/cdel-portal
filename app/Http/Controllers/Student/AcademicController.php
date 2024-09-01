@@ -51,6 +51,7 @@ class AcademicController extends Controller
                 'passTuition' => $paymentCheck->passTuitionPayment,
                 'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
                 'passEightyTuition' => $paymentCheck->passEightyTuition,
+                'studentPendingTransactions' => $paymentCheck->studentPendingTransactions
             ]);
         }
 

@@ -523,10 +523,21 @@
                                         <div class="collapse menu-dropdown" id="staffApplicants">
                                             <ul class="nav nav-sm flex-column">
                                                 <li class="nav-item">
-                                                    <a href="#l" class="nav-link" data-key="t-basic"> Staff Applications(coming soon) </a>
+                                                    <a href="#" class="nav-link" data-key="t-cover"> Role Applications(coming soon) </a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="#prospectiveStaff" class="nav-link" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="prospectiveStaff" data-key="t-prospectiveStaff"> Staff
+                                        </a>
+                                        <div class="collapse menu-dropdown" id="prospectiveStaff">
+                                            <ul class="nav nav-sm flex-column">
+                                                <li class="nav-item">
+                                                    <a href="{{ url('/admin/jobVacancy') }}" class="nav-link" data-key="t-basic"> Job Vacancies </a>
                                                 </li>
                                                 <li class="nav-item">
-                                                    <a href="#" class="nav-link" data-key="t-cover"> Role Applications(coming soon) </a>
+                                                    <a href="{{('/admin/prospectiveStaff')}}" class="nav-link" data-key="t-cover">Job Applicants </a>
                                                 </li>
                                             </ul>
                                         </div>
@@ -657,7 +668,7 @@
                         <div class="col-sm-6">
                             <script>document.write(new Date().getFullYear())</script> © {{ env('APP_NAME') }}.
                         </div>
-                        <div class="col-sm-6"
+                        <div class="col-sm-6">
                             <div class="text-sm-end d-none d-sm-block">
                                 Design & Develop by TAU ICT
                             </div>

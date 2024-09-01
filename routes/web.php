@@ -397,6 +397,9 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'admin'],
   Route::post('/markStudentAttendance', [App\Http\Controllers\Admin\ProgrammeController::class, 'markStudentAttendance'])->name('markStudentAttendance')->middleware(['auth:admin']);
   Route::post('/deleteStudentAttendance', [App\Http\Controllers\Admin\ProgrammeController::class, 'deleteStudentAttendance'])->name('deleteStudentAttendance')->middleware(['auth:admin']);
   
+  Route::get('/jobVacancy', [App\Http\Controllers\Admin\CareerController::class, 'jobVacancy'])->name('jobVacancy')->middleware(['auth:admin']);
+  Route::get('/prospectiveStaff', [App\Http\Controllers\Admin\CareerController::class, 'prospectiveStaff'])->name('prospectiveStaff')->middleware(['auth:admin']);
+
 });
 
 Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'student'], function () {
