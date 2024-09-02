@@ -116,11 +116,17 @@
             </div>
         </div>
         <div class="col-md-12">
-            <h4>Amount Billed: NGN{{ number_format($info->amountBilled/100, 2) }}
+            <h4>Amount Billed: NGN{{ $info->amountBilled > 0 ? number_format($info->amountBilled/100, 2) : number_format($transactions->sum('amount_payed')/100, 2) }}
             <br>
             <h4>Amount Paid:  NGN{{ number_format($transactions->sum('amount_payed')/100, 2) }}
             <br>
-            <h4 class="text-danger">Balance: NGN{{ number_format(($info->amountBilled-$transactions->sum('amount_payed'))/100, 2) }}</h4>
+            @php
+               $balance = $info->amountBilled - $transactions->sum('amount_payed');
+               if($balance < 1){
+                $balance = 0;
+               }
+            @endphp
+            <h4 class="text-danger">Balance: NGN{{ number_format($balance/100, 2) }}</h4>
         </div>
     </div>
 </div>
