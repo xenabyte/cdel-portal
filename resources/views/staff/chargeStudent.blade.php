@@ -468,7 +468,7 @@
                                         <form action="{{ url('/staff/getStudentPayment') }}" method="post" enctype="multipart/form-data">
                                             @csrf
                                             <input name="payment_id" type="hidden" value="{{$filteredTransaction['id']}}">
-                                            <input name="student_id" type="hidden" value="{{$student->id}}">
+                                            <input name="student_id" type="hidden" value="{{$applicant->student->id}}">
                                             <input name="session" type="hidden" value="{{ $filteredTransaction['session'] }}">
                                             <button type="submit" id="submit-button" class="btn btn-info my-1"><i class="mdi mdi-eye"></i></button>
                                         </form>
