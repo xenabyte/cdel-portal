@@ -447,7 +447,7 @@
                             @foreach($paymentType as $filteredTransaction)
                             @php
                                 $payment = new \App\Models\Payment;
-                                $paymentAmount = $payment->getTotalStructureAmount($filteredTransaction['id']) < 1?$filteredTransaction['totalAmount']:$payment->getTotalStructureAmount($filteredTransaction['id']);
+                                $paymentAmount = $payment->getTotalStructureAmount($filteredTransaction['id']);
                                 $balance = $filteredTransaction['paymentType'] == 'Wallet Deposit'? 0 : $paymentAmount-$filteredTransaction['totalPaid'];
                                 if($balance < 1){
                                     $balance = 0;
