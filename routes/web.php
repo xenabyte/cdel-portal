@@ -398,6 +398,10 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'admin'],
   Route::post('/deleteStudentAttendance', [App\Http\Controllers\Admin\ProgrammeController::class, 'deleteStudentAttendance'])->name('deleteStudentAttendance')->middleware(['auth:admin']);
   
   Route::get('/jobVacancy', [App\Http\Controllers\Admin\CareerController::class, 'jobVacancy'])->name('jobVacancy')->middleware(['auth:admin']);
+  Route::post('/postJobVacancy', [App\Http\Controllers\Admin\CareerController::class, 'postJobVacancy'])->name('postJobVacancy')->middleware(['auth:admin']);
+  Route::get('/viewJobVacancy/{slug}', [App\Http\Controllers\Admin\CareerController::class, 'viewJobVacancy'])->name('viewJobVacancy')->middleware(['auth:admin']);
+  Route::post('/updateJobVacancy', [App\Http\Controllers\Admin\CareerController::class, 'updateJobVacancy'])->name('updateJobVacancy')->middleware(['auth:admin']);
+  
   Route::get('/prospectiveStaff', [App\Http\Controllers\Admin\CareerController::class, 'prospectiveStaff'])->name('prospectiveStaff')->middleware(['auth:admin']);
 
 });
@@ -847,5 +851,5 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'career']
 
   Route::post('/manageProfile', [App\Http\Controllers\Career\CareerController::class, 'manageProfile'])->name('manageProfile')->middleware(['auth:career']);
 
-  
+  Route::post('/apply', [App\Http\Controllers\Career\CareerController::class, 'apply'])->name('apply')->middleware(['auth:career']);
 });

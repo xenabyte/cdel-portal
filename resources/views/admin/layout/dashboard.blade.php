@@ -529,7 +529,7 @@
                                         </div>
                                     </li>
                                     <li class="nav-item">
-                                        <a href="#prospectiveStaff" class="nav-link" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="prospectiveStaff" data-key="t-prospectiveStaff"> Staff
+                                        <a href="#prospectiveStaff" class="nav-link" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="prospectiveStaff" data-key="t-prospectiveStaff"> Career
                                         </a>
                                         <div class="collapse menu-dropdown" id="prospectiveStaff">
                                             <ul class="nav nav-sm flex-column">
@@ -1044,13 +1044,15 @@
 
         function handleHostelChange(event) {
             const selectedCampus = $('#campus').val(); 
-            const gender = $('.gender').val();;
+            const gender = $('.gender').val();
+            const hostel = $('#hostel').val(); 
             const roomTypeSelect = $('#roomType');
 
             if (selectedCampus !== '') {
                 axios.post("{{ url('/student/getRoomTypes') }}", {
                     campus: selectedCampus, 
-                    gender: gender
+                    gender: gender,
+                    hostelId: hostel
                 })
                 .then(function (response) {
                     roomTypeSelect.empty().append($('<option>', {

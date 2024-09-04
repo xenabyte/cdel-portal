@@ -1,33 +1,7 @@
 @php
     $formSession =  session('previous_section');
     $career = Auth::guard('career')->user();
-
-    $percent = 1;
-        $total = 8;
-
-        if(!empty($career->lastname)){
-            $percent = $percent + 1;
-        }
-        if(!empty($career->profile)){
-            $percent = $percent + 1;
-        }
-        if(!empty($career->profile->biodata)){
-            $percent = $percent + 1;
-        }
-        if(!empty($career->profile->education_history)){
-            $percent = $percent + 1;
-        }
-        if(!empty($career->profile->professional_information)){
-            $percent = $percent + 1;
-        }
-        if(!empty($career->profile->publications)){
-            $percent = $percent + 1;
-        }
-        if(!empty($career->profile->cv_path)){
-            $percent = $percent + 1;
-        }
-
-        $percent = round(($percent/$total)*100);
+    $percent = $career->calculateProfileCompletion();
 @endphp
 @extends('career.layout.dashboard')
 

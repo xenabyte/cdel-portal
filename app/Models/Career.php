@@ -64,4 +64,34 @@ class Career extends Authenticatable
     {
         return $this->hasMany(Notification::class, 'career_id', 'id');
     }
+
+    public function calculateProfileCompletion()
+    {
+        $percent = 1;
+        $total = 8;
+
+        if (!empty($this->lastname)) {
+            $percent++;
+        }
+        if (!empty($this->profile)) {
+            $percent++;
+        }
+        if (!empty($this->profile->biodata)) {
+            $percent++;
+        }
+        if (!empty($this->profile->education_history)) {
+            $percent++;
+        }
+        if (!empty($this->profile->professional_information)) {
+            $percent++;
+        }
+        if (!empty($this->profile->publications)) {
+            $percent++;
+        }
+        if (!empty($this->profile->cv_path)) {
+            $percent++;
+        }
+
+        return round(($percent / $total) * 100);
+    }
 }

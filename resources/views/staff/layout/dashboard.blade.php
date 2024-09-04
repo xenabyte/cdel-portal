@@ -1072,13 +1072,15 @@
 
         function handleHostelChange(event) {
             const selectedCampus = $('#campus').val(); 
-            const gender = $('.gender').val();;
+            const gender = $('.gender').val();
+            const hostel = $('#hostel').val(); 
             const roomTypeSelect = $('#roomType');
 
             if (selectedCampus !== '') {
                 axios.post("{{ url('/student/getRoomTypes') }}", {
                     campus: selectedCampus, 
-                    gender: gender
+                    gender: gender,
+                    hostelId: hostel
                 })
                 .then(function (response) {
                     roomTypeSelect.empty().append($('<option>', {

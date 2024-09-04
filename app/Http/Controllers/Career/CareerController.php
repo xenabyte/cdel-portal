@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Validator;
 
 use App\Models\CareerProfile;
 use App\Models\Career;
+use App\Models\JobVacancy;
 
 use SweetAlert;
 use Mail;
@@ -26,8 +27,11 @@ class CareerController extends Controller
     //
 
     public function index(Request $request){
+        $jobVacancies = JobVacancy::where('status', 'active')->where('type', JobVacancy::TYPE_JOB)->get();
 
-        return view('career.home');
+        return view('career.home', [
+            'jobVacancies' => $jobVacancies
+        ]);
     }
 
     public function profile(Request $request){
@@ -81,5 +85,9 @@ class CareerController extends Controller
 
         alert()->success('Good Job', 'Application reviewed')->persistent('Close');
         return redirect()->back();
+    }
+
+    public function apply (){
+        
     }
 }

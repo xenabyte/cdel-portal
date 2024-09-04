@@ -654,7 +654,7 @@ class Controller extends BaseController
             $matricNumber = substr($admissionSession, 2, 2).'/'.$facultyCode.$code.sprintf("%03d", $newMatric);
 
             $google = new Google();
-            $createStudentEmail = $google->createUser($studentEmail, $student->applicant->othernames, $student->applicant->lastname, $accessCode);
+            $createStudentEmail = $google->createUser($studentEmail, $student->applicant->othernames, $student->applicant->lastname, $accessCode, env('GOOGLE_STUDENT_GROUP'));
             log::info($createStudentEmail);
 
             $student->email = $studentEmail;

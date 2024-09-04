@@ -6,7 +6,6 @@
     $career = Auth::guard('career')->user();
     $notifications = $career->notifications()->orderBy('created_at', 'desc')->get();    
 @endphp
-
 <head>
 
     <meta charset="utf-8" />

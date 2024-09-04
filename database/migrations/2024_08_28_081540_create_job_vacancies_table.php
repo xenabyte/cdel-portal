@@ -19,6 +19,10 @@ class CreateJobVacanciesTable extends Migration
             $table->text('description')->nullable();
             $table->text('requirements')->nullable();
             $table->date('application_deadline')->nullable();
+            $table->string('type')->nullable();
+            $table->string('status')->nullable();
+            $table->integer('cgpa')->nullable();
+            $table->string('slug')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

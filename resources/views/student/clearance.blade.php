@@ -768,6 +768,7 @@
                                                                         <option value="Stenography">Stenography</option>
                                                                         <option value="Store Keeping">Store Keeping</option>
                                                                         <option value="Store Management">Store Management</option>
+                                                                        <option value="Technical Drawing">Technical Drawing</option>
                                                                         <option value="Tourism">Tourism</option>
                                                                         <option value="Type Writing">Type Writing</option>
                                                                         <option value="Visual Art">Visual Art</option>
@@ -926,6 +927,7 @@
                                                                                                 <option {{ $olevel->subject == "Stenography" ? "selected":"" }} value="Stenography">Stenography</option>
                                                                                                 <option {{ $olevel->subject == "Store Keeping" ? "selected":"" }} value="Store Keeping">Store Keeping</option>
                                                                                                 <option {{ $olevel->subject == "Store Management" ? "selected":"" }} value="Store Management">Store Management</option>
+                                                                                                <option {{ $olevel->subject == "Technical Drawing" ? "selected":"" }} value="Technical Drawing">Technical Drawing</option>
                                                                                                 <option {{ $olevel->subject == "Tourism" ? "selected":"" }} value="Tourism">Tourism</option>
                                                                                                 <option {{ $olevel->subject == "Type Writing" ? "selected":"" }} value="Type Writing">Type Writing</option>
                                                                                                 <option {{ $olevel->subject == "Visual Art" ? "selected":"" }} value="Visual Art">Visual Art</option>
@@ -1158,6 +1160,7 @@
                                                                             <option value="Stenography">Stenography</option>
                                                                             <option value="Store Keeping">Store Keeping</option>
                                                                             <option value="Store Management">Store Management</option>
+                                                                            <option value="Technical Drawing">Technical Drawing</option>
                                                                             <option value="Tourism">Tourism</option>
                                                                             <option value="Type Writing">Type Writing</option>
                                                                             <option value="Visual Art">Visual Art</option>
@@ -1261,6 +1264,7 @@
                                                                                                     <option {{ $utme->subject == "Stenography" ? "selected":"" }} value="Stenography">Stenography</option>
                                                                                                     <option {{ $utme->subject == "Store Keeping" ? "selected":"" }} value="Store Keeping">Store Keeping</option>
                                                                                                     <option {{ $utme->subject == "Store Management" ? "selected":"" }} value="Store Management">Store Management</option>
+                                                                                                    <option {{ $utme->subject == "Technical Drawing" ? "selected":"" }} value="Technical Drawing">Technical Drawing</option>
                                                                                                     <option {{ $utme->subject == "Tourism" ? "selected":"" }} value="Tourism">Tourism</option>
                                                                                                     <option {{ $utme->subject == "Type Writing" ? "selected":"" }} value="Type Writing">Type Writing</option>
                                                                                                     <option {{ $utme->subject == "Visual Art" ? "selected":"" }} value="Visual Art">Visual Art</option>
