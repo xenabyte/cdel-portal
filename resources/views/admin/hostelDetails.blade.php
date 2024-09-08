@@ -158,8 +158,6 @@
                                                             <button type="button" class="btn-close text-end" data-bs-dismiss="modal" aria-label="Close"></button>
                                                         </div>
                                                         <div class="mt-2">
-                                                            <lord-icon src="https://cdn.lordicon.com/wwneckwc.json" trigger="hover" style="width:150px;height:150px">
-                                                            </lord-icon>
                                                             <h4 class="mb-3 mt-4">Are you sure you want to {{ $room->is_reserved?'open':'reserve' }}  <br/> {{ $room->number }} with {{ $room->type->capacity }} Capacity</h4>
                                                             <form action="{{ url('/admin/reserveRoom') }}" method="POST">
                                                                 @csrf
