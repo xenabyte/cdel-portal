@@ -314,24 +314,55 @@ class StudentController extends Controller
                 "campus" => $campus,
                 "type_id" => $typeId,
             );
-        
+
             $hostelMeta = json_encode($hostelData);
+
+
+            $hostelPaymentId = $request->hostel_payment_id;
+            if(!empty($hostelPaymentId)){
+                $hostelPaymentTx = Transaction::where('student_id', $studentId)->where('id', $hostelPaymentId)->where('status', 1)->first();
+                if(!$hostelPaymentTx){
+                    alert()->error('Error', 'Accomondation payment not found, contact Bursary')->persistent('Close');
+                    return redirect()->back();
+                }
+
+                $hostelPaymentAmount = $hostelPaymentTx->amount_payed;
+                if($amount != $hostelPaymentAmount){
+                    alert()->error('Error', 'Invalid accomondation payment, amount paid dosent match hostel type picked')->persistent('Close');
+                    return redirect()->back();
+                }
+
+                $hostelPaymentTx->additional_data = $hostelMeta;
+                $hostelPaymentTx->save();
+
+                $hostelPaymentTx->refresh();
+                $creditStudent = $this->creditAccommodation($hostelPaymentTx);
+                if (is_string($creditStudent)) {
+                    alert()->error('Oops', $creditStudent)->persistent('Close');
+                }
+
+                alert()->success('Room allocated successfully', '')->persistent('Close');
+                return redirect()->back();
+            }
+        
         }
         
 
         $paymentGateway = $request->paymentGateway;
 
 
-        //Create new transaction
-        $transaction = Transaction::create([
-            'student_id' => $studentId,
-            'payment_id' => $paymentId,
-            'amount_payed' => $amount,
-            'payment_method' => $paymentGateway,
-            'reference' => $reference,
-            'session' => $student->academic_session,
-            'additional_data' => !empty($hostelMeta)?$hostelMeta:null
-        ]);
+        if(!$transaction){
+            //Create new transaction
+            $transaction = Transaction::create([
+                'student_id' => $studentId,
+                'payment_id' => $paymentId,
+                'amount_payed' => $amount,
+                'payment_method' => $paymentGateway,
+                'reference' => $reference,
+                'session' => $student->academic_session,
+                'additional_data' => !empty($hostelMeta)?$hostelMeta:null
+            ]);
+        }
 
         if(strtolower($paymentGateway) == 'paystack') {
             Log::info("Paystack Amount ****************: ". round($this->getPaystackAmount($amount)));
@@ -1295,6 +1326,7 @@ class StudentController extends Controller
 
         $paymentCheck = $this->checkSchoolFees($student, $academicSession, $levelId);
         $hostelPayment = Payment::where("type", "Accomondation Fee")->where("academic_session", $academicSession)->first();
+        $hostelPaymentTx = Transaction::where('student_id', $studentId)->where('payment_id', $hostelPayment->id)->where('status', 1)->first();
 
         $allocatedRoom = Allocation::where('student_id', $studentId)->where('academic_session', $academicSession)->first();
 
@@ -1335,7 +1367,8 @@ class StudentController extends Controller
             'passTuition' => $paymentCheck->passTuitionPayment,
             'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
             'passEightyTuition' => $paymentCheck->passEightyTuition,
-            'studentPendingTransactions' => $paymentCheck->studentPendingTransactions
+            'studentPendingTransactions' => $paymentCheck->studentPendingTransactions,
+            'hostelPaymentTx' => $hostelPaymentTx
         ]);
     }
 

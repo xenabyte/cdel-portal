@@ -67,7 +67,7 @@ class HostelController extends Controller
         $rooms = Room::where('type_id', $typeId)->where('hostel_id', $hostelId)->get();
 
         if($student){
-            $rooms = Room::where('type_id', $typeId)->where('hostel_id', $hostelId)->where('is_reserved', false)->get();
+            $rooms = Room::where('type_id', $typeId)->where('hostel_id', $hostelId)->where('is_reserved', null)->get();
         }
 
         return $rooms;
