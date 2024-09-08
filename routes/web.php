@@ -506,6 +506,12 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'student'
 
   Route::get('/registeredCourses', [App\Http\Controllers\Student\AcademicController::class, 'registeredCourses'])->name('registeredCourses')->middleware(['auth:student']); 
 
+
+  Route::get('/vacancies', [App\Http\Controllers\Student\CareerController::class, 'vacancies'])->name('vacancies')->middleware(['auth:student']);
+  Route::get('/applications', [App\Http\Controllers\Student\CareerController::class, 'applications'])->name('applications')->middleware(['auth:student']);
+  Route::post('/apply', [App\Http\Controllers\Student\CareerController::class, 'apply'])->name('apply')->middleware(['auth:student']);
+
+
 });
 
 Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'staff'], function () {
@@ -850,8 +856,10 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'career']
 
   Route::get('/home', [App\Http\Controllers\Career\CareerController::class, 'index'])->middleware(['auth:career']);
   Route::get('/profile', [App\Http\Controllers\Career\CareerController::class, 'profile'])->name('profile')->middleware(['auth:career']);
+  Route::get('/applications', [App\Http\Controllers\Career\CareerController::class, 'applications'])->name('applications')->middleware(['auth:career']);
+
 
   Route::post('/manageProfile', [App\Http\Controllers\Career\CareerController::class, 'manageProfile'])->name('manageProfile')->middleware(['auth:career']);
-
   Route::post('/apply', [App\Http\Controllers\Career\CareerController::class, 'apply'])->name('apply')->middleware(['auth:career']);
+
 });

@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Validator;
 use App\Models\CareerProfile;
 use App\Models\Career;
 use App\Models\JobVacancy;
+use App\Models\JobApplication;
 
 use SweetAlert;
 use Mail;
@@ -37,6 +38,11 @@ class CareerController extends Controller
     public function profile(Request $request){
 
         return view('career.profile');
+    }
+
+    public function applications(Request $request){
+
+        return view('career.applications');
     }
 
 
@@ -87,7 +93,45 @@ class CareerController extends Controller
         return redirect()->back();
     }
 
-    public function apply (){
-        
+
+    public function apply(Request $request){
+        $career = Auth::guard('career')->user();
+
+        $validator = Validator::make($request->all(), [
+            'job_vacancy_id' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+
+        if (!$jobVacancy = JobVacancy::where('id', $request->job_vacancy_id)->first()) {
+            alert()->error('Oops', 'Invalid Job Vacancy')->persistent('Close');
+            return redirect()->back();
+        }
+
+        $existingApplication = JobApplication::where('job_vacancy_id', $request->job_vacancy_id)
+            ->where('career_id', $career->id)
+            ->first();
+
+        if ($existingApplication) {
+            alert()->error('Oops', 'You have already applied for this job')->persistent('Close');
+            return redirect()->back();
+        }
+
+        $jobApplicationData = [
+            'job_vacancy_id' => $request->job_vacancy_id,
+            'career_id' => $career->id,
+        ];
+
+        if (JobApplication::create($jobApplicationData)) {
+            alert()->success('Success', 'Application submitted successfully')->persistent('Close');
+            return redirect()->back();
+        }
+
+        alert()->error('Oops!', 'Something went wrong')->persistent('Close');
+        return redirect()->back();
     }
+
 }
