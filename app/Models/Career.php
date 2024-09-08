@@ -94,4 +94,14 @@ class Career extends Authenticatable
 
         return round(($percent / $total) * 100);
     }
+
+    /**
+     * Get all of the applications for the Career
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function applications()
+    {
+        return $this->hasMany(JobApplication::class, 'career_id', 'id');
+    }
 }

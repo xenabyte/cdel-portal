@@ -202,4 +202,14 @@ class Student extends Authenticatable
     {
         return $this->hasOne(FinalClearance::class, 'student_id', 'id');
     }
+
+    /**
+     * Get all of the applications for the Student
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function applications()
+    {
+        return $this->hasMany(JobApplication::class, 'student_id', 'id');
+    }
 }

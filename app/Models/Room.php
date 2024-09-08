@@ -15,6 +15,7 @@ class Room extends Model
         'number',
         'type_id',
         'hostel_id',
+        'is_reserved'
     ];
 
     /**

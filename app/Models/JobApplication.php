@@ -14,17 +14,23 @@ class JobApplication extends Model
     protected $fillable = [
         'job_vacancy_id', 
         'career_id', 
+        'student_id',
         'status',
     ];
 
     public function vacancy()
     {
-        return $this->belongsTo(JobVacancy::class);
+        return $this->belongsTo(JobVacancy::class, 'job_vacancy_id');
     }
 
-    public function applicant()
+    public function jobApplicant()
     {
-        return $this->belongsTo(Career::class);
+        return $this->belongsTo(Career::class, 'career_id');
+    }
+
+    public function workStudyApplicant()
+    {
+        return $this->belongsTo(Student::class, 'student_id');
     }
     
 }
