@@ -378,7 +378,9 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'admin'],
   Route::get('/viewHostel/{slug}', [App\Http\Controllers\Admin\HostelController::class, 'viewHostel'])->name('viewHostel')->middleware(['auth:admin']);
   Route::post('/addRoom', [App\Http\Controllers\Admin\HostelController::class, 'addRoom'])->name('addRoom')->middleware(['auth:admin']);
   Route::post('/deleteRoom', [App\Http\Controllers\Admin\HostelController::class, 'deleteRoom'])->name('deleteRoom')->middleware(['auth:admin']);
- 
+  Route::post('/reserveRoom', [App\Http\Controllers\Admin\HostelController::class, 'reserveRoom'])->name('reserveRoom')->middleware(['auth:admin']);
+
+
   Route::get('/allocations', [App\Http\Controllers\Admin\HostelController::class, 'allocations'])->name('allocations')->middleware(['auth:admin']);
   Route::post('/deleteAllocation', [App\Http\Controllers\Admin\HostelController::class, 'deleteAllocation'])->name('deleteAllocation')->middleware(['auth:admin']);
   Route::post('/allocateRoom', [App\Http\Controllers\Admin\HostelController::class, 'allocateRoom'])->name('allocateRoom')->middleware(['auth:admin']);

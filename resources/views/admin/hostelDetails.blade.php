@@ -95,6 +95,7 @@
                             <th scope="col">Room Number</th>
                             <th scope="col">Room Type</th>
                             <th scope="col">Allocations</th>
+                            <th scope="col">Status</th>
                             <th scope="col">No of Space Left</th>
                             <th scope="col"></th>
                         </tr>
@@ -114,11 +115,13 @@
                                         </ol>
                                     @endforeach
                                 </td>
+                                <td><span class="badge badge-pill {{ $room->is_reserved?'bg-warning':'bg-success' }}" data-key="t-hot">{{ $room->is_reserved?'Reserved':'Open' }} </span></td>
                                 <td>
                                     {{ intval($room->type->capacity) - $room->allocations->where('academic_session', $pageGlobalData->sessionSetting->academic_session)->count() }}
                                 </td>
                                 <td>
                                     <div class="hstack gap-3 fs-15">
+                                        <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#reserve{{$room->id}}" class="link-{{ $room->is_reserved?'success':'primary' }}"><i class="ri-list-settings-line"></i></a>
                                         <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#delete{{$room->id}}" class="link-danger"><i class="ri-delete-bin-5-line"></i></a>
 
                                         <div id="delete{{$room->id}}" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
@@ -137,6 +140,32 @@
                                                                 <input name="room_id" type="hidden" value="{{$room->id}}">
                                                                 <hr>
                                                                 <button type="submit" id="submit-button" class="btn btn-danger w-100">Yes, Delete</button>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer bg-light p-3 justify-content-center">
+
+                                                    </div>
+                                                </div><!-- /.modal-content -->
+                                            </div><!-- /.modal-dialog -->
+                                        </div><!-- /.modal -->
+
+                                        <div id="reserve{{$room->id}}" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
+                                            <div class="modal-dialog modal-dialog-centered">
+                                                <div class="modal-content">
+                                                    <div class="modal-body text-center p-5">
+                                                        <div class="text-end">
+                                                            <button type="button" class="btn-close text-end" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                        </div>
+                                                        <div class="mt-2">
+                                                            <lord-icon src="https://cdn.lordicon.com/wwneckwc.json" trigger="hover" style="width:150px;height:150px">
+                                                            </lord-icon>
+                                                            <h4 class="mb-3 mt-4">Are you sure you want to {{ $room->is_reserved?'open':'reserve' }}  <br/> {{ $room->number }} with {{ $room->type->capacity }} Capacity</h4>
+                                                            <form action="{{ url('/admin/reserveRoom') }}" method="POST">
+                                                                @csrf
+                                                                <input name="room_id" type="hidden" value="{{$room->id}}">
+                                                                <hr>
+                                                                <button type="submit" id="submit-button" class="btn btn-danger w-100">Yes, Proceed</button>
                                                             </form>
                                                         </div>
                                                     </div>

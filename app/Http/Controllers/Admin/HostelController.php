@@ -334,6 +334,39 @@ class HostelController extends Controller
         }
     }
 
+    public function reserveRoom(Request $request){
+        $validator = Validator::make($request->all(), [
+            'room_id' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+
+        $globalData = $request->input('global_data');
+        $academicSession = $globalData->sessionSetting['academic_session'];
+
+        $roomId = $request->room_id;
+        $room = Room::findOrFail($roomId);
+        
+        $room->is_reserved = $room->is_reserved === null ? 1 : null;
+
+        DB::beginTransaction();
+
+        try {
+            $room->save();
+            DB::commit();
+            $statusMessage = $room->is_reserved ? 'Room reserved successfully' : 'Room reservation removed successfully';
+            alert()->success($statusMessage, '')->persistent('Close');
+            return redirect()->back();
+        } catch (\Exception $e) {
+            DB::rollback();
+
+            alert()->error('Error', 'Failed to update room reservation. Please try again.')->persistent('Close');
+            return redirect()->back();
+        }
+    }
 
     public function allocations (Request $request){
 
