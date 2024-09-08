@@ -82,7 +82,7 @@ class CareerController extends Controller
 
     public function viewJobVacancy($slug){
 
-        $jobVacancy = JobVacancy::with('applications', 'applications.applicant')->where('slug', $slug)->first();
+        $jobVacancy = JobVacancy::with('applications', 'applications.jobApplicant', 'applications.workStudyApplicant')->where('slug', $slug)->first();
 
         return view('admin.jobVacancyDetails', [
             'jobVacancy' => $jobVacancy

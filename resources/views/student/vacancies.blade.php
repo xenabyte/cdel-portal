@@ -1,8 +1,7 @@
 @php
-    $career = Auth::guard('career')->user();
-    $percent = $career->calculateProfileCompletion();
+    $student = Auth::guard('student')->user();
 @endphp
-@extends('career.layout.dashboard')
+@extends('student.layout.dashboard')
 
 @section('content')
 <!-- start page title -->
@@ -24,43 +23,7 @@
 <!-- end page title -->
 
 <div class="row">
-    @if($percent < 99)
-    <div class="row justify-content-center">
-        <div class="col-lg-6">
-            <div class="card">
-                <div class="card-body">
-                    <div class="text-center">
-                        <div class="row justify-content-center">
-                            <div class="col-lg-9">
-                                <h4 class="mt-4 fw-semibold">Job Vacancies</h4>
-                                <div class="container mt-5 text-start">
-                                    <h4 class="alert-heading">Profile Incomplete: Action Required</h4>
-                                        <p>Thank you for your interest in applying for job opportunities with us. Before you can proceed with your application, please take a moment to complete your profile. A complete profile is essential for us to assess your qualifications and match you with the most suitable opportunities.</p>
-                                        <hr>
-                                        <h5>Steps to Complete Your Profile:</h5>
-                                        <ol>
-                                            <li>Navigate to the <strong>"Profile"</strong> section.</li>
-                                            <li>Fill in all required fields, including your personal information, educational background, work experience, and upload your updated CV.</li>
-                                            <li>Review and save your profile.</li>
-                                        </ol>
-                                        <p>Once your profile is fully completed, you will be able to apply for any available job vacancies.</p>
-                                </div>
-                                <div class="mt-4">
-                                    <a href="{{ url('/career/profile') }}" class="btn btn-primary">
-                                        Go to profile
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-            <!--end card-->
-        </div>
-        <!--end col-->
-    </div>
-    @elseif($jobVacancies->count() < 1) 
+   @if($jobVacancies->count() < 1) 
     <div class="row justify-content-center">
         <div class="col-lg-6">
             <div class="card">
@@ -143,7 +106,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <form action="{{ url('/career/apply') }}" method="POST">
+                        <form action="{{ url('/student/apply') }}" method="POST">
                             @csrf
                             <input type="hidden" name="job_vacancy_id" value="{{ $jobVacancy->id }}">
                             <button type="submit" class="btn btn-primary">Apply for this Job</button>

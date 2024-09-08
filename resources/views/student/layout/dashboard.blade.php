@@ -290,6 +290,22 @@
                             </a>
                         </li>
 
+                        <li class="nav-item">
+                            <a class="nav-link menu-link" href="#workStudy" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="workStudy">
+                                <i class="mdi mdi-account-tie"></i> <span data-key="t-workStudy">Work Study</span>
+                            </a>
+                            <div class="collapse menu-dropdown" id="workStudy">
+                                <ul class="nav nav-sm flex-column">
+                                    <li class="nav-item">
+                                        <a href="{{ url('/student/vacancies') }}" class="nav-link">Vacancies</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="{{ url('/student/applications') }}" class="nav-link">Applications</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+
                         
                         {{-- @if(!empty($student->image) && !empty($student->linkedIn) && !empty($student->bandwidth_username))
                             @if($passTuition) --}}
@@ -307,7 +323,7 @@
 
                             <li class="nav-item">
                                 <a class="nav-link menu-link" href="#bandwidth" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="transaction">
-                                    <i class="mdi mdi-bank-transfer"></i> <span data-key="t-transaction">Internet Data</span>
+                                    <i class="mdi mdi-web-plus"></i> <span data-key="t-transaction">Internet Data</span>
                                 </a>
                                 <div class="collapse menu-dropdown" id="bandwidth">
                                     <ul class="nav nav-sm flex-column">
@@ -816,8 +832,6 @@
                 }));
             }
         }
-
-
     </script>
     
     

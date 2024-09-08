@@ -62,8 +62,13 @@ class HostelController extends Controller
     public function getRooms(Request $request) {
         $typeId = $request->typeId;
         $hostelId = $request->hostelId;
+        $student = Auth::guard('student')->user();
 
         $rooms = Room::where('type_id', $typeId)->where('hostel_id', $hostelId)->get();
+
+        if($student){
+            $rooms = Room::where('type_id', $typeId)->where('hostel_id', $hostelId)->where('is_reserved', false)->get();
+        }
 
         return $rooms;
     }
