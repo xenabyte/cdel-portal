@@ -64,6 +64,9 @@
 
                                 <h4 class="mt-4 fw-semibold">Hostel Booking</h4>
                                 <p class="text-muted mt-3">Great news! The booking of accommodation has officially started. To secure your room, please click the button below and make your selection. We look forward to welcoming you soon!</p>
+                                @if($hostelPaymentTx)
+                                <h4 class="mt-4 text-warning">We have recognized a payment of ₦{{ number_format($hostelPaymentTx->amount_payed/100, 2) }}. Please proceed to select a room. If you have already made a payment but are still being prompted to pay, kindly contact the bursary for assistance.</h4>
+                                @endif
                                 <div class="mt-4">
                                     <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
                                         Click here to book a space
@@ -75,6 +78,7 @@
                                             <div class="row g-3">
                             
                                                 <input type="hidden" name="payment_id" value="{{ $hostelPayment->id }}">
+                                                <input type="hidden" name="hostel_payment_id" value="{{ !empty($hostelPaymentTx) ? $hostelPaymentTx->Id:null }}">
                                                 
                                                 <div class="col-lg-12">
                                                     <div class="form-floating">
@@ -116,7 +120,9 @@
                                                     </div>
                                                 </div>
                                                 
-                            
+
+                                                
+                                                @if(empty($hostelPaymentId))
                                                 <div class="col-lg-12">
                                                     <div class="form-floating">
                                                         <select class="form-select" aria-label="paymentGateway" name="paymentGateway" required>
@@ -131,6 +137,7 @@
                                                         <label for="paymentGateway" class="form-label">Select Payment Gateway</label>
                                                     </div>
                                                 </div>
+                                                @endif
                                                
                                                 <button type="submit" id="submit-button" class="btn btn-fill btn-primary btn-lg btn-block mb-5">Book Now</button>
                                             </div>
