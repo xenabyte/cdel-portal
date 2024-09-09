@@ -51,9 +51,7 @@ class HostelController extends Controller
         $uniqueTypeIds = Room::where('hostel_id', $hostelId)
         ->whereHas('bedSpaces', function($query) {
             // Only include rooms where there is at least one bed space without an active allocation
-            $query->whereDoesntHave('allocations', function($query) {
-                $query->whereNull('release_date'); // Active allocations (i.e., no release date)
-            });
+            $query->whereDoesntHave('currentAllocation');  // Only consider bed spaces without a current allocation
         })
         ->pluck('type_id')
         ->unique();
@@ -74,9 +72,7 @@ class HostelController extends Controller
         $rooms = Room::where('type_id', $typeId)
             ->where('hostel_id', $hostelId)
             ->whereHas('bedSpaces', function($query) {
-                $query->whereDoesntHave('allocations', function($query) {
-                    $query->whereNull('release_date'); // Active allocations (i.e., no release date)
-                });
+                $query->whereDoesntHave('currentAllocation');  // Only consider bed spaces without a current allocation
             })
             ->get();
 
@@ -85,9 +81,7 @@ class HostelController extends Controller
                 ->where('hostel_id', $hostelId)
                 ->where('is_reserved', null)
                 ->whereHas('bedSpaces', function($query) {
-                    $query->whereDoesntHave('allocations', function($query) {
-                        $query->whereNull('release_date'); // Active allocations (i.e., no release date)
-                    });
+                    $query->whereDoesntHave('currentAllocation');  // Only consider bed spaces without a current allocation
                 })
                 ->get();
         }
