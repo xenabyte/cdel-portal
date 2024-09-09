@@ -1199,7 +1199,7 @@ class AcademicController extends Controller
                     'student_id' => $student->id,
                     'payment_id' => $checkStudentPayment->schoolPayment->id,
                     'amount_payed' => $balance,
-                    'payment_method' => null,
+                    'payment_method' => 'Balance brought forward',
                     'reference' => $reference,
                     'session' => $student->academic_session,
                     'status' => null

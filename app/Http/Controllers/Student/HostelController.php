@@ -49,8 +49,15 @@ class HostelController extends Controller
         $applicantGender = !empty($student)? $student->applicant->gender : $gender;
 
         $uniqueTypeIds = Room::where('hostel_id', $hostelId)
+        ->whereHas('bedSpaces', function($query) {
+            // Only include rooms where there is at least one bed space without an active allocation
+            $query->whereDoesntHave('allocations', function($query) {
+                $query->whereNull('release_date'); // Active allocations (i.e., no release date)
+            });
+        })
         ->pluck('type_id')
         ->unique();
+
 
         $roomTypes = RoomType::whereIn('id', $uniqueTypeIds)->orderByRaw('CAST(capacity AS UNSIGNED) DESC')
         ->get();
@@ -64,10 +71,25 @@ class HostelController extends Controller
         $hostelId = $request->hostelId;
         $student = Auth::guard('student')->user();
 
-        $rooms = Room::where('type_id', $typeId)->where('hostel_id', $hostelId)->get();
+        $rooms = Room::where('type_id', $typeId)
+            ->where('hostel_id', $hostelId)
+            ->whereHas('bedSpaces', function($query) {
+                $query->whereDoesntHave('allocations', function($query) {
+                    $query->whereNull('release_date'); // Active allocations (i.e., no release date)
+                });
+            })
+            ->get();
 
-        if($student){
-            $rooms = Room::where('type_id', $typeId)->where('hostel_id', $hostelId)->where('is_reserved', null)->get();
+        if ($student) {
+            $rooms = Room::where('type_id', $typeId)
+                ->where('hostel_id', $hostelId)
+                ->where('is_reserved', null)
+                ->whereHas('bedSpaces', function($query) {
+                    $query->whereDoesntHave('allocations', function($query) {
+                        $query->whereNull('release_date'); // Active allocations (i.e., no release date)
+                    });
+                })
+                ->get();
         }
 
         return $rooms;
