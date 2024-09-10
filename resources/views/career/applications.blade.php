@@ -53,7 +53,15 @@
                                 <td>
                                     <div class="hstack gap-3 fs-15">
                                         <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#jobVacancyModal{{$application->id}}" class="link-primary"><i class="ri-eye-fill"></i></a>
+                                        @if(!empty($application->appointment_letter))
+                                        <a href="{{ asset($application->appointment_letter) }}" class="btn btn-danger m-1"> Download Appointment Letter</a>
+                                        @endif
+                                        @if($application->status == 'applied')
                                         <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#delete{{$application->id}}" class="link-danger"><i class="ri-delete-bin-5-line"></i></a>
+                                        @endif
+                                        @if($application->status == 'approved')
+                                        <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#manage{{$application->id}}" class="btn btn-secondary"><i class="ri-user-settings-fill"></i> Manage</a>
+                                        @endif
                                     </div>
                                 </td>
                             </tr>
@@ -117,6 +125,39 @@
                 </div><!-- /.modal-content -->
             </div><!-- /.modal-dialog -->
         </div><!-- /.modal -->
+
+        <div class="modal fade" id="manage{{ $application->id }}" tabindex="-1" aria-labelledby="manage{{ $application->id }}" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="jobVacancyModalLabel{{ $application->vacancy->id }}">{{ $application->vacancy->title }}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p><strong>Job Description:</strong></p>
+                        <p>{!! $application->vacancy->description !!}</p>
+                    </div>
+                    <div class="modal-footer">
+                        <!-- Form for accepting or rejecting offer -->
+                        <form action="{{ url('career/manageApplication') }}" method="POST">
+                            @csrf
+                            <input type="hidden" name="vacancy_id" value="{{ $application->vacancy->id }}">
+                            <input name="application_id" type="hidden" value="{{$application->id}}">
+                            
+                            <!-- Accept offer button -->
+                            <button type="submit" name="response" value="accepted" class="btn btn-success">
+                                Accept Offer
+                            </button>
+        
+                            <!-- Reject offer button -->
+                            <button type="submit" name="response" value="rejected" class="btn btn-danger">
+                                Reject Offer
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
     @endforeach   
 @endif
 

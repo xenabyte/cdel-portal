@@ -16,6 +16,7 @@ class JobApplication extends Model
         'career_id', 
         'student_id',
         'status',
+        'appointment_letter'
     ];
 
     public function vacancy()

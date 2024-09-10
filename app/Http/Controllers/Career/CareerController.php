@@ -15,6 +15,7 @@ use App\Models\CareerProfile;
 use App\Models\Career;
 use App\Models\JobVacancy;
 use App\Models\JobApplication;
+use App\Models\JobLevel;
 
 use SweetAlert;
 use Mail;
@@ -163,5 +164,53 @@ class CareerController extends Controller
 
         alert()->error('Oops!', 'Something went wrong')->persistent('Close');
         return redirect()->back();
+    }
+
+    public function manageApplication(Request $request){
+        $validator = Validator::make($request->all(), [
+            'vacancy_id' => 'required|integer',
+            'application_id' => 'required|integer',
+            'response' => 'required|string|in:accepted,rejected',
+        ]);
+
+        if ($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+
+        if (!$jobApplication = JobApplication::where('id', $request->application_id)->first()) {
+            alert()->error('Oops', 'Invalid Job Application')->persistent('Close');
+            return redirect()->back();
+        }
+
+         // Ensure the status hasn't already been set
+        if ($jobApplication->status === 'accepted' || $jobApplication->status === 'rejected') {
+            alert()->error('Oops', 'This action has already been taken')->persistent('Close');
+            return redirect()->back();
+        }
+
+        if (!$jobVacancy = JobVacancy::where('id', $request->vacancy_id)->first()) {
+            alert()->error('Oops', 'Invalid Job Vacancy')->persistent('Close');
+            return redirect()->back();
+        }
+
+        if ($request->input('response') === 'accepted') {
+            $jobApplication->status = 'accepted';
+        } elseif ($request->input('response') === 'rejected') {
+            $jobApplication->status = 'rejected';
+        }
+
+        if($jobApplication->save()){
+            if ($request->input('response') === 'accepted') {
+                
+            }
+
+            alert()->success('Success', 'Offer status set successfully')->persistent('Close');
+            return redirect()->back();
+        }
+
+        alert()->error('Oops!', 'Something went wrong')->persistent('Close');
+        return redirect()->back();
+
     }
 }

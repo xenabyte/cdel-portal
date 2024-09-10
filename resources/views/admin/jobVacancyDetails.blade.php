@@ -71,7 +71,7 @@
         <div class="tab-content text-muted">
             <div class="tab-pane fade show active" id="project-overview" role="tabpanel">
                 <div class="row">
-                    <div class="col-xl-6 col-lg-7">
+                    <div class="col-xl-5 col-lg-5">
                         <div class="card">
                             <div class="card-body">
                                 <div class="text-muted">
@@ -91,7 +91,7 @@
 
                     </div>
                     <!-- ene col -->
-                    <div class="col-xl-6 col-lg-5">
+                    <div class="col-xl-7 col-lg-7">
                         <div class="card">
                             <div class="card-body">
                                 <div class="card-header align-items-center d-flex">
@@ -132,11 +132,14 @@
                                                             {{ $applicant->jobApplicant->lastname.' '.$applicant->jobApplicant->othernames }} 
                                                         @endif
                                                     </td>
-                                                    <td><span class="badge badge-soft-{{ $applicant->status == 'accepted' ? 'success' : 'info' }}">{{ ucwords(str_replace('_', ' ', $applicant->status)) }}</span></td>
+                                                    <td><span class="badge badge-soft-{{ $applicant->status == 'approved' ? 'success' : 'info' }}">{{ ucwords(str_replace('_', ' ', $applicant->status)) }}</span></td>
                                                     <td>
                                                         <div class="hstack gap-3 fs-15">
                                                             <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#viewApplicant{{$applicant->id}}" class="link-primary"><i class="ri-eye-fill"></i></a>
                                                             <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#manage{{$applicant->id}}" class="link-muted"><i class="ri-edit-circle-fill"></i></a>
+                                                            @if(!empty($applicant->appointment_letter))
+                                                            <a href="{{ asset($applicant->appointment_letter) }}" class="btn btn-danger m-1"> Download Appointment Letter</a>
+                                                            @endif
                                                         </div>
                                                     </td>
                                                 </tr>
@@ -161,7 +164,7 @@
                                                                 <option value="">Select Status</option>
                                                                 <option value="request_interview">Request Interview</option>
                                                                 <option value="declined">Declined</option>
-                                                                <option value="accepted">Accepted</option>
+                                                                <option value="approved">Approved</option>
                                                             </select>
                                                         </div>
                                                     
@@ -295,6 +298,35 @@
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
+
+<div class="modal fade" id="manage{{ $applicant->id }}" tabindex="-1" aria-labelledby="manage{{ $applicant->id }}" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Upload Appointment Letter</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <hr>
+                <form action="{{ url('admin/uploadApplicantAppointmentLetter') }}" method="POST" enctype="multipart/form-data">
+                    @csrf
+                    <input name="applicant_id" type="hidden" value="{{$applicant->id}}">
+
+                    <div class="mb-3">
+                        <label for="appointment_letter" class="form-label">Upload Appointment Letter (Optional):</label>
+                        <input type="file" name="appointment_letter" id="appointment_letter" class="form-control" accept=".pdf,.doc,.docx">
+                    </div>
+                    
+                    <button type="submit" name="response" value="approved" class="btn btn-success">
+                       Upload
+                    </button>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
 @endforeach
 <script>
     // Select all checkboxes

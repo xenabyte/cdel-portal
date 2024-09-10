@@ -16,6 +16,7 @@ use App\Models\Staff;
 use App\Models\Session;
 use App\Models\JobVacancy;
 use App\Models\JobApplication;
+use App\Models\JobLevel;
 use App\MOdels\Unit;
 use App\MOdels\Faculty;
 use App\MOdels\Department;
@@ -35,9 +36,12 @@ class CareerController extends Controller
     public function jobVacancy(){
 
         $jobVacancies = JobVacancy::get();
+        $jobLevels = JobLevel::all();
+
 
         return view('admin.jobVacancy', [
-            'jobVacancies' => $jobVacancies
+            'jobVacancies' => $jobVacancies,
+            'jobLevels' => $jobLevels
         ]);
     }
 
@@ -70,6 +74,7 @@ class CareerController extends Controller
             'type' => $request->type,
             'status' => 'active',
             'cgpa' => $request->cgpa,
+            'level_id' => $request->level_id,
             'slug' => $slug
         ]);
 
@@ -152,6 +157,10 @@ class CareerController extends Controller
             JobApplication::where('job_vacancy_id', $request->job_id)->delete();
         }
 
+        if(!empty($request->level_id) && $request->level_id != $jobVacancy->level_id){
+            $jobVacancy->level_id = $request->level_id;
+        }
+
         if(!empty($request->status) && $request->status != $jobVacancy->status){
             $jobVacancy->status = $request->status;
             if($request->status == 'reset'){
@@ -223,4 +232,47 @@ class CareerController extends Controller
         alert()->success('Status updated successfully', '')->persistent('Close');
         return redirect()->back();
     }
+
+    public function uploadApplicantAppointmentLetter(Request $request){
+    
+        $validator = Validator::make($request->all(), [
+            'applicant_id' => 'required|integer', 
+            'appointment_letter' => 'nullable|file|mimes:pdf,doc,docx',
+        ]);
+
+        if ($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+
+        $applicantId = $request->input('applicant_id');
+        $application = JobApplication::find($applicantId);
+
+        if (!$application) {
+            alert()->error('Error', 'Applicant not found')->persistent('Close');
+            return redirect()->back();
+        }
+
+
+        if ($request->hasFile('appointment_letter')) {
+            $dir = public_path('uploads/career/appointment');
+            if (!file_exists($dir)) {
+                mkdir($dir, 0755, true);
+            }
+
+            $fileUrl = 'uploads/career/appointment/'.time().'.'.$request->file('appointment_letter')->getClientOriginalExtension();
+            $file = $request->file('appointment_letter')->move('uploads/career/appointment/', $fileUrl);
+            $application->appointment_letter = $fileUrl;
+        }
+        
+        if($application->save()){
+            alert()->success('Appointment Letter uploaded successfully', '')->persistent('Close');
+            return redirect()->back();
+        }
+
+        alert()->error('Oops', 'error in saving changes ')->persistent('Close');
+        return redirect()->back();
+
+    }
+
 }

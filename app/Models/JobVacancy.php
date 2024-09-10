@@ -22,12 +22,24 @@ class JobVacancy extends Model
         'type',
         'status',
         'cgpa',
+        'level_id',
+        'employment_letter',
         'slug'
     ];
 
     public function applications()
     {
         return $this->hasMany(JobApplication::class);
+    }
+
+    /**
+     * Get the jobLevel that owns the JobVacancy
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function jobLevel()
+    {
+        return $this->belongsTo(JobLevel::class, 'level_id', 'id');
     }
 
 }

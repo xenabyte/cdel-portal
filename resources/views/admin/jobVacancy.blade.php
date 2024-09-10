@@ -39,6 +39,7 @@
                                         <th scope="col">Id</th>
                                         <th scope="col">Title</th>
                                         <th scope="col">Application Type</th>
+                                        <th scope="col">Job Level</th>
                                         <th scope="col">Status</th>
                                         <th scope="col"></th>
                                     </tr>
@@ -49,6 +50,7 @@
                                         <th scope="row">{{ $loop->iteration }}</th>
                                         <td>{{ $jobVacancy->title }} </td>
                                         <td>{{ $jobVacancy->type }} </td>
+                                        <td>{{ $jobVacancy->jobLevel?$jobVacancy->jobLevel->name .' @ ₦'. number_format($jobVacancy->jobLevel->hourly_rate/100, 2) .'/hour':null }}</td>
                                         <td>{{ ucwords($jobVacancy->status) }} </td>
                                         <td>
                                             <div class="hstack gap-3 fs-15">
@@ -98,7 +100,7 @@
 
                                                                         <div class="mb-3">
                                                                             <label for="role" class="form-label">Vacancy Type</label>
-                                                                            <select class="form-select" aria-label="role" name="type" id="vacancy-type" required>
+                                                                            <select class="form-select" aria-label="role" name="type" required>
                                                                                 <option @if($jobVacancy->type == 'Job Vacancy') selected  @endif value="Job Vacancy">Job Vacancy</option>
                                                                                 <option @if($jobVacancy->type == 'Work Study') selected @endif value="Work Study">Work Study</option>
                                                                             </select>
@@ -126,15 +128,22 @@
                                                                     
                                                                         @if($jobVacancy->type == 'Work Study')
                                                                         <!-- CGPA Field Wrapper -->
-                                                                        <div class="mb-3" id="cgpa-field">
+                                                                        <div class="mb-3">
                                                                             <label for="cgpa" class="form-label">Minimum Student CGPA</label>
                                                                             <input type="text" class="form-control" name="cgpa" value="{{ $jobVacancy->cgpa }}" id="cgpa">
+                                                                        </div>
+
+                                                                        <div class="mb-3">
+                                                                            <label for="role" class="form-label">Job Level</label>
+                                                                            <select class="form-select" aria-label="role" name="level_id" id="level_id">
+                                                                                @foreach($jobLevels as $jobLevel)<option @if($jobLevel->id == $jobVacancy->level_id) selected @endif value="{{ $jobLevel->id }}">{{ $jobLevel->name .' @ ₦'. number_format($jobLevel->hourly_rate/100, 2) .'/hour' }}</option>@endforeach
+                                                                            </select>
                                                                         </div>
                                                                         @endif
 
                                                                         <div class="mb-3">
                                                                             <label for="role" class="form-label">Status</label>
-                                                                            <select class="form-select" aria-label="role" name="status" id="vacancy-type">
+                                                                            <select class="form-select" aria-label="role" name="status">
                                                                                 <option selected value="">Select Option </option>
                                                                                 <option value="active">Active</option>
                                                                                 <option value="closed">Closed</option>
@@ -215,6 +224,14 @@
                         <label for="cgpa" class="form-label">Minimum Student CGPA</label>
                         <input type="text" class="form-control" name="cgpa" id="cgpa">
                     </div>
+
+                    <div class="mb-3" id="job-level" style="display: none;">
+                        <label for="role" class="form-label">Job Level</label>
+                        <select class="form-select" aria-label="role" name="level_id">
+                            <option selected value="">Select Option </option>
+                            @foreach($jobLevels as $jobLevel)<option value="{{ $jobLevel->id }}">{{ $jobLevel->name .' @ ₦'. number_format($jobLevel->hourly_rate/100, 2) .'/hour' }}</option>@endforeach
+                        </select>
+                    </div>
                 
                     <hr>
                     <div class="text-end">
@@ -229,10 +246,15 @@
 <script>
     document.getElementById('vacancy-type').addEventListener('change', function() {
         var cgpaField = document.getElementById('cgpa-field');
+        var jobLevel = document.getElementById('job-level');
+
         if (this.value === 'Work Study') {
             cgpaField.style.display = 'block';
+            jobLevel.style.display = 'block';
         } else {
             cgpaField.style.display = 'none';
+            jobLevel.style.display = 'none';
+
         }
     });
 </script>
