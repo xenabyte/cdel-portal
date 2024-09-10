@@ -20,6 +20,8 @@ use App\MOdels\Unit;
 use App\MOdels\Faculty;
 use App\MOdels\Department;
 
+use App\Mail\ApplicantStatusUpdateMail;
+
 use SweetAlert;
 use Mail;
 use Alert;
@@ -89,6 +91,83 @@ class CareerController extends Controller
         ]);
     }
 
+    public function updateApplicantStatus(Request $request){
+        // Validate that status and message are provided
+        $validator = Validator::make($request->all(), [
+            'selected_applicants' => 'required|array',
+            'status' => 'required|string',
+            'message' => 'required|string',
+            'job_id' => 'required'
+        ]);
+
+        if($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+
+        if(!$jobVacancy = JobVacancy::find($request->job_id)){
+            alert()->error('Oops', 'Invalid Job ')->persistent('Close');
+            return redirect()->back();
+        }
+
+        $selectedApplicants = $request->input('selected_applicants', []);
+        $status = $request->input('status');
+        $message = $request->input('message');
+
+
+        if(count($selectedApplicants) < 1) {
+            alert()->error('Error', 'No applicants selected')->persistent('Close');
+            return redirect()->back();
+        }
+        
+        foreach ($selectedApplicants as $applicantId) {
+            $jobType = $jobVacancy->type;
+            $application = JobApplication::find($applicantId);
+
+            $applicant = new \stdClass();
+            $applicant->status = $status;
+            $applicant->email =  $jobType == 'Work Study' ? $application->workStudyApplicant->email : $application->jobApplicant->email;
+            $applicant->lastname =  $jobType == 'Work Study' ? $application->workStudyApplicant->applicant->lastname : $application->jobApplicant->lastname;
+            $applicant->othernames =  $jobType == 'Work Study' ? $application->workStudyApplicant->applicant->othernames : $application->jobApplicant->othernames;
+
+            if ($application) {
+                $application->status = $status;
+                $application->save();
+            }
+
+
+            Mail::to($applicant->email)->send(new ApplicantStatusUpdateMail($applicant, $message));
+        }
+
+        alert()->success('Status updated successfully', '')->persistent('Close');
+        return redirect()->back();
+    }
+
+
+    public function deleteJobVacancy(Request $request){
+        $validator = Validator::make($request->all(), [
+            'job_id' =>'required',
+        ]);
+
+        if($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+
+        if($jobVacancy = JobVacancy::find($request->job_id)){
+            alert()->error('Oops', 'Invalid Job ')->persistent('Close');
+            return redirect()->back();
+        }
+
+        if(JobVacancy::delete($request->job_id)){
+            alert()->success('Job vacancy deleted successfully', '')->persistent('Close');
+            return redirect()->back();
+        }
+
+        alert()->error('Oops!', 'Something went wrong')->persistent('Close');
+        return redirect()->back();
+    }
+
     public function updateJobVacancy(Request $request){
         $validator = Validator::make($request->all(), [
             'job_id' => 'required',
@@ -126,6 +205,9 @@ class CareerController extends Controller
 
         if(!empty($request->status) && $request->status != $jobVacancy->status){
             $jobVacancy->status = $request->status;
+            if($request->status == 'reset'){
+                JobApplication::where('job_vacancy_id', $request->job_id)->delete();
+            }
         }
 
         if(!empty($request->cgpa) && $request->cgpa != $jobVacancy->cgpa){

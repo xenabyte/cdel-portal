@@ -94,38 +94,93 @@
                     <div class="col-xl-6 col-lg-5">
                         <div class="card">
                             <div class="card-body">
-                                <h5 class="card-title mb-3">Applicants</h5>
-                                <hr>
-                                <div class="table-responsive">
-                                    <table id="fixed-header" class="table table-borderedless dt-responsive nowrap table-striped align-middle" style="width:100%">
-                                        <thead>
-                                            <tr>
-                                                <th scope="col">Id</th>
-                                                <th scope="col">Name</th>
-                                                <th scope="col"></th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @foreach($jobVacancy->applications as $applicant)
-                                            <tr>
-                                                <th scope="row">{{ $loop->iteration }}</th>
-                                                <td>
-                                                    @if($applicant->workStudyApplicant)
-                                                        {{ $applicant->workStudyApplicant->applicant->lastname.' '.$applicant->workStudyApplicant->applicant->othernames }} 
-                                                    @else
-                                                        {{ $applicant->jobApplicant->lastname.' '.$applicant->jobApplicant->othernames }} 
-                                                    @endif
-                                                </td>
-                                                <td>
-                                                    <div class="hstack gap-3 fs-15">
-                                                        <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#viewApplicant{{$applicant->id}}" class="link-primary"><i class="ri-eye-fill"></i></a>
-                                                        <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#manage{{$applicant->id}}" class="link-muted"><i class="ri-edit-circle-fill"></i></a>
+                                <div class="card-header align-items-center d-flex">
+                                    <h4 class="card-title mb-0 flex-grow-1">Applicants</h4>
+                                    <div class="flex-shrink-0">
+                                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#updateStatusModal">Change Status for Selected</button>
+                                    </div>
+                                </div><!-- end card header -->
+                                <div class="table-responsive mt-3">
+                                   <!-- Form to select applicants and update their status -->
+                                    <form action="{{ url('admin/updateApplicantStatus') }}" method="POST">
+                                        @csrf
+                                        <input name="job_id" type="hidden" value="{{$jobVacancy->id}}">
+
+                                        <table id="fixed-header" class="table table-borderedless dt-responsive nowrap table-striped align-middle" style="width:100%">
+                                            <thead>
+                                                <tr>
+                                                    <th scope="col">
+                                                        <input type="checkbox" id="select-all" /> <!-- Checkbox to select all -->
+                                                    </th>
+                                                    <th scope="col">Id</th>
+                                                    <th scope="col">Name</th>
+                                                    <th scope="col">Status</th>
+                                                    <th scope="col">Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach($jobVacancy->applications as $applicant)
+                                                <tr>
+                                                    <td>
+                                                        <input type="checkbox" name="selected_applicants[]" value="{{ $applicant->id }}" class="applicant-checkbox">
+                                                    </td>
+                                                    <th scope="row">{{ $loop->iteration }}</th>
+                                                    <td>
+                                                        @if($applicant->workStudyApplicant)
+                                                            {{ $applicant->workStudyApplicant->applicant->lastname.' '.$applicant->workStudyApplicant->applicant->othernames }} 
+                                                        @else
+                                                            {{ $applicant->jobApplicant->lastname.' '.$applicant->jobApplicant->othernames }} 
+                                                        @endif
+                                                    </td>
+                                                    <td><span class="badge badge-soft-{{ $applicant->status == 'accepted' ? 'success' : 'info' }}">{{ ucwords(str_replace('_', ' ', $applicant->status)) }}</span></td>
+                                                    <td>
+                                                        <div class="hstack gap-3 fs-15">
+                                                            <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#viewApplicant{{$applicant->id}}" class="link-primary"><i class="ri-eye-fill"></i></a>
+                                                            <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#manage{{$applicant->id}}" class="link-muted"><i class="ri-edit-circle-fill"></i></a>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                   
+                                        <div id="updateStatusModal" class="modal fade" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" style="display: none;">
+                                            <!-- Fullscreen Modals -->
+                                            <div class="modal-dialog modal-lg">
+                                                <div class="modal-content border-0 overflow-hidden">
+                                                    <div class="modal-header p-3">
+                                                        <h4 class="card-title mb-0">Update Status for Selected Applicants</h4>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                     </div>
-                                                </td>
-                                            </tr>
-                                            @endforeach
-                                        </tbody>
-                                    </table>
+                                        
+                                                    <div class="modal-body">
+                                                        
+                                                        <div class="mb-3">
+                                                            <label for="status" class="form-label">Status</label>
+                                                            <select class="form-select" aria-label="role" name="status" required>
+                                                                <option value="">Select Status</option>
+                                                                <option value="request_interview">Request Interview</option>
+                                                                <option value="declined">Declined</option>
+                                                                <option value="accepted">Accepted</option>
+                                                            </select>
+                                                        </div>
+                                                    
+                                                        <div class="mb-3">
+                                                            <label for="message">Message for Applicants:</label>
+                                                            <textarea name="message" id="message" class="form-control ckeditor" rows="4" placeholder="Enter message for applicants"></textarea>
+                                                        </div>
+
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                        <button type="submit" class="btn btn-primary">Update Applicants</button>
+                                                    </div>
+                                                </div><!-- /.modal-content -->
+                                            </div><!-- /.modal-dialog -->
+                                        </div><!-- /.modal -->
+
+                                    </form>    
+                                    
                                 </div>
                             </div><!-- end card body -->
                         </div><!-- end card -->
@@ -241,4 +296,11 @@
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
 @endforeach
+<script>
+    // Select all checkboxes
+    document.getElementById('select-all').addEventListener('click', function(event) {
+        const checkboxes = document.querySelectorAll('.applicant-checkbox');
+        checkboxes.forEach(checkbox => checkbox.checked = event.target.checked);
+    });
+</script>
 @endsection

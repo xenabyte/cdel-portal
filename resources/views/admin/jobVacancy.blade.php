@@ -65,9 +65,9 @@
                                                                     <lord-icon src="https://cdn.lordicon.com/wwneckwc.json" trigger="hover" style="width:150px;height:150px">
                                                                     </lord-icon>
                                                                     <h4 class="mb-3 mt-4">Are you sure you want to delete <br/> {{ $jobVacancy->name }} at {{ $jobVacancy->campus }} Campus?</h4>
-                                                                    <form action="{{ url('/admin/deleteHostel') }}" method="POST">
+                                                                    <form action="{{ url('/admin/deleteJobVacancy') }}" method="POST">
                                                                         @csrf
-                                                                        <input name="jobVacancy_id" type="hidden" value="{{$jobVacancy->id}}">
+                                                                        <input name="job_id" type="hidden" value="{{$jobVacancy->id}}">
                                                                         <hr>
                                                                         <button type="submit" id="submit-button" class="btn btn-danger w-100">Yes, Delete</button>
                                                                     </form>
@@ -84,7 +84,7 @@
                                                     <div class="modal-dialog modal-dialog-centered">
                                                         <div class="modal-content border-0 overflow-hidden">
                                                             <div class="modal-header p-3">
-                                                                <h4 class="card-title mb-0">Edit Hostel</h4>
+                                                                <h4 class="card-title mb-0">Edit Job Vacancy</h4>
                                                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                             </div>
                                     
@@ -92,29 +92,46 @@
                                                                 <form action="{{ url('/admin/updateHostel') }}" method="post" enctype="multipart/form-data">
                                                                     @csrf
 
-                                                                    <input name="jobVacancy_id" type="hidden" value="{{$jobVacancy->id}}">
-
-                                                                    <div class="mb-3">
-                                                                        <label for="name" class="form-label">Name</label>
-                                                                        <input type="text" class="form-control" name="name" id="name" value="{{ $jobVacancy->name }}">
-                                                                    </div>
+                                                                        <input name="job_id" type="hidden" value="{{$jobVacancy->id}}">
                                                                     
-                                                                    <div class="mb-3">
-                                                                        <label for="role" class="form-label">Select Gender</label>
-                                                                        <select class="form-select" aria-label="role" name="gender" required>
-                                                                            <option {{ $jobVacancy->gender =='Male'?'selected':'' }} value="Male">Male</option>
-                                                                            <option {{ $jobVacancy->gender =='Female'?'selected':'' }} value="Female">Female</option>
-                                                                        </select>
-                                                                    </div>
+                                                                        <div class="mb-3">
+                                                                            <label for="title" class="form-label">Title</label>
+                                                                            <input type="text" class="form-control" name="title" value="{{ $jobVacancy->title }}" id="title">
+                                                                        </div>
                                                                     
-                                                                    <div class="mb-3">
-                                                                        <label for="role" class="form-label">Select Campus</label>
-                                                                        <select class="form-select" aria-label="role" name="campus" required>
-                                                                            <option {{ $jobVacancy->campus =='West'?'selected':'' }} value="West">West Campus</option>
-                                                                            <option {{ $jobVacancy->campus =='East'?'selected':'' }} value="East">East Campus</option>
-                                                                        </select>
-                                                                    </div>
+                                                                        <div class="mb-3">
+                                                                            <label for="description">Description</label>
+                                                                            <textarea class="ckeditor" id="description" name="description">{!! $jobVacancy->description !!}</textarea>
+                                                                        </div>
+                                                                    
+                                                                        <div class="mb-3">
+                                                                            <label for="requirements">Requirements</label>
+                                                                            <textarea class="ckeditor" id="requirements" name="requirements">{!! $jobVacancy->requirement !!}</textarea>
+                                                                        </div>
+                                                                    
+                                                                        <div class="mb-3">
+                                                                            <label for="applicationDeadline" class="form-label">Application Deadline</label>
+                                                                            <input type="date" class="form-control" name="application_deadline" value="{{ $jobvacancy->application_deadline }}" id="applicationDeadline">
+                                                                        </div>
+                                                                    
+                                                                        @if($jobVacancy->type == 'Work Study')
+                                                                        <!-- CGPA Field Wrapper -->
+                                                                        <div class="mb-3" id="cgpa-field" style="display: none;">
+                                                                            <label for="cgpa" class="form-label">Minimum Student CGPA</label>
+                                                                            <input type="text" class="form-control" name="cgpa" id="cgpa">
+                                                                        </div>
+                                                                        @endif
 
+                                                                        <div class="mb-3">
+                                                                            <label for="status" class="form-label">Status</label>
+                                                                            <select class="form-select" aria-label="role" name="status" id="status" required>
+                                                                                <option selected value="">Select Option </option>
+                                                                                <option value="active">Active</option>
+                                                                                <option value="closed">Closed</option>
+                                                                                <option value="reset">Reset (This will remove all applicant)</option>
+                                                                            </select>
+                                                                        </div>
+                                                                    
                                                                     <hr>
                                                                     <div class="text-end">
                                                                         <button type="submit" id="submit-button" class="btn btn-primary">Save Changes</button>

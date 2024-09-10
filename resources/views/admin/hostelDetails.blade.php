@@ -106,14 +106,14 @@
                                 <td>{{ $room->number }}</td>
                                 <td>{{ $room->type->name . ' - ' . $room->type->capacity }} Bedspaces</td>
                                 <td>
+                                    <ol>
                                     @foreach($room->allocations->where('academic_session', $pageGlobalData->sessionSetting->academic_session) as $allocation)
-                                        <ol>
                                             <li>{{ $allocation->student->applicant->lastname.' '. $allocation->student->applicant->othernames }} 
                                             <br>Programme: {{ $allocation->student->programme->name }} 
                                             <br>Level: {{ $allocation->student->level_id * 100 }} Level
                                             </li>
-                                        </ol>
                                     @endforeach
+                                    </ol>
                                 </td>
                                 <td><span class="badge badge-pill {{ $room->is_reserved?'bg-warning':'bg-success' }}" data-key="t-hot">{{ $room->is_reserved?'Reserved':'Open' }} </span></td>
                                 <td>

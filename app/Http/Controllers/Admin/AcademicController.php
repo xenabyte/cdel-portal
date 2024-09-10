@@ -369,7 +369,7 @@ class AcademicController extends Controller
             return redirect()->back();
         }
 
-        $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $request->name)));
+        $slug = md5(strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $request->name))));
 
         $newAddFaculty = ([
             'name' => $request->name,

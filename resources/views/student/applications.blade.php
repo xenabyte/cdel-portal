@@ -48,7 +48,7 @@
                             <tr>
                                 <th scope="row">{{ $loop->iteration }}</th>
                                 <td>{{ $application->vacancy->title }}</td>
-                                <td><span class="badge badge-soft-{{ $application->status == 'approved' ? 'success' : 'warning' }}">{{ ucwords($application->status) }}</span></td>
+                                <td><span class="badge badge-soft-{{ $application->status == 'accepted' ? 'success' : 'warning' }}">{{ ucwords(str_replace('_', ' ', $application->status)) }}</span></td>
                                 <td>{{ date('F j, Y \a\t g:i A', strtotime($application->created_at)) }} </td>
                                 <td>
                                     

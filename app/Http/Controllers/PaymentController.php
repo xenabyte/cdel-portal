@@ -425,6 +425,8 @@ class PaymentController extends Controller
         Log::info("**********************Flutterwave Webhook**********************");
         $verified = Flutterwave::verifyWebhook();
 
+        log::info(json_encode($verified));
+
         if ($verified && $request->event == 'charge.completed' && $request->data->status == 'successful') {
             $verificationData = Flutterwave::verifyPayment($request->data['id']);
             $paymentDetails = Flutterwave::verifyTransaction($request->data['id']);
