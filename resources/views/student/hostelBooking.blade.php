@@ -78,7 +78,7 @@
                                             <div class="row g-3">
                             
                                                 <input type="hidden" name="payment_id" value="{{ $hostelPayment->id }}">
-                                                <input type="hidden" name="hostel_payment_id" value="{{ !empty($hostelPaymentTx) ? $hostelPaymentTx->Id:null }}">
+                                                <input type="hidden" name="hostel_payment_id" value="{{ !empty($hostelPaymentTx) ? $hostelPaymentTx->id:null }}">
                                                 
                                                 <div class="col-lg-12">
                                                     <div class="form-floating">
