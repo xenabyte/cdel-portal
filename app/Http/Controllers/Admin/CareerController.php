@@ -91,6 +91,87 @@ class CareerController extends Controller
         ]);
     }
 
+
+    public function deleteJobVacancy(Request $request){
+        $validator = Validator::make($request->all(), [
+            'job_id' =>'required',
+        ]);
+
+        if($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+
+        if(!$jobVacancy = JobVacancy::find($request->job_id)){
+            alert()->error('Oops', 'Invalid Job ')->persistent('Close');
+            return redirect()->back();
+        }
+
+        if(JobVacancy::delete($request->job_id)){
+            alert()->success('Job vacancy deleted successfully', '')->persistent('Close');
+            return redirect()->back();
+        }
+
+        alert()->error('Oops!', 'Something went wrong')->persistent('Close');
+        return redirect()->back();
+    }
+
+    public function updateJobVacancy(Request $request){
+        $validator = Validator::make($request->all(), [
+            'job_id' => 'required',
+        ]);
+
+        if($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+
+        if(!$jobVacancy = JobVacancy::find($request->job_id)){
+            alert()->error('Oops', 'Invalid Job ')->persistent('Close');
+            return redirect()->back();
+        }
+
+        if(!empty($request->title) &&  $request->title != $jobVacancy->title){
+            $jobVacancy->title = $request->title;
+        }
+
+        if(!empty($request->description) &&  $request->description != $jobVacancy->description){
+            $jobVacancy->description = $request->description;
+        }
+
+        if(!empty($request->requirements) &&  $request->requirements != $jobVacancy->requirements){
+            $jobVacancy->requirements = $request->requirements;
+        }
+
+        if(!empty($request->application_deadline) &&  $request->application_deadline != $jobVacancy->application_deadline){
+            $jobVacancy->application_deadline = $request->application_deadline;
+        }
+
+        if(!empty($request->type) && $request->type != $jobVacancy->type){
+            $jobVacancy->type = $request->type;
+            JobApplication::where('job_vacancy_id', $request->job_id)->delete();
+        }
+
+        if(!empty($request->status) && $request->status != $jobVacancy->status){
+            $jobVacancy->status = $request->status;
+            if($request->status == 'reset'){
+                JobApplication::where('job_vacancy_id', $request->job_id)->delete();
+            }
+        }
+
+        if(!empty($request->cgpa) && $request->cgpa != $jobVacancy->cgpa){
+            $jobVacancy->cgpa = $request->cgpa;
+        }
+
+        if($jobVacancy->save()){
+            alert()->success('Job vacancy updated successfully', '')->persistent('Close');
+            return redirect()->back();
+        }
+
+        alert()->error('Oops', 'error in saving changes ')->persistent('Close');
+        return redirect()->back();
+    }
+
     public function updateApplicantStatus(Request $request){
         // Validate that status and message are provided
         $validator = Validator::make($request->all(), [
@@ -140,86 +221,6 @@ class CareerController extends Controller
         }
 
         alert()->success('Status updated successfully', '')->persistent('Close');
-        return redirect()->back();
-    }
-
-
-    public function deleteJobVacancy(Request $request){
-        $validator = Validator::make($request->all(), [
-            'job_id' =>'required',
-        ]);
-
-        if($validator->fails()) {
-            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
-            return redirect()->back();
-        }
-
-        if($jobVacancy = JobVacancy::find($request->job_id)){
-            alert()->error('Oops', 'Invalid Job ')->persistent('Close');
-            return redirect()->back();
-        }
-
-        if(JobVacancy::delete($request->job_id)){
-            alert()->success('Job vacancy deleted successfully', '')->persistent('Close');
-            return redirect()->back();
-        }
-
-        alert()->error('Oops!', 'Something went wrong')->persistent('Close');
-        return redirect()->back();
-    }
-
-    public function updateJobVacancy(Request $request){
-        $validator = Validator::make($request->all(), [
-            'job_id' => 'required',
-        ]);
-
-        if($validator->fails()) {
-            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
-            return redirect()->back();
-        }
-
-        if($jobVacancy = JobVacancy::find($request->job_id)){
-            alert()->error('Oops', 'Invalid Job ')->persistent('Close');
-            return redirect()->back();
-        }
-
-        if(!empty($request->title) &&  $request->title != $jobVacancy->title){
-            $jobVacancy->title = $request->title;
-        }
-
-        if(!empty($request->description) &&  $request->description != $jobVacancy->description){
-            $jobVacancy->description = $request->description;
-        }
-
-        if(!empty($request->requirements) &&  $request->requirements != $jobVacancy->requirements){
-            $jobVacancy->requirements = $request->requirements;
-        }
-
-        if(!empty($request->application_deadline) &&  $request->application_deadline != $jobVacancy->application_deadline){
-            $jobVacancy->application_deadline = $request->application_deadline;
-        }
-
-        if(!empty($request->type) && $request->type != $jobVacancy->type){
-            $jobVacancy->type = $request->type;
-        }
-
-        if(!empty($request->status) && $request->status != $jobVacancy->status){
-            $jobVacancy->status = $request->status;
-            if($request->status == 'reset'){
-                JobApplication::where('job_vacancy_id', $request->job_id)->delete();
-            }
-        }
-
-        if(!empty($request->cgpa) && $request->cgpa != $jobVacancy->cgpa){
-            $jobVacancy->cgpa = $request->cgpa;
-        }
-
-        if($jobVacancy->save()){
-            alert()->success('Job vacancy updated successfully', '')->persistent('Close');
-            return redirect()->back();
-        }
-
-        alert()->error('Oops', 'error in saving changes ')->persistent('Close');
         return redirect()->back();
     }
 }

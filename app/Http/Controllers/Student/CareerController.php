@@ -57,6 +57,11 @@ class CareerController extends Controller
             return redirect()->back();
         }
 
+        if($student->cgpa > $jobVacancy->cgpa){
+            alert()->error('Oops', 'Your CGPA is below the required CGPA for this job')->persistent('Close');
+            return redirect()->back();
+        }
+
         $existingApplication = JobApplication::where('job_vacancy_id', $request->job_vacancy_id)
             ->where('student_id', $student->id)
             ->first();
@@ -66,10 +71,10 @@ class CareerController extends Controller
             return redirect()->back();
         }
 
-        $jobApplicationData = [
+        $jobApplicationData = ([
             'job_vacancy_id' => $request->job_vacancy_id,
             'student_id' => $student->id,
-        ];
+        ]);
 
         if (JobApplication::create($jobApplicationData)) {
             alert()->success('Success', 'Application submitted successfully')->persistent('Close');
@@ -80,4 +85,36 @@ class CareerController extends Controller
         return redirect()->back();
     }
 
+
+    public function deleteApplication(Request $request){
+        $student = Auth::guard('student')->user();
+
+        $validator = Validator::make($request->all(), [
+            'application_id' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+
+        if (!$jobApplication = JobApplication::where('id', $request->application_id)->first()) {
+            alert()->error('Oops', 'Invalid Job Application')->persistent('Close');
+            return redirect()->back();
+        }
+
+        if ($jobApplication->student_id!= $student->id) {
+            alert()->error('Oops', 'You are not authorized to delete this application')->persistent('Close');
+            return redirect()->back();
+        }
+
+        if ($jobApplication->delete()) {
+            alert()->success('Success', 'Application deleted successfully')->persistent('Close');
+            return redirect()->back();
+        }
+
+        alert()->error('Oops!', 'Something went wrong')->persistent('Close');
+        return redirect()->back();
+
+    }
 }

@@ -51,12 +51,13 @@
                                 <td><span class="badge badge-soft-{{ $application->status == 'approved' ? 'success' : 'warning' }}">{{ ucwords($application->status) }}</span></td>
                                 <td>{{ date('F j, Y \a\t g:i A', strtotime($application->created_at)) }} </td>
                                 <td>
-                                    <button type="button" class="btn btn-ghost-primary btn-icon custom-toggle" data-bs-toggle="modal" data-bs-target="#jobVacancyModal{{ $application->id }}">
-                                        <span class="icon-on"><i class="ri-eye-line"></i></span>
-                                        <span class="icon-off"><i class="ri-eye-off-line"></i></span>
-                                    </button>
+                                    <div class="hstack gap-3 fs-15">
+                                        <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#jobVacancyModal{{$application->id}}" class="link-primary"><i class="ri-eye-fill"></i></a>
+                                        <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#delete{{$application->id}}" class="link-danger"><i class="ri-delete-bin-5-line"></i></a>
+                                    </div>
                                 </td>
                             </tr>
+
                         @endforeach
                     </tbody>
                 </table>
@@ -90,6 +91,32 @@
                 </div>
             </div>
         </div>  
+
+        <div id="delete{{$application->id}}" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-body text-center p-5">
+                        <div class="text-end">
+                            <button type="button" class="btn-close text-end" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="mt-2">
+                            <lord-icon src="https://cdn.lordicon.com/wwneckwc.json" trigger="hover" style="width:150px;height:150px">
+                            </lord-icon>
+                            <h4 class="mb-3 mt-4">Are you sure you want to delete <br/> {{ $application->vacancy->title }}?</h4>
+                            <form action="{{ url('/career/deleteApplication') }}" method="POST">
+                                @csrf
+                                <input name="application_id" type="hidden" value="{{$application->id}}">
+                                <hr>
+                                <button type="submit" id="submit-button" class="btn btn-danger w-100">Yes, Delete</button>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="modal-footer bg-light p-3 justify-content-center">
+
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
     @endforeach   
 @endif
 

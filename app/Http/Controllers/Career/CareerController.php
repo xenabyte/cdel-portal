@@ -134,4 +134,34 @@ class CareerController extends Controller
         return redirect()->back();
     }
 
+    public function deleteApplication(Request $request){
+        $career = Auth::guard('career')->user();
+
+        $validator = Validator::make($request->all(), [
+            'application_id' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+
+        if (!$jobApplication = JobApplication::where('id', $request->application_id)->first()) {
+            alert()->error('Oops', 'Invalid Job Application')->persistent('Close');
+            return redirect()->back();
+        }
+
+        if ($jobApplication->career_id != $career->id) {
+            alert()->error('Oops', 'You are not authorized to delete this application')->persistent('Close');
+            return redirect()->back();
+        }
+
+        if ($jobApplication->delete()) {
+            alert()->success('Success', 'Application deleted successfully')->persistent('Close');
+            return redirect()->back();
+        }
+
+        alert()->error('Oops!', 'Something went wrong')->persistent('Close');
+        return redirect()->back();
+    }
 }
