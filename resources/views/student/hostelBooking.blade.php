@@ -67,6 +67,8 @@
                                 @if($hostelPaymentTx)
                                 <h4 class="mt-4 text-warning">We have recognized a payment of ₦{{ number_format($hostelPaymentTx->amount_payed/100, 2) }}. Please proceed to select a room. If you have already made a payment but are still being prompted to pay, kindly contact the bursary for assistance.</h4>
                                 @endif
+
+                                <h4 class="mt-4 text-danger">Accommodation bookings for Rev. James Abolarin Hostel are handled manually. Payments should be directed to the TAU Accommodation Account.</h4>
                                 <div class="mt-4">
                                     <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
                                         Click here to book a space
