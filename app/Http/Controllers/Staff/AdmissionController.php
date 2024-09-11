@@ -147,21 +147,27 @@ class AdmissionController extends Controller
             $nameParts = explode(' ', $applicant->othernames);
             $firstName = $nameParts[0];  
 
+            $student = Student::where('email', $applicant->email)->first();
+ 
             //create student records
-            $studentId = Student::create([
-                'slug' => $applicant->slug,
-                'email' => $applicant->email,
-                'password' => bcrypt($accessCode),
-                'passcode' => $accessCode,
-                'user_id' => $applicantId,
-                'academic_session' => $admissionSession,
-                'level_id' => $request->level_id,
-                'faculty_id' => $programme->department->faculty->id,
-                'department_id' => $programme->department->id,
-                'programme_id' => $programme->id,
-                'entry_year' => $entryYear,
-                'batch' => $request->batch
-            ])->id;
+            if ($student) {
+                $studentId = $student->id;
+            } else {
+                $studentId = Student::create([
+                    'slug' => $applicant->slug,
+                    'email' => $applicant->email,
+                    'password' => bcrypt($accessCode),
+                    'passcode' => $accessCode,
+                    'user_id' => $applicantId,
+                    'academic_session' => $admissionSession,
+                    'level_id' => $request->level_id,
+                    'faculty_id' => $programme->department->faculty->id,
+                    'department_id' => $programme->department->id,
+                    'programme_id' => $programme->id,
+                    'entry_year' => $entryYear,
+                    'batch' => $request->batch
+                ])->id;
+            }
 
             //create an email with tau letter heading 
             $pdf = new Pdf();

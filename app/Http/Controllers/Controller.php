@@ -1006,7 +1006,7 @@ class Controller extends BaseController
         $room = $this->findRoomWithVacancy($roomId, $typeId);
 
         if (!$room) {
-            return 'No available bed spaces in the selected room type.';
+            return 'No available bed spaces in the selected room type. kindly pick another room';
         }
 
         $availableBedSpace = RoomBedSpace::where('room_id', $room->id)
@@ -1014,7 +1014,7 @@ class Controller extends BaseController
             ->first();
 
         if (!$availableBedSpace) {
-            return 'No available bed spaces found.';
+            return 'No available bed spaces found. kindly pick another room';
         }
 
         $checkStudentAllocationCount = Allocation::where('student_id', $transaction->student_id)->where('academic_session', $transaction->session)->count();
