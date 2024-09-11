@@ -61,7 +61,7 @@
                     <div class="collapse navbar-collapse" id="navbarSupportedContent">
                         <ul class="navbar-nav mx-auto mt-2 mt-lg-0" id="navbar-example">
                             <li class="nav-item">
-                                <a class="nav-link text-light fs-14 active" href="#hero">Home</a>
+                                <a class="nav-link   fs-14 active" href="#hero">Home</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link text-light fs-14" href="{{ url('student/hallOfFame') }}">Hall of Fame</a>

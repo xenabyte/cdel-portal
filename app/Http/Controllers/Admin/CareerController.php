@@ -47,7 +47,11 @@ class CareerController extends Controller
 
     public function prospectiveStaff(){
 
-        return view('admin.prospectiveStaff');
+        $careerApplicants = Career::all();
+
+        return view('admin.prospectiveStaff', [
+            'careerApplicants' => $careerApplicants
+        ]);
     }
 
     public function postJobVacancy(Request $request){  

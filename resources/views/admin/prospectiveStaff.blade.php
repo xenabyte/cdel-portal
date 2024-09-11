@@ -25,7 +25,7 @@
             <div class="card-header align-items-center d-flex">
                 <h4 class="card-title mb-0 flex-grow-1">Staff </h4>
                 <div class="flex-shrink-0">
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addStaff"><i class="mdi mdi-account-multiple-plus"></i> Add Staff</button>
+                    {{-- <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addStaff"><i class="mdi mdi-account-multiple-plus"></i> Add Staff</button> --}}
                 </div>
             </div><!-- end card header -->
 
@@ -42,139 +42,15 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($staff as $singleStaff)
+                        @foreach($careerApplicants as $singleStaff)
                         <tr>
                             <th scope="row">{{ $loop->iteration }}</th>
                             <td>{{ $singleStaff->lastname .' '. $singleStaff->othernames }}</td>
                             <td>{{ $singleStaff->email }} </td>
                             <td>{{ $singleStaff->phone_number }} </td>
                             <td>
-                                <a href="{{ url('admin/staff/'.$singleStaff->slug) }}" class="btn btn-primary"> <i class= "mdi mdi-monitor-eye"></i></a>
-                                <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#editStaff{{$singleStaff->id}}" class="btn btn-info"><i class= "mdi mdi-application-edit"></i></a>
+                                <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#viewApplicant{{$singleStaff->id}}" class="link-primary"><i class="ri-eye-fill"></i></a>
                             </td>
-
-                            {{-- <div id="editStaff{{$singleStaff->id}}" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
-                                <div class="modal-dialog modal-lg modal-dialog-centered">
-                                    <div class="modal-content border-0 overflow-hidden">
-                                        <div class="modal-header p-3">
-                                            <h4 class="card-title mb-0">Add Staff</h4>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                        </div>
-                            
-                                        <div class="modal-body">
-                                            <form action="{{ url('/admin/updateStaff') }}" method="post" enctype="multipart/form-data">
-                                                @csrf
-                                                <input type="hidden" name="staff_id" value="{{ $singleStaff->id }}">
-                                                <div class="mb-3">
-                                                    <label for="image" class="form-label">Image</label>
-                                                    <input type="file" class="form-control" name='image' id="emailInput">
-                                                </div>
-                            
-                                                <div class="row mt-3 g-3">
-                                                    <span class="text-muted"> Bio Data</span><br>
-                                                    <div class="col-lg-3">
-                                                        <div class="form-floating">
-                                                            <input type="text" class="form-control" id="title" name="title" value="{{ $singleStaff->title }}">
-                                                            <label for="title">Title(Mr/Miss/Mrs/Dr/Prof)</label>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-lg-4">
-                                                        <div class="form-floating">
-                                                            <input type="text" class="form-control" id="lastname" name="lastname" value="{{ $singleStaff->lastname }}">
-                                                            <label for="lastname">Lastname(Surname)</label>
-                                                        </div>
-                                                    </div>
-                            
-                                                    <div class="col-lg-5">
-                                                        <div class="form-floating">
-                                                            <input type="text" class="form-control" id="othernames" name="othernames" value="{{ $singleStaff->othernames }}">
-                                                            <label for="othernames">Othernames</label>
-                                                        </div>
-                                                    </div>
-                            
-                                                    <div class="col-lg-6">
-                                                        <div class="form-floating">
-                                                            <input type="email" class="form-control" id="email" name="email" value="{{ $singleStaff->email }}">
-                                                            <label for="email">Staff Email</label>
-                                                        </div>
-                                                    </div>
-                            
-                                                    <div class="col-lg-6">
-                                                        <div class="form-floating">
-                                                            <input type="text" class="form-control" id="staffId" name="staffId" value="{{ $singleStaff->staffId }}">
-                                                            <label for="staffId">Staff ID</label>
-                                                        </div>
-                                                    </div>
-                            
-                                                    <div class="col-lg-12">
-                                                        <div class="form-floating">
-                                                            <input type="text" class="form-control" id="phone_number" name="phone_number" value="{{ $singleStaff->phone_number }}">
-                                                            <label for="phone_number">Staff Mobile Number</label>
-                                                        </div>
-                                                    </div>
-                            
-                                                    <span class="text-muted"> Authentication</span><br>
-                                                    <div class="col-lg-6">
-                                                        <div class="form-floating">
-                                                            <input type="password" class="form-control" id="password" name="password" placeholder="Enter your Passowrd">
-                                                            <label for="password">Password</label>
-                                                        </div>
-                                                    </div>
-                            
-                                                    <div class="col-lg-6">
-                                                        <div class="form-floating">
-                                                            <input type="password" class="form-control" id="confirm-password" name="confirm_password" placeholder="Enter your email">
-                                                            <label for="confirm-password">Confirm Password</label>
-                                                        </div>
-                                                    </div>
-                            
-                                                    <span class="text-muted"> Academic Information</span><br>
-                                                    <div class="mb-3">
-                                                        <label for="category" class="form-label">Select Staff Category</label>
-                                                        <select class="form-select" aria-label="category" name="category">
-                                                            <option value= "" selected>Select Staff Category </option>
-                                                            <option @if($singleStaff->category == 'Academic') selected @endif value="Academic">Academic</option>
-                                                            <option @if($singleStaff->category == 'Non Academic') selected @endif value="Non Academic">Non Academic</option>
-                                                        </select>
-                                                    </div>
-                            
-                                                    <div class="mb-3">
-                                                        <label for="faculty" class="form-label">Select Staff Faculty</label>
-                                                        <select class="form-select" aria-label="faculty" name="faculty_id">
-                                                            <option value= "" selected>Select Staff Faculty </option>
-                                                            @foreach($faculties as $faculty)
-                                                            <option @if($singleStaff->faculty_id == $faculty->id) selected @endif value="{{ $faculty->id }}">{{ $faculty->name }}</option>
-                                                            @endforeach
-                                                        </select>
-                                                    </div>
-                                
-                                                    <div class="mb-3">
-                                                        <label for="department" class="form-label">Select Staff Department</label>
-                                                        <select class="form-select" aria-label="department" name="department_id">
-                                                            @foreach($departments as $department)
-                                                            <option @if($singleStaff->department_id == $department->id) selected @endif value="{{ $department->id }}">{{ $department->name }}</option>
-                                                            @endforeach
-                                                        </select>
-                                                    </div>
-                            
-                                                    <div class="mb-3">
-                                                        <label for="description" class="form-label">Staff Qualifications</label>
-                                                        <textarea type="text" class="form-control ckeditor" name="description" id="description">{{ $singleStaff->description }}</textarea>
-                                                    </div>
-                            
-                                                    <!--end col-->
-                                                    <div class="col-lg-12 border-top border-top-dashed">
-                                                        <div class="d-flex align-items-start gap-3 mt-3">
-                                                            <button type="submit" id="submit-button" class="btn btn-primary btn-label right ms-auto nexttab" data-nexttab="pills-bill-address-tab"><i class="ri-arrow-right-line label-icon align-middle fs-16 ms-2"></i> Submit</button>
-                                                        </div>
-                                                    </div>
-                                                    <!--end col-->
-                                                </div>    
-                                            </form>
-                                        </div>
-                                    </div><!-- /.modal-content -->
-                                </div><!-- /.modal-dialog -->
-                            </div><!-- /.modal --> --}}
                         </tr>
                         @endforeach
                     </tbody>
@@ -185,6 +61,40 @@
     <!-- end col -->
 </div>
 <!-- end row -->
-    
+@foreach($careerApplicants as $singleStaff)
+<div id="viewApplicant{{ $singleStaff->id }}" class="modal fade zoomIn" tabindex="-1" aria-labelledby="zoomInModalLabel" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog modal-dialog-centered  modal-dialog-scrollable modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="zoomInModalLabel">Applicant Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <hr>
+            </div>
+            <div class="modal-body border-top border-top-dashed">
+                <div class="d-flex align-items-center mb-3">
+                    <div class="avatar-sm me-3 flex-shrink-0">
+                        <div class="avatar-title bg-info-subtle rounded">
+                            <img src="{{ asset($singleStaff->image) }}" alt="" class="avatar-xs">
+                        </div>
+                    </div>
+                    <div class="flex-grow-1">
+                        <h5 class="fs-15 fw-semibold mb-0">{{ $singleStaff->lastname .' '. $singleStaff->othernames }}</h5>
+                        <p class="text-muted mb-2">{{ $singleStaff->email.' | '.$singleStaff->phone_number }}</p>
+                    </div>
+                </div>
+                @if(!empty($singleStaff->profile))
+                <p class="text-muted pb-1 border-top border-top-dashed">{!! $singleStaff->profile->biodata !!}</p>
+                <p class="text-muted pb-1 border-top border-top-dashed">{!! $singleStaff->profile->education_history !!}</p>
+                <p class="text-muted pb-1 border-top border-top-dashed">{!! $singleStaff->profile->professional_information !!}</p>
+                <p class="text-muted pb-1 border-top border-top-dashed">{!! $singleStaff->profile->publications !!}</p>
+                @endif
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+            </div>
 
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+@endforeach
 @endsection
