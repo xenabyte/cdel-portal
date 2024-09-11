@@ -58,7 +58,7 @@ class CareerController extends Controller
             return redirect()->back();
         }
 
-        if($student->cgpa > $jobVacancy->cgpa){
+        if($student->cgpa > intval($jobVacancy->cgpa)){
             alert()->error('Oops', 'Your CGPA is below the required CGPA for this job')->persistent('Close');
             return redirect()->back();
         }
