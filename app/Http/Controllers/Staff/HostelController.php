@@ -235,13 +235,14 @@ class HostelController extends Controller
         $hostelBedSpaces = RoomBedSpace::whereIn('room_id', $hostelRooms)->count();
 
         $allocatedBedSpaces = RoomBedSpace::whereIn('room_id', $hostelRooms)
-        ->whereHas('currentAllocations') 
+        ->whereHas('currentAllocation') 
         ->count();
 
         return view('staff.hostelDetails', [
             'hostel' => $hostel,
             'roomTypes' => $roomTypes,
-            'hostelBedSpaces' => $hostelBedSpaces
+            'hostelBedSpaces' => $hostelBedSpaces,
+            'allocatedBedSpaces' => $allocatedBedSpaces
         ]);
     }
 

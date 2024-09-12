@@ -580,7 +580,21 @@
                                             <a href="{{ url('/staff/verifyStudentExits') }}" class="nav-link">Verify Student Exit</a>
                                         </li>
                                         <li class="nav-item">
-                                            <a href="{{ url('/staff/allocations') }}" class="nav-link">Student Hostel Mgt</a>
+                                            <a href="#studentHostelMgt" class="nav-link" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="studentHostelMgt" data-key="t-studentHostelMgt"> Student Hostel Mgt
+                                            </a>
+                                            <div class="collapse menu-dropdown" id="studentHostelMgt">
+                                                <ul class="nav nav-sm flex-column">
+                                                    <li class="nav-item">
+                                                        <a href="{{ url('/staff/hostel') }}" class="nav-link" data-key="t-basic"> Hostel </a>
+                                                    </li>
+                                                    <li class="nav-item">
+                                                        <a href="{{ url('/staff/hostelType') }}" class="nav-link" data-key="t-basic"> Room Type </a>
+                                                    </li>
+                                                    <li class="nav-item">
+                                                        <a href="{{ url('/staff/allocations') }}" class="nav-link" data-key="t-basic"> Allocations </a>
+                                                    </li>
+                                                </ul>
+                                            </div>
                                         </li>
                                     </ul>
                                 </div>
