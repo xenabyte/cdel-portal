@@ -712,6 +712,21 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'staff'],
 
   Route::post('/manageClearanceApplication', [App\Http\Controllers\Staff\StudentController::class, 'manageClearanceApplication'])->name('manageClearanceApplication')->middleware(['auth:staff']);
 
+  Route::get('/hostelType', [App\Http\Controllers\Staff\HostelController::class, 'hostelType'])->name('hostelType')->middleware(['auth:staff']);
+  Route::post('/addRoomType', [App\Http\Controllers\Staff\HostelController::class, 'addRoomType'])->name('addRoomType')->middleware(['auth:staff']);
+  Route::post('/updateRoomType', [App\Http\Controllers\Staff\HostelController::class, 'updateRoomType'])->name('updateRoomType')->middleware(['auth:staff']);
+  Route::post('/deleteRoomType', [App\Http\Controllers\Staff\HostelController::class, 'deleteRoomType'])->name('deleteRoomType')->middleware(['auth:staff']);
+
+  Route::get('/hostel', [App\Http\Controllers\Staff\HostelController::class, 'hostel'])->name('hostel')->middleware(['auth:staff']);
+  Route::post('/addHostel', [App\Http\Controllers\Staff\HostelController::class, 'addHostel'])->name('addHostel')->middleware(['auth:staff']);
+  Route::post('/updateHostel', [App\Http\Controllers\Staff\HostelController::class, 'updateHostel'])->name('updateHostel')->middleware(['auth:staff']);
+  Route::post('/deleteHostel', [App\Http\Controllers\Staff\HostelController::class, 'deleteHostel'])->name('deleteHostel')->middleware(['auth:staff']);
+  Route::get('/viewHostel/{slug}', [App\Http\Controllers\Staff\HostelController::class, 'viewHostel'])->name('viewHostel')->middleware(['auth:staff']);
+  Route::post('/addRoom', [App\Http\Controllers\Staff\HostelController::class, 'addRoom'])->name('addRoom')->middleware(['auth:staff']);
+  Route::post('/deleteRoom', [App\Http\Controllers\Staff\HostelController::class, 'deleteRoom'])->name('deleteRoom')->middleware(['auth:staff']);
+  Route::post('/reserveRoom', [App\Http\Controllers\Staff\HostelController::class, 'reserveRoom'])->name('reserveRoom')->middleware(['auth:staff']);
+
+
   Route::get('/allocations', [App\Http\Controllers\Staff\HostelController::class, 'allocations'])->name('allocations')->middleware(['auth:staff']);
   Route::post('/deleteAllocation', [App\Http\Controllers\Staff\HostelController::class, 'deleteAllocation'])->name('deleteAllocation')->middleware(['auth:staff']);
   Route::post('/allocateRoom', [App\Http\Controllers\Staff\HostelController::class, 'allocateRoom'])->name('allocateRoom')->middleware(['auth:staff']);

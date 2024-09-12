@@ -228,15 +228,23 @@ class HostelController extends Controller
         ->where('slug', $slug)
         ->first();
         
-        
         $roomTypes = RoomType::where('campus', $hostel->campus)
-        ->orderByRaw('CAST(capacity AS UNSIGNED) DESC')
-        ->get();
-    
+            ->orderByRaw('CAST(capacity AS UNSIGNED) DESC')
+            ->get();
+
+        $hostelRooms = $hostel->rooms->pluck('id');
+        
+        $hostelBedSpaces = RoomBedSpace::whereIn('room_id', $hostelRooms)->count();
+
+        $allocatedBedSpaces = RoomBedSpace::whereIn('room_id', $hostelRooms)
+        ->whereHas('currentAllocation') 
+        ->count();
 
         return view('admin.hostelDetails', [
             'hostel' => $hostel,
-            'roomTypes' => $roomTypes
+            'roomTypes' => $roomTypes,
+            'hostelBedSpaces' => $hostelBedSpaces,
+            'allocatedBedSpaces' => $allocatedBedSpaces
         ]);
     }
 
@@ -375,9 +383,12 @@ class HostelController extends Controller
 
         $allocations = Allocation::with(['student', 'room', 'room.hostel', 'room.type'])->where('academic_session', $academicSession)->get();
         
+        $totalBedSpaces = RoomBedSpace::get()->count();
+
 
         return view('admin.allocations', [
             'allocations' => $allocations,
+            'totalBedSpaces' => $totalBedSpaces
         ]);
     }
 

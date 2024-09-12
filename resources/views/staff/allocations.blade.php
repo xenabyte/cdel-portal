@@ -19,6 +19,62 @@
 </div>
 <!-- end page title -->
 
+<div class="row">
+    <div class="col-xl-4 col-md-4">
+        <div class="card card-height-100">
+            <div class="card-body">
+                <div class="d-flex align-items-center">
+                    <div class="avatar-sm flex-shrink-0">
+                        <span class="avatar-title bg-warning text-white rounded-2 fs-2 shadow">
+                            <i class="mdi mdi-bed-double"></i>
+                        </span>
+                    </div>
+                    <div class="flex-grow-1 ms-3">
+                        <p class="text-uppercase fw-medium text-muted mb-3">Total Bed Space(s)</p>
+                        <h4 class="fs-4 mb-3"><span class="counter-value" data-target="{{ $totalBedSpaces }}">{{ $totalBedSpaces }}</span></h4>
+                    </div>
+                </div>
+            </div><!-- end card body -->
+        </div>
+    </div> <!-- end col-->
+
+    <div class="col-xl-4 col-md-4">
+        <div class="card card-height-100">
+            <div class="card-body">
+                <div class="d-flex align-items-center">
+                    <div class="avatar-sm flex-shrink-0">
+                        <span class="avatar-title bg-success text-white rounded-2 fs-2 shadow">
+                            <i class="mdi mdi-bed-outline"></i>
+                        </span>
+                    </div>
+                    <div class="flex-grow-1 ms-3">
+                        <p class="text-uppercase fw-medium text-muted mb-3">Total Allocated Bed Space(s)</p>
+                        <h4 class="fs-4 mb-3"><span class="counter-value" data-target="{{ $allocations->count() }}">{{ $allocations->count() }}</span></h4>
+                    </div>
+                </div>
+            </div><!-- end card body -->
+        </div>
+    </div> <!-- end col-->
+
+    <div class="col-xl-4 col-md-4">
+        <div class="card  bg-success card-height-100">
+            <div class="card-body">
+                <div class="d-flex align-items-center">
+                    <div class="avatar-sm flex-shrink-0">
+                        <span class="avatar-title bg-info text-white rounded-2 fs-2 shadow">
+                            <i class="mdi mdi-bed-empty"></i>
+                        </span>
+                    </div>
+                    <div class="flex-grow-1 ms-3">
+                        <p class="text-uppercase fw-medium text-white-50 mb-3">Total Available Bed Space(s)</p>
+                        <h4 class="fs-4 mb-3 text-white"><span class="counter-value" data-target="{{ $totalBedSpaces - $allocations->count() }}">{{ $totalBedSpaces - $allocations->count() }}</span></h4>
+                    </div>
+                </div>
+            </div><!-- end card body -->
+        </div>
+    </div> <!-- end col-->
+</div> <!-- end row-->
+
 <div class="col-lg-12">
     <div class="card">
         <div class="card-body">

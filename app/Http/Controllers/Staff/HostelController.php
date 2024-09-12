@@ -29,15 +29,363 @@ use Carbon\Carbon;
 
 class HostelController extends Controller
 {
+    public function hostelType() {
+        $roomTypes = RoomType::all();
+    
+        $roomTypesByCampus = $roomTypes->groupBy('campus')->map(function ($group) {
+            return $group->sortByDesc('capacity');
+        });
+    
+        return view('staff.hostelType', [
+            'roomTypesByCampus' => $roomTypesByCampus
+        ]);
+    }
+    
+
+    public function addRoomType(Request $request){
+
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:255',
+            'capacity' => 'required|integer',
+            'amount' => 'required|numeric',
+            'campus' => 'required|string|in:' . RoomType::EAST_CAMPUS . ',' . RoomType::WEST_CAMPUS,
+        ]);
+
+        if($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+
+        $roomType = ([
+            'name' => $request->name,
+            'capacity' => $request->capacity,
+            'amount' => $request->amount * 100,
+            'campus' => $request->campus,
+            'gender' => $request->gender
+        ]);
+
+        if(RoomType::create($roomType)){
+            alert()->success('Room Type added successfully', '')->persistent('Close');
+            return redirect()->back();
+        }
+
+        alert()->error('Oops!', 'Something went wrong')->persistent('Close');
+        return redirect()->back();
+    }
+
+    public function updateRoomType(Request $request){
+        $validator = Validator::make($request->all(), [
+            'room_type_id' => 'required|exists:room_types,id',
+            'name' => 'sometimes|string|max:255',
+            'capacity' => 'sometimes|integer',
+            'amount' => 'sometimes|numeric',
+            'campus' => 'sometimes|string|in:' . RoomType::EAST_CAMPUS . ',' . RoomType::WEST_CAMPUS,
+        ]);
+
+        if ($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+
+        $roomType = RoomType::findOrFail($request->room_type_id);
+
+        $roomTypeData = array_filter([
+            'name' => $request->name,
+            'capacity' => $request->capacity,
+            'campus' => $request->campus,
+            'gender' => $request->gender,
+        ]);
+
+        if ($request->has('amount') && $request->amount*100 != $roomType->amount) {
+            $roomTypeData['amount'] = $request->amount * 100;
+        }
+
+        if ($roomType->update($roomTypeData)) {
+            alert()->success('Changes saved successfully', '')->persistent('Close');
+            return redirect()->back();
+        }
+
+        alert()->error('Oops!', 'Something went wrong')->persistent('Close');
+        return redirect()->back();
+    }
+
+
+    public function deleteRoomType(Request $request){
+
+        $validatedData = $request->validate([
+            'room_type_id' => 'required|exists:room_types,id',
+        ]);
+
+        $roomType = RoomType::findOrFail($request->room_type_id);
+
+
+        if($roomType->delete()){
+            alert()->success('Record deleted successfully', '')->persistent('Close');
+            return redirect()->back();
+        }
+
+        alert()->error('Oops!', 'Something went wrong')->persistent('Close');
+        return redirect()->back();
+    }
+
+    public function hostel(){
+        $hostels = Hostel::get();
+        
+        return view('staff.hostel', [
+            'hostels' => $hostels
+        ]);
+    }
+
+    public function addHostel(Request $request){
+
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:255',
+            'gender' => 'required|string|in:' . RoomType::GENDER_MALE . ',' . RoomType::GENDER_FEMALE,
+            'campus' => 'required|string|in:' . RoomType::EAST_CAMPUS . ',' . RoomType::WEST_CAMPUS,
+        ]);
+
+        if($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+
+        $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $request->name)));
+
+        $hostel = ([
+            'slug' => $slug,
+            'name' => $request->name,
+            'campus' => $request->campus,
+            'gender' => $request->gender,
+        ]);
+
+        if(Hostel::create($hostel)){
+            alert()->success('Hostel added successfully', '')->persistent('Close');
+            return redirect()->back();
+        }
+
+        alert()->error('Oops!', 'Something went wrong')->persistent('Close');
+        return redirect()->back();
+    }
+
+    public function updateHostel(Request $request){
+
+        $validator = Validator::make($request->all(), [
+            'hostel_id' => 'required|exists:hostels,id',
+            'name' => 'sometimes|string|max:255',
+            'campus' => 'sometimes|string|in:' . RoomType::EAST_CAMPUS . ',' . RoomType::WEST_CAMPUS,
+            'gender' => 'required|string|in:' . RoomType::GENDER_MALE . ',' . RoomType::GENDER_FEMALE
+        ]);
+
+        if($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+
+        $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $request->name)));
+
+        $hostel = Hostel::findOrFail($request->hostel_id);
+
+        $hostelData = ([
+            'slug' => $slug,
+            'name' => $request->name,
+            'campus' => $request->campus,
+            'gender' => $request->gender
+        ]);
+
+        if($hostel->update($hostelData)){
+            alert()->success('Changes saved successfully', '')->persistent('Close');
+            return redirect()->back();
+        }
+
+        alert()->error('Oops!', 'Something went wrong')->persistent('Close');
+        return redirect()->back();
+    }
+
+    public function deleteHostel(Request $request){
+
+        $validatedData = $request->validate([
+            'hostel_id' => 'required|exists:hostels,id',
+        ]);
+
+        $hostel = Hostel::findOrFail($request->hostel_id);
+
+
+        if($hostel->delete()){
+            alert()->success('Record deleted successfully', '')->persistent('Close');
+            return redirect()->back();
+        }
+
+        alert()->error('Oops!', 'Something went wrong')->persistent('Close');
+        return redirect()->back();
+    }
+
+    public function viewHostel($slug){
+        $hostel = Hostel::with(['rooms' => function ($query) {
+            $query->orderBy('id', 'desc');
+        }, 'rooms.type', 'rooms.allocations'])
+        ->where('slug', $slug)
+        ->first();
+        
+        $roomTypes = RoomType::where('campus', $hostel->campus)
+            ->orderByRaw('CAST(capacity AS UNSIGNED) DESC')
+            ->get();
+
+        $hostelRooms = $hostel->rooms->pluck('id');
+        
+        $hostelBedSpaces = RoomBedSpace::whereIn('room_id', $hostelRooms)->count();
+
+        $allocatedBedSpaces = RoomBedSpace::whereIn('room_id', $hostelRooms)
+        ->whereHas('currentAllocations') 
+        ->count();
+
+        return view('staff.hostelDetails', [
+            'hostel' => $hostel,
+            'roomTypes' => $roomTypes,
+            'hostelBedSpaces' => $hostelBedSpaces
+        ]);
+    }
+
+
+    public function addRoom(Request $request){
+        $validator = Validator::make($request->all(), [
+            'number' => 'required',
+            'type_id' => 'required|exists:room_types,id',
+            'hostel_id' => 'required|exists:hostels,id',
+        ]);
+    
+        if ($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+    
+        $globalData = $request->input('global_data');
+        $academicSession = $globalData->sessionSetting['academic_session'];
+    
+        $hostel = Hostel::findOrFail($request->hostel_id);
+        $roomType = RoomType::findOrFail($request->type_id);
+    
+        $roomExists = Room::where('number', $request->number)
+                          ->where('hostel_id', $request->hostel_id)
+                          ->exists();
+    
+        if ($roomExists) {
+            alert()->error('Error', 'Room with the same number already exists in this hostel')->persistent('Close');
+            return redirect()->back();
+        }
+    
+        $roomCapacity = $roomType->capacity;
+    
+        $room = [
+            'number' => $request->number,
+            'type_id' => $request->type_id,
+            'hostel_id' => $request->hostel_id,
+        ];
+    
+        if ($createRoom = Room::create($room)) {
+            for ($i = 1; $i <= $roomCapacity; $i++) {
+                RoomBedSpace::create([
+                    'room_id' => $createRoom->id,
+                    'space' => $i,
+                ]);
+            }
+    
+            alert()->success('Room added successfully', '')->persistent('Close');
+            return redirect()->back();
+        }
+    }
+    
+
+    public function deleteRoom(Request $request){
+        $validator = Validator::make($request->all(), [
+            'room_id' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+
+        $globalData = $request->input('global_data');
+        $academicSession = $globalData->sessionSetting['academic_session'];
+
+        $roomId = $request->room_id;
+        $room = Room::findOrFail($roomId);
+
+
+        $roomAllocationExists = Allocation::where('room_id', $roomId)
+                                ->where('academic_session', $academicSession)
+                                ->exists();
+
+        if ($roomAllocationExists) {
+            alert()->error('Error', 'Room cannot be deleted as it is allocated for the current academic session')->persistent('Close');
+            return redirect()->back();
+        }
+
+        DB::beginTransaction();
+
+        try {
+            RoomBedSpace::where('room_id', $room->id)->forceDelete();
+
+            $room->forceDelete();
+
+            DB::commit();
+
+            alert()->success('Room and associated bed spaces deleted successfully', '')->persistent('Close');
+            return redirect()->back();
+        } catch (\Exception $e) {
+            DB::rollback();
+
+            alert()->error('Error', 'Failed to delete room. Please try again.')->persistent('Close');
+            return redirect()->back();
+        }
+    }
+
+    public function reserveRoom(Request $request){
+        $validator = Validator::make($request->all(), [
+            'room_id' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+
+        $globalData = $request->input('global_data');
+        $academicSession = $globalData->sessionSetting['academic_session'];
+
+        $roomId = $request->room_id;
+        $room = Room::findOrFail($roomId);
+        
+        $room->is_reserved = $room->is_reserved === null ? 1 : null;
+
+        DB::beginTransaction();
+
+        try {
+            $room->save();
+            DB::commit();
+            $statusMessage = $room->is_reserved ? 'Room reserved successfully' : 'Room reservation removed successfully';
+            alert()->success($statusMessage, '')->persistent('Close');
+            return redirect()->back();
+        } catch (\Exception $e) {
+            DB::rollback();
+
+            alert()->error('Error', 'Failed to update room reservation. Please try again.')->persistent('Close');
+            return redirect()->back();
+        }
+    }
+
     public function allocations (Request $request){
 
         $globalData = $request->input('global_data');
         $academicSession = $globalData->sessionSetting['academic_session'];
 
+        $totalBedSpaces = RoomBedSpace::get()->count();
+
         $allocations = Allocation::with(['student', 'room', 'room.hostel', 'room.type'])->where('academic_session', $academicSession)->get();
 
         return view('staff.allocations', [
             'allocations' => $allocations,
+            'totalBedSpaces' => $totalBedSpaces
         ]);
     }
 
