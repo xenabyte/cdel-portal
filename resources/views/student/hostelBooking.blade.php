@@ -122,7 +122,7 @@
                                                     </div>
                                                 </div>
                                                 
-                                                @if($hostelPaymentTx)
+                                                @if(empty($hostelPaymentTx))
                                                 <div class="col-lg-12">
                                                     <div class="form-floating">
                                                         <select class="form-select" aria-label="paymentGateway" name="paymentGateway" required>
