@@ -237,6 +237,7 @@
                                                                                                 <option value="General Fee">General Fee</option>
                                                                                                 <option value="Other Fee">Other Fee</option>
                                                                                                 <option value="Course Reg">Modify Course Reg Fee</option>
+                                                                                                <option value="Late Course Reg">Late Course Reg Fee</option>
                                                                                                 <option value="Accomondation Fee">Accomondation Fee</option>
                                                                                             </select>
                                                                                         </div>
@@ -365,7 +366,8 @@
                             <option value="DE School Fee">Direct Entry School Fee</option>
                             <option value="General Fee">General Fee</option>
                             <option value="Other Fee">Other Fee</option>
-                            <option value="Course Reg">Modify Course Reg Fee</option>
+                             <option value="Late Course Reg">Late Course Reg Fee</option>
+                                                                                                <option value="Course Reg">Modify Course Reg Fee</option>
                             <option value="Accomondation Fee">Accomondation Fee</option>
                         </select>
                     </div>

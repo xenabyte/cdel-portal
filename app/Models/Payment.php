@@ -18,6 +18,7 @@ class Payment extends Model
     const PAYMENT_TYPE_GENERAL = 'General Fee';
     const PAYMENT_TYPE_OTHER = 'Other Fee';
     const PAYMENT_MODIFY_COURSE_REG = 'Course Reg';
+    const PAYMENT_LATE_COURSE_REG = 'Late Course Reg';
     const PAYMENT_TYPE_WALLET_DEPOSIT = 'Wallet Deposit';
     const PAYMENT_TYPE_BANDWIDTH = 'Bandwidth Fee';
     const PAYMENT_TYPE_ACCOMONDATION = 'Accomondation Fee';
@@ -81,6 +82,7 @@ class Payment extends Model
             case 'Wallet Deposit':
                 return 'Other Fee';
             case 'Course Reg':
+            case 'Late Course Reg':
             case 'Bandwidth Fee':
                 return 'ICT';
             case 'Accomondation Fee':

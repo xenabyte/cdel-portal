@@ -133,8 +133,6 @@ class PaymentController extends Controller
                             'programmes' => $this->programmes,
                             'payment' => $payment
                         ]);
-                    }elseif($paymentType == Payment::PAYMENT_TYPE_ACCEPTANCE){
-                        return redirect($redirectPath);
                     }elseif($paymentType == Payment::PAYMENT_TYPE_SCHOOL || $paymentType == Payment::PAYMENT_TYPE_SCHOOL_DE){
                         $this->generateMatricAndEmail($student);
                         return redirect($redirectPath);
@@ -148,8 +146,6 @@ class PaymentController extends Controller
                             'programmes' => $this->programmes,
                             'payment' => $payment
                         ]);
-                    }elseif($paymentType == Payment::PAYMENT_TYPE_ACCEPTANCE){
-                        return redirect($redirectPath);
                     }else{
                         return redirect($redirectPath);
                     }
@@ -163,8 +159,6 @@ class PaymentController extends Controller
                     'programmes' => $this->programmes,
                     'payment' => $payment
                 ]);
-            }elseif($paymentType == Payment::PAYMENT_TYPE_ACCEPTANCE){
-                return redirect($redirectPath);
             }else{
                 return redirect($redirectPath);
             }
@@ -241,8 +235,6 @@ class PaymentController extends Controller
                             'programmes' => $this->programmes,
                             'payment' => $payment
                         ]);
-                    }elseif($paymentType == Payment::PAYMENT_TYPE_ACCEPTANCE){
-                        return redirect($redirectPath);
                     }elseif($paymentType == Payment::PAYMENT_TYPE_SCHOOL || $paymentType == Payment::PAYMENT_TYPE_SCHOOL_DE){
                         $this->generateMatricAndEmail($student);
                         return redirect($redirectPath);
@@ -256,8 +248,6 @@ class PaymentController extends Controller
                             'programmes' => $this->programmes,
                             'payment' => $payment
                         ]);
-                    }elseif($paymentType == Payment::PAYMENT_TYPE_ACCEPTANCE){
-                        return redirect($redirectPath);
                     }else{
                         return redirect($redirectPath);
                     }
@@ -271,8 +261,6 @@ class PaymentController extends Controller
                     'programmes' => $this->programmes,
                     'payment' => $payment
                 ]);
-            }elseif($paymentType == Payment::PAYMENT_TYPE_ACCEPTANCE){
-                return redirect($redirectPath);
             }else{
                 return redirect($redirectPath);
             }
@@ -372,8 +360,6 @@ class PaymentController extends Controller
                         'programmes' => $this->programmes,
                         'payment' => $payment
                     ]);
-                }elseif($paymentType == Payment::PAYMENT_TYPE_ACCEPTANCE){
-                    return redirect($redirectPath);
                 }elseif($paymentType == Payment::PAYMENT_TYPE_SCHOOL || $paymentType == Payment::PAYMENT_TYPE_SCHOOL_DE){
                     $this->generateMatricAndEmail($student);
                     return redirect($redirectPath);
@@ -387,8 +373,6 @@ class PaymentController extends Controller
                         'programmes' => $this->programmes,
                         'payment' => $payment
                     ]);
-                }elseif($paymentType == Payment::PAYMENT_TYPE_ACCEPTANCE){
-                    return redirect($redirectPath);
                 }else{
                     return redirect($redirectPath);
                 }
@@ -473,8 +457,6 @@ class PaymentController extends Controller
                             $applicantData = $paymentDetails;
                             $this->createApplicant($applicantData);
                             return true;
-                        }elseif($paymentType == Payment::PAYMENT_TYPE_ACCEPTANCE){
-                            return true;
                         }elseif($paymentType == Payment::PAYMENT_TYPE_SCHOOL || $paymentType == Payment::PAYMENT_TYPE_SCHOOL_DE){
                             $this->generateMatricAndEmail($student);
                             return true;
@@ -484,8 +466,6 @@ class PaymentController extends Controller
                     }else{
                         if($paymentType == Payment::PAYMENT_TYPE_GENERAL_APPLICATION || $paymentType == Payment::PAYMENT_TYPE_INTER_TRANSFER_APPLICATION){
                             return false;
-                        }elseif($paymentType == Payment::PAYMENT_TYPE_ACCEPTANCE){
-                            return false;
                         }else{
                             return false;
                         }
@@ -494,8 +474,6 @@ class PaymentController extends Controller
                 }
 
                 if($paymentType == Payment::PAYMENT_TYPE_GENERAL_APPLICATION || $paymentType == Payment::PAYMENT_TYPE_INTER_TRANSFER_APPLICATION){
-                    return false;
-                }elseif($paymentType == Payment::PAYMENT_TYPE_ACCEPTANCE){
                     return false;
                 }else{
                     return false;

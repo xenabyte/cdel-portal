@@ -114,6 +114,16 @@ class AcademicController extends Controller
 
             $unregisteredRequiredCoursesIds = array_merge($unregisteredRequiredCoursesIds, array_diff($allRequiredCoursesIds, $registeredCourseIds));        
         }
+        
+        $checkLateReg = $this->checkLateRegistration();        
+        $lateRegTxPay = Payment::with('structures')->where('type', Payment::PAYMENT_LATE_COURSE_REG)->where('academic_session', $academicSession)->first();
+        $lateRegTxPayId = $lateRegTxPay->id;
+        
+        $lateRegTx = Transaction::where([
+            'student_id' =>  $studentId,
+            'payment_id' => $lateRegTxPayId,
+            'status' => 1
+        ])->first();
 
         $addOrRemoveTxPay = Payment::with('structures')->where('type', Payment::PAYMENT_MODIFY_COURSE_REG)->where('academic_session', $academicSession)->first();
         $addOrRemoveTxId = $addOrRemoveTxPay->id;
@@ -163,6 +173,9 @@ class AcademicController extends Controller
             'carryOverCourses' => $carryOverCourses,
             'unregisteredRequiredCourses' => $unregisteredRequiredCourses,
             'addOrRemoveTxs' => $addOrRemoveTxs,
+            'checkLateReg' => $checkLateReg,
+            'lateRegTx' => $lateRegTx,
+            'lateRegTxPay' => $lateRegTxPay,
             'passTuition' => $paymentCheck->passTuitionPayment,
             'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
             'passEightyTuition' => $paymentCheck->passEightyTuition
@@ -558,8 +571,7 @@ class AcademicController extends Controller
         return redirect(asset($studentExamCard->file));
     }
 
-    public function allExamDockets(Request $request)
-    {
+    public function allExamDockets(Request $request){
         $student = Auth::guard('student')->user();
         $studentId = $student->id;
         $levelId = $student->level_id;
