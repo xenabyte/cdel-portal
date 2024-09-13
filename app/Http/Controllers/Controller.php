@@ -249,7 +249,7 @@ class Controller extends BaseController
             'user_id' => !empty($applicationId)?$applicationId:null,
             'student_id' => !empty($studentId)?$studentId:null,
             'payment_id' => $paymentId,
-            'amount_payed' => $amount,
+            'amount_payed' => $amount*100,
             'payment_method' => $paymentGateway,
             'reference' => $reference,
             'session' => $session,
