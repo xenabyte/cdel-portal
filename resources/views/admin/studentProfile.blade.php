@@ -405,8 +405,20 @@ $studentRegistrations = $student->courseRegistrationDocument()->orderBy('created
                                                             <input type="email" class="form-control" id="email" name="email" value="{{ $student->email }}">
                                                             <label for="email">TAU Student Email</label>
                                                         </div>
-                                                    </div>                    
-                                                </div>     
+                                                    </div>   
+                                                    
+                                                    <div class="col-lg-12">
+                                                        <div class="form-floating">
+                                                            <select class="form-control" name="gender" id="gender" required>
+                                                                <option @if($student->applicant->gender == '') selected  @endif value="" selected>Select Gender</option>
+                                                                <option @if($student->applicant->gender == 'Male') selected  @endif value="Male">Male</option>
+                                                                <option @if($student->applicant->gender == 'Female') selected  @endif value="Female">Female</option>
+                                                            </select>
+                                                            <label for="gender" class="form-label">Gender</label>
+                                                        </div>
+                                                    </div>
+                                                </div>   
+                                                  
                 
                                                 <!--end col-->
                                                 <div class="col-lg-12">

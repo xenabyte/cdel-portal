@@ -136,13 +136,13 @@ class StudentController extends Controller
 
     public function saveBioData(Request $request){
         $validator = Validator::make($request->all(), [
-            'dob' => 'required',
-            'religion' => 'required',
-            'gender' => 'required',
-            'marital_status' => 'required',
-            'nationality' => 'required',
-            'state' => 'required',
-            'lga' => 'required',
+            'dob' => 'nullable',
+            'religion' => 'nullable',
+            'gender' => 'nullable',
+            'marital_status' => 'nullable',
+            'nationality' => 'nullable',
+            'state' => 'nullable',
+            'lga' => 'nullable',
         ]);
 
         if($validator->fails()) {

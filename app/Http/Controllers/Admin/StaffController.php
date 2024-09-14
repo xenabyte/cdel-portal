@@ -791,6 +791,7 @@ class StaffController extends Controller
         
         $applicant->lastname = $request->lastname;
         $applicant->othernames = $request->othernames;
+        $applicant->gender = $request->gender;
         $applicant->save();
 
         $student->email = $request->email;

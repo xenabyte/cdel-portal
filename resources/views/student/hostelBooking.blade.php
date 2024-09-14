@@ -1,6 +1,11 @@
 @extends('student.layout.dashboard')
 
 @section('content')
+@php
+    $student = Auth::guard('student')->user();
+    $applicant = $student->applicant;
+    $gender = $applicant->gender;
+@endphp
 <div class="row">
     <div class="col-12">
         <div class="page-title-box d-sm-flex align-items-center justify-content-between">
@@ -17,6 +22,53 @@
     </div>
 </div>
 
+@if(empty($gender))
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <div class="card">
+            <div class="card-header align-items-center d-flex">
+                <h4 class="mb-sm-0">Student Gender Update</h4>
+                <div class="flex-shrink-0">
+                </div>
+            </div><!-- end card header -->
+
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-8 offset-md-2 ">
+                        <div class="bg-soft-info p-2">
+                            <p>Kindly pick your gender</p>
+                        </div>
+                        
+                        <form action="{{ url('student/saveBioData') }}" method="post" enctype="multipart/form-data">
+                            @csrf
+
+                            <div class="row mt-3 g-3">        
+                                <div class="mb-3">
+                                    <label for="gender" class="form-label">Gender</label>
+                                    <select class="form-control" name="gender" id="gender" required>
+                                        <option @if($applicant->gender == '') selected  @endif value="" selected>Select Gender</option>
+                                        <option @if($applicant->gender == 'Male') selected  @endif value="Male">Male</option>
+                                        <option @if($applicant->gender == 'Female') selected  @endif value="Female">Female</option>
+                                    </select>
+                                </div>
+     
+                                <!--end col-->
+                                <div class="col-lg-12 border-top border-top-dashed">
+                                    <div class="d-flex align-items-start gap-3 mt-3">
+                                        <button type="submit" id="submit-button" class="btn btn-primary btn-label right ms-auto nexttab" data-nexttab="pills-bill-address-tab"><i class="ri-arrow-right-line label-icon align-middle fs-16 ms-2"></i> Submit</button>
+                                    </div>
+                                </div>
+                                <!--end col-->
+                            </div>    
+                        </form>
+                    </div>
+                </div>
+
+            </div>
+        </div><!-- end card -->
+    </div>
+    <!-- end col -->
+</div>
 @if(!empty($pageGlobalData->setting) && strtolower($pageGlobalData->sessionSetting->accomondation_booking_status) != 'start')
 <div class="row justify-content-center">
     <div class="col-lg-6">
@@ -45,8 +97,6 @@
     </div>
     <!--end col-->
 </div>
-<!--end row-->
-
 @else
     @if(empty($allocatedRoom))
     <div class="row justify-content-center">
