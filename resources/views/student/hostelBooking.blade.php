@@ -69,7 +69,7 @@
     </div>
     <!-- end col -->
 </div>
-@if(!empty($pageGlobalData->setting) && strtolower($pageGlobalData->sessionSetting->accomondation_booking_status) != 'start')
+@elseif(!empty($pageGlobalData->setting) && strtolower($pageGlobalData->sessionSetting->accomondation_booking_status) != 'start')
 <div class="row justify-content-center">
     <div class="col-lg-6">
         <div class="card">
@@ -255,7 +255,6 @@
         <!--end col-->
     </div>
     @endif                     
-@endif
 @endif
 
 @endsection
