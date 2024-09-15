@@ -54,7 +54,7 @@
                             <th scope="row">{{ $loop->iteration }}</th>
                             <td>{{ $student->applicant->lastname .' '. $student->applicant->othernames }}</td>
                             <td>{{ $student->applicant->application_number }}</td>
-                            <td>{{ $student->applicant->matric_number }}</td>
+                            <td>{{ $student->matric_number }}</td>
                             <td>{{ $student->applicant->gender }}</td>
                             <td>{{ $student->programme->name }}</td>
                             <td>{{ $student->email }} </td>
