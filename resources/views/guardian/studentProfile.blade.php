@@ -316,7 +316,7 @@ $studentRegistrations = $student->courseRegistrationDocument()->orderBy('created
                                         <p class="text-muted">{{ $student->programme->name }} <br>
                                             <strong>Matric Number:</strong> {{ $student->matric_number }}<br>
                                             <strong>Jamb Reg. Number:</strong> {{ $student->applicant->jamb_reg_no }}<br>
-                                            <strong>Support Code:</strong> <span class="text-danger">ST{{ sprintf("%06d", $student->id) }}</span> 
+                                            <strong>Support Code:</strong> <span class="text-danger">{{ $student->applicant->id }}-ST{{ sprintf("%03d", $student->id) }}</span> 
                                         </p>
                                         <p class="text-muted border-top border-top-dashed"><strong>CGPA:</strong> {{ $student->cgpa }} <br>
                                             <strong>Class:</strong> {{ $student->degree_class }}<br>
@@ -533,7 +533,7 @@ $studentRegistrations = $student->courseRegistrationDocument()->orderBy('created
                                         <p class="text-muted">{{ $student->programme->name }} <br>
                                             <strong>Matric Number:</strong> {{ $student->matric_number }}<br>
                                             <strong>Jamb Reg. Number:</strong> {{ $student->applicant->jamb_reg_no }}<br> <br>
-                                            <strong>Support Code:</strong> <span class="text-danger">ST{{ sprintf("%06d", $student->id) }}</span> 
+                                            <strong>Support Code:</strong> <span class="text-danger">{{ $student->applicant->id }}-ST{{ sprintf("%03d", $student->id) }}</span> 
                                             <hr>
                                             @if(env('WALLET_STATUS'))<a class="dropdown-item" href="#"><i class="mdi mdi-wallet text-muted fs-16 align-middle me-1"></i> <span class="align-middle">Balance : <b>₦{{ number_format($student->amount_balance/100, 2) }}</b></span></a>@endif
                                         </p>

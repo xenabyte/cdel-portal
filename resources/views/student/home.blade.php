@@ -125,6 +125,7 @@ $studentRegistrations = $student->courseRegistrationDocument()->orderBy('created
                         <h5 class="mb-1">{{$name}}</h5>
                         <p class="text-muted">{{ $student->programme->name }} <br>
                             <strong>Matric Number:</strong> {{ $student->matric_number }}<br>
+                            <strong>Wifi Username:</strong> {{ $student->bandwidth_username }}<br>
                             <strong>Jamb Reg. Number:</strong> {{ $student->applicant->jamb_reg_no }} <br>
                             <strong>Academic Level:</strong> <span class="text-primary">{{ $student->level_id * 100 }} Level</span><br>
                             <strong>Academic session:</strong> {{ $student->academic_session }}</span>
@@ -132,7 +133,7 @@ $studentRegistrations = $student->courseRegistrationDocument()->orderBy('created
                             @if($student->level_id >= $student->programme->duration && !$student->is_passed_out)
                             <span class="text-warning"><strong>Graduating Set</strong></span> <br><br>
                             @endif
-                            <strong>Support Code:</strong> <span class="text-danger">ST{{ sprintf("%06d", $student->id) }}</span> 
+                            <strong>Support Code:</strong> <span class="text-danger">{{ $student->applicant->id }}-ST{{ sprintf("%03d", $student->id) }}</span> 
                         </p>
                         <p class="text-muted border-top border-top-dashed pt-2"><strong>CGPA:</strong> {{ $student->cgpa }} <br>
                             <strong>Class:</strong> {{ $student->degree_class }}<br>

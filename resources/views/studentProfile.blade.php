@@ -92,7 +92,7 @@ $name = $student->applicant->lastname.' '.$student->applicant->othernames;
                                         <p class="text-muted">{{ $student->programme->name }} <br>
                                             <strong>Matric Number:</strong> {{ $student->matric_number }}<br>
                                             <strong>Jamb Reg. Number:</strong> {{ $student->applicant->jamb_reg_no }}<br><br>
-                                            <strong>Support Code:</strong> <span class="text-danger">ST{{ sprintf("%06d", $student->id) }}</span> 
+                                            <strong>Support Code:</strong> <span class="text-danger">{{ $student->applicant->id }}-ST{{ sprintf("%03d", $student->id) }}</span> 
                                         </p>
                                         <p class="text-muted border-top border-top-dashed">
                                             <strong>Class:</strong> {{ $student->degree_class }}<br>

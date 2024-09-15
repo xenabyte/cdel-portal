@@ -81,9 +81,7 @@ class StudentController extends Controller
             ]);
         }
         
-        if ((($levelId == 1 && strtolower($applicationType) == 'utme') || 
-            ($levelId == 2 && strtolower($applicationType) != 'utme')) && 
-            ($student->clearance_status != 1 && $student->is_active != 1)) {
+        if ($this->checkNewStudentStatus($student)) {
             return view('student.clearance', [
                 'payment' => $paymentCheck->schoolPayment,
                 'passTuition' => $paymentCheck->passTuitionPayment,
@@ -1325,6 +1323,7 @@ class StudentController extends Controller
         $academicSession = $globalData->sessionSetting['academic_session'];
 
         $paymentCheck = $this->checkSchoolFees($student, $academicSession, $levelId);
+        
         $hostelPayment = Payment::where("type", "Accomondation Fee")->where("academic_session", $academicSession)->first();
         $hostelPaymentTx = Transaction::where('student_id', $studentId)->where('payment_id', $hostelPayment->id)->where('status', 1)->first();
 
@@ -1368,7 +1367,8 @@ class StudentController extends Controller
             'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
             'passEightyTuition' => $paymentCheck->passEightyTuition,
             'studentPendingTransactions' => $paymentCheck->studentPendingTransactions,
-            'hostelPaymentTx' => $hostelPaymentTx
+            'hostelPaymentTx' => $hostelPaymentTx,
+
         ]);
     }
 

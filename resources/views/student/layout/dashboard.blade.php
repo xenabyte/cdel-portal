@@ -223,7 +223,7 @@
                                 <!-- item-->
                                 <h6 class="dropdown-header">Welcome {{ $name }}!</h6>
                                 <div class="dropdown-divider"></div>
-                                <h6 class="dropdown-header">Support Code: <span class="text-danger">ST{{ sprintf("%06d", $student->id) }}</span></h6>
+                                <h6 class="dropdown-header">Support Code: <span class="text-danger">{{ $student->applicant->id }}-ST{{ sprintf("%03d", $student->id) }}</span></h6>
                                 @if(env('WALLET_STATUS'))<a class="dropdown-item" href=#"><i class="mdi mdi-wallet text-muted fs-16 align-middle me-1"></i> <span class="align-middle">Balance : <b>₦{{ number_format($student->amount_balance/100, 2) }}</b></span></a>@endif
                                 <a class="dropdown-item" href="{{ url('/student/profile') }}"><i class="mdi mdi-cog-outline text-muted fs-16 align-middle me-1"></i> <span class="align-middle">Settings</span></a>
                                 <a class="dropdown-item" href="{{ url('/student/logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();"><i class="mdi mdi-logout text-muted fs-16 align-middle me-1"></i> <span class="align-middle" data-key="t-logout">Logout</span></a>
@@ -276,6 +276,12 @@
                         </li>
                         <hr class="text-light">
                         @endif
+                        <hr class="text-light">
+                        <li class="nav-item">
+                            <a class="nav-link menu-link" href="#"><i class="mdi mdi-web-box fs-16 align-middle me-1"></i> <span class="align-middle">Wifi Username: <b>{{ $student->bandwidth_username }}</b></span></a>
+                        </li>
+                        <hr class="text-light">
+
                         <li class="menu-title"><span data-key="t-menu">Menu</span></li>
 
                         <li class="nav-item">

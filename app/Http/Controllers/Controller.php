@@ -1081,8 +1081,8 @@ class Controller extends BaseController
         $now = Carbon::now();
     
         if ($now->greaterThan($lateRegStartDate)) {
-            $daysPast = $now->diffInDays($lateRegStartDate);
-            $weeksPast = floor($daysPast / 7); 
+            $daysPast = $now->diffInWeekdays($lateRegStartDate);
+            $weeksPast = floor($daysPast / 5); 
     
             // Return true with the number of days and weeks past
             $data = new \stdClass();
@@ -1099,6 +1099,21 @@ class Controller extends BaseController
         $data->weeksPast = 0;
             
         return $data;
+    }
+
+    public static function checkNewStudentStatus($student){
+        $levelId = $student->level_id;
+        $applicationType = $student->application_type;
+    
+    
+        if ((($levelId == 1 && strtolower($applicationType) == 'utme') || 
+            ($levelId == 2 && strtolower($applicationType) != 'utme')) && 
+            ($student->clearance_status != 1 && $student->is_active != 1)) {
+            
+            return true;
+        }
+    
+        return false;
     }
     
 }

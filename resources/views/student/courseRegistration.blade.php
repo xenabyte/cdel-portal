@@ -70,7 +70,7 @@
     <!--end col-->
 </div>
 @else
-    @if($checkLateReg->isLate && empty($lateRegTx))
+    @if($checkLateReg->isLate && !$checkNewStudentStatus && empty($lateRegTx))
         <div class="row justify-content-center">
             <div class="col-lg-6">
                 <div class="card">

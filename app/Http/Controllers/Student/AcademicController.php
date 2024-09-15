@@ -78,6 +78,8 @@ class AcademicController extends Controller
         $minLevel = $isUTME ? 1 : 2;
 
         $paymentCheck = $this->checkSchoolFees($student, $academicSession, $levelId);
+        $checkNewStudentStatus = $this->checkNewStudentStatus($student);
+
         if(!$paymentCheck->passTuitionPayment){
             return view('student.schoolFee', [
                 'payment' => $paymentCheck->schoolPayment,
@@ -176,6 +178,7 @@ class AcademicController extends Controller
             'checkLateReg' => $checkLateReg,
             'lateRegTx' => $lateRegTx,
             'lateRegTxPay' => $lateRegTxPay,
+            'checkNewStudentStatus' => $checkNewStudentStatus,
             'passTuition' => $paymentCheck->passTuitionPayment,
             'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
             'passEightyTuition' => $paymentCheck->passEightyTuition

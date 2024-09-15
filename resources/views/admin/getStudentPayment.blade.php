@@ -55,7 +55,7 @@ $balance = $paymentAmount>0? $paymentAmount - $totalPaid : 0;
                         <p class="text-muted">{{ $student->programme->name }} <br>
                             <strong>Matric Number:</strong> {{ $student->matric_number }}<br>
                             <strong>Jamb Reg. Number:</strong> {{ $student->applicant->jamb_reg_no }}<br>
-                            <strong>Support Code:</strong> <span class="text-danger">ST{{ sprintf("%06d", $student->id) }}</span> 
+                            <strong>Support Code:</strong> <span class="text-danger">{{ $student->applicant->id }}-ST{{ sprintf("%03d", $student->id) }}</span> 
                         </p>
                     </div>
                     <div class="table-responsive border-top border-top-dashed">
