@@ -58,10 +58,9 @@
         window.OneSignal = window.OneSignal || [];
         OneSignal.push(function() {
             OneSignal.init({
-                appId: "6738e20a-154a-46d6-8b26-0afffd0ad96f",
+                appId: "78a3101e-4969-46bc-8582-c9f8574a25f3",
             });
 
-            // Use getSubscriptionId instead of getUserId
             OneSignal.getSubscriptionId().then(async function(playerId) {
                 if (playerId) {
                     try {
@@ -114,6 +113,7 @@
     @include('sweetalert::alert')
     <!-- Begin page -->
     <div id="layout-wrapper">
+        <div class='onesignal-customlink-container'></div>
 
         <header id="page-topbar">
             <div class="layout-width">
