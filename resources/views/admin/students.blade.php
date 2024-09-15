@@ -34,6 +34,7 @@
                             <th scope="col">Id</th>
                             <th scope="col">Name</th>
                             <th scope="col">Application Number</th>
+                            <th scope="col">Matric Number</th>
                             <th scope="col">Gender</th>
                             <th scope="col">Programme</th>
                             <th scope="col">Email</th>
@@ -53,6 +54,7 @@
                             <th scope="row">{{ $loop->iteration }}</th>
                             <td>{{ $student->applicant->lastname .' '. $student->applicant->othernames }}</td>
                             <td>{{ $student->applicant->application_number }}</td>
+                            <td>{{ $student->applicant->matric_number }}</td>
                             <td>{{ $student->applicant->gender }}</td>
                             <td>{{ $student->programme->name }}</td>
                             <td>{{ $student->email }} </td>
