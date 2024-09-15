@@ -1323,7 +1323,7 @@ class StudentController extends Controller
         $academicSession = $globalData->sessionSetting['academic_session'];
 
         $paymentCheck = $this->checkSchoolFees($student, $academicSession, $levelId);
-        
+
         $hostelPayment = Payment::where("type", "Accomondation Fee")->where("academic_session", $academicSession)->first();
         $hostelPaymentTx = Transaction::where('student_id', $studentId)->where('payment_id', $hostelPayment->id)->where('status', 1)->first();
 
@@ -1372,5 +1372,21 @@ class StudentController extends Controller
         ]);
     }
 
+    public function savePlayerId(Request $request){
+        $request->validate([
+            'player_id' => 'required|string',
+        ]);
+
+        $student = Auth::guard('student')->user();
+
+        if ($student) {
+            $student->one_signal_token = $request->player_id;
+            $student->save();
+
+            return response()->json(['message' => 'Player ID saved successfully'], 200);
+        }
+
+        return response()->json(['message' => 'Not authenticated'], 401);
+    }
     
 }

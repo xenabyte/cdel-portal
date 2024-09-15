@@ -50,7 +50,8 @@ class Student extends Authenticatable
         'batch',
         'graduation_date',
         'graduation_session',
-        'clearance_status'
+        'clearance_status',
+        'one_signal_token'
     ];
 
     /**

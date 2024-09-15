@@ -55,34 +55,40 @@
     <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
     <script>
         window.OneSignalDeferred = window.OneSignalDeferred || [];
-        OneSignalDeferred.push(function(OneSignal) {
+        window.OneSignal = window.OneSignal || [];
+        OneSignal.push(function() {
             OneSignal.init({
                 appId: "6738e20a-154a-46d6-8b26-0afffd0ad96f",
             });
 
-            OneSignal.getUserId().then(function(playerId) {
-                // Send the player ID to your Laravel backend
-                fetch('/save-player-id', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}' // Ensure you include CSRF token if using Laravel CSRF protection
-                    },
-                    body: JSON.stringify({ player_id: playerId })
-                })
-                .then(response => {
-                    if (response.ok) {
-                        console.log('Player ID saved successfully');
-                    } else {
-                        console.error('Failed to save player ID');
+            // Use getSubscriptionId instead of getUserId
+            OneSignal.getSubscriptionId().then(async function(playerId) {
+                if (playerId) {
+                    try {
+                        const response = await fetch('/save-player-id', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}' // Ensure you include CSRF token if using Laravel CSRF protection
+                            },
+                            body: JSON.stringify({ player_id: playerId })
+                        });
+
+                        if (response.ok) {
+                            console.log('Player ID saved successfully');
+                        } else {
+                            console.error('Failed to save player ID');
+                        }
+                    } catch (error) {
+                        console.error('Error:', error);
                     }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                });
+                } else {
+                    console.error('Subscription ID not available');
+                }
+            }).catch(function(error) {
+                console.error('Error fetching player ID:', error);
             });
         });
-
     </script>
 
     <script>

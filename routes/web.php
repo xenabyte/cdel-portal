@@ -511,6 +511,8 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'student'
 
   Route::get('/registeredCourses', [App\Http\Controllers\Student\AcademicController::class, 'registeredCourses'])->name('registeredCourses')->middleware(['auth:student']); 
 
+  Route::post('/save-player-id', [App\Http\Controllers\Student\StudentController::class, 'savePlayerId'])->name('savePlayerId')->middleware(['auth:student']);
+
 
   Route::get('/vacancies', [App\Http\Controllers\Student\CareerController::class, 'vacancies'])->name('vacancies')->middleware(['auth:student']);
   Route::get('/applications', [App\Http\Controllers\Student\CareerController::class, 'applications'])->name('applications')->middleware(['auth:student']);
