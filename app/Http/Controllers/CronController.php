@@ -127,35 +127,40 @@ class CronController extends Controller
     
     }
 
-    public function massBandwidthCreation(){
+    public function massBandwidthCreation() {
         $students = Student::all();
         $bandwidthAmount = 32212254720;
-
-
-        foreach($students as $student){
-            if($this->checkNewStudentStatus($student)){
+    
+        foreach($students as $student) {
+            if($this->checkNewStudentStatus($student)) {
                 $username = $student->bandwidth_username;
-
-                if(!empty($username)){
+    
+                if(!empty($username)) {
                     $accessCode = $student->passcode;
                     $firstName = $student->applicant->othernames;
-
+    
                     $userData = new \stdClass();
-                    $userData->username = $username; 
+                    $userData->username = $username;
                     $userData->password =  $accessCode;
                     $userData->firstname = $firstName;
-                    $userData->lastname = $student->applicant->lastname; 
-                    $userData->phone = $student->applicant->phone_number; 
-                    $userData->address = $student->applicant->address; 
+                    $userData->lastname = $student->applicant->lastname;
+                    $userData->phone = $student->applicant->phone_number;
+                    $userData->address = $student->applicant->address;
     
                     $bandwidth = new Bandwidth();
                     $createStudentBandwidthRecord = $bandwidth->createUser($userData);
-                    $creditStudent = $bandwidth->addToDataBalance($username, $bandwidthAmount);
+    
+                    if (isset($createStudentBandwidthRecord->status) && $createStudentBandwidthRecord->status === "success") {
+                        $creditStudent = $bandwidth->addToDataBalance($username, $bandwidthAmount);
+                        Log::info("Student Bandwidth Credited: ". json_encode($creditStudent));
+
+                    }
                 }
             }
         }
-
+    
         return response()->json(['message' => 'record updated.']);
     }
+    
 
 }
