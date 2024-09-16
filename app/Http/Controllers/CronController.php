@@ -18,6 +18,7 @@ use App\Models\TestApplicant;
 use App\Models\User;
 use App\Models\Partner;
 
+use App\Libraries\Bandwidth\Bandwidth;
 
 use SweetAlert;
 use Mail;
@@ -123,6 +124,34 @@ class CronController extends Controller
 
         return response()->json(['message' => 'record updated.']);
     
+    }
+
+    public function massBandwidthCreation(){
+        $students = Student::all();
+        $bandwidthAmount = 32212254720;
+
+
+        foreach($students as $student){
+            if($this->checkNewStudentStatus()){
+                $username = $student->bandwidth_username;
+                $accessCode = $student->passcode;
+                $firstName = $student->applicant->othernames;
+                
+                $userData = new \stdClass();
+                $userData->username = $username; 
+                $userData->password =  $accessCode;
+                $userData->firstname = $firstName;
+                $userData->lastname = $student->applicant->lastname; 
+                $userData->phone = $student->applicant->phone_number; 
+                $userData->address = $student->applicant->address; 
+
+                $bandwidth = new Bandwidth();
+                $createStudentBandwidthRecord = $bandwidth->createUser($userData);
+                $creditStudent = $bandwidth->addToDataBalance($username, $bandwidthAmount);
+            }
+        }
+
+        return response()->json(['message' => 'record updated.']);
     }
 
 }

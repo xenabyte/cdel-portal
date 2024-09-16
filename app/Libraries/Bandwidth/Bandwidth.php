@@ -116,7 +116,7 @@ class Bandwidth {
 
         try {
             $response = $this->makeCurlRequest($url, $dataok, $header);
-
+            Log::info("Bandwidth message: ".$response);
             $data = json_decode($response, true);
             return $data;
         } catch (Exception $e) {
