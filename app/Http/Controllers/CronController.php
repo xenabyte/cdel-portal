@@ -133,22 +133,25 @@ class CronController extends Controller
 
 
         foreach($students as $student){
-            if($this->checkNewStudentStatus()){
+            if($this->checkNewStudentStatus($student)){
                 $username = $student->bandwidth_username;
-                $accessCode = $student->passcode;
-                $firstName = $student->applicant->othernames;
-                
-                $userData = new \stdClass();
-                $userData->username = $username; 
-                $userData->password =  $accessCode;
-                $userData->firstname = $firstName;
-                $userData->lastname = $student->applicant->lastname; 
-                $userData->phone = $student->applicant->phone_number; 
-                $userData->address = $student->applicant->address; 
 
-                $bandwidth = new Bandwidth();
-                $createStudentBandwidthRecord = $bandwidth->createUser($userData);
-                $creditStudent = $bandwidth->addToDataBalance($username, $bandwidthAmount);
+                if(!empty($username)){
+                    $accessCode = $student->passcode;
+                    $firstName = $student->applicant->othernames;
+
+                    $userData = new \stdClass();
+                    $userData->username = $username; 
+                    $userData->password =  $accessCode;
+                    $userData->firstname = $firstName;
+                    $userData->lastname = $student->applicant->lastname; 
+                    $userData->phone = $student->applicant->phone_number; 
+                    $userData->address = $student->applicant->address; 
+    
+                    $bandwidth = new Bandwidth();
+                    $createStudentBandwidthRecord = $bandwidth->createUser($userData);
+                    $creditStudent = $bandwidth->addToDataBalance($username, $bandwidthAmount);
+                }
             }
         }
 

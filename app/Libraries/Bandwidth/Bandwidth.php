@@ -103,7 +103,7 @@ class Bandwidth {
             'firstname' => $userData->firstname,
             'lastname' => $userData->lastname,
             'phone' => $userData->phone,
-            'address' => $userData->address,
+            'address' => strip_tags($userData->address),
             'token' => $this->apiToken
         );
 

@@ -1107,8 +1107,7 @@ class Controller extends BaseController
     
     
         if ((($levelId == 1 && strtolower($applicationType) == 'utme') || 
-            ($levelId == 2 && strtolower($applicationType) != 'utme')) && 
-            ($student->clearance_status != 1 && $student->is_active != 1)) {
+            ($levelId == 2 && strtolower($applicationType) != 'utme'))) {
             
             return true;
         }
