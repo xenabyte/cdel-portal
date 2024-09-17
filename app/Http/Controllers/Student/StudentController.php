@@ -360,6 +360,7 @@ class StudentController extends Controller
                 'payment_method' => $paymentGateway,
                 'reference' => $reference,
                 'session' => $student->academic_session,
+                "plan_id" => !empty($bandwidthPlan)?$bandwidthPlan->id:null,
                 'additional_data' => !empty($hostelMeta)?$hostelMeta:null
             ]);
         }

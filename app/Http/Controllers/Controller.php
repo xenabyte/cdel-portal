@@ -98,7 +98,7 @@ class Controller extends BaseController
         $admissionSession = $sessionSetting['admission_session'];
 
 
-        log::info("Processing payment:" . json_encode($paymentDetails));
+        log::info("Processing paystack payment:" . json_encode($paymentDetails));
         //get active editions
         $email = $paymentDetails['data']['metadata']['email'];
         $applicationId = $paymentDetails['data']['metadata']['application_id'];
@@ -107,6 +107,7 @@ class Controller extends BaseController
         $paymentGateway = $paymentDetails['data']['metadata']['payment_gateway'];
         $amount = $paymentDetails['data']['metadata']['amount'];
         $txRef = $paymentDetails['data']['metadata']['reference'];
+        $planId = !empty($paymentDetails['data']['metadata']['plan_id'])?$paymentDetails['data']['metadata']['plan_id']:null;
         $reference = $paymentDetails['data']['reference'];
         $session = $paymentDetails['data']['metadata']['academic_session'];
 
@@ -138,7 +139,8 @@ class Controller extends BaseController
             'payment_method' => $paymentGateway,
             'reference' => $reference,
             'session' => $session,
-            'status' => 1
+            'status' => 1,
+            'plan_id' => !empty($planId)?$planId:null,
         ]);
 
        return true;
@@ -151,11 +153,12 @@ class Controller extends BaseController
         $admissionSession = $sessionSetting['admission_session'];
 
 
-        log::info("Processing payment:" . json_encode($paymentDetails));
+        log::info("Processing flutterwave payment:" . json_encode($paymentDetails));
         //get active editions
         $email = $paymentDetails['data']['meta']['email'];
         $applicationId = !empty($paymentDetails['data']['meta']['application_id'])?$paymentDetails['data']['meta']['application_id']:null;
         $studentId = !empty($paymentDetails['data']['meta']['student_id'])?$paymentDetails['data']['meta']['student_id']:null;
+        $planId = !empty($paymentDetails['data']['meta']['plan_id'])?$paymentDetails['data']['meta']['plan_id']:null;
         $paymentId = $paymentDetails['data']['meta']['payment_id'];
         $paymentGateway = $paymentDetails['data']['meta']['payment_gateway'];
         $amount = $paymentDetails['data']['meta']['amount'];
@@ -195,6 +198,7 @@ class Controller extends BaseController
             'reference' => $reference,
             'session' => $session,
             'redirect_url' => $redirectUrl,
+            'plan_id' => !empty($planId)?$planId:null,
             'status' => 1
         ]);
 
@@ -207,7 +211,7 @@ class Controller extends BaseController
         $applicationSession = $sessionSetting['application_session'];
         $admissionSession = $sessionSetting['admission_session'];
 
-        log::info("Processing payment:" . json_encode($paymentDetails));
+        log::info("Processing upperlink payment:" . json_encode($paymentDetails));
 
         $data = $paymentDetails['meta'];
         $paymentData = json_decode($data, true);
@@ -217,6 +221,7 @@ class Controller extends BaseController
         //get active editions
         $applicationId = !empty($paymentData['application_id'])?$paymentData['application_id']:null;
         $studentId = !empty($paymentData['student_id'])?$paymentData['student_id']:null;
+        $planId = !empty($paymentData['plan_id'])?$paymentData['plan_id']:null;
         $paymentId = $paymentData['payment_id'];
         $paymentGateway = $paymentData['payment_gateway'];
         $amount = $paymentDetails['amount'];
@@ -254,26 +259,12 @@ class Controller extends BaseController
             'reference' => $reference,
             'session' => $session,
             'redirect_url' => $redirectUrl,
+            'plan_id' => !empty($planId)?$planId:null,
             'status' => 1
         ]);
 
        return true;
 
-
-        log::info("Processing payment:" . $transactionId);
-
-        if(!$transaction = Transaction::where('id', $transactionId)->first()){
-            return false;
-        }
-
-        if($transaction->status == 1){
-            return true;
-        }
-
-        $transaction->status = 1;
-        if($transacton->save()){
-            return true;
-        }
     }
 
     public function generateAccessCode () {
