@@ -1,10 +1,14 @@
 @php
     $staff = Auth::guard('staff')->user();
     $staffAcademicPlannerRole = false;
+    $staffLevelAdviserRole = false;
     foreach ($staff->staffRoles as $staffRole) {
         if(strtolower($staffRole->role->role) == 'academic planning'){
             $staffAcademicPlannerRole = true;
-        }   
+        }  
+        if (strtolower($staffRole->role->role) == 'level adviser') {
+            $staffLevelAdviserRole = true;
+        } 
     }
 
 @endphp
@@ -82,10 +86,12 @@
                                     <a href="{{ url('/staff/levelCourseReg/'.$adviserProgramme->id) }}" class="btn btn-info">Course Registrations</a>
                                     <a href="{{ url('/staff/levelStudents/'.$adviserProgramme->id) }}" class="btn btn-dark">All Students</a>
                                     @endif
-                                    @if($adviserProgramme->course_approval_status == null)
-                                    <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#submitCourses{{ $adviserProgramme->id }}">Submit For DAP Approval</button>
-                                    @else
-                                    <span class="p-2 badge btn btn-primary-subtle text-primary badge-border">{{ ucwords($adviserProgramme->course_approval_status) }}</span>
+                                    @if($staffLevelAdviserRole)
+                                        @if($adviserProgramme->course_approval_status == null)
+                                        <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#submitCourses{{ $adviserProgramme->id }}">Submit For DAP Approval</button>
+                                        @else
+                                        <span class="p-2 badge btn btn-primary-subtle text-primary badge-border">{{ ucwords($adviserProgramme->course_approval_status) }}</span>
+                                        @endif
                                     @endif
                                 @else
                                     @if(strtolower($adviserProgramme->course_approval_status) == 'pending')
