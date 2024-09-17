@@ -227,7 +227,7 @@ Class Pdf {
             mkdir($dir, 0755, true);
         }
 
-        $fileDirectory = 'uploads/files/result_card/'.$slug.'.pdf';
+        $fileDirectory = 'uploads/files/result_card/'.$slug.time().'.pdf';
         if (file_exists($fileDirectory)) {
             unlink($fileDirectory);
         } 
