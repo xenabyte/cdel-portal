@@ -927,6 +927,78 @@ class StaffController extends Controller
         return redirect()->back();
     }
 
+    public function updateLecture(Request $request){
+        $globalData = $request->input('global_data');
+        $admissionSession = $globalData->sessionSetting['admission_session'];
+        $academicSession = $globalData->sessionSetting['academic_session'];
+        $applicationSession = $globalData->sessionSetting['application_session'];
+
+        $validator = Validator::make($request->all(), [
+            'lecture_id' => 'required',
+        ]);
+
+        if($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+
+        if(!$lecture = CourseLecture::find($request->lecture_id)){
+            alert()->error('Oops', 'Course lecture not found')->persistent('Close');
+            return redirect()->back();
+        }
+
+        if(!$course = Course::find($lecture->course_id)){
+            alert()->error('Oops', 'Course not found')->persistent('Close');
+            return redirect()->back();
+        }
+
+        $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $course->code.$request->topic)));
+
+        $createLectureData = ([
+            'topic' => $request->topic,
+            'duration' => $request->duration,
+            'date' => $request->date,
+            'slug' => $slug,
+        ]);
+
+        if(CourseLecture::update($createLectureData)){
+            alert()->success('Lecture updated successfully!', '')->persistent('Close');
+            return redirect()->back();
+        }
+
+        alert()->error('Error while updating lecture', '')->persistent('Close');
+        return redirect()->back();
+       
+    }
+
+    public function deleteLecture(Request $request){
+        $validator = Validator::make($request->all(), [
+            'lecture_id' => 'required|exists:course_lectures,id',
+        ]);
+
+        if ($validator->fails()) {
+            alert()->error('Error', $validator->messages()->first())->persistent('Close');
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
+
+        $lecture = CourseLecture::find($request->lecture_id);
+
+        if (!$lecture) {
+            alert()->error('Oops', 'Course lecture not found')->persistent('Close');
+            return redirect()->back();
+        }
+
+        $deletedAttendance = LectureAttendance::where('course_lecture_id', $lecture->id)->delete();
+
+        if ($lecture->delete()) {
+            alert()->success('Lecture deleted successfully!')->persistent('Close');
+            return redirect()->back();
+        }
+
+        alert()->error('Error while deleting lecture')->persistent('Close');
+        return redirect()->back();
+    }
+
 
     public function updateStudentResult(Request $request){
         $staff = Auth::guard('staff')->user();

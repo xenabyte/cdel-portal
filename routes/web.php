@@ -398,6 +398,7 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'admin'],
 
   Route::post('/createLecture', [App\Http\Controllers\Admin\ProgrammeController::class, 'createLecture'])->name('createLecture')->middleware(['auth:admin']);
   Route::post('/updateLecture', [App\Http\Controllers\Admin\ProgrammeController::class, 'updateLecture'])->name('updateLecture')->middleware(['auth:admin']);
+  Route::post('/deleteLecture', [App\Http\Controllers\Admin\ProgrammeController::class, 'deleteLecture'])->name('deleteLecture')->middleware(['auth:admin']);
   Route::post('/staffUploadAttendance', [App\Http\Controllers\Admin\ProgrammeController::class, 'staffUploadAttendance'])->name('staffUploadAttendance')->middleware(['auth:admin']);
   Route::post('/markStudentAttendance', [App\Http\Controllers\Admin\ProgrammeController::class, 'markStudentAttendance'])->name('markStudentAttendance')->middleware(['auth:admin']);
   Route::post('/deleteStudentAttendance', [App\Http\Controllers\Admin\ProgrammeController::class, 'deleteStudentAttendance'])->name('deleteStudentAttendance')->middleware(['auth:admin']);
@@ -743,6 +744,7 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'staff'],
 
   Route::post('/createLecture', [App\Http\Controllers\Staff\StaffController::class, 'createLecture'])->name('createLecture')->middleware(['auth:staff']);
   Route::post('/updateLecture', [App\Http\Controllers\Staff\StaffController::class, 'updateLecture'])->name('updateLecture')->middleware(['auth:staff']);
+  Route::post('/deleteLecture', [App\Http\Controllers\Staff\StaffController::class, 'deleteLecture'])->name('deleteLecture')->middleware(['auth:staff']);
   Route::post('/staffUploadAttendance', [App\Http\Controllers\Staff\StaffController::class, 'staffUploadAttendance'])->name('staffUploadAttendance')->middleware(['auth:staff']);
   Route::post('/markStudentAttendance', [App\Http\Controllers\Staff\StaffController::class, 'markStudentAttendance'])->name('markStudentAttendance')->middleware(['auth:staff']);
   Route::post('/deleteStudentAttendance', [App\Http\Controllers\Staff\StaffController::class, 'deleteStudentAttendance'])->name('deleteStudentAttendance')->middleware(['auth:staff']);

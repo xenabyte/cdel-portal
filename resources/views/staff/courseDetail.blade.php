@@ -130,6 +130,7 @@
                                     <td>
                                         <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#uploadAttendance{{$courseLecture->id}}">Bulk upload attendance</button>
                                         <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#updateLecture{{$courseLecture->id}}" class="btn btn-secondary m-1"><i class="ri-edit-circle-fill"></i> Edit Lecture</a>
+                                        <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#deleteLecture{{$courseLecture->id}}" class="btn btn-secondary m-1"><i class="ri-delete-bin-5-line"></i> Delete Lecture</a>
                                     </td>
                                     <td>
                                         <form action="{{ url('/staff/markStudentAttendance') }}" method="post" enctype="multipart/form-data">
@@ -491,7 +492,7 @@
             </div>
             <hr>
             <div class="modal-body">
-                <form action="{{ url('/staff/updatedLecture') }}" method="post" enctype="multipart/form-data">
+                <form action="{{ url('/staff/updateLecture') }}" method="post" enctype="multipart/form-data">
                     @csrf
                     <input type="hidden" name="course_id" value="{{ $course->id }}">
                     <input type="hidden" name="lecture_id" value="{{ $courseLecture->id }}">
@@ -517,6 +518,32 @@
                         <button type="submit" id="submit-button" class="btn btn-primary">Save Changes</button>
                     </div>
                 </form>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<div id="deleteLecture{{ $courseLecture->id }}" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body text-center p-5">
+                <div class="text-end">
+                    <button type="button" class="btn-close text-end" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="mt-2">
+                    <lord-icon src="https://cdn.lordicon.com/wwneckwc.json" trigger="hover" style="width:150px;height:150px">
+                    </lord-icon>
+                    <h4 class="mb-3 mt-4">Are you sure you want to delete <br/> {{ $courseLecture->topic }}?</h4>
+                    <form action="{{ url('/staff/deleteLecture') }}" method="POST">
+                        @csrf
+                        <input type="hidden" name="lecture_id" value="{{ $courseLecture->id }}">
+                        <hr>
+                        <button type="submit" id="submit-button" class="btn btn-danger w-100">Yes, Delete</button>
+                    </form>
+                </div>
+            </div>
+            <div class="modal-footer bg-light p-3 justify-content-center">
+
             </div>
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->

@@ -592,6 +592,35 @@ class ProgrammeController extends Controller
        
     }
 
+    public function deleteLecture(Request $request){
+        $validator = Validator::make($request->all(), [
+            'lecture_id' => 'required|exists:course_lectures,id',
+        ]);
+
+        if ($validator->fails()) {
+            alert()->error('Error', $validator->messages()->first())->persistent('Close');
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
+
+        $lecture = CourseLecture::find($request->lecture_id);
+
+        if (!$lecture) {
+            alert()->error('Oops', 'Course lecture not found')->persistent('Close');
+            return redirect()->back();
+        }
+
+        $deletedAttendance = LectureAttendance::where('course_lecture_id', $lecture->id)->delete();
+
+        if ($lecture->delete()) {
+            alert()->success('Lecture deleted successfully!')->persistent('Close');
+            return redirect()->back();
+        }
+
+        alert()->error('Error while deleting lecture')->persistent('Close');
+        return redirect()->back();
+    }
+
+
     public function staffUploadAttendance(Request $request){
         $globalData = $request->input('global_data');
         $admissionSession = $globalData->sessionSetting['admission_session'];
