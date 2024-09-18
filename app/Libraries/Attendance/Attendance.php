@@ -12,6 +12,7 @@ use App\Models\Leave;
 use App\Models\LectureAttendance;
 use App\Models\CourseLecture;
 use App\Models\Student;
+use App\Models\CourseRegistration;
 
 
 use Carbon\Carbon;
