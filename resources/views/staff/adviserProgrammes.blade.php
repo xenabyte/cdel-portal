@@ -68,7 +68,11 @@
                             <td>
                                 {{$adviserProgramme->level->level}} Level <span class="badge badge-pill bg-danger" data-key="t-hot">{{ $adviserProgramme->studentRegistrationsCount }} </span>
                             </td>
-                            <td>{!! $adviserProgramme->comment !!}</td>
+                            <td>
+                                @if(!empty($adviserProgramme->comment))
+                                <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#viewComment{{ $adviserProgramme->id }}">View Comment</button>                                   
+                                @endif
+                            </td>
                             <td>
                                 @if(!empty($adviserProgramme->course_approval_status))
                                     @if(strtolower($adviserProgramme->course_approval_status) == 'approved')
@@ -157,7 +161,7 @@
 
                     <div class="mb-3">
                         <label for="comment" class="form-label">Comment</label>
-                        <textarea class="form-control ckeditor" name="comment" id="comment"></textarea>
+                        <textarea class="form-control ckeditor" name="comment" id="comment">{!! $adviserProgramme->comment !!}</textarea>
                     </div>
 
                     <div class="mb-3">
@@ -178,6 +182,23 @@
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
+
+<div id="viewComment{{ $adviserProgramme->id }}" class="modal fade" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" style="display: none;">
+    <!-- Fullscreen Modals -->
+    <div class="modal-dialog modal-md">
+        <div class="modal-content border-0 overflow-hidden">
+            <div class="modal-header p-3">
+                <h4 class="card-title mb-0">DAP Comment</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <hr>
+            <div class="modal-body">
+                {!! $adviserProgramme->comment !!}</td>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
 
 <div id="viewCourses{{ $adviserProgramme->id }}" class="modal fade" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" style="display: none;">
     <!-- Fullscreen Modals -->

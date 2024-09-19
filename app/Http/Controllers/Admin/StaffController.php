@@ -530,7 +530,7 @@ class StaffController extends Controller
 
         if ($levelAdviser) {
             $levelAdviser->update([
-                $levelAdviser->staff_id => $staff->id
+                'staff_id' => $staff->id
             ]);
         } else {
             // Level Adviser does not exist, create a new one

@@ -87,7 +87,7 @@ class LeaveController extends Controller
             $nextApprover = $this->getNextApprover(Role::ROLE_HR);
             $nextSteps = [
                 $this->getNextApprover(Role::ROLE_REGISTRAR),
-                $this->getNextApprover(Role::ROLE_VC)
+                $this->getNextApprover(Role::ROLE_VICE_CHANCELLOR)
             ];
         } elseif ($staffRole == 'HOD') {
             // Skip HOD approval, go to Dean, then HR, then Registrar, then VC
@@ -97,7 +97,7 @@ class LeaveController extends Controller
 
             $nextSteps = [
                 $this->getNextApprover(Role::ROLE_REGISTRAR),
-                $this->getNextApprover(Role::ROLE_VC)
+                $this->getNextApprover(Role::ROLE_VICE_CHANCELLOR)
             ];
         } elseif ($staffRole == 'Other') {
             if ($role == 'assisting_staff') {

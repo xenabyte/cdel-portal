@@ -52,6 +52,7 @@ class CommitteeController extends Controller
         }
 
         $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $request->name)));
+        $staff = Auth::guard('staff')->user();
 
         $newCommittee = [
             'name' => $request->name,
@@ -59,7 +60,17 @@ class CommitteeController extends Controller
             'slug' => $slug
         ];
         
-        if(Committee::create($newCommittee)){
+        if($committe =  Committee::create($newCommittee)){
+
+            $committee->chairman_id = $staff->id;
+
+            $newCommitteeMember = [
+                'staff_id' => $staff->id,
+                'committee_id' => $committe->id,
+            ];
+            
+            CommitteeMember::create($newCommitteeMember);
+
             alert()->success('Committee created successfully', '')->persistent('Close');
             return redirect()->back();
         }
