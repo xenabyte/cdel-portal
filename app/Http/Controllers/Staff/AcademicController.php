@@ -25,8 +25,8 @@ use App\Models\StudentDemotion;
 use App\Models\Course;
 use App\Models\Notification;
 use App\Models\Unit;
-use App\MOdels\LevelAdviser;
-use App\MOdels\CoursePerProgrammePerAcademicSession;
+use App\Models\LevelAdviser;
+use App\Models\CoursePerProgrammePerAcademicSession;
 
 use SweetAlert;
 use Mail;

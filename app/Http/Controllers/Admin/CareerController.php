@@ -17,9 +17,9 @@ use App\Models\Session;
 use App\Models\JobVacancy;
 use App\Models\JobApplication;
 use App\Models\JobLevel;
-use App\MOdels\Unit;
-use App\MOdels\Faculty;
-use App\MOdels\Department;
+use App\Models\Unit;
+use App\Models\Faculty;
+use App\Models\Department;
 
 use App\Mail\ApplicantStatusUpdateMail;
 
