@@ -52,7 +52,7 @@
                                 
                                 <div class="mb-3">
                                     <label for="selectWithSearch" class="form-label">Name of Officer to act on your Duty while Away</label>
-                                    <select class="form-select select2" id="selectWithSearch" name="assisting_staff_id" aria-label="cstatus">
+                                    <select class="form-select select2 selectWithSearch" id="selectWithSearch" name="assisting_staff_id" aria-label="cstatus">
                                             <option value="" selected>--Select--</option>
                                             @foreach($staff as $staffMember)@if($staffMember->id != Auth::guard('staff')->user()->id)<option value="{{$staffMember->id}}">{{ $staffMember->title.' '.$staffMember->lastname.' '.$staffMember->othernames}}</option>@endif @endforeach
                                     </select>

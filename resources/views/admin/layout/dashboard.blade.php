@@ -863,6 +863,7 @@
         $(document).ready(function() {
             $('.selectWithSearch').select2();
         });
+        
         $(document).ready(function() {
             $('.selectRoom').select2();
         });

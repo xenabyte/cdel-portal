@@ -116,7 +116,7 @@
             
                                 <div class="mb-3">
                                     <label for="staff_id" class="form-label">Select Staff</label>
-                                    <select class="form-select select2" id="selectWithSearch" name="staff_id" aria-label="cstatus" required>
+                                    <select class="form-select select2 selectWithSearch" id="selectWithSearch" name="staff_id" aria-label="cstatus" required>
                                         <option value="" selected>--Select--</option>
                                         @foreach($staffs as $uniStaff)<option value="{{$uniStaff->id}}">{{ $uniStaff->title.' '. $uniStaff->lastname.' '.$uniStaff->othernames }}</option>@endforeach
                                     </select>
