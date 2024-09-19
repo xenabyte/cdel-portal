@@ -547,11 +547,10 @@
                     </div>
 
                     <div class="tab-pane" id="uploadSignature" role="tabpanel">
-                        @if(!empty($staff->signature))
                         <!-- Thumbnails Images -->
                         <img class="img-thumbnail" alt="signature" width="200" src="{{ asset($staff->signature) }}">
-                        @else
 
+                        <hr>
                         <form action="{{ url('staff/uploadSignature') }}" method="POST" enctype="multipart/form-data">
                             @csrf
                             <div class="row g-2">
@@ -580,7 +579,6 @@
                             </div>
                             <!--end row-->
                         </form>
-                        @endif
                     </div>
                 </div>
             </div>

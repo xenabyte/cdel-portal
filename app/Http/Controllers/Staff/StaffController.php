@@ -222,7 +222,12 @@ class StaffController extends Controller
         $staff = Auth::guard('staff')->user();
 
         if(\Hash::check($request->old_password, Auth::guard('staff')->user()->password)){
-            $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-',$staff->title.$staff->lastname.$staff->othernames)));
+            $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-',$staff->title.$staff->lastname.$staff->othernames.time())));
+
+            $signature = $staff->signature;
+            if (file_exists($signature)) {
+                unlink($signature);
+            } 
 
             $imageUrl = 'uploads/staff/'.$slug.'.'.$request->file('image')->getClientOriginalExtension();
             $image = $request->file('image')->move('uploads/staff', $imageUrl);
