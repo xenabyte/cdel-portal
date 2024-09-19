@@ -39,7 +39,7 @@
                             <p>Kindly pick your gender</p>
                         </div>
                         
-                        <form action="{{ url('student/saveBioData') }}" method="post" enctype="multipart/form-data">
+                        <form action="{{ url('/student/saveBioData') }}" method="post" enctype="multipart/form-data">
                             @csrf
 
                             <div class="row mt-3 g-3">        
