@@ -239,7 +239,7 @@
                 <div class="mt-2">
                     <lord-icon src="https://cdn.lordicon.com/wwneckwc.json" trigger="hover" style="width:150px;height:150px">
                     </lord-icon>
-                    <h4 class="mb-3 mt-4">Are you sure you want to reverse Allocation for  <br/> {{  $allocation->student->applicant ? $allocation->student->applicant->lastname .' '. $allocation->student->applicant->othernames : null }}?</h4>
+                    <h4 class="mb-3 mt-4">Are you sure you want to reverse Allocation for  <br/> {{  $allocation->student ? $allocation->student->applicant->lastname .' '. $allocation->student->applicant->othernames : null }}?</h4>
                     <form action="{{ url('/admin/deleteAllocation') }}" method="POST">
                         @csrf
                         <input name="allocation_id" type="hidden" value="{{$allocation->id}}">
