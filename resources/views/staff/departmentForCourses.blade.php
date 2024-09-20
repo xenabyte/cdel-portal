@@ -50,7 +50,7 @@
                     </thead>
                     <tbody>
                         @foreach($departments as $department)
-                            @if (($staffRoleGSTCordinator && $department->faculty_id == 0) || $department->faculty_id != 0)
+                            {{-- @if (($staffRoleGSTCordinator && $department->faculty_id == 0) || $department->faculty_id != 0) --}}
                                 <tr>
                                     <th scope="row">{{ $deptCount++ }}</th>
                                     <td>{{ $department->name }}</td>
@@ -59,7 +59,7 @@
                                         <a href="{{ url('staff/departmentCourse/'.$department->slug) }}" class="btn btn-primary m-1"><i class= "mdi mdi-database-eye"></i> View department</a>
                                     </td>
                                 </tr>
-                            @endif
+                            {{-- @endif --}}
                         @endforeach
                     </tbody>
                 </table>
