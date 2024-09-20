@@ -214,6 +214,41 @@ class AcademicController extends Controller
             ]);
         }
 
+        // Collect semester information from selected courses
+        $semesters = [
+            'semester_1' => [],
+            'semester_2' => [],
+            'dsa_courses' => 0,
+        ];
+
+        foreach ($selectedCourses as $courseId) {
+            $coursePerProgrammeAndLevel = CoursePerProgrammePerAcademicSession::with('course')->findOrFail($courseId);
+            $course = $coursePerProgrammeAndLevel->course;
+            
+            if ($coursePerProgrammeAndLevel->semester == 1) {
+                $semesters['semester_1'][] = $courseId;
+            } elseif ($coursePerProgrammeAndLevel->semester == 2) {
+                $semesters['semester_2'][] = $courseId;
+            }
+            
+            // Check if the course code starts with "DSA"
+            if (preg_match('/^DSA\s?\d{3}$/', $course->code)) {
+                $semesters['dsa_courses']++;
+            }
+        }
+
+        // Check if courses are selected for both semesters
+        if (empty($semesters['semester_1']) || empty($semesters['semester_2'])) {
+            alert()->info('Please select courses for both Semester 1 and Semester 2', '')->persistent('Close');
+            return redirect()->back();
+        }
+
+        // Check if more than one DSA course is selected
+        if ($semesters['dsa_courses'] > 1) {
+            alert()->error('You can only select 1 DSA course in a session', '')->persistent('Close');
+            return redirect()->back();
+        }
+
         if(!empty($txId)) {
             //delete existing registrattion
             CourseRegistration::where([
