@@ -101,7 +101,7 @@
                                     {{-- @if(strtolower($adviserProgramme->course_approval_status) == 'pending') --}}
                                     {{-- @if(!empty($adviserProgramme->course_approval_status)) --}}
                                         <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#manage{{ $adviserProgramme->id }}">Manage Level Adviser Request</button>
-                                    @endif
+                                    {{-- @endif --}}
                                 @endif
                             </td>
                         </tr>
