@@ -197,14 +197,14 @@
                         @foreach($allocations as $allocation)
                         <tr>
                             <th scope="row">{{ $loop->iteration }}</th>
-                            <td><span class="text-danger">#{{ $allocation->student->id }}</span></td>
-                            <td>{{ $allocation->student->applicant->lastname .' '. $allocation->student->applicant->othernames }}</td>
-                            <td>{{ $allocation->student->email }} </td>
-                            <td>{{ $allocation->student->academicLevel->level }} </td>
-                            <td>{{ $allocation->student->matric_number }}</td>
-                            <td>{{ $allocation->student->programme->name }}</td>
+                            <td><span class="text-danger">#{{ $allocation->student->id ?? 'Not Available' }}</span></td>
+                            <td>{{ $allocation->student ? $allocation->student->applicant->lastname .' '. $allocation->student->applicant->othernames : 'Not Available' }}</td>
+                            <td>{{ $allocation->student ? $allocation->student->email : 'Not Available' }} </td>
+                            <td>{{ $allocation->student ? $allocation->student->academicLevel->level : 'Not Available' }} </td>
+                            <td>{{ $allocation->student ? $allocation->student->matric_number : 'Not Available' }}</td>
+                            <td>{{ $allocation->student ? $allocation->student->programme->name : 'Not Available' }}</td>
                             <td>
-                                @if($allocation)
+                                @if($allocation->student)
                                     <span class="text-primary">Campus: {{ $allocation->room->type->campus }}</span><br>
                                     <span class="text-success">Room: {{ $allocation->room->number }}</span><br>
                                     <span class="text-secondary">Hostel: {{ $allocation->room->hostel->name }}</span><br>
@@ -216,7 +216,7 @@
                             <td>
                                 <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#delete{{$allocation->id}}" class="btn btn-danger m-1"><i class= "ri-delete-bin-5-line"></i> Reverse Application</a>
                             </td>
-                        </tr>
+                        </tr>                        
                         @endforeach
                     </tbody>
                 </table>
