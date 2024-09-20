@@ -80,8 +80,8 @@ class AcademicController extends Controller
     public function departmentForCourses(){
         $staff = Auth::guard('staff')->user();
         $staffId = $staff->id;
-        $department = Department::with('courses')->where('hod_id', $staff->id)->orWhere('faculty_id', 0)->orderBy('id', 'DESC')->get();
-        
+        $department = Department::with('courses')->where('hod_id', $staff->id)->orderBy('id', 'DESC')->get();
+        // ->orWhere('faculty_id', 0)
         return view('staff.departmentForCourses', [
             'departments' => $department
         ]);
