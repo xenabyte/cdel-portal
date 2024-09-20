@@ -49,8 +49,9 @@
                         </tr>
                     </thead>
                     <tbody>
+                        {{-- || $department->faculty_id != 0 --}}
                         @foreach($departments as $department)
-                            @if (($staffRoleGSTCordinator && $department->faculty_id == 0) || $department->faculty_id != 0)
+                            @if (($staffRoleGSTCordinator && $department->faculty_id == 0)) 
                                 <tr>
                                     <th scope="row">{{ $deptCount++ }}</th>
                                     <td>{{ $department->name }}</td>
