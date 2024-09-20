@@ -1315,7 +1315,7 @@ class ProgrammeController extends Controller
         $academicSession = $globalData->sessionSetting['academic_session'];
 
         $comment = $request->comment;
-        $status = $request->status == 'request changes'?null:$request->status;
+        $status = $request->status == 'request changes'?'pending':$request->status;
 
         $levelAdviser = LevelAdviser::find($request->level_adviser_id);
         if(!$levelAdviser){

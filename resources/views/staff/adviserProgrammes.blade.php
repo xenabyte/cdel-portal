@@ -91,7 +91,7 @@
                                     <a href="{{ url('/staff/levelStudents/'.$adviserProgramme->id) }}" class="btn btn-dark">All Students</a>
                                     @endif
                                     @if($staffLevelAdviserRole)
-                                        @if($adviserProgramme->course_approval_status == null)
+                                        @if($adviserProgramme->course_approval_status != 'approved' )
                                         <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#submitCourses{{ $adviserProgramme->id }}">Submit For DAP Approval</button>
                                         @else
                                         <span class="p-2 badge btn btn-primary-subtle text-primary badge-border">{{ ucwords($adviserProgramme->course_approval_status) }}</span>
@@ -99,9 +99,9 @@
                                     @endif
                                 @else
                                     {{-- @if(strtolower($adviserProgramme->course_approval_status) == 'pending') --}}
-                                    {{-- @if(!empty($adviserProgramme->course_approval_status)) --}}
+                                    @if(!empty($adviserProgramme->course_approval_status))
                                         <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#manage{{ $adviserProgramme->id }}">Manage Level Adviser Request</button>
-                                    {{-- @endif --}}
+                                    @endif
                                 @endif
                             </td>
                         </tr>
