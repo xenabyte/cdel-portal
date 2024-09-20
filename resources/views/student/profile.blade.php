@@ -73,7 +73,7 @@
             <div class="card-body p-4">
                 <div class="tab-content">
                     <div class="tab-pane active" id="personalDetails" role="tabpanel">
-                        <form action="{{ url('student/saveBioData') }}" method="POST" enctype="multipart/form-data">
+                        <form action="{{ url('student/profile/saveBioData') }}" method="POST" enctype="multipart/form-data">
                             @csrf
                             <div class="row">
                                 <!--end col-->
