@@ -63,7 +63,7 @@
                                 <a href="#" data-bs-toggle="modal" data-bs-target="#viewCourses{{ $adviserProgramme->id }}" class="btn btn-primary">Courses</a>
                                 <a href="{{ url('/admin/levelCourseReg/'.$adviserProgramme->id) }}" class="btn btn-info">Course Registrations</a>
                                 <a href="{{ url('/admin/levelStudents/'.$adviserProgramme->id) }}" class="btn btn-dark">All Students</a>
-                                @if(strtolower($adviserProgramme->course_approval_status) != 'approved')
+                                @if(!empty($adviserProgramme->course_approval_status) && strtolower($adviserProgramme->course_approval_status) != 'approved')
                                 <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#manage{{ $adviserProgramme->id }}">Manage Approval</button>  
                                 @endif                                 
                             </td>
