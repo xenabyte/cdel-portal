@@ -451,14 +451,20 @@ class StaffController extends Controller
     //     return view('staff.studentCourses', $defaultData);
     // }
 
-    public function courseDetail(Request $request, $id){
+    public function courseDetail(Request $request, $id, $academicSession = null){
         $staff = Auth::guard('staff')->user();
         $staffId = $staff->id;
 
-        $globalData = $request->input('global_data');
-        $admissionSession = $globalData->sessionSetting['admission_session'];
-        $academicSession = $globalData->sessionSetting['academic_session'];
-        $applicationSession = $globalData->sessionSetting['application_session'];
+        if(!empty($academicSession)){
+            $academicSession = str_replace('-', '/', $academicSession);
+        }
+
+        if(empty($academicSession)){
+            $globalData = $request->input('global_data');
+            $admissionSession = $globalData->sessionSetting['admission_session'];
+            $academicSession = $globalData->sessionSetting['academic_session'];
+            $applicationSession = $globalData->sessionSetting['application_session'];
+        }
 
         $lecturerDetails = CourseManagement::with('staff')->where('course_id', $id)->where('academic_session', $academicSession)->first(); 
         $registrations = CourseRegistration::where('course_id', $id)->where('academic_session', $academicSession)->get();
@@ -470,6 +476,7 @@ class StaffController extends Controller
             'lecturerDetails' => $lecturerDetails,
             'courseLectures' => $courseLectures,
             'course' => $course,
+            'academicSession' => $academicSession,
         ]);
     }
 

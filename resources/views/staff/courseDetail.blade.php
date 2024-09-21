@@ -49,7 +49,7 @@
                 <div class="d-flex flex-wrap justify-content-evenly">
                     <p class="text-muted mb-0"><i class="mdi mdi-account-circle text-success fs-18 align-middle me-2 rounded-circle shadow"></i>{{ $totalStudent }} Student(s)</p>
                     <p class="text-muted mb-0"><i class="mdi mdi-book-clock text-info fs-18 align-middle me-2 rounded-circle shadow"></i>{{ !empty($registrationDetails) ? ($registrationDetails->semester == 1 ? 'First' : 'Second') : null }} Semester</p>
-                    <p class="text-muted mb-0"><i class="mdi mdi-clipboard-clock text-primary fs-18 align-middle me-2 rounded-circle shadow"></i>{{ $pageGlobalData->sessionSetting->academic_session }} Academic Session</p>
+                    <p class="text-muted mb-0"><i class="mdi mdi-clipboard-clock text-primary fs-18 align-middle me-2 rounded-circle shadow"></i>{{ $academicSession }} Academic Session</p>
                 </div>
             </div>
             <div class="progress animated-progress bg-soft-primary rounded-bottom rounded-0" style="height: 6px;">
@@ -130,30 +130,10 @@
                                     <td>
                                         <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#uploadAttendance{{$courseLecture->id}}">Bulk upload attendance</button>
                                         <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#updateLecture{{$courseLecture->id}}" class="btn btn-secondary m-1"><i class="ri-edit-circle-fill"></i> Edit Lecture</a>
-                                        <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#deleteLecture{{$courseLecture->id}}" class="btn btn-secondary m-1"><i class="ri-delete-bin-5-line"></i> Delete Lecture</a>
+                                        <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#deleteLecture{{$courseLecture->id}}" class="btn btn-danger m-1"><i class="ri-delete-bin-5-line"></i> Delete Lecture</a>
                                     </td>
                                     <td>
-                                        <form action="{{ url('/staff/markStudentAttendance') }}" method="post" enctype="multipart/form-data">
-                                            @csrf
-                                        
-                                            <input name="lecture_id" type="hidden" value="{{$courseLecture->id}}">
-                                            <div class="mb-3 d-flex align-items-end">
-                                                <div class="me-2 flex-grow-1">
-                                                    <label>Select Students Present</label>
-                                                    <select class="form-select select2 selectWithSearch" name="student_id[]" multiple aria-label="cstatus">
-                                                        @foreach($registrations as $studentReg)
-                                                            @if($studentReg->student)
-                                                                <option value="{{$studentReg->student->id}}">{{$studentReg->student->matric_number}} - {{ $studentReg->student->applicant->lastname .' '. $studentReg->student->applicant->othernames }}</option>
-                                                            @endif
-                                                        @endforeach
-                                                    </select>
-                                                </div>
-                                                <div>
-                                                    <button type="submit" id="submit-button" class="btn btn-primary">Save</button>
-                                                </div>
-                                            </div>
-                                        </form>
-                                        
+                                        <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#markLectureAttendance{{$courseLecture->id}}" class="btn btn-success m-1"><i class="ri-user-follow-fill"></i> Mark Attendance</a>
                                     </td>
                                 </tr>
                             @endforeach
@@ -399,7 +379,7 @@
     <div class="modal-dialog modal-xl">
         <div class="modal-content border-0 overflow-hidden">
             <div class="modal-header p-3">
-                <h4 class="card-title mb-0">Student(s) in Attendance</h4>
+                <h4 class="card-title mb-0">Student(s) in Attendance for {{ $courseLecture->topic }}</h4>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <hr>
@@ -448,12 +428,49 @@
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
 
+<div id="markLectureAttendance{{ $courseLecture->id }}" class="modal fade" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" style="display: none;">
+    <!-- Fullscreen Modals -->
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content border-0 overflow-hidden">
+            <div class="modal-header p-3">
+                <h4 class="card-title mb-0">Mark Student(s) in Attendance for {{ $courseLecture->topic }}</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <hr>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <form action="{{ url('/staff/markStudentAttendance') }}" method="post" enctype="multipart/form-data">
+                            @csrf
+                        
+                            <input name="lecture_id" type="hidden" value="{{$courseLecture->id}}">
+                            <div class="mb-3">
+                                <label>Select Students Present</label>
+                                <select class="form-select select2 selectWithSearch" name="student_id[]" multiple aria-label="cstatus">
+                                    @foreach($registrations as $studentReg)
+                                        @if($studentReg->student)
+                                            <option value="{{$studentReg->student->id}}">{{$studentReg->student->matric_number}} - {{ $studentReg->student->applicant->lastname .' '. $studentReg->student->applicant->othernames }}</option>
+                                        @endif
+                                    @endforeach
+                                </select>
+                            </div>
+                            <hr>
+                            <div>
+                                <button type="submit" id="submit-button" class="btn btn-primary">Save</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
 
 <div id="uploadAttendance{{ $courseLecture->id }}" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content border-0 overflow-hidden">
             <div class="modal-header p-3">
-                <h4 class="card-title mb-0">Upload Attendance</h4>
+                <h4 class="card-title mb-0">Upload Attendance for {{ $courseLecture->topic }}</h4>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <hr>
