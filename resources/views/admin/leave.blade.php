@@ -128,7 +128,7 @@ $assistingstaffName = $assistingStaff->title.' '.$assistingStaff->lastname.' '.$
                             <div class="flex-grow-1 ms-3">
                                 <h6 class="mb-1">{{ $leave->viceChancellor->title.' '.$leave->viceChancellor->lastname.' '.$leave->viceChancellor->othernames }}</h6>
                                 <p class="text-muted mb-2 fst-italic">{{ ucwords($leave->vc_status) }}</p>
-                                <small class="mb-0 text-muted">{{ $leave->vc_comment }}</small>
+                                <small class="mb-0 text-muted">{!! $leave->vc_comment !!}</small>
                             </div>
                         </div>
                         @endif
@@ -140,7 +140,7 @@ $assistingstaffName = $assistingStaff->title.' '.$assistingStaff->lastname.' '.$
                             <div class="flex-grow-1 ms-3">
                                 <h6 class="mb-1">{{ $leave->registrar->title.' '.$leave->registrar->lastname.' '.$leave->registrar->othernames }}</h6>
                                 <p class="text-muted mb-2 fst-italic">{{ ucwords($leave->registrar_status) }}</p>
-                                <small class="mb-0 text-muted">{{ $leave->registrar_comment }}</small>
+                                <small class="mb-0 text-muted">{!! $leave->registrar_comment !!}</small>
                             </div>
                         </div>
                         @endif
@@ -152,7 +152,7 @@ $assistingstaffName = $assistingStaff->title.' '.$assistingStaff->lastname.' '.$
                             <div class="flex-grow-1 ms-3">
                                 <h6 class="mb-1">{{ $leave->humanResource->title.' '.$leave->humanResource->lastname.' '.$leave->humanResource->othernames }}</h6>
                                 <p class="text-muted mb-2 fst-italic">{{ ucwords($leave->hr_status) }}</p>
-                                <small class="mb-0 text-muted">{{ $leave->hr_comment }}</small>
+                                <small class="mb-0 text-muted">{!! $leave->hr_comment !!}</small>
                             </div>
                         </div>
                         @endif
@@ -164,7 +164,7 @@ $assistingstaffName = $assistingStaff->title.' '.$assistingStaff->lastname.' '.$
                             <div class="flex-grow-1 ms-3">
                                 <h6 class="mb-1">{{ $leave->dean->title.' '.$leave->dean->lastname.' '.$leave->dean->othernames }}</h6>
                                 <p class="text-muted mb-2 fst-italic">{{ ucwords($leave->dean_status) }}</p>
-                                <small class="mb-0 text-muted">{{ $leave->dean_comment }}</small>
+                                <small class="mb-0 text-muted">{!! $leave->dean_comment !!}</small>
                             </div>
                         </div>
                         @endif
@@ -176,7 +176,7 @@ $assistingstaffName = $assistingStaff->title.' '.$assistingStaff->lastname.' '.$
                             <div class="flex-grow-1 ms-3">
                                 <h6 class="mb-1">{{ $leave->hod->title.' '.$leave->hod->lastname.' '.$leave->hod->othernames }}</h6>
                                 <p class="text-muted mb-2 fst-italic">{{ ucwords($leave->hod_status) }}</p>
-                                <small class="mb-0 text-muted">{{ $leave->hod_comment }}</small>
+                                <small class="mb-0 text-muted">{!! $leave->hod_comment !!}</small>
                             </div>
                         </div>
                         @endif

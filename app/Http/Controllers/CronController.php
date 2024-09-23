@@ -132,7 +132,7 @@ class CronController extends Controller
         $bandwidthAmount = 32212254720;
     
         foreach($students as $student) {
-            if($student->level_id == 1) {
+            if($this->checkNewStudentStatus($student)) {
                 $username = $student->bandwidth_username;
     
                 if(!empty($username)) {

@@ -83,7 +83,7 @@ class StudentController extends Controller
         
         if ((($levelId == 1 && strtolower($applicationType) == 'utme') || 
             ($levelId == 2 && strtolower($applicationType) != 'utme')) && 
-            ($student->clearance_status != 1 && $student->is_active != 1)) {
+            ($student->clearance_status != 1)) {
             return view('student.clearance', [
                 'payment' => $paymentCheck->schoolPayment,
                 'passTuition' => $paymentCheck->passTuitionPayment,

@@ -75,7 +75,7 @@ class LeaveController extends Controller
             return redirect()->back();
         }
 
-        $days = $startDate->diffInDays($endDate) - $this->countWeekendDays($startDate, $endDate) + 1;
+        $days = $startDate->diffInDays($endDate) - $this->countWeekendDays($startDate, $endDate);
 
         $newLeaveApplication = ([
             'slug' => $slug,
