@@ -900,6 +900,7 @@
                                                                                                 <option {{ $olevel->subject == "Data Processing" ? "selected" : "" }} value="Data Processing">Data Processing</option>
                                                                                                 <option {{ $olevel->subject == "Dyeing & Bleaching" ? "selected":"" }} value="Dyeing & Bleaching">Dyeing & Bleaching</option>
                                                                                                 <option {{ $olevel->subject == "Economics" ? "selected":"" }} value="Economics">Economics</option>
+                                                                                                <option {{ $olevel->subject == "English Language" ? "selected":"" }} value="English Language">English Language</option>
                                                                                                 <option {{ $olevel->subject == "Financial Accounting" ? "selected":"" }} value="Financial Accounting">Financial Accounting</option>
                                                                                                 <option {{ $olevel->subject == "Fisheries" ? "selected":"" }} value="Fisheries">Fisheries</option>
                                                                                                 <option {{ $olevel->subject == "Food & Nutrition" ? "selected":"" }} value="Food & Nutrition">Food & Nutrition</option>
