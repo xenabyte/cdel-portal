@@ -328,15 +328,12 @@ class LeaveController extends Controller
         } elseif (strtolower($role) == 'hod') {
             $leave->hod_status = $status;
             $leave->hod_comment = $comment;
-            $leave->status = $status;
         } elseif (strtolower($role) == 'dean') {
             $leave->dean_status = $status;
             $leave->dean_comment = $comment;
-            $leave->status = $status;
         } elseif(strtolower($role) == 'hr') {
             $leave->hr_status = $status;
             $leave->hr_comment = $comment;
-            $leave->status = $status;
         } elseif (strtolower($role) == 'registrar') {
             $leave->registrar_status = $status;
             $leave->registrar_comment = $comment;
