@@ -355,8 +355,8 @@ class LeaveController extends Controller
     private function updateLeaveApproverSequential($leave, $approver){
         $previousStatusField = $this->getPreviousStatusField($approver->roleName, strtolower($leave->staff->category));
         log::info("previous field". $previousStatusField);
-        log::info("previous field". $approver->roleName);
-        $leave->refresh();
+        log::info("RoleName". $approver->roleName);
+        $leave = Leave::where('id', $leave->id)->first();
         if ($leave->$previousStatusField == 'approved') {
             log::info("at approval sequence". $approver);
             $this->updateLeaveApprover($leave, $approver);
