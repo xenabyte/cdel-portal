@@ -130,7 +130,8 @@ class StaffController extends Controller
         if(!empty($request->lastname) && $request->lastname != $staff->lastname){
             $staff->lastname = $request->lastname;
             $staff->othernames = $request->othernames;
-            $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $request->lastname.'-'. $request->othernames)));
+            $name = $request->lastname.'-'.$request->othernames;
+            $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $name)));
             $staff->slug = $slug;
         }
 
