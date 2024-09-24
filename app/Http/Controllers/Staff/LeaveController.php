@@ -223,6 +223,7 @@ class LeaveController extends Controller
     
             // Process remaining steps if any
             foreach ($nextSteps as $approver) {
+                log::info($approver);
                 $leave->refresh();
                 $this->updateLeaveApproverSequential($leave, $approver);
             }
@@ -353,7 +354,11 @@ class LeaveController extends Controller
     
     private function updateLeaveApproverSequential($leave, $approver){
         $previousStatusField = $this->getPreviousStatusField($approver->roleName, strtolower($leave->staff->category));
+        log::info("previous field". $previousStatusField);
+        log::info("previous field". $approver->roleName);
+        $leave->refresh();
         if ($leave->$previousStatusField == 'approved') {
+            log::info("at approval sequence". $approver);
             $this->updateLeaveApprover($leave, $approver);
             $this->notifyApprover($approver);
         } elseif (in_array($leave->$previousStatusField, ['declined', 'rejected'])) {
