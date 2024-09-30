@@ -249,12 +249,12 @@
                     </div>
 
                     <div class="form-floating mb-3">
-                        <input type="number" name="test" id="test" step="0.01" class="form-control" required>
+                        <input type="number" name="test" id="test" step="0.01" class="form-control">
                         <label for="test">Test Score</label>
                     </div>
 
                     <div class="form-floating mb-3">
-                        <input type="number" name="exam" id="exam" step="0.01" class="form-control" required>
+                        <input type="number" name="exam" id="exam" step="0.01" class="form-control">
                         <label for="exam">Exam Score</label>
                     </div>
 

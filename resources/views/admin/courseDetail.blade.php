@@ -248,18 +248,20 @@
                     @csrf
                     <input type="hidden" name="course_id" value="{{ $course->id }}">
                     <input type="hidden" name="staff_id" value="{{ $staffId }}">
+                    <input type="hidden" name="academic_session" value="{{ $academicSession }}">
+
                     <div class="form-floating mb-3">
                         <input type="text" name="matric_number" id="matric_number" class="form-control" required>
                         <label for="matric_number">Matric Number</label>
                     </div>
 
                     <div class="form-floating mb-3">
-                        <input type="number" name="test" id="test" step="0.01" class="form-control" required>
+                        <input type="number" name="test" id="test" step="0.01" class="form-control">
                         <label for="test">Test Score</label>
                     </div>
 
                     <div class="form-floating mb-3">
-                        <input type="number" name="exam" id="exam" step="0.01" class="form-control" required>
+                        <input type="number" name="exam" id="exam" step="0.01" class="form-control">
                         <label for="exam">Exam Score</label>
                     </div>
 

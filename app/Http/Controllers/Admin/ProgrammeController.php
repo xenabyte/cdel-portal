@@ -830,14 +830,9 @@ class ProgrammeController extends Controller
     }
 
     public function updateStudentResult(Request $request){
-        $globalData = $request->input('global_data');
-        $admissionSession = $globalData->sessionSetting['admission_session'];
-        $academicSession = $globalData->sessionSetting['academic_session'];
-        $applicationSession = $globalData->sessionSetting['application_session'];
+        $academicSession = $request->academic_session;
 
         $validator = Validator::make($request->all(), [
-            'test' => 'required',
-            'exam' => 'required',
             'course_id' => 'required',
             'matric_number' => 'required',
             'type' => 'required'
