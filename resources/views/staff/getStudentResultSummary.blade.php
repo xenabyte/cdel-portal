@@ -157,14 +157,14 @@
                                 <th>Programmes</th>
                                 <th>Level</th>
                                 <th>Number of Students</th>
-                                <th class="bg bg-success text-light">Number of Good Standing</th>
-                                <th class="bg bg-warning text-light">Number of Not in Good Standing</th>
-                                <th class="bg bg-primary text-light">Number of First Class</th>
-                                <th class="bg bg-secondary text-light">Number of Second Class Upper</th>
-                                <th class="bg bg-dark text-light">Number of Second Lower</th>
-                                <th class="bg bg-info text-light">Number of Third Class</th>
-                                <th class="bg bg-warning text-light">Number of Pass</th>
-                                <th class="bg bg-danger text-light">Number of Fail</th>
+                                <th class="bg bg-success text-light">Number of Students in Good Standing</th>
+                                <th class="bg bg-warning text-light">Number of Students Not in Good Standing</th>
+                                <th class="bg bg-primary text-light">Number of Students with First Class</th>
+                                <th class="bg bg-secondary text-light">Number of Students with Second Class Upper</th>
+                                <th class="bg bg-dark text-light">Number of Students with Second Class Lower</th>
+                                <th class="bg bg-info text-light">Number of Students with Third Class</th>
+                                <th class="bg bg-warning text-light">Number of Students with Pass</th>
+                                <th class="bg bg-danger text-light">Number of Students with Fail</th>
                             </tr>
                         </thead>
                         <tbody>
