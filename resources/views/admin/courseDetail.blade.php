@@ -318,6 +318,7 @@
                                 <option value="" selected>--Select--</option>
                                 <option value="test">Test</option>
                                 <option value="exam">Exam</option>
+                                <option value="both">Both</option>
                             </select>
                             <label for="type">Result Type</label>
                         </div>

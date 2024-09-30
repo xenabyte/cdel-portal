@@ -67,25 +67,32 @@ class Result
                 continue;
             }
 
-            $testScore = $studentRegistration->ca_score;
-            $examScore = $studentRegistration->exam_score;
-
             if(strtolower($type) != 'test'){
-                $examScore = $request->exam;
+                $testScore = $studentRegistration->ca_score;
+                $studentRegistration->ca_score = $testScore;
+                $studentRegistration->exam_score = $examScore;
             }else{
-                $testScore = $request->test;
+                $examScore = $studentRegistration->exam_score;
+                $studentRegistration->test_score = $testScore;
             }
 
-            $studentRegistration->ca_score = $testScore;
 
-            if($examScore > 0 && strtolower($uploadType) != 'test'){
+            $totalScore = 0;
+            if($examScore > 0 && strtolower($type) != 'test'){
                 $totalScore = $testScore + $examScore;
+            }
 
-                if($totalScore > 100){
-                    alert()->success('Oops', 'Total score is greater than 100.')->persistent('Close');
-                    return redirect()->back();
-                }
-        
+            if(strtolower($type) == 'both'){
+                $totalScore = $testScore + $examScore;
+            }
+            
+
+            if($totalScore > 0 && $totalScore > 100){
+                alert()->success('Oops', 'Total score is greater than 100.')->persistent('Close');
+                return redirect()->back();
+            }
+    
+            if($totalScore > 0){
                 $grading = GradeScale::computeGrade($totalScore);
                 $grade = $grading->grade;
                 $points = $grading->point;
@@ -99,7 +106,6 @@ class Result
                     }
                 }
 
-                $studentRegistration->exam_score = $examScore;
                 $studentRegistration->total = $totalScore;
                 $studentRegistration->grade = $grade;
                 $studentRegistration->points = $studentRegistration->course_credit_unit * $points;
