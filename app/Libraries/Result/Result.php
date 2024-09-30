@@ -22,13 +22,12 @@ use Log;
 
 class Result
 {
-    public static function processResult(UploadedFile $file, $courseId, $type, $globalSettings)
+    public static function processResult(UploadedFile $file, $courseId, $type, $academicSession)
     {
         $csv = Reader::createFromPath($file->getPathname());
         $csv->setHeaderOffset(0);
 
         $records = $csv->getRecords();
-        $academicSession = $globalSettings->sessionSetting['academic_session'];
 
         foreach ($records as $row) {
             $matricNumber = $row['Matric No'];

@@ -298,6 +298,9 @@
                     @csrf
                     <input type="hidden" name="course_id" value="{{ $course->id }}">
                     <input type="hidden" name="staff_id" value="{{ $staffId }}">
+                    <input type="hidden" name="academic_session" value="{{ $academicSession }}">
+
+                    
                     <div class="row">
                         <div class="col-lg-12 mb-3">
                             <div>

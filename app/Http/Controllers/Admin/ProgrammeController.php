@@ -788,10 +788,7 @@ class ProgrammeController extends Controller
     }
 
     public function staffUploadResult(Request $request){
-        $globalData = $request->input('global_data');
-        $admissionSession = $globalData->sessionSetting['admission_session'];
-        $academicSession = $globalData->sessionSetting['academic_session'];
-        $applicationSession = $globalData->sessionSetting['application_session'];
+        $academicSession = $request->academic_session;
 
         $validator = Validator::make($request->all(), [
             'result' => 'required|file',
@@ -816,7 +813,7 @@ class ProgrammeController extends Controller
 
     
         $file = $request->file('result');
-        $processResult = Result::processResult($file, $courseId, $uploadType, $globalData);
+        $processResult = Result::processResult($file, $courseId, $uploadType, $academicSession);
 
         if($processResult != 'success'){
             alert()->error('oops!', $processResult)->persistent('Close');
