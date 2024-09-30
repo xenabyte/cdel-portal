@@ -67,7 +67,10 @@ class Result
                 continue;
             }
 
-            if(strtolower($type) != 'test'){
+            if(strtolower($type) == 'both'){
+                $studentRegistration->ca_score = $testScore;
+                $studentRegistration->exam_score = $examScore;
+            }else{if(strtolower($type) == 'exam'){
                 $testScore = $studentRegistration->ca_score;
                 $studentRegistration->ca_score = $testScore;
                 $studentRegistration->exam_score = $examScore;
