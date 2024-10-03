@@ -469,6 +469,34 @@ class StaffController extends Controller
         return redirect()->back(); 
     }
 
+    public function assignFacultyOfficerToFaculty(Request $request){
+        $validator = Validator::make($request->all(), [
+            'staff_id' => 'required',
+            'faculty_id' => 'required',
+        ]);
+
+        if($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+        if(!$staff = Staff::find($request->staff_id)){
+            alert()->error('Oops', 'Invalid Staff ')->persistent('Close');
+            return redirect()->back();
+        }
+
+        if(!$faculty = Faculty::find($request->faculty_id)){
+            alert()->error('Oops', 'Invalid Faculty ')->persistent('Close');
+            return redirect()->back();
+        }
+        $faculty->faculty_officer_id = $staff->id;
+        if($faculty->save()){
+            alert()->success('Faculty Officer assigned to Faculty', '')->persistent('Close');
+            return redirect()->back();
+        }
+        alert()->error('Oops!', 'Something went wrong')->persistent('Close');
+        return redirect()->back();
+    }
+
     public function assignSubDeanToFaculty(Request $request){
         $validator = Validator::make($request->all(), [
             'staff_id' => 'required',
@@ -519,7 +547,32 @@ class StaffController extends Controller
             return redirect()->back();
         }
         $department->hod_id = $staff->id;
+        $hodRoleId = Role::getRole(Role::ROLE_HOD);
+        if(empty($hodRoleId)){
+            alert()->error('Oops', 'Invalid HOD Role')->persistent('Close');
+            return redirect()->back();
+        }
+
         if($department->save()){
+            $existingStaffRole = StaffRole::where('staff_id', $request->staff_id)->where('role_id', $hodRoleId)->first();
+            if(empty($existingStaffRole)){
+
+                $newRole = [
+                    'role_id' => $hodRoleId,
+                    'staff_id' => $request->staff_id,
+                ];
+
+                $role = Role::find($hodRoleId);
+        
+                $staffDescription = "Congratulations, you have been assigned as  ".$role->role;
+                Notification::create([
+                    'staff_id' =>  $request->staff_id,
+                    'description' => $staffDescription,
+                    'status' => 0
+                ]);
+        
+                StaffRole::create($newRole);
+            }
             alert()->success('HOD assigned to Department', '')->persistent('Close');
             return redirect()->back();
         }

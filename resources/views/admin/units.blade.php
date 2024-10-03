@@ -51,8 +51,8 @@
                                     @csrf
                                     <input type="hidden" name='unit_id' value="{{ $unit->id }}">
                                     
-                                    <div class="input-group">
-                                        <select class="form-select select2 selectWithSearch" id="selectWithSearch" aria-label="staff" name="unit_head_id" required>
+                                    <div class="input-group" style="display: flex; flex-wrap: nowrap;">
+                                        <select class="form-select select2 selectWithSearch" aria-label="staff" name="unit_head_id" required>
                                             <option value= "" selected>Select Staff</option>
                                             @foreach($staffMembers as $staffMember)<option value="{{ $staffMember->id }}">{{ $staffMember->title.' '.$staffMember->lastname.' '.$staffMember->othernames }}</option>@endforeach
                                         </select>

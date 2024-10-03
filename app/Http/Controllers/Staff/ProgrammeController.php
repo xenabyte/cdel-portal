@@ -19,6 +19,7 @@ use App\Models\StudentCourseRegistration;
 use App\Models\CourseRegistration;
 use App\Models\Student;
 use App\Models\Department;
+use App\Models\Faculty;
 use App\Models\CoursePerProgrammePerAcademicSession;
 use App\Models\Course;
 use App\Models\CourseRegistrationSetting;
@@ -259,6 +260,54 @@ class ProgrammeController extends Controller
         return view('staff.adviserProgrammes', [
             'adviserProgrammes' => $adviserProgrammes
         ]);
+    }
+
+    public function studentCourseReg(Request $request){
+        $staff = Auth::guard('staff')->user();
+        $staffId = $staff->id;
+        $globalData = $request->input('global_data');
+        $academicSession = $globalData->sessionSetting['academic_session'];
+
+        $facultyIds= Faculty::where('faculty_officer_id', $staff->id)->pluck('id');
+        $departmentIds= Department::whereIn('faculty_id', $facultyIds)->pluck('id');
+        $programmeIds= Programme::whereIn('department_id', $departmentIds)->pluck('id');
+
+        $adviserProgrammesQuery = LevelAdviser::with('programme', 'level')->whereIn('programme_id', $programmeIds)->where('academic_session', $academicSession);
+        $adviserProgrammes = $adviserProgrammesQuery->get();
+
+        foreach ($adviserProgrammes as $adviserProgramme) {
+            $levelId = $adviserProgramme->level_id;
+            $programmeId = $adviserProgramme->programme_id;
+        
+            $studentIds = Student::where('level_id', $levelId)
+                ->where('programme_id', $programmeId)
+                ->pluck('id')
+                ->toArray();
+        
+            $studentRegistrationsCount = StudentCourseRegistration::with('student', 'student.applicant')
+                ->whereIn('student_id', $studentIds)
+                ->where('level_id', $levelId)
+                ->where('academic_session', $academicSession)
+                ->where(function ($query) {
+                    $query->where('level_adviser_status', null)
+                          ->orWhere('hod_status', null);
+                })
+                ->count();
+
+            $coursesForReg = CoursePerProgrammePerAcademicSession::where('programme_id', $programmeId)
+            ->where('academic_session', $academicSession)
+            ->where('level_id', $levelId)
+            ->get();
+        
+            // Add studentRegistrationsCount to the object
+            $adviserProgramme->studentRegistrationsCount = $studentRegistrationsCount;
+            $adviserProgramme->coursesForReg = $coursesForReg;
+        }
+
+        return view('staff.studentCourseReg', [
+            'adviserProgrammes' => $adviserProgrammes
+        ]);
+
     }
 
     public function addCourseForStudent(Request $request){

@@ -36,7 +36,6 @@
                             <th scope="col">Name</th>
                             <th scope="col">Dean</th>
                             <th scope="col"></th>
-                            <th scope="col"></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -46,14 +45,20 @@
                             <td>{{ $faculty->name }}</td>
                             <td>{{ !empty($faculty->dean)?$faculty->dean->title.' '.$faculty->dean->lastname. ' '.$faculty->dean->othernames : null }}</td>
                             <td>
-                                <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#assignDean{{$faculty->id}}" class="btn btn-info">Assign Dean</a>
+                                {{-- <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#assignDean{{$faculty->id}}" class="btn btn-info">Assign Dean</a> --}}
+                                <form action="{{ url('/admin/assignDeanToFaculty') }}" method="post" enctype="multipart/form-data">
+                                    @csrf
+                                    <input type="hidden" name='faculty_id' value="{{ $faculty->id }}">
+                                    
+                                    <div class="input-group" style="display: flex; flex-wrap: nowrap;">
+                                        <select class="form-select select2 selectWithSearch" aria-label="staff" name="staff_id" required>
+                                            <option value= "" selected>Select Staff</option>
+                                            @foreach($faculty->staffs as $staffMember)<option value="{{ $staffMember->id }}">{{ $staffMember->title.' '.$staffMember->lastname.' '.$staffMember->othernames }}</option>@endforeach
+                                        </select>
+                                        <button type="submit" class="btn btn-outline-secondary shadow-none" type="button">Assign</button>
+                                    </div>
+                                </form>
                             </td>
-                            <td>
-                                <a href="{{ url('admin/faculty/'.$faculty->slug) }}" class="btn btn-primary m-1"><i class= "mdi mdi-database-eye"></i> View Faculty</a>
-                                <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#editFaculty{{$faculty->id}}" class="btn btn-info">Edit</a>
-                                <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#delete{{$faculty->id}}" class="btn btn-danger">Delete</a>
-                            </td>
-                          
                         </tr>
                         @endforeach
                     </tbody>
@@ -65,7 +70,7 @@
 </div>
 <!-- end row -->
 
-<!-- Modal for Assign Dean -->
+{{-- <!-- Modal for Assign Dean -->
 @foreach($faculties as $faculty)
     <div id="assignDean{{$faculty->id}}" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
         <div class="modal-dialog modal-dialog-centered">
@@ -92,58 +97,6 @@
             </div><!-- /.modal-content -->
         </div><!-- /.modal-dialog -->
     </div><!-- /.modal -->
-
-    <div id="editFaculty{{$faculty->id}}" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content border-0 overflow-hidden">
-                <div class="modal-header p-3">
-                    <h4 class="card-title mb-0">Update Faculty</h4>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-
-                <div class="modal-body">
-                    <form action="{{ url('/admin/updateFaculty') }}" method="post" enctype="multipart/form-data">
-                        @csrf
-                        <input type="hidden" name='faculty_id' value="{{ $faculty->id }}">
-                        <div class="mb-3">
-                            <label for="name" class="form-label">Faculty Name</label>
-                            <input type="text" class="form-control" name="name" id="name" value="{{ $faculty->name }}">
-                        </div>
-
-                        <hr>
-                        <div class="text-end">
-                            <button type="submit" id="submit-button" class="btn btn-primary">Save Changes</button>
-                        </div>
-                    </form>
-                </div>
-            </div><!-- /.modal-content -->
-        </div><!-- /.modal-dialog -->
-    </div><!-- /.modal -->
-    <div id="delete{{$faculty->id}}" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-body text-center p-5">
-                    <div class="text-end">
-                        <button type="button" class="btn-close text-end" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="mt-2">
-                        <lord-icon src="https://cdn.lordicon.com/wwneckwc.json" trigger="hover" style="width:150px;height:150px">
-                        </lord-icon>
-                        <h4 class="mb-3 mt-4">Are you sure you want to delete <br/> {{ $faculty->name }}?</h4>
-                        <form action="{{ url('/admin/deleteFaculty') }}" method="POST">
-                            @csrf
-                            <input type="hidden" name='faculty_id' value="{{ $faculty->id }}">
-                            <hr>
-                            <button type="submit" id="submit-button" class="btn btn-danger w-100">Yes, Delete</button>
-                        </form>
-                    </div>
-                </div>
-                <div class="modal-footer bg-light p-3 justify-content-center">
-
-                </div>
-            </div><!-- /.modal-content -->
-        </div><!-- /.modal-dialog -->
-    </div><!-- /.modal -->
-@endforeach
+@endforeach --}}
 
 @endsection

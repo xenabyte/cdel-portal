@@ -34,26 +34,33 @@
                         <tr>
                             <th scope="col">Id</th>
                             <th scope="col">Name</th>
-                            <th scope="col">Dean</th>
+                            <th scope="col">Faculty Officer</th>
                             <th scope="col"></th>
-                            <th scope="col"></th>
-                        </tr>
+                       </tr>
                     </thead>
                     <tbody>
                         @foreach($faculties as $faculty)
                         <tr>
                             <th scope="row">{{ $loop->iteration }}</th>
                             <td>{{ $faculty->name }}</td>
-                            <td>{{ !empty($faculty->dean)?$faculty->dean->title.' '.$faculty->dean->lastname. ' '.$faculty->dean->othernames : null }}</td>
+                            <td>{{ !empty($faculty->facultyOfficer)?$faculty->facultyOfficer->title.' '.$faculty->facultyOfficer->lastname. ' '.$faculty->facultyOfficer->othernames : null }}</td>
                             <td>
-                                <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#assignDean{{$faculty->id}}" class="btn btn-info">Assign Dean</a>
-                            </td>
-                            <td>
-                                <a href="{{ url('admin/faculty/'.$faculty->slug) }}" class="btn btn-primary m-1"><i class= "mdi mdi-database-eye"></i> View Faculty</a>
-                                <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#editFaculty{{$faculty->id}}" class="btn btn-info">Edit</a>
-                                <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#delete{{$faculty->id}}" class="btn btn-danger">Delete</a>
-                            </td>
-                          
+                                {{-- <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#assign{{$faculty->id}}" class="btn btn-info">Assign facultyOfficer</a> --}}
+                                <form action="{{ url('/admin/assignFacultyOfficerToFaculty') }}" method="post" enctype="multipart/form-data">
+                                    @csrf
+                                    <input type="hidden" name='faculty_id' value="{{ $faculty->id }}">
+                                
+                                    <div class="input-group" style="display: flex; flex-wrap: nowrap;">
+                                        <select class="form-select select2 selectWithSearch" aria-label="staff" name="staff_id" required style="flex-grow: 1;">
+                                            <option value="" selected>Select Staff</option>
+                                            @foreach($staffMembers as $staffMember)
+                                                <option value="{{ $staffMember->id }}">{{ $staffMember->title.' '.$staffMember->lastname.' '.$staffMember->othernames }}</option>
+                                            @endforeach
+                                        </select>
+                                        <button type="submit" class="btn btn-outline-secondary shadow-none" style="white-space: nowrap;">Assign</button>
+                                    </div>
+                                </form>                                
+                            </td>      
                         </tr>
                         @endforeach
                     </tbody>
@@ -65,25 +72,25 @@
 </div>
 <!-- end row -->
 
-<!-- Modal for Assign Dean -->
-@foreach($faculties as $faculty)
-    <div id="assignDean{{$faculty->id}}" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
+<!-- Modal for Assign facultyOfficer -->
+{{-- @foreach($faculties as $faculty)
+    <div id="assign{{$faculty->id}}" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content border-0 overflow-hidden">
                 <div class="modal-header p-3">
-                    <h4 class="card-title mb-0">Assign Faculty Dean</h4>
+                    <h4 class="card-title mb-0">Assign Faculty Officer</h4>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
 
                 <div class="modal-body">
-                    <form action="{{ url('/admin/assignDeanToFaculty') }}" method="post" enctype="multipart/form-data">
+                    <form action="{{ url('/admin/assignFacultyOfficerToFaculty') }}" method="post" enctype="multipart/form-data">
                         @csrf
                         <input type="hidden" name='faculty_id' value="{{ $faculty->id }}">
                         
                         <div class="input-group">
                             <select class="form-select select2 selectWithSearch" aria-label="staff" name="staff_id" required>
                                 <option value= "" selected>Select Staff</option>
-                                @foreach($faculty->staffs as $staffMember)<option value="{{ $staffMember->id }}">{{ $staffMember->title.' '.$staffMember->lastname.' '.$staffMember->othernames }}</option>@endforeach
+                                @foreach($staffMembers as $staffMember)<option value="{{ $staffMember->id }}">{{ $staffMember->title.' '.$staffMember->lastname.' '.$staffMember->othernames }}</option>@endforeach
                             </select>
                             <button type="submit" class="btn btn-outline-secondary shadow-none" type="button">Assign</button>
                         </div>
@@ -144,6 +151,6 @@
             </div><!-- /.modal-content -->
         </div><!-- /.modal-dialog -->
     </div><!-- /.modal -->
-@endforeach
+@endforeach --}}
 
 @endsection

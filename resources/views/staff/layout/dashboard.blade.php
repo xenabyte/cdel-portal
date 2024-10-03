@@ -2,6 +2,7 @@
 <html lang="en" data-layout="vertical" data-layout-style="default" data-layout-position="fixed" data-topbar="light" data-sidebar="dark" data-sidebar-size="lg" data-layout-width="fluid" data-preloader="disable">
 @php
     use App\Models\Unit;
+    use App\Models\Faculty;
 
     $staff = Auth::guard('staff')->user();
     $staffDeanRole = false;
@@ -77,6 +78,9 @@
                     ->exists();
 
     $pendingStudentClearanceCount = \App\Models\FinalClearance::where('status', null)->count();
+
+    $isFacultyOfficer = Faculty::where('faculty_officer_id', $staff->id)->exists();
+
 @endphp
 
 <head>
@@ -514,7 +518,7 @@
                             </li> 
                             @endif
 
-                            @if($staffLevelAdviserRole || $staffHODRole || $staffDeanRole || $staffSubDeanRole || $staffAcademicPlannerRole)
+                            @if($staffLevelAdviserRole || $staffHODRole || $staffDeanRole || $staffSubDeanRole || $staffAcademicPlannerRole || $isFacultyOfficer)
                             <li class="nav-item">
                                 <a class="nav-link menu-link" href="#courseSettings" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="courseSettings">
                                     <i class="mdi mdi-card"></i> <span  data-key="t-hot">Prog. Management </span><span class="badge badge-pill bg-danger" data-key="t-hot">{{ $staffAcademicPlannerRole ? $pageGlobalData->adviserProgrammesCount : $pageGlobalData->totalPendingRegistrations }} </span>
@@ -528,6 +532,12 @@
 
                                         <li class="nav-item">
                                             <a href="{{ url('/staff/departmentForCourses') }}" class="nav-link">All Courses</a>
+                                        </li>
+                                        @endif
+
+                                        @if($isFacultyOfficer)
+                                        <li class="nav-item">
+                                            <a href="{{ url('/staff/studentCourseReg') }}" class="nav-link">Student Course Reg</a>
                                         </li>
                                         @endif
 

@@ -163,23 +163,23 @@ $staffCourses = $staff->staffCourses;
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($staffCourses as $staffCourse)
-                        @php
-                            $courseData = $staffCourse->course->coursePerProgrammePerAcademicSession->where('academic_session', $pageGlobalData->sessionSetting->academic_session)->first();
-                        @endphp
-                        @if(!empty($courseData))
-                        <tr>
-                            <td scope="row"> {{ $loop->iteration }}</td>
-                            <td>{{$staffCourse->course->code}}</td>
-                            <td>{{$staffCourse->course->name }}</td>
-                            <td>{{ $courseData->credit_unit}}</td>
-                            <td>{{ $courseData->status}}</td>
-                            <td>{{ $courseData->level->level}}</td>
-                            <td>
-                                <a href="{{ url('/staff/courseDetail/'.$staffCourse->course->id) }}" class="btn btn-md btn-primary">Course Details</a>
-                            </td>
-                        </tr>
-                        @endif
+                        @foreach($staffCourses->where('academic_session', $pageGlobalData->sessionSetting->academic_session) as $staffCourse)
+                            @php
+                                $courseData = $staffCourse->course->coursePerProgrammePerAcademicSession->where('academic_session', $pageGlobalData->sessionSetting->academic_session)->first();
+                            @endphp
+                            @if(!empty($courseData))
+                                <tr>
+                                    <td scope="row"> {{ $loop->iteration }}</td>
+                                    <td>{{$staffCourse->course->code}}</td>
+                                    <td>{{$staffCourse->course->name }}</td>
+                                    <td>{{ $courseData->credit_unit}}</td>
+                                    <td>{{ $courseData->status}}</td>
+                                    <td>{{ $courseData->level->level}}</td>
+                                    <td>
+                                        <a href="{{ url('/staff/courseDetail/'.$staffCourse->course->id) }}" class="btn btn-md btn-primary">Course Details</a>
+                                    </td>
+                                </tr>
+                            @endif
                         @endforeach
                     </tbody>
                 </table>
