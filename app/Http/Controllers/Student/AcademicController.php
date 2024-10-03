@@ -652,15 +652,15 @@ class AcademicController extends Controller
         $academicLevels = AcademicLevel::get();
 
         $paymentCheck = $this->checkSchoolFees($student, $academicSession, $levelId);
-        if(!$paymentCheck->passTuitionPayment){
-            return view('student.schoolFee', [
-                'payment' => $paymentCheck->schoolPayment,
-                'passTuition' => $paymentCheck->passTuitionPayment,
-                'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
-                'passEightyTuition' => $paymentCheck->passEightyTuition,
-                'studentPendingTransactions' => $paymentCheck->studentPendingTransactions
-            ]);
-        }
+        // if(!$paymentCheck->passTuitionPayment){
+        //     return view('student.schoolFee', [
+        //         'payment' => $paymentCheck->schoolPayment,
+        //         'passTuition' => $paymentCheck->passTuitionPayment,
+        //         'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
+        //         'passEightyTuition' => $paymentCheck->passEightyTuition,
+        //         'studentPendingTransactions' => $paymentCheck->studentPendingTransactions
+        //     ]);
+        // }
 
         return view('student.examResult', [
             'sessions' => $sessions,
@@ -707,25 +707,25 @@ class AcademicController extends Controller
             return redirect()->back();
         }
 
-        // $checkStudentPayment = $this->checkSchoolFees($student, $academicSession, $levelId);
-        // if($checkStudentPayment->status != 'success'){
-        //     alert()->error('Oops!', 'Something went wrong with School fees')->persistent('Close');
-        //     return redirect()->back();
-        // }
+        $checkStudentPayment = $this->checkSchoolFees($student, $academicSession, $levelId);
+        if($checkStudentPayment->status != 'success'){
+            alert()->error('Oops!', 'Something went wrong with School fees')->persistent('Close');
+            return redirect()->back();
+        }
 
-        // $passTuition = $checkStudentPayment->passTuitionPayment;
-        // $fullTuitionPayment = $checkStudentPayment->fullTuitionPayment;
-        // $passEightyTuition = $checkStudentPayment->passEightyTuition;
+        $passTuition = $checkStudentPayment->passTuitionPayment;
+        $fullTuitionPayment = $checkStudentPayment->fullTuitionPayment;
+        $passEightyTuition = $checkStudentPayment->passEightyTuition;
 
-        // if($semester == 1 && !$passTuition){
-        //     alert()->info('Oops!', 'Please be informed that in order to generate your examination results, it is necessary to clear 50% of school fees for '.$academicSession.' acaddemic session')->persistent('Close');
-        //     return redirect()->back();
-        // }
+        if($semester == 1 && !$passTuition){
+            alert()->info('Oops!', 'Please be informed that in order to generate your examination results, it is necessary to clear 40% of school fees for '.$academicSession.' acaddemic session')->persistent('Close');
+            return redirect()->back();
+        }
 
-        // if($semester == 2 && !$fullTuitionPayment){
-        //     alert()->info('Oops!', 'Please be informed that in order to generate your examination results, it is necessary to clear 100% of school fees for '.$academicSession.' acaddemic session')->persistent('Close');
-        //     return redirect()->back();
-        // }
+        if($semester == 2 && !$fullTuitionPayment){
+            alert()->info('Oops!', 'Please be informed that in order to generate your examination results, it is necessary to clear 100% of school fees for '.$academicSession.' acaddemic session')->persistent('Close');
+            return redirect()->back();
+        }
 
         $pdf = new Pdf();
         $examResult = $pdf->generateExamResult($studentId, $academicSession, $semester, $levelId);

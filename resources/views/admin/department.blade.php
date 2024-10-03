@@ -506,7 +506,7 @@
 
                     <div class="mb-3">
                         <label for="staff_id" class="form-label">Select Staff</label>
-                        <select class="form-select" aria-label="staff_id" name="staff_id">
+                        <select class="form-select selectWithSearch" aria-label="staff_id" name="staff_id">
                             <option selected value= "">Select Staff </option>
                             @foreach($department->staffs as $staff)
                             <option value="{{ $staff->id }}">{{ $staff->lastname.' '.$staff->othernames }}</option>
@@ -583,7 +583,7 @@
 
                     <div class="mb-3">
                         <label for="staff_id" class="form-label">Select Staff</label>
-                        <select class="form-select" aria-label="staff_id" name="staff_id">
+                        <select class="form-select selectWithSearch" aria-label="staff_id" name="staff_id">
                             <option selected value= "">Select Staff </option>
                             @foreach($department->staffs as $staff)
                             <option value="{{ $staff->id }}">{{ $staff->lastname.' '.$staff->othernames }}</option>

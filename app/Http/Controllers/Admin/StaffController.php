@@ -433,7 +433,34 @@ class StaffController extends Controller
             return redirect()->back();
         }
         $faculty->dean_id = $staff->id;
+        $deanRoleId = Role::getRole(Role::ROLE_DEAN);
+        if(empty($deanRoleId)){
+            alert()->error('Oops', 'Invalid Dean Role')->persistent('Close');
+            return redirect()->back();
+        }
+
+        
         if($faculty->save()){
+            $existingStaffRole = StaffRole::where('staff_id', $request->staff_id)->where('role_id', $deanRoleId)->first();
+            if(empty($existingStaffRole)){
+
+                $newRole = [
+                    'role_id' => $deanRoleId,
+                    'staff_id' => $request->staff_id,
+                ];
+
+                $role = Role::find($deanRoleId);
+        
+                $staffDescription = "Congratulations, you have been assigned as  ".$role->role;
+                Notification::create([
+                    'staff_id' =>  $request->staff_id,
+                    'description' => $staffDescription,
+                    'status' => 0
+                ]);
+        
+                StaffRole::create($newRole);
+            }
+             
             alert()->success('Dean assigned to Faculty', '')->persistent('Close');
             return redirect()->back();
         }

@@ -353,6 +353,33 @@ class AcademicController extends Controller
         ]);
     }
 
+    public function deans(){
+        $faculties = Faculty::with('staffs')->get();
+
+        return view('admin.deans', [
+            'faculties' => $faculties
+        ]);
+    }
+
+    public function hods(){
+        $departments = Department::with('staffs')->get();
+
+
+        return view('admin.hods', [
+            'departments' => $departments
+        ]);
+    }
+    
+    public function facultyOfficers(){
+        $faculties = Faculty::with('departments')->get();
+        $staffMembers = Staff::all();
+
+        return view('admin.facultyOfficers', [
+            'faculties' => $faculties,
+            'staffMembers' => $staffMembers
+        ]);
+    }
+
     /**
      * Add a new Faculty
      *

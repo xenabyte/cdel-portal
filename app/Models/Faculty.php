@@ -14,6 +14,7 @@ class Faculty extends Model
         'name',
         'dean_id',
         'sub_dean_id',
+        'faculty_officer_id',
         'web_id',
         'slug',
         'code'
@@ -57,5 +58,15 @@ class Faculty extends Model
     public function dean()
     {
         return $this->belongsTo(Staff::class, 'dean_id', 'id');
+    }
+
+    /**
+     * Get the faculty officers that owns the Faculty
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function facultyOfficer()
+    {
+        return $this->belongsTo(Staff::class, 'faculty_officer_id', 'id');
     }
 }

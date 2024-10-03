@@ -70,7 +70,7 @@ class Result
             if(strtolower($type) == 'both'){
                 $studentRegistration->ca_score = $testScore;
                 $studentRegistration->exam_score = $examScore;
-            }else{if(strtolower($type) == 'exam'){
+            }elseif(strtolower($type) == 'exam'){
                 $testScore = $studentRegistration->ca_score;
                 $studentRegistration->ca_score = $testScore;
                 $studentRegistration->exam_score = $examScore;

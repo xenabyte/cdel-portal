@@ -417,6 +417,11 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'admin'],
 
   Route::get('/prospectiveStaff', [App\Http\Controllers\Admin\CareerController::class, 'prospectiveStaff'])->name('prospectiveStaff')->middleware(['auth:admin']);
 
+  Route::get('/deans', [App\Http\Controllers\Admin\AcademicController::class, 'deans'])->name('deans')->middleware(['auth:admin']);
+  Route::get('/hods', [App\Http\Controllers\Admin\AcademicController::class, 'hods'])->name('hods')->middleware(['auth:admin']);
+  Route::get('/facultyOfficers', [App\Http\Controllers\Admin\AcademicController::class, 'facultyOfficers'])->name('facultyOfficers')->middleware(['auth:admin']);
+
+
 });
 
 Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'student'], function () {

@@ -987,7 +987,6 @@ class StudentController extends Controller
         ]);
     }
 
-
     public function createBandwidthPayment (Request $request){
         $student = Auth::guard('student')->user();
         $studentId = $student->id;

@@ -365,6 +365,23 @@
                                     <li class="nav-item">
                                         <a href="{{ url('/admin/faculties') }}" class="nav-link">Faculties</a>
                                     </li>
+                                    <li class="nav-item">
+                                        <a href="#academicSettingsRole" class="nav-link" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="academicSettingsRole" data-key="t-academicSettingsRole"> Academic Roles
+                                        </a>
+                                        <div class="collapse menu-dropdown" id="academicSettingsRole">
+                                            <ul class="nav nav-sm flex-column">
+                                                <li class="nav-item">
+                                                    <a href="{{ url('/admin/deans') }}" class="nav-link" data-key="t-basic"> Deans </a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a href="{{ url('/admin/hods') }}" class="nav-link" data-key="t-basic"> HOD(s) </a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a href="{{ url('/admin/facultyOfficers') }}" class="nav-link" data-key="t-basic"> Faculty Officers </a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </li>
                                     @if(env('POPULATE_DATA'))
                                     <li class="nav-item">
                                         <a href="{{ url('/admin/populateFaculty') }}" class="nav-link">Populate Faculty</a>
@@ -557,7 +574,7 @@
                                                     <a href="{{('/admin/attendance')}}" class="nav-link" data-key="t-cover"> Staff Attendance </a>
                                                 </li>
                                                 <li class="nav-item">
-                                                    <a href="{{('/admin/leaveApplications')}}" class="nav-link" data-key="t-cover"> Staff Leave Applications </a>
+                                                    <a href="{{('/admin/manageLeaves')}}" class="nav-link" data-key="t-cover"> Staff Leave Applications </a>
                                                 </li>
                                             </ul>
                                         </div>
@@ -863,7 +880,9 @@
         $(document).ready(function() {
             $('.selectWithSearch').select2();
         });
-        
+        $(document).ready(function() {
+            $('#selectWithSearch').select2();
+        });
         $(document).ready(function() {
             $('.selectRoom').select2();
         });
