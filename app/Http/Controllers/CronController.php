@@ -18,8 +18,13 @@ use App\Models\TestApplicant;
 use App\Models\User;
 use App\Models\Partner;
 use App\Models\Student;
+use App\Models\CourseRegistration;
+use App\Models\GradeScale;
+
 
 use App\Libraries\Bandwidth\Bandwidth;
+use App\Libraries\Google\Google;
+
 
 use SweetAlert;
 use Mail;
@@ -156,6 +161,56 @@ class CronController extends Controller
 
                     }
                 }
+            }
+        }
+    
+        return response()->json(['message' => 'record updated.']);
+    }
+
+    public function updateGrades(){
+        $courseId = 867;
+        $academicSession = '2023/2024';
+
+        $studentRegistrations = CourseRegistration::where([
+            'course_id' => $courseId,
+            'academic_session' => $academicSession
+        ])->get();
+
+        foreach($studentRegistrations as $studentRegistration){
+            $totalScore = $studentRegistration->total;
+            $grading = GradeScale::computeGrade($totalScore);
+            $grade = $grading->grade;
+            $points = $grading->point;
+    
+            // $courseCode = $studentRegistration->course_code;
+    
+            // if (strpos($courseCode, 'NSC') !== false && $student->programme_id == 15) {
+            //     if($totalScore < 50){
+            //         $grade = 'F';
+            //         $points = 0;
+            //     }
+            // }
+            $studentRegistration->grade = $grade;
+            $studentRegistration->points = $studentRegistration->course_credit_unit * $points;
+
+            $studentRegistration->save();
+        }
+
+        return response()->json(['message' => 'record updated.']);
+    }
+
+
+    public function massEmailCreation() {
+        $students = Student::orderBy('id', 'DESC')->get();
+    
+        foreach($students as $student) {
+            $accessCode = $student->applicant->passcode;
+            $studentEmail
+             = $student->email;
+
+            if($student->is_active) {
+                $google = new Google();
+                $createStudentEmail = $google->createUser($studentEmail, $student->applicant->othernames, $student->applicant->lastname, $accessCode, env('GOOGLE_STUDENT_GROUP'));
             }
         }
     

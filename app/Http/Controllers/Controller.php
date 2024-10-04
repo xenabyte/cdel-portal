@@ -646,7 +646,7 @@ class Controller extends BaseController
 
             $google = new Google();
             $createStudentEmail = $google->createUser($studentEmail, $student->applicant->othernames, $student->applicant->lastname, $accessCode, env('GOOGLE_STUDENT_GROUP'));
-            log::info($createStudentEmail);
+            //log::info($createStudentEmail);
 
             $student->email = $studentEmail;
             $student->matric_number = $matricNumber;

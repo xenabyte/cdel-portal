@@ -41,12 +41,24 @@ class Google
         }
     }
 
-    public function createUser($email, $firstName, $lastName, $password, $groupEmail=null)
+    public function createUser($email, $firstName, $lastName, $password, $groupEmail = null)
     {
         try {
             $client = $this->getClient();
             $this->directoryService = new Directory($client);
 
+            try {
+                $existingUser = $this->directoryService->users->get($email);
+                if ($existingUser) {
+                    Log::info("User with email {$email} already exists.");
+                    return $existingUser;
+                }
+            } catch (\Google\Service\Exception $e) {
+                if ($e->getCode() != 404) {
+                    Log::error('Google Service Error (User Check): ' . $e->getMessage());
+                    return false;
+                }
+            }
 
             $user = new Directory\User([
                 'primaryEmail' => $email,
@@ -59,18 +71,23 @@ class Google
             ]);
 
             $user = $this->directoryService->users->insert($user);
-            if($user){
+            $data = json_encode($user);
+            Log::info("User created with email {$data}.");
+
+            if ($user && $groupEmail) {
                 $this->addMemberToGroup($email, $groupEmail);
             }
+
             return $user;
         } catch (\Google\Service\Exception $e) {
-            Log::error('Google Service Error: ' . $e->getMessage());
+            Log::error('Google Service Error (User Creation): ' . $e->getMessage());
             return false;
         } catch (\Exception $e) {
             Log::error('General Error: ' . $e->getMessage());
             return false;
         }
     }
+
 
     public function generateGoogleMeetLink($title, $date, $time)
     {

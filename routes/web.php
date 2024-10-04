@@ -53,6 +53,8 @@ Route::get('/deletePendingTransactions', [App\Http\Controllers\CronController::c
 Route::get('/exportDatabase', [App\Http\Controllers\CronController::class, 'exportDatabase']);
 Route::get('/updateReferrers', [App\Http\Controllers\CronController::class, 'updateReferrers']);
 Route::get('/massBandwidthCreation', [App\Http\Controllers\CronController::class, 'massBandwidthCreation']);
+Route::get('/massEmailCreation', [App\Http\Controllers\CronController::class, 'massEmailCreation']);
+Route::get('/updateGrades', [App\Http\Controllers\CronController::class, 'updateGrades']);
 
 
 
