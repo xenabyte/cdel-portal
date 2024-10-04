@@ -93,8 +93,18 @@ class StudentController extends Controller
             ]);
         }
 
-        if($student->is_active != 1 && !$paymentCheck->passTuitionPayment){
+        if(!$student->is_active && !$paymentCheck->passTuitionPayment){
             return view('student.schoolFee', [
+                'payment' => $paymentCheck->schoolPayment,
+                'passTuition' => $paymentCheck->passTuitionPayment,
+                'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
+                'passEightyTuition' => $paymentCheck->passEightyTuition,
+                'studentPendingTransactions' => $paymentCheck->studentPendingTransactions
+            ]);
+        }
+
+        if(empty($student->image)){
+            return view('student.updateImage', [
                 'payment' => $paymentCheck->schoolPayment,
                 'passTuition' => $paymentCheck->passTuitionPayment,
                 'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
