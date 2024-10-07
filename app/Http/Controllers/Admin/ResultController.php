@@ -60,9 +60,15 @@ class ResultController extends Controller
         ]);
     }
 
-    public function getStudentMissingResults(Request $request, $semester){
-        $globalData = $request->input('global_data');
-        $academicSession = $globalData->sessionSetting['academic_session'];
+    public function getStudentMissingResults(Request $request, $semester, $academicSession=null){
+
+        if(!empty($academicSession)){
+            $academicSession = str_replace('-', '/', $academicSession);
+        }else{
+            $globalData = $request->input('global_data');
+            $academicSession = $globalData->sessionSetting['academic_session'];
+        }
+        
 
         $courseRegistrations = CourseRegistration::with('student')->where('academic_session', $academicSession)->where('semester', $semester)->where('course_credit_unit', '>', 0)->where('grade', null)->get();
         $studentIds = $courseRegistrations->pluck('student_id')->unique()->values()->all();
