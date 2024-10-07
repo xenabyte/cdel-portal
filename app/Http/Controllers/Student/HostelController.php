@@ -63,6 +63,27 @@ class HostelController extends Controller
         return $roomTypes;
     }
 
+    public function getTypes(Request $request) {
+        $campus = $request->campus;
+        $gender = $request->gender;
+        
+        $student = Auth::guard('student')->user();
+        $applicantGender = !empty($student)? $student->applicant->gender : $gender;
+        $hostelIds = Hostel::where('campus', $campus)->pluck('id');
+
+        $uniqueTypeIds = Room::whereIn('hostel_id', $hostelIds)
+        ->whereHas('bedSpaces', function($query) {
+            $query->whereDoesntHave('currentAllocation');
+        })
+        ->pluck('type_id')
+        ->unique();
+
+        $roomTypes = RoomType::whereIn('id', $uniqueTypeIds)->orderByRaw('CAST(capacity AS UNSIGNED) DESC')
+        ->get();
+
+        return $roomTypes;
+    }
+
 
     public function getRooms(Request $request) {
         $typeId = $request->typeId;

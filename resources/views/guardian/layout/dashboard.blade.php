@@ -497,5 +497,44 @@
       });
     });
 </script>
+<script>
+    function handleCampusChange(event) {
+        const selectedCampus = event.target.value;
+        const gender = $('.gender').val();
+        const roomTypeSelect = $('#roomType');
+
+        if (selectedCampus !== '') {
+            axios.post("{{ url('/student/getTypes') }}", {
+                campus: selectedCampus, 
+                gender: gender,
+            })
+            .then(function (response) {
+                roomTypeSelect.empty().append($('<option>', {
+                    value: '',
+                    text: '--Select--'
+                }));
+
+                $.each(response.data, function (index, roomType) {
+                    const formattedAmount = (roomType.amount / 100).toLocaleString('en-NG', { style: 'currency', currency: 'NGN' });
+
+                    roomTypeSelect.append($('<option>', {
+                        value: roomType.id,  
+                        text: `${roomType.name} (${roomType.capacity} Bed Spaces) (${formattedAmount})`
+                    }));
+                });
+            })
+            .catch(function (error) {
+                console.error("Error fetching room types:", error);
+            });
+        } else {
+            roomTypeSelect.empty().append($('<option>', {
+                value: '',
+                text: '--Select--'
+            }));
+        }
+    }
+
+
+</script>
 </body>
 </html>

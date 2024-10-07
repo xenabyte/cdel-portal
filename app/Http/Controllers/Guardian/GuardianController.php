@@ -28,12 +28,19 @@ use App\Models\LevelAdviser;
 use App\Models\Payment;
 use App\Models\ResultApprovalStatus;
 use App\Models\Transaction;
+use App\Models\BankAccount;
+use App\Models\RoomType;
 
 use Paystack;
 use KingFlamez\Rave\Facades\Rave as Flutterwave;
 
 use App\Libraries\Result\Result;
 use App\Libraries\Pdf\Pdf;
+use App\Libraries\Bandwidth\Bandwidth;
+use App\Libraries\Monnify\Monnify;
+use App\Libraries\Paygate\Paygate;
+use App\Libraries\Google\Google;
+
 
 use SweetAlert;
 use Mail;
@@ -77,6 +84,7 @@ class GuardianController extends Controller
         $academicLevels = AcademicLevel::orderBy('id', 'desc')->get();
         $sessions = Session::orderBy('id', 'desc')->get();
         $student->schoolFeeDetails = $this->checkSchoolFees($student, $student->academic_session, $student->level_id);
+        $student->accomondationDetails = $this->checkAccomondationStatus($student);
 
         return view('guardian.studentProfile', [
             'student' => $student,
@@ -89,6 +97,7 @@ class GuardianController extends Controller
     {
         $studentId = $request->student_id;
         $student = Student::with('applicant')->where('id', $studentId)->first();
+        $transaction = Transaction::find($request->transaction_id);
 
         $globalData = $request->input('global_data');
         $paymentId = $request->payment_id;
@@ -116,18 +125,44 @@ class GuardianController extends Controller
             $reference = $this->generateRandomString(25);
         }
 
+        if(strtolower($paymentType) == "accomondation") {
+            $validator = Validator::make($request->all(), [
+                'campus' => 'required',
+                'type_id' => 'required',
+            ]);
+        
+            if($validator->fails()) {
+                alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+                return redirect()->back();
+            }
+        
+            $campus = $request->campus;
+            $typeId = $request->type_id;
+        
+            $roomType = RoomType::find($typeId);
+            $amount = $roomType->amount;
+
+            if(!$roomType) {
+                alert()->error('Error', 'Selected room type not found.')->persistent('Close');
+                return redirect()->back();
+            }
+        }
+
         $paymentGateway = $request->paymentGateway;
 
-        //Create new transaction
-        $transaction = Transaction::create([
-            'student_id' => $studentId,
-            'payment_id' => $paymentId,
-            'amount_payed' => $amount,
-            'payment_method' => $paymentGateway,
-            'reference' => $reference,
-            'session' => $student->academic_session,
-            'plan_id' => !empty($bandwidthPlan)?$bandwidthPlan->id:null,
-        ]);
+        if(!$transaction){
+            //Create new transaction
+            $transaction = Transaction::create([
+                'student_id' => $studentId,
+                'payment_id' => $paymentId,
+                'amount_payed' => $amount,
+                'payment_method' => $paymentGateway,
+                'reference' => $reference,
+                'session' => $student->academic_session,
+                "plan_id" => !empty($bandwidthPlan)?$bandwidthPlan->id:null,
+                'additional_data' => !empty($hostelMeta)?$hostelMeta:null
+            ]);
+        }
        
 
         if(strtolower($paymentGateway) == 'paystack') {

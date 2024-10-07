@@ -213,4 +213,25 @@ class Student extends Authenticatable
     {
         return $this->hasMany(JobApplication::class, 'student_id', 'id');
     }
+
+    /**
+     * Get all of the hostelAllocations for the Student
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function hostelAllocations()
+    {
+        return $this->hasMany(Allocations::class, 'student_id', 'id');
+    }
+
+    /**
+     * Get the currentHostelAllocation associated with the Student
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function currentHostelAllocation()
+    {
+        return $this->hasOne(Allocation::class, 'bed_id', 'id')
+                    ->whereNull('release_date');
+    }
 }

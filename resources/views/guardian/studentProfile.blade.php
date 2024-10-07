@@ -1,10 +1,11 @@
-@extends('guardian.layout.dashboard')
+    @extends('guardian.layout.dashboard')
 @php
 
 $qrcode = 'https://quickchart.io/chart?chs=300x300&cht=qr&chl='.env('APP_URL').'/studentDetails/'.$student->slug;
 $name = $student->applicant->lastname.' '.$student->applicant->othernames;
 $transactions = $student->transactions()->orderBy('created_at', 'desc')->get();
 $studentRegistrations = $student->courseRegistrationDocument()->orderBy('created_at', 'desc')->take(10)->get();
+$currentHostelAllocation = $student->currentHostelAllocation;
 @endphp
 @section('content')
 <!-- start page title -->
@@ -66,7 +67,18 @@ $studentRegistrations = $student->courseRegistrationDocument()->orderBy('created
                         </div>
                         <div class="col-md-auto">
                             <div class="hstack gap-1 flex-wrap">
-                                
+                                <div class="flex-shrink-0">
+                                    @if(empty($currentHostelAllocation))
+                                    <button type="button" class="btn btn-warning mb-2" data-bs-toggle="modal" data-bs-target="#payAccomondation">Pay Accomondation Fee</button>
+                                    @endif
+                                    <br>
+                                    @if(!$student->schoolFeeDetails->fullTuitionPayment)
+                                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addTransaction">Pay Tuition Fee</button>
+                                    @endif
+                                    @if(env('WALLET_STATUS'))
+                                    <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#topUpWallet">Topup Student Wallet</button>
+                                    @endif
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -103,12 +115,6 @@ $studentRegistrations = $student->courseRegistrationDocument()->orderBy('created
                         <div class="card">
                             <div class="card-header align-items-center d-flex">
                                 <h4 class="card-title mb-0 flex-grow-1">Payments </h4>
-                                <div class="flex-shrink-0">
-                                    @if(!$student->schoolFeeDetails->fullTuitionPayment)
-                                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addTransaction">Pay Tuition Fee</button>
-                                    @endif
-                                    <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#topUpWallet">Topup Student Wallet</button>
-                                </div>
                             </div><!-- end card header -->
                             <div class="card-body">
                                 <div class="text-muted">
@@ -131,99 +137,101 @@ $studentRegistrations = $student->courseRegistrationDocument()->orderBy('created
                                                 </thead>
                                                 <tbody>
                                                     @foreach($transactions as $transaction)
-                                                    <tr>
-                                                        <th scope="row">{{ $loop->iteration }}</th>
-                                                        <td>{{ $transaction->reference }}</td>
-                                                        <td>₦{{ number_format($transaction->amount_payed/100, 2) }} </td>
-                                                        <td>{{ !empty($transaction->paymentType) ? ($transaction->paymentType->type == 'General Fee' ? $transaction->paymentType->title : $transaction->paymentType->type) : 'Wallet Deposit' }} </td>
-                                                        <td>{{ $transaction->session }}</td>
-                                                        <td>{{ $transaction->schoolPayment_method }}</td>
-                                                        <td><span class="badge badge-soft-{{ $transaction->status == 1 ? 'success' : 'warning' }}">{{ $transaction->status == 1 ? 'Paid' : 'Pending' }}</span></td>
-                                                        <td>{{ $transaction->status == 1 ? $transaction->updated_at : null }} </td>
-                                                        <td>
-                                                            @if($transaction->status == 1)
-                                                                <form action="{{ url('/guardian/generateInvoice') }}" method="post" enctype="multipart/form-data">
-                                                                    @csrf
-                                                                    <input name="payment_id" type="hidden" value="{{!empty($transaction->paymentType)?$transaction->paymentType->id:0}}">
-                                                                    <input name="student_id" type="hidden" value="{{$transaction->student_id}}">
-                                                                    <input name="session" type="hidden" value="{{ $transaction->session }}">
-                                                                    <button type="submit" id="submit-button" class="btn btn-primary"><i class="mdi mdi-printer"></i></button>
-                                                                </form>
-                                                            @endif
-                                                            @if($transaction->status == 0)
-                                                                <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#payNow{{$transaction->id}}" style="margin: 5px" class="btn btn-warning">Pay Now</a>
-                                                            @endif
-                                                        </td>
-                                                    </tr>
-                            
-                                                    <div id="payNow{{$transaction->id}}" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
-                                                        <div class="modal-dialog modal-lg modal-dialog-centered">
-                                                            <div class="modal-content border-0 overflow-hidden">
-                                                                <div class="modal-header p-3">
-                                                                    <h4 class="card-title mb-0">Pay Now</h4>
-                                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                                </div>
-                            
-                                                                <div class="modal-body border-top border-top-dashed">
-                                                                    <div class="mt-2 text-center">
-                                                                    <lord-icon src="https://cdn.lordicon.com/ggihhudh.json" trigger="hover" style="width:150px;height:150px">
-                                                                    </lord-icon>
-                                                                    </div>
-                                                                    <form action="{{ url('/guardian/makePayment') }}" method="post" enctype="multipart/form-data">
-                                                                        @csrf
-                                                                        <input type="hidden" name='programme_id' value="{{ $student->programme->id }}">
-                                                                        <input type="hidden" name="student_id" value="{{ $student->id }}">
-                                                                        <input type="hidden" name="transaction_id" value="{{ $transaction->id }}">
-                                                                        <input type="hidden" name="payment_id" value="{{ !empty($transaction->paymentType)? $transaction->paymentType->id : 0 }}">
-                                                                        <input type="hidden" name="reference" value="{{ $transaction->reference }}">
-                                                                        <input type="hidden" name="amount" value="{{ $transaction->amount_payed }}">
-                                                                        
-                                                                        <div class="mb-3">
-                                                                            <label for="paymentGateway" class="form-label">Select Payment Gateway<span class="text-danger">*</span></label>
-                                                                            <select class="form-select" aria-label="paymentGateway" name="paymentGateway" required onchange="handlePaymentMethodChange(event)">
-                                                                                <option value= "" selected>Select Payment Gateway</option>
-                                                                                @if(env('UPPERLINK_STATUS'))<option value="Upperlink">Upperlink</option>@endif
-                                                                                @if(env('FLUTTERWAVE_STATUS'))<option value="Rave">Flutterwave</option>@endif
-                                                                                @if(env('MONNIFY_STATUS'))<option value="Monnify">Monnify</option>@endif
-                                                                                @if(env('PAYSTACK_STATUS'))<option value="Paystack">Paystack</option>@endif
-                                                                                @if(env('BANK_TRANSFER_STATUS'))<option value="BankTransfer">Transfer</option>@endif
-                                                                            </select>
+                                                        @if($transaction->amount_payed > 0)
+                                                            <tr>
+                                                                <th scope="row">{{ $loop->iteration }}</th>
+                                                                <td>{{ $transaction->reference }}</td>
+                                                                <td>₦{{ number_format($transaction->amount_payed/100, 2) }} </td>
+                                                                <td>{{ !empty($transaction->paymentType) ? ($transaction->paymentType->type == 'General Fee' ? $transaction->paymentType->title : $transaction->paymentType->type) : 'Wallet Deposit' }} </td>
+                                                                <td>{{ $transaction->session }}</td>
+                                                                <td>{{ $transaction->schoolPayment_method }}</td>
+                                                                <td><span class="badge badge-soft-{{ $transaction->status == 1 ? 'success' : 'warning' }}">{{ $transaction->status == 1 ? 'Paid' : 'Pending' }}</span></td>
+                                                                <td>{{ $transaction->status == 1 ? $transaction->updated_at : null }} </td>
+                                                                <td>
+                                                                    @if($transaction->status == 1)
+                                                                        <form action="{{ url('/guardian/generateInvoice') }}" method="post" enctype="multipart/form-data">
+                                                                            @csrf
+                                                                            <input name="payment_id" type="hidden" value="{{!empty($transaction->paymentType)?$transaction->paymentType->id:0}}">
+                                                                            <input name="student_id" type="hidden" value="{{$transaction->student_id}}">
+                                                                            <input name="session" type="hidden" value="{{ $transaction->session }}">
+                                                                            <button type="submit" id="submit-button" class="btn btn-primary"><i class="mdi mdi-printer"></i></button>
+                                                                        </form>
+                                                                    @endif
+                                                                    @if($transaction->status == 0)
+                                                                        <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#payNow{{$transaction->id}}" style="margin: 5px" class="btn btn-warning">Pay Now</a>
+                                                                    @endif
+                                                                </td>
+                                                            </tr>
+                                    
+                                                            <div id="payNow{{$transaction->id}}" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
+                                                                <div class="modal-dialog modal-lg modal-dialog-centered">
+                                                                    <div class="modal-content border-0 overflow-hidden">
+                                                                        <div class="modal-header p-3">
+                                                                            <h4 class="card-title mb-0">Pay Now</h4>
+                                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                                         </div>
-                            
-                                                                        <hr>
-                                                                        <!-- Primary Alert -->
-                                                                        <div class="alert alert-primary alert-dismissible alert-additional fade show" role="alert" style="display: none" id="transferInfo">
-                                                                            <div class="alert-body">
-                                                                                <div class="d-flex">
-                                                                                    <div class="flex-shrink-0 me-3">
-                                                                                        <i class="fs-16 align-middle"></i>
+                                    
+                                                                        <div class="modal-body border-top border-top-dashed">
+                                                                            <div class="mt-2 text-center">
+                                                                            <lord-icon src="https://cdn.lordicon.com/ggihhudh.json" trigger="hover" style="width:150px;height:150px">
+                                                                            </lord-icon>
+                                                                            </div>
+                                                                            <form action="{{ url('/guardian/makePayment') }}" method="post" enctype="multipart/form-data">
+                                                                                @csrf
+                                                                                <input type="hidden" name='programme_id' value="{{ $student->programme->id }}">
+                                                                                <input type="hidden" name="student_id" value="{{ $student->id }}">
+                                                                                <input type="hidden" name="transaction_id" value="{{ $transaction->id }}">
+                                                                                <input type="hidden" name="payment_id" value="{{ !empty($transaction->paymentType)? $transaction->paymentType->id : 0 }}">
+                                                                                <input type="hidden" name="reference" value="{{ $transaction->reference }}">
+                                                                                <input type="hidden" name="amount" value="{{ $transaction->amount_payed }}">
+                                                                                
+                                                                                <div class="mb-3">
+                                                                                    <label for="paymentGateway" class="form-label">Select Payment Gateway<span class="text-danger">*</span></label>
+                                                                                    <select class="form-select" aria-label="paymentGateway" name="paymentGateway" required onchange="handlePaymentMethodChange(event)">
+                                                                                        <option value= "" selected>Select Payment Gateway</option>
+                                                                                        @if(env('UPPERLINK_STATUS'))<option value="Upperlink">Upperlink</option>@endif
+                                                                                        @if(env('FLUTTERWAVE_STATUS'))<option value="Rave">Flutterwave</option>@endif
+                                                                                        @if(env('MONNIFY_STATUS'))<option value="Monnify">Monnify</option>@endif
+                                                                                        @if(env('PAYSTACK_STATUS'))<option value="Paystack">Paystack</option>@endif
+                                                                                        @if(env('BANK_TRANSFER_STATUS'))<option value="BankTransfer">Transfer</option>@endif
+                                                                                    </select>
+                                                                                </div>
+                                    
+                                                                                <hr>
+                                                                                <!-- Primary Alert -->
+                                                                                <div class="alert alert-primary alert-dismissible alert-additional fade show" role="alert" style="display: none" id="transferInfo">
+                                                                                    <div class="alert-body">
+                                                                                        <div class="d-flex">
+                                                                                            <div class="flex-shrink-0 me-3">
+                                                                                                <i class="fs-16 align-middle"></i>
+                                                                                            </div>
+                                                                                            <div class="flex-grow-1">
+                                                                                                <h5 class="alert-heading">Well done !</h5>
+                                                                                                <p class="mb-0">Kindly make transfer to the below transaction </p>
+                                                                                                <br>
+                                                                                                <ul class="list-group">
+                                                                                                    <li class="list-group-item"><i class="mdi mdi-check-bold align-middle lh-1 me-2"></i><strong>Bank Name:</strong> {{env('BANK_NAME')}}</li>
+                                                                                                    <li class="list-group-item"><i class="mdi mdi-check-bold align-middle lh-1 me-2"></i><strong>Bank Account Number:</strong> {{env('BANK_ACCOUNT_NUMBER')}}</li>
+                                                                                                    <li class="list-group-item"><i class="mdi mdi-check-bold align-middle lh-1 me-2"></i><strong>Bank Account Name:</strong> {{env('BANK_ACCOUNT_NAME')}}</li>
+                                                                                                </ul>
+                                                                                                <br>
+                                                                                                <p>Please send proof of payment as an attachment to {{ env('ACCOUNT_EMAIL') }}, including your name, registration number, and purpose of payment. For any inquiries, you can also call {{ env('ACCOUNT_PHONE') }}.</p>
+                                                                                            </div>
+                                                                                        </div>
                                                                                     </div>
-                                                                                    <div class="flex-grow-1">
-                                                                                        <h5 class="alert-heading">Well done !</h5>
-                                                                                        <p class="mb-0">Kindly make transfer to the below transaction </p>
-                                                                                        <br>
-                                                                                        <ul class="list-group">
-                                                                                            <li class="list-group-item"><i class="mdi mdi-check-bold align-middle lh-1 me-2"></i><strong>Bank Name:</strong> {{env('BANK_NAME')}}</li>
-                                                                                            <li class="list-group-item"><i class="mdi mdi-check-bold align-middle lh-1 me-2"></i><strong>Bank Account Number:</strong> {{env('BANK_ACCOUNT_NUMBER')}}</li>
-                                                                                            <li class="list-group-item"><i class="mdi mdi-check-bold align-middle lh-1 me-2"></i><strong>Bank Account Name:</strong> {{env('BANK_ACCOUNT_NAME')}}</li>
-                                                                                        </ul>
-                                                                                        <br>
-                                                                                        <p>Please send proof of payment as an attachment to {{ env('ACCOUNT_EMAIL') }}, including your name, registration number, and purpose of payment. For any inquiries, you can also call {{ env('ACCOUNT_PHONE') }}.</p>
+                                                                                    <div class="alert-content">
+                                                                                        <p class="mb-0">NOTE: PLEASE ENSURE TO VERIFY THE TRANSACTION DETAILS PROPERLY. TRANSFER ONLY TO THE ACCOUNT ABOVE. STUDENTS TAKE RESPONSIBILITY FOR ANY MISPLACEMENT OF FUNDS.</p>
                                                                                     </div>
                                                                                 </div>
-                                                                            </div>
-                                                                            <div class="alert-content">
-                                                                                <p class="mb-0">NOTE: PLEASE ENSURE TO VERIFY THE TRANSACTION DETAILS PROPERLY. TRANSFER ONLY TO THE ACCOUNT ABOVE. STUDENTS TAKE RESPONSIBILITY FOR ANY MISPLACEMENT OF FUNDS.</p>
-                                                                            </div>
+                                                                                <div>
+                                                                                    <button type="submit" id="submit-button" class="btn btn-primary">Make payment</button>
+                                                                                </div>
+                                                                            </form>
                                                                         </div>
-                                                                        <div>
-                                                                            <button type="submit" id="submit-button" class="btn btn-primary">Make payment</button>
-                                                                        </div>
-                                                                    </form>
-                                                                </div>
-                                                            </div><!-- /.modal-content -->
-                                                        </div><!-- /.modal-dialog -->
-                                                    </div><!-- /.modal -->
+                                                                    </div><!-- /.modal-content -->
+                                                                </div><!-- /.modal-dialog -->
+                                                            </div><!-- /.modal -->
+                                                        @endif
                                                     @endforeach
                                                 </tbody>
                                             </table>
@@ -627,7 +635,7 @@ $studentRegistrations = $student->courseRegistrationDocument()->orderBy('created
 
 
 <div id="addTransaction" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
-    <div class="modal-dialog modal-md modal-dialog-centered">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
         <div class="modal-content border-0 overflow-hidden">
             <div class="modal-header p-3">
                 <h4 class="card-title mb-0">Make 'a' Payment</h4>
@@ -655,6 +663,8 @@ $studentRegistrations = $student->courseRegistrationDocument()->orderBy('created
                             <option value="{{ $student->schoolFeeDetails->schoolPayment->structures->sum('amount')*0.4 }}">₦{{ number_format($student->schoolFeeDetails->schoolPayment->structures->sum('amount')*0.4/100, 2) }} - 40%</option>
                             @endif
                             @if($student->schoolFeeDetails->passTuitionPayment && !$student->schoolFeeDetails->fullTuitionPayment && !$student->schoolFeeDetails->passEightyTuition)
+                            <option value="{{ $student->schoolFeeDetails->schoolPayment->structures->sum('amount')*0.6 }}">₦{{ number_format($student->schoolFeeDetails->schoolPayment->structures->sum('amount')*0.6/100, 2) }} - 60%</option>
+                            <option value="{{ $student->schoolFeeDetails->schoolPayment->structures->sum('amount')*0.5 }}">₦{{ number_format($student->schoolFeeDetails->schoolPayment->structures->sum('amount')*0.5/100, 2) }} - 50%</option>
                             <option value="{{ $student->schoolFeeDetails->schoolPayment->structures->sum('amount')*0.4 }}">₦{{ number_format($student->schoolFeeDetails->schoolPayment->structures->sum('amount')*0.4/100, 2) }} - 40%</option>
                             <option value="{{ $student->schoolFeeDetails->schoolPayment->structures->sum('amount')*0.3 }}">₦{{ number_format($student->schoolFeeDetails->schoolPayment->structures->sum('amount')*0.3/100, 2) }} - 30%</option>
                             <option value="{{ $student->schoolFeeDetails->schoolPayment->structures->sum('amount')*0.2 }}">₦{{ number_format($student->schoolFeeDetails->schoolPayment->structures->sum('amount')*0.2/100, 2) }} - 20%</option>
@@ -715,7 +725,7 @@ $studentRegistrations = $student->courseRegistrationDocument()->orderBy('created
 </div><!-- /.modal -->
 
 <div id="topUpWallet" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
-    <div class="modal-dialog modal-md modal-dialog-centered">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
         <div class="modal-content border-0 overflow-hidden">
             <div class="modal-header p-3">
                 <h4 class="card-title mb-0">Deposit into Wallet</h4>
@@ -739,10 +749,10 @@ $studentRegistrations = $student->courseRegistrationDocument()->orderBy('created
                         <select class="form-select" aria-label="paymentGateway" name="paymentGateway" required onchange="handlePaymentMainMethodChange(event)">
                             <option value= "" selected>Select Payment Gateway</option>
                             @if(env('UPPERLINK_STATUS'))<option value="Upperlink">Upperlink</option>@endif
-                            @if(env('FLUTTERWAVE_STATUS'))<option value="Rave">Flutterwave</option>@endif
+                            {{-- @if(env('FLUTTERWAVE_STATUS'))<option value="Rave">Flutterwave</option>@endif
                             @if(env('MONNIFY_STATUS'))<option value="Monnify">Monnify</option>@endif
                             @if(env('PAYSTACK_STATUS'))<option value="Paystack">Paystack</option>@endif
-                            @if(env('BANK_TRANSFER_STATUS'))<option value="BankTransfer">Transfer</option>@endif
+                            @if(env('BANK_TRANSFER_STATUS'))<option value="BankTransfer">Transfer</option>@endif --}}
                         </select>
                     </div>
 
@@ -776,6 +786,108 @@ $studentRegistrations = $student->courseRegistrationDocument()->orderBy('created
                         <button type="submit" id="submit-button-main" class="btn btn-primary">Make payment</button>
                     </div>
                 </form>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<div id="payAccomondation" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content border-0 overflow-hidden">
+            <div class="modal-header p-3">
+                <h4 class="card-title mb-0">Pay Accomondation</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body border-top border-top-dashed">
+                @if(!empty($student->accomondationDetails->accommondationPaymentTransactions) && $student->accomondationDetails->accommondationPaymentTransactions->count() > 0)
+                <div class="mt-2">
+                    <lord-icon src="https://cdn.lordicon.com/wwneckwc.json" trigger="hover" style="width:150px;height:150px">
+                    </lord-icon>
+                    <p class="mb-3 mt-4">You have successfully made payment for accomondation, kindly inform your ward to login he/her portal and select a room of her choice. Thank you.</p>
+                </div>
+
+                @elseif(empty($student->applicant->gender))
+                <div class="mt-2">
+                    <lord-icon src="https://cdn.lordicon.com/wwneckwc.json" trigger="hover" style="width:150px;height:150px">
+                    </lord-icon>
+                    <p class="mb-3 mt-4">Kindly inform you ward to update gender on he/her portal. Thank you.</p>
+                </div>
+                @else
+                <form action="{{ url('/guardian/makePayment') }}" method="post" enctype="multipart/form-data">
+                    @csrf
+                    <input type="hidden" name='student_id' value="{{ $student->id }}">
+                    <input type="hidden" name="payment_id" value="{{ $student->accomondationDetails->accommondationPayment->id }}">
+                    <input type="hidden" id="studentGender" class="gender" name="gender" value="{{ $student->applicant->gender }}">
+
+                    <div class="col-lg-12 mb-3">
+                        <div class="form-floating">
+                            <select class="form-select" id="campus" aria-label="role" name="campus" onchange="handleCampusChange(event)" required>
+                                <option selected value="">Select Option </option>
+                                <option value="West">West Campus</option>
+                                <option value="East">East Campus</option>
+                            </select>
+                            <label for="campus" class="form-label">Select Campus</label>
+                        </div>
+                    </div>
+                    
+
+                    <div class="col-lg-12 mb-3">
+                        <div class="form-floating">
+                            <select class="form-select" id="roomType" name="type_id" aria-label="roomType" required>
+                                <option value="" selected>--Select--</option>
+                            </select>
+                            <label for="roomType">Room Type</label>
+                        </div>
+                    </div>
+
+
+                    
+                    <div class="col-lg-12 mb-3">
+                        <div class="form-floating">
+                            <select class="form-select" aria-label="paymentGateway" name="paymentGateway" required onchange="handlePaymentMethodChange(event)">
+                                <option value= "" selected>Select Payment Gateway</option>
+                                @if(env('UPPERLINK_STATUS'))<option value="Upperlink">Upperlink</option>@endif
+                                {{-- @if(env('FLUTTERWAVE_STATUS'))<option value="Rave">Flutterwave</option>@endif
+                                @if(env('MONNIFY_STATUS'))<option value="Monnify">Monnify</option>@endif
+                                @if(env('PAYSTACK_STATUS'))<option value="Paystack">Paystack</option>@endif
+                                @if(env('BANK_TRANSFER_STATUS'))<option value="BankTransfer">Transfer</option>@endif --}}
+                            </select>
+                            <label for="paymentGateway" class="form-label">Select Payment Gateway<span class="text-danger">*</span></label>
+                        </div>
+                    </div>
+
+                    <!-- Primary Alert -->
+                    <div class="alert alert-primary alert-dismissible alert-additional fade show" role="alert" style="display: none" id="transferInfo">
+                        <div class="alert-body">
+                            <div class="d-flex">
+                                <div class="flex-shrink-0 me-3">
+                                    <i class="mdi mdi-check-bold fs-16 align-middle"></i>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h5 class="alert-heading">Well done !</h5>
+                                    <p class="mb-0">Kindly make transfer to the below transaction </p>
+                                    <br>
+                                    <ul class="list-group">
+                                        <li class="list-group-item"><i class="mdi mdi-check-bold align-middle lh-1 me-2"></i><strong>Bank Name:</strong> {{env('BANK_NAME')}}</li>
+                                        <li class="list-group-item"><i class="mdi mdi-check-bold align-middle lh-1 me-2"></i><strong>Bank Account Number:</strong> {{env('BANK_ACCOUNT_NUMBER')}}</li>
+                                        <li class="list-group-item"><i class="mdi mdi-check-bold align-middle lh-1 me-2"></i><strong>Bank Account Name:</strong> {{env('BANK_ACCOUNT_NAME')}}</li>
+                                    </ul>
+                                    <br>
+                                    <p>Please send proof of payment as an attachment to {{ env('ACCOUNT_EMAIL') }}, including your name, registration number, and purpose of payment. For any inquiries, you can also call {{ env('ACCOUNT_PHONE') }}.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="alert-content">
+                            <p class="mb-0">NOTE: PLEASE ENSURE TO VERIFY THE TRANSACTION DETAILS PROPERLY. TRANSFER ONLY TO THE ACCOUNT ABOVE. STUDENTS TAKE RESPONSIBILITY FOR ANY MISPLACEMENT OF FUNDS.</p>
+                        </div>
+                    </div>
+
+                    <div>
+                        <button type="submit" id="submit-button" class="btn btn-primary">Make payment</button>
+                    </div>
+                </form>
+                @endif
             </div>
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->

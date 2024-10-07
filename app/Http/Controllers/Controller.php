@@ -619,6 +619,38 @@ class Controller extends BaseController
 
         return $data;
     }
+
+    public function checkAccomondationStatus($student){
+        $studentId = $student->id;
+        $sessionSetting = SessionSetting::first();
+        $academicSession = $sessionSetting->academic_session;
+
+
+        $type = Payment::PAYMENT_TYPE_ACCOMONDATION;
+
+        $accommondationPayment = Payment::with('structures')
+            ->where('type', $type)
+            ->where('academic_session', $academicSession)
+            ->first();
+
+        if(!$accommondationPayment){
+            $data = new \stdClass();
+            $data->status = 'record_not_found';
+
+            return $data;
+        }
+
+        $accommondationPaymentTransactions = Transaction::where('student_id', $studentId)->where('payment_id', $accommondationPayment->id)->where('session', $academicSession)->where('status', 1)->get();
+
+
+        $data = new \stdClass();
+        $data->status = 'success';
+        $data->accommondationPayment = $accommondationPayment;
+        $data->accommondationPaymentTransactions = $accommondationPaymentTransactions;
+
+        return $data;
+
+    }
     
     public function generateMatricAndEmail($student){
         if(!$student->is_active && empty($student->matric_number)){
@@ -983,6 +1015,10 @@ class Controller extends BaseController
     }
 
     public function creditAccommodation(Transaction $transaction){
+        if(empty($transaction->additional_data)){
+            return true; 
+        }
+
         $allocationData = json_decode($transaction->additional_data, true);
 
         if (!$allocationData || !isset($allocationData['room_id'], $allocationData['hostel_id'], $allocationData['campus'], $allocationData['type_id'])) {

@@ -346,7 +346,7 @@ class ProgrammeController extends Controller
 
         $courseRegistration = $levelAdviser->course_registration;
 
-        if(!empty($courseRegistration) && $courseRegistration != 'stop'){
+        if(!empty($courseRegistration) && $courseRegistration == 'start'){
             alert()->error('Oops', 'Course Registration already started')->persistent('Close');
             return view('staff.studentCourses', $defaultData);
         }

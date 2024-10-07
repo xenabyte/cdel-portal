@@ -518,6 +518,7 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'student'
   Route::get('/hostelBooking', [App\Http\Controllers\Student\StudentController::class, 'hostelBooking'])->name('hostelBooking')->middleware(['auth:student']); 
   Route::post('/getHostels', [App\Http\Controllers\Student\HostelController::class, 'getHostels'])->name('getHostels'); 
   Route::post('/getRoomTypes', [App\Http\Controllers\Student\HostelController::class, 'getRoomTypes'])->name('getRoomTypes'); 
+  Route::post('/getTypes', [App\Http\Controllers\Student\HostelController::class, 'getTypes'])->name('getTypes'); 
   Route::post('/getRooms', [App\Http\Controllers\Student\HostelController::class, 'getRooms'])->name('getRooms'); 
 
   Route::post('/startClearance', [App\Http\Controllers\Student\ClearanceController::class, 'startClearance'])->name('startClearance')->middleware(['auth:student']); 
