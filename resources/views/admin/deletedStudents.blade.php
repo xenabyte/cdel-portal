@@ -54,11 +54,11 @@
                             <td>
                                 <img class="img-thumbnail rounded-circle avatar-md"  src="{{ !empty($student->image) ? asset($student->image) : asset('assets/images/users/user-dummy-img.jpg') }}">
                             </td>
-                            <td>{{ $student->applicant->lastname .' '. $student->applicant->othernames }}</td>
+                            <td>{{ $student->applicant? $student->applicant->lastname .' '. $student->applicant->othernames : null }}</td>
                             <td>{{ $student->academicLevel->level }} </td>
                             <td>{{ $student->passcode }} </td>
                             <td>{{ $student->matric_number }}</td>
-                            <td>{{ $student->applicant->application_number }}</td>
+                            <td>{{ $student->applicant? $student->applicant->application_number:null }}</td>
                             <td>{{ $student->programme->name }}</td>
                             <td>{{ $student->email }} </td>
                             <td>
