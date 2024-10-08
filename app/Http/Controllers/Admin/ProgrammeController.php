@@ -510,6 +510,7 @@ class ProgrammeController extends Controller
             'courseLectures' => $courseLectures,
             'course' => $course,
             'academicSession' => $academicSession,
+            'sessions' => Session::orderBy('id', 'DESC')->get()
         ]);
     }
 

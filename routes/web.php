@@ -257,6 +257,8 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'admin'],
   Route::post('/getStudents', [App\Http\Controllers\Admin\StaffController::class, 'getStudents'])->name('getStudents')->middleware(['auth:admin']);
 
   Route::get('/courseRegistrations', [App\Http\Controllers\Admin\AcademicController::class, 'courseRegistrations'])->name('courseRegistrations')->middleware(['auth:admin']);
+  Route::get('/courseRegistrations/{academicSession}', [App\Http\Controllers\Admin\AcademicController::class, 'courseRegistrations'])->name('courseRegistrations')->middleware(['auth:admin']);
+
   Route::post('/approveReg', [App\Http\Controllers\Admin\AcademicController::class, 'approveReg'])->name('approveReg')->middleware(['auth:admin']);
   Route::post('/undoReg', [App\Http\Controllers\Admin\AcademicController::class, 'undoReg'])->name('undoReg')->middleware(['auth:admin']);
   Route::post('/resetCourseReg', [App\Http\Controllers\Admin\AcademicController::class, 'resetCourseReg'])->name('resetCourseReg')->middleware(['auth:admin']);

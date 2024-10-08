@@ -1369,9 +1369,17 @@ class AcademicController extends Controller
     }
 
 
-    public function courseRegistrations(Request $request){
-        $globalData = $request->input('global_data');
-        $academicSession = $globalData->sessionSetting['academic_session'];
+    public function courseRegistrations(Request $request, $academicSession=null){
+        if(!empty($academicSession)){
+            $academicSession = str_replace('-', '/', $academicSession);
+        }
+
+        if(empty($academicSession)){
+            $globalData = $request->input('global_data');
+            $admissionSession = $globalData->sessionSetting['admission_session'];
+            $academicSession = $globalData->sessionSetting['academic_session'];
+            $applicationSession = $globalData->sessionSetting['application_session'];
+        }
 
         $studentRegistrations = StudentCourseRegistration::with('student')
             ->where('academic_session', $academicSession)
@@ -1383,7 +1391,9 @@ class AcademicController extends Controller
 
         return view('admin.courseRegistrations', [
             'studentRegistrations' => $studentRegistrations,
-            'pendingStudents' => $pendingStudents
+            'pendingStudents' => $pendingStudents,
+            'academicSession' => $academicSession,
+            'sessions' => Session::orderBy('id', 'DESC')->get()
         ]);
     }
 

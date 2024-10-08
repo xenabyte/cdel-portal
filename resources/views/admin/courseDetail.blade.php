@@ -38,6 +38,44 @@
 <!-- end page title -->
 
 <div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-body">
+                <div class="card-header align-items-center d-flex">
+                    <h4 class="card-title mb-0 flex-grow-1">Select Academic Session </h4>
+                </div><!-- end card header -->
+                <form id="courseDetailForm" action="{{ url('/admin/courseDetail/'.$course->id) }}" method="get">
+                    @csrf
+                    <div class="input-group" style="display: flex; flex-wrap: nowrap;">
+                        <select id="sessionSelect" class="form-select select2 selectWithSearch" aria-label="staff" required style="flex-grow: 1;">
+                            <option value="" selected>Select Session</option>
+                            @foreach($sessions as $session)
+                                <option value="{{ str_replace('/', '-', $session->year) }}">{{ $session->year }}</option>
+                            @endforeach
+                        </select>
+                        <button type="submit" class="btn btn-outline-secondary shadow-none" style="white-space: nowrap;">Fetch</button>
+                    </div>
+                </form>
+
+                <script>
+                    document.getElementById('courseDetailForm').addEventListener('submit', function(event) {
+                        event.preventDefault(); // Prevent the form from submitting the usual way
+                
+                        var session = document.getElementById('sessionSelect').value;
+                        if(session) {
+                            // Append the selected session to the form's action URL
+                            var formAction = this.action + '/' + session;
+                            window.location.href = formAction; // Redirect to the new URL
+                        } else {
+                            alert('Please select a session');
+                        }
+                    });
+                </script>
+                
+            </div>
+        </div>
+    </div><!-- end col -->
+
     <div class="col-lg-6">
         <div class="card">
             <div class="card-body">

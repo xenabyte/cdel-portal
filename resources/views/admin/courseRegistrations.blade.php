@@ -19,6 +19,43 @@
 </div>
 
 <div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-body">
+                <div class="card-header align-items-center d-flex">
+                    <h4 class="card-title mb-0 flex-grow-1">Select Academic Session </h4>
+                </div><!-- end card header -->
+                <form id="courseRegForm" action="{{ url('/admin/courseRegistrations/') }}" method="get">
+                    @csrf
+                    <div class="input-group" style="display: flex; flex-wrap: nowrap;">
+                        <select id="sessionSelect" class="form-select select2 selectWithSearch" aria-label="staff" required style="flex-grow: 1;">
+                            <option value="" selected>Select Session</option>
+                            @foreach($sessions as $session)
+                                <option value="{{ str_replace('/', '-', $session->year) }}">{{ $session->year }}</option>
+                            @endforeach
+                        </select>
+                        <button type="submit" class="btn btn-outline-secondary shadow-none" style="white-space: nowrap;">Fetch</button>
+                    </div>
+                </form>
+
+                <script>
+                    document.getElementById('courseRegForm').addEventListener('submit', function(event) {
+                        event.preventDefault(); // Prevent the form from submitting the usual way
+                
+                        var session = document.getElementById('sessionSelect').value;
+                        if(session) {
+                            // Append the selected session to the form's action URL
+                            var formAction = this.action + '/' + session;
+                            window.location.href = formAction; // Redirect to the new URL
+                        } else {
+                            alert('Please select a session');
+                        }
+                    });
+                </script>
+                
+            </div>
+        </div>
+    </div><!-- end col -->
 
     <div class="col-lg-12">
         <div class="card">
@@ -40,6 +77,7 @@
                                             <th scope="col">Matric Number</th>
                                             <th scope="col">Phone Number</th>
                                             <th scope="col">Programme</th>
+                                            <th scope="col">Faculty</th>
                                             <th scope="col">Level</th>
                                             <th scope="col"></th>
                                         </tr>
@@ -52,6 +90,7 @@
                                                 <td>{{ $pendingStudent->matric_number }}</td>
                                                 <td>{{ $pendingStudent->applicant->phone_number }}</td>
                                                 <td>{{ $pendingStudent->programme->name }}</td>
+                                                <td>{{ $pendingStudent->faculty->name }}
                                                 <td>{{ $pendingStudent->academicLevel->level }} Level</td>
                                                 <td>
                                                     <a href="{{ url('admin/studentProfile/'.$pendingStudent->slug) }}" class="btn btn-success m-1"><i class= "ri-user-6-fill"></i> View Student</a>
@@ -71,18 +110,19 @@
     <div class="col-lg-12">
         <div class="card">
             <div class="card-header align-items-center d-flex">
-                <h4 class="card-title mb-0 flex-grow-1">Course Registrations for {{ $pageGlobalData->sessionSetting->academic_session }} Academic session</h4>
+                <h4 class="card-title mb-0 flex-grow-1">Course Registrations for {{ $academicSession }} Academic session</h4>
             </div><!-- end card header -->
 
             <div class="card-body table-responsive">
                 <!-- Bordered Tables -->
-                <table id="buttons-datatables" class="display table table-bordered" style="width:100%">
+                <table id="buttons-datatables2" class="display table table-bordered" style="width:100%">
                     <thead>
                         <tr>
                             <th scope="col">Id</th>
                             <th scope="col">Student Name</th>
                             <th scope="col">Matric Number</th>
                             <th scope="col">Phone Number</th>
+                            <th scope="col">Faculty</th>
                             <th scope="col">Programme</th>
                             <th scope="col">Level</th>
                             <th scope="col">Academic Session</th>
@@ -99,8 +139,9 @@
                                 <td>{{ $studentRegistration->student->applicant->lastname .' '. $studentRegistration->student->applicant->othernames}}</td>
                                 <td>{{ $studentRegistration->student->matric_number }}</td>
                                 <td>{{ $studentRegistration->student->applicant->phone_number }}</td>
+                                <td>{{ $studentRegistration->student->faculty->name }}</td>
                                 <td>{{ $studentRegistration->student->programme->name }}</td>
-                                <td>{{ $studentRegistration->student->academicLevel->level }} Level</td>
+                                <td>{{ $studentRegistration->level_id * 100 }} Level</td>
                                 <td>{{ $studentRegistration->academic_session }}</td>
                                 <td><span class="badge badge-soft-{{ $studentRegistration->level_adviser_status == 1 ? 'success' : 'warning' }}">{{ $studentRegistration->level_adviser_status == 1 ? 'Approved' : 'Pending' }}</span></td>
                                 <td><span class="badge badge-soft-{{ $studentRegistration->hod_status == 1 ? 'success' : 'warning' }}">{{ $studentRegistration->hod_status == 1 ? 'Approved' : 'Pending' }}</span></td>
