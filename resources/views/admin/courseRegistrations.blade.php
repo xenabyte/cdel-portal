@@ -19,6 +19,7 @@
 </div>
 
 <div class="row">
+
     <div class="col-lg-12">
         <div class="card">
             <div class="card-body">
@@ -56,6 +57,67 @@
             </div>
         </div>
     </div><!-- end col -->
+
+
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-body">
+                <div class="accordion" id="default-accordion-example">
+                    <div class="accordion-item shadow">
+                        <h2 class="accordion-header" id="headingTwo">
+                            <button class="accordion-button collapsed bg-primary text-light" type="button" data-bs-toggle="collapse" data-bs-target="#downloadCourseRegs" aria-expanded="false" aria-controls="downloadCourseRegs">
+                                Download Course Registrations
+                            </button>
+                        </h2>
+                        <div id="downloadCourseRegs" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#default-accordion-example">
+                            <div class="accordion-body">
+                                <form action="{{ url('/admin/downloadStudentCourseRegistrations') }}" method="POST">
+                                    @csrf
+                                    <div class="row g-3">
+                                        <div class="col-lg-12">
+                                            <div class="form-floating">
+                                                <select class="form-select" id="programme" name="programme_id" aria-label="programme">
+                                                    <option value="" selected>--Select--</option>
+                                                    @foreach($programmes as $programme)
+                                                        <option value="{{ $programme->id }}">{{ $programme->name }}</option>
+                                                    @endforeach
+                                                </select>
+                                                <label for="department">Programme</label>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="col-lg-12">
+                                            <div class="form-floating">
+                                                <select class="form-select" id="level" name="level_id" aria-label="level">
+                                                    <option value="" selected>--Select--</option>
+                                                    @foreach($academicLevels as $academicLevel)
+                                                        <option value="{{ $academicLevel->id }}">{{ $academicLevel->level }} Level</option>
+                                                    @endforeach
+                                                </select>
+                                                <label for="level">Academic Level</label>
+                                            </div>
+                                        </div>
+            
+                                        <div class="col-lg-12">
+                                            <div class="form-floating">
+                                                <select class="form-select" id="session" name="academic_session" aria-label="Academic Session">
+                                                    <option value="" selected>--Select--</option>
+                                                    @foreach($sessions as $session)<option value="{{ $session->year }}">{{ $session->year }}</option>@endforeach
+                                                </select>
+                                                <label for="session">Academic Session</label>
+                                            </div>
+                                        </div>
+            
+                                        <button type="submit" id="submit-button" class="btn btn-fill btn-primary btn-lg btn-block mb-5">Download Students Course Registrations</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <div class="col-lg-12">
         <div class="card">

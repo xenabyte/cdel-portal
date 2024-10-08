@@ -46,6 +46,7 @@ use Mail;
 use Alert;
 use Log;
 use Carbon\Carbon;
+use ZipArchive;
 
 
 class AcademicController extends Controller
@@ -1389,12 +1390,88 @@ class AcademicController extends Controller
         $studentIds = $studentRegistrations->pluck('student_id');
         $pendingStudents = Student::with('applicant')->whereNotNull('matric_number')->whereNotIn('id', $studentIds)->get();
 
+        $programmes = Programme::get();
+        $academicLevels = AcademicLevel::get();
+
         return view('admin.courseRegistrations', [
             'studentRegistrations' => $studentRegistrations,
             'pendingStudents' => $pendingStudents,
             'academicSession' => $academicSession,
-            'sessions' => Session::orderBy('id', 'DESC')->get()
+            'sessions' => Session::orderBy('id', 'DESC')->get(),
+            'programmes' => $programmes,
+            'academicLevels' => $academicLevels,
         ]);
+    }
+
+    public function downloadStudentCourseRegistrations(Request $request){
+        $validator = Validator::make($request->all(), [
+            'programme_id' => 'required',
+            'level_id' => 'required',
+            'academic_session' => 'required'
+        ]);
+
+        if ($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+
+        $studentIds = Student::where('programme_id', $request->programme_id)->pluck('id');
+
+        $studentRegistrations = StudentCourseRegistration::whereIn('student_id', $studentIds)
+            ->where('academic_session', $request->academic_session)
+            ->where('level_id', $request->level_id)
+            ->get();
+
+        if ($studentRegistrations->isEmpty()) {
+            alert()->error('Error', 'No registrations found for the selected criteria')->persistent('Close');
+            return redirect()->back();
+        }
+        
+        $programme = Programme::find($request->programme_id);
+        $level = $request->level_id * 100 .' level student course registrations '.$request->academic_session;
+
+        $folderName  = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $programme->name.' '.$level)));
+        $folderPath  = public_path('uploads/files/'.$folderName);
+        if (!file_exists($folderPath )) {
+            mkdir($folderPath , 0755, true);
+        }
+
+        // Save each student's file into the folder
+        foreach ($studentRegistrations as $registration) {
+            if ($registration->file && file_exists($registration->file)) {
+                // Get the file from storage
+                $file = $registration->file;
+                // Copy the file into the new folder (use original file name or customize it)
+                File::copy($file, $folderPath . '/' . basename($registration->file));
+            }
+        }
+
+
+      
+       // Now that all files are saved in the folder, we will zip the folder
+        $zipFileName = $folderName .'.zip'; // The name of the ZIP file
+        $zipFilePath = public_path('uploads/files/'.$zipFileName); // Full path to the ZIP file
+
+        $zip = new ZipArchive;
+        $zipOpenResult = $zip->open($zipFilePath, ZipArchive::CREATE | ZipArchive::OVERWRITE); // Use full path
+
+       if ($zipOpenResult === TRUE) {
+            // Add all files from the folder to the ZIP
+            $files = File::files($folderPath);
+            foreach ($files as $file) {
+                $zip->addFile($file->getRealPath(), $file->getFilename());
+            }
+            $zip->close();
+
+            // Delete the folder after zipping to avoid clutter
+            File::deleteDirectory($folderPath);
+
+            // Return the ZIP file as a response for download
+            return response()->download($zipFilePath)->deleteFileAfterSend(true);
+        } else {
+            alert()->error('Error', 'Failed to create ZIP file')->persistent('Close');
+            return redirect()->back();
+        }
     }
 
     public function approveReg(Request $request){
