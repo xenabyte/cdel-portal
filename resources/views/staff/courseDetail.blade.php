@@ -344,7 +344,7 @@
             </div>
             <hr>
             <div class="modal-body">
-                <form action="{{ url('/admin/createLecture') }}" method="post" enctype="multipart/form-data">
+                <form action="{{ url('/staff/createLecture') }}" method="post" enctype="multipart/form-data">
                     @csrf
                     <input type="hidden" name="course_id" value="{{ $course->id }}">
 

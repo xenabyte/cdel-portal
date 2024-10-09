@@ -108,7 +108,7 @@
                                             </div>
                                         </div>
             
-                                        <button type="submit" id="submit-button" class="btn btn-fill btn-primary btn-lg btn-block mb-5">Download Students Course Registrations</button>
+                                        <button type="submit" class="btn btn-fill btn-primary btn-lg btn-block mb-5">Download Students Course Registrations</button>
                                     </div>
                                 </form>
                             </div>
