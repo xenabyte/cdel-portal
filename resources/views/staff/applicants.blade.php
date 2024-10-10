@@ -36,6 +36,7 @@
                             <th scope="col">Id</th>
                             <th scope="col">Application Number</th>
                             <th scope="col">Name</th>
+                            <th scope="col">Age</th>
                             <th scope="col">Gender</th>
                             <th scope="col">Programme</th>
                             <th scope="col">Application Type</th>
@@ -54,6 +55,7 @@
                             <th scope="row">{{ $loop->iteration }}</th>
                             <td>{{ $applicant->application_number }}</td>
                             <td>{{ $applicant->lastname .' '. $applicant->othernames }}</td>
+                            <td>{{ \Carbon\Carbon::parse($applicant->dob)->age }} years</td>
                             <td>{{ $applicant->gender }} </td>
                             <td>{{ !empty($applicant->programme)?$applicant->programme->name:null }}</td>
                             <td>{{ $applicant->application_type }}</td>
@@ -99,6 +101,7 @@
                             <h5 id="candidate-name" class="mb-0">{{ $applicant->lastname .' '. $applicant->othernames }}</h5>
                             <p id="candidate-position" class="text-muted">{{ $applicant->programme?$applicant->programme->name:null }}</p>
                             <p id="candidate-position" class="text-muted">Phone Number: {{ $applicant->phone_number }}</p>
+                            <p id="candidate-position" class="text-muted">Age: {{ \Carbon\Carbon::parse($applicant->dob)->age }} years</p>
                             <div class="vr"></div>
                             <div class="text-muted">Application ID : <span class="text-body fw-medium"> {{ $applicant->application_number }}</span></div>
                             @if($applicant->application_type == 'UTME')

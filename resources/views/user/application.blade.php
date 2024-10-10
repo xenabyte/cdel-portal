@@ -173,10 +173,32 @@
                                                 <div class="col-lg-6">
                                                     <div class="mb-3">
                                                         <label for="dob" class="form-label">Date of Birth</label>
-                                                        <input type="date" class="form-control"  id="dob" name="dob" value="{{ isset($applicant->dob) ? substr($applicant->dob, 0, 10) : '' }}" required />
+                                                        <input type="date" class="form-control" id="dob" name="dob" 
+                                                               value="{{ isset($applicant->dob) ? substr($applicant->dob, 0, 10) : '' }}" 
+                                                               required min="{{ date('Y-m-d', strtotime('-14 years')) }}" />
                                                     </div>
                                                 </div>
-                                                <!--end col-->
+                                                
+                                                <script>
+                                                    document.querySelector('form').addEventListener('submit', function(event) {
+                                                        const dobInput = document.getElementById('dob');
+                                                        const dob = new Date(dobInput.value);
+                                                        const today = new Date();
+                                                        const age = today.getFullYear() - dob.getFullYear();
+                                                        const monthDiff = today.getMonth() - dob.getMonth();
+                                                        
+                                                        // Adjust age if the birthday hasn't occurred yet this year
+                                                        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dob.getDate())) {
+                                                            age--;
+                                                        }
+                                                
+                                                        if (age < 14) {
+                                                            event.preventDefault(); // Prevent form submission
+                                                            alert('You must be at least 14 years old.');
+                                                        }
+                                                    });
+                                                </script>
+                                                
     
                                                 <div class="col-lg-6">
                                                     <div class="mb-3">
