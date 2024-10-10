@@ -33,6 +33,7 @@
                         <tr>
                             <th scope="col">Id</th>
                             <th scope="col">Name</th>
+                            <th scope="col">Age</th>
                             <th scope="col">Application Number</th>
                             <th scope="col">Gender</th>
                             <th scope="col">Programme</th>
@@ -52,6 +53,7 @@
                         <tr>
                             <th scope="row">{{ $loop->iteration }}</th>
                             <td>{{ $student->applicant->lastname .' '. $student->applicant->othernames }}</td>
+                            <td>{{ \Carbon\Carbon::parse($student->applicant->dob)->age }} years</td>
                             <td>{{ $student->applicant->application_number }}</td>
                             <td>{{ $student->applicant->gender }}</td>
                             <td>{{ $student->programme->name }}</td>

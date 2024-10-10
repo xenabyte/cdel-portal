@@ -117,7 +117,7 @@
                                 <div class="card">
                                     <div class="card-body">
                                         <h5 class="card-title mb-3">Bio-Data</h5>
-                                        <form action="{{ url('applicant/saveBioData') }}" method="POST" enctype="multipart/form-data">
+                                        <form action="{{ url('applicant/saveBioData') }}" id="biodata" method="POST" enctype="multipart/form-data">
                                             @csrf
                                             <div class="row">
                                                 <div class="col-lg-12 text-center">
@@ -178,27 +178,6 @@
                                                                required min="{{ date('Y-m-d', strtotime('-14 years')) }}" />
                                                     </div>
                                                 </div>
-                                                
-                                                <script>
-                                                    document.querySelector('form').addEventListener('submit', function(event) {
-                                                        const dobInput = document.getElementById('dob');
-                                                        const dob = new Date(dobInput.value);
-                                                        const today = new Date();
-                                                        const age = today.getFullYear() - dob.getFullYear();
-                                                        const monthDiff = today.getMonth() - dob.getMonth();
-                                                        
-                                                        // Adjust age if the birthday hasn't occurred yet this year
-                                                        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dob.getDate())) {
-                                                            age--;
-                                                        }
-                                                
-                                                        if (age < 14) {
-                                                            event.preventDefault(); // Prevent form submission
-                                                            alert('You must be at least 14 years old.');
-                                                        }
-                                                    });
-                                                </script>
-                                                
     
                                                 <div class="col-lg-6">
                                                     <div class="mb-3">
@@ -1584,4 +1563,24 @@
     <!--end row-->
 
 </div><!-- container-fluid -->
+
+<script>
+    document.querySelector('#biodata').addEventListener('submit', function(event) {
+        const dobInput = document.getElementById('dob');
+        const dob = new Date(dobInput.value);
+        const today = new Date();
+        const age = today.getFullYear() - dob.getFullYear();
+        const monthDiff = today.getMonth() - dob.getMonth();
+        
+        // Adjust age if the birthday hasn't occurred yet this year
+        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dob.getDate())) {
+            age--;
+        }
+
+        if (age < 14) {
+            event.preventDefault(); // Prevent form submission
+            alert('You must be at least 14 years old.');
+        }
+    });
+</script>
 @endsection
