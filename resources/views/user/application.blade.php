@@ -175,7 +175,7 @@
                                                         <label for="dob" class="form-label">Date of Birth</label>
                                                         <input type="date" class="form-control" id="dob" name="dob" 
                                                                value="{{ isset($applicant->dob) ? substr($applicant->dob, 0, 10) : '' }}" 
-                                                               required min="{{ date('Y-m-d', strtotime('-14 years')) }}" />
+                                                               required min="{{ date('Y-m-d', strtotime('-15 years')) }}" />
                                                     </div>
                                                 </div>
     
@@ -1577,9 +1577,9 @@
             age--;
         }
 
-        if (age < 14) {
+        if (age < 15) {
             event.preventDefault(); // Prevent form submission
-            alert('You must be at least 14 years old.');
+            alert('You must be at least 15 years old.');
         }
     });
 </script>
