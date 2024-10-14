@@ -973,7 +973,7 @@ class StaffController extends Controller
             'slug' => $slug,
         ]);
 
-        if(CourseLecture::update($createLectureData)){
+        if($lecture->update($createLectureData)){
             alert()->success('Lecture updated successfully!', '')->persistent('Close');
             return redirect()->back();
         }
