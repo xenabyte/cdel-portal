@@ -653,7 +653,8 @@ class Controller extends BaseController
     }
     
     public function generateMatricAndEmail($student){
-        if(!$student->is_active && empty($student->matric_number)){
+        $isStudentActive = $student->is_active;
+        if(empty($student->matric_number)){
             $sessionSetting = SessionSetting::first();
             $admissionSession = $sessionSetting->admission_session;
 
@@ -689,12 +690,15 @@ class Controller extends BaseController
             $programme->matric_last_number = $newMatric;
             $programme->save();
 
-            $createBandwitdth = $this->createBandwidthAccount($student);
-            $student = Student::find($student->id);
+            if(empty($student->bandwidth_username)){
+                $createBandwitdth = $this->createBandwidthAccount($student);
+                $student = Student::find($student->id);
+            }
             
-            Mail::to($studentPreviousEmail)->send(new StudentActivated($student));
-
-            $this->sendGuardianOnboardingMail($student);
+            if(!$isStudentActive){
+                Mail::to($studentPreviousEmail)->send(new StudentActivated($student));
+                $this->sendGuardianOnboardingMail($student);
+            }
 
             return true;
         }

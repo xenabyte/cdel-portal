@@ -66,6 +66,7 @@
                             <td>{{ ucwords($applicant->status) }} </td>
                             <td>{{ $applicant->created_at }} </td>
                             <td>
+                                <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#edit{{$applicant->id}}" class="btn btn-info m-1"><i class= "ri-edit-box-fill"></i> Edit</a>
                                 @if(!empty($applicant->programme_id))<a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#view{{$applicant->id}}" class="btn btn-secondary m-1"><i class= "ri-eye-fill"></i> View</a>@endif
                                 @if(!empty($applicant->programme_id))<a href="{{ url('admin/applicant/'.$applicant->slug) }}" class="btn btn-primary m-1"><i class= "ri-user-6-fill"></i> View Applicant</a>@endif
                             </td>
@@ -280,6 +281,132 @@
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
+
+
+<div id="edit{{$applicant->id}}" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content border-0 overflow-hidden">
+            <div class="modal-header p-3">
+                <h4 class="card-title mb-0">Update Applicant</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body">
+                <hr>
+                <form action="{{ url('/admin/updateApplicant') }}" method="post" enctype="multipart/form-data">
+                    @csrf
+                    <input name="user_id" type="hidden" value="{{ $applicant->id }}">
+                    
+                    <span class="text-muted"> Bio Data</span><br>
+                    
+                    <div class="row mt-3 g-3">
+                        <!-- Lastname -->
+                        <div class="col-lg-6">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="lastname" name="lastname" value="{{ $applicant->lastname }}">
+                                <label for="lastname">Lastname (Surname)</label>
+                            </div>
+                        </div>
+                
+                        <!-- Othernames -->
+                        <div class="col-lg-6">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="othernames" name="othernames" value="{{ $applicant->othernames }}">
+                                <label for="othernames">Othernames</label>
+                            </div>
+                        </div>
+                
+                        <!-- Email -->
+                        <div class="col-lg-6">
+                            <div class="form-floating">
+                                <input type="email" class="form-control" id="email" name="email" value="{{ $applicant->email }}">
+                                <label for="email">Email</label>
+                            </div>
+                        </div>
+                
+                
+                        <!-- Phone Number -->
+                        <div class="col-lg-6">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="phone_number" name="phone_number" value="{{ $applicant->phone_number }}">
+                                <label for="phone_number">Mobile Number</label>
+                            </div>
+                        </div>
+                
+                
+                        <!-- Date of Birth -->
+                        <div class="col-lg-6">
+                            <div class="form-floating">
+                                <input type="date" class="form-control" id="dob" name="dob" 
+                                                               value="{{ isset($applicant->dob) ? substr($applicant->dob, 0, 10) : '' }}" 
+                                                               required max="{{ date('Y-m-d', strtotime('-15 years')) }}" />
+                                <label for="dob">Date of Birth</label>
+                            </div>
+                        </div>
+                
+                        <!-- Gender -->
+                        <div class="col-lg-6">
+                            <div class="form-floating">
+                                <select class="form-control" id="gender" name="gender">
+                                    <option value="Male" @if($applicant->gender == 'Male') selected @endif>Male</option>
+                                    <option value="Female" @if($applicant->gender == 'Female') selected @endif>Female</option>
+                                </select>
+                                <label for="gender">Gender</label>
+                            </div>
+                        </div>
+                
+                        <!-- Address -->
+                        <div class="col-lg-12">
+                            <div class="form-floating">
+                                <input type="text" class="form-control ckeditor" id="address" name="address" value="{!! $applicant->address !!}">
+                                <label for="address">Address</label>
+                            </div>
+                        </div>
+                
+                        <!-- Academic Information -->
+                        <span class="text-muted"> Academic Information</span><br>
+                
+                        <!-- Faculty -->
+                        <div class="mb-3">
+                            <label for="programme" class="form-label">Select Applicant Programme</label>
+                            <select class="form-select" aria-label="programme" name="programme_id">
+                                @foreach($programmes as $programme)
+                                <option @if($applicant->programe_id == $programme->id) selected @endif value="{{ $programme->id }}">{{ $programme->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                         <div class="col-lg-6">
+                            <div class="form-floating">
+                                <input type="number" class="form-control" id="sitting_no" name="sitting_no" value="{{ $applicant->sitting_no }}">
+                                <label for="sitting_no">Number of Olevel Sitting</label>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-6">
+                            <div class="form-floating">
+                                <input type="jamb_reg_no" class="form-control" id="jamb_reg_no" name="jamb_reg_no" value="{{ $applicant->jamb_reg_no }}">
+                                <label for="jamb_reg_no">Jamb Registration Number</label>
+                            </div>
+                        </div>
+            
+                        
+                
+                        <!-- Submit Button -->
+                        <div class="col-lg-12 border-top border-top-dashed">
+                            <div class="d-flex align-items-start gap-3 mt-3">
+                                <button type="submit" id="submit-button" class="btn btn-primary btn-label right ms-auto nexttab">
+                                    <i class="ri-arrow-right-line label-icon align-middle fs-16 ms-2"></i> Submit
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
 @endforeach
 
 <div id="searchApplicant" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">

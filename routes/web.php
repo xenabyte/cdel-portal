@@ -57,9 +57,6 @@ Route::get('/massEmailCreation', [App\Http\Controllers\CronController::class, 'm
 Route::get('/updateGrades', [App\Http\Controllers\CronController::class, 'updateGrades']);
 
 
-
-
-
 Route::post('/addStaffRecord', [App\Http\Controllers\HomeController::class, 'addStaffRecord'])->name('addStaffRecord');
 Route::get('/staffRecord', [App\Http\Controllers\HomeController::class, 'staffRecord'])->name('staffRecord');
 
@@ -191,8 +188,6 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'admin'],
   Route::post('/resendGuardianOnboarding', [App\Http\Controllers\Admin\StudentController::class, 'resendGuardianOnboarding'])->name('resendGuardianOnboarding')->middleware(['auth:admin']);
   Route::post('/refreshPasscode', [App\Http\Controllers\Admin\StudentController::class, 'refreshPasscode'])->name('refreshPasscode')->middleware(['auth:admin']);
 
-  
-
   Route::get('/faculties', [App\Http\Controllers\Admin\AcademicController::class, 'faculties'])->name('faculties')->middleware(['auth:admin']);
   Route::get('/faculty/{slug}', [App\Http\Controllers\Admin\AcademicController::class, 'faculty'])->name('faculty')->middleware(['auth:admin']);
   Route::post('/saveFaculty', [App\Http\Controllers\Admin\AcademicController::class, 'saveFaculty'])->name('saveFaculty')->middleware(['auth:admin']);
@@ -206,6 +201,8 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'admin'],
   Route::post('/saveProgramme', [App\Http\Controllers\Admin\ProgrammeController::class, 'saveProgramme'])->name('saveProgramme')->middleware(['auth:admin']);
 
   Route::post('/manageAdmission', [App\Http\Controllers\Admin\AdmissionController::class, 'manageAdmission'])->name('manageAdmission')->middleware(['auth:admin']);
+  Route::post('/updateApplicant', [App\Http\Controllers\Admin\AdmissionController::class, 'updateApplicant'])->name('updateApplicant')->middleware(['auth:admin']); 
+  
   
   Route::post('/manageCourseReg', [App\Http\Controllers\Admin\AcademicController::class, 'manageCourseReg'])->name('manageCourseReg')->middleware(['auth:admin']);
   Route::get('/courseRegMgt', [App\Http\Controllers\Admin\AcademicController::class, 'courseRegMgt'])->name('courseRegMgt')->middleware(['auth:admin']);

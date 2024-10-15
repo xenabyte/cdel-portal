@@ -296,4 +296,39 @@ class AdmissionController extends Controller
         return redirect()->back();
     }
 
+    public function updateApplicant(Request $request){
+        $request->validate([
+            'lastname' => 'required|string|max:255',
+            'othernames' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
+            'phone_number' => 'required|string|max:15',
+            'dob' => 'required|date',
+            'gender' => 'required|string|in:Male,Female',
+            'address' => 'required|string|max:255',
+            'programme_id' => 'required|exists:programmes,id', 
+            'sitting_no' => 'required|integer',
+            'jamb_reg_no' => 'nullable|string|max:20',
+        ]);
+
+        // Find the applicant by ID
+        $applicant = Applicant::findOrFail($request->user_id); 
+
+        // Update applicant data
+        $applicant->lastname = $request->input('lastname');
+        $applicant->othernames = $request->input('othernames');
+        $applicant->email = $request->input('email');
+        $applicant->phone_number = $request->input('phone_number');
+        $applicant->dob = $request->input('dob');
+        $applicant->gender = $request->input('gender');
+        $applicant->address = $request->input('address');
+        $applicant->programme_id = $request->input('programme_id');
+        $applicant->sitting_no = $request->input('sitting_no');
+        $applicant->jamb_reg_no = $request->input('jamb_reg_no');
+
+        $applicant->save();
+
+        alert()->success('Changes Saved', '')->persistent('Close');
+        return redirect()->back();
+    }
+
 }

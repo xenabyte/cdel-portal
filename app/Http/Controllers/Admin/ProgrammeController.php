@@ -993,6 +993,7 @@ class ProgrammeController extends Controller
         }
 
         $academicSession = $student->academic_session;
+        $changeMatricNumber = false;
 
         if(!empty($request->level_id) && ($request->level_id != $student->level_id)){
             $student->level_id = $request->level_id;
@@ -1010,12 +1011,21 @@ class ProgrammeController extends Controller
             $student->faculty_id = $request->faculty_id;
         }
 
+        if(empty($student->cgpa) && $student->level_id = 1 && !empty($student->matric_number)){
+            $changeMatricNumber = true;
+            $student->matric_number = null;
+        }
+
         if($student->save()){
             $student->refresh();
             $studentId = $student->id;
             $applicantId = $student->user_id;
             $applicant = User::find($applicantId);
             $applicationType = $applicant->application_type;
+
+            if($changeMatricNumber){
+                $this->generateMatricAndEmail($student);
+            }
 
             $type = Payment::PAYMENT_TYPE_SCHOOL;
 

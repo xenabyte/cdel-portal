@@ -156,7 +156,7 @@
                     </div>
 
                     <div class="mb-3">
-                        <label for="type" class="form-label">Select New Faculty</label>
+                        <label for="type" class="form-label">Select New Department</label>
                         <select class="form-select" aria-label="type" name="department_id" required>
                             <option selected value="">Select Department</option>
                             @foreach($departments as $department)<option value="{{ $department->id }}">Department of {{ $department->name }}</option>@endforeach
