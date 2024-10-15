@@ -1011,7 +1011,7 @@ class ProgrammeController extends Controller
             $student->faculty_id = $request->faculty_id;
         }
 
-        if(empty($student->cgpa) && $student->level_id = 1 && !empty($student->matric_number)){
+        if(empty($student->cgpa) && $student->level_id = 1){
             $changeMatricNumber = true;
             $student->matric_number = null;
         }
