@@ -32,88 +32,76 @@
                     <thead>
                         <tr>
                             <th scope="col">Id</th>
+                            <th scope="col">Application Number</th>
+                            <th scope="col">Matric Number</th>
                             <th scope="col">Name</th>
                             <th scope="col">Age</th>
-                            <th scope="col">Application Number</th>
                             <th scope="col">Gender</th>
                             <th scope="col">Programme</th>
                             <th scope="col">Email</th>
                             <th scope="col">Access Code</th>
                             <th scope="col">Phone Number</th>
-                            <th scope="col">Academic Session</th>
-                            <th scope="col">Admitted Date</th>
-                            <th scope="col">Acceptance Fee Status</th>
                             <th scope="col">Clearance Status</th>
-                            <th scope="col">Admission Letter</th>
-                            <th scope="col"></th>
+                            <th scope="col">Acceptance Fee Status</th>
+                            <th scope="col">Admitted Date</th>
+                            <th scope="col">Action</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach($students as $student)
                         <tr>
                             <th scope="row">{{ $loop->iteration }}</th>
+                            <td>{{ $student->applicant->application_number }}</td>
+                            <td>{{ $student->matric_number }}</td>
                             <td>{{ $student->applicant->lastname .' '. $student->applicant->othernames }}</td>
                             <td>{{ \Carbon\Carbon::parse($student->applicant->dob)->age }} years</td>
-                            <td>{{ $student->applicant->application_number }}</td>
                             <td>{{ $student->applicant->gender }}</td>
                             <td>{{ $student->programme->name }}</td>
                             <td>{{ $student->email }} </td>
                             <td>{{ $student->passcode }} </td>
                             <td>{{ $student->applicant->phone_number }} </td>
-                            <td>{{ $student->academic_session }} </td>
-                            <td>{{ $student->created_at }} </td>
-                            <td>
-                                @if($student->acceptanceFeeStatus)
-                                    <span class="badge bg-success p-2 rounded-pill">Paid</span>
-                                @else
-                                    <span class="badge bg-danger p-2 rounded-pill">Not Yet Paid</span>
-                                @endif
-                            </td>
                             <td>
                                 @if($student->clearance_status == 1) Cleared @else Not Cleared @endif
                             </td>
                             <td>
-                                <a href="{{ asset($student->admission_letter) }}" class="btn btn-danger m-1"> Download Admission Letter</a>
-                                <form action="{{ url('staff/generateAdmissionLetter') }}" method="POST">
-                                    @csrf
-                                    <input name="applicant_id" type="hidden" value="{{$student->user_id}}">
-                                    <hr>
-                                    <button type="submit" id="submit-button" class="btn btn-primary w-100">Regenerate Admission Letter</button>
-                                </form>
+                                @if($student->acceptanceFeeStatus) <span class="badge bg-success p-2 rounded-pill">Paid</span> @else <span class="badge bg-danger p-2 rounded-pill">Not Yet Paid</span> @endif
                             </td>
+                            <td>{{ $student->created_at }} </td>
                             <td>
-                                @if(!empty($student->clearance_status))<a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#view{{$student->applicant->id}}" class="btn btn-secondary m-1"><i class= "ri-eye-fill"></i> View Clearance</a>@endif
-                                <a href="{{ url('staff/student/'.$student->slug) }}" class="btn btn-primary m-1"><i class= "ri-user-6-fill"></i> View Student</a>
-                                {{-- <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#delete{{$student->id}}" class="btn btn-danger m-1"><i class="ri-delete-bin-5-line"></i> Reverse Admission</a> --}}
+                                <div class="dropdown">
+                                    <a href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="ri-more-2-fill"></i>
+                                    </a>
+                                  
+                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                                        @if(!empty($student->clearance_status))<li><a class="dropdown-item link-primary" data-bs-toggle="modal" data-bs-target="#view{{$student->applicant->id}}" href="#"><i class="ri-eye-fill"></i> View Clearance</a></li>@endif
+                                        <li><a class="dropdown-item link-muted" href="{{ url('staff/student/'.$student->slug) }}"><i class="ri-folder-open-fill"></i> Applicant Profile</a></li>
+                                        <li><a class="dropdown-item link-danger" href="#" data-bs-toggle="modal" data-bs-target="#delete{{$student->id}}"><i class="ri-delete-bin-5-line"></i> Reverse Admission</a></li>
+                                        <li><a class="dropdown-item link-success" href="{{ asset($student->admission_letter) }}"><i class="ri-download-cloud-2-fill"></i> Download Admission Letter</a></li>
+                                        {{-- <li>
+                                            <form action="{{ url('staff/generateAdmissionLetter') }}" method="POST">
+                                                @csrf
+                                                <input name="applicant_id" type="hidden" value="{{ $student->user_id }}">
+                                                <button type="submit" id="submit-button" class="btn dropdown-item text-primary w-100" style="background-color: transparent; border: none;">
+                                                    <i class="ri-refresh-fill"></i> Regenerate Admission Letter
+                                                </button>
+                                            </form>
+                                        </li> --}}
+                                        <li>
+                                            <form action="{{ url('staff/refreshPasscode') }}" method="POST">
+                                                @csrf
+                                                <input name="applicant_id" type="hidden" value="{{ $student->user_id }}">
+                                                <button type="submit" id="submit-button" class="btn dropdown-item text-primary w-100" style="background-color: transparent; border: none;">
+                                                    <i class="ri-refresh-line"></i> Refresh Passcode
+                                                </button>
+                                            </form>
+                                        </li>
+                                    </ul>
+                                </div>
                             </td>
                         </tr>
 
-                        <div id="delete{{$student->id}}" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
-                            <div class="modal-dialog modal-dialog-centered modal-lg">
-                                <div class="modal-content">
-                                    <div class="modal-body text-center p-5">
-                                        <div class="text-end">
-                                            <button type="button" class="btn-close text-end" data-bs-dismiss="modal" aria-label="Close"></button>
-                                        </div>
-                                        <div class="mt-2">
-                                            <lord-icon src="https://cdn.lordicon.com/wwneckwc.json" trigger="hover" style="width:150px;height:150px">
-                                            </lord-icon>
-                                            <h4 class="mb-3 mt-4">Are you sure you want to reverse admission for <br/> {{ $student->applicant->lastname .' '. $student->applicant->othernames }}?</h4>
-                                            <form action="{{ url('staff/manageAdmission') }}" method="POST">
-                                                @csrf
-                                                <input name="applicant_id" type="hidden" value="{{$student->user_id}}">
-                                                <input name="status" type="hidden" value="reverse_admission" />
-                                                <hr>
-                                                <button type="submit" id="submit-button" class="btn btn-danger w-100">Yes, Reverse Admission</button>
-                                            </form>
-                                        </div>
-                                    </div>
-                                    <div class="modal-footer bg-light p-3 justify-content-center">
-
-                                    </div>
-                                </div><!-- /.modal-content -->
-                            </div><!-- /.modal-dialog -->
-                        </div><!-- /.modal -->
+                       
                         @endforeach
                     </tbody>
                 </table>
@@ -301,5 +289,33 @@
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
+
+<div id="delete{{$student->id}}" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-body text-center p-5">
+                <div class="text-end">
+                    <button type="button" class="btn-close text-end" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="mt-2">
+                    <lord-icon src="https://cdn.lordicon.com/wwneckwc.json" trigger="hover" style="width:150px;height:150px">
+                    </lord-icon>
+                    <h4 class="mb-3 mt-4">Are you sure you want to reverse admission for <br/> {{ $student->applicant->lastname .' '. $student->applicant->othernames }}?</h4>
+                    <form action="{{ url('staff/manageAdmission') }}" method="POST">
+                        @csrf
+                        <input name="applicant_id" type="hidden" value="{{$student->user_id}}">
+                        <input name="status" type="hidden" value="reverse_admission" />
+                        <hr>
+                        <button type="submit" id="submit-button" class="btn btn-danger w-100">Yes, Reverse Admission</button>
+                    </form>
+                </div>
+            </div>
+            <div class="modal-footer bg-light p-3 justify-content-center">
+
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
 @endforeach
 @endsection

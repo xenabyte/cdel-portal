@@ -226,6 +226,7 @@ class AdmissionController extends Controller
         $globalData = $request->input('global_data');
         $applicationSession = $globalData->sessionSetting['application_session'];
         $admissionSession = $globalData->sessionSetting['admission_session'];
+        $programmes = Programme::get();
     
         $students = Student::with('applicant', 'programme')
             ->where('academic_session', $admissionSession)
@@ -249,7 +250,8 @@ class AdmissionController extends Controller
         }
     
         return view('admin.students', [
-            'students' => $students
+            'students' => $students,
+            'programmes' => $programmes
         ]);
     }
     
