@@ -468,7 +468,7 @@ class StaffController extends Controller
 
         $lecturerDetails = CourseManagement::with('staff')->where('course_id', $id)->where('academic_session', $academicSession)->first(); 
         $registrations = CourseRegistration::where('course_id', $id)->where('academic_session', $academicSession)->get();
-        $courseLectures = CourseLecture::with('lectureAttendance')->where('academic_session', $academicSession)->get();
+        $courseLectures = CourseLecture::with('lectureAttendance')->where('course_id', $id)->where('academic_session', $academicSession)->get();
         $course = Course::find($id);
 
         return view('staff.courseDetail', [
