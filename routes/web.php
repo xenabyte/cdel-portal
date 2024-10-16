@@ -411,7 +411,6 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'admin'],
   Route::post('/markStudentAttendance', [App\Http\Controllers\Admin\ProgrammeController::class, 'markStudentAttendance'])->name('markStudentAttendance')->middleware(['auth:admin']);
   Route::post('/deleteStudentAttendance', [App\Http\Controllers\Admin\ProgrammeController::class, 'deleteStudentAttendance'])->name('deleteStudentAttendance')->middleware(['auth:admin']);
   
-  Route::get('/jobVacancy', [App\Http\Controllers\Admin\CareerController::class, 'jobVacancy'])->name('jobVacancy')->middleware(['auth:admin']);
   Route::post('/postJobVacancy', [App\Http\Controllers\Admin\CareerController::class, 'postJobVacancy'])->name('postJobVacancy')->middleware(['auth:admin']);
   Route::get('/viewJobVacancy/{slug}', [App\Http\Controllers\Admin\CareerController::class, 'viewJobVacancy'])->name('viewJobVacancy')->middleware(['auth:admin']);
   Route::post('/updateJobVacancy', [App\Http\Controllers\Admin\CareerController::class, 'updateJobVacancy'])->name('updateJobVacancy')->middleware(['auth:admin']);
@@ -422,6 +421,9 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'admin'],
   
 
   Route::get('/prospectiveStaff', [App\Http\Controllers\Admin\CareerController::class, 'prospectiveStaff'])->name('prospectiveStaff')->middleware(['auth:admin']);
+  Route::get('/workStudyApplicants', [App\Http\Controllers\Admin\CareerController::class, 'workStudyApplicants'])->name('workStudyApplicants')->middleware(['auth:admin']);
+  Route::get('/jobVacancy', [App\Http\Controllers\Admin\CareerController::class, 'jobVacancy'])->name('jobVacancy')->middleware(['auth:admin']);
+
 
   Route::get('/deans', [App\Http\Controllers\Admin\AcademicController::class, 'deans'])->name('deans')->middleware(['auth:admin']);
   Route::get('/hods', [App\Http\Controllers\Admin\AcademicController::class, 'hods'])->name('hods')->middleware(['auth:admin']);
@@ -766,6 +768,17 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'staff'],
   Route::post('/markStudentAttendance', [App\Http\Controllers\Staff\StaffController::class, 'markStudentAttendance'])->name('markStudentAttendance')->middleware(['auth:staff']);
   Route::post('/deleteStudentAttendance', [App\Http\Controllers\Staff\StaffController::class, 'deleteStudentAttendance'])->name('deleteStudentAttendance')->middleware(['auth:staff']);
   
+  Route::post('/postJobVacancy', [App\Http\Controllers\Staff\CareerController::class, 'postJobVacancy'])->name('postJobVacancy')->middleware(['auth:staff']);
+  Route::get('/viewJobVacancy/{slug}', [App\Http\Controllers\Staff\CareerController::class, 'viewJobVacancy'])->name('viewJobVacancy')->middleware(['auth:staff']);
+  Route::post('/updateJobVacancy', [App\Http\Controllers\Staff\CareerController::class, 'updateJobVacancy'])->name('updateJobVacancy')->middleware(['auth:staff']);
+  Route::post('/deleteJobVacancy', [App\Http\Controllers\Staff\CareerController::class, 'deleteJobVacancy'])->name('deleteJobVacancy')->middleware(['auth:staff']);
+  Route::post('/updateApplicantStatus', [App\Http\Controllers\Staff\CareerController::class, 'updateApplicantStatus'])->name('updateApplicantStatus')->middleware(['auth:staff']);
+  Route::post('/uploadApplicantAppointmentLetter', [App\Http\Controllers\Staff\CareerController::class, 'uploadApplicantAppointmentLetter'])->name('uploadApplicantAppointmentLetter')->middleware(['auth:staff']);
+
+  Route::get('/prospectiveStaff', [App\Http\Controllers\Staff\CareerController::class, 'prospectiveStaff'])->name('prospectiveStaff')->middleware(['auth:staff']);
+  Route::get('/workStudyApplicants', [App\Http\Controllers\Staff\CareerController::class, 'workStudyApplicants'])->name('workStudyApplicants')->middleware(['auth:staff']);
+  Route::get('/jobVacancy', [App\Http\Controllers\Staff\CareerController::class, 'jobVacancy'])->name('jobVacancy')->middleware(['auth:staff']);
+
 
 });
 

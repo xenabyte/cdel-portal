@@ -66,7 +66,7 @@
     }
 
 
-    $unitNames = ['UNIT_REGISTRY', 'UNIT_BURSARY', 'UNIT_STUDENT_CARE', 'UNIT_LIBRARY'];
+    $unitNames = ['UNIT_REGISTRY', 'UNIT_BURSARY', 'UNIT_STUDENT_CARE', 'UNIT_LIBRARY', 'UNIT_WORK_STUDY'];
 
     $units = [];
     foreach ($unitNames as $unitName) {
@@ -77,6 +77,18 @@
                     ->where('unit_head_id', $staff->id)
                     ->exists();
 
+    // Get the Work Study unit constant
+    $workStudyUnit = constant("App\Models\Unit::UNIT_WORK_STUDY");
+
+    $isWorkStudyUnitHeadOrMember = Unit::where('name', $workStudyUnit)
+    ->where(function ($query) use ($staff, $workStudyUnit) {
+        $query->where('unit_head_id', $staff->id) 
+            ->orWhere(function ($query) use ($staff, $workStudyUnit) {
+                $query->where('id', $staff->unit_id);
+            });
+    })
+    ->exists();
+
     $pendingStudentClearanceCount = \App\Models\FinalClearance::where('status', null)->count();
 
     $isFacultyOfficer = Faculty::where('faculty_officer_id', $staff->id)->exists();
@@ -86,7 +98,7 @@
 <head>
 
     <meta charset="utf-8" />
-    <title>{{ env('APP_NAME') }} || Staff Dashboard </title>
+    <title>{{ env('APP_NAME') }} || Staff Dashboard || {{ $isWorkStudyUnitHeadOrMember }}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta content="{{ env('APP_NAME') }} Dashboard" name="description" />
@@ -448,7 +460,7 @@
                             </li> 
                             @endif
 
-                            @if($staffDeanRole || $staffSubDeanRole || $staffHODRole || $staffRegistrarRole ||  $staffHRRole || $staffVCRole)
+                            @if($staffDeanRole || $staffSubDeanRole || $staffHODRole || $staffRegistrarRole ||  $staffHRRole || $staffVCRole || $isWorkStudyUnitHeadOrMember)
                             <li class="nav-item">
                                 <a class="na<li class="nav-item">
                                     <a class="nav-link menu-link" href="#staffManagement" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="staffManagement">
@@ -465,7 +477,9 @@
                                             <li class="nav-item">
                                                 <a href="{{('/staff/attendance')}}" class="nav-link" data-key="t-cover"> Staff Attendance </a>
                                             </li>
+                                            @endif
 
+                                            @if($staffRegistrarRole || $staffHRRole || $staffVCRole || $isWorkStudyUnitHeadOrMember)
                                             <li class="nav-item">
                                                 <a href="#prospectiveStaff" class="nav-link" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="prospectiveStaff" data-key="t-prospectiveStaff"> Staff
                                                 </a>
@@ -474,9 +488,16 @@
                                                         <li class="nav-item">
                                                             <a href="{{ url('/staff/jobVacancy') }}" class="nav-link" data-key="t-basic"> Job Vacancies </a>
                                                         </li>
+                                                        @if($staffRegistrarRole || $staffHRRole || $staffVCRole)
                                                         <li class="nav-item">
                                                             <a href="{{('/staff/prospectiveStaff')}}" class="nav-link" data-key="t-cover">Job Applicants </a>
                                                         </li>
+                                                        @endif
+                                                        @if($isWorkStudyUnitHeadOrMember)
+                                                        <li class="nav-item">
+                                                            <a href="{{('/staff/workStudyApplicants')}}" class="nav-link" data-key="t-cover">Work Study Applicants </a>
+                                                        </li>
+                                                        @endif
                                                     </ul>
                                                 </div>
                                             </li>

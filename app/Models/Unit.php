@@ -14,6 +14,7 @@ class Unit extends Model
     const UNIT_BURSARY = 'Bursary';
     const UNIT_STUDENT_CARE = 'Student Care Services';
     const UNIT_LIBRARY = 'Library';
+    const UNIT_WORK_STUDY = 'Work Study';
 
     protected $fillable = [
         'name',

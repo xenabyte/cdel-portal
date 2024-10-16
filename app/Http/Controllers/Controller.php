@@ -744,14 +744,20 @@ class Controller extends BaseController
 
         // Credit bandwidth
         $bandwidth = new Bandwidth();
-        $creditStudent = $bandwidth->addToDataBalance($bandwidthUsername, $bandwidthAmount);
-        if ($creditStudent && isset($creditStudent['status']) && $creditStudent['status'] === 'success') {
-            Log::info("********************** credit student bandwidth**********************: ". $bandwidthAmount .' - '.$student);
-            $transaction->status = 1;
-            $transaction->update();
+        if(empty($transaction->is_used)){
+            $creditStudent = $bandwidth->addToDataBalance($bandwidthUsername, $bandwidthAmount);
+            if ($creditStudent && isset($creditStudent['status']) && $creditStudent['status'] === 'success') {
+                Log::info("********************** credit student bandwidth**********************: ". $bandwidthAmount .' - '.$student);
+                $transaction->status = 1;
+                $transaction->is_used = 1;
+                $transaction->update();
+
+                return true;
+            }
 
             return true;
         }
+        
         return false;
     }
 

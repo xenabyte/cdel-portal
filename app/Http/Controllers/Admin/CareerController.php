@@ -54,6 +54,15 @@ class CareerController extends Controller
         ]);
     }
 
+
+    public function workStudyApplicants(){
+        $wordStudyApplications = JobApplication::with('workStudyApplicant', 'vacancy')->where('student_id', '!=', NULL)->where('status', 'applied')->get(); 
+
+        return view('admin.workStudyApplicants', [
+            'wordStudyApplications' => $wordStudyApplications
+        ]);
+    }
+
     public function postJobVacancy(Request $request){  
         $validator = Validator::make($request->all(), [
             'title' => 'required|string|max:255',

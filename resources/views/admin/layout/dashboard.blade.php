@@ -556,6 +556,9 @@
                                                 <li class="nav-item">
                                                     <a href="{{('/admin/prospectiveStaff')}}" class="nav-link" data-key="t-cover">Job Applicants </a>
                                                 </li>
+                                                <li class="nav-item">
+                                                    <a href="{{('/admin/workStudyApplicants')}}" class="nav-link" data-key="t-cover">Work Study Applicants </a>
+                                                </li>
                                             </ul>
                                         </div>
                                     </li>
