@@ -938,7 +938,7 @@ class StudentController extends Controller
             return redirect()->back();
         }     
         
-        $checkPendingExit = StudentExit::where('student_id', $student->id)->where(status, null)->first();
+        $checkPendingExit = StudentExit::where('student_id', $student->id)->where('status', null)->first();
 
         if($checkPendingExit){
             alert()->error('Oops!', 'You have a pending exit application, you cant apply for another unless that is attended to, check with student care services')->persistent('Close');

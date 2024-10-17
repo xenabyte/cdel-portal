@@ -866,20 +866,24 @@ class Controller extends BaseController
         return redirect($transactionData->redirect_path);
     }
 
-    public function getPreviousAcademicSession($currentAcademicSession){
-        [$year, $term] = explode('/', $currentAcademicSession);
+    public function getPreviousAcademicSession($currentAcademicSession) {
+        [$year, $nextYear] = explode('/', $currentAcademicSession);
         $year = intval($year);
-        
-        if ($term === '1') {
-            $prevYear = $year - 2;
-        } else {
+    
+        // If we are in the first term, the previous session starts 2 years earlier
+        if ($nextYear == $year + 1) { 
             $prevYear = $year - 1; 
+            $prevNextYear = $nextYear - 1;
+        } else {
+            $prevYear = $year - 2; 
+            $prevNextYear = $nextYear - 2;
         }
-        
-        $prevAcademicSession = $prevYear . '/' . ($year - 1);
-
+    
+        $prevAcademicSession = $prevYear . '/' . $prevNextYear;
+    
         return $prevAcademicSession;
     }
+    
 
     public function classifyCourses($students, $semester, $academicLevel, $academicSession) {
         $classifiedCourses = [];
@@ -1150,6 +1154,40 @@ class Controller extends BaseController
         }
     
         return false;
+    }
+
+    public static function sortCourses($courses) {
+        return $courses->sort(function ($course) {
+            $code = $course->course->code;
+    
+            // Rule 1: Check if the code includes "GST"
+            if (strpos($code, 'GST') !== false) {
+                // Get last digit (assuming last character after space)
+                $lastDigit = intval(substr(strrchr($code, ' '), -1)); 
+                return ['priority' => 1, 'last_digit' => $lastDigit, 'length' => strlen($code), 'code' => $code];
+            }
+    
+            // Rule 4: Check if the code includes "DSA"
+            if (strpos($code, 'DSA') !== false) {
+                return ['priority' => 5, 'length' => strlen($code), 'code' => $code]; // Last rank
+            }
+    
+            // Rule 5: Check if the code includes "TAU" and length is less than 9
+            if (strpos($code, 'TAU') !== false && strlen($code) < 9) {
+                return ['priority' => 4, 'length' => strlen($code), 'code' => $code]; // Just above DSA
+            }
+    
+            // Rule 2: Sort by alphabetical order and last digit
+            $lastDigit = intval(substr(strrchr($code, ' '), -1)); // Assuming last digit is after a space
+            return ['priority' => 3, 'last_digit' => $lastDigit, 'length' => strlen($code), 'code' => $code];
+        })->sortBy(function ($course) {
+            return [
+                $course['priority'], // First by priority
+                $course['last_digit'], // Then by last digit
+                strlen($course['code']), // Then by length of code
+                $course['code'] // Finally by code itself
+            ];
+        })->values(); // Reset keys
     }
     
 }

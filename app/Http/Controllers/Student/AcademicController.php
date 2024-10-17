@@ -98,8 +98,10 @@ class AcademicController extends Controller
 
         $unregisteredRequiredCoursesIds = [];
 
+        $prevAcademicSession = $academicSession;
+
         for ($level = $levelId - 1; $level >= $minLevel; $level--) {
-            $prevAcademicSession = $this->getPreviousAcademicSession($academicSession);
+            $prevAcademicSession = $this->getPreviousAcademicSession($prevAcademicSession);
 
             $allRequiredCourses = CoursePerProgrammePerAcademicSession::where('programme_id', $student->programme_id)
                 ->where('status', '!=', 'Elective')
@@ -114,8 +116,13 @@ class AcademicController extends Controller
                 ->pluck('course_id')
                 ->toArray();
 
-            $unregisteredRequiredCoursesIds = array_merge($unregisteredRequiredCoursesIds, array_diff($allRequiredCoursesIds, $registeredCourseIds));        
+            $missingRequiredCourses = array_diff($allRequiredCoursesIds, $registeredCourseIds);
+
+            $unregisteredRequiredCoursesIds = array_merge($unregisteredRequiredCoursesIds, $missingRequiredCourses);
         }
+
+        $unregisteredRequiredCoursesIds = array_unique($unregisteredRequiredCoursesIds);
+
         
         $checkLateReg = $this->checkLateRegistration();        
         $lateRegTxPay = Payment::with('structures')->where('type', Payment::PAYMENT_LATE_COURSE_REG)->where('academic_session', $academicSession)->first();
@@ -162,7 +169,12 @@ class AcademicController extends Controller
         $failedCourses = CourseRegistration::with('course')->where('student_id', $studentId)->where('grade', 'F')->where('re_reg', null)->get();
         $failedCourseIds = $failedCourses->pluck('programme_course_id')->toArray();
         $carryOverCourses = CoursePerProgrammePerAcademicSession::where('programme_id', $student->programme_id)->whereIn('id', $failedCourseIds)->get();
-        $unregisteredRequiredCourses = CoursePerProgrammePerAcademicSession::where('programme_id', $student->programme_id)->whereIn('course_id', $unregisteredRequiredCoursesIds)->get();
+
+        $unregisteredRequiredCourses = CoursePerProgrammePerAcademicSession::where('programme_id', $student->programme_id)
+         ->whereIn('course_id', $unregisteredRequiredCoursesIds)
+         ->whereIn('level_id', range($minLevel, $levelId - 1))
+         ->get()
+         ->unique('course_id');
 
         $courseRegMgt = CourseRegistrationSetting::first();
 
