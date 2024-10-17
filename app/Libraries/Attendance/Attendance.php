@@ -16,6 +16,7 @@ use App\Models\CourseRegistration;
 
 
 use Carbon\Carbon;
+use Log;
 
 class Attendance
 {
