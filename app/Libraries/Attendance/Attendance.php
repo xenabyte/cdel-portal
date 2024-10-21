@@ -31,13 +31,11 @@ class Attendance
 
             $staffId = 'TAU/'.$row['Enrolled ID'];
             $date = Carbon::parse($row['Date']);
-            $year = carbon::parse($date)->format('Y');
-            $month = carbon::parse($date)->format('M');
+            $formattedDate = Carbon::parse($date)->format('Y-m-d');
+            $year = carbon::parse($formattedDate)->format('Y');
+            $month = carbon::parse($formattedDate)->format('M');
             $clockIn = !empty($row['Clock In'])? $row['Clock In'] : null;
             $clockOut =  !empty($row['Clock Out'])? $row['Clock Out'] : null;
-
-
-
 
             $tauStaffId = str_replace("/", "", $staffId);
 
@@ -47,7 +45,7 @@ class Attendance
             }
 
             //add attendance
-            $checkAttendance = StaffAttandance::where('staff_id', $staff->id)->where('date', $date)->first();
+            $checkAttendance = StaffAttandance::where('staff_id', $staff->id)->where('date', $formattedDate)->first();
 
             if(empty($checkAttendance)){
                 switch($tauStaffId){
@@ -99,7 +97,7 @@ class Attendance
 
                 $newAttendance = ([
                     'staff_id' => $staff->id,
-                    'date' => $date,
+                    'date' => $formattedDate,
                     'year' => $year,
                     'month' => $month,
                     'clock_in' => $clockIn,
