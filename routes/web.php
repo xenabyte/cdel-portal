@@ -89,6 +89,8 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'admin'],
   Route::post('/updateAdmin', [App\Http\Controllers\Admin\AdminController::class, 'updateAdmin'])->name('updateAdmin')->middleware(['auth:admin']);
   Route::post('/deleteAdmin', [App\Http\Controllers\Admin\AdminController::class, 'deleteAdmin'])->name('deleteAdmin')->middleware(['auth:admin']);
 
+  Route::post('/createNewApplicant', [App\Http\Controllers\Admin\AdmissionController::class, 'createNewApplicant'])->name('createNewApplicant')->middleware(['auth:admin']);
+
   Route::get('/messageStudent', [App\Http\Controllers\Admin\CommunicationController::class, 'messageStudent'])->name('messageStudent')->middleware(['auth:admin']);
   Route::get('/messageParent', [App\Http\Controllers\Admin\CommunicationController::class, 'messageParent'])->name('messageParent')->middleware(['auth:admin']);
   Route::get('/messageAllStudent', [App\Http\Controllers\Admin\CommunicationController::class, 'messageAllStudent'])->name('messageAllStudent')->middleware(['auth:admin']);

@@ -299,7 +299,7 @@ class AdmissionController extends Controller
     }
 
     public function updateApplicant(Request $request){
-        $request->validate([
+        $validator = Validator::make($request->all(), [
             'lastname' => 'required|string|max:255',
             'othernames' => 'required|string|max:255',
             'email' => 'required|email|max:255',
@@ -309,8 +309,13 @@ class AdmissionController extends Controller
             'address' => 'required|string|max:255',
             'programme_id' => 'required|exists:programmes,id', 
             'sitting_no' => 'required|integer',
-            'jamb_reg_no' => 'nullable|string|max:20',
+            'jamb_reg_no' => 'nullable|string|max:20'
         ]);
+
+        if($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
 
         // Find the applicant by ID
         $applicant = Applicant::findOrFail($request->user_id); 
@@ -331,6 +336,72 @@ class AdmissionController extends Controller
 
         alert()->success('Changes Saved', '')->persistent('Close');
         return redirect()->back();
+    }
+
+    public function createNewApplicant(Request $request){
+
+        $globalData = $request->input('global_data');
+        $applicationSession = $globalData->sessionSetting['application_session'];
+
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|string|email|max:255|unique:users,email,NULL,id,academic_session,' . $applicationSession,
+            'lastname' => 'required',
+            'password' => 'required|confirmed',
+            'phone_number' => 'required',
+            'othernames' => 'required',
+        ]);
+
+        if($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+        
+        $applicationType = $request->input('applicationType');
+
+        $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $request->lastname .' '. $request->othernames)));
+
+        $applicationPayment = Payment::with('structures')->where('academic_session', $applicationSession)->where('type', Payment::PAYMENT_TYPE_GENERAL_APPLICATION)->first();
+        $interApplicationPayment = Payment::with('structures')->where('academic_session', $applicationSession)->where('type', Payment::PAYMENT_TYPE_INTER_TRANSFER_APPLICATION)->first();
+
+        $payment = $applicationPayment;
+        if($applicationType == 'Inter Transfer Application'){
+            $payment = $interApplicationPayment;
+        }
+        $amount = $payment->structures->sum('amount');
+
+        $newApplicant = ([
+            'slug' => $slug,
+            'email' => strtolower($request->email),
+            'lastname' => ucwords($request->lastname),
+            'phone_number' => $request->phone_number,
+            'othernames' => ucwords($request->othernames),
+            'password' => Hash::make($request->password),
+            'passcode' => $request->password,
+            'academic_session' => $applicationSession,
+            'application_type' => $applicationType,
+        ]);
+
+
+        $reference = $this->generateAccessCode();
+        if($applicant = Applicant::create($newApplicant)){
+            $transaction = Transaction::create([
+                'payment_id' =>  $payment->id,
+                'user_id' => $applicant->id,
+                'amount_payed' => $amount,
+                'payment_method' => 'Manual',
+                'reference' => $reference,
+                'session' => $applicationSession,
+                'status' => 1
+            ]);
+
+            alert()->success('User Created', '')->persistent('Close');
+            return redirect()->back();
+
+        }
+
+        alert()->error('Oops!', 'Something went wrong')->persistent('Close');
+        return redirect()->back();
+        
     }
 
 }
