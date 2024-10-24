@@ -383,6 +383,11 @@ class AdmissionController extends Controller
 
         $reference = $this->generateAccessCode();
         if($applicant = Applicant::create($newApplicant)){
+            $applicationNumber = env('SCHOOL_CODE').'/'.substr($applicationSession, 0, 4).sprintf("%03d", ($applicant->id + env('APPLICATION_STARTING_NUMBER')));
+            $applicant->application_number = $applicationNumber;
+            $applicant->save();
+
+            
             $transaction = Transaction::create([
                 'payment_id' =>  $payment->id,
                 'user_id' => $applicant->id,
