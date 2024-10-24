@@ -30,8 +30,9 @@ class Attendance
         foreach ($records as $row) {
 
             $staffId = 'TAU/'.$row['Enrolled ID'];
-            $date = Carbon::parse($row['Date']);
-            $formattedDate = Carbon::parse($date)->format('Y-m-d');
+            $date = $row['Date'];
+            $date = trim($date); 
+            $formattedDate = Carbon::createFromFormat('d/m/Y', $date)->format('Y-m-d');
             $year = carbon::parse($formattedDate)->format('Y');
             $month = carbon::parse($formattedDate)->format('M');
             $clockIn = !empty($row['Clock In'])? $row['Clock In'] : null;
