@@ -61,7 +61,13 @@
                             <td>{{ $student->passcode }} </td>
                             <td>{{ $student->applicant->phone_number }} </td>
                             <td>
-                                @if($student->clearance_status == 1) Cleared @else Not Cleared @endif
+                                @if($student->clearance_status == 1)
+                                    Cleared
+                                @elseif(!empty($student->clearance_status))
+                                    Pending
+                                @else
+                                    Not Cleared
+                                @endif
                             </td>
                             <td>
                                 @if($student->acceptanceFeeStatus) <span class="badge bg-success p-2 rounded-pill">Paid</span> @else <span class="badge bg-danger p-2 rounded-pill">Not Yet Paid</span> @endif
