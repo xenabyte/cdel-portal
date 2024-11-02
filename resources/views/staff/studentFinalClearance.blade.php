@@ -122,17 +122,45 @@
                                                     </div>
                                                 </div>
                                                 @endif
-                
-                                                <!-- Registrar Activity -->
-                                                @if(!empty($studentsPendingClearance->registrar_id) && $studentsPendingClearance->registrar)
+
+                                                <!-- PPD Activity -->
+                                                @if(!empty($studentsPendingClearance->ppd_id) && $studentsPendingClearance->ppd)
                                                 <div class="acitivity-item d-flex mb-3">
                                                     <div class="flex-shrink-0">
-                                                        <img src="{{ $studentsPendingClearance->registrar->image }}" alt="" class="avatar-xs rounded-circle acitivity-avatar shadow">
+                                                        <img src="{{ $studentsPendingClearance->ppd->image }}" alt="" class="avatar-xs rounded-circle acitivity-avatar shadow">
                                                     </div>
                                                     <div class="flex-grow-1 ms-3">
-                                                        <h6 class="mb-1">{{ $studentsPendingClearance->registrar->title.' '.$studentsPendingClearance->registrar->lastname.' '.$studentsPendingClearance->registrar->othernames }}</h6>
-                                                        <p class="text-muted mb-2 fst-italic">{{ ucwords($studentsPendingClearance->registrar_status) }}</p>
-                                                        <small class="mb-0 text-muted">Comment: {!! strip_tags($studentsPendingClearance->registrar_comment) !!}</small>
+                                                        <h6 class="mb-1">{{ $studentsPendingClearance->ppd->title.' '.$studentsPendingClearance->ppd->lastname.' '.$studentsPendingClearance->ppd->othernames }}</h6>
+                                                        <p class="text-muted mb-2 fst-italic">{{ ucwords($studentsPendingClearance->ppd_status) }}</p>
+                                                        <small class="mb-0 text-muted">Comment: {!! strip_tags($studentsPendingClearance->ppd_comment) !!}</small>
+                                                    </div>
+                                                </div>
+                                                @endif
+
+                                                <!-- Student Care Dean Activity -->
+                                                @if(!empty($studentsPendingClearance->student_care_dean_id) && $studentsPendingClearance->student_care_dean)
+                                                <div class="acitivity-item d-flex mb-3">
+                                                    <div class="flex-shrink-0">
+                                                        <img src="{{ $studentsPendingClearance->student_care_dean->image }}" alt="" class="avatar-xs rounded-circle acitivity-avatar shadow">
+                                                    </div>
+                                                    <div class="flex-grow-1 ms-3">
+                                                        <h6 class="mb-1">{{ $studentsPendingClearance->student_care_dean->title.' '.$studentsPendingClearance->student_care_dean->lastname.' '.$studentsPendingClearance->student_care_dean->othernames }}</h6>
+                                                        <p class="text-muted mb-2 fst-italic">{{ ucwords($studentsPendingClearance->student_care_dean_status) }}</p>
+                                                        <small class="mb-0 text-muted">Comment: {!! strip_tags($studentsPendingClearance->student_care_dean_comment) !!}</small>
+                                                    </div>
+                                                </div>
+                                                @endif
+
+                                                <!-- Library Activity -->
+                                                @if(!empty($studentsPendingClearance->library_id) && $studentsPendingClearance->librarian)
+                                                <div class="acitivity-item d-flex mb-3">
+                                                    <div class="flex-shrink-0">
+                                                        <img src="{{ $studentsPendingClearance->librarian->image }}" alt="" class="avatar-xs rounded-circle acitivity-avatar shadow">
+                                                    </div>
+                                                    <div class="flex-grow-1 ms-3">
+                                                        <h6 class="mb-1">{{ $studentsPendingClearance->librarian->title.' '.$studentsPendingClearance->librarian->lastname.' '.$studentsPendingClearance->librarian->othernames }}</h6>
+                                                        <p class="text-muted mb-2 fst-italic">{{ ucwords($studentsPendingClearance->library_status) }}</p>
+                                                        <small class="mb-0 text-muted">Comment: {!! strip_tags($studentsPendingClearance->library_comment) !!}</small>
                                                     </div>
                                                 </div>
                                                 @endif
@@ -151,33 +179,21 @@
                                                 </div>
                                                 @endif
                 
-                                                <!-- Library Activity -->
-                                                @if(!empty($studentsPendingClearance->library_id) && $studentsPendingClearance->librarian)
+
+                                                <!-- Registrar Activity -->
+                                                @if(!empty($studentsPendingClearance->registrar_id) && $studentsPendingClearance->registrar)
                                                 <div class="acitivity-item d-flex mb-3">
                                                     <div class="flex-shrink-0">
-                                                        <img src="{{ $studentsPendingClearance->librarian->image }}" alt="" class="avatar-xs rounded-circle acitivity-avatar shadow">
+                                                        <img src="{{ $studentsPendingClearance->registrar->image }}" alt="" class="avatar-xs rounded-circle acitivity-avatar shadow">
                                                     </div>
                                                     <div class="flex-grow-1 ms-3">
-                                                        <h6 class="mb-1">{{ $studentsPendingClearance->librarian->title.' '.$studentsPendingClearance->librarian->lastname.' '.$studentsPendingClearance->librarian->othernames }}</h6>
-                                                        <p class="text-muted mb-2 fst-italic">{{ ucwords($studentsPendingClearance->library_status) }}</p>
-                                                        <small class="mb-0 text-muted">Comment: {!! strip_tags($studentsPendingClearance->library_comment) !!}</small>
+                                                        <h6 class="mb-1">{{ $studentsPendingClearance->registrar->title.' '.$studentsPendingClearance->registrar->lastname.' '.$studentsPendingClearance->registrar->othernames }}</h6>
+                                                        <p class="text-muted mb-2 fst-italic">{{ ucwords($studentsPendingClearance->registrar_status) }}</p>
+                                                        <small class="mb-0 text-muted">Comment: {!! strip_tags($studentsPendingClearance->registrar_comment) !!}</small>
                                                     </div>
                                                 </div>
                                                 @endif
-                
-                                                <!-- Student Care Dean Activity -->
-                                                @if(!empty($studentsPendingClearance->student_care_dean_id) && $studentsPendingClearance->student_care_dean)
-                                                <div class="acitivity-item d-flex mb-3">
-                                                    <div class="flex-shrink-0">
-                                                        <img src="{{ $studentsPendingClearance->student_care_dean->image }}" alt="" class="avatar-xs rounded-circle acitivity-avatar shadow">
-                                                    </div>
-                                                    <div class="flex-grow-1 ms-3">
-                                                        <h6 class="mb-1">{{ $studentsPendingClearance->student_care_dean->title.' '.$studentsPendingClearance->student_care_dean->lastname.' '.$studentsPendingClearance->student_care_dean->othernames }}</h6>
-                                                        <p class="text-muted mb-2 fst-italic">{{ ucwords($studentsPendingClearance->student_care_dean_status) }}</p>
-                                                        <small class="mb-0 text-muted">Comment: {!! strip_tags($studentsPendingClearance->student_care_dean_comment) !!}</small>
-                                                    </div>
-                                                </div>
-                                                @endif
+
                                             </div>
                                         </div>
                                     </div>
@@ -206,6 +222,8 @@
                                     $roleStatus = $studentsPendingClearance->bursary_status;
                                 } elseif ($staff->id == $studentsPendingClearance->library_id) {
                                     $roleStatus = $studentsPendingClearance->library_status;
+                                } elseif ($staff->id == $studentsPendingClearance->ppd_id) {
+                                    $roleStatus = $studentsPendingClearance->ppd_status;
                                 }
                             @endphp
                             @if($roleStatus === null || $roleStatus !== 'approved')

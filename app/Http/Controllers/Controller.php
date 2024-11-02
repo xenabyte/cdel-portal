@@ -782,6 +782,7 @@ class Controller extends BaseController
     public function billStudent($transactionData){
 
         $student = Student::with('applicant')->where('id', $transactionData->student_id)->first();
+        $studentId = $student->id;
         
         if(empty($transactionData->transaction_id)){
             if($transaction = Transaction::where('reference',  $transactionData->reference)->where('status',  null)->first()){

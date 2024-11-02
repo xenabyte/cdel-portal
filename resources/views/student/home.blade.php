@@ -653,17 +653,31 @@ $studentRegistrations = $student->courseRegistrationDocument()->orderBy('created
                                                     </div>
                                                 </div>
                                                 @endif
-                
+
                                                 <!-- Registrar Activity -->
-                                                @if(!empty($student->finalClearance->registrar_id) && $student->finalClearance->registrar)
+                                                @if(!empty($student->finalClearance->ppd_id) && $student->finalClearance->ppd)
                                                 <div class="acitivity-item d-flex mb-3">
                                                     <div class="flex-shrink-0">
-                                                        <img src="{{ $student->finalClearance->registrar->image }}" alt="" class="avatar-xs rounded-circle acitivity-avatar shadow">
+                                                        <img src="{{ $student->finalClearance->ppd->image }}" alt="" class="avatar-xs rounded-circle acitivity-avatar shadow">
                                                     </div>
                                                     <div class="flex-grow-1 ms-3">
-                                                        <h6 class="mb-1">{{ $student->finalClearance->registrar->title.' '.$student->finalClearance->registrar->lastname.' '.$student->finalClearance->registrar->othernames }}</h6>
-                                                        <p class="text-muted mb-2 fst-italic">{{ ucwords($student->finalClearance->registrar_status) }}</p>
-                                                        <small class="mb-0 text-muted">Comment: {!! strip_tags($student->finalClearance->registrar_comment) !!}</small>
+                                                        <h6 class="mb-1">{{ $student->finalClearance->ppd->title.' '.$student->finalClearance->ppd->lastname.' '.$student->finalClearance->ppd->othernames }}</h6>
+                                                        <p class="text-muted mb-2 fst-italic">{{ ucwords($student->finalClearance->ppd_status) }}</p>
+                                                        <small class="mb-0 text-muted">Comment: {!! strip_tags($student->finalClearance->ppd_comment) !!}</small>
+                                                    </div>
+                                                </div>
+                                                @endif
+
+                                                <!-- Student Care Dean Activity -->
+                                                @if(!empty($student->finalClearance->student_care_dean_id) && $student->finalClearance->student_care_dean)
+                                                <div class="acitivity-item d-flex mb-3">
+                                                    <div class="flex-shrink-0">
+                                                        <img src="{{ $student->finalClearance->student_care_dean->image }}" alt="" class="avatar-xs rounded-circle acitivity-avatar shadow">
+                                                    </div>
+                                                    <div class="flex-grow-1 ms-3">
+                                                        <h6 class="mb-1">{{ $student->finalClearance->student_care_dean->title.' '.$student->finalClearance->student_care_dean->lastname.' '.$student->finalClearance->student_care_dean->othernames }}</h6>
+                                                        <p class="text-muted mb-2 fst-italic">{{ ucwords($student->finalClearance->student_care_dean_status) }}</p>
+                                                        <small class="mb-0 text-muted">Comment: {!! strip_tags($student->finalClearance->student_care_dean_comment) !!}</small>
                                                     </div>
                                                 </div>
                                                 @endif
@@ -695,20 +709,21 @@ $studentRegistrations = $student->courseRegistrationDocument()->orderBy('created
                                                     </div>
                                                 </div>
                                                 @endif
-                
-                                                <!-- Student Care Dean Activity -->
-                                                @if(!empty($student->finalClearance->student_care_dean_id) && $student->finalClearance->student_care_dean)
+
+                                                <!-- Registrar Activity -->
+                                                @if(!empty($student->finalClearance->registrar_id) && $student->finalClearance->registrar)
                                                 <div class="acitivity-item d-flex mb-3">
                                                     <div class="flex-shrink-0">
-                                                        <img src="{{ $student->finalClearance->student_care_dean->image }}" alt="" class="avatar-xs rounded-circle acitivity-avatar shadow">
+                                                        <img src="{{ $student->finalClearance->registrar->image }}" alt="" class="avatar-xs rounded-circle acitivity-avatar shadow">
                                                     </div>
                                                     <div class="flex-grow-1 ms-3">
-                                                        <h6 class="mb-1">{{ $student->finalClearance->student_care_dean->title.' '.$student->finalClearance->student_care_dean->lastname.' '.$student->finalClearance->student_care_dean->othernames }}</h6>
-                                                        <p class="text-muted mb-2 fst-italic">{{ ucwords($student->finalClearance->student_care_dean_status) }}</p>
-                                                        <small class="mb-0 text-muted">Comment: {!! strip_tags($student->finalClearance->student_care_dean_comment) !!}</small>
+                                                        <h6 class="mb-1">{{ $student->finalClearance->registrar->title.' '.$student->finalClearance->registrar->lastname.' '.$student->finalClearance->registrar->othernames }}</h6>
+                                                        <p class="text-muted mb-2 fst-italic">{{ ucwords($student->finalClearance->registrar_status) }}</p>
+                                                        <small class="mb-0 text-muted">Comment: {!! strip_tags($student->finalClearance->registrar_comment) !!}</small>
                                                     </div>
                                                 </div>
                                                 @endif
+                                                
                                             </div>
                                         </div>
                                     </div>

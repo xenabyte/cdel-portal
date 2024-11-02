@@ -787,7 +787,7 @@ class ClearanceController extends Controller
         $hodId = $student->department->hod_id;
         $deanId = $student->faculty->dean_id;
 
-        $unitNames = ['UNIT_REGISTRY', 'UNIT_BURSARY', 'UNIT_STUDENT_CARE', 'UNIT_LIBRARY'];
+        $unitNames = ['UNIT_REGISTRY', 'UNIT_BURSARY', 'UNIT_STUDENT_CARE', 'UNIT_LIBRARY', 'UNIT_PPD'];
         $unitHeadIds = [];
 
         foreach ($unitNames as $unitName) {
@@ -809,6 +809,7 @@ class ClearanceController extends Controller
             'student_care_dean_id' => $unitHeadIds['UNIT_STUDENT_CARE'],
             'registrar_id' => $unitHeadIds['UNIT_REGISTRY'],
             'bursary_id' => $unitHeadIds['UNIT_BURSARY'],
+            'ppd_id' => $unitHeadIds['UNIT_PPD'],
         ]);
 
         if($clearance = FinalClearance::create($clearanceData)){

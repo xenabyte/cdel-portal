@@ -38,6 +38,10 @@ class FinalClearance extends Model
         'library_status',
         'library_comment',
         'library_approval_date',
+        'ppd_id',
+        'ppd_status',
+        'ppd_comment',
+        'ppd_approval_date',
         'file',
         'status'
     ];
@@ -110,6 +114,16 @@ class FinalClearance extends Model
     public function student_care_dean()
     {
         return $this->belongsTo(Staff::class, 'student_care_dean_id');
+    }
+
+    /**
+     * Get the ppd that owns the FinalClearance
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function ppd()
+    {
+        return $this->belongsTo(Staff::class, 'ppd_id');
     }
 
 

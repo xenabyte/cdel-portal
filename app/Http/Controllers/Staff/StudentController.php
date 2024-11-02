@@ -148,6 +148,8 @@ class StudentController extends Controller
             $role = 'bursary';
         } elseif ($staff->id == $studentFinalClearance->library_id) {
             $role = 'library';
+        } elseif ($staff->id == $studentFinalClearance->ppd_id) {
+            $role = 'ppd';
         } else {
             alert()->error('Error', 'You do not have permission to manage this clearance')->persistent('Close');
             return redirect()->back();
@@ -184,6 +186,11 @@ class StudentController extends Controller
                 $studentFinalClearance->library_comment = $request->comment;
                 $studentFinalClearance->library_approval_date = now();
                 break;
+            case 'ppd':
+                $studentFinalClearance->ppd_status = $request->status;
+                $studentFinalClearance->ppd_comment = $request->comment;
+                $studentFinalClearance->ppd_approval_date = now();
+                break;
         }
         $studentFinalClearance->save();
 
@@ -196,7 +203,8 @@ class StudentController extends Controller
             $studentFinalClearance->student_care_dean_status === 'approved' &&
             $studentFinalClearance->registrar_status === 'approved' &&
             $studentFinalClearance->bursary_status === 'approved' &&
-            $studentFinalClearance->library_status === 'approved'
+            $studentFinalClearance->library_status === 'approved' &&
+            $studentFinalClearance->ppd_status === 'approved'
         ) {
             // All roles have approved, set the clearance status to approved
             $studentFinalClearance->status = 'approved';
