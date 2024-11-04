@@ -128,7 +128,7 @@ $hodRole = array_filter($singleStaffRoles, function ($staffRole) {
                                                     <tr>
                                                         <th scope="row">{{ $loop->iteration }}</th>
                                                         <td>{{ $applicant->lastname .' '. $applicant->othernames }}</td>
-                                                        <td>{{ $applicant->programme->name }}</td>
+                                                        <td>{{ !empty($applicant->programme)? $applicant->programme->name:'Not Available' }}</td>
                                                         <td>{{ $applicant->email }} </td>
                                                         <td>{{ $applicant->phone_number }} </td>
                                                         <td>{{ $applicant->academic_session }} </td>

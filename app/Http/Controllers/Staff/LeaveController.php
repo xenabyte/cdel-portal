@@ -83,7 +83,7 @@ class LeaveController extends Controller
             'purpose' => $request->purpose,
             'start_date' => $request->start_date,
             'end_date' => $request->end_date,
-            'days' => $days,
+            'days' => $days - 1,
             'destination_address' => $request->destination_address,
             'assisting_staff_id' => $request->assisting_staff_id
         ]);
@@ -179,39 +179,39 @@ class LeaveController extends Controller
         $nextSteps = [];
     
         // Start with assisting staff approval
-        if ($staffRole == 'Dean') {
-            // Skip Dean approval, go to HR, then Registrar, then VC
-            $leave->dean_status = 'approved';
-            $leave->dean_comment = 'Skipped approval as the applicant is a Dean.';
-            $nextApprover = $this->getNextApprover(Role::ROLE_HR);
-            $nextSteps = [
-                $this->getNextApprover(Role::ROLE_REGISTRAR),
-                $this->getNextApprover(Role::ROLE_VICE_CHANCELLOR)
-            ];
-        } elseif ($staffRole == 'HOD') {
-            // Skip HOD approval, go to Dean, then HR, then Registrar, then VC
-            $leave->hod_status = 'approved';
-            $leave->hod_comment = 'Skipped approval as the applicant is a HOD.';
-            $nextApprover = strtolower($leave->staff->category) == 'academic'? $this->getNextApprover(Role::ROLE_DEAN):$this->getNextApprover(Role::ROLE_HR);
-
-            $nextSteps = [
-                $this->getNextApprover(Role::ROLE_REGISTRAR),
-                $this->getNextApprover(Role::ROLE_VICE_CHANCELLOR)
-            ];
-        } elseif ($staffRole == 'Other') {
-            if ($role == 'assisting_staff') {
-                $nextApprover = strtolower($leave->staff->category) == 'academic'? $this->getDepartmentHOD($leave->staff->department_id):$this->getUnitHOD($leave->staff->unit_id);
-            } elseif ($role == 'HOD') {
-                if ($leave->staff->category == 'academic') {
-                    $nextApprover = $this->getFacultyDean($leave->staff->faculty_id);
-                } else {
-                    $nextApprover = $this->getNextApprover(Role::ROLE_HR);
-                }
-            } elseif ($role == 'Dean') {
+        if ($role == 'assisting_staff') {
+            if ($staffRole == 'Dean') {
+                // Skip Dean approval, go to HR, then Registrar, then VC
+                $leave->dean_status = 'approved';
+                $leave->dean_comment = 'Skipped approval as the applicant is a Dean.';
                 $nextApprover = $this->getNextApprover(Role::ROLE_HR);
-            } else {
-                $nextApprover = $this->getNextApprover(Role::ROLE_REGISTRAR);
+                $nextSteps = [
+                    $this->getNextApprover(Role::ROLE_REGISTRAR),
+                    $this->getNextApprover(Role::ROLE_VICE_CHANCELLOR)
+                ];
+            } elseif ($staffRole == 'HOD') {
+                // Skip HOD approval, go to Dean, then HR, then Registrar, then VC
+                $leave->hod_status = 'approved';
+                $leave->hod_comment = 'Skipped approval as the applicant is a HOD.';
+                $nextApprover = strtolower($leave->staff->category) == 'academic'? $this->getNextApprover(Role::ROLE_DEAN):$this->getNextApprover(Role::ROLE_HR);
+    
+                $nextSteps = [
+                    $this->getNextApprover(Role::ROLE_REGISTRAR),
+                    $this->getNextApprover(Role::ROLE_VICE_CHANCELLOR)
+                ];
+            } elseif ($staffRole == 'Other') {
+                $nextApprover = strtolower($leave->staff->category) == 'academic'? $this->getDepartmentHOD($leave->staff->department_id):$this->getUnitHOD($leave->staff->unit_id);
             }
+        } elseif ($role == 'hod') {
+            if ($leave->staff->category == 'academic') {
+                $nextApprover = $this->getFacultyDean($leave->staff->faculty_id);
+            } else {
+                $nextApprover = $this->getNextApprover(Role::ROLE_HR);
+            }
+        } elseif ($role == 'dean') {
+            $nextApprover = $this->getNextApprover(Role::ROLE_HR);
+        } else {
+            $nextApprover = $this->getNextApprover(Role::ROLE_REGISTRAR);
         }
 
         $leave->save();
@@ -223,7 +223,6 @@ class LeaveController extends Controller
     
             // Process remaining steps if any
             foreach ($nextSteps as $approver) {
-                log::info($approver);
                 $leave->refresh();
                 $this->updateLeaveApproverSequential($leave, $approver, $status);
             }
