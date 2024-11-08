@@ -13,4 +13,11 @@ class Session extends Model
     protected $fillable = [
         'year',
     ];
+
+    public static function getSessionId ($year) {
+        if($session = self::where('year', $year)->first()) {
+            return $session->id;
+        }
+        return null;
+    }
 }

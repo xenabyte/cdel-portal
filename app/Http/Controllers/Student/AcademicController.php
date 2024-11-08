@@ -719,24 +719,27 @@ class AcademicController extends Controller
             return redirect()->back();
         }
 
-        $checkStudentPayment = $this->checkSchoolFees($student, $academicSession, $levelId);
-        if($checkStudentPayment->status != 'success'){
-            alert()->error('Oops!', 'Something went wrong with School fees')->persistent('Close');
-            return redirect()->back();
-        }
+        $sessionId = Session::getSessionId($academicSession);
 
-        $passTuition = $checkStudentPayment->passTuitionPayment;
-        $fullTuitionPayment = $checkStudentPayment->fullTuitionPayment;
-        $passEightyTuition = $checkStudentPayment->passEightyTuition;
+        if($sessionId > 3) {
+            $checkStudentPayment = $this->checkSchoolFees($student, $academicSession, $levelId);
+            if($checkStudentPayment->status != 'success'){
+                alert()->error('Oops!', 'Something went wrong with School fees')->persistent('Close');
+                return redirect()->back();
+            }
 
-        if($semester == 1 && !$passTuition){
-            alert()->info('Oops!', 'Please be informed that in order to generate your examination results, it is necessary to clear 40% of school fees for '.$academicSession.' acaddemic session')->persistent('Close');
-            return redirect()->back();
-        }
+            $passTuition = $checkStudentPayment->passTuitionPayment;
+            $fullTuitionPayment = $checkStudentPayment->fullTuitionPayment;
 
-        if($semester == 2 && !$fullTuitionPayment){
-            alert()->info('Oops!', 'Please be informed that in order to generate your examination results, it is necessary to clear 100% of school fees for '.$academicSession.' acaddemic session')->persistent('Close');
-            return redirect()->back();
+            if($semester == 1 && !$passTuition){
+                alert()->info('Oops!', 'Please be informed that in order to generate your examination results, it is necessary to clear 40% of school fees for '.$academicSession.' acaddemic session')->persistent('Close');
+                return redirect()->back();
+            }
+
+            if($semester == 2 && !$fullTuitionPayment){
+                alert()->info('Oops!', 'Please be informed that in order to generate your examination results, it is necessary to clear 100% of school fees for '.$academicSession.' acaddemic session')->persistent('Close');
+                return redirect()->back();
+            }
         }
 
         $pdf = new Pdf();

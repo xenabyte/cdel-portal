@@ -128,7 +128,11 @@
         <div class="col-md-12">
             <h4>G.P.A: {{ number_format($totalPoints / $totalCreditUnits, 2) }}</h4>
             <br>
-            <h4>C.G.P.A: {{ $levelCGPA }}</h4>
+            <h4>Total Credit Unit: {{ $cgpaData->levelTotalUnit }}</h4>
+            <br>
+            <h4>Total Credit Point: {{ $cgpaData->levelTotalPoint }}</h4>
+            <br>
+            <h4>C.G.P.A: {{ $cgpaData->levelCGPA }}</h4>
         </div>
     </div>
 </div>

@@ -237,6 +237,11 @@ Class Pdf {
         $allRegisteredGradePoints = $allRegisteredCourses->sum('points');
         $levelCGPA = $allRegisteredGradePoints > 0 ? number_format($allRegisteredGradePoints / $allRegisteredCreditUnits, 2) : 0;
 
+        $cgpaData = new \stdClass();
+        $cgpaData->levelCGPA = $levelCGPA;
+        $cgpaData->levelTotalUnit = $allRegisteredCreditUnits;
+        $cgpaData->levelTotalPoint = $allRegisteredGradePoints;
+
         
         $student->resultSession = $academicSession;
         $student->resultSemester = $semester;
@@ -251,7 +256,7 @@ Class Pdf {
         if (file_exists($fileDirectory)) {
             unlink($fileDirectory);
         } 
-        $data = ['info'=>$student, 'registeredCourses' => $courseRegs, 'levelCGPA' => $levelCGPA];
+        $data = ['info'=>$student, 'registeredCourses' => $courseRegs, 'cgpaData' => $cgpaData];
 
         $pdf = PDFDocument::loadView('pdf.resultCard', $data)
         ->setOptions($options)
