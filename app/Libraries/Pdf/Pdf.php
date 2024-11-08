@@ -179,7 +179,7 @@ Class Pdf {
             ->where('status', 'approved')
             ->get()
             ->filter(function ($courseReg) {
-                return $courseReg->attendancePercentage() > 75;
+                return round($courseReg->attendancePercentage()) > 75;
             });
 
         $dir = public_path('uploads/files/exam_card');
