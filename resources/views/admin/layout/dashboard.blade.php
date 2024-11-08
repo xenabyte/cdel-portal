@@ -577,7 +577,7 @@
                                                     <a href="{{('/admin/attendance')}}" class="nav-link" data-key="t-cover"> Staff Attendance </a>
                                                 </li>
                                                 <li class="nav-item">
-                                                    <a href="{{('/admin/manageLeaves')}}" class="nav-link" data-key="t-cover"> Staff Leave Applications </a>
+                                                    <a href="{{('/admin/leaves')}}" class="nav-link" data-key="t-cover"> Staff Leave Applications </a>
                                                 </li>
                                             </ul>
                                         </div>

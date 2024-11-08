@@ -84,8 +84,6 @@ class CourseRegistration extends Model
         ->where('status', 1) // Assuming 1 means present
         ->count();        
 
-        log::info($totalLectures);
-
         // Calculate the attendance percentage
         if ($totalLectures > 0) {
             return ($attendedLectures / $totalLectures) * 100;

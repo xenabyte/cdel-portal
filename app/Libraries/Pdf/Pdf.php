@@ -177,7 +177,10 @@ Class Pdf {
             ->where('total', null)
             ->where('semester', $semester)
             ->where('status', 'approved')
-            ->get();
+            ->get()
+            ->filter(function ($courseReg) {
+                return $courseReg->attendancePercentage() > 75;
+            });
 
         $dir = public_path('uploads/files/exam_card');
         if (!file_exists($dir)) {
@@ -204,7 +207,7 @@ Class Pdf {
             'no_modify' => true,
         ];
 
-        $student = Student::with('applicant', 'academicLevel', 'faculty', 'department', 'programme')->where('id', $studentId)->first();
+        $student = Student::with('applicant', 'academicLevel', 'faculty', 'department', 'programme', 'registeredCourses')->where('id', $studentId)->first();
         $name = $student->applicant->lastname.' '.$student->applicant->othernames;
         $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $name .' examination result '. $semester .' '. $academicSession)));
 
@@ -216,6 +219,12 @@ Class Pdf {
                 $query->where('semester', $semester);
             })
             ->get();
+
+        
+        $allRegisteredCourses = $student->registeredCourses->where('level_id', '<=', $level)->where('grade', '!=', null);
+        $allRegisteredCreditUnits =  $allRegisteredCourses->sum('course_credit_unit');
+        $allRegisteredGradePoints = $allRegisteredCourses->sum('points');
+        $levelCGPA = $allRegisteredGradePoints > 0 ? number_format($allRegisteredGradePoints / $allRegisteredCreditUnits, 2) : 0;
 
         
         $student->resultSession = $academicSession;
@@ -231,7 +240,7 @@ Class Pdf {
         if (file_exists($fileDirectory)) {
             unlink($fileDirectory);
         } 
-        $data = ['info'=>$student, 'registeredCourses' => $courseRegs];
+        $data = ['info'=>$student, 'registeredCourses' => $courseRegs, 'levelCGPA' => $levelCGPA];
 
         $pdf = PDFDocument::loadView('pdf.resultCard', $data)
         ->setOptions($options)
