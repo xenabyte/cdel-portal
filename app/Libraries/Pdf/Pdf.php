@@ -220,8 +220,19 @@ Class Pdf {
             })
             ->get();
 
+
+        $allRegisteredCourses = $student->registeredCourses->filter(function ($course) use ($level, $semester) {
+            if ($course->level_id < $level) {
+                return true;
+            }
+            
+            if ($course->level_id == $level) {
+                return ($semester == 2) || ($course->semester == 1);
+            }
+            
+            return false;
+        })->where('grade', '!=', null);
         
-        $allRegisteredCourses = $student->registeredCourses->where('level_id', '<=', $level)->where('grade', '!=', null);
         $allRegisteredCreditUnits =  $allRegisteredCourses->sum('course_credit_unit');
         $allRegisteredGradePoints = $allRegisteredCourses->sum('points');
         $levelCGPA = $allRegisteredGradePoints > 0 ? number_format($allRegisteredGradePoints / $allRegisteredCreditUnits, 2) : 0;
