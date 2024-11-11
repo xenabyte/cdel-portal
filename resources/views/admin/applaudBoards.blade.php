@@ -101,7 +101,7 @@
                                                 
                                                                     <div class="mb-3">
                                                                         <label for="description" class="form-label">Description</label>
-                                                                        <textarea name="description" class="form-control" id="description" cols="30" rows="10">{!! $applaud->description !!}</textarea>
+                                                                        <textarea name="description" class="form-control" id="description" cols="30" rows="10">{!! $applaudBoard->description !!}</textarea>
                                                                     </div>
                                                 
                                                                     <div class="mb-3">
