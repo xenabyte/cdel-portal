@@ -802,14 +802,14 @@ $currentHostelAllocation = $student->currentHostelAllocation;
             <div class="modal-body border-top border-top-dashed">
                 @if(!empty($student->accomondationDetails->accommondationPaymentTransactions) && $student->accomondationDetails->accommondationPaymentTransactions->count() > 0)
                 <div class="mt-2">
-                    <lord-icon src="https://cdn.lordicon.com/wwneckwc.json" trigger="hover" style="width:150px;height:150px">
+                    <lord-icon src="https://cdn.lordicon.com/gsqxdxog.json" trigger="hover" style="width:150px;height:150px">
                     </lord-icon>
                     <p class="mb-3 mt-4">You have successfully made payment for accomondation, kindly inform your ward to login he/her portal and select a room of her choice. Thank you.</p>
                 </div>
 
                 @elseif(empty($student->applicant->gender))
                 <div class="mt-2">
-                    <lord-icon src="https://cdn.lordicon.com/wwneckwc.json" trigger="hover" style="width:150px;height:150px">
+                    <lord-icon src="https://cdn.lordicon.com/gsqxdxog.json" trigger="hover" style="width:150px;height:150px">
                     </lord-icon>
                     <p class="mb-3 mt-4">Kindly inform you ward to update gender on he/her portal. Thank you.</p>
                 </div>

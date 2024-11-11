@@ -53,71 +53,7 @@
                                                 <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#delete{{$applaudBoard->id}}" class="link-danger"><i class="ri-delete-bin-5-line"></i></a>
 
 
-                                                <div id="delete{{$applaudBoard->id}}" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
-                                                    <div class="modal-dialog modal-dialog-centered modal-lg">
-                                                        <div class="modal-content">
-                                                            <div class="modal-body text-center p-5">
-                                                                <div class="text-end">
-                                                                    <button type="button" class="btn-close text-end" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                                </div>
-                                                                <div class="mt-2">
-                                                                    <lord-icon src="https://cdn.lordicon.com/wwneckwc.json" trigger="hover" style="width:150px;height:150px">
-                                                                    </lord-icon>
-                                                                    <h4 class="mb-3 mt-4">Are you sure you want to delete <br/> {{ $applaudBoard->title }}?</h4>
-                                                                    <form action="{{ url('/admin/deleteBoard') }}" method="POST">
-                                                                        @csrf
-                                                                        <input name="board_id" type="hidden" value="{{$applaudBoard->id}}">
-                                                                        <hr>
-                                                                        <button type="submit" id="submit-button" class="btn btn-danger w-100">Yes, Delete</button>
-                                                                    </form>
-                                                                </div>
-                                                            </div>
-                                                            <div class="modal-footer bg-light p-3 justify-content-center">
-
-                                                            </div>
-                                                        </div><!-- /.modal-content -->
-                                                    </div><!-- /.modal-dialog -->
-                                                </div><!-- /.modal -->
-
-                                                <div id="edit{{$applaudBoard->id}}" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
-                                                    <div class="modal-dialog modal-dialog-centered modal-lg">
-                                                        <div class="modal-content border-0 overflow-hidden">
-                                                            <div class="modal-header p-3">
-                                                                <h4 class="card-title mb-0">Edit Applaud Board</h4>
-                                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                            </div>
-                                    
-                                                            <div class="modal-body">
-                                                                <form action="{{ url('/admin/updateBoard') }}" method="post" enctype="multipart/form-data">
-                                                                    @csrf
-
-                                                                    <input name="board_id" type="hidden" value="{{$applaudBoard->id}}">
-                                    
-                                                                    <div class="mb-3">
-                                                                        <label for="title" class="form-label">Title</label>
-                                                                        <input type="text" class="form-control"  name="title" id="title" value="{{$applaudBoard->title}}">
-                                                                    </div>
-                                                
-                                                
-                                                                    <div class="mb-3">
-                                                                        <label for="description" class="form-label">Description</label>
-                                                                        <textarea name="description" class="form-control" id="description" cols="30" rows="10">{!! $applaudBoard->description !!}</textarea>
-                                                                    </div>
-                                                
-                                                                    <div class="mb-3">
-                                                                        <label for="image" class="form-label">Image</label>
-                                                                        <input type="file" class="form-control"  name="image" id="image">
-                                                                    </div>
-
-                                                                    <hr>
-                                                                    <div class="text-end">
-                                                                        <button type="submit" id="submit-button" class="btn btn-primary">Save Changes</button>
-                                                                    </div>
-                                                                </form>
-                                                            </div>
-                                                        </div><!-- /.modal-content -->
-                                                    </div><!-- /.modal-dialog -->
-                                                </div><!-- /.modal -->
+                                               
                                             </div>
                                         </td>
                                     </tr>
@@ -134,6 +70,80 @@
     <!-- end row -->
 </div>
 <!-- end page title -->
+
+@foreach ($applaudBoards as $applaudBoard)
+
+<div id="delete{{$applaudBoard->id}}" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-body text-center p-5">
+                <div class="text-end">
+                    <button type="button" class="btn-close text-end" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="mt-2">
+                    <lord-icon src="https://cdn.lordicon.com/gsqxdxog.json" trigger="hover" style="width:150px;height:150px">
+                    </lord-icon>
+                    <h4 class="mb-3 mt-4">Are you sure you want to delete <br/> {{ $applaudBoard->title }}?</h4>
+                    <form action="{{ url('/admin/deleteBoard') }}" method="POST">
+                        @csrf
+                        <input name="board_id" type="hidden" value="{{$applaudBoard->id}}">
+                        <hr>
+                        <button type="submit" id="submit-button" class="btn btn-danger w-100">Yes, Delete</button>
+                    </form>
+                </div>
+            </div>
+            <div class="modal-footer bg-light p-3 justify-content-center">
+
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<div id="edit{{$applaudBoard->id}}" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content border-0 overflow-hidden">
+            <div class="modal-header p-3">
+                <h4 class="card-title mb-0">Edit Applaud Board</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body">
+                <form action="{{ url('/admin/updateBoard') }}" method="post" enctype="multipart/form-data">
+                    @csrf
+
+                    <input name="board_id" type="hidden" value="{{$applaudBoard->id}}">
+
+                    <div class="mb-3">
+                        <label for="title" class="form-label">Title</label>
+                        <input type="text" class="form-control"  name="title" id="title" value="{{$applaudBoard->title}}">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Celebrant Email</label>
+                        <input type="email" class="form-control"  name="email" id="email" value="{{$applaudBoard->email}}">
+                    </div>
+
+
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Description</label>
+                        <textarea name="description" class="form-control" id="description" cols="30" rows="10">{!! $applaudBoard->description !!}</textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="image" class="form-label">Image</label>
+                        <input type="file" class="form-control"  name="image" id="image">
+                    </div>
+
+                    <hr>
+                    <div class="text-end">
+                        <button type="submit" id="submit-button" class="btn btn-primary">Save Changes</button>
+                    </div>
+                </form>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+@endforeach
 
 <div id="add" class="modal fade" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" style="display: none;">
     <!-- Fullscreen Modals -->
@@ -152,6 +162,10 @@
                         <input type="text" class="form-control"  name="title" id="title">
                     </div>
 
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Celebrant Email</label>
+                        <input type="email" class="form-control"  name="email" id="email">
+                    </div>
 
                     <div class="mb-3">
                         <label for="description" class="form-label">Description</label>

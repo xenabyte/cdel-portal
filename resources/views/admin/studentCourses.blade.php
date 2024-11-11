@@ -252,7 +252,7 @@
                                                     <button type="button" class="btn-close text-end" data-bs-dismiss="modal" aria-label="Close"></button>
                                                 </div>
                                                 <div class="mt-2">
-                                                    <lord-icon src="https://cdn.lordicon.com/wwneckwc.json" trigger="hover" style="width:150px;height:150px">
+                                                    <lord-icon src="https://cdn.lordicon.com/gsqxdxog.json" trigger="hover" style="width:150px;height:150px">
                                                     </lord-icon>
                                                     <h4 class="mb-3 mt-4">Are you sure you want to delete <br/> {{ $course->course->code }}?</h4>
                                                     <form action="{{ url('/admin/deleteCourseForStudent') }}" method="POST">

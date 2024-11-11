@@ -52,6 +52,7 @@ class ApplaudController extends Controller
             'title' => 'required',
             'description' => 'required',
             'image' => 'required',
+            'email' => 'required',
         ]);
 
 
@@ -69,6 +70,7 @@ class ApplaudController extends Controller
             'slug' => $slug,
             'title' => $request->title,
             'description' => $request->description,
+            'image'=> $request->email,
         ]);
 
         if($board = Board::create($newBoard)){
@@ -138,6 +140,10 @@ class ApplaudController extends Controller
 
         if(!empty($request->description) && $request->description != $board->description){
             $board->description = $request->description;
+        }
+
+        if(!empty($request->email) && $request->email != $board->email){
+            $board->email = $request->email;
         }
 
         if(!empty($request->image)){
