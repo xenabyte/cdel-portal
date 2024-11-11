@@ -84,6 +84,7 @@ class ApplaudController extends Controller
                 $imageUrl = 'uploads/board/'.$slug.'.'.$request->file('image')->getClientOriginalExtension();
                 $request->file('image')->move('uploads/board', $imageUrl);
                 $board->image = $imageUrl;
+                $board->save();
             }
            
 
