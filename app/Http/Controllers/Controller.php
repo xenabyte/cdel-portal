@@ -816,7 +816,7 @@ class Controller extends BaseController
         $studentBalance = $student->amount_balance;
         $studentNewBalance = $studentBalance - $transactionData->amount;
         $student->amount_balance = $studentNewBalance;
-        $student->update();
+        $student->save();
 
         if($student && !empty($transactionData->student_id)){
             $pdf = new Pdf();

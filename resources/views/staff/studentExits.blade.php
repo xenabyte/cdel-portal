@@ -77,60 +77,6 @@
                                                             <div class="hstack gap-3 fs-15">
                                                                 <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#decline{{$exitApplication->id}}" class="link-danger"><i class="ri-close-circle-fill"></i></a>
                                                                 <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#approve{{$exitApplication->id}}" class="link-success"><i class="ri-checkbox-circle-fill"></i></a>
-                    
-                                                                <div id="decline{{$exitApplication->id}}" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
-                                                                    <div class="modal-dialog modal-dialog-centered">
-                                                                        <div class="modal-content">
-                                                                            <div class="modal-body text-center p-5">
-                                                                                <div class="text-end">
-                                                                                    <button type="button" class="btn-close text-end" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                                                </div>
-                                                                                <div class="mt-2">
-                                                                                    <lord-icon src="https://cdn.lordicon.com/gsqxdxog.json" trigger="loop" colors="primary:#f7b84b,secondary:#f06548" style="width:100px;height:100px"></lord-icon>
-                                                                                    </lord-icon>
-                                                                                    <h4 class="mb-3 mt-4">Are you sure you want to decline <br/> {{ $exitApplication->student->applicant->lastname .' ' . $exitApplication->student->applicant->othernames}} exit application?</h4>
-                                                                                    <form action="{{ url('/staff/manageExitApplication') }}" method="POST">
-                                                                                        @csrf
-                                                                                        <input name="exit_id" type="hidden" value="{{$exitApplication->id}}">
-                                                                                        <input name="action" type="hidden" value="declined">
-                                                                                        <hr>
-                                                                                        <button type="submit" id="submit-button" class="btn btn-danger w-100">Yes, Decline</button>
-                                                                                    </form>
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="modal-footer bg-light p-3 justify-content-center">
-                    
-                                                                            </div>
-                                                                        </div><!-- /.modal-content -->
-                                                                    </div><!-- /.modal-dialog -->
-                                                                </div><!-- /.modal -->
-
-                                                                <div id="approve{{$exitApplication->id}}" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
-                                                                    <div class="modal-dialog modal-dialog-centered">
-                                                                        <div class="modal-content">
-                                                                            <div class="modal-body text-center p-5">
-                                                                                <div class="text-end">
-                                                                                    <button type="button" class="btn-close text-end" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                                                </div>
-                                                                                <div class="mt-2">
-                                                                                    <lord-icon src="https://cdn.lordicon.com/wwneckwc.json" trigger="hover" style="width:150px;height:150px">
-                                                                                    </lord-icon>
-                                                                                    <h4 class="mb-3 mt-4">Are you sure you want to approve <br/> {{ $exitApplication->student->applicant->lastname .' ' . $exitApplication->student->applicant->othernames}} exit application?</h4>
-                                                                                    <form action="{{ url('/staff/manageExitApplication') }}" method="POST">
-                                                                                        @csrf
-                                                                                        <input name="exit_id" type="hidden" value="{{$exitApplication->id}}">
-                                                                                        <input name="action" type="hidden" value="approved">
-                                                                                        <hr>
-                                                                                        <button type="submit" id="submit-button" class="btn btn-danger w-100">Yes, Approve</button>
-                                                                                    </form>
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="modal-footer bg-light p-3 justify-content-center">
-                    
-                                                                            </div>
-                                                                        </div><!-- /.modal-content -->
-                                                                    </div><!-- /.modal-dialog -->
-                                                                </div><!-- /.modal -->
                                                             </div>
                                                         </td>
                                                     </tr>
@@ -157,6 +103,61 @@
     <!-- end col -->
 </div>
 <!-- end row -->
+@foreach($exitApplications as $exitApplication)
+<div id="decline{{$exitApplication->id}}" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body text-center p-5">
+                <div class="text-end">
+                    <button type="button" class="btn-close text-end" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="mt-2">
+                    <lord-icon src="https://cdn.lordicon.com/gsqxdxog.json" trigger="loop" colors="primary:#f7b84b,secondary:#f06548" style="width:100px;height:100px"></lord-icon>
+                    </lord-icon>
+                    <h4 class="mb-3 mt-4">Are you sure you want to decline <br/> {{ $exitApplication->student->applicant->lastname .' ' . $exitApplication->student->applicant->othernames}} exit application?</h4>
+                    <form action="{{ url('/staff/manageExitApplication') }}" method="POST">
+                        @csrf
+                        <input name="exit_id" type="hidden" value="{{$exitApplication->id}}">
+                        <input name="action" type="hidden" value="declined">
+                        <hr>
+                        <button type="submit" id="submit-button" class="btn btn-danger w-100">Yes, Decline</button>
+                    </form>
+                </div>
+            </div>
+            <div class="modal-footer bg-light p-3 justify-content-center">
+
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<div id="approve{{$exitApplication->id}}" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body text-center p-5">
+                <div class="text-end">
+                    <button type="button" class="btn-close text-end" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="mt-2">
+                    <lord-icon src="https://cdn.lordicon.com/wwneckwc.json" trigger="hover" style="width:150px;height:150px">
+                    </lord-icon>
+                    <h4 class="mb-3 mt-4">Are you sure you want to approve <br/> {{ $exitApplication->student->applicant->lastname .' ' . $exitApplication->student->applicant->othernames}} exit application?</h4>
+                    <form action="{{ url('/staff/manageExitApplication') }}" method="POST">
+                        @csrf
+                        <input name="exit_id" type="hidden" value="{{$exitApplication->id}}">
+                        <input name="action" type="hidden" value="approved">
+                        <hr>
+                        <button type="submit" id="submit-button" class="btn btn-danger w-100">Yes, Approve</button>
+                    </form>
+                </div>
+            </div>
+            <div class="modal-footer bg-light p-3 justify-content-center">
+
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+@endforeach
 
 <div id="getApplication" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
     <div class="modal-dialog modal-dialog-centered">

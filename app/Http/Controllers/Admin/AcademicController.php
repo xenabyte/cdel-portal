@@ -1767,9 +1767,10 @@ class AcademicController extends Controller
     public function genExamDocket(Request $request){
         $studentId = $request->student_id;
         $globalData = $request->input('global_data');
-        $admissionSession = $globalData->sessionSetting['admission_session'];
         $academicSession = $globalData->sessionSetting['academic_session'];
         $semester  = $globalData->examSetting['semester'];
+
+        $student = Student::find($studentId);
 
         $courseRegs = CourseRegistration::with('course')
             ->where('student_id', $studentId)

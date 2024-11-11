@@ -108,8 +108,23 @@ class StudentController extends Controller
     }
 
     public function studentFinalClearance(){
+        $staff = Auth::guard('staff')->user();
+        $staffId = $staff->id;
 
-        $students = FinalClearance::with('student', 'librarian', 'hod', 'dean', 'bursary', 'registrar', 'student_care_dean')->where('status', null)->get();
+        $students = FinalClearance::with('student', 'librarian', 'hod', 'dean', 'bursary', 'registrar', 'student_care_dean')
+        ->whereNull('status')
+        ->where(function ($query) use ($staffId) {
+            $query->where('hod_id', $staffId)
+                ->orWhere('dean_id', $staffId)
+                ->orWhere('student_care_dean_id', $staffId)
+                ->orWhere('registrar_id', $staffId)
+                ->orWhere('bursary_id', $staffId)
+                ->orWhere('library_id', $staffId)
+                ->orWhere('ppd_id', $staffId);
+        })
+        ->get();
+
+
 
         return view('staff.studentFinalClearance', [
             'students' => $students,

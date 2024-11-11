@@ -431,6 +431,12 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'admin'],
   Route::get('/hods', [App\Http\Controllers\Admin\AcademicController::class, 'hods'])->name('hods')->middleware(['auth:admin']);
   Route::get('/facultyOfficers', [App\Http\Controllers\Admin\AcademicController::class, 'facultyOfficers'])->name('facultyOfficers')->middleware(['auth:admin']);
 
+  Route::get('/applaudBoards', [App\Http\Controllers\Admin\ApplaudController::class, 'applaudBoards'])->name('applaudBoards')->middleware(['auth:admin']);
+  Route::post('/createBoard', [App\Http\Controllers\Admin\ApplaudController::class, 'createBoard'])->name('createBoard')->middleware(['auth:admin']);
+  Route::get('/applaudBoard/{slug}', [App\Http\Controllers\Admin\ApplaudController::class, 'applaudBoard'])->name('applaudBoard')->middleware(['auth:admin']);
+  Route::post('/updateBoard', [App\Http\Controllers\Admin\ApplaudController::class, 'updateBoard'])->name('updateBoard')->middleware(['auth:admin']);
+  Route::post('/deleteBoard', [App\Http\Controllers\Admin\ApplaudController::class, 'deleteBoard'])->name('deleteBoard')->middleware(['auth:admin']);
+
 
 });
 
