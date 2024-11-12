@@ -18,7 +18,8 @@ class CoursePerProgrammePerAcademicSession extends Model
         'credit_unit',
         'level_id',
         'status',
-        'academic_session'
+        'academic_session',
+        'programme_category_id',
     ];
 
     /**
@@ -69,5 +70,15 @@ class CoursePerProgrammePerAcademicSession extends Model
     public function registrations()
     {
         return $this->hasMany(CourseRegistration::class, 'programme_course_id', 'id');
+    }
+
+    /**
+     * Get the programmeCategory that owns the CourseRegistration
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function programmeCategory()
+    {
+        return $this->belongsTo(ProgrammeCategory::class, 'programme_category_id');
     }
 }

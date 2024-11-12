@@ -3,6 +3,8 @@
 @php
     use App\Models\Unit;
     use App\Models\Faculty;
+    $programmeCategory = new \App\Models\ProgrammeCategory;
+
 
     $staff = Auth::guard('staff')->user();
     $staffDeanRole = false;
@@ -437,27 +439,57 @@
                             </li>
                             @endif
 
+
                             @if($staffAdmissionOfficerRole || $staffPublicRelationRole || $staffRegistrarRole || $staffVCRole || $staffBursaryRole)
                             <li class="nav-item">
                                 <a class="nav-link menu-link" href="#admission" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="admission">
-                                    <i class="mdi mdi-account-box-multiple"></i> <span data-key="t-admission">Admission</span>
+                                    <i class="mdi mdi-account"></i> <span data-key="t-admission">Admissions</span>
                                 </a>
                                 <div class="collapse menu-dropdown" id="admission">
                                     <ul class="nav nav-sm flex-column">
+                                        
                                         <li class="nav-item">
-                                            <a href="{{ url('/staff/applicants') }}" class="nav-link">Applicants</a>
-                                        </li>
+                                            <a href="#undergraduateAdmission" class="nav-link" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="undergraduateAdmission" data-key="t-undergraduateAdmission"> Undergraduate Admission
+                                            </a>
+                                            <div class="collapse menu-dropdown" id="undergraduateAdmission">
+                                                <ul class="nav nav-sm flex-column">
+                                                    <li class="nav-item">
+                                                        <a href="{{ url('/staff/applicants/'.$programmeCategory::UNDERGRADUATE) }}" class="nav-link">Applicants</a>
+                                                    </li>
+                            
+                                                    <li class="nav-item">
+                                                        <a href="{{ url('/staff/students/'.$programmeCategory::UNDERGRADUATE) }}" class="nav-link">Students</a>
+                                                    </li>
                 
-                                        <li class="nav-item">
-                                            <a href="{{ url('/staff/students') }}" class="nav-link">Admitted Students</a>
+                                                    <li class="nav-item">
+                                                        <a href="{{ url('/staff/matriculants/'.$programmeCategory::UNDERGRADUATE) }}" class="nav-link">Matriculating List</a>
+                                                    </li>
+                                                </ul>
+                                            </div>
                                         </li>
 
                                         <li class="nav-item">
-                                            <a href="{{ url('/staff/matriculants') }}" class="nav-link">Matriculating List</a>
+                                            <a href="#topupAdmission" class="nav-link" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="topupAdmission" data-key="t-topupAdmission"> TOPUP Admission
+                                            </a>
+                                            <div class="collapse menu-dropdown" id="topupAdmission">
+                                                <ul class="nav nav-sm flex-column">
+                                                    <li class="nav-item">
+                                                        <a href="{{ url('/staff/applicants/'.$programmeCategory::TOPUP) }}" class="nav-link">Applicants</a>
+                                                    </li>
+                            
+                                                    <li class="nav-item">
+                                                        <a href="{{ url('/staff/students/'.$programmeCategory::TOPUP) }}" class="nav-link">Students</a>
+                                                    </li>
+                
+                                                    <li class="nav-item">
+                                                        <a href="{{ url('/staff/matriculants/'.$programmeCategory::TOPUP) }}" class="nav-link">Matriculating List</a>
+                                                    </li>
+                                                </ul>
+                                            </div>
                                         </li>
                                     </ul>
                                 </div>
-                            </li> 
+                            </li> <!-- end Dashboard Menu -->
                             @endif
 
                             @if($staffDeanRole || $staffSubDeanRole || $staffHODRole || $staffRegistrarRole ||  $staffHRRole || $staffVCRole || $isWorkStudyUnitHeadOrMember)

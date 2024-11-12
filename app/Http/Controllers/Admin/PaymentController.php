@@ -25,6 +25,7 @@ use App\Models\Department;
 use App\Models\AcademicLevel;
 use App\Models\Notification;
 use App\Models\BankAccount;
+use App\Models\ProgrammeCategory;
 
 use App\Libraries\Pdf\Pdf;
 use App\Mail\TransactionMail;
@@ -47,11 +48,15 @@ class PaymentController extends Controller
         $this->middleware(['auth:admin']);
     }
 
-    public function payments(Request $request) {
+    public function payments(Request $request, $programmeCategory) {
         $globalData = $request->input('global_data');
         $academicSession = $globalData->sessionSetting['academic_session'];
 
-        $payments = Payment::with(['structures', 'programme'])->where('academic_session', $academicSession)->get();
+        $programmeCategory = ProgrammeCategory::where('category', $programmeCategory)->first();
+        $programmeCategoryId = $programmeCategory->id;
+
+
+        $payments = Payment::with(['structures', 'programme'])->where('academic_session', $academicSession)->where('programme_category_id', $programmeCategoryId)->get();
         $programmes = Programme::get();
         $levels = Level::get();
         $sessions = Session::orderBy('id', 'DESC')->get();
@@ -60,7 +65,9 @@ class PaymentController extends Controller
             'payments' => $payments,
             'programmes' => $programmes,
             'levels' => $levels,
-            'sessions' => $sessions
+            'sessions' => $sessions,
+            'programmeCategory'=> $programmeCategory,
+
         ]);
     }
 
@@ -111,7 +118,8 @@ class PaymentController extends Controller
             'level_id' => $request->level_id,
             'type' => $request->type,
             'slug' => $slug,
-            'academic_session' => $request->academic_session
+            'academic_session' => $request->academic_session,
+            'programme_category_id'=> $request->programme_category_id,
         ]);
 
         if(Payment::create($addPayment)){
@@ -163,6 +171,10 @@ class PaymentController extends Controller
 
         if(!empty($request->academic_session) &&  $request->academic_session != $payment->academic_session){
             $payment->academic_session = $request->academic_session;
+        }
+
+        if(!empty($request->programme_category_id) && $request->programme_category_id != $payment->programme_category_id){
+            $payment->programme_category_id = $request->programme_category_id;
         }
 
         if($payment->save()){

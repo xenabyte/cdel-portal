@@ -54,6 +54,7 @@ class User extends Authenticatable
         'de_result',
         'de_school_attended',
         'referrer',
+        'programme_category_id',
     ];
 
     /**
@@ -179,5 +180,15 @@ class User extends Authenticatable
     public function transactions()
     {
         return $this->hasMany(Transaction::class, 'user_id');
+    }
+
+    /**
+     * Get the programmeCategory that owns the CourseRegistration
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function programmeCategory()
+    {
+        return $this->belongsTo(ProgrammeCategory::class, 'programme_category_id');
     }
 }

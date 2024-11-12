@@ -32,6 +32,7 @@ class Payment extends Model
         'programme_id',
         'level_id',
         'academic_session',
+        'programme_category_id',
         'is_charged',
     ];
 
@@ -63,6 +64,16 @@ class Payment extends Model
     public function level()
     {
         return $this->belongsTo(AcademicLevel::class, 'level_id');
+    }
+
+    /**
+     * Get the programmeCategory that owns the CourseRegistration
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function programmeCategory()
+    {
+        return $this->belongsTo(ProgrammeCategory::class, 'programme_category_id');
     }
 
     public static function getTotalStructureAmount($id)

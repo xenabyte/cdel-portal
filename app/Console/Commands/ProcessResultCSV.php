@@ -100,7 +100,7 @@ class ProcessResultCSV extends Command
                 $caScore = $row['CA'];
                 $academicSession = $row['AcademicSession'];
                 $courseCode = strtoupper(trim(str_replace("--", "", $row['CourseCode'])));
-                $programmeId = $row['ProgrammeId'];
+                $programmeId = $row['ProgrammeID'];
                 $examScore = $row['Exam'];
                 $totalScore = $row['Total'];
                 $courseStatus = ucwords($row['CourseStatus']);
@@ -112,7 +112,7 @@ class ProcessResultCSV extends Command
 
                 // if($matricNumber != 'TAU/20232966' && $matricNumber != 'TAU/20222722' && $matricNumber != 'TAU/20222755' && $matricNumber != 'TAU/20233419'){
 
-                if($matricNumber == 'TAU/20222755'){
+                // if($matricNumber == 'TAU/20222755'){
                     if(!empty($totalScore)) {
                         if (strpos($matricNumber, 'TAU') !== false) {
                             $applicantId = Applicant::where('application_number', $matricNumber)->value('id');
@@ -167,7 +167,7 @@ class ProcessResultCSV extends Command
                                 }
                             }else{
                                 $programmeCourse = CoursePerProgrammePerAcademicSession::where([
-                                    // 'level_id' => $levelId,
+                                    'level_id' => $levelId,
                                     'course_id' => $course->id,
                                     'programme_id' => $programmeId,
                                     'semester' => $semester,
@@ -248,7 +248,7 @@ class ProcessResultCSV extends Command
                         $studentCourseReg->save();
                         }
                     }
-                }
+                // }
             }
             $this->info('Result processed successfully!');
         } else {

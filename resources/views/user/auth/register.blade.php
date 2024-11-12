@@ -14,7 +14,7 @@
                     <h5 class="alert-heading">Welcome to Application Portal</h5>
                     <hr>
                     <p class="mb-0">
-                        For Admission into Undergraduate Programme <strong> ({{ !empty($pageGlobalData->sessionSetting) ? $pageGlobalData->sessionSetting->application_session : null }} Academic Session) </strong>You are most welcome to study at {{ env('SCHOOL_NAME') }}. We offer candidates excellent and stable academic calendar, comfortable hall of residence, sound morals, entrepreneurial training, skill acquisition, serene and secure environment for learning. <strong> This application form will cost ₦{{ number_format($payment->structures->sum('amount')/100, 2) }}</strong>
+                        {{-- For Admission into Undergraduate Programme <strong> ({{ !empty($pageGlobalData->sessionSetting) ? $pageGlobalData->sessionSetting->application_session : null }} Academic Session) </strong>You are most welcome to study at {{ env('SCHOOL_NAME') }}. We offer candidates excellent and stable academic calendar, comfortable hall of residence, sound morals, entrepreneurial training, skill acquisition, serene and secure environment for learning. <strong> This application form will cost ₦{{ number_format($payment->structures->sum('amount')/100, 2) }}</strong> --}}
                     </p>
                 </div>
             </div>
@@ -31,7 +31,7 @@
                     <h5 class="alert-heading">Welcome to Application Portal</h5>
                     <hr>
                     <p class="mb-0">
-                        For Admission into Undergraduate Programme <strong> ({{ !empty($pageGlobalData->sessionSetting) ? $pageGlobalData->sessionSetting->application_session : null }} Academic Session) </strong>You are most welcome to study at {{ env('SCHOOL_NAME') }}. We offer candidates excellent and stable academic calendar, comfortable hall of residence, sound morals, entrepreneurial training, skill acquisition, serene and secure environment for learning. <strong> This application form will cost ₦{{ number_format($interPayment->structures->sum('amount')/100, 2) }}</strong>
+                        {{-- For Admission into Undergraduate Programme <strong> ({{ !empty($pageGlobalData->sessionSetting) ? $pageGlobalData->sessionSetting->application_session : null }} Academic Session) </strong>You are most welcome to study at {{ env('SCHOOL_NAME') }}. We offer candidates excellent and stable academic calendar, comfortable hall of residence, sound morals, entrepreneurial training, skill acquisition, serene and secure environment for learning. <strong> This application form will cost ₦{{ number_format($interPayment->structures->sum('amount')/100, 2) }}</strong> --}}
                     </p>
                 </div>
             </div>
@@ -124,23 +124,56 @@
 
             <div>
                 <h5>Kindly fill the form below<h5>
+
+
                 <form class="needs-validation" method="POST" novalidate action="{{ url('applicant/register') }}">
                     @csrf
+
                     <div class="p-2 mt-4">
+                        <div class="mb-3 border-top border-top-dashed pt-3">
+                            <label for="programmeCategory" class="form-label">Select Programme Category<span class="text-danger">*</span></label>
+                            <select class="form-select" aria-label="programme_category_id" name="programmeCategory" required onchange="handleProgrammeCategoryChange(event)">
+                                <option value="" selected>Select Programme Category</option>
+                                @if(!empty($advanceStudyProgrammes))
+                                    @foreach($advanceStudyProgrammes as $advanceStudyProgramme)
+                                        <option value="{{ $advanceStudyProgramme['title'] }}">{{ $advanceStudyProgramme['title'] }} Programme</option>
+                                    @endforeach
+                                @endif
+                                @foreach($programmeCategories as $programmeCategory)
+                                    <option value="{{ $programmeCategory->id }}">{{ $programmeCategory->category }} Programme</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Application Type dropdown, hidden by default -->
+                    <div id="applicationTypeContainer" class="p-2 mt-4" style="display: none;">
+                        <div class="mb-3">
+                            <label for="applicationType" class="form-label">Select Application Type<span class="text-danger">*</span></label>
+                            <select class="form-select" aria-label="applicationType" name="applicationType" required onchange="handleApplicationTypeChange(event)">
+                                <option value="" selected>Select Application Type</option>
+                                <option value="General Application">General Application (UTME & DE)</option>
+                                <option value="Inter Transfer Application">Inter Transfer Application</option>
+                            </select>
+                        </div>
+                    </div>
+
+
+
+
+
+
+                    {{-- <div class="p-2 mt-4">
                         <div class="mb-3 border-top border-top-dashed pt-3">
                             <label for="applicationType" class="form-label">Select Application Type<span class="text-danger">*</span></label>
                             <select class="form-select" aria-label="applicationType" name="applicationType" required onchange="handleApplicationTypeChange(event)">
                                 <option value= "" selected>Select Application Type</option>
                                 <option value="General Application">General Application(UTME & DE)</option>
                                 <option value="Inter Transfer Application">Inter Transfer Application</option>
-                                @if(!empty($advanceStudyProgrammes))
-                                    @foreach($advanceStudyProgrammes as $advanceStudyProgramme)
-                                    <option value="{{ $advanceStudyProgramme['title'] }}">{{ $advanceStudyProgramme['title'] }}</option>
-                                    @endforeach
-                                @endif
+                                
                             </select>
                         </div>
-                    </div>
+                    </div> --}}
 
                     <div class="p-2 mt-4 border-top border-top-dashed pt-3" style="display: none" id="applicationForm">
 
@@ -279,6 +312,41 @@
         }
     }
 
+
+    function handleProgrammeCategoryChange(event) {
+        const selectedValue = event.target.value;
+        const advancedStudiesUrl = "{{ env('ADVANCED_STUDIES_URL') }}";
+
+        // Redirect for specific program categories
+        if (["IJMB", "Preliminary Studies"].includes(selectedValue)) {
+            window.location.href = `${advancedStudiesUrl}?programme=${selectedValue}`;
+            return;
+        }
+
+        // Post request to get the programme category details
+        axios.post(`/getProgrammeCategory`, { programme_category_id: selectedValue })
+            .then(response => {
+                const data = response.data;
+
+                if (data.status === 0) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Application Closed',
+                        text: `Application is closed for ${data.category} programme.`,
+                    });
+                    document.getElementById('applicationTypeContainer').style.display = 'none';
+                } else {
+                    // Toggle the Application Type dropdown based on the category
+                    document.getElementById('applicationTypeContainer').style.display = 
+                        (data.category === 'Undergraduate') ? 'block' : 'none';
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching programme category:', error);
+            });
+    }
+
+
     function handleApplicationTypeChange(event) {
         const selectedValue = event.target.value;
         const generalAlert = document.getElementById("generalAlert");
@@ -294,17 +362,30 @@
             applicationForm.style.display = "block";
             generalAlert.style.display = "none";
             interTransferAlert.style.display = "block";
-
-        } else if (selectedValue === "IJMB") {
-            window.location.href = "{{env('ADVANCED_STUDIES_URL')}}?programme="+selectedValue;
-
-        } else if (selectedValue === "Preliminary Studies") {
-            window.location.href = "{{env('ADVANCED_STUDIES_URL')}}?programme="+selectedValue;
         } else {
             generalAlert.style.display = "block";
             interTransferAlert.style.display = "none";
             applicationForm.style.display = "block";
         }
+    }
+
+    function handleApplicationTypeChange(event) {
+        const applicationType = event.target.value;
+        const programmeCategoryId = document.querySelector('select[name="programmeCategory"]').value;
+
+        // Post request to get the payment details
+        axios.post(`/getPayments`, {
+            programme_category_id: programmeCategoryId,
+            applicationType: applicationType 
+        })
+        .then(response => {
+            const data = response.data;
+            // Process and display payment details if needed
+            console.log('Payment details:', data);
+        })
+        .catch(error => {
+            console.error('Error fetching payment details:', error);
+        });
     }
 
     // function handleProgrammeChange(event) {

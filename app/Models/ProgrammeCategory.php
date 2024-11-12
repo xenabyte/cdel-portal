@@ -10,7 +10,22 @@ class ProgrammeCategory extends Model
 {
     use HasFactory, SoftDeletes;
 
+    const DIPLOMA = 'Diploma';
+    const UNDERGRADUATE = 'Undergraduate';
+    const TOPUP = 'Topup';
+    const MASTER = 'Master';
+    const DOCTORATE = 'Doctorate';
+
     protected $fillable = [
         'category',
     ];
+
+    public  static function getProgrammeCategory($programmeCategory){
+        if($category = self::where('category', $programmeCategory)->first()) {
+            return $category->id;
+        }
+        return null;
+    }
+    
+    
 }

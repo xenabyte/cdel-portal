@@ -23,6 +23,7 @@ use App\Models\Faculty;
 use App\Models\Department;
 use App\Models\BankAccount;
 use App\Models\TestApplicant;
+use App\Models\ProgrammeCategory;
 
 
 use App\Mail\ApplicationMail;
@@ -57,17 +58,33 @@ class ApplicationController extends Controller
 
     public function index(Request $request)
     {
-        $userId = Auth::guard('user')->user()->id;
+        $user = Auth::guard('user')->user()->id;
+        $userId = $user->id;
         $globalData = $request->input('global_data');
         $applicationSession = $globalData->sessionSetting['application_session'];
         
         $applicant = Applicant::with('programme', 'olevels', 'guardian')->where('id', $userId)->first();
+        $applicantProgrammeCategoryId = $applicant->programme_category_id;
 
-        $applicationPayment = Payment::with('structures')->where('type', Payment::PAYMENT_TYPE_GENERAL_APPLICATION)->where('academic_session', $applicationSession)->first();
-        $interApplicationPayment = Payment::with('structures')->where('type', Payment::PAYMENT_TYPE_INTER_TRANSFER_APPLICATION)->where('academic_session', $applicationSession)->first();
+        $programmeCategories = ProgrammeCategory::get();
 
-        $paymentId = $applicationPayment->id;
-        $interPaymentId = $interApplicationPayment->id;
+        $commonConditions = [
+            'programme_category_id' => $applicantProgrammeCategoryId,
+            'academic_session' => $applicationSession
+        ];
+        
+        $applicationPayments = Payment::with('structures')
+            ->where($commonConditions)
+            ->where('type', Payment::PAYMENT_TYPE_GENERAL_APPLICATION)
+            ->get();
+        
+        $interApplicationPayments = Payment::with('structures')
+            ->where($commonConditions)
+            ->where('type', Payment::PAYMENT_TYPE_INTER_TRANSFER_APPLICATION)
+            ->get();
+
+        $paymentId = $applicationPayments->id;
+        $interPaymentId = $interApplicationPayments->id;
 
         $transaction = Transaction::where('user_id', $userId)
         ->where('session', $applicationSession)
@@ -82,8 +99,7 @@ class ApplicationController extends Controller
             return view('user.auth.register', [
                 'programmes' => $this->programmes,
                 'applicant' => $applicant,
-                'payment' => $applicationPayment,
-                'interPayment' => $interApplicationPayment
+                'programmeCategories' => $programmeCategories
             ]);
         }
 
@@ -147,15 +163,13 @@ class ApplicationController extends Controller
         $advanceStudy = new AdvanceStudy();
         $advanceStudyProgrammes = $advanceStudy->getProgrammes();
 
+        $programmeCategories = ProgrammeCategory::get();
 
-        $applicationPayment = Payment::with('structures')->where('type', Payment::PAYMENT_TYPE_GENERAL_APPLICATION)->where('academic_session', $applicationSession)->first();
-        $interApplicationPayment = Payment::with('structures')->where('type', Payment::PAYMENT_TYPE_INTER_TRANSFER_APPLICATION)->where('academic_session', $applicationSession)->first();
 
         return view('user.auth.register', [
             'programmes' => $this->programmes,
-            'payment' => $applicationPayment,
-            'interPayment' => $interApplicationPayment,
             'advanceStudyProgrammes' => $advanceStudyProgrammes,
+            'programmeCategories'=> $programmeCategories,
         ]);
     }
 
@@ -370,12 +384,29 @@ class ApplicationController extends Controller
         $applicationSession = $globalData->sessionSetting['application_session'];
         $applicationType = $request->input('applicationType');
 
-        $applicationPayment = Payment::with('structures')->where('academic_session', $applicationSession)->where('type', Payment::PAYMENT_TYPE_GENERAL_APPLICATION)->first();
-        $interApplicationPayment = Payment::with('structures')->where('academic_session', $applicationSession)->where('type', Payment::PAYMENT_TYPE_INTER_TRANSFER_APPLICATION)->first();
+        $applicant = Applicant::with('programme', 'olevels', 'guardian')->where('id', $userId)->first();
+        $applicantProgrammeCategoryId = $applicant->programme_category_id;
 
-        $payment = $applicationPayment;
+        $programmeCategories = ProgrammeCategory::get();
+
+        $commonConditions = [
+            'programme_category_id' => $applicantProgrammeCategoryId,
+            'academic_session' => $applicationSession
+        ];
+        
+        $applicationPayments = Payment::with('structures')
+            ->where($commonConditions)
+            ->where('type', Payment::PAYMENT_TYPE_GENERAL_APPLICATION)
+            ->first();
+        
+        $interApplicationPayments = Payment::with('structures')
+            ->where($commonConditions)
+            ->where('type', Payment::PAYMENT_TYPE_INTER_TRANSFER_APPLICATION)
+            ->first();
+
+        $payment = $applicationPayments;
         if($applicationType == 'Inter Transfer Application'){
-            $payment = $interApplicationPayment;
+            $payment = $interApplicationPayments;
         }
 
         $referralCode = $request->referrer;
@@ -406,8 +437,7 @@ class ApplicationController extends Controller
                 return view('user.auth.register', [
                     'programmes' => $this->programmes,
                     'applicant' => $applicant,
-                    'payment' => $applicationPayment,
-                    'interPayment' => $interApplicationPayment,
+                    'programmeCategories' => $programmeCategories
                 ]);
             }
         }
@@ -470,6 +500,7 @@ class ApplicationController extends Controller
             'academic_session' => $applicationSession,
             'redirect_path' => 'user.auth.login',
             'payment_Type' => $paymentType,
+            'programme_category_id' => $request->programme_category_id,
         ];
 
         if(strtolower($paymentGateway) == 'paystack') {
@@ -546,7 +577,8 @@ class ApplicationController extends Controller
                 'application_type' => $applicationType == 'Inter Transfer Application'? $applicationType : null,
                 'academic_session' => $applicationSession,
                 'reference' => $reference,
-            ])->id;
+                'programme_category_id' => $request->programme_category_id,
+                ])->id;
 
             $metaData = [
                 'test_applicant_id' => $testApplicantId,

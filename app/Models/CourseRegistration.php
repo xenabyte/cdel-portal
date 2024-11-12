@@ -27,7 +27,8 @@ class CourseRegistration extends Model
         'result_approval_id',
         'programme_course_id',
         're_reg',
-        'status'
+        'status',
+        'programme_category_id',
     ];
 
     /**
@@ -58,6 +59,16 @@ class CourseRegistration extends Model
     public function academicLevel()
     {
         return $this->belongsTo(AcademicLevel::class, 'level_id');
+    }
+
+    /**
+     * Get the programmeCategory that owns the CourseRegistration
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function programmeCategory()
+    {
+        return $this->belongsTo(ProgrammeCategory::class, 'programme_category_id');
     }
 
 

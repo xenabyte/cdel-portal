@@ -25,6 +25,7 @@ use App\Models\Faculty;
 use App\Models\Staff;
 use App\Models\StudentExit;
 use App\Models\Unit;
+use App\Models\ProgrammeCategory;
 
 use App\Mail\NotificationMail;
 
@@ -385,6 +386,40 @@ class HomeController extends Controller
         $departments = Department::where('faculty_id', $id)->get();
 
         return $departments;
+    }
+
+    public function getPayments(Request $request){
+
+        $globalData = $request->input('global_data');
+        $applicationSession = $globalData->sessionSetting['application_session'];
+
+        $commonConditions = [
+            'programme_category_id' => $request->programme_category_id,
+            'academic_session' => $applicationSession
+        ];
+        
+        $applicationPayment = Payment::with('structures')
+            ->where($commonConditions)
+            ->where('type', Payment::PAYMENT_TYPE_GENERAL_APPLICATION)
+            ->first();
+        
+        $interApplicationPayment = Payment::with('structures')
+            ->where($commonConditions)
+            ->where('type', Payment::PAYMENT_TYPE_INTER_TRANSFER_APPLICATION)
+            ->first();
+
+        $payment = new \stdClass();
+        $payment->payment = $applicationPayment;
+        $payment->interApplicationPayments = $interApplicationPayment;
+
+        return $payment;
+
+    }
+
+    public function getProgrammeCategory(Request $request){
+        $programmeCategory = ProgrammeCategory::find($request->programme_category_id);
+        
+        return $programmeCategory;
     }
 
     public function csrfErrorPage(){ 

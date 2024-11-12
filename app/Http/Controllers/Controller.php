@@ -916,6 +916,7 @@ class Controller extends BaseController
         $referralCode = isset($applicantData['data']['metadata']['referrer']) ? $applicantData['data']['metadata']['referrer'] : (isset($applicantData['data']['meta']['referrer']) ? $applicantData['data']['meta']['referrer'] : null);
         $applicationType = isset($applicantData['data']['metadata']['application_type']) ? $applicantData['data']['metadata']['application_type'] : (isset($applicantData['data']['meta']['application_type']) ? $applicantData['data']['meta']['application_type'] : null);
         $txRef = isset($applicantData['data']['reference']) ? $applicantData['data']['reference'] : (isset($applicantData['data']['meta']['reference']) ? $applicantData['data']['meta']['reference'] : null);
+        $programmeCategoryId = isset($applicantData['data']['programme_category_id']) ? $applicantData['data']['programme_category_id'] : (isset($applicantData['data']['meta']['programme_category_id']) ? $applicantData['data']['meta']['programme_category_id'] : null);
         $applicant = null;
 
 
@@ -933,6 +934,7 @@ class Controller extends BaseController
             $referralCode = $testApplicant->referrer;
             $applicationType = $testApplicant->application_type;
             $txRef = $testApplicant->reference;
+            $programmeCategoryId = $testApplicant->programme_category_id;
         }
         
 
@@ -948,6 +950,7 @@ class Controller extends BaseController
             'partner_id' => $partnerId,
             'referrer' => $referralCode,
             'application_type' => $applicationType,
+            'programme_category_id' => $programmeCategoryId
         ]);
 
         if(!$checkApplicant = User::where('email', strtolower($email))->where('academic_session', $applicationSession)->first()){

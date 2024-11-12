@@ -21,6 +21,7 @@ use App\Models\NextOfKin;
 use App\Models\AcademicLevel;
 use App\Models\Student;
 use App\Models\Payment;
+use App\Models\ProgrammeCategory;
 
 
 
@@ -54,17 +55,29 @@ class AdmissionController extends Controller
         $this->programmes = Programme::get();
     }
 
-    public function applicants(Request $request){
+    public function applicants(Request $request, $programmeCategory){
         $globalData = $request->input('global_data');
         $academicSession = $globalData->sessionSetting['application_session'];
-        $applicants = Applicant::where('academic_session', $academicSession)->orderBy('status', 'DESC')->get();
+        $programmeCategory = ProgrammeCategory::where('category', $programmeCategory)->first();
+        $programmeCategoryId = $programmeCategory->id;
+
+        $applicants = Applicant::where('programme_category_id', $programmeCategoryId)
+        ->where(function($query) {
+            $query->where('status', 'submitted')
+                  ->orWhereNull('status');
+        })
+        ->where('academic_session', $academicSession)
+        ->orderBy('status', 'DESC')
+        ->get();
+
         $programmes = Programme::get(); 
         $levels = AcademicLevel::get();
 
         return view('staff.applicants', [
             'applicants' => $applicants,
             'programmes' => $programmes,
-            'levels' => $levels
+            'levels' => $levels,
+            'programmeCategory' => $programmeCategory
         ]);
     }
 
@@ -94,14 +107,22 @@ class AdmissionController extends Controller
         ]);
     }
 
-    public function matriculants(Request $request){
+    public function matriculants(Request $request, $programmeCategory){
         $globalData = $request->input('global_data');
         $academicSession = $globalData->sessionSetting['application_session'];
 
-        $matriculants = Applicant::with('student')->where('academic_session', $academicSession)->where('status', 'Admitted')->get();
+        $programmeCategory = ProgrammeCategory::where('category', $programmeCategory)->first();
+        $programmeCategoryId = $programmeCategory->id;
+
+        $matriculants = Applicant::with('student')
+        ->where('academic_session', $academicSession)
+        ->where('status', 'Admitted')
+        ->where('programme_category_id', $programmeCategoryId)
+        ->get();
 
         return view('staff.matriculants', [
             'matriculants' => $matriculants,
+            'programmeCategory' => $programmeCategory
         ]);
     }
 
@@ -165,7 +186,8 @@ class AdmissionController extends Controller
                     'department_id' => $programme->department->id,
                     'programme_id' => $programme->id,
                     'entry_year' => $entryYear,
-                    'batch' => $request->batch
+                    'batch' => $request->batch,
+                    'programme_category_id' => $applicant->programme_category->id
                 ])->id;
             }
 
@@ -208,13 +230,17 @@ class AdmissionController extends Controller
         return redirect()->back();
     }
 
-    public function students(Request $request){
+    public function students(Request $request, $programmeCategory){
         $globalData = $request->input('global_data');
         $applicationSession = $globalData->sessionSetting['application_session'];
         $admissionSession = $globalData->sessionSetting['admission_session'];
     
+        $programmeCategory = ProgrammeCategory::where('category', $programmeCategory)->first();
+        $programmeCategoryId = $programmeCategory->id;
+
         $students = Student::with('applicant', 'programme')
             ->where('academic_session', $admissionSession)
+            ->where('programme_category_id', $$programmeCategoryId)
             ->whereHas('applicant', function ($query) use ($admissionSession) {
                 $query->where('academic_session', $admissionSession);
             })
@@ -235,7 +261,8 @@ class AdmissionController extends Controller
         }
     
         return view('staff.students', [
-            'students' => $students
+            'students' => $students,
+            'programmeCategory' => $programmeCategory
         ]);
     }
 

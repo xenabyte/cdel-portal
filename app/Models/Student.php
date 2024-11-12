@@ -51,7 +51,8 @@ class Student extends Authenticatable
         'graduation_date',
         'graduation_session',
         'clearance_status',
-        'one_signal_token'
+        'one_signal_token',
+        'programme_category_id'
     ];
 
     /**
@@ -233,5 +234,15 @@ class Student extends Authenticatable
     {
         return $this->hasOne(Allocation::class, 'bed_id', 'id')
                     ->whereNull('release_date');
+    }
+
+    /**
+     * Get the programmeCategory that owns the CourseRegistration
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function programmeCategory()
+    {
+        return $this->belongsTo(ProgrammeCategory::class, 'programme_category_id');
     }
 }

@@ -55,6 +55,8 @@ Route::get('/updateReferrers', [App\Http\Controllers\CronController::class, 'upd
 Route::get('/massBandwidthCreation', [App\Http\Controllers\CronController::class, 'massBandwidthCreation']);
 Route::get('/massEmailCreation', [App\Http\Controllers\CronController::class, 'massEmailCreation']);
 Route::get('/updateGrades', [App\Http\Controllers\CronController::class, 'updateGrades']);
+Route::post('/getPayments', [App\Http\Controllers\HomeController::class, 'getPayments']);
+Route::post('/getProgrammeCategory', [App\Http\Controllers\HomeController::class, 'getProgrammeCategory']);
 
 
 Route::post('/addStaffRecord', [App\Http\Controllers\HomeController::class, 'addStaffRecord'])->name('addStaffRecord');
@@ -155,7 +157,7 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'admin'],
   Route::post('/updateSession', [App\Http\Controllers\Admin\AcademicController::class, 'updateSession'])->name('updateSession')->middleware(['auth:admin']);
   Route::post('/deleteSession', [App\Http\Controllers\Admin\AcademicController::class, 'deleteSession'])->name('deleteSession')->middleware(['auth:admin']);
   
-  Route::get('/payments', [App\Http\Controllers\Admin\PaymentController::class, 'payments'])->name('payments')->middleware(['auth:admin']);
+  Route::get('/payments/{programmeCategory}', [App\Http\Controllers\Admin\PaymentController::class, 'payments'])->name('payments')->middleware(['auth:admin']);
   Route::post('/addPayment', [App\Http\Controllers\Admin\PaymentController::class, 'addPayment'])->name('addPayment')->middleware(['auth:admin']);
   Route::post('/updatePayment', [App\Http\Controllers\Admin\PaymentController::class, 'updatePayment'])->name('updatePayment')->middleware(['auth:admin']);
   Route::post('/deletePayment', [App\Http\Controllers\Admin\PaymentController::class, 'deletePayment'])->name('deletePayment')->middleware(['auth:admin']);
@@ -181,11 +183,11 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'admin'],
   Route::post('/walletTopUp', [App\Http\Controllers\Admin\PaymentController::class, 'walletTopUp'])->name('walletTopUp')->middleware(['auth:admin']);
   Route::post('/chargeStudents', [App\Http\Controllers\Admin\PaymentController::class, 'chargeStudents'])->name('chargeStudents')->middleware(['auth:admin']);
 
-  Route::get('/applicants', [App\Http\Controllers\Admin\AdmissionController::class, 'applicants'])->name('applicants')->middleware(['auth:admin']);
+  Route::get('/applicants/{programmeCategory}', [App\Http\Controllers\Admin\AdmissionController::class, 'applicants'])->name('applicants')->middleware(['auth:admin']);
   Route::get('/applicant/{slug}', [App\Http\Controllers\Admin\AdmissionController::class, 'applicant'])->name('applicant')->middleware(['auth:admin']);
   Route::post('/applicantWithSession', [App\Http\Controllers\Admin\AdmissionController::class, 'applicantWithSession'])->name('applicantWithSession')->middleware(['auth:admin']);
 
-  Route::get('/students', [App\Http\Controllers\Admin\AdmissionController::class, 'students'])->name('students')->middleware(['auth:admin']);
+  Route::get('/students/{programmeCategory}', [App\Http\Controllers\Admin\AdmissionController::class, 'students'])->name('students')->middleware(['auth:admin']);
   Route::get('/student/{slug}', [App\Http\Controllers\Admin\AdmissionController::class, 'student'])->name('student')->middleware(['auth:admin']);
   Route::post('/resendGuardianOnboarding', [App\Http\Controllers\Admin\StudentController::class, 'resendGuardianOnboarding'])->name('resendGuardianOnboarding')->middleware(['auth:admin']);
   Route::post('/refreshPasscode', [App\Http\Controllers\Admin\StudentController::class, 'refreshPasscode'])->name('refreshPasscode')->middleware(['auth:admin']);
@@ -209,7 +211,7 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'admin'],
   Route::post('/manageCourseReg', [App\Http\Controllers\Admin\AcademicController::class, 'manageCourseReg'])->name('manageCourseReg')->middleware(['auth:admin']);
   Route::get('/courseRegMgt', [App\Http\Controllers\Admin\AcademicController::class, 'courseRegMgt'])->name('courseRegMgt')->middleware(['auth:admin']);
   Route::post('/setCourseRegStatus', [App\Http\Controllers\Admin\AcademicController::class, 'setCourseRegStatus'])->name('setCourseRegStatus')->middleware(['auth:admin']);
-  Route::get('/matriculants', [App\Http\Controllers\Admin\AdmissionController::class, 'matriculants'])->name('matriculants')->middleware(['auth:admin']);
+  Route::get('/matriculants/{programmeCategory}', [App\Http\Controllers\Admin\AdmissionController::class, 'matriculants'])->name('matriculants')->middleware(['auth:admin']);
   Route::post('/generateAdmissionLetter', [App\Http\Controllers\Admin\AdmissionController::class, 'generateAdmissionLetter'])->name('generateAdmissionLetter')->middleware(['auth:admin']);
 
 
@@ -656,7 +658,7 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'staff'],
   Route::post('/changeStudentCreditLoad', [App\Http\Controllers\Staff\StaffController::class, 'changeStudentCreditLoad'])->name('changeStudentCreditLoad')->middleware(['auth:staff']);
   Route::post('/changeStudentBatch', [App\Http\Controllers\Staff\StaffController::class, 'changeStudentBatch'])->name('changeStudentBatch')->middleware(['auth:staff']);
 
-  Route::get('/payments', [App\Http\Controllers\Staff\PaymentController::class, 'payments'])->name('payments')->middleware(['auth:staff']);
+  Route::get('/payments/{programmeCategory}', [App\Http\Controllers\Staff\PaymentController::class, 'payments'])->name('payments')->middleware(['auth:staff']);
   Route::post('/addPayment', [App\Http\Controllers\Staff\PaymentController::class, 'addPayment'])->name('addPayment')->middleware(['auth:staff']);
   Route::post('/updatePayment', [App\Http\Controllers\Staff\PaymentController::class, 'updatePayment'])->name('updatePayment')->middleware(['auth:staff']);
   Route::post('/deletePayment', [App\Http\Controllers\Staff\PaymentController::class, 'deletePayment'])->name('deletePayment')->middleware(['auth:staff']);
@@ -686,13 +688,13 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'staff'],
 
   Route::post('/uploadSignature', [App\Http\Controllers\Staff\StaffController::class, 'uploadSignature'])->name('uploadSignature')->middleware(['auth:staff']);
 
-  Route::get('/applicants', [App\Http\Controllers\Staff\AdmissionController::class, 'applicants'])->name('applicants')->middleware(['auth:staff']);
+  Route::get('/applicants/{programmeCategory}', [App\Http\Controllers\Staff\AdmissionController::class, 'applicants'])->name('applicants')->middleware(['auth:staff']);
   Route::get('/applicant/{slug}', [App\Http\Controllers\Staff\AdmissionController::class, 'applicant'])->name('applicant')->middleware(['auth:staff']);
   Route::post('/applicantWithSession', [App\Http\Controllers\Staff\AdmissionController::class, 'applicantWithSession'])->name('applicantWithSession')->middleware(['auth:staff']);
-  Route::get('/matriculants', [App\Http\Controllers\Staff\AdmissionController::class, 'matriculants'])->name('matriculants')->middleware(['auth:staff']);
+  Route::get('/matriculants/{programmeCategory}', [App\Http\Controllers\Staff\AdmissionController::class, 'matriculants'])->name('matriculants')->middleware(['auth:staff']);
   Route::post('/manageAdmission', [App\Http\Controllers\Staff\AdmissionController::class, 'manageAdmission'])->name('manageAdmission')->middleware(['auth:staff']);
 
-  Route::get('/students', [App\Http\Controllers\Staff\AdmissionController::class, 'students'])->name('students')->middleware(['auth:staff']);
+  Route::get('/students/{programmeCategory}', [App\Http\Controllers\Staff\AdmissionController::class, 'students'])->name('students')->middleware(['auth:staff']);
   Route::get('/student/{slug}', [App\Http\Controllers\Staff\AdmissionController::class, 'student'])->name('student')->middleware(['auth:staff']);
   Route::get('/allStudents', [App\Http\Controllers\Staff\AdmissionController::class, 'allStudents'])->name('allStudents')->middleware(['auth:staff']);
   Route::get('/graduatingStudents', [App\Http\Controllers\Staff\StudentController::class, 'graduatingStudents'])->name('graduatingStudents')->middleware(['auth:staff']);
@@ -820,7 +822,6 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'partner'
   Route::get('/password/reset/{token}', [App\Http\Controllers\Partner\Auth\ResetPasswordController::class, 'showResetForm']);
 
   Route::get('/home', [App\Http\Controllers\Partner\PartnerController::class, 'index'])->name('home')->middleware(['auth:partner']);
-  Route::get('/students', [App\Http\Controllers\Partner\PartnerController::class, 'students'])->name('students')->middleware(['auth:partner']);
   Route::get('/applicants', [App\Http\Controllers\Partner\PartnerController::class, 'applicants'])->name('applicants')->middleware(['auth:partner']);
   Route::get('/transactions', [App\Http\Controllers\Partner\PartnerController::class, 'transactions'])->name('transactions')->middleware(['auth:partner']);
   Route::get('/profile', [App\Http\Controllers\Partner\PartnerController::class, 'profile'])->name('profile')->middleware(['auth:partner']);

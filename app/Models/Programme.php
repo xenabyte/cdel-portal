@@ -45,6 +45,10 @@ class Programme extends Model
         return $this->hasMany(Course::class, 'programme_id')->where('semester', 2);
     }
 
+    public function thirdSemesterCourses(){
+        return $this->hasMany(Course::class, 'programme_id')->where('semester', 3);
+    }
+
     public function department()
     {
         return $this->belongsTo(Department::class, 'department_id');
