@@ -4,7 +4,7 @@
 <div class="col-lg-8">
     @if(empty($applicant))
     <!-- Primary Alert -->
-    <div class="alert alert-primary alert-dismissible alert-additional fade show" id="generalAlert" role="alert">
+    <div class="alert alert-primary alert-dismissible alert-additional fade show" id="generalAlert" role="alert" style="display: none;">
         <div class="alert-body">
             <div class="d-flex">
                 <div class="flex-shrink-0 me-3">
@@ -14,13 +14,16 @@
                     <h5 class="alert-heading">Welcome to Application Portal</h5>
                     <hr>
                     <p class="mb-0">
-                        {{-- For Admission into Undergraduate Programme <strong> ({{ !empty($pageGlobalData->sessionSetting) ? $pageGlobalData->sessionSetting->application_session : null }} Academic Session) </strong>You are most welcome to study at {{ env('SCHOOL_NAME') }}. We offer candidates excellent and stable academic calendar, comfortable hall of residence, sound morals, entrepreneurial training, skill acquisition, serene and secure environment for learning. <strong> This application form will cost ₦{{ number_format($payment->structures->sum('amount')/100, 2) }}</strong> --}}
+                        For Admission into <span id="generalProgrammeCategory"></span> Programme 
+                        <strong> ({{ !empty($pageGlobalData->sessionSetting) ? $pageGlobalData->sessionSetting->application_session : null }} Academic Session) </strong>
+                        You are most welcome to study at {{ env('SCHOOL_NAME') }}. We offer candidates an excellent and stable academic calendar, comfortable hall of residence, sound morals, entrepreneurial training, skill acquisition, serene, and secure environment for learning. 
+                        <strong>This application form will cost ₦<span id="generalFeeAmount"></span></strong>
                     </p>
                 </div>
             </div>
         </div>
     </div>
-
+    
     <div class="alert alert-success alert-dismissible alert-additional fade show" id="interTransferAlert" role="alert" style="display: none;">
         <div class="alert-body">
             <div class="d-flex">
@@ -31,7 +34,10 @@
                     <h5 class="alert-heading">Welcome to Application Portal</h5>
                     <hr>
                     <p class="mb-0">
-                        {{-- For Admission into Undergraduate Programme <strong> ({{ !empty($pageGlobalData->sessionSetting) ? $pageGlobalData->sessionSetting->application_session : null }} Academic Session) </strong>You are most welcome to study at {{ env('SCHOOL_NAME') }}. We offer candidates excellent and stable academic calendar, comfortable hall of residence, sound morals, entrepreneurial training, skill acquisition, serene and secure environment for learning. <strong> This application form will cost ₦{{ number_format($interPayment->structures->sum('amount')/100, 2) }}</strong> --}}
+                        For Admission into <span id="interTransferProgrammeCategory"></span> Programme 
+                        <strong> ({{ !empty($pageGlobalData->sessionSetting) ? $pageGlobalData->sessionSetting->application_session : null }} Academic Session) </strong>
+                        You are most welcome to study at {{ env('SCHOOL_NAME') }}. We offer candidates an excellent and stable academic calendar, comfortable hall of residence, sound morals, entrepreneurial training, skill acquisition, serene, and secure environment for learning. 
+                        <strong>This application form will cost ₦<span id="interTransferFeeAmount"></span></strong>
                     </p>
                 </div>
             </div>
@@ -66,6 +72,7 @@
                                 <input type="hidden" name="lastname" value="{{ $applicant->lastname }}">
                                 <input type="hidden" name="othernames" value="{{ $applicant->othernames }}">
                                 <input type="hidden" name="phone_number" value="{{ $applicant->phone_number }}">
+                                <input type="hidden" name="programme_category_id" id="programmeCategoryId">
 
                                 <div class="mb-3">
                                     <label for="paymentGateway" class="form-label">Select Payment Gateway<span class="text-danger">*</span></label>
@@ -147,33 +154,20 @@
                     </div>
 
                     <!-- Application Type dropdown, hidden by default -->
+                    <input type="hidden" name="programme_category_id" id="programmeCategoryId">
+                    <input type="hidden" name="applicationType" id="hiddenApplicationType">
+
+                    <!-- Application Type dropdown, hidden by default -->
                     <div id="applicationTypeContainer" class="p-2 mt-4" style="display: none;">
                         <div class="mb-3">
                             <label for="applicationType" class="form-label">Select Application Type<span class="text-danger">*</span></label>
-                            <select class="form-select" aria-label="applicationType" name="applicationType" required onchange="handleApplicationTypeChange(event)">
+                            <select class="form-select" aria-label="applicationType" name="applicationTypeDropdown" required onchange="handleApplicationTypeChange(event)">
                                 <option value="" selected>Select Application Type</option>
                                 <option value="General Application">General Application (UTME & DE)</option>
                                 <option value="Inter Transfer Application">Inter Transfer Application</option>
                             </select>
                         </div>
                     </div>
-
-
-
-
-
-
-                    {{-- <div class="p-2 mt-4">
-                        <div class="mb-3 border-top border-top-dashed pt-3">
-                            <label for="applicationType" class="form-label">Select Application Type<span class="text-danger">*</span></label>
-                            <select class="form-select" aria-label="applicationType" name="applicationType" required onchange="handleApplicationTypeChange(event)">
-                                <option value= "" selected>Select Application Type</option>
-                                <option value="General Application">General Application(UTME & DE)</option>
-                                <option value="Inter Transfer Application">Inter Transfer Application</option>
-                                
-                            </select>
-                        </div>
-                    </div> --}}
 
                     <div class="p-2 mt-4 border-top border-top-dashed pt-3" style="display: none" id="applicationForm">
 
@@ -316,6 +310,14 @@
     function handleProgrammeCategoryChange(event) {
         const selectedValue = event.target.value;
         const advancedStudiesUrl = "{{ env('ADVANCED_STUDIES_URL') }}";
+        const applicationTypeContainer = document.getElementById('applicationTypeContainer');
+        const hiddenApplicationTypeInput = document.getElementById('hiddenApplicationType');
+        const applicationForm = document.getElementById("applicationForm");
+
+        // Update hidden inputs with the selected programme category ID
+        document.querySelectorAll('input[name="programme_category_id"]').forEach(input => {
+            input.value = selectedValue;
+        });
 
         // Redirect for specific program categories
         if (["IJMB", "Preliminary Studies"].includes(selectedValue)) {
@@ -334,11 +336,22 @@
                         title: 'Application Closed',
                         text: `Application is closed for ${data.category} programme.`,
                     });
-                    document.getElementById('applicationTypeContainer').style.display = 'none';
+                    applicationTypeContainer.style.display = 'none';
+                    applicationForm.style.display = "none";
+                    hiddenApplicationTypeInput.value = '';
                 } else {
-                    // Toggle the Application Type dropdown based on the category
-                    document.getElementById('applicationTypeContainer').style.display = 
-                        (data.category === 'Undergraduate') ? 'block' : 'none';
+                    // Toggle Application Type dropdown and handle hidden input
+                    if (data.category === 'Undergraduate') {
+                        applicationTypeContainer.style.display = 'block';
+                        applicationForm.style.display = "none";
+                        hiddenApplicationTypeInput.value = '';
+                    } else {
+                        applicationTypeContainer.style.display = 'none';
+                        applicationForm.style.display = "block";
+                        hiddenApplicationTypeInput.value = 'General Application';
+
+                        getPaymentDetails('General Application', selectedValue);
+                    }
                 }
             })
             .catch(error => {
@@ -346,78 +359,59 @@
             });
     }
 
-
-    function handleApplicationTypeChange(event) {
-        const selectedValue = event.target.value;
-        const generalAlert = document.getElementById("generalAlert");
-        const interTransferAlert = document.getElementById("interTransferAlert");
-        const applicationForm = document.getElementById("applicationForm");
-
-        // Toggle visibility based on the selected value
-        if (selectedValue === "") {
-            applicationForm.style.display = "none";
-            generalAlert.style.display = "none";
-            interTransferAlert.style.display = "none";
-        } else if (selectedValue === "Inter Transfer Application") {
-            applicationForm.style.display = "block";
-            generalAlert.style.display = "none";
-            interTransferAlert.style.display = "block";
-        } else {
-            generalAlert.style.display = "block";
-            interTransferAlert.style.display = "none";
-            applicationForm.style.display = "block";
-        }
-    }
-
     function handleApplicationTypeChange(event) {
         const applicationType = event.target.value;
         const programmeCategoryId = document.querySelector('select[name="programmeCategory"]').value;
 
-        // Post request to get the payment details
+        getPaymentDetails(applicationType, programmeCategoryId);
+    }
+
+    function getPaymentDetails(applicationType, programmeCategoryId) {
+
         axios.post(`/getPayments`, {
             programme_category_id: programmeCategoryId,
             applicationType: applicationType 
         })
         .then(response => {
             const data = response.data;
-            // Process and display payment details if needed
-            console.log('Payment details:', data);
+
+            if (applicationType === "Inter Transfer Application" && data.interApplicationPayment) {
+                // Calculate and display Inter Transfer Application fee
+                const interTransferAmount = data.interApplicationPayment.structures.reduce((total, structure) => total + parseInt(structure.amount), 0) / 100;
+                document.getElementById("interTransferFeeAmount").textContent = interTransferAmount.toLocaleString();
+                document.getElementById("interTransferProgrammeCategory").textContent = data.interApplicationPayment.programme_category.category;
+
+                // Display the Inter Transfer alert, hide the General alert
+                generalAlert.style.display = "none";
+                interTransferAlert.style.display = "block";
+                applicationForm.style.display = "block";
+            } else if (applicationType === "General Application" && data.payment) {
+                // Calculate and display General Application fee
+                const generalAmount = data.payment.structures.reduce((total, structure) => total + parseInt(structure.amount), 0) / 100;
+                document.getElementById("generalFeeAmount").textContent = generalAmount.toLocaleString();
+                document.getElementById("generalProgrammeCategory").textContent = data.payment.programme_category.category;
+
+                // Display the General alert, hide the Inter Transfer alert
+                generalAlert.style.display = "block";
+                interTransferAlert.style.display = "none";
+                applicationForm.style.display = "block";
+            } else {
+                // Hide both alerts if no valid payment information is found
+                generalAlert.style.display = "none";
+                interTransferAlert.style.display = "none";
+                applicationForm.style.display = "none";
+
+                // Display a notice if it's an unexpected category without payment info
+                Swal.fire({
+                    icon: 'info',
+                    title: 'Notice',
+                    text: 'Payment information is unavailable for this category.',
+                });
+            }
         })
         .catch(error => {
             console.error('Error fetching payment details:', error);
         });
     }
-
-    // function handleProgrammeChange(event) {
-    //     const selectedProgramme = event.target.value;
-    //     if(selectedProgramme != ''){
-    //         axios.get("{{ url('/applicant/programmeById')  }}/"+selectedProgramme)
-    //         .then(response => {
-    //             const data = response.data;
-    //             const totalAmount = getTotalAmountForApplicationFee(data);
-                
-    //             // Set the total amount in the paragraph element
-    //             const amountParagraph = document.getElementById('amount');
-    //             amountParagraph.textContent = `Application Fee(Non Refundable): ₦${totalAmount.toFixed(2)}`;
-    //             document.getElementById('paymentInfo').style.display = 'block';
-    //         })
-    //         .catch(error => {
-    //             console.error(error);
-    //         });
-    //     }else{
-    //         document.getElementById('paymentInfo').style.display = 'none';
-    //     }
-    // }
-
-    // function getTotalAmountForApplicationFee(data) {
-    //     const applicationFeePayment = data.payments.find(payment => payment.title === "Application Fee");
-    //     if (!applicationFeePayment) {
-    //         return 0;
-    //     }
-
-    //     const totalAmount = applicationFeePayment.structures.reduce((total, structure) => total + parseInt(structure.amount), 0);
-    //     return totalAmount/100 + 52;
-    // }
-
 </script>
 @endsection

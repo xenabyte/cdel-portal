@@ -382,10 +382,9 @@ class ApplicationController extends Controller
         $userId = $request->user_id;
         $globalData = $request->input('global_data');
         $applicationSession = $globalData->sessionSetting['application_session'];
-        $applicationType = $request->input('applicationType');
+        $applicationType = !empty($request->applicationTypeDropdown) ? $request->applicationTypeDropdown : $request->input('applicationType');
 
-        $applicant = Applicant::with('programme', 'olevels', 'guardian')->where('id', $userId)->first();
-        $applicantProgrammeCategoryId = $applicant->programme_category_id;
+        $applicantProgrammeCategoryId = $request->programme_category_id;
 
         $programmeCategories = ProgrammeCategory::get();
 
@@ -422,7 +421,6 @@ class ApplicationController extends Controller
                 'phone_number' => 'required',
                 'othernames' => 'required',
                 'paymentGateway' => 'required',
-                'applicationType' => 'required',
             ]);
         }else{
             $validator = Validator::make($request->all(), [
@@ -430,7 +428,7 @@ class ApplicationController extends Controller
             ]);
         }
 
-        if(!$request->has('user_id') && $applicant = Applicant::where('email', $request->email)->where('academic_session', $applicationSession)->first()){
+        if(!$request->has('user_id') && $applicant = Applicant::where('email', $request->email)->where('academic_session', $applicationSession)->where('programme_category_id', $applicantProgrammeCategoryId)->first()){
             $transaction = Transaction::where('user_id', $applicant->id)->where('session', $applicationSession)->where('payment_id', $payment->id)->where('status', 1)->first();
 
             if(!$transaction){

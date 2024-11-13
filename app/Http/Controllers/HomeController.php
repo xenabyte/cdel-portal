@@ -398,19 +398,19 @@ class HomeController extends Controller
             'academic_session' => $applicationSession
         ];
         
-        $applicationPayment = Payment::with('structures')
+        $applicationPayment = Payment::with('structures', 'programmeCategory')
             ->where($commonConditions)
             ->where('type', Payment::PAYMENT_TYPE_GENERAL_APPLICATION)
             ->first();
         
-        $interApplicationPayment = Payment::with('structures')
+        $interApplicationPayment = Payment::with('structures', 'programmeCategory')
             ->where($commonConditions)
             ->where('type', Payment::PAYMENT_TYPE_INTER_TRANSFER_APPLICATION)
             ->first();
 
         $payment = new \stdClass();
         $payment->payment = $applicationPayment;
-        $payment->interApplicationPayments = $interApplicationPayment;
+        $payment->interApplicationPayment = $interApplicationPayment;
 
         return $payment;
 
