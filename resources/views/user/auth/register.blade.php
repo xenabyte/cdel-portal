@@ -379,7 +379,7 @@
                 // Calculate and display Inter Transfer Application fee
                 const interTransferAmount = data.interApplicationPayment.structures.reduce((total, structure) => total + parseInt(structure.amount), 0) / 100;
                 document.getElementById("interTransferFeeAmount").textContent = interTransferAmount.toLocaleString();
-                document.getElementById("interTransferProgrammeCategory").textContent = data.interApplicationPayment.programme_category.category;
+                document.getElementById("interTransferProgrammeCategory").textContent = data.interApplicationPayment.programmeCategory.category;
 
                 // Display the Inter Transfer alert, hide the General alert
                 generalAlert.style.display = "none";
@@ -389,7 +389,7 @@
                 // Calculate and display General Application fee
                 const generalAmount = data.payment.structures.reduce((total, structure) => total + parseInt(structure.amount), 0) / 100;
                 document.getElementById("generalFeeAmount").textContent = generalAmount.toLocaleString();
-                document.getElementById("generalProgrammeCategory").textContent = data.payment.programme_category.category;
+                document.getElementById("generalProgrammeCategory").textContent = data.payment.programmeCategory.category;
 
                 // Display the General alert, hide the Inter Transfer alert
                 generalAlert.style.display = "block";

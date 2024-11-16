@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ProgrammeCategory;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
@@ -101,8 +101,8 @@ class Controller extends BaseController
         log::info("Processing paystack payment:" . json_encode($paymentDetails));
         //get active editions
         $email = $paymentDetails['data']['metadata']['email'];
-        $applicationId = $paymentDetails['data']['metadata']['application_id'];
-        $studentId = $paymentDetails['data']['metadata']['student_id'];
+        $applicationId = !empty($paymentDetails['data']['metadata']['application_id'])?$paymentDetails['data']['metadata']['application_id']:null;
+        $studentId = !($paymentDetails['data']['metadata']['student_id'])?$paymentDetails['data']['metadata']['student_id']:null;
         $paymentId = $paymentDetails['data']['metadata']['payment_id'];
         $paymentGateway = $paymentDetails['data']['metadata']['payment_gateway'];
         $amount = $paymentDetails['data']['metadata']['amount'];
@@ -374,7 +374,7 @@ class Controller extends BaseController
     }
 
     public function getSingleApplicant($studentIdCode, $path){
-        $student = User::with('programme', 'programme.department', 'programme.department.faculty', 'transactions')->where('application_number', $studentIdCode)->first();
+        $student = User::with('programme', 'programme.department', 'programme.department.faculty', 'transactions', 'student')->where('application_number', $studentIdCode)->first();
         if(!$student){
             alert()->info('Record not found', '')->persistent('Close');
             return redirect()->back();
@@ -388,7 +388,24 @@ class Controller extends BaseController
         $faculties = Faculty::get();
         $sessions = Session::orderBy('id', 'DESC')->get();
 
+        // Initialize $studentUserId and $studentStudentId
+        $studentUserId = $student->user_id; 
+        $studentStudentId = $student->student ? $student->student->id : null; 
+
+        // Modify the transaction query based on the presence of $student->student
+        $transactions = Transaction::where('user_id', $studentUserId)
+            ->where(function($query) use ($studentStudentId) {
+                if ($studentStudentId) {
+                    $query->where('student_id', $studentStudentId);
+                }
+            })
+            ->where('payment_id', '!=', 0)
+            ->orderBy('id', 'DESC')
+            ->get();
+
         $transactions = Transaction::where('user_id', $student->id)->where('payment_id', '!=', 0)->orderBy('id', 'DESC')->get();
+
+
         $filteredTransactions = [];
         foreach ($transactions as $transaction) {
             $paymentType = !empty($transaction->paymentType)?$transaction->paymentType->type:Payment::PAYMENT_TYPE_WALLET_DEPOSIT;
@@ -471,6 +488,7 @@ class Controller extends BaseController
         $schoolPayment = Payment::with('structures')
             ->where('type', Payment::PAYMENT_TYPE_SCHOOL)
             ->where('programme_id', $student->programme_id)
+            ->where('programme_category_id', $student->programme_category_id)
             ->where('level_id', $levelId)
             ->where('academic_session', $student->academic_session)
             ->first();
@@ -551,13 +569,16 @@ class Controller extends BaseController
         $applicantId = $student->user_id;
         $applicant = User::find($applicantId);
         $applicationType = $applicant->application_type;
+        $programmeCategoryId = $student->programme_category_id;
 
         $sessionSetting = SessionSetting::first();
 
         $type = Payment::PAYMENT_TYPE_SCHOOL;
 
-        if($applicationType != 'UTME' && ($student->level_id == 2|| $student->level_id == 3)){
-            $type = Payment::PAYMENT_TYPE_SCHOOL_DE;
+        if($programmeCategoryId == ProgrammeCategory::getProgrammeCategory(ProgrammeCategory::UNDERGRADUATE)){
+            if($applicationType != 'UTME' && ($student->level_id == 2|| $student->level_id == 3)){
+                $type = Payment::PAYMENT_TYPE_SCHOOL_DE;
+            }
         }
 
         $schoolPayment = Payment::with('structures')
@@ -565,6 +586,7 @@ class Controller extends BaseController
             ->where('programme_id', $student->programme_id)
             ->where('level_id', $levelId)
             ->where('academic_session', $academicSession)
+            ->where('programme_category_id', $programmeCategoryId)
             ->first();
 
         if(!$schoolPayment){
@@ -916,7 +938,7 @@ class Controller extends BaseController
         $referralCode = isset($applicantData['data']['metadata']['referrer']) ? $applicantData['data']['metadata']['referrer'] : (isset($applicantData['data']['meta']['referrer']) ? $applicantData['data']['meta']['referrer'] : null);
         $applicationType = isset($applicantData['data']['metadata']['application_type']) ? $applicantData['data']['metadata']['application_type'] : (isset($applicantData['data']['meta']['application_type']) ? $applicantData['data']['meta']['application_type'] : null);
         $txRef = isset($applicantData['data']['reference']) ? $applicantData['data']['reference'] : (isset($applicantData['data']['meta']['reference']) ? $applicantData['data']['meta']['reference'] : null);
-        $programmeCategoryId = isset($applicantData['data']['programme_category_id']) ? $applicantData['data']['programme_category_id'] : (isset($applicantData['data']['meta']['programme_category_id']) ? $applicantData['data']['meta']['programme_category_id'] : null);
+        $programmeCategoryId = isset($applicantData['data']['metadata']['programme_category_id']) ? $applicantData['data']['metadata']['programme_category_id'] : (isset($applicantData['data']['meta']['programme_category_id']) ? $applicantData['data']['meta']['programme_category_id'] : null);
         $applicant = null;
 
 
@@ -947,7 +969,7 @@ class Controller extends BaseController
             'password' => Hash::make($password),
             'passcode' => $password,
             'academic_session' => $applicationSession,
-            'partner_id' => $partnerId,
+            'partner_id' => !empty($partnerId)?$partnerId:null,
             'referrer' => $referralCode,
             'application_type' => $applicationType,
             'programme_category_id' => $programmeCategoryId

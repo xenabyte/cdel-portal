@@ -676,9 +676,6 @@
                                             <a href="{{ url('/staff/payments') }}" class="nav-link"> Bills </a>
                                         </li>
                                         <li class="nav-item">
-                                            <a href="{{('/staff/transactions')}}" class="nav-link"> Transactions </a>
-                                        </li>
-                                        <li class="nav-item">
                                             <a href="{{('/staff/chargeStudent')}}" class="nav-link">Payment/Charge </a>
                                         </li>
                                         @endif

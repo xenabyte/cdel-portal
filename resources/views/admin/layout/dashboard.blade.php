@@ -349,7 +349,7 @@
                                     </li>
 
                                     <li class="nav-item">
-                                        <a href="#topupAdmission" class="nav-link" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="topupAdmission" data-key="t-topupAdmission"> TOPUP Admission
+                                        <a href="#topupAdmission" class="nav-link" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="topupAdmission" data-key="t-topupAdmission"> Topup Admission
                                         </a>
                                         <div class="collapse menu-dropdown" id="topupAdmission">
                                             <ul class="nav nav-sm flex-column">
@@ -681,10 +681,26 @@
                                         <a href="{{url('/admin/bankAccounts')}}" class="nav-link" data-key="t-calendar">Bank Account(s) </a>
                                     </li>
                                     <li class="nav-item">
-                                        <a href="{{ url('/admin/payments') }}" class="nav-link"> Bills </a>
+                                        <a href="#undergraduateBursary" class="nav-link" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="undergraduateBursary" data-key="t-undergraduateBursary"> Undergraduate Bursary</a>
+                                        </a>
+                                        <div class="collapse menu-dropdown" id="undergraduateBursary">
+                                            <ul class="nav nav-sm flex-column">
+                                                <li class="nav-item">
+                                                    <a href="{{ url('/admin/payments/'.$programmeCategory::UNDERGRADUATE) }}" class="nav-link"> Bills </a>
+                                                </li>
+                                            </ul>
+                                        </div>
                                     </li>
                                     <li class="nav-item">
-                                        <a href="{{('/admin/transactions')}}" class="nav-link"> Transactions </a>
+                                        <a href="#topupBursary" class="nav-link" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="topupBursary" data-key="t-topupBursary"> Top up Bursary</a>
+                                        </a>
+                                        <div class="collapse menu-dropdown" id="topupBursary">
+                                            <ul class="nav nav-sm flex-column">
+                                                <li class="nav-item">
+                                                    <a href="{{ url('/admin/payments/'.$programmeCategory::TOPUP) }}" class="nav-link"> Bills </a>
+                                                </li>
+                                            </ul>
+                                        </div>
                                     </li>
                                     <li class="nav-item">
                                         <a href="{{('/admin/chargeStudent')}}" class="nav-link">Payment/Charge </a>
@@ -694,7 +710,7 @@
                                     </li>
                                 </ul>
                             </div>
-                        </li> <!-- end Bursary Menu -->
+                        </li> <!-- end Dashboard Menu -->
 
 
                         <li class="menu-title"><i class="ri-more-fill"></i> <span data-key="t-pages"></span></li>

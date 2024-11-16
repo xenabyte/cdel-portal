@@ -152,7 +152,7 @@ class AdmissionController extends Controller
             }
         }
 
-        if(!$applicant = Applicant::with('programme')->where('id', $request->applicant_id)->first()){
+        if(!$applicant = Applicant::with('programme', 'programmeCategory')->where('id', $request->applicant_id)->first()){
             alert()->error('Oops', 'Invalid Applicant Information')->persistent('Close');
             return redirect()->back();
         }
@@ -197,7 +197,8 @@ class AdmissionController extends Controller
                     'department_id' => $programme->department->id,
                     'programme_id' => $programme->id,
                     'entry_year' => $entryYear,
-                    'batch' => $request->batch
+                    'batch' => $request->batch,
+                    'programme_category_id' => $applicant->programmeCategory->id,
                 ])->id;
             }
 

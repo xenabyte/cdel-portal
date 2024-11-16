@@ -5,7 +5,7 @@
 <div class="row">
     <div class="col-12">
         <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-            <h4 class="mb-sm-0">Bills Setup for {{ $pageGlobalData->sessionSetting->academic_session }} Academic Session</h4>
+            <h4 class="mb-sm-0">{{ $programmeCategory->category }} Programme Bills Setup for {{ $pageGlobalData->sessionSetting->academic_session }} Academic Session</h4>
 
             <div class="page-title-right">
                 <ol class="breadcrumb m-0">
@@ -345,6 +345,8 @@
             <div class="modal-body">
                 <form action="{{ url('/staff/addPayment') }}" method="post" enctype="multipart/form-data">
                     @csrf
+                    <input type="hidden" name="programme_category_id" value="{{ $programmeCategory->id }}">
+
                     <div class="mb-3">
                         <label for="paymentTitle" class="form-label">Bill Name</label>
                         <input type="text" class="form-control" name="title" id="paymentTitle">
@@ -425,6 +427,8 @@
                 <form action="{{ url('/staff/uploadBulkPayment') }}" method="post" enctype="multipart/form-data">
                     @csrf
                     <input type="hidden" name="academic_session" value="{{ $pageGlobalData->sessionSetting->application_session}}">
+                    <input type="hidden" name="programme_category_id" value="{{ $programmeCategory->id }}">
+
                     <div class="mb-3">
                         <label for="file" class="form-label">File(CSV)</label>
                         <input type="file" class="form-control" name="file" id="type">

@@ -175,7 +175,7 @@
                                                         <label for="dob" class="form-label">Date of Birth</label>
                                                         <input type="date" class="form-control" id="dob" name="dob" 
                                                                value="{{ isset($applicant->dob) ? substr($applicant->dob, 0, 10) : '' }}" 
-                                                               required max="{{ date('Y-m-d', strtotime('-15 years')) }}" />
+                                                               required max="{{ date('Y-m-d', strtotime('-13 years')) }}" />
                                                     </div>
                                                 </div>
     
@@ -542,7 +542,6 @@
                                     </div>
                                     <!--end card-body-->
                                 </div><!-- end card -->
-
                             </div>
                             <!--end col-->
                         </div>
@@ -565,7 +564,7 @@
                                                 </div>
                                                 <div class="flex-grow-1 ms-3">
                                                     <h6></h6>
-                                                    <p class="text-muted mb-0"><strong>Programme:</strong> @if(!empty($applicant->programme)){{ $applicant->programme->name }}@endif</p>
+                                                    <p class="text-muted mb-0"><strong>Programme of Study:</strong>{{ $applicant->programmeCategory->category }} : @if(!empty($applicant->programme)){{ $applicant->programme->name }}@endif</p>
                                                 </div>
                                                 <div>
                                                     
@@ -588,27 +587,34 @@
                                                 </div>
                     
                                                 @if(empty($applicant->application_type))
-                                                <div class="col-md-12">
-                                                    <div class="mb-3">
-                                                        <label for="application_type">Application Type</label>
-                                                        <select class="form-select" name="application_type" id="application_type">
-                                                            <option selected>Choose...</option>
-                                                            <option value="UTME"> UTME</option>
-                                                            <option value="DE"> Direct Entry</option>
-                                                        </select>
-                                                    </div>
-                                                </div><!--end col-->
+                                                    @if(strtolower($applicant->programmeCategory->category) == "undergraduate")
+                                                        <div class="col-md-12">
+                                                            <div class="mb-3">
+                                                                <label for="application_type">Application Type</label>
+                                                                <select class="form-select" name="application_type" id="application_type">
+                                                                    <option selected>Choose...</option>
+                                                                    <option value="UTME"> UTME</option>
+                                                                    <option value="DE"> Direct Entry</option>
+                                                                </select>
+                                                            </div>
+                                                        </div><!--end col-->
+                                                    @endif
+
+                                                    <input type="hidden" name="application_type" value="{{ strtoupper($applicant->programmeCategory->category) }}">
                                                 @endif
     
-                                                @if(!empty($applicant->application_type) && strtolower($applicant->application_type) == 'de')
-                                                <div class="col-lg-12">
-                                                    <div class="mb-3">
-                                                        <label for="jamb_reg" class="form-label">Jamb Registration Number</label>
-                                                        <input type="text" class="form-control" id="jamb_reg" name="jamb_reg_no" value="{{ $applicant->jamb_reg_no }}" required>
-                                                    </div>
-                                                </div>
-                                                <hr>
+                                                @if(strtolower($applicant->programmeCategory->category) == "undergraduate")
+                                                    @if(!empty($applicant->application_type) && strtolower($applicant->application_type) == 'de')
+                                                        <div class="col-lg-12">
+                                                            <div class="mb-3">
+                                                                <label for="jamb_reg" class="form-label">Jamb Registration Number</label>
+                                                                <input type="text" class="form-control" id="jamb_reg" name="jamb_reg_no" value="{{ $applicant->jamb_reg_no }}" required>
+                                                            </div>
+                                                        </div>
+                                                        <hr>
+                                                    @endif
                                                 @endif
+
                                                 <div class="row g-2">
                                                     @if(empty($applicant->status))
                                                     <div class="col-lg-12">
@@ -1406,7 +1412,11 @@
                                                 </div><!--end col-->
                     
                                                 <div class="col-md-12 mt-3">
-                                                    <label for="de_result">Upload Result/Certificate</label>
+                                                    @if(strtolower($applicant->programmeCategory->category) == "topup")
+                                                    <label for="de_result">Upload <span class="text-warning">certificate and NYSC certificate/discharge certificate</span> as a single file</label>
+                                                    @else
+                                                    <label for="de_result">Upload DE Result</label>
+                                                    @endif
                                                     <input type="file" name="de_result" class="form-control" id="de_result">
                                                 </div><!--end col-->
                                                 <div class="row g-2">

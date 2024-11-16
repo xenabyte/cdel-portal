@@ -187,7 +187,7 @@ class AdmissionController extends Controller
                     'programme_id' => $programme->id,
                     'entry_year' => $entryYear,
                     'batch' => $request->batch,
-                    'programme_category_id' => $applicant->programme_category->id
+                    'programme_category_id' => $applicant->programmeCategory->id
                 ])->id;
             }
 

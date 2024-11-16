@@ -68,7 +68,6 @@ class PaymentController extends Controller
             $redirectPath = $paymentDetails['data']['metadata']['redirect_path'];
             $txRef = $paymentDetails['data']['metadata']['reference'];
 
-
             $paymentType = Payment::PAYMENT_TYPE_WALLET_DEPOSIT;
             if($paymentId > 0){
                 $payment = Payment::where('id', $paymentId)->first();
@@ -567,7 +566,7 @@ class PaymentController extends Controller
                         // Credit bandwidth and update transaction status if the payment is valid
                         $result = $this->creditBandwidth($transaction, $amountPaid);
                         if($result){
-                            return $this->dataResponse('Account Credited', $creditStudent);
+                            return $this->dataResponse('Account Credited', $result);
                         }
                         return $this->dataResponse('Account not credited', null, 'error');
                     }

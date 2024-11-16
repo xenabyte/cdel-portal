@@ -288,6 +288,8 @@ class PaymentController extends Controller
         $programmeId = $request->programme_id;
         $levelId  = $request->level;
         $userType = $request->userType;
+        $programmeCategoryId = $request->programmeCategoryId;
+        
         if($userType == 'applicant') {
             $applicant = Applicant::with('programme', 'student')->where('id', $request->student_id)->first();
             $applicantId = $applicant->id;
@@ -312,6 +314,7 @@ class PaymentController extends Controller
                     'programme_id' => $programmeId,
                     'level_id' => $levelId,
                     'academic_session' => $session,
+                    'programme_category_id' => $programmeCategoryId
                 ])->first();
 
                 if(!$payment){
@@ -326,6 +329,7 @@ class PaymentController extends Controller
                 $payment = Payment::with(['structures'])->where([
                     'type' => $type,
                     'academic_session' => $session,
+                    'programme_category_id' => $programmeCategoryId
                 ])->get();
         
                 if(!$payment){
@@ -335,6 +339,7 @@ class PaymentController extends Controller
                 $payment = Payment::with(['structures'])->where([
                     'type' => $type,
                     'academic_session' => $session,
+                    'programme_category_id'=> $programmeCategoryId
                 ])->first();
         
                 if(!$payment){
@@ -353,6 +358,7 @@ class PaymentController extends Controller
         $payment = Payment::with(['structures'])->where([
             'type' => $type,
             'academic_session' => $session,
+            'programme_category_id'=> $programmeCategoryId
         ])->first();
 
         if(!$payment){
@@ -479,7 +485,10 @@ class PaymentController extends Controller
     
                 foreach ($records as $row) {
                     $level = !empty($row['level'])?$row['level']:null;
+
                     $academicSession = $request->academic_session;
+                    $programmeCategoryId = $request->programme_category_id;
+
                     $title = $row['payment_name'];
                     $amount = !empty($row['payment_amount']) ? $row['payment_amount'] :null;
                     $type = !empty($row['payment_type'])?$row['payment_type']: null;
@@ -494,7 +503,8 @@ class PaymentController extends Controller
                             'level_id' => $level,
                             'type' => $type,
                             'academic_session' => $academicSession,
-                            'slug' => $slug
+                            'slug' => $slug,
+                            'programme_category_id' => $programmeCategoryId
                         ]);
 
                         //check existing

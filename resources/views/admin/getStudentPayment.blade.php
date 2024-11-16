@@ -342,6 +342,7 @@ $balance = $paymentAmount>0? $paymentAmount - $totalPaid : 0;
                 <form action="{{ url('/admin/chargeStudent') }}" method="post" enctype="multipart/form-data">
                     @csrf
                     <input type="hidden" id="studentId" name="student_id" value="{{ $student->id }}">
+                    <input type="hidden" id="programmeCategoryId" name="programme_category_id" value="{{ $student->programme_category_id }}" >
                     <input type="hidden" id="programmeId" name="programme_id" value="{{ $student->programme_id }}">
                     <input type="hidden" name="paymentGateway" value="Manual/BankTransfer">
                     <input type="hidden" id="userType" name="userType" value="student">
@@ -483,6 +484,7 @@ $balance = $paymentAmount>0? $paymentAmount - $totalPaid : 0;
         const selectedPaymentType = event.target.value;
         const academicSession = document.getElementById('academicSession').value;
         const programmeId = document.getElementById('programmeId').value;
+        const programmeCategoryId = document.getElementById('programmeCategoryId').value;
         const paymentId = document.getElementById('paymentId');
         const studentId = document.getElementById('studentId').value;
         const level = document.getElementById('level').value;
@@ -499,7 +501,8 @@ $balance = $paymentAmount>0? $paymentAmount - $totalPaid : 0;
                 programme_id: programmeId,
                 student_id: studentId,
                 level: level,
-                userType: userType
+                userType: userType,
+                programme_category_id: programmeCategoryId
             })
             .then(response => {
                 const data = response.data.data;

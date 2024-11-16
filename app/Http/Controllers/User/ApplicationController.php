@@ -58,8 +58,7 @@ class ApplicationController extends Controller
 
     public function index(Request $request)
     {
-        $user = Auth::guard('user')->user()->id;
-        $userId = $user->id;
+        $userId = Auth::guard('user')->user()->id;
         $globalData = $request->input('global_data');
         $applicationSession = $globalData->sessionSetting['application_session'];
         
@@ -76,15 +75,15 @@ class ApplicationController extends Controller
         $applicationPayments = Payment::with('structures')
             ->where($commonConditions)
             ->where('type', Payment::PAYMENT_TYPE_GENERAL_APPLICATION)
-            ->get();
+            ->first();
         
         $interApplicationPayments = Payment::with('structures')
             ->where($commonConditions)
             ->where('type', Payment::PAYMENT_TYPE_INTER_TRANSFER_APPLICATION)
-            ->get();
+            ->first();
 
-        $paymentId = $applicationPayments->id;
-        $interPaymentId = $interApplicationPayments->id;
+        $paymentId = !empty($applicationPayments) ? $applicationPayments->id : null;
+        $interPaymentId = !empty($interApplicationPayments) ? $interApplicationPayments->id : null;
 
         $transaction = Transaction::where('user_id', $userId)
         ->where('session', $applicationSession)

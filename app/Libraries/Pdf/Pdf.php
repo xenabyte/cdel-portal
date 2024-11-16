@@ -29,6 +29,7 @@ Class Pdf {
         $student = Student::with('programme', 'faculty', 'department', 'applicant')->where('slug', $slug)->first();
         $setting = Setting::first();
         $applicationType = $student->applicant->application_type;
+        $programmeCategory = $student->applicant->programmeCategory->category;
 
         $acceptancePayment = Payment::with('structures')->where('type', Payment::PAYMENT_TYPE_ACCEPTANCE)->where('academic_session', $student->academic_session)->first();
         $type = Payment::PAYMENT_TYPE_SCHOOL;
@@ -64,6 +65,7 @@ Class Pdf {
         
         $studentData = [
             'applicant_number' => $student->applicant->application_number,
+            'programmeCategory' => $programmeCategory,
             'levelId' => $student->level_id,
             'created_at' => $student->created_at,
             'jamb_reg_no' => $student->applicant->jamb_reg_no,

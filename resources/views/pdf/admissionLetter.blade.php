@@ -96,7 +96,7 @@
             <p class="date"><strong>Date:</strong> {{ date('F j, Y', strtotime($created_at)) }}</p>
             <p>Dear <strong>{{ $student_name }}</strong>,</p>
             
-            <p class="congratulations"><strong>Congratulations and Welcome to the {{ $academic_session }} Undergraduate Degree Programme at TAU</strong></p>
+            <p class="congratulations"><strong>Congratulations and Welcome to the {{ $academic_session }}  {{ $programmeCategory }} Degree Programme at TAU</strong></p>
             
             <p>On behalf of Thomas Adewumi University, I am excited to offer you a Provisional Admission to the <strong>{{ $programme_name }}</strong> in the {{ $faculty_name }} for the {{ $academic_session }} academic session. This admission is granted for a full-time study period of <strong>{{ $duration + 1 - $levelId }} Years</strong> and acknowledges your potential as an outstanding candidate. Please note that your JAMB admission letter will soon be available for your acceptance on the Central Admissions Processing System (CAPS).</p>
             
