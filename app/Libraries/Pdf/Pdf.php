@@ -29,9 +29,10 @@ Class Pdf {
         $student = Student::with('programme', 'faculty', 'department', 'applicant')->where('slug', $slug)->first();
         $setting = Setting::first();
         $applicationType = $student->applicant->application_type;
+        $programmeCategoryId = $student->applicant->programme_category_id;
         $programmeCategory = $student->applicant->programmeCategory->category;
 
-        $acceptancePayment = Payment::with('structures')->where('type', Payment::PAYMENT_TYPE_ACCEPTANCE)->where('academic_session', $student->academic_session)->first();
+        $acceptancePayment = Payment::with('structures')->where('programme_category_id', $programmeCategoryId)->where('type', Payment::PAYMENT_TYPE_ACCEPTANCE)->where('academic_session', $student->academic_session)->first();
         $type = Payment::PAYMENT_TYPE_SCHOOL;
 
         if($applicationType != 'UTME' && ($student->level_id == 2)){
@@ -41,6 +42,7 @@ Class Pdf {
         $schoolPayment = Payment::with('structures')
             ->where('type', $type)
             ->where('programme_id', $student->programme_id)
+            ->where('programme_category_id', $programmeCategoryId)
             ->where('level_id', $student->level_id)
             ->where('academic_session', $student->academic_session)
             ->first();

@@ -87,7 +87,7 @@
     <div class="modal-dialog modal-xl modal-dialog-centered">
         <div class="modal-content border-0 overflow-hidden">
             <div class="modal-header p-3">
-                <h4 class="card-title mb-0">View Applicant</h4>
+                <h4 class="card-title mb-0">View {{ $programmeCategory->category }} Programme Applicant </h4>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <hr>
@@ -101,6 +101,7 @@
                             </div>
     
                             <h5 id="candidate-name" class="mb-0">{{ $applicant->lastname .' '. $applicant->othernames }}</h5>
+                            <p id="candidate-position" class="text-muted">{{ $applicant->programmeCategory?$applicant->programmeCategory->category.' Programme':null }}</p>
                             <p id="candidate-position" class="text-muted">{{ $applicant->programme?$applicant->programme->name:null }}</p>
                             <p id="candidate-position" class="text-muted">Phone Number: {{ $applicant->phone_number }}</p>
                             <div class="vr"></div>
@@ -248,7 +249,12 @@
                                     <label for="level" class="form-label">Level</label>
                                     <select class="form-select" name="level_id" id="level" data-choices data-choices-search-false required>
                                         <option value="" selected>Choose...</option>
-                                        @foreach($levels as $academicLevel)<option value="{{ $academicLevel->id }}">{{ $academicLevel->level }}</option>@endforeach
+                                        @foreach($levels as $academicLevel)
+                                            @if(strtolower($programmeCategory->category) === 'topup' && (int) $academicLevel->level < 300)
+                                                @continue
+                                            @endif
+                                            <option value="{{ $academicLevel->id }}">{{ $academicLevel->level }} Level</option>
+                                        @endforeach
                                     </select>
                                 </div>
     

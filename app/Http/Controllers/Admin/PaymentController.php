@@ -494,7 +494,7 @@ class PaymentController extends Controller
                     $type = !empty($row['payment_type'])?$row['payment_type']: null;
                     $programmeId = !empty($row['programme'])?$row['programme']: null;
 
-                    if(!empty($title) && !empty($type)){
+                    if(!empty($title) && !empty($type) && !empty($amount)){
                         $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $title.'-'.($level*100).'Level-'.$academicSession)));
                         $paymentData = ([
                             'title' => $title,
@@ -509,6 +509,7 @@ class PaymentController extends Controller
 
                         //check existing
                         $existingPayment = Payment::where([
+                            'programme_category_id' => $programmeCategoryId,
                             'programme_id' => $programmeId,
                             'level_id' => $level,
                             'type' => $type,

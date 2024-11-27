@@ -373,7 +373,7 @@
             </div>
 
             <div class="modal-body">
-                <form action="{{ url('/admin/c') }}" method="post" enctype="multipart/form-data">
+                <form action="{{ url('/admin/uploadBulkPayment') }}" method="post" enctype="multipart/form-data">
                     @csrf
                     <input type="hidden" name="academic_session" value="{{ $pageGlobalData->sessionSetting->application_session}}">
                     <input type="hidden" name="programme_category_id" value="{{ $programmeCategory->id }}">

@@ -396,7 +396,7 @@
                                         </li>
 
                                         <li class="nav-item">
-                                            <a class="nav-link menu-link" href="{{ url('staff/leaves') }}" data-key="t-profile">Manage Leaves</a>
+                                            <a class="nav-link menu-link" href="{{ url('staff/manageLeaves') }}" data-key="t-profile">Manage Leaves</a>
                                         </li>
                                     </ul>
                                 </div>
@@ -409,7 +409,7 @@
                                 <div class="collapse menu-dropdown" id="committeeMgt">
                                     <ul class="nav nav-sm flex-column">
                                         <li class="nav-item">
-                                            <a href="{{ url('/staff/committees') }}" class="nav-link"> Committees </a>
+                                               <a href="{{ url('/staff/committees') }}" class="nav-link"> Committees </a>
                                         </li>
                                     </ul>
                                 </div>

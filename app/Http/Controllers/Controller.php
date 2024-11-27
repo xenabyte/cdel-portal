@@ -679,6 +679,7 @@ class Controller extends BaseController
         if(empty($student->matric_number)){
             $sessionSetting = SessionSetting::first();
             $admissionSession = $sessionSetting->admission_session;
+            // $programmeCategorySuffix = ;
 
             $programme = Programme::with('students', 'department', 'department.faculty')->where('id', $student->programme_id)->first();
             $codeNumber = $programme->code_number;
