@@ -21,7 +21,8 @@ class TestApplicant extends Model
         'application_type',
         'referrer',
         'academic_session',
-        'reference'
+        'reference',
+        'programme_category_id',
     ];
 
 

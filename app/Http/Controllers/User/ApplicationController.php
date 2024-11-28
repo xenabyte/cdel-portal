@@ -382,7 +382,6 @@ class ApplicationController extends Controller
         $globalData = $request->input('global_data');
         $applicationSession = $globalData->sessionSetting['application_session'];
         $applicationType = !empty($request->applicationTypeDropdown) ? $request->applicationTypeDropdown : $request->input('applicationType');
-
         $applicantProgrammeCategoryId = $request->programme_category_id;
 
         $programmeCategories = ProgrammeCategory::get();
@@ -391,7 +390,7 @@ class ApplicationController extends Controller
             'programme_category_id' => $applicantProgrammeCategoryId,
             'academic_session' => $applicationSession
         ];
-        
+
         $applicationPayments = Payment::with('structures')
             ->where($commonConditions)
             ->where('type', Payment::PAYMENT_TYPE_GENERAL_APPLICATION)
