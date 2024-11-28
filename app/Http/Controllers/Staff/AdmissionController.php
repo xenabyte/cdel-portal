@@ -240,7 +240,7 @@ class AdmissionController extends Controller
 
         $students = Student::with('applicant', 'programme')
             ->where('academic_session', $admissionSession)
-            ->where('programme_category_id', $$programmeCategoryId)
+            ->where('programme_category_id', $programmeCategoryId)
             ->whereHas('applicant', function ($query) use ($admissionSession) {
                 $query->where('academic_session', $admissionSession);
             })
