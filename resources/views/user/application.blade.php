@@ -598,9 +598,9 @@
                                                                 </select>
                                                             </div>
                                                         </div><!--end col-->
+                                                    @else
+                                                        <input type="hidden" name="application_type" value="{{ strtoupper($applicant->programmeCategory->category) }}">
                                                     @endif
-
-                                                    <input type="hidden" name="application_type" value="{{ strtoupper($applicant->programmeCategory->category) }}">
                                                 @endif
     
                                                 @if(strtolower($applicant->programmeCategory->category) == "undergraduate")
