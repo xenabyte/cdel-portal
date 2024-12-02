@@ -236,7 +236,7 @@
                                                 </td>
                                             </tr>
                                         @endforeach
-                                        @foreach($unregisteredRequiredCourses->where('semester', 1) as $unregisteredCourse)
+                                        {{-- @foreach($unregisteredRequiredCourses->where('semester', 1) as $unregisteredCourse)
                                             <tr>
                                                 <td>{{ $firstSemester++ }}</td>
                                                 <td>{{ $unregisteredCourse->course->code }}</td>
@@ -247,7 +247,7 @@
                                                     <input type="checkbox" name="selected_courses[]" value="{{ $unregisteredCourse->id }}">
                                                 </td>
                                             </tr>
-                                        @endforeach
+                                        @endforeach --}}
                                         @foreach($courses->where('semester', 1) as $course11)
                                             <tr>
                                                 <td>{{ $firstSemester++ }}</td>
@@ -303,7 +303,7 @@
                                                 </td>
                                             </tr>
                                         @endforeach
-                                        @foreach($unregisteredRequiredCourses->where('semester', 2) as $unregisteredCourse2)
+                                        {{-- @foreach($unregisteredRequiredCourses->where('semester', 2) as $unregisteredCourse2)
                                             <tr>
                                                 <td>{{ $secondSemester++ }}</td>
                                                 <td>{{ $unregisteredCourse2->course->code }}</td>
@@ -314,7 +314,7 @@
                                                     <input type="checkbox" name="selected_courses[]" value="{{ $unregisteredCourse2->id }}">
                                                 </td>
                                             </tr>
-                                        @endforeach
+                                        @endforeach --}}
                                         @foreach($courses->where('semester', 2) as $course12)
                                             <tr>
                                                 <td>{{ $secondSemester++ }}</td>
