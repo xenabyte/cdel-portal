@@ -477,6 +477,10 @@
                             <div class="collapse menu-dropdown" id="resultMgt">
                                 <ul class="nav nav-sm flex-column">
                                     <li class="nav-item">
+                                        <a href="{{ url('/admin/getStudentResultPerYear') }}" class="nav-link">Students Result Per Year</a>
+                                    </li>
+
+                                    <li class="nav-item">
                                         <a href="{{ url('/admin/getStudentResults') }}" class="nav-link">Students Results</a>
                                     </li>
 

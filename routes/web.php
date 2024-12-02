@@ -273,6 +273,9 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'admin'],
   Route::get('/studentProfile/{slug}', [App\Http\Controllers\Admin\AcademicController::class, 'studentProfile'])->name('studentProfile')->middleware(['auth:admin']);
 
   Route::get('/getStudentResults', [App\Http\Controllers\Admin\ResultController::class, 'getStudentResults'])->name('getStudentResults')->middleware(['auth:admin']);
+  Route::get('/getStudentResultPerYear', [App\Http\Controllers\Admin\ResultController::class, 'getStudentResultPerYear'])->name('getStudentResultPerYear')->middleware(['auth:admin']);
+  Route::post('/studentResultPerYear', [App\Http\Controllers\Admin\ResultController::class, 'studentResultPerYear'])->name('studentResultPerYear')->middleware(['auth:admin']);
+
   Route::get('/getStudentMissingResults/{semester}', [App\Http\Controllers\Admin\ResultController::class, 'getStudentMissingResults'])->name('getStudentMissingResults')->middleware(['auth:admin']);
   Route::get('/getStudentMissingResults/{semester}/{academicSession}', [App\Http\Controllers\Admin\ResultController::class, 'getStudentMissingResults'])->name('getStudentMissingResults')->middleware(['auth:admin']);
   Route::post('/generateStudentResults', [App\Http\Controllers\Admin\ResultController::class, 'generateStudentResults'])->name('generateStudentResults')->middleware(['auth:admin']);

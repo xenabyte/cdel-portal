@@ -652,6 +652,73 @@ class ResultController extends Controller
 
         alert()->error('Oops!', 'Something went wrong')->persistent('Close');
         return $this->getSingleStudent($studentIdCode, $request->url, $data);
-   }
+    }
 
+    public function getStudentResultPerYear(){
+        $academicLevels = AcademicLevel::get();
+        $academicSessions = Session::orderBy('id', 'desc')->get();
+        $faculties = Faculty::get();
+
+        return view('admin.getStudentResultPerYear',[
+            'academicLevels' => $academicLevels,
+            'academicSessions' => $academicSessions,
+            'faculties' => $faculties
+        ]);
+    }
+
+    public function studentResultPerYear(Request $request){
+        $request->validate([
+            'faculty_id' => 'nullable|integer|exists:faculties,id',
+            'level_id' => 'required|integer|exists:academic_levels,id',
+        ]);
+
+        $academicLevels = AcademicLevel::get();
+        $academicSessions = Session::orderBy('id', 'desc')->get();
+        $faculties = Faculty::get();
+
+        $academicLevel = AcademicLevel::find($request->level_id);
+
+    
+        $facultyId = $request->faculty_id;
+        $programmeIds = [];
+
+        if ($facultyId) {
+            $programmeIds = Programme::where('','=', $facultyId)->pluck('id')->toArray();
+        } else {
+            $programmeIds = Programme::pluck('id')->toArray();
+        }
+
+
+        $studentsQuery = Student::with(['applicant', 'programme', 'registeredCourses', 'registeredCourses.course'])
+        ->where([
+            'is_active' => true,
+            'is_rusticated' => false,
+            'level_id' => $request->level_id,
+        ]);
+    
+        if (!empty($programmeIds)) {
+            $studentsQuery->whereIn('programme_id', $programmeIds);
+        }
+    
+    
+        $students = $studentsQuery->orderBy('programme_id', 'asc')->get();
+        if(empty($students)){
+            alert()->success('No students found', '')->persistent('Close');
+            return view('admin.getStudentResultPerYear',[
+                'academicLevels' => $academicLevels,
+                'academicSessions' => $academicSessions,
+                'faculties' => $faculties
+            ]);
+        }
+    
+        
+        return view('admin.getStudentResultPerYear',[
+            'students' => $students,
+            'academicLevels' => $academicLevels,
+            'academicSessions' => $academicSessions,
+            'faculties' => $faculties,
+            'academicSession' => $request->session,
+            'academicLevel' => $academicLevel,
+        ]);
+    }
 }
