@@ -10,7 +10,17 @@ $qrcode = 'https://quickchart.io/chart?chs=300x300&cht=qr&chl='.env('APP_URL').'
         body {
             font-size: 12px;
         }
-       
+        .watermark {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: url('{{ env('SCHOOL_LOGO') }}') center center no-repeat;
+            background-size: 50%;
+            opacity: 0.1; /* Adjust for visibility */
+        }
         .header-logo {
             text-align: right;
         }
@@ -43,6 +53,7 @@ $qrcode = 'https://quickchart.io/chart?chs=300x300&cht=qr&chl='.env('APP_URL').'
     </style>
 </head>
 <body>
+<div class="watermark"></div>
 <div class="container">
     <table style="width: 100%;">
         <tbody>
@@ -105,7 +116,7 @@ $qrcode = 'https://quickchart.io/chart?chs=300x300&cht=qr&chl='.env('APP_URL').'
                             <div><strong>Student Guardian Name:</strong> {{ $info->applicant->guardian->name }}</div>
                             <div><strong>Student Guardian Phone Number:</strong> {{ $info->applicant->guardian->phone_number }}</div>
                             <div><strong>Student Guardian Email:</strong> {{ $info->applicant->guardian->email }}</div>
-                            <div><strong>Student Guardian Address:</strong> {{ $info->applicant->guardian->address }}</div>
+                            <div><strong>Student Guardian Address:</strong> {!! $info->applicant->guardian->address !!}</div>
                             @endif
                         </td>
                         <td style="width: 30%; border: none;">

@@ -20,6 +20,17 @@
             position: relative;
             z-index: 1;
         }
+        .watermark {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: url('{{ env('SCHOOL_LOGO') }}') center center no-repeat;
+            background-size: 50%;
+            opacity: 0.1; /* Adjust for visibility */
+        }
         .header {
             text-align: center;
         }
@@ -85,6 +96,7 @@
     </style>
 </head>
 <body>
+    <div class="watermark"></div>
     <div class="container">
         <div class="header">
             <img src="{{ env('SCHOOL_LOGO') }}" alt="School Logo">

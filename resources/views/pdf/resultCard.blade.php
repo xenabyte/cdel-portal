@@ -10,40 +10,76 @@
     <style>
         body {
             font-size: 12px;
+            position: relative;
         }
-       
+
         .header-logo {
             text-align: right;
         }
+
         .header-logo img {
             width: 25%;
             margin-bottom: 5px;
         }
+
         table {
             border-collapse: collapse;
             width: 100%;
         }
+
         th, td {
             border: 1px solid;
             padding: 2px;
             text-align: center;
         }
+
         th {
             background-color: #f2f2f2;
         }
+
         .info-column {
             column-count: 2;
             column-gap: 5px;
         }
+
         @media print {
             .info-column {
                 column-count: 2;
                 column-gap: 5px;
             }
         }
+
+        .watermark {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: 40%;
+            opacity: 0.1;
+            background-image: url('{{ env('SCHOOL_LOGO') }}');
+        }
+
+        .watermark-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 50px;
+            font-weight: bold;
+            color: rgba(0, 0, 0, 0.1);
+            white-space: nowrap;
+            z-index: -1;
+        }
     </style>
 </head>
 <body>
+<div class="watermark"></div>
+<div class="watermark-text">This is not a transcript</div>
+
 <div class="container">
     <table style="width: 100%;">
         <tbody>
@@ -56,7 +92,7 @@
     </table>
     <div class="row" style="margin-top: 2%;">
         <div class="text-center">
-            <h1>{{ $info->resultSemester == 1? env('FIRST_SEMESTER') : env('SECOND_SEMESTER') }}  Examination Result</h1>
+            <h1>{{ $info->resultSemester == 1 ? env('FIRST_SEMESTER') : env('SECOND_SEMESTER') }} Examination Result</h1>
             <br>
         </div>
     </div>
@@ -114,9 +150,7 @@
                             <td></td>
                             <td></td>
                             <td><strong>Total</strong></td>
-                            <td>
-                                {{ $totalCreditUnits }}
-                            </td>
+                            <td>{{ $totalCreditUnits }}</td>
                             <td></td>
                             <td></td>
                             <td>{{ $totalPoints }}</td>

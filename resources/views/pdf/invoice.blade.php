@@ -6,8 +6,19 @@
     <style>
         body {
             font-size: 12px;
+            position: relative;
         }
-       
+        .watermark {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: url('{{ env('SCHOOL_LOGO') }}') center center no-repeat;
+            background-size: 50%;
+            opacity: 0.1; /* Adjust for visibility */
+        }
         .header-logo {
             text-align: right;
         }
@@ -40,6 +51,7 @@
     </style>
 </head>
 <body>
+<div class="watermark"></div>
 <div class="container">
     <table style="width: 100%;">
         <tbody>
