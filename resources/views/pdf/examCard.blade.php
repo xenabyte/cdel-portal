@@ -54,7 +54,7 @@ $qrcode = 'https://quickchart.io/chart?chs=300x300&cht=qr&chl='.env('APP_URL').'
     </style>
 </head>
 <body>
-<div class="watermark"></div>
+{{-- <div class="watermark"></div> --}}
 <div class="container">
     <table style="width: 100%;">
         <tbody>

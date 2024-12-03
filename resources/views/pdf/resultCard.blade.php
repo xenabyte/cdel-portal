@@ -77,8 +77,8 @@
     </style>
 </head>
 <body>
-<div class="watermark"></div>
-<div class="watermark-text">This is not a transcript</div>
+{{-- <div class="watermark"></div>
+<div class="watermark-text">This is not a transcript</div> --}}
 
 <div class="container">
     <table style="width: 100%;">
