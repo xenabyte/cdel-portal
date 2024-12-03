@@ -67,18 +67,17 @@
             position: absolute;
             top: 50%;
             left: 50%;
-            transform: translate(-50%, -50%);
+            transform: translate(-50%, -50%) rotate(-45deg);
             font-size: 50px;
             font-weight: bold;
             color: rgba(0, 0, 0, 0.1);
             white-space: nowrap;
-            z-index: -1;
+            z-index: -2;
+            pointer-events: none; 
         }
     </style>
 </head>
 <body>
-{{-- <div class="watermark"></div>
-<div class="watermark-text">This is not a transcript</div> --}}
 
 <div class="container">
     <table style="width: 100%;">
@@ -170,6 +169,8 @@
         </div>
     </div>
 </div>
+<div class="watermark"></div>
+<div class="watermark-text">This is not a transcript</div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

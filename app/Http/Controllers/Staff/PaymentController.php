@@ -301,11 +301,19 @@ class PaymentController extends Controller
 
         if(!empty($studentId)){
             $student = Student::find($studentId);
+            $applicationType = $student->applicant->application_type;
+            $programmeCategoryId = $student->programme_category_id;
             
             if ($type == Payment::PAYMENT_TYPE_SCHOOL || $type == Payment::PAYMENT_TYPE_SCHOOL_DE) {
                 $paymentCheck = $this->checkSchoolFees($student, $session, $levelId);
                 if($paymentCheck->status != 'success'){
                     return response()->json(['status' => 'School fee not setup for the section and programme']);
+                }
+
+                if($programmeCategoryId == ProgrammeCategory::getProgrammeCategory(ProgrammeCategory::UNDERGRADUATE)){
+                    if($applicationType != 'UTME' && ($student->level_id == 2|| $student->level_id == 3)){
+                        $type = Payment::PAYMENT_TYPE_SCHOOL_DE;
+                    }
                 }
 
                 $payment = Payment::with(['structures'])->where([

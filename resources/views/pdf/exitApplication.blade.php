@@ -53,7 +53,6 @@ $qrcode = 'https://quickchart.io/chart?chs=300x300&cht=qr&chl='.env('APP_URL').'
     </style>
 </head>
 <body>
-{{-- <div class="watermark"></div> --}}
 <div class="container">
     <table style="width: 100%;">
         <tbody>
@@ -144,6 +143,7 @@ $qrcode = 'https://quickchart.io/chart?chs=300x300&cht=qr&chl='.env('APP_URL').'
     </table>
     
 </div>
+<div class="watermark"></div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

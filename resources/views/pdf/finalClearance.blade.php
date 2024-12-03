@@ -96,7 +96,6 @@
     </style>
 </head>
 <body>
-    {{-- <div class="watermark"></div> --}}
     <div class="container">
         <div class="header">
             <img src="{{ env('SCHOOL_LOGO') }}" alt="School Logo">
