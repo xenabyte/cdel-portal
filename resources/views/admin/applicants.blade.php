@@ -454,6 +454,8 @@
                 <form action="{{ url('/admin/createNewApplicant') }}" method="post" enctype="multipart/form-data">
                     @csrf
 
+                    <input type="hidden" name="programme_category_id" value="{{ $programmeCategory->id }}">
+
                     <div class="row mt-2 g-3">
                         <span class="text-muted border-top border-top-dashed pt-3"> Bio Data</span>
 

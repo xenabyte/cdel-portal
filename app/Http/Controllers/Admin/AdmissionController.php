@@ -405,6 +405,8 @@ class AdmissionController extends Controller
             'password' => Hash::make($request->password),
             'passcode' => $request->password,
             'academic_session' => $applicationSession,
+            'application_type' => $applicationType,
+            'programme_category_id' => $request->programme_category_id,
         ]);
 
 
