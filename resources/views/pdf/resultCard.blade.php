@@ -83,6 +83,11 @@
     <table style="width: 100%;">
         <tbody>
             <tr>
+                <td style="width: 100%; border: none; text-align: center; font-size: 12px; color: red; font-weight: bold;">
+                    This is not a transcript
+                </td>
+            </tr>
+            <tr>
                 <td style="width: 100%; border: none;">
                     <img src="{{ env('SCHOOL_LOGO') }}" width="40%">
                 </td>

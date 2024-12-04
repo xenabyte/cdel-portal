@@ -80,12 +80,12 @@
                     </div><!-- end card header -->
                     <div class="card-body">
 
-                        <div class="align-items-center d-flex mt-3 pt-3">
+                        {{-- <div class="align-items-center d-flex mt-3 pt-3">
                             <p class="mb-0 flex-grow-1">Add Course</p>
                             <div class="flex-shrink-0">
                                 <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#addCourse" class="btn btn-primary">Add Course</a>
                             </div>
-                        </div>
+                        </div> --}}
 
                         @if($department->id == env('VOCATION_ID'))
                         <div class="align-items-center d-flex mt-3 pt-3">
@@ -165,7 +165,7 @@
                             <td>
                                 <div class="hstack gap-3 fs-15">
                                     <a href="{{ url('/staff/courseDetail/'.$course->id) }}" class="btn btn-lg btn-primary">Course Details</a>
-                                    <a href="avascript:void(0);"  data-bs-toggle="modal" data-bs-target="#edit{{$course->id}}"  class="btn btn-primary m-1"><i class= "mdi mdi-edit"></i> Edit Course</a>
+                                    {{-- <a href="avascript:void(0);"  data-bs-toggle="modal" data-bs-target="#edit{{$course->id}}"  class="btn btn-primary m-1"><i class= "mdi mdi-edit"></i> Edit Course</a> --}}
                                     @if(empty($staff))
                                     <a href="avascript:void(0);"  data-bs-toggle="modal" data-bs-target="#assignCourse{{$course->id}}" class="btn btn-info m-1"><i class= "mdi mdi-link"></i> Assign Staff To Course</a>
                                     @endif
@@ -173,7 +173,7 @@
                                     <a href="avascript:void(0);"  data-bs-toggle="modal" data-bs-target="#unsetStaff{{$course->id}}" class="btn btn-danger m-1"><i class= "mdi mdi-link"></i> Unset Staff From Course</a>
                                     @endif
 
-                                    <div id="edit{{$course->id}}" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
+                                    {{-- <div id="edit{{$course->id}}" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
                                         <div class="modal-dialog modal-dialog-centered">
                                             <div class="modal-content border-0 overflow-hidden">
                                                 <div class="modal-header p-3">
@@ -204,7 +204,7 @@
                                                 </div>
                                             </div><!-- /.modal-content -->
                                         </div><!-- /.modal-dialog -->
-                                    </div><!-- /.modal -->
+                                    </div><!-- /.modal --> --}}
 
                                     <div id="assignCourse{{$course->id}}" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
                                         <div class="modal-dialog modal-dialog-centered">
@@ -276,7 +276,7 @@
     <!-- end col -->
 </div>
 
-<div id="addCourse" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
+{{-- <div id="addCourse" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
     <div class="modal-dialog modal-md modal-dialog-centered">
         <div class="modal-content border-0 overflow-hidden">
             <div class="modal-header p-3">
@@ -307,7 +307,7 @@
             </div>
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
+</div><!-- /.modal --> --}}
 
 <div id="uploadResult" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
     <div class="modal-dialog modal-dialog-centered">
