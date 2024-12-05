@@ -53,7 +53,7 @@
                             <tr>
                                 <th scope="row">{{ $matriculantId++ }}</th>
                                 <td>{{ ucwords(strtolower($matriculant->lastname)) }}</td>
-                                <td>{{ ucwords(strtolower($matriculant->othenames)) }}</td>
+                                <td>{{ ucwords(strtolower($matriculant->othernames)) }}</td>
                                 <td>{{ $matriculant->application_number }}</td>
                                 <td>{{ $matriculant->student->matric_number }}</td>
                                 <td>{{ $matriculant->student->programme->name }}</td>
