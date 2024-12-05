@@ -32,7 +32,8 @@
                     <thead>
                         <tr>
                             <th scope="col">Id</th>
-                            <th scope="col">Name</th>
+                            <th scope="col">Lastname</th>
+                            <th scope="col">Othernames</th>
                             <th scope="col">Applicant</th>
                             <th scope="col">Matric Number</th>
                             <th scope="col">Programme</th>
@@ -51,7 +52,8 @@
                             @if($matriculant->student && $matriculant->student->is_active)
                             <tr>
                                 <th scope="row">{{ $matriculantId++ }}</th>
-                                <td>{{ $matriculant->lastname .' '. $matriculant->othernames }}</td>
+                                <td>{{ ucwords(strtolower($matriculant->lastname)) }}</td>
+                                <td>{{ ucwords(strtolower($matriculant->othenames)) }}</td>
                                 <td>{{ $matriculant->application_number }}</td>
                                 <td>{{ $matriculant->student->matric_number }}</td>
                                 <td>{{ $matriculant->student->programme->name }}</td>
