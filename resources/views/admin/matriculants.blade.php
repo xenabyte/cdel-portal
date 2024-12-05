@@ -34,7 +34,7 @@
                             <th scope="col">Id</th>
                             <th scope="col">Lastname</th>
                             <th scope="col">Othernames</th>
-                            <th scope="col">Applicant</th>
+                            <th scope="col">Applicant Number</th>
                             <th scope="col">Matric Number</th>
                             <th scope="col">Programme</th>
                             <th scope="col">Email</th>
