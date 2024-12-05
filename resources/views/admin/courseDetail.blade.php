@@ -209,7 +209,7 @@
                                 <th scope="col">Attendance Percentage</th>
                                 <th scope="col">Lastname</th>
                                 <th scope="col">Othername</th>
-                                <th scope="col">Matric No</th>
+                                <th scope="col">Matric Number</th>
                                 <th scope="col">Programme</th>
                                 <th scope="col">Email</th>
                                 <th scope="col">Phone No</th>

@@ -167,7 +167,7 @@
                                 <th scope="col">Course Code</th>
                                 <th scope="col">Attendance Percentage</th>
                                 <th scope="col">Name</th>
-                                <th scope="col">Matric No</th>
+                                <th scope="col">Matric Number</th>
                                 <th scope="col">Programme</th>
                                 <th scope="col">Email</th>
                                 <th scope="col">Phone No</th>
