@@ -126,7 +126,7 @@
                 <div class="mt-2">
                     <lord-icon src="https://cdn.lordicon.com/gsqxdxog.json" trigger="loop" colors="primary:#f7b84b,secondary:#f06548" style="width:100px;height:100px"></lord-icon>
                     </lord-icon>
-                    <h4 class="mb-3 mt-4">Are you sure you want to decline <br/> {{ $exitApplication->student->applicant->lastname .' ' . $exitApplication->student->applicant->othernames}} exit application?</h4>
+                    <h4 class="mb-3 mt-4">Are you sure you want to decline <br/> {{ isset($exitApplication->student->applicant)?$exitApplication->student->applicant->lastname .' ' . $exitApplication->student->applicant->othernames:null}} exit application?</h4>
                     <form action="{{ url('/staff/manageExitApplication') }}" method="POST">
                         @csrf
                         <input name="exit_id" type="hidden" value="{{$exitApplication->id}}">
@@ -153,7 +153,7 @@
                 <div class="mt-2">
                     <lord-icon src="https://cdn.lordicon.com/gsqxdxog.json" trigger="hover" style="width:150px;height:150px">
                     </lord-icon>
-                    <h4 class="mb-3 mt-4">Are you sure you want to approve <br/> {{ $exitApplication->student->applicant? $exitApplication->student->applicant->lastname .' ' . $exitApplication->student->applicant->othernames: null }} exit application?</h4>
+                    <h4 class="mb-3 mt-4">Are you sure you want to approve <br/> {{ isset($exitApplication->student->applicant)? $exitApplication->student->applicant->lastname .' ' . $exitApplication->student->applicant->othernames: null }} exit application?</h4>
                     <form action="{{ url('/staff/manageExitApplication') }}" method="POST">
                         @csrf
                         <input name="exit_id" type="hidden" value="{{$exitApplication->id}}">
