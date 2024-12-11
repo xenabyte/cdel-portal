@@ -233,16 +233,16 @@
                                         $secondSemester = 1;
                                     @endphp
                                     @foreach($adviserProgramme->coursesForReg as $firstSemsRegisteredCourse)
-                                        @if($firstSemsRegisteredCourse->semester == 1)
-                                            <tr>
-                                                <td>{{ $firstSemester++ }}</td>
-                                                <td>{{ $firstSemsRegisteredCourse->course->code }}</td>
-                                                <td>{{ $firstSemsRegisteredCourse->course->name }}</td>
-                                                <td>{{ $firstSemsRegisteredCourse->credit_unit }}</td>
-                                                <td>{{ strtoupper(substr($firstSemsRegisteredCourse->status, 0, 1)) }}</td>
-                                            </tr>
-                                        @endif
-                                    @endforeach
+                                    @if($firstSemsRegisteredCourse->semester == 1)
+                                        <tr>
+                                            <td>{{ $firstSemester++ }}</td>
+                                            <td>{{ $firstSemsRegisteredCourse->course->code ?? 'N/A' }}</td>
+                                            <td>{{ $firstSemsRegisteredCourse->course->name ?? 'N/A' }}</td>
+                                            <td>{{ $firstSemsRegisteredCourse->credit_unit ?? 'N/A' }}</td>
+                                            <td>{{ strtoupper(substr($firstSemsRegisteredCourse->status ?? 'N/A', 0, 1)) }}</td>
+                                        </tr>
+                                    @endif
+                                @endforeach
                                 </tbody>
                             </table>
                         </div>
@@ -270,10 +270,10 @@
                                         @if($secondSemsRegisteredCourse->semester == 2)
                                             <tr>
                                                 <td>{{ $secondSemester++ }}</td>
-                                                <td>{{ $secondSemsRegisteredCourse->course->code }}</td>
-                                                <td>{{ $secondSemsRegisteredCourse->course->name }}</td>
-                                                <td>{{ $secondSemsRegisteredCourse->credit_unit }}</td>
-                                                <td>{{ strtoupper(substr($secondSemsRegisteredCourse->status, 0, 1)) }}</td>
+                                                <td>{{ $secondSemsRegisteredCourse->course->code ?? 'N/A' }}</td>
+                                                <td>{{ $secondSemsRegisteredCourse->course->name ?? 'N/A' }}</td>
+                                                <td>{{ $secondSemsRegisteredCourse->credit_unit ?? 'N/A' }}</td>
+                                                <td>{{ strtoupper(substr($secondSemsRegisteredCourse->status ?? 'N/A', 0, 1)) }}</td>
                                             </tr>
                                         @endif
                                     @endforeach
