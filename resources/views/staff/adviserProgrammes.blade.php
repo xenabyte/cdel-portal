@@ -42,7 +42,7 @@
             </div><!-- end card header -->
 
             <div class="card-body table-responsive">
-                <table class="table table-stripped table-bordered table-nowrap">
+                <table id="buttons-datatables" class="table table-stripped table-bordered table-nowrap">
                     <thead>
                         <tr>
                             <th scope="col">ID</th>
