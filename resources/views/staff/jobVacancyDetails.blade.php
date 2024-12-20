@@ -230,6 +230,7 @@
                         <div class="col-md-5">
                             <div class="mt-4">
                                 <p class="text-muted">{{ $student->programme->name }} <br>
+                                    <strong>Programme Category:</strong> {{ $student->programmeCategory->category }} Programme<br>
                                     <strong>Matric Number:</strong> {{ $student->matric_number }}<br>
                                     <strong>Jamb Reg. Number:</strong> {{ $student->applicant->jamb_reg_no }}<br> <br>
                                 </p>

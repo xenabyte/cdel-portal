@@ -347,7 +347,7 @@ class ApplicationController extends Controller
         }
 
         if(!empty($request->name) &&  $request->name != $guardian->name){
-            $guardian->name = $request->name;
+            $guardian->name = ucwords($request->name);
         }
 
         if(!empty($request->phone_number) &&  $request->phone_number != $guardian->phone_number){
@@ -480,9 +480,9 @@ class ApplicationController extends Controller
         $metaData = [
             'slug' => $slug,
             'email' => strtolower($request->email),
-            'lastname' => ucwords($request->lastname),
+            'lastname' => ucwords(strtolower($request->lastname)),
             'phone_number' => $request->phone_number,
-            'othernames' => ucwords($request->othernames),
+            'othernames' => ucwords(strtolower($request->othernames)),
             'password' => $request->password,
             'partner_id' => $partnerId,
             'referrer' => $referralCode,
@@ -564,9 +564,9 @@ class ApplicationController extends Controller
             $testApplicantId = TestApplicant::create([
                 'slug' => $slug,
                 'email' => strtolower($request->email),
-                'lastname' => ucwords($request->lastname),
+                'lastname' => ucwords(strtolower($request->lastname)),
                 'phone_number' => $request->phone_number,
-                'othernames' => ucwords($request->othernames),
+                'othernames' => ucwords(strtolower($request->othernames)),
                 'passcode' => $request->password,
                 'partner_id' => $partnerId,
                 'referrer' => $referralCode,
@@ -598,8 +598,8 @@ class ApplicationController extends Controller
                 "countryCode" =>  "NG",
                 "currency" => "NGN",
                 "logoUrl" => env('SCHOOL_LOGO'),
-                "firstName" => ucwords($request->othernames),
-                "lastName" => ucwords($request->lastname),
+                "firstName" => ucwords(strtolower($request->othernames)),
+                "lastName" => ucwords(strtolower($request->lastname)),
                 "redirectUrl" => env("UPPERLINK_REDIRECT_URL"),
                 "accountCode" => BankAccount::getBankAccountCode($paymentType),
                 "meta" => json_encode($metaData),
@@ -780,7 +780,7 @@ class ApplicationController extends Controller
         }
 
         if(!empty($request->name) &&  $request->name != $nextOfKin->name){
-            $nextOfKin->name = $request->name;
+            $nextOfKin->name = ucwords($request->name);
         }
 
         if(!empty($request->relationship) &&  $request->relationship != $nextOfKin->relationship){

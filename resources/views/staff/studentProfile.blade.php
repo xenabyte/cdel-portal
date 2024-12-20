@@ -271,6 +271,7 @@ $studentRegistrations = $student->courseRegistrationDocument()->orderBy('created
                                     <div class="mt-4 text-center">
                                         <h5 class="mb-1">{{$name}}</h5>
                                         <p class="text-muted">{{ $student->programme->name }} <br>
+                                            <strong>Programme Category:</strong> {{ $student->programmeCategory->category }} Programme<br>
                                             <strong>Matric Number:</strong> {{ $student->matric_number }}<br>
                                             <strong>Jamb Reg. Number:</strong> {{ $student->applicant->jamb_reg_no }}<br>
                                             <strong>Support Code:</strong> <span class="text-danger">{{ $student->applicant->id }}-ST{{ sprintf("%03d", $student->id) }}</span> 

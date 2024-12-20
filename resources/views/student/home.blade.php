@@ -1,6 +1,6 @@
 @extends('student.layout.dashboard')
 @php
-
+use \App\Models\ProgrammeCategory;
 $student = Auth::guard('student')->user();
 $qrcode = 'https://quickchart.io/chart?chs=300x300&cht=qr&chl='.env('APP_URL').'/studentDetails/'.$student->slug;
 $name = $student->applicant->lastname.' '.$student->applicant->othernames;
@@ -51,7 +51,7 @@ $studentRegistrations = $student->courseRegistrationDocument()->orderBy('created
         </div><!-- end card header -->
     </div>
 </div>
-@if(empty($student->linkedIn))
+@if(empty($student->linkedIn) && ($student->programme_category == ProgrammeCategory::getProgrammeCategory(ProgrammeCategory::UNDERGRADUATE)))
 <div class="row">
     <div class="col-md-8 offset-md-2">
         <div class="card">
@@ -124,6 +124,7 @@ $studentRegistrations = $student->courseRegistrationDocument()->orderBy('created
                     <div class="mt-4 text-center">
                         <h5 class="mb-1">{{$name}}</h5>
                         <p class="text-muted">{{ $student->programme->name }} <br>
+                            <strong>Programme Category:</strong> {{ $student->programmeCategory->category }} Programme<br>
                             <strong>Matric Number:</strong> {{ $student->matric_number }}<br>
                             <strong>Wifi Username:</strong> {{ $student->bandwidth_username }}<br>
                             <strong>Jamb Reg. Number:</strong> {{ $student->applicant->jamb_reg_no }} <br>
