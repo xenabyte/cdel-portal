@@ -257,8 +257,8 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'admin'],
   Route::post('/addExamOfficer', [App\Http\Controllers\Admin\StaffController::class, 'addExamOfficer'])->name('addExamOfficer')->middleware(['auth:admin']);
   Route::post('/getStudents', [App\Http\Controllers\Admin\StaffController::class, 'getStudents'])->name('getStudents')->middleware(['auth:admin']);
 
-  Route::get('/courseRegistrations', [App\Http\Controllers\Admin\AcademicController::class, 'courseRegistrations'])->name('courseRegistrations')->middleware(['auth:admin']);
-  Route::get('/courseRegistrations/{academicSession}', [App\Http\Controllers\Admin\AcademicController::class, 'courseRegistrations'])->name('courseRegistrations')->middleware(['auth:admin']);
+  Route::get('/courseRegistrations/{programmeCategory}', [App\Http\Controllers\Admin\AcademicController::class, 'courseRegistrations'])->name('courseRegistrations')->middleware(['auth:admin']);
+  Route::get('/courseRegistrations/{programmeCategory}/{academicSession}', [App\Http\Controllers\Admin\AcademicController::class, 'courseRegistrations'])->name('courseRegistrations')->middleware(['auth:admin']);
 
   Route::post('/downloadStudentCourseRegistrations', [App\Http\Controllers\Admin\AcademicController::class, 'downloadStudentCourseRegistrations'])->name('downloadStudentCourseRegistrations')->middleware(['auth:admin']);
 

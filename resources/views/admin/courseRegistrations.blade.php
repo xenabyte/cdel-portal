@@ -1,11 +1,13 @@
 @extends('admin.layout.dashboard')
-
+@php
+use \App\Models\ProgrammeCategory;
+@endphp
 @section('content')
 
 <div class="row">
     <div class="col-12">
         <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-            <h4 class="mb-sm-0">Course Registrations</h4>
+            <h4 class="mb-sm-0">{{ $programmeCategory->category }} Programme Course Registrations</h4>
 
             <div class="page-title-right">
                 <ol class="breadcrumb m-0">
@@ -26,7 +28,7 @@
                 <div class="card-header align-items-center d-flex">
                     <h4 class="card-title mb-0 flex-grow-1">Select Academic Session </h4>
                 </div><!-- end card header -->
-                <form id="courseRegForm" action="{{ url('/admin/courseRegistrations/') }}" method="get">
+                <form id="courseRegForm" action="{{ url('/admin/courseRegistrations/'.$programmeCategory->category) }}" method="get">
                     @csrf
                     <div class="input-group" style="display: flex; flex-wrap: nowrap;">
                         <select id="sessionSelect" class="form-select select2 selectWithSearch" aria-label="staff" required style="flex-grow: 1;">
@@ -73,6 +75,7 @@
                             <div class="accordion-body">
                                 <form action="{{ url('/admin/downloadStudentCourseRegistrations') }}" method="POST">
                                     @csrf
+                                    <input type="hidden" name="programme_category_id" value="{{ $programmeCategory->id }}">
                                     <div class="row g-3">
                                         <div class="col-lg-12">
                                             <div class="form-floating">
@@ -126,7 +129,7 @@
                     <div class="accordion-item shadow">
                         <h2 class="accordion-header" id="headingTwo">
                             <button class="accordion-button collapsed bg-info" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                                Students yet to do course registration
+                                {{ $programmeCategory->category }} Programme Students yet to do course registration
                             </button>
                         </h2>
                         <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#default-accordion-example">
@@ -172,7 +175,7 @@
     <div class="col-lg-12">
         <div class="card">
             <div class="card-header align-items-center d-flex">
-                <h4 class="card-title mb-0 flex-grow-1">Course Registrations for {{ $academicSession }} Academic session</h4>
+                <h4 class="card-title mb-0 flex-grow-1">{{ $programmeCategory->category }} Programme Course Registrations for {{ $academicSession }} Academic session</h4>
             </div><!-- end card header -->
 
             <div class="card-body table-responsive">

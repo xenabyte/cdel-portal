@@ -22,6 +22,7 @@ class StudentCourseRegistration extends Model
         'hod_id',
         'level_adviser_approved_date',
         'hod_approved_date',
+        'programme_category_id',
     ];
 
     /**
@@ -52,5 +53,15 @@ class StudentCourseRegistration extends Model
     public function hod()
     {
         return $this->belongsTo(Staff::class, 'hod_id', 'id');
+    }
+
+    /**
+     * Get the programmeCategory that owns the StudentCourseRegistration
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function programmeCategory()
+    {
+        return $this->belongsTo(ProgrammeCategory::class, 'programme_category_id');
     }
 }

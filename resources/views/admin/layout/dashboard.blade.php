@@ -453,9 +453,22 @@
                                     <li class="nav-item">
                                         <a href="{{ url('/admin/studentCourses') }}" class="nav-link">Student Courses</a>
                                     </li>
+
                                     <li class="nav-item">
-                                        <a href="{{ url('/admin/courseRegistrations') }}" class="nav-link">Course Registrations</a>
+                                        <a href="#courseRegistrations" class="nav-link" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="courseRegistrations" data-key="t-courseRegistrations"> Course Registrations
+                                        </a>
+                                        <div class="collapse menu-dropdown" id="courseRegistrations">
+                                            <ul class="nav nav-sm flex-column">
+                                                <li class="nav-item">
+                                                    <a href="{{ url('/admin/courseRegistrations/'.$programmeCategory::UNDERGRADUATE) }}" class="nav-link" data-key="t-basic"> Undergraduates </a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a href="{{ url('/admin/courseRegistrations/'.$programmeCategory::TOPUP) }}" class="nav-link" data-key="t-basic"> Topup </a>
+                                                </li>
+                                            </ul>
+                                        </div>
                                     </li>
+
                                     <li class="nav-item">
                                         <a href="{{ url('/admin/getCourseResult') }}" class="nav-link">Course Per Semester</a>
                                     </li>

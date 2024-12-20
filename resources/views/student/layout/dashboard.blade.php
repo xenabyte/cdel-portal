@@ -1,6 +1,8 @@
 
 <!doctype html>
 <?php 
+    use \App\Models\ProgrammeCategory;
+
     $student = Auth::guard('student')->user();
     $notifications = $student->notifications()->orderBy('created_at', 'desc')->get();
     $name = $student->applicant->lastname. ' ' . $student->applicant->othernames;
@@ -295,12 +297,13 @@
                                 <i class="mdi mdi-view-dashboard"></i> <span>Dashboard</span>
                             </a>
                         </li>
-
+                        @if($student->programme_category == ProgrammeCategory::getProgrammeCategory(ProgrammeCategory::UNDERGRADUATE))
                         <li class="nav-item">
                             <a class="nav-link menu-link" href="{{ url('/student/hostelBooking') }}">
                                 <i class="mdi mdi-warehouse"></i> <span>Hostel Booking</span>
                             </a>
                         </li>
+                        @endif
 
                         <li class="nav-item">
                             <a class="nav-link menu-link" href="#workStudy" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="workStudy">

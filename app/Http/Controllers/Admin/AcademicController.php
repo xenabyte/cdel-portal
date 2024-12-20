@@ -824,6 +824,7 @@ class AcademicController extends Controller
     public function resetStudentCourseReg(Request $request){
         $validator = Validator::make($request->all(), [
             'level_adviser_id' => 'required',
+            'programme_category_id' => 'required',
         ]);
 
         $levelAdviser = LevelAdviser::find($request->level_adviser_id);
@@ -836,7 +837,11 @@ class AcademicController extends Controller
         $programmeId = $levelAdviser->programme_id;
         $levelId = $levelAdviser->level_id;
 
-        $programmeStudents = Student::where('programme_id', $programmeId)->where('level_id', $levelId)->get();
+        $programmeStudents = Student::where('programme_id', $programmeId)
+            ->where('programme_category_id', $request->programme_category_id)
+            ->where('level_id', $levelId)
+            ->get();
+
         $programmeStudentIds = $programmeStudents->pluck('id')->toArray();
         $studentCourseRegistrations = StudentCourseRegistration::whereIn('student_id', $programmeStudentIds)->get();
         
@@ -844,7 +849,11 @@ class AcademicController extends Controller
             $studentId = $studentCourseReg->student_id;
             $academicSession = $studentCourseReg->academic_session;
 
-            $courseRegistrations = CourseRegistration::where('student_id', $studentId)->where('academic_session', $academicSession)->get();
+            $courseRegistrations = CourseRegistration::where('student_id', $studentId)
+            ->where('programme_category_id', $request->programme_category_id)
+            ->where('academic_session', $academicSession)
+            ->get();
+
             foreach ($courseRegistrations as $courseReg){
                 $courseId = $courseReg->course_id;
 
@@ -1370,7 +1379,7 @@ class AcademicController extends Controller
     }
 
 
-    public function courseRegistrations(Request $request, $academicSession=null){
+    public function courseRegistrations(Request $request, $programmeCategory, $academicSession=null){
         if(!empty($academicSession)){
             $academicSession = str_replace('-', '/', $academicSession);
         }
@@ -1382,13 +1391,20 @@ class AcademicController extends Controller
             $applicationSession = $globalData->sessionSetting['application_session'];
         }
 
+        $programmeCategory = Category::where('category', $programmeCategory)->first();
+        $programmeCategoryId = $programmeCategory->id;
+
         $studentRegistrations = StudentCourseRegistration::with('student')
             ->where('academic_session', $academicSession)
+            ->where('programme_category_id', $programmeCategoryId)
             ->orderBy('level_id', 'asc')
             ->get();
 
         $studentIds = $studentRegistrations->pluck('student_id');
-        $pendingStudents = Student::with('applicant')->whereNotNull('matric_number')->whereNotIn('id', $studentIds)->get();
+        $pendingStudents = Student::with('applicant')
+        ->where('programme_category_id', $programmeCategoryId)
+        ->whereNotNull('matric_number')
+        ->whereNotIn('id', $studentIds)->get();
 
         $programmes = Programme::get();
         $academicLevels = AcademicLevel::get();
@@ -1400,6 +1416,7 @@ class AcademicController extends Controller
             'sessions' => Session::orderBy('id', 'DESC')->get(),
             'programmes' => $programmes,
             'academicLevels' => $academicLevels,
+            'programmeCategory' => $programmeCategory
         ]);
     }
 
@@ -1407,7 +1424,8 @@ class AcademicController extends Controller
         $validator = Validator::make($request->all(), [
             'programme_id' => 'required',
             'level_id' => 'required',
-            'academic_session' => 'required'
+            'academic_session' => 'required',
+            'programme_category_id' => 'required'
         ]);
 
         if ($validator->fails()) {
@@ -1415,10 +1433,13 @@ class AcademicController extends Controller
             return redirect()->back();
         }
 
-        $studentIds = Student::where('programme_id', $request->programme_id)->pluck('id');
+        $studentIds = Student::where('programme_id', $request->programme_id)
+        ->where('programme_category_id', $request->programme_category_id)
+        ->pluck('id');
 
         $studentRegistrations = StudentCourseRegistration::whereIn('student_id', $studentIds)
             ->where('academic_session', $request->academic_session)
+            ->where('programme_category_id', $request->programme_category_id)
             ->where('level_id', $request->level_id)
             ->get();
 

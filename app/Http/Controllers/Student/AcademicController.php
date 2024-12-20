@@ -90,7 +90,13 @@ class AcademicController extends Controller
             ]);
         }
 
-        $coursePerProgrammePerAcademicSession = CoursePerProgrammePerAcademicSession::where('programme_id', $student->programme_id)->where('level_id', $student->level_id)->where('academic_session', $academicSession)->where('dap_approval_status', 'approved')->get();
+        $coursePerProgrammePerAcademicSession = CoursePerProgrammePerAcademicSession::where('programme_id', $student->programme_id)
+            ->where('level_id', $student->level_id)
+            ->where('programme_category_id', $student->programme_category_id)
+            ->where('academic_session', $academicSession)
+            ->where('dap_approval_status', 'approved')
+            ->get();
+
         $existingRegistration = CourseRegistration::where([
             'student_id' => $studentId,
             'academic_session' => $academicSession
@@ -309,6 +315,7 @@ class AcademicController extends Controller
                     $courseReg = CourseRegistration::create([
                         'student_id' => $studentId,
                         'course_id' => $course->id,
+                        'programme_category_id' => $student->programme_category_id,
                         'course_credit_unit' => $coursePerProgrammeAndLevel->credit_unit,
                         'course_code' => $course->code,
                         'semester' => $coursePerProgrammeAndLevel->semester,
@@ -346,6 +353,7 @@ class AcademicController extends Controller
                     
                     $courseReg = CourseRegistration::create([
                         'student_id' => $studentId,
+                        'programme_category_id' => $student->programme_category_id,
                         'course_id' => $course->id,
                         'course_credit_unit' => $coursePerProgrammeAndLevel->credit_unit,
                         'course_code' => $course->code,
