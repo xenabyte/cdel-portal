@@ -37,6 +37,7 @@
                             {{-- <th scope="col">Image</th> --}}
                             <th scope="col">Name</th>
                             <th scope="col">Level</th>
+                            <th scope="col">Religion</th>
                             <th scope="col">Passcode</th>
                             <th scope="col">Matric Number</th>
                             <th scope="col">Application Number</th>
@@ -56,6 +57,7 @@
                             </td> --}}
                             <td>{{ $student->applicant->lastname .' '. $student->applicant->othernames }}</td>
                             <td>{{ $student->academicLevel->level }} </td>
+                            <td>{{ $student->applicant->religion }}</td>
                             <td>{{ $student->passcode }} </td>
                             <td>{{ $student->matric_number }}</td>
                             <td>{{ $student->applicant->application_number }}</td>
