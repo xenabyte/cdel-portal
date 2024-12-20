@@ -328,11 +328,13 @@ class StaffController extends Controller
         
 
         $academicLevels = AcademicLevel::get();
+        $programmeCategories = Category::get();
 
 
         return view('staff.studentCourses',[
             'programmes' => $programmes,
-            'academicLevels' => $academicLevels
+            'academicLevels' => $academicLevels,
+            'programmeCategories' => $programmeCategories
         ]);
     }
 
@@ -342,6 +344,7 @@ class StaffController extends Controller
             'programme_id' => 'required',
             'level_id' => 'required',
             'semester' => 'required',
+            'programme_category_id' => 'required',
         ]);
 
         if($validator->fails()) {
@@ -352,13 +355,21 @@ class StaffController extends Controller
         $globalData = $request->input('global_data');
         $academicSession = $globalData->sessionSetting['academic_session'];
 
-        $courses = CoursePerProgrammePerAcademicSession::with('course')->where('programme_id', $request->programme_id)->where('level_id', $request->level_id)->where('academic_session', $academicSession)->where('semester', $request->semester)->get();
+        $courses = CoursePerProgrammePerAcademicSession::with('course')
+            ->where('programme_id', $request->programme_id)
+            ->where('level_id', $request->level_id)
+            ->where('academic_session', $request->academic_session)
+            ->where('semester', $request->semester)
+            ->where('programme_course_id', $request->programme_category_id)
+            ->get();
+
         $programme = Programme::find($request->programme_id);
         $academicLevel = AcademicLevel::find($request->level_id);
         $allCourses = Course::all();
 
         $programmes = Programme::get();
         $academicLevels = AcademicLevel::get();
+        $programmeCategories = Category::get();
 
         return view('staff.studentCourses',[
             'programmes' => $programmes,
@@ -368,6 +379,9 @@ class StaffController extends Controller
             'programme' => $programme,
             'semester' => $request->semester,
             'allCourses' => $allCourses,
+            'programmeCategories' => $programmeCategories,
+            'academic_session' => $request->academic_session,
+            'programmeCategory' => Category::find($request->programme_category_id)
         ]);
     }
 

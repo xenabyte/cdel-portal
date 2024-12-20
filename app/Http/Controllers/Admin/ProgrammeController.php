@@ -203,11 +203,13 @@ class ProgrammeController extends Controller
         $programmes = Programme::get();
         $academicLevels = AcademicLevel::get();
         $academicSessions = Session::orderBy('id', 'DESC')->get();
+        $programmeCategories = ProgrammeCategory::get();
 
         return view('admin.studentCourses',[
             'programmes' => $programmes,
             'academicLevels' => $academicLevels,
-            'academicSessions' => $academicSessions
+            'academicSessions' => $academicSessions,
+            'programmeCategories' => $programmeCategories
         ]);
     }
 
@@ -217,7 +219,8 @@ class ProgrammeController extends Controller
             'programme_id' => 'required',
             'level_id' => 'required',
             'semester' => 'required',
-            'academic_session' => 'required'
+            'academic_session' => 'required',
+            'programme_category_id' => 'required'
         ]);
 
         if($validator->fails()) {
@@ -227,7 +230,14 @@ class ProgrammeController extends Controller
 
         $academicSession = $request->academic_session;
 
-        $courses = CoursePerProgrammePerAcademicSession::with('course')->where('programme_id', $request->programme_id)->where('level_id', $request->level_id)->where('academic_session', $academicSession)->where('semester', $request->semester)->get();
+        $courses = CoursePerProgrammePerAcademicSession::with('course')
+            ->where('programme_id', $request->programme_id)
+            ->where('level_id', $request->level_id)
+            ->where('academic_session', $academicSession)
+            ->where('semester', $request->semester)
+            ->where('programme_category_id', $request->programme_category_id)
+            ->get();
+
         $allCourses = Course::all();
         $programme = Programme::find($request->programme_id);
         $academicLevel = AcademicLevel::find($request->level_id);
@@ -235,6 +245,7 @@ class ProgrammeController extends Controller
         $programmes = Programme::get();
         $academicLevels = AcademicLevel::get();
         $academicSessions = Session::orderBy('id', 'DESC')->get();
+        $programmeCategories = ProgrammeCategory::get();
 
 
         return view('admin.studentCourses',[
@@ -246,6 +257,10 @@ class ProgrammeController extends Controller
             'programme' => $programme,
             'semester' => $request->semester,
             'allCourses' => $allCourses,
+            'programmeCategories' => $programmeCategories,
+            'academic_session' => $academicSession,
+            'programme_category_id' => $request->programme_category_id,
+            'programmeCategory' => ProgrammeCategory::find($request->programme_category_id)
         ]);
     }
 
@@ -253,14 +268,27 @@ class ProgrammeController extends Controller
         $globalData = $request->input('global_data');
         $academicSession = $globalData->sessionSetting['academic_session'];
 
-        $courses = CoursePerProgrammePerAcademicSession::with('course')->where('programme_id', $request->programme_id)->where('level_id', $request->level_id)->where('academic_session', $academicSession)->where('semester', $request->semester)->get();
+        $courses = CoursePerProgrammePerAcademicSession::with('course')
+            ->where('programme_id', $request->programme_id)
+            ->where('level_id', $request->level_id)
+            ->where('academic_session', $request->academic_session)
+            ->where('semester', $request->semester)
+            ->where('programme_category_id', $request->programme_category_id)
+            ->get();
+
+        $programmeCategories = ProgrammeCategory::get();
+
         $defaultData = [
             'courses' => $courses,
             'academiclevel' => AcademicLevel::find($request->level_id),
             'programme' => Programme::find($request->programme_id),
             'semester' => $request->semester,
             'allCourses' => Course::all(),
-            'academicLevels' => AcademicLevel::get()
+            'academicLevels' => AcademicLevel::get(),
+            'programmeCategories' => $programmeCategories,
+            'academic_session' => $request->academic_session,
+            'programme_category_id' => $request->programme_category_id,
+            'programmeCategory' => ProgrammeCategory::find($request->programme_category_id)
         ];
 
         $validator = Validator::make($request->all(), [
@@ -269,6 +297,7 @@ class ProgrammeController extends Controller
             'programme_id' => 'required',
             'semester' => 'required',
             'credit_unit' => 'required',
+            'programme_category_id' => 'required',
         ]);
 
         if($validator->fails()) {
@@ -276,8 +305,6 @@ class ProgrammeController extends Controller
             return view('admin.studentCourses',$defaultData);
         }
 
-
-        
         $levelAdviser = LevelAdviser::where('programme_id', $request->programme_id)->where('level_id', $request->level_id)->where('academic_session', $academicSession)->first();
         if(!$levelAdviser){
             alert()->error('Oops', 'Invalid Level Adviser or not set ')->persistent('Close');
@@ -303,6 +330,7 @@ class ProgrammeController extends Controller
             'semester' => $request->semester,
             'credit_unit' => $request->credit_unit,
             'academic_session' => $academicSession,
+            'programme_category_id' => $request->programme_category_id,
         ])->first();
 
         if($exist){
@@ -317,12 +345,18 @@ class ProgrammeController extends Controller
             'semester' => $request->semester,
             'credit_unit' => $request->credit_unit,
             'academic_session' => $academicSession,
+            'programme_category_id' => $request->programme_category_id,
             'status' => $request->status,
         ];
         
         if($coursePerProgrammePerAcademicSession = CoursePerProgrammePerAcademicSession::create($newCourses)){
             if(strtolower($request->addToReg) == 'yes'){
-                $allStudents = Student::where('level_id', $request->level_id)->where('programme_id', $request->programme_id)->where('is_active', 1)->get();
+                $allStudents = Student::where('level_id', $request->level_id)
+                    ->where('programme_id', $request->programme_id)
+                    ->where('programme_category_id', $request->programme_category_id)
+                    ->where('is_active', 1)
+                    ->get();
+
                 foreach($allStudents as $student){
                     $newCourseRegistration = ([
                         'programme_course_id' => $coursePerProgrammePerAcademicSession->id,
@@ -334,6 +368,7 @@ class ProgrammeController extends Controller
                         'course_credit_unit' => $request->credit_unit,
                         'course_code' => $course->code,
                         'course_status' => $request->status,
+                        'programme_category_id' => $request->programme_category_id,
                         'status' => 'approved',
                     ]);
                     CourseRegistration::create($newCourseRegistration);
@@ -342,15 +377,27 @@ class ProgrammeController extends Controller
 
 
             alert()->success('Course added successfully', '')->persistent('Close');
-            $courses = CoursePerProgrammePerAcademicSession::with('course', 'course.courseManagement', 'course.courseManagement.staff')->where('programme_id', $request->programme_id)->where('level_id', $request->level_id)->where('academic_session', $academicSession)->where('semester', $request->semester)->get();
+            $courses = CoursePerProgrammePerAcademicSession::with('course', 'course.courseManagement', 'course.courseManagement.staff')
+                ->where('programme_id', $request->programme_id)
+                ->where('level_id', $request->level_id)
+                ->where('academic_session', $request->academic_session)
+                ->where('semester', $request->semester)
+                ->where('programme_category_id', $request->programme_category_id)
+                ->get();
+
             $defaultData = [
                 'courses' => $courses,
                 'academiclevel' => AcademicLevel::find($request->level_id),
                 'programme' => Programme::find($request->programme_id),
                 'semester' => $request->semester,
                 'allCourses' => Course::all(),
-                'academicLevels' => AcademicLevel::get()
+                'academicLevels' => AcademicLevel::get(),
+                'programmeCategories' => $programmeCategories,
+                'academic_session' => $request->academic_session,
+                'programme_category_id' => $request->programme_category_id,
+                'programmeCategory' => ProgrammeCategory::find($request->programme_category_id)
             ];
+
             return view('admin.studentCourses',$defaultData);
         }
 
@@ -358,53 +405,19 @@ class ProgrammeController extends Controller
         return view('admin.studentCourses', $defaultData);
     }
 
-   public function deleteCourseForStudent(Request $request){
-    $globalData = $request->input('global_data');
-    $academicSession = $globalData->sessionSetting['academic_session'];
+    public function deleteCourseForStudent(Request $request){
+        $globalData = $request->input('global_data');
+        $academicSession = $globalData->sessionSetting['academic_session'];
 
-    $courses = CoursePerProgrammePerAcademicSession::with('course')->where('programme_id', $request->programme_id)->where('level_id', $request->level_id)->where('academic_session', $academicSession)->where('semester', $request->semester)->get();
-    $defaultData = [
-        'courses' => $courses,
-        'academiclevel' => AcademicLevel::find($request->level_id),
-        'programme' => Programme::find($request->programme_id),
-        'semester' => $request->semester,
-        'allCourses' => Course::all(),
-        'academicLevels' => AcademicLevel::get(),
-    ];
+        $programmeCategories = ProgrammeCategory::get();
 
-    $validator = Validator::make($request->all(), [
-        'student_course_id' => 'required',
-    ]);
+        $courses = CoursePerProgrammePerAcademicSession::with('course')
+            ->where('programme_id', $request->programme_id)
+            ->where('level_id', $request->level_id)
+            ->where('academic_session', $request->academic_session)
+            ->where('semester', $request->semester)
+            ->get();
 
-    if($validator->fails()) {
-        alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
-        return view('admin.studentCourses',$defaultData);
-    }
-    
-    $levelAdviser = LevelAdviser::where('programme_id', $request->programme_id)->where('level_id', $request->level_id)->where('academic_session', $academicSession)->first();
-    if(!$levelAdviser){
-        alert()->error('Oops', 'Invalid Level Adviser or not set')->persistent('Close');
-        return view('staff.studentCourses', $defaultData);
-    }
-
-    $courseRegistration = $levelAdviser->course_registration;
-
-    if(!empty($courseRegistrationSetting) && $courseRegistrationSetting != 'stop'){
-        alert()->error('Oops', 'Course Registration already started')->persistent('Close');
-        return view('admin.studentCourses', $defaultData);
-    }
-
-    if(!$studentCourse = CoursePerProgrammePerAcademicSession::find($request->student_course_id)){
-        alert()->error('Oops', 'Invalid Record ')->persistent('Close');
-        return view('admin.studentCourses',$defaultData);
-    }
-    
-    if($studentCourse->delete()){
-        //delete all course registration with programme_course_id
-        $deleteStudentCourseReg = CourseRegistration::where('programme_course_id',$request->student_course_id)->where('academic_session', $academicSession)->delete();
-
-        alert()->success('Delete Successfully', '')->persistent('Close');
-        $courses = CoursePerProgrammePerAcademicSession::with('course', 'course.courseManagement', 'course.courseManagement.staff')->where('programme_id', $request->programme_id)->where('level_id', $request->level_id)->where('academic_session', $academicSession)->where('semester', $request->semester)->get();
         $defaultData = [
             'courses' => $courses,
             'academiclevel' => AcademicLevel::find($request->level_id),
@@ -412,18 +425,70 @@ class ProgrammeController extends Controller
             'semester' => $request->semester,
             'allCourses' => Course::all(),
             'academicLevels' => AcademicLevel::get(),
+            'programmeCategories' => $programmeCategories,
+            'academic_session' => $request->academic_session,
+            'programme_category_id' => $request->programme_category_id,
+            'programmeCategory' => ProgrammeCategory::find($request->programme_category_id)
         ];
+
+        $validator = Validator::make($request->all(), [
+            'student_course_id' => 'required',
+        ]);
+
+        if($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return view('admin.studentCourses',$defaultData);
+        }
+        
+        $levelAdviser = LevelAdviser::where('programme_id', $request->programme_id)->where('level_id', $request->level_id)->where('academic_session', $academicSession)->first();
+        if(!$levelAdviser){
+            alert()->error('Oops', 'Invalid Level Adviser or not set')->persistent('Close');
+            return view('staff.studentCourses', $defaultData);
+        }
+
+        $courseRegistration = $levelAdviser->course_registration;
+
+        if(!empty($courseRegistrationSetting) && $courseRegistrationSetting != 'stop'){
+            alert()->error('Oops', 'Course Registration already started')->persistent('Close');
+            return view('admin.studentCourses', $defaultData);
+        }
+
+        if(!$studentCourse = CoursePerProgrammePerAcademicSession::find($request->student_course_id)){
+            alert()->error('Oops', 'Invalid Record ')->persistent('Close');
+            return view('admin.studentCourses',$defaultData);
+        }
+        
+        if($studentCourse->delete()){
+            //delete all course registration with programme_course_id
+            $deleteStudentCourseReg = CourseRegistration::where('programme_course_id',$request->student_course_id)->where('academic_session', $academicSession)->delete();
+
+            alert()->success('Delete Successfully', '')->persistent('Close');
+            $courses = CoursePerProgrammePerAcademicSession::with('course', 'course.courseManagement', 'course.courseManagement.staff')->where('programme_id', $request->programme_id)->where('level_id', $request->level_id)->where('academic_session', $academicSession)->where('semester', $request->semester)->get();
+            $defaultData = [
+                'courses' => $courses,
+                'academiclevel' => AcademicLevel::find($request->level_id),
+                'programme' => Programme::find($request->programme_id),
+                'semester' => $request->semester,
+                'allCourses' => Course::all(),
+                'academicLevels' => AcademicLevel::get(),
+                'programmeCategories' => $programmeCategories,
+                'academic_session' => $request->academic_session,
+                'programme_category_id' => $request->programme_category_id,
+                'programmeCategory' => ProgrammeCategory::find($request->programme_category_id)
+            ];
+            return view('admin.studentCourses',$defaultData);
+        }
+
+        alert()->error('Oops!', 'Something went wrong')->persistent('Close');
         return view('admin.studentCourses',$defaultData);
+
     }
 
-    alert()->error('Oops!', 'Something went wrong')->persistent('Close');
-    return view('admin.studentCourses',$defaultData);
-
-   }
-
-   public function updateCourseForStudent(Request $request){
+    public function updateCourseForStudent(Request $request){
         $globalData = $request->input('global_data');
         $academicSession = $globalData->sessionSetting['academic_session'];
+        $programmeCategories = ProgrammeCategory::get();
+
 
         $courses = CoursePerProgrammePerAcademicSession::with('course')->where('programme_id', $request->programme_id)->where('level_id', $request->level_id)->where('academic_session', $academicSession)->where('semester', $request->semester)->get();
         $defaultData = [
@@ -433,6 +498,10 @@ class ProgrammeController extends Controller
             'semester' => $request->semester,
             'allCourses' => Course::all(),
             'academicLevels' => AcademicLevel::get(),
+            'programmeCategories' => $programmeCategories,
+            'academic_session' => $request->academic_session,
+            'programme_category_id' => $request->programme_category_id,
+            'programmeCategory' => ProgrammeCategory::find($request->programme_category_id)
         ];
 
         $validator = Validator::make($request->all(), [
@@ -479,12 +548,16 @@ class ProgrammeController extends Controller
                 'semester' => $request->semester,
                 'allCourses' => Course::all(),
                 'academicLevels' => AcademicLevel::get(),
+                'programmeCategories' => $programmeCategories,
+                'academic_session' => $request->academic_session,
+                'programme_category_id' => $request->programme_category_id,
+                'programmeCategory' => ProgrammeCategory::find($request->programme_category_id)
             ];
             return view('admin.studentCourses',$defaultData);
         }
         alert()->error('Oops!', 'Something went wrong')->persistent('Close');
         return view('admin.studentCourses',$defaultData);
-   }
+    }
 
     public function courseDetail(Request $request, $id, $academicSession = null){
 

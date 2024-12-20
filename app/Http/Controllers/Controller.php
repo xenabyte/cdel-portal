@@ -677,6 +677,7 @@ class Controller extends BaseController
     public function generateMatricAndEmail($student){
         $isStudentActive = $student->is_active;
         if(empty($student->matric_number)){
+            $programmeCategoryId = $student->programme_category_id;
             $sessionSetting = SessionSetting::first();
             $admissionSession = $sessionSetting->admission_session;
             // $programmeCategorySuffix = ;
@@ -698,7 +699,13 @@ class Controller extends BaseController
 
 
             $newMatric = empty($programme->matric_last_number)? ($programme->students->count() + 20) + 1 : $programme->matric_last_number + 1;
-            $matricNumber = substr($admissionSession, 2, 2).'/'.$facultyCode.$code.sprintf("%03d", $newMatric);
+            if($programmeCategoryId == ProgrammeCategory::getProgrammeCategory(ProgrammeCategory::UNDERGRADUATE)){
+                $matricNumber = substr($admissionSession, 2, 2).'/'.$facultyCode.$code.sprintf("%03d", $newMatric);
+            }
+
+            if($programmeCategoryId == ProgrammeCategory::getProgrammeCategory(ProgrammeCategory::TOPUP)){
+                $matricNumber = 'TP/'.substr($admissionSession, 2, 2).'/'.$facultyCode.$code.sprintf("%03d", $newMatric);
+            }
 
             $google = new Google();
             $createStudentEmail = $google->createUser($studentEmail, $student->applicant->othernames, $student->applicant->lastname, $accessCode, env('GOOGLE_STUDENT_GROUP'));

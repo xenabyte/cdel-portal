@@ -62,8 +62,19 @@
                                                     <option value="" selected>--Select--</option>
                                                     <option value="1">Harmattan Semester</option>
                                                     <option value="2">Rain Semester</option>
+                                                    <option value="3">Summer Semester</option>
                                                 </select>
                                                 <label for="semester">Semester</label>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-12">
+                                            <div class="form-floating">
+                                                <select class="form-select" id="programme_category" name="programme_category_id" aria-label="Programme Category">
+                                                    <option value="" selected>--Select--</option>
+                                                    @foreach($programmeCategories as $programmeCategory)<option value="{{ $programmeCategory->id }}">{{ $programmeCategory->category }} Programme</option>@endforeach
+                                                </select>
+                                                <label for="session">Programme Category</label>
                                             </div>
                                         </div>
 
@@ -97,7 +108,7 @@
     <div class="col-lg-12">
         <div class="card">
             <div class="card-header align-items-center d-flex">
-                <h4 class="card-title mb-0 flex-grow-1">{{ $semester == 1? 'First':'Second'}} Semester Course(s) for {{ $academiclevel->level }} Level,  {{ $programme->name }}</h4>
+                <h4 class="card-title mb-0 flex-grow-1">{{ $semester == 1? 'First':'Second'}} Semester Course(s) for {{ $academiclevel->level }} Level, {{ $programmeCategory->category }} Programme for  {{ $programme->name }} {{ $academic_session }}</h4>
             </div><!-- end card header -->
         </div>
     </div>
@@ -155,6 +166,9 @@
                                     <input type="hidden" name="academiclevel" value="{{$academiclevel}}">
                                     <input type="hidden" name="courses" value="{{$courses}}">
                                     <input type="hidden" name="allCourses" value="{{$allCourses}}">
+                                    <input type="hidden" name="academic_session" value="{{$academic_session}}">
+                                    <input type="hidden" name="programme_category_id" value="{{$programme_category_id}}">
+
                                     <div class="row g-3">
                 
                                         <div class="col-lg-12">
@@ -261,6 +275,9 @@
                                                         <input type="hidden" name="level_id" value="{{ $academiclevel->id }}">
                                                         <input type="hidden" name="programme_id" value="{{ $programme->id }}">
                                                         <input type="hidden" name="semester" value="{{$semester}}">
+                                                        <input type="hidden" name="academic_session" value="{{$academic_session}}">
+                                                        <input type="hidden" name="programme_category_id" value="{{$programme_category_id}}">
+
                                                         <hr>
                                                         <button type="submit" id="submit-button" class="btn btn-danger w-100">Yes, Delete</button>
                                                     </form>
@@ -289,6 +306,8 @@
                                                     <input type="hidden" name="level_id" value="{{ $academiclevel->id }}">
                                                     <input type="hidden" name="programme_id" value="{{ $programme->id }}">
                                                     <input type="hidden" name="semester" value="{{$semester}}">
+                                                    <input type="hidden" name="academic_session" value="{{$academic_session}}">
+                                                    <input type="hidden" name="programme_category_id" value="{{$programme_category_id}}">
                                                     
                                                     <div class="col-lg-12">
                                                         <div class="form-floating">

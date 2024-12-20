@@ -34,7 +34,7 @@
                 <div class="text-center">
                     <div class="row justify-content-center">
                         <div class="col-lg-9">
-                            <h4 class="mt-4 fw-semibold">Fetch Student Course(s) for {{ $pageGlobalData->sessionSetting->academic_session }} academic session</h4>
+                            <h4 class="mt-4 fw-semibold">Fetch Student Course(s) for {{ $pageGlobalData->sessionSetting->academic_session }} {{ $programmeCategory->category }} Programme for  {{ $programme->name }} {{ $academic_session }}</h4>
                             <p class="text-muted mt-3"></p>
                             <div class="mt-4">
                                 <form action="{{ url('/staff/getStudentCourses') }}" method="POST">
@@ -64,6 +64,16 @@
                                                 <label for="level">Academic Level</label>
                                             </div>
                                         </div>
+
+                                        <div class="col-lg-12">
+                                            <div class="form-floating">
+                                                <select class="form-select" id="programme_category" name="programme_category_id" aria-label="Programme Category">
+                                                    <option value="" selected>--Select--</option>
+                                                    @foreach($programmeCategories as $programmeCategory)<option value="{{ $programmeCategory->id }}">{{ $programmeCategory->category }} Programme</option>@endforeach
+                                                </select>
+                                                <label for="session">Programme Category</label>
+                                            </div>
+                                        </div>
         
                                         <div class="col-lg-12">
                                             <div class="form-floating">
@@ -76,7 +86,6 @@
                                             </div>
                                         </div>
         
-
                                         <button type="submit" id="submit-button" class="btn btn-fill btn-primary btn-lg btn-block mb-5">Get Courses</button>
                                     </div>
                                 </form>
@@ -114,6 +123,8 @@
                                 <input type="hidden" name="academiclevel" value="{{$academiclevel}}">
                                 <input type="hidden" name="courses" value="{{$courses}}">
                                 <input type="hidden" name="allCourses" value="{{$allCourses}}">
+                                <input type="hidden" name="academic_session" value="{{$academic_session}}">
+                                <input type="hidden" name="programme_category_id" value="{{$programme_category_id}}">
                                 <div class="row g-3">
             
                                     <div class="col-lg-12">
@@ -248,6 +259,8 @@
                                                         <input type="hidden" name="level_id" value="{{ $academiclevel->id }}">
                                                         <input type="hidden" name="programme_id" value="{{ $programme->id }}">
                                                         <input type="hidden" name="semester" value="{{$semester}}">
+                                                        <input type="hidden" name="academic_session" value="{{$academic_session}}">
+                                                        <input type="hidden" name="programme_category_id" value="{{$programme_category_id}}">
                                                         <hr>
                                                         <button type="submit" id="submit-button" class="btn btn-danger w-100">Yes, Delete</button>
                                                     </form>
@@ -271,11 +284,12 @@
                                             <div class="modal-body">
                                                 <form action="{{ url('/staff/updateCourseForStudent') }}" method="post" enctype="multipart/form-data">
                                                     @csrf
-
                                                     <input name="student_course_id" type="hidden" value="{{$course->id}}">
                                                     <input type="hidden" name="level_id" value="{{ $academiclevel->id }}">
                                                     <input type="hidden" name="programme_id" value="{{ $programme->id }}">
                                                     <input type="hidden" name="semester" value="{{$semester}}">
+                                                    <input type="hidden" name="academic_session" value="{{$academic_session}}">
+                                                    <input type="hidden" name="programme_category_id" value="{{$programme_category_id}}">
                                                     
                                                     <div class="col-lg-12">
                                                         <div class="form-floating">

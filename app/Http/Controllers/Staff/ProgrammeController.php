@@ -314,14 +314,27 @@ class ProgrammeController extends Controller
         $globalData = $request->input('global_data');
         $academicSession = $globalData->sessionSetting['academic_session'];
 
-        $courses = CoursePerProgrammePerAcademicSession::with('course')->where('programme_id', $request->programme_id)->where('level_id', $request->level_id)->where('academic_session', $academicSession)->where('semester', $request->semester)->get();
+        $programmeCategories = ProgrammeCategory::get();
+
+        $courses = CoursePerProgrammePerAcademicSession::with('course')
+            ->where('programme_id', $request->programme_id)
+            ->where('level_id', $request->level_id)
+            ->where('academic_session', $request->academic_session)
+            ->where('semester', $request->semester)
+            ->where('programme_category_id', $request->programme_category_id)
+            ->get();
+
         $defaultData = [
             'courses' => $courses,
             'academiclevel' => AcademicLevel::find($request->level_id),
             'programme' => Programme::find($request->programme_id),
             'semester' => $request->semester,
             'allCourses' => Course::all(),
-            'academicLevels' => AcademicLevel::get()
+            'academicLevels' => AcademicLevel::get(),
+            'programmeCategories' => $programmeCategories,
+            'academic_session' => $request->academic_session,
+            'programme_category_id' => $request->programme_category_id,
+            'programmeCategory' => ProgrammeCategory::find($request->programme_category_id)
         ];
 
         $validator = Validator::make($request->all(), [
@@ -330,6 +343,7 @@ class ProgrammeController extends Controller
             'programme_id' => 'required',
             'semester' => 'required',
             'credit_unit' => 'required',
+            'programme_category_id' => 'required',
         ]);
 
         if($validator->fails()) {
@@ -362,7 +376,8 @@ class ProgrammeController extends Controller
             'programme_id' => $request->programme_id,
             'semester' => $request->semester,
             'credit_unit' => $request->credit_unit,
-            'academic_session' => $academicSession,
+            'academic_session' => $request->academic_session,
+            'programme_category_id' => $request->programme_category_id
         ])->first();
 
         if($exist){
@@ -376,20 +391,32 @@ class ProgrammeController extends Controller
             'programme_id' => $request->programme_id,
             'semester' => $request->semester,
             'credit_unit' => $request->credit_unit,
-            'academic_session' => $academicSession,
+            'academic_session' => $request->academic_session,
             'status' => $request->status,
+            'programme_category_id' => $request->programme_category_id,
+            'programmeCategory' => ProgrammeCategory::find($request->programme_category_id)
         ];
         
         if(CoursePerProgrammePerAcademicSession::create($newCourses)){
             alert()->success('Course added successfully', '')->persistent('Close');
-            $courses = CoursePerProgrammePerAcademicSession::with('course', 'course.courseManagement', 'course.courseManagement.staff')->where('programme_id', $request->programme_id)->where('level_id', $request->level_id)->where('academic_session', $academicSession)->where('semester', $request->semester)->get();
+            $courses = CoursePerProgrammePerAcademicSession::with('course', 'course.courseManagement', 'course.courseManagement.staff')
+                ->where('programme_id', $request->programme_id)
+                ->where('level_id', $request->level_id)
+                ->where('academic_session', $request->academic_session)
+                ->where('semester', $request->semester)
+                ->get();
+
             $defaultData = [
                 'courses' => $courses,
                 'academiclevel' => AcademicLevel::find($request->level_id),
                 'programme' => Programme::find($request->programme_id),
                 'semester' => $request->semester,
                 'allCourses' => Course::all(),
-                'academicLevels' => AcademicLevel::get()
+                'academicLevels' => AcademicLevel::get(),
+                'programmeCategories' => $programmeCategories,
+                'academic_session' => $request->academic_session,
+                'programme_category_id' => $request->programme_category_id,
+                'programmeCategory' => ProgrammeCategory::find($request->programme_category_id)
             ];
             return view('staff.studentCourses',$defaultData);
         }
@@ -402,7 +429,15 @@ class ProgrammeController extends Controller
         $globalData = $request->input('global_data');
         $academicSession = $globalData->sessionSetting['academic_session'];
 
-        $courses = CoursePerProgrammePerAcademicSession::with('course')->where('programme_id', $request->programme_id)->where('level_id', $request->level_id)->where('academic_session', $academicSession)->where('semester', $request->semester)->get();
+        $programmeCategories = ProgrammeCategory::get();
+
+        $courses = CoursePerProgrammePerAcademicSession::with('course')
+            ->where('programme_id', $request->programme_id)
+            ->where('level_id', $request->level_id)
+            ->where('academic_session', $request->academic_session)
+            ->where('semester', $request->semester)
+            ->get();
+
         $defaultData = [
             'courses' => $courses,
             'academiclevel' => AcademicLevel::find($request->level_id),
@@ -410,6 +445,10 @@ class ProgrammeController extends Controller
             'semester' => $request->semester,
             'allCourses' => Course::all(),
             'academicLevels' => AcademicLevel::get(),
+            'programmeCategories' => $programmeCategories,
+            'academic_session' => $request->academic_session,
+            'programme_category_id' => $request->programme_category_id,
+            'programmeCategory' => ProgrammeCategory::find($request->programme_category_id)
         ];
 
         $validator = Validator::make($request->all(), [
@@ -448,6 +487,10 @@ class ProgrammeController extends Controller
                 'semester' => $request->semester,
                 'allCourses' => Course::all(),
                 'academicLevels' => AcademicLevel::get(),
+                'programmeCategories' => $programmeCategories,
+                'academic_session' => $request->academic_session,
+                'programme_category_id' => $request->programme_category_id,
+                'programmeCategory' => ProgrammeCategory::find($request->programme_category_id)
             ];
             return view('staff.studentCourses',$defaultData);
         }
@@ -461,7 +504,15 @@ class ProgrammeController extends Controller
             $globalData = $request->input('global_data');
             $academicSession = $globalData->sessionSetting['academic_session'];
 
-            $courses = CoursePerProgrammePerAcademicSession::with('course')->where('programme_id', $request->programme_id)->where('level_id', $request->level_id)->where('academic_session', $academicSession)->where('semester', $request->semester)->get();
+            $programmeCategories = ProgrammeCategory::get();
+
+            $courses = CoursePerProgrammePerAcademicSession::with('course')
+                ->where('programme_id', $request->programme_id)
+                ->where('level_id', $request->level_id)
+                ->where('academic_session', $request->academic_session)
+                ->where('semester', $request->semester)
+                ->get();
+
             $defaultData = [
                 'courses' => $courses,
                 'academiclevel' => AcademicLevel::find($request->level_id),
@@ -469,6 +520,10 @@ class ProgrammeController extends Controller
                 'semester' => $request->semester,
                 'allCourses' => Course::all(),
                 'academicLevels' => AcademicLevel::get(),
+                'programmeCategories' => $programmeCategories,
+                'academic_session' => $request->academic_session,
+                'programme_category_id' => $request->programme_category_id,
+                'programmeCategory' => ProgrammeCategory::find($request->programme_category_id)
             ];
 
             $validator = Validator::make($request->all(), [
@@ -516,6 +571,10 @@ class ProgrammeController extends Controller
                     'semester' => $request->semester,
                     'allCourses' => Course::all(),
                     'academicLevels' => AcademicLevel::get(),
+                    'programmeCategories' => $programmeCategories,
+                    'academic_session' => $request->academic_session,
+                    'programme_category_id' => $request->programme_category_id,
+                    'programmeCategory' => ProgrammeCategory::find($request->programme_category_id)
                 ];
                 return view('staff.studentCourses',$defaultData);
             }
