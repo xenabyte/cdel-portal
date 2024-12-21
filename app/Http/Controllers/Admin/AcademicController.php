@@ -680,7 +680,7 @@ class AcademicController extends Controller
         return view('admin.department', [
             'department' => $department,
             'levels' => $levels,
-            'categories' => $categories
+            'categories' => $categories,
         ]);
     }
 
@@ -910,6 +910,7 @@ class AcademicController extends Controller
         ]);
 
         $programmeId = $request->programme_id;
+        $programmeCategoryId = $request->programme_category_id;
 
         $programme = Programme::where('id', $programmeId)
         ->first();
@@ -919,7 +920,7 @@ class AcademicController extends Controller
             return redirect()->back();
         }
 
-        $programmeStudents = Student::where('programme_id', $programmeId)->get();
+        $programmeStudents = Student::where('programme_id', $programmeId)->where('programme_category_id', $programmeCategoryId)->get();
         $programmeStudentIds = $programmeStudents->pluck('id')->toArray();
         $studentCourseRegistrations = StudentCourseRegistration::whereIn('student_id', $programmeStudentIds)->get();
         

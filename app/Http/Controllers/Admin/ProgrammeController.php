@@ -1332,7 +1332,7 @@ class ProgrammeController extends Controller
         ]);
     }
 
-    Public function levelCourseReg(Request $request, $id){
+    Public function levelCourseReg(Request $request, $programmeCategory, $id){
         $globalData = $request->input('global_data');
         $academicSession = $globalData->sessionSetting['academic_session'];
 
@@ -1341,19 +1341,31 @@ class ProgrammeController extends Controller
             return redirect()->back();
         }
 
+        $programmeCategory = ProgrammeCategory::where('category', $programmeCategory)->first();
+        $programmeCategoryId = $programmeCategory->id;
+
         $levelId = $adviserProgramme->level_id;
         $programmeId = $adviserProgramme->programme_id;
 
-        $studentIds = Student::where('level_id', $levelId)->where('programme_id', $programmeId)->pluck('id')->toArray();
+        $studentIds = Student::where('level_id', $levelId)
+        ->where('programme_category_id', $programmeCategoryId)
+        ->where('programme_id', $programmeId)
+        ->pluck('id')
+        ->toArray();
     
-        $studentRegistrations = StudentCourseRegistration::with('student', 'student.applicant')->whereIn('student_id', $studentIds)->where('level_id', $levelId)->where('academic_session', $academicSession)->get();
+        $studentRegistrations = StudentCourseRegistration::with('student', 'student.applicant')
+        ->whereIn('student_id', $studentIds)
+        ->where('programme_category_id', $programmeCategoryId)
+        ->where('level_id', $levelId)
+        ->where('academic_session', $academicSession)
+        ->get();
 
         return view('admin.levelCourseReg', [
             'studentRegistrations' => $studentRegistrations
         ]);
     }
 
-    public function levelStudents(Request $request, $id){
+    public function levelStudents(Request $request, $programmeCategory, $id){
         $globalData = $request->input('global_data');
         $academicSession = $globalData->sessionSetting['academic_session'];
 
@@ -1365,6 +1377,9 @@ class ProgrammeController extends Controller
             alert()->error('Oops!', 'Record not found')->persistent('Close');
             return redirect()->back();
         }
+
+        $programmeCategory = ProgrammeCategory::where('category', $programmeCategory)->first();
+        $programmeCategoryId = $programmeCategory->id;
 
         $levelId = $adviserProgramme->level_id;
         $programmeId = $adviserProgramme->programme_id;
@@ -1383,6 +1398,7 @@ class ProgrammeController extends Controller
             ->where([
                 'level_id' => $levelId,
                 'programme_id' => $programmeId,
+                'programme_category_id' => $programmeCategoryId,
                 'is_active' => true,
                 'is_passed_out' => false,
                 'is_rusticated' => false

@@ -12,21 +12,14 @@ use App\Http\Requests;
 use Illuminate\Support\Facades\Validator;
 
 use App\Models\AcademicLevel;
-use App\Models\ApprovalLevel;
-use App\Models\Session;
-use App\Models\SessionSetting;
 use App\Models\Faculty;
 use App\Models\Department;
-use App\Models\CourseRegistrationSetting;
-use App\Models\ExaminationSetting;
-use App\Models\Programme;
-use App\Models\Student;
-use App\Models\StudentDemotion;
 use App\Models\Course;
 use App\Models\Notification;
 use App\Models\Unit;
 use App\Models\LevelAdviser;
 use App\Models\CoursePerProgrammePerAcademicSession;
+use App\Models\ProgrammeCategory;
 
 use SweetAlert;
 use Mail;
@@ -70,10 +63,12 @@ class AcademicController extends Controller
     public function department(Request $request, $slug){
         $department = Department::with('programmes', 'programmes.students', 'programmes.academicAdvisers', 'programmes.academicAdvisers.staff', 'programmes.academicAdvisers.level')->where('slug', $slug)->first();
         $levels = AcademicLevel::all();
+        $categories = ProgrammeCategory::all();
 
         return view('staff.department', [
             'department' => $department,
-            'levels' => $levels
+            'levels' => $levels,
+            'categories' => $categories
         ]);
     }
 

@@ -373,7 +373,8 @@ class AcademicController extends Controller
                 'student_id' => $studentId,
                 'academic_session' => $academicSession,
                 'file' => $courseReg,
-                'level_id' => $student->level_id
+                'level_id' => $student->level_id,
+                'programme_category_id' => $student->programme_category_id
             ]);
 
         
@@ -411,6 +412,7 @@ class AcademicController extends Controller
         $studentRegistration = StudentCourseRegistration::where([
             'student_id' => $studentId,
             'academic_session' => $academicSession,
+            'programme_category_id' => $student->programme_category_id
         ])->first();
 
         $pdf = new Pdf();
@@ -422,7 +424,8 @@ class AcademicController extends Controller
                 'student_id' => $studentId,
                 'academic_session' => $academicSession,
                 'file' => $courseReg,
-                'level_id' => $student->level_id
+                'level_id' => $student->level_id,
+                'programme_category_id' => $student->programme_category_id
             ]);
         }
 

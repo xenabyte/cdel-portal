@@ -87,8 +87,8 @@
                                 @if(!$staffAcademicPlannerRole)
                                     @if($adviserProgramme->course_approval_status == 'approved')
                                     <a href="#" data-bs-toggle="modal" data-bs-target="#viewCourses{{ $adviserProgramme->id }}" class="btn btn-primary">Courses</a>
-                                    <a href="{{ url('/staff/levelCourseReg/'.$adviserProgramme->id) }}" class="btn btn-info">Course Registrations</a>
-                                    <a href="{{ url('/staff/levelStudents/'.$adviserProgramme->id) }}" class="btn btn-dark">All Students</a>
+                                    <a href="{{ url('/staff/levelCourseReg/'.$programmeCategory->category.'/'.$adviserProgramme->id) }}" class="btn btn-info">Course Registrations</a>
+                                    <a href="{{ url('/staff/levelStudents/'.$programmeCategory->category.'/'.$adviserProgramme->id) }}" class="btn btn-dark">All Students</a>
                                     @endif
                                     @if($staffLevelAdviserRole)
                                         @if($adviserProgramme->course_approval_status != 'approved')
@@ -132,6 +132,7 @@
                         <input type="hidden" name="level_id" value="{{ $adviserProgramme->level->id }}">
                         <input type="hidden" name="programme_id" value="{{ $adviserProgramme->programme->id }}">
                         <input type="hidden" name="level_adviser_id" value="{{ $adviserProgramme->id }}">
+                        <input name="programme_course_id" type="hidden" value="{{$adviserProgramme->programme_course_id}}">
                         <hr>
                         <button type="submit" id="submit-button" class="btn btn-danger w-100">Yes, Proceed</button>
                     </form>
@@ -159,6 +160,7 @@
                     <input type="hidden" name="level_id" value="{{ $adviserProgramme->level->id }}">
                     <input type="hidden" name="programme_id" value="{{ $adviserProgramme->programme->id }}">
                     <input type="hidden" name="level_adviser_id" value="{{ $adviserProgramme->id }}">
+                    <input name="programme_course_id" type="hidden" value="{{$adviserProgramme->programme_course_id}}">
 
                     <div class="mb-3">
                         <label for="comment" class="form-label">Comment</label>

@@ -1449,6 +1449,7 @@ class StaffController extends Controller
         $validator = Validator::make($request->all(), [
             'staff_id' => 'required',
             'programme_id' => 'required',
+            'programme_category_id' => 'required',
         ]);
 
         if($validator->fails()) {
@@ -1466,6 +1467,7 @@ class StaffController extends Controller
         }
 
         $levelAdviser = LevelAdviser::where('programme_id', $request->programme_id)
+                        ->where('programme_category_id', $request->programme_category_id)
                         ->where('level_id', $request->level_id)
                         ->where('academic_session', $academicSession)
                         ->first();
@@ -1479,6 +1481,7 @@ class StaffController extends Controller
             LevelAdviser::create([
                 'staff_id' => $staff->id,
                 'programme_id' => $programme->id,
+                'programme_category_id' => $request->programme_category_id,
                 'level_id' => $request->level_id,
                 'academic_session' => $academicSession
             ]);
@@ -1548,6 +1551,7 @@ class StaffController extends Controller
     public function getStudents(Request $request){
         $validator = Validator::make($request->all(), [
             'programme_id' => 'required',
+            'programme_category_id' => 'required',
             'level_id' => 'required',
             'department_id' => 'required',
         ]);
@@ -1570,6 +1574,7 @@ class StaffController extends Controller
                 'is_rusticated' => false,
                 'level_id' => $request->level_id,
                 'programme_id' => $request->programme_id,
+                'programme_category_id' => $request->programme_category_id,
                 'department_id' => $request->department_id,
             ])
             ->get();

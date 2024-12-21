@@ -56,7 +56,7 @@ class LevelAdviser extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function programme_category()
+    public function programmeCategory()
     {
         return $this->belongsTo(ProgrammeCategory::class, 'programme_category_id');
     }

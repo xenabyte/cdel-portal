@@ -297,6 +297,7 @@
                                         <div>
                                             <h5 class="fs-13 mb-0">{{ $academicAdviser->staff->title.' '.$academicAdviser->staff->lastname.' '.$academicAdviser->staff->lastname.' '.$academicAdviser->staff->othernames }}</h5>
                                             <p class="fs-12 mb-0 text-muted"><strong>Programme:</strong> {{ $programmes->name }}</p>
+                                            <p class="fs-12 mb-0 text-muted"><strong>Programme Category:</strong> {{ $academicAdviser->programmeCategory->category }}</p>
                                             <p class="fs-12 mb-0 text-muted"><strong>Level:</strong> {{ $academicAdviser->level->level }} Level</p>
                                         </div>
                                     </td>
@@ -446,6 +447,16 @@
                     </div>
 
                     <div class="mb-3">
+                        <label for="category" class="form-label">Select Programme Category</label>
+                        <select class="form-select" aria-label="category" name="programme_category_id">
+                            <option value= "" selected>Select Programme Category</option>
+                            @foreach($categories as $programmeCategory)
+                            <option value="{{ $programmeCategory->id }}">{{ $programmeCategory->category }} Programme</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
                         <label for="staff_id" class="form-label">Select Staff</label>
                         <select class="form-select" aria-label="staff_id" name="staff_id">
                             <option selected value= "">Select Staff </option>
@@ -495,6 +506,16 @@
                             <option selected value= "">Select Level </option>
                             @foreach($levels as $acadlevel)
                             <option value="{{ $acadlevel->id }}">{{ $acadlevel->level }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="category" class="form-label">Select Programme Category</label>
+                        <select class="form-select" aria-label="category" name="programme_category_id">
+                            <option value= "" selected>Select Programme Category</option>
+                            @foreach($categories as $programmeCategory)
+                            <option value="{{ $programmeCategory->id }}">{{ $programmeCategory->category }} Programme</option>
                             @endforeach
                         </select>
                     </div>

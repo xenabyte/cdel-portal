@@ -589,7 +589,7 @@ class ProgrammeController extends Controller
             return view('staff.studentCourses',$defaultData);
     }
 
-    Public function levelCourseReg(Request $request, $id){
+    Public function levelCourseReg(Request $request, $programmeCategory, $id){
         $staff = Auth::guard('staff')->user();
         $staffId = $staff->id;
         $globalData = $request->input('global_data');
@@ -600,12 +600,24 @@ class ProgrammeController extends Controller
             return redirect()->back();
         }
 
+        $programmeCategory = ProgrammeCategory::where('category', $programmeCategory)->first();
+        $programmeCategoryId = $programmeCategory->id;
+
         $levelId = $adviserProgramme->level_id;
         $programmeId = $adviserProgramme->programme_id;
 
-        $studentIds = Student::where('level_id', $levelId)->where('programme_id', $programmeId)->pluck('id')->toArray();
+        $studentIds = Student::where('level_id', $levelId)
+        ->where('programme_category_id', $programmeCategoryId)
+        ->where('programme_id', $programmeId)
+        ->pluck('id')
+        ->toArray();
     
-        $studentRegistrations = StudentCourseRegistration::with('student', 'student.applicant')->whereIn('student_id', $studentIds)->where('level_id', $levelId)->where('academic_session', $academicSession)->get();
+        $studentRegistrations = StudentCourseRegistration::with('student', 'student.applicant')
+        ->whereIn('student_id', $studentIds)
+        ->where('programme_category_id', $programmeCategoryId)
+        ->where('level_id', $levelId)
+        ->where('academic_session', $academicSession)
+        ->get();
 
         return view('staff.levelCourseReg', [
             'studentRegistrations' => $studentRegistrations
@@ -680,11 +692,14 @@ class ProgrammeController extends Controller
         return redirect()->back();
     }
 
-    public function levelStudents(Request $request, $id){
+    public function levelStudents(Request $request, $programmeCategory, $id){
         $staff = Auth::guard('staff')->user();
         $staffId = $staff->id;
         $globalData = $request->input('global_data');
         $academicSession = $globalData->sessionSetting['academic_session'];
+
+        $programmeCategory = ProgrammeCategory::where('category', $programmeCategory)->first();
+        $programmeCategoryId = $programmeCategory->id;
 
         $adviserProgramme = LevelAdviser::with('programme', 'level')
             ->where('id', $id)
@@ -712,6 +727,7 @@ class ProgrammeController extends Controller
             ->where([
                 'level_id' => $levelId,
                 'programme_id' => $programmeId,
+                'programme_category_id' => $programmeCategoryId,
                 'is_active' => true,
                 'is_passed_out' => false,
                 'is_rusticated' => false
