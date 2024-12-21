@@ -179,12 +179,15 @@ class ProgrammeController extends Controller
         
     }
 
-    public function adviserProgrammes(Request $request){
+    public function adviserProgrammes(Request $request, $programmeCategory){
         $staff = Auth::guard('staff')->user();
         $staffId = $staff->id;
         $staffDepartmentId = $staff->department_id;
         $globalData = $request->input('global_data');
         $academicSession = $globalData->sessionSetting['academic_session'];
+
+        $programmeCategory = ProgrammeCategory::where('category', $programmeCategory)->first();
+        $programmeCategoryId = $programmeCategory->id;
 
         $staffHod = false;
         if($staff->id == $staff->acad_department->hod_id){
@@ -196,7 +199,7 @@ class ProgrammeController extends Controller
         $unitHead =  $unit ? $unit->unit_head : null;
         
 
-        $adviserProgrammesQuery = LevelAdviser::with('programme', 'level')->where('academic_session', $academicSession);
+        $adviserProgrammesQuery = LevelAdviser::with('programme', 'level')->where('programme_category_id', $programmeCategoryId)->where('academic_session', $academicSession);
         if ($staffHod) {
             $adviserProgrammesQuery->where(function ($query) use ($staff) {
                 $query->whereHas('programme', function ($query) use ($staff) {
@@ -213,7 +216,7 @@ class ProgrammeController extends Controller
 
 
         if($unit->unit_head_id == $staff->id){
-            $adviserProgrammesQuery = LevelAdviser::with('programme', 'level')->where('academic_session', $academicSession);
+            $adviserProgrammesQuery = LevelAdviser::with('programme', 'level')->where('programme_category_id', $programmeCategoryId)->where('academic_session', $academicSession);
         }
 
         $adviserProgrammes = $adviserProgrammesQuery->get();
@@ -225,11 +228,13 @@ class ProgrammeController extends Controller
         
             $studentIds = Student::where('level_id', $levelId)
                 ->where('programme_id', $programmeId)
+                ->where('programme_category_id', $programmeCategoryId)
                 ->pluck('id')
                 ->toArray();
         
             $studentRegistrationsCount = StudentCourseRegistration::with('student', 'student.applicant')
                 ->whereIn('student_id', $studentIds)
+                ->where('programme_category_id', $programmeCategoryId)
                 ->where('level_id', $levelId)
                 ->where('academic_session', $academicSession)
                 ->where(function ($query) {
@@ -240,6 +245,7 @@ class ProgrammeController extends Controller
 
             $coursesForReg = CoursePerProgrammePerAcademicSession::where('programme_id', $programmeId)
             ->where('academic_session', $academicSession)
+            ->where('programme_category_id', $programmeCategoryId)
             ->where('level_id', $levelId)
             ->get();
         
@@ -258,7 +264,9 @@ class ProgrammeController extends Controller
         // }
 
         return view('staff.adviserProgrammes', [
-            'adviserProgrammes' => $adviserProgrammes
+            'adviserProgrammes' => $adviserProgrammes,
+            'programmeCategory' => $programmeCategory,
+            'academicSession' => $academicSession
         ]);
     }
 
@@ -394,7 +402,6 @@ class ProgrammeController extends Controller
             'academic_session' => $request->academic_session,
             'status' => $request->status,
             'programme_category_id' => $request->programme_category_id,
-            'programmeCategory' => ProgrammeCategory::find($request->programme_category_id)
         ];
         
         if(CoursePerProgrammePerAcademicSession::create($newCourses)){

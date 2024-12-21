@@ -447,9 +447,23 @@
                                     <li class="nav-item">
                                         <a href="{{ url('/admin/departmentForCourses') }}" class="nav-link">All Courses</a>
                                     </li>
+                                
                                     <li class="nav-item">
-                                        <a href="{{ url('/admin/adviserProgrammes') }}" class="nav-link">Course Reg MGT</a>
+                                        <a href="#adviserProgrammes" class="nav-link" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="adviserProgrammes" data-key="t-adviserProgrammes"> Course Reg MGT
+                                        </a>
+                                        <div class="collapse menu-dropdown" id="adviserProgrammes">
+                                            <ul class="nav nav-sm flex-column">
+                                                <li class="nav-item">
+                                                    <a href="{{ url('/admin/adviserProgrammes/'.$programmeCategory::UNDERGRADUATE) }}" class="nav-link" data-key="t-basic"> Undergraduates </a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a href="{{ url('/admin/adviserProgrammes/'.$programmeCategory::TOPUP) }}" class="nav-link" data-key="t-basic"> Topup </a>
+                                                </li>
+                                            </ul>
+                                        </div>
                                     </li>
+
+
                                     <li class="nav-item">
                                         <a href="{{ url('/admin/studentCourses') }}" class="nav-link">Student Courses</a>
                                     </li>

@@ -24,7 +24,7 @@
     <div class="col-lg-12">
         <div class="card">
             <div class="card-header align-items-center">
-                <h4 class="card-title mb-0 flex-grow-1">Programmes</h4>
+                <h4 class="card-title mb-0 flex-grow-1">{{ $programmeCategory->category }} Programme Level Advisers and Student Course Reg for {{ $academicSession }} Academic Session</h4>
             </div><!-- end card header -->
 
             <div class="card-body table-responsive">

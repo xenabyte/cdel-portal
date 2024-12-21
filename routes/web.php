@@ -377,7 +377,7 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'admin'],
   Route::get('/manageLeaves', [App\Http\Controllers\Admin\LeaveController::class, 'manageLeaves'])->name('manageLeaves')->middleware(['auth:admin']);
   Route::post('/manageLeave', [App\Http\Controllers\Admin\LeaveController::class, 'manageLeave'])->name('manageLeave')->middleware(['auth:admin']);
 
-  Route::get('/adviserProgrammes', [App\Http\Controllers\Admin\ProgrammeController::class, 'adviserProgrammes'])->name('adviserProgrammes')->middleware(['auth:admin']);
+  Route::get('/adviserProgrammes/{programmeCategory}', [App\Http\Controllers\Admin\ProgrammeController::class, 'adviserProgrammes'])->name('adviserProgrammes')->middleware(['auth:admin']);
   Route::get('/levelCourseReg/{id}', [App\Http\Controllers\Admin\ProgrammeController::class, 'levelCourseReg'])->name('levelCourseReg')->middleware(['auth:admin']);
   Route::get('/levelStudents/{id}', [App\Http\Controllers\Admin\ProgrammeController::class, 'levelStudents'])->name('levelStudents')->middleware(['auth:admin']);
   Route::post('/courseApproval', [App\Http\Controllers\Admin\ProgrammeController::class, 'courseApproval'])->name('courseApproval')->middleware(['auth:admin']);
@@ -638,7 +638,7 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'staff'],
   Route::post('/addExamOfficer', [App\Http\Controllers\Staff\StaffController::class, 'addExamOfficer'])->name('addExamOfficer')->middleware(['auth:staff']);
   Route::post('/getStudents', [App\Http\Controllers\Staff\StaffController::class, 'getStudents'])->name('getStudents')->middleware(['auth:staff']);
 
-  Route::get('/adviserProgrammes', [App\Http\Controllers\Staff\ProgrammeController::class, 'adviserProgrammes'])->name('adviserProgrammes')->middleware(['auth:staff']);
+  Route::get('/adviserProgrammes/{programmeCategory}', [App\Http\Controllers\Staff\ProgrammeController::class, 'adviserProgrammes'])->name('adviserProgrammes')->middleware(['auth:staff']);
   Route::get('/studentCourseReg', [App\Http\Controllers\Staff\ProgrammeController::class, 'studentCourseReg'])->name('studentCourseReg')->middleware(['auth:staff']);
   Route::get('/levelCourseReg/{id}', [App\Http\Controllers\Staff\ProgrammeController::class, 'levelCourseReg'])->name('levelCourseReg')->middleware(['auth:staff']);
   Route::get('/levelStudents/{id}', [App\Http\Controllers\Staff\ProgrammeController::class, 'levelStudents'])->name('levelStudents')->middleware(['auth:staff']);

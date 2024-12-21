@@ -1282,11 +1282,14 @@ class ProgrammeController extends Controller
         
     }
 
-    public function adviserProgrammes(Request $request){
+    public function adviserProgrammes(Request $request, $programmeCategory){
         $globalData = $request->input('global_data');
         $academicSession = $globalData->sessionSetting['academic_session'];
 
-        $adviserProgrammesQuery = LevelAdviser::with('programme', 'level')->where('academic_session', $academicSession);
+        $programmeCategory = ProgrammeCategory::where('category', $programmeCategory)->first();
+        $programmeCategoryId = $programmeCategory->id;
+
+        $adviserProgrammesQuery = LevelAdviser::with('programme', 'level')->where('programme_category_id', $programmeCategoryId)->where('academic_session', $academicSession);
         $adviserProgrammes = $adviserProgrammesQuery->get();
 
 
@@ -1296,12 +1299,14 @@ class ProgrammeController extends Controller
         
             $studentIds = Student::where('level_id', $levelId)
                 ->where('programme_id', $programmeId)
+                ->where('programme_category_id', $programmeCategoryId)
                 ->pluck('id')
                 ->toArray();
         
             $studentRegistrationsCount = StudentCourseRegistration::with('student', 'student.applicant')
                 ->whereIn('student_id', $studentIds)
                 ->where('level_id', $levelId)
+                ->where('programme_category_id', $programmeCategoryId)
                 ->where('academic_session', $academicSession)
                 ->where(function ($query) {
                     $query->where('level_adviser_status', null)
@@ -1311,6 +1316,7 @@ class ProgrammeController extends Controller
 
             $coursesForReg = CoursePerProgrammePerAcademicSession::where('programme_id', $programmeId)
                 ->where('academic_session', $academicSession)
+                ->where('programme_category_id', $programmeCategoryId)
                 ->where('level_id', $levelId)
                 ->get();
         
@@ -1320,7 +1326,9 @@ class ProgrammeController extends Controller
         }
 
         return view('admin.adviserProgrammes', [
-            'adviserProgrammes' => $adviserProgrammes
+            'adviserProgrammes' => $adviserProgrammes,
+            'programmeCategory' => $programmeCategory,
+            'academicSession' => $academicSession
         ]);
     }
 

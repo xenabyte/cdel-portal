@@ -12,6 +12,7 @@ class LevelAdviser extends Model
 
     protected $fillable = [
         'programme_id',
+        'programme_category_id',
         'level_id',
         'staff_id',
         'academic_session',
@@ -48,5 +49,15 @@ class LevelAdviser extends Model
     public function programme()
     {
         return $this->belongsTo(Programme::class, 'programme_id');
+    }
+
+    /**
+     * Get the programme_category that owns the LevelAdviser
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function programme_category()
+    {
+        return $this->belongsTo(ProgrammeCategory::class, 'programme_category_id');
     }
 }

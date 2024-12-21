@@ -34,7 +34,7 @@
                 <div class="text-center">
                     <div class="row justify-content-center">
                         <div class="col-lg-9">
-                            <h4 class="mt-4 fw-semibold">Fetch Student Course(s) for {{ $pageGlobalData->sessionSetting->academic_session }} {{ $programmeCategory->category }} Programme for  {{ $programme->name }} {{ $academic_session }}</h4>
+                            <h4 class="mt-4 fw-semibold">Fetch Student Course(s) for {{ $pageGlobalData->sessionSetting->academic_session }}</h4>
                             <p class="text-muted mt-3"></p>
                             <div class="mt-4">
                                 <form action="{{ url('/staff/getStudentCourses') }}" method="POST">
@@ -171,7 +171,7 @@
     <div class="col-lg-12">
         <div class="card">
             <div class="card-header align-items-center d-flex">
-                <h4 class="card-title mb-0 flex-grow-1">{{ $semester == 1? 'First':'Second'}} Semester Course(s) for {{ $academiclevel->level }} Level,  {{ $programme->name }}</h4>
+                <h4 class="card-title mb-0 flex-grow-1">{{ $semester == 1? 'First':'Second'}} Semester Course(s) for {{ $academiclevel->level }} Level, {{ $programmeCategory->category}} programme for {{ $programme->name }}</h4>
             </div><!-- end card header -->
 
             {{-- <div id="approveResult" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
