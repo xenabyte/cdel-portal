@@ -85,11 +85,13 @@ class AcademicController extends Controller
     public function departmentForCourse(Request $request, $slug){
         $globalData = $request->input('global_data');
         $academicSession = $globalData->sessionSetting['academic_session'];
+        $programmeCategories = ProgrammeCategory::all();
 
         $department = Department::with('courses', 'courses.courseManagement', 'courses.courseManagement.staff', 'programmes', 'programmes.students', 'programmes.academicAdvisers', 'programmes.academicAdvisers.staff', 'programmes.academicAdvisers.level')->where('slug', $slug)->first();
         
         return view('staff.departmentForCourse', [
             'department' => $department,
+            'programmeCategories' => $programmeCategories
         ]);
     }
 

@@ -176,7 +176,33 @@ $staffCourses = $staff->staffCourses;
                                     <td>{{ $courseData->status}}</td>
                                     <td>{{ $courseData->level->level}}</td>
                                     <td>
-                                        <a href="{{ url('/staff/courseDetail/'.$staffCourse->course->id) }}" class="btn btn-md btn-primary">Course Details</a>
+                                        <form id="courseDetailForm{{ $loop->iteration }}" action="{{ url('/staff/courseDetail/'.$staffCourse->course->id) }}" method="get">
+                                            @csrf
+                                            <div class="input-group" style="display: flex; flex-wrap: nowrap;">
+                                                <select id="programmeSelect{{ $loop->iteration }}" class="form-select select2 selectWithSearch" required style="flex-grow: 1;">
+                                                    <option value="" selected>Select Programme Category</option>
+                                                    @foreach($programmeCategories as $category)
+                                                        <option value="{{ $category->category }}">{{ $category->category }} Programme</option>
+                                                    @endforeach
+                                                </select>
+                                                <button type="submit" class="btn btn-outline-secondary shadow-none">Fetch Course Details</button>
+                                            </div>
+                                        </form>
+
+                                        <script>
+                                            document.getElementById('courseDetailForm{{ $loop->iteration }}').addEventListener('submit', function(event) {
+                                                event.preventDefault();
+
+                                                var programmeSelect = document.getElementById('programmeSelect{{ $loop->iteration }}').value;
+
+                                                if (programmeSelect) {
+                                                    var updatedAction = this.action + '/' + programmeSelect;
+                                                    window.location.href = updatedAction;
+                                                } else {
+                                                    alert('Please select a programme category');
+                                                }
+                                            });
+                                        </script>
                                     </td>
                                 </tr>
                             @endif

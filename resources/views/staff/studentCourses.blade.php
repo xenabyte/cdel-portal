@@ -81,6 +81,7 @@
                                                     <option value="" selected>--Select--</option>
                                                     <option value="1">Harmattan Semester</option>
                                                     <option value="2">Rain Semester</option>
+                                                    <option value="3">Summer Semester</option>
                                                 </select>
                                                 <label for="semester">Semester</label>
                                             </div>
@@ -171,7 +172,7 @@
     <div class="col-lg-12">
         <div class="card">
             <div class="card-header align-items-center d-flex">
-                <h4 class="card-title mb-0 flex-grow-1">{{ $semester == 1? 'First':'Second'}} Semester Course(s) for {{ $academiclevel->level }} Level, {{ $programmeCategory->category}} programme for {{ $programme->name }}</h4>
+                <h4 class="card-title mb-0 flex-grow-1">{{ $semester == 1 ? 'Harmattan' : ($semester == 2 ? 'Rain' : 'Summer') }} Semester Course(s) for {{ $academiclevel->level }} Level, {{ $programmeCategory->category}} Programme for {{ $programme->name }} for {{ $academic_session }} Academic Session</h4>
             </div><!-- end card header -->
 
             {{-- <div id="approveResult" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
@@ -238,7 +239,8 @@
                             <td>{{$course->status}}</td>
                             <td>{{$course->level->level}}</td>
                             <td>
-                                <a href="{{ url('/staff/courseDetail/'.$course->course->id) }}" class="btn btn-lg btn-primary">Course Details</a>
+                                <a href="{{ url('/staff/courseDetail/'.$course->course->id.'/'.$programmeCategory->category) }}" class="btn btn-lg btn-primary">Course Details</a>
+                                <br>
                                 <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#delete{{$course->id}}" class="btn btn-danger"><i class="ri-delete-bin-5-line"></i> Delete</a>
                                 <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#edit{{$course->id}}" class="btn btn-info"><i class="ri-edit-circle-fill"></i> Edit</a>
 
@@ -330,5 +332,33 @@
     <!-- end col -->
 </div>
 <!-- end row -->
+{{-- <form id="courseDetailForm{{ $loop->iteration }}" action="{{ url('/staff/courseDetail/'.$course->course->id) }}" method="get">
+    @csrf
+    <div class="input-group" style="display: flex; flex-wrap: nowrap;">
+        <select id="programmeSelect{{ $loop->iteration }}" class="form-select select2 selectWithSearch" required style="flex-grow: 1;">
+            <option value="" selected>Select Programme Category</option>
+            @foreach($programmeCategories as $category)
+                <option value="{{ $category->category }}">{{ $category->category }} Programme</option>
+            @endforeach
+        </select>
+        <button type="submit" class="btn btn-outline-secondary shadow-none">Fetch Course Details</button>
+    </div>
+</form>
+
+<script>
+    document.getElementById('courseDetailForm{{ $loop->iteration }}').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        var programmeSelect = document.getElementById('programmeSelect{{ $loop->iteration }}').value;
+
+        if (programmeSelect) {
+            var updatedAction = this.action + '/' + programmeSelect;
+            window.location.href = updatedAction;
+        } else {
+            alert('Please select a programme category');
+        }
+    });
+</script> --}}
+
 @endif
 @endsection

@@ -108,7 +108,7 @@
     <div class="col-lg-12">
         <div class="card">
             <div class="card-header align-items-center d-flex">
-                <h4 class="card-title mb-0 flex-grow-1">{{ $semester == 1? 'First':'Second'}} Semester Course(s) for {{ $academiclevel->level }} Level, {{ $programmeCategory->category }} Programme for  {{ $programme->name }} {{ $academic_session }}</h4>
+                <h4 class="card-title mb-0 flex-grow-1">{{ $semester == 1 ? 'Harmattan' : ($semester == 2 ? 'Rain' : 'Summer') }} Semester Course(s) for {{ $academiclevel->level }} Level, {{ $programmeCategory->category }} Programme for  {{ $programme->name }}  for {{ $academic_session }} Academic Session</h4>
             </div><!-- end card header -->
         </div>
     </div>
@@ -225,7 +225,7 @@
         <div class="card">
             <div class="card-body table-responsive">
                 <!-- Bordered Tables -->
-                <table class="table table-stripped table-bordered table-nowrap">
+                <table class="table table-striped table-bordered table-nowrap">
                     <thead>
                         <tr>
                             <th scope="col">ID</th>
@@ -241,102 +241,91 @@
                     <tbody>
                         @foreach($courses as $course)
                         @php
-                            $courseManagement =  $course->course->courseManagement->where('academic_session', $pageGlobalData->sessionSetting->academic_session);
-                            $assignedCourse = $courseManagement->where('academic_session', $pageGlobalData->sessionSetting->academic_session)->first();
-                            $staff = !empty($assignedCourse) && !empty($assignedCourse->staff) ? $assignedCourse->staff->title.' '.$assignedCourse->staff->lastname.' '.$assignedCourse->staff->othernames :null;
+                            $courseManagement = $course->course->courseManagement->where('academic_session', $pageGlobalData->sessionSetting->academic_session);
+                            $assignedCourse = $courseManagement->first();
+                            $staff = $assignedCourse && $assignedCourse->staff 
+                                ? $assignedCourse->staff->title.' '.$assignedCourse->staff->lastname.' '.$assignedCourse->staff->othernames 
+                                : null;
                         @endphp
                         <tr>
-                            <td scope="row"> {{ $loop->iteration }}</td>
-                            <td>{{!empty($staff)? $staff : null }}</td>
-                            <td>{{$course->course->code}}</td>
-                            <td>{{$course->course->name }}</td>
-                            <td>{{$course->credit_unit}} </td>
-                            <td>{{$course->status}}</td>
-                            <td>{{$course->level->level}}</td>
+                            <td scope="row">{{ $loop->iteration }}</td>
+                            <td>{{ $staff ?? 'N/A' }}</td>
+                            <td>{{ $course->course->code }}</td>
+                            <td>{{ $course->course->name }}</td>
+                            <td>{{ $course->credit_unit }}</td>
+                            <td>{{ $course->status }}</td>
+                            <td>{{ $course->level->level }}</td>
                             <td>
-                                <a href="{{ url('/admin/courseDetail/'.$course->course->id) }}" class="btn btn-lg btn-primary">Course Details</a>
-                                <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#delete{{$course->id}}" class="btn btn-danger"><i class="ri-delete-bin-5-line"></i> Delete</a>
-                                <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#edit{{$course->id}}" class="btn btn-info"><i class="ri-edit-circle-fill"></i> Edit</a>
-
-                                <div id="delete{{$course->id}}" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
+                                <a href="{{ url('/admin/courseDetail/'.$course->course->id.'/'.$programmeCategory->category) }}" class="btn btn-lg btn-primary">Course Details</a>
+                                <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#delete{{ $course->id }}" class="btn btn-danger">
+                                    <i class="ri-delete-bin-5-line"></i> Delete
+                                </a>
+                                <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#edit{{ $course->id }}" class="btn btn-info">
+                                    <i class="ri-edit-circle-fill"></i> Edit
+                                </a>
+                
+                                <!-- Delete Modal -->
+                                <div id="delete{{ $course->id }}" class="modal fade" tabindex="-1" aria-hidden="true">
                                     <div class="modal-dialog modal-dialog-centered">
                                         <div class="modal-content">
                                             <div class="modal-body text-center p-5">
-                                                <div class="text-end">
-                                                    <button type="button" class="btn-close text-end" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                </div>
-                                                <div class="mt-2">
-                                                    <lord-icon src="https://cdn.lordicon.com/gsqxdxog.json" trigger="hover" style="width:150px;height:150px">
-                                                    </lord-icon>
-                                                    <h4 class="mb-3 mt-4">Are you sure you want to delete <br/> {{ $course->course->code }}?</h4>
-                                                    <form action="{{ url('/admin/deleteCourseForStudent') }}" method="POST">
-                                                        @csrf
-                                                        <input name="student_course_id" type="hidden" value="{{$course->id}}">
-                                                        <input type="hidden" name="level_id" value="{{ $academiclevel->id }}">
-                                                        <input type="hidden" name="programme_id" value="{{ $programme->id }}">
-                                                        <input type="hidden" name="semester" value="{{$semester}}">
-                                                        <input type="hidden" name="academic_session" value="{{$academic_session}}">
-                                                        <input type="hidden" name="programme_category_id" value="{{$programme_category_id}}">
-
-                                                        <hr>
-                                                        <button type="submit" id="submit-button" class="btn btn-danger w-100">Yes, Delete</button>
-                                                    </form>
-                                                </div>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                <lord-icon src="https://cdn.lordicon.com/gsqxdxog.json" trigger="hover" style="width:150px;height:150px"></lord-icon>
+                                                <h4 class="mb-3 mt-4">Are you sure you want to delete <br/> {{ $course->course->code }}?</h4>
+                                                <form action="{{ url('/admin/deleteCourseForStudent') }}" method="POST">
+                                                    @csrf
+                                                    <input name="student_course_id" type="hidden" value="{{ $course->id }}">
+                                                    <input type="hidden" name="level_id" value="{{ $academiclevel->id }}">
+                                                    <input type="hidden" name="programme_id" value="{{ $programme->id }}">
+                                                    <input type="hidden" name="semester" value="{{ $semester }}">
+                                                    <input type="hidden" name="academic_session" value="{{ $academic_session }}">
+                                                    <input type="hidden" name="programme_category_id" value="{{ $programme_category_id }}">
+                                                    <hr>
+                                                    <button type="submit" class="btn btn-danger w-100">Yes, Delete</button>
+                                                </form>
                                             </div>
-                                            <div class="modal-footer bg-light p-3 justify-content-center">
-
-                                            </div>
-                                        </div><!-- /.modal-content -->
-                                    </div><!-- /.modal-dialog -->
-                                </div><!-- /.modal -->
-
-                                <div id="edit{{$course->id}}" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
+                                        </div>
+                                    </div>
+                                </div>
+                
+                                <!-- Edit Modal -->
+                                <div id="edit{{ $course->id }}" class="modal fade" tabindex="-1" aria-hidden="true">
                                     <div class="modal-dialog modal-dialog-centered">
-                                        <div class="modal-content border-0 overflow-hidden">
+                                        <div class="modal-content">
                                             <div class="modal-header p-3">
                                                 <h4 class="card-title mb-0">Edit Level</h4>
                                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                             </div>
-                    
                                             <div class="modal-body">
-                                                <form action="{{ url('/admin/updateCourseForStudent') }}" method="post" enctype="multipart/form-data">
+                                                <form action="{{ url('/admin/updateCourseForStudent') }}" method="post">
                                                     @csrf
-
-                                                    <input name="student_course_id" type="hidden" value="{{$course->id}}">
+                                                    <input name="student_course_id" type="hidden" value="{{ $course->id }}">
                                                     <input type="hidden" name="level_id" value="{{ $academiclevel->id }}">
                                                     <input type="hidden" name="programme_id" value="{{ $programme->id }}">
-                                                    <input type="hidden" name="semester" value="{{$semester}}">
-                                                    <input type="hidden" name="academic_session" value="{{$academic_session}}">
-                                                    <input type="hidden" name="programme_category_id" value="{{$programme_category_id}}">
-                                                    
-                                                    <div class="col-lg-12">
-                                                        <div class="form-floating">
-                                                            <select class="form-select" id="cstatus" name="status" aria-label="cstatus">
-                                                                <option value="" selected>--Select--</option>
-                                                                <option @if($course->status == "Required") selected @endif value="Required">Required</option>
-                                                                <option @if($course->status == "Core") selected @endif value="Core">Core</option>
-                                                                <option @if($course->status == "Elective") selected @endif value="Elective">Elective</option>
-                                                            </select>
-                                                            <label for="cstatus">Status</label>
-                                                        </div>
+                                                    <input type="hidden" name="semester" value="{{ $semester }}">
+                                                    <input type="hidden" name="academic_session" value="{{ $academic_session }}">
+                                                    <input type="hidden" name="programme_category_id" value="{{ $programme_category_id }}">
+                
+                                                    <div class="form-floating">
+                                                        <select class="form-select" name="status" required>
+                                                            <option value="" selected>--Select--</option>
+                                                            <option @if($course->status == "Required") selected @endif value="Required">Required</option>
+                                                            <option @if($course->status == "Core") selected @endif value="Core">Core</option>
+                                                            <option @if($course->status == "Elective") selected @endif value="Elective">Elective</option>
+                                                        </select>
+                                                        <label for="status">Status</label>
                                                     </div>
-                            
-                                                    <div class="col-lg-12 mt-3">
-                                                        <div class="form-floating">
-                                                            <input type="text" class="form-control" max="6" name="credit_unit" id="credit_unit" value="{{ $course->credit_unit }}">
-                                                            <label for="semester">Credit Unit</label>
-                                                        </div>
+                                                    <div class="form-floating mt-3">
+                                                        <input type="number" class="form-control" name="credit_unit" max="6" value="{{ $course->credit_unit }}" required>
+                                                        <label for="credit_unit">Credit Unit</label>
                                                     </div>
-                            
                                                     <hr>
-                                                    <div class="text-end">
-                                                        <button type="submit" id="submit-button" class="btn btn-primary">Save Changes</button>
-                                                    </div>
+                                                    <button type="submit" class="btn btn-primary w-100">Save Changes</button>
                                                 </form>
                                             </div>
-                                        </div><!-- /.modal-content -->
-                                    </div><!-- /.modal-dialog -->
-                                </div><!-- /.modal -->
+                                        </div>
+                                    </div>
+                                </div>
                             </td>
                         </tr>
                         @endforeach
@@ -348,5 +337,37 @@
     <!-- end col -->
 </div>
 <!-- end row -->
+{{-- 
+<!-- Fetch Form -->
+<form id="courseDetailForm{{ $loop->iteration }}" action="{{ url('/admin/courseDetail/'.$course->course->id) }}" method="get">
+    @csrf
+    <div class="input-group" style="display: flex; flex-wrap: nowrap;">
+        <select id="programmeSelect{{ $loop->iteration }}" class="form-select select2 selectWithSearch" required style="flex-grow: 1;">
+            <option value="" selected>Select Programme Category</option>
+            @foreach($programmeCategories as $category)
+                <option value="{{ $category->category }}">{{ $category->category }} Programme</option>
+            @endforeach
+        </select>
+        <button type="submit" class="btn btn-outline-secondary shadow-none">Fetch</button>
+    </div>
+</form>
+
+<script>
+    document.getElementById('courseDetailForm{{ $loop->iteration }}').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        var programmeSelect = document.getElementById('programmeSelect{{ $loop->iteration }}').value;
+
+        if (programmeSelect) {
+            var updatedAction = this.action + '/' + programmeSelect;
+            window.location.href = updatedAction;
+        } else {
+            alert('Please select a programme category');
+        }
+    });
+</script>
+
+<!-- Action Buttons -->
+<br> --}}
 @endif
 @endsection

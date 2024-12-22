@@ -44,7 +44,7 @@
                 <div class="card-header align-items-center d-flex">
                     <h4 class="card-title mb-0 flex-grow-1">Select Academic Session </h4>
                 </div><!-- end card header -->
-                <form id="courseDetailForm" action="{{ url('/admin/courseDetail/'.$course->id) }}" method="get">
+                <form id="courseDetailForm" action="{{ url('/admin/courseDetail/'.$course->id.'/'.$programmeCategory->category) }}" method="get">
                     @csrf
                     <div class="input-group" style="display: flex; flex-wrap: nowrap;">
                         <select id="sessionSelect" class="form-select select2 selectWithSearch" aria-label="staff" required style="flex-grow: 1;">

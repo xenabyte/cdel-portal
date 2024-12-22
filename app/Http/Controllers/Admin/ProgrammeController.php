@@ -117,7 +117,7 @@ class ProgrammeController extends Controller
             return redirect()->back();
         }
         if(!$programmeCategory = ProgrammeCategory::find($request->category_id)){
-            alert()->error('Oops', 'Invalid Prograamme Category ')->persistent('Close');
+            alert()->error('Oops', 'Invalid Programme Category ')->persistent('Close');
             return redirect()->back();
         }
         
@@ -559,7 +559,7 @@ class ProgrammeController extends Controller
         return view('admin.studentCourses',$defaultData);
     }
 
-    public function courseDetail(Request $request, $id, $academicSession = null){
+    public function courseDetail(Request $request, $id, $programmeCategory, $academicSession = null){
 
         if(!empty($academicSession)){
             $academicSession = str_replace('-', '/', $academicSession);
@@ -572,9 +572,12 @@ class ProgrammeController extends Controller
             $applicationSession = $globalData->sessionSetting['application_session'];
         }
 
+        $programmeCategory = ProgrammeCategory::where('category', $programmeCategory)->first();
+        $programmeCategoryId = $programmeCategory->id;
+
         $lecturerDetails = CourseManagement::where('course_id', $id)->where('academic_session', $academicSession)->first(); 
-        $registrations = CourseRegistration::where('course_id', $id)->where('academic_session', $academicSession)->get();
-        $courseLectures = CourseLecture::with('lectureAttendance')->where('course_id', $id)->where('academic_session', $academicSession)->get();
+        $registrations = CourseRegistration::where('course_id', $id)->where('programme_category_id', $programmeCategoryId)->where('academic_session', $academicSession)->get();
+        $courseLectures = CourseLecture::with('lectureAttendance')->where('course_id', $id)->where('programme_category_id', $programmeCategoryId)->where('academic_session', $academicSession)->get();
         $course = Course::find($id);
 
         return view('admin.courseDetail', [
@@ -583,6 +586,7 @@ class ProgrammeController extends Controller
             'courseLectures' => $courseLectures,
             'course' => $course,
             'academicSession' => $academicSession,
+            'programmeCategory' => $programmeCategory,
             'sessions' => Session::orderBy('id', 'DESC')->get()
         ]);
     }

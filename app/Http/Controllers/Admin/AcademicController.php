@@ -1712,7 +1712,7 @@ class AcademicController extends Controller
         $department = Department::with('courses')->orderBy('id', 'DESC')->get();
         
         return view('admin.departmentForCourses', [
-            'departments' => $department
+            'departments' => $department,
         ]);
     }
 
@@ -1720,10 +1720,13 @@ class AcademicController extends Controller
         $globalData = $request->input('global_data');
         $academicSession = $globalData->sessionSetting['academic_session'];
 
+        $programmeCategories = Category::all();
+
         $department = Department::with('courses', 'courses.courseManagement', 'courses.courseManagement.staff', 'programmes', 'programmes.students', 'programmes.academicAdvisers', 'programmes.academicAdvisers.staff', 'programmes.academicAdvisers.level')->where('slug', $slug)->first();
 
         return view('admin.departmentForCourse', [
             'department' => $department,
+            'programmeCategories' => $programmeCategories
         ]);
     }
 

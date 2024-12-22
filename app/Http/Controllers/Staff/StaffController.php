@@ -60,6 +60,8 @@ class StaffController extends Controller
         $applicationSession = $globalData->sessionSetting['application_session'];
         $units = Unit::get();
 
+        $programmeCategories = Category::all();
+
         $year = Carbon::parse()->format('Y');
         $month = Carbon::parse()->format('M');
         $capturedWorkingDays = $this->capturedWorkingDays();
@@ -92,7 +94,8 @@ class StaffController extends Controller
         return view('staff.home', [
             'applicants' => $applicants,
             'capturedWorkingDays' => $capturedWorkingDays,
-            'monthAttendance' => $monthAttendance
+            'monthAttendance' => $monthAttendance,
+            'programmeCategories' => $programmeCategories
         ]);
     }
 
@@ -284,9 +287,13 @@ class StaffController extends Controller
         $globalData = $request->input('global_data');
         $academicSession = $globalData->sessionSetting['academic_session'];
 
+        $programmeCategories = Category::all();
+
         // $courses = CoursePerProgrammePerAcademicSession::with('course', 'course.courseManagement', 'course.courseManagement.staff',  'level',  'registrations', 'registrations.student', 'registrations.student.applicant', 'registrations.student.programme')->where('academic_session', $academicSession)->where('staff_id', $staffId)->first();
 
-        return view('staff.courses');
+        return view('staff.courses', [
+            'programmeCategories' => $programmeCategories
+        ]);
     }
 
     public function studentCourses(Request $request){
@@ -358,9 +365,9 @@ class StaffController extends Controller
         $courses = CoursePerProgrammePerAcademicSession::with('course')
             ->where('programme_id', $request->programme_id)
             ->where('level_id', $request->level_id)
-            ->where('academic_session', $request->academic_session)
+            ->where('academic_session', $academicSession)
             ->where('semester', $request->semester)
-            ->where('programme_course_id', $request->programme_category_id)
+            ->where('programme_category_id', $request->programme_category_id)
             ->get();
 
         $programme = Programme::find($request->programme_id);
@@ -380,7 +387,8 @@ class StaffController extends Controller
             'semester' => $request->semester,
             'allCourses' => $allCourses,
             'programmeCategories' => $programmeCategories,
-            'academic_session' => $request->academic_session,
+            'academic_session' => $academicSession,
+            'programme_category_id' => $request->programme_category_id,
             'programmeCategory' => Category::find($request->programme_category_id)
         ]);
     }
@@ -465,7 +473,7 @@ class StaffController extends Controller
     //     return view('staff.studentCourses', $defaultData);
     // }
 
-    public function courseDetail(Request $request, $id, $academicSession = null){
+    public function courseDetail(Request $request, $id, $programmeCategory, $academicSession = null){
         $staff = Auth::guard('staff')->user();
         $staffId = $staff->id;
 
@@ -480,9 +488,12 @@ class StaffController extends Controller
             $applicationSession = $globalData->sessionSetting['application_session'];
         }
 
-        $lecturerDetails = CourseManagement::with('staff')->where('course_id', $id)->where('academic_session', $academicSession)->first(); 
-        $registrations = CourseRegistration::where('course_id', $id)->where('academic_session', $academicSession)->get();
-        $courseLectures = CourseLecture::with('lectureAttendance')->where('course_id', $id)->where('academic_session', $academicSession)->get();
+        $programmeCategory = Category::where('category', $programmeCategory)->first();
+        $programmeCategoryId = $programmeCategory->id;
+
+        $lecturerDetails = CourseManagement::where('course_id', $id)->where('academic_session', $academicSession)->first(); 
+        $registrations = CourseRegistration::where('course_id', $id)->where('programme_category_id', $programmeCategoryId)->where('academic_session', $academicSession)->get();
+        $courseLectures = CourseLecture::with('lectureAttendance')->where('course_id', $id)->where('programme_category_id', $programmeCategoryId)->where('academic_session', $academicSession)->get();
         $course = Course::find($id);
 
         return view('staff.courseDetail', [

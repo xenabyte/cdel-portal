@@ -164,14 +164,42 @@
                             <td>{{ $staff }}</td>
                             <td>{{ $password }}</td>
                             <td>
-                                <div class="hstack gap-3 fs-15">
-                                    <a href="{{ url('/admin/courseDetail/'.$course->id) }}" class="btn btn-lg btn-primary">Course Details</a>
-                                    <a href="avascript:void(0);"  data-bs-toggle="modal" data-bs-target="#edit{{$course->id}}"  class="btn btn-primary m-1"><i class= "mdi mdi-edit"></i> Edit Course</a>
+                                <div>
+                                    {{-- <a href="{{ url('/admin/courseDetail/'.$course->id) }}" class="btn btn-lg btn-primary">Course Details</a> --}}
+                                    <form id="courseDetailForm{{ $loop->iteration }}" action="{{ url('/staff/courseDetail/'.$course->id) }}" method="get">
+                                        @csrf
+                                        <div class="input-group" style="display: flex; flex-wrap: nowrap;">
+                                            <select id="programmeSelect{{ $loop->iteration }}" class="form-select select2 selectWithSearch" required style="flex-grow: 1;">
+                                                <option value="" selected>Select Programme Category</option>
+                                                @foreach($programmeCategories as $category)
+                                                    <option value="{{ $category->category }}">{{ $category->category }} Programme</option>
+                                                @endforeach
+                                            </select>
+                                            <button type="submit" class="btn btn-outline-secondary btn-sm shadow-none">Fetch Course Details</button>
+                                        </div>
+                                        <hr>
+                                    </form>
+
+                                    <script>
+                                        document.getElementById('courseDetailForm{{ $loop->iteration }}').addEventListener('submit', function(event) {
+                                            event.preventDefault();
+
+                                            var programmeSelect = document.getElementById('programmeSelect{{ $loop->iteration }}').value;
+
+                                            if (programmeSelect) {
+                                                var updatedAction = this.action + '/' + programmeSelect;
+                                                window.location.href = updatedAction;
+                                            } else {
+                                                alert('Please select a programme category');
+                                            }
+                                        });
+                                    </script>
+                                    <a href="avascript:void(0);"  data-bs-toggle="modal" data-bs-target="#edit{{$course->id}}"  class="btn btn-sm btn-primary m-1"><i class= "mdi mdi-edit"></i> Edit Course</a>
                                     @if(empty($staff))
-                                    <a href="avascript:void(0);"  data-bs-toggle="modal" data-bs-target="#assignCourse{{$course->id}}" class="btn btn-info m-1"><i class= "mdi mdi-link"></i> Assign Staff To Course</a>
+                                    <a href="avascript:void(0);"  data-bs-toggle="modal" data-bs-target="#assignCourse{{$course->id}}" class="btn btn-sm btn-info m-1"><i class= "mdi mdi-link"></i> Assign Staff To Course</a>
                                     @endif
                                     @if(!empty($staff))
-                                    <a href="avascript:void(0);"  data-bs-toggle="modal" data-bs-target="#unsetStaff{{$course->id}}" class="btn btn-danger m-1"><i class= "mdi mdi-link"></i> Unset Staff From Course</a>
+                                    <a href="avascript:void(0);"  data-bs-toggle="modal" data-bs-target="#unsetStaff{{$course->id}}" class="btn btn-sm btn-danger m-1"><i class= "mdi mdi-link"></i> Unset Staff From Course</a>
                                     @endif
 
                                     <div id="edit{{$course->id}}" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
