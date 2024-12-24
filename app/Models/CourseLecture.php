@@ -19,7 +19,8 @@ class CourseLecture extends Model
         'duration',
         'notes',
         'video_link',
-        'slug'
+        'slug',
+        'programme_category_id',
     ];
 
     /**

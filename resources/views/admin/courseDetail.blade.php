@@ -260,6 +260,9 @@
                     @csrf
                     <input type="hidden" name="course_id" value="{{ $course->id }}">
                     <input type="hidden" name="staff_id" value="{{ $staffId }}">
+                    <input type="hidden" name="programme_category_id" value="{{ $programmeCategory->id }}" />
+
+
                     <div class="form-floating">
                         <textarea class="form-control ckeditor" name="message"></textarea>
                         <label for="semester">Message</label>
@@ -289,6 +292,7 @@
                     <input type="hidden" name="course_id" value="{{ $course->id }}">
                     <input type="hidden" name="staff_id" value="{{ $staffId }}">
                     <input type="hidden" name="academic_session" value="{{ $academicSession }}">
+                    <input type="hidden" name="programme_category_id" value="{{ $programmeCategory->id }}" />
 
                     <div class="form-floating mb-3">
                         <input type="text" name="matric_number" id="matric_number" class="form-control" required>
@@ -341,6 +345,8 @@
                     <input type="hidden" name="course_id" value="{{ $course->id }}">
                     <input type="hidden" name="staff_id" value="{{ $staffId }}">
                     <input type="hidden" name="academic_session" value="{{ $academicSession }}">
+                    <input type="hidden" name="programme_category_id" value="{{ $programmeCategory->id }}" />
+
 
                     
                     <div class="row">
@@ -386,6 +392,8 @@
                 <form action="{{ url('/admin/createLecture') }}" method="post" enctype="multipart/form-data">
                     @csrf
                     <input type="hidden" name="course_id" value="{{ $course->id }}">
+                    <input type="hidden" name="programme_category_id" value="{{ $programmeCategory->id }}" />
+
 
                     <div class="form-floating mb-3">
                         <input type="text" name="topic" id="topic" class="form-control" required>
@@ -482,6 +490,8 @@
                     <input type="hidden" name="course_id" value="{{ $course->id }}">
                     <input type="hidden" name="staff_id" value="{{ $staffId }}">
                     <input type="hidden" name="lecture_id" value="{{ $courseLecture->id }}">
+                    <input type="hidden" name="programme_category_id" value="{{ $programmeCategory->id }}" />
+
 
                     <div class="row">
                         <div class="col-lg-12">
@@ -515,6 +525,8 @@
                     @csrf
                     <input type="hidden" name="course_id" value="{{ $course->id }}">
                     <input type="hidden" name="lecture_id" value="{{ $courseLecture->id }}">
+                    <input type="hidden" name="programme_category_id" value="{{ $programmeCategory->id }}" />
+
 
 
                     <div class="form-floating mb-3">
@@ -584,6 +596,7 @@
                             @csrf
                         
                             <input name="lecture_id" type="hidden" value="{{$courseLecture->id}}">
+
                             <div class="mb-3">
                                 <label>Select Students Present</label>
                                 <select class="form-select select2 selectWithSearch" name="student_id[]" multiple aria-label="cstatus">

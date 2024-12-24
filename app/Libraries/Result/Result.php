@@ -22,7 +22,7 @@ use Log;
 
 class Result
 {
-    public static function processResult(UploadedFile $file, $courseId, $type, $academicSession)
+    public static function processResult(UploadedFile $file, $courseId, $type, $programmeCategoryId, $academicSession)
     {
         $csv = Reader::createFromPath($file->getPathname());
         $csv->setHeaderOffset(0);
@@ -59,7 +59,8 @@ class Result
                 'student_id' => $studentId,
                 'course_id' => $courseId,
                 'result_approval_id' => null,
-                'academic_session' => $academicSession
+                'academic_session' => $academicSession,
+                'programme_category_id' => $programmeCategoryId
             ])->first();
 
             if(!$studentRegistration){
@@ -146,13 +147,12 @@ class Result
         return true;
     }
 
-    public static function processVocationResult(UploadedFile $file,  $globalSettings){
+    public static function processVocationResult(UploadedFile $file, $programmeCategoryId, $globalSettings){
         $csv = Reader::createFromPath($file->getPathname());
         $csv->setHeaderOffset(0);
 
         $records = $csv->getRecords();
         $academicSession = $globalSettings->sessionSetting['academic_session'];
-        $academicSession = '2023/2024';
 
         foreach ($records as $row) {
             $email = $row['email'];
@@ -195,7 +195,8 @@ class Result
                 'student_id' => $studentId,
                 'course_id' => $course->id,
                 'result_approval_id' => null,
-                'academic_session' => $academicSession
+                'academic_session' => $academicSession,
+                'programme_category_id' => $programmeCategoryId,
             ])->first();
 
             if(!$studentRegistration){

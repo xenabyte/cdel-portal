@@ -425,7 +425,7 @@ class ResultController extends Controller
             'url' => 'required',
             'level_id' => 'required',
             'session' => 'required',
-            'course_reg_id' => 'required'
+            'course_reg_id' => 'required',
         ]);
 
         if($validator->fails()) {

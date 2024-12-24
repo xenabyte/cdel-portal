@@ -98,7 +98,7 @@ class AttendanceController extends Controller
         $processAttendance = AttendanceLibrary::processStaffAttendance($attendanceFile);
 
         if($processAttendance != 'success'){
-            alert()->error('oops!', $processResult)->persistent('Close');
+            alert()->error('oops!', $processAttendance)->persistent('Close');
             return redirect()->back();
         }
 

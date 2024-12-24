@@ -502,6 +502,7 @@ class StaffController extends Controller
             'courseLectures' => $courseLectures,
             'course' => $course,
             'academicSession' => $academicSession,
+            'programmeCategory' => $programmeCategory
         ]);
     }
 
@@ -692,6 +693,7 @@ class StaffController extends Controller
 
         $validator = Validator::make($request->all(), [
             'message' => 'required',
+            'programme_category_id' => 'required',
         ]);
 
         if($validator->fails()) {
@@ -703,8 +705,10 @@ class StaffController extends Controller
         $staffId = $staff->id;
 
         $message = $request->message;
+        $programmeCategoryId = $request->programme_category_id;
+
         $course = Course::with('level', 'registrations', 'registrations.student', 'registrations.student.applicant', 'registrations.student.programme')->where('id', $request->course_id)->first();
-        $registeredStudents = $course->registrations->where('academic_session', $academicSession)->pluck('student');
+        $registeredStudents = $course->registrations->where('programme_category_id', $programmeCategoryId)->where('academic_session', $academicSession)->pluck('student');
 
         foreach ($registeredStudents as $student){
             $description = $staffName ." sent you a message; ".$message;
@@ -758,6 +762,7 @@ class StaffController extends Controller
         $validator = Validator::make($request->all(), [
             'result' => 'required|file',
             'course_id' => 'required',
+            'programme_category_id' => 'required'
         ]);
 
         if($validator->fails()) {
@@ -793,10 +798,11 @@ class StaffController extends Controller
         $staff = Auth::guard('staff')->user();
         $staffId = $staff->id;
         $courseId = $request->course_id;
+        $programmeCategoryId = $request->programme_category_id;
 
     
         $file = $request->file('result');
-        $processResult = Result::processResult($file, $courseId, $uploadType, $globalData);
+        $processResult = Result::processResult($file, $courseId, $uploadType, $programmeCategoryId, $globalData);
 
         if($processResult != 'success'){
             alert()->error('oops!', $processResult)->persistent('Close');
@@ -814,14 +820,13 @@ class StaffController extends Controller
 
     public function createLecture(Request $request){
         $globalData = $request->input('global_data');
-        $admissionSession = $globalData->sessionSetting['admission_session'];
         $academicSession = $globalData->sessionSetting['academic_session'];
-        $applicationSession = $globalData->sessionSetting['application_session'];
 
         $validator = Validator::make($request->all(), [
             'topic' => 'required',
             'duration' => 'required',
-            'date' => 'required'
+            'date' => 'required',
+            'programme_category_id' => 'required',
         ]);
 
         if($validator->fails()) {
@@ -842,7 +847,8 @@ class StaffController extends Controller
             'duration' => $request->duration,
             'date' => $request->date,
             'slug' => $slug,
-            'academic_session' => $academicSession
+            'academic_session' => $academicSession,
+            'programme_category_id' => $request->programme_category_id
         ]);
 
         if(CourseLecture::create($createLectureData)){
@@ -857,9 +863,6 @@ class StaffController extends Controller
 
     public function staffUploadAttendance(Request $request){
         $globalData = $request->input('global_data');
-        $admissionSession = $globalData->sessionSetting['admission_session'];
-        $academicSession = $globalData->sessionSetting['academic_session'];
-        $applicationSession = $globalData->sessionSetting['application_session'];
 
         $validator = Validator::make($request->all(), [
             'attendance' => 'required|file',
@@ -879,7 +882,6 @@ class StaffController extends Controller
             return redirect()->back();
         }
 
-        $courseId = $request->course_id;
         $lectureId = $request->lecture_id;
 
     
@@ -966,9 +968,6 @@ class StaffController extends Controller
 
     public function updateLecture(Request $request){
         $globalData = $request->input('global_data');
-        $admissionSession = $globalData->sessionSetting['admission_session'];
-        $academicSession = $globalData->sessionSetting['academic_session'];
-        $applicationSession = $globalData->sessionSetting['application_session'];
 
         $validator = Validator::make($request->all(), [
             'lecture_id' => 'required',
@@ -991,14 +990,14 @@ class StaffController extends Controller
 
         $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $course->code.$request->topic)));
 
-        $createLectureData = ([
+        $updateLectureData = ([
             'topic' => $request->topic,
             'duration' => $request->duration,
             'date' => $request->date,
             'slug' => $slug,
         ]);
 
-        if($lecture->update($createLectureData)){
+        if($lecture->update($updateLectureData)){
             alert()->success('Lecture updated successfully!', '')->persistent('Close');
             return redirect()->back();
         }
@@ -1063,6 +1062,7 @@ class StaffController extends Controller
         $validator = Validator::make($request->all(), [
             'course_id' => 'required',
             'matric_number' => 'required',
+            'programme_category_id' => 'required',
         ]);
 
         $courseManagement = CourseManagement::where([
@@ -1094,7 +1094,8 @@ class StaffController extends Controller
         $studentRegistration = CourseRegistration::where([
             'student_id' => $studentId,
             'course_id' => $courseId,
-            'academic_session' => $academicSession
+            'academic_session' => $academicSession,
+            'programme_category-id' => $request->programme_category_id
         ])->first();
 
         if(!$studentRegistration){
@@ -1163,6 +1164,7 @@ class StaffController extends Controller
 
         $validator = Validator::make($request->all(), [
             'result' => 'required|file',
+            'programme_category_id' => 'required',
         ]);
 
         if($validator->fails()) {
@@ -1170,6 +1172,7 @@ class StaffController extends Controller
             return redirect()->back();
         }
 
+        $programmeCategoryId = $request->programme_category_id;
         $file = $request->file('result');
         $fileExtension = $file->getClientOriginalExtension();
         
@@ -1180,7 +1183,7 @@ class StaffController extends Controller
 
     
         $file = $request->file('result');
-        $processResult = Result::processVocationResult($file, $globalData);
+        $processResult = Result::processVocationResult($file, $programmeCategoryId,  $globalData);
 
         if($processResult != 'success'){
             alert()->error('oops!', $processResult)->persistent('Close');
