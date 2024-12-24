@@ -138,6 +138,16 @@
                                                 <label for="semester">Semester</label>
                                             </div>
                                         </div>
+
+                                        <div class="col-lg-12">
+                                            <div class="form-floating">
+                                                <select class="form-select" id="programme_category" name="programme_category_id" aria-label="Programme Category">
+                                                    <option value="" selected>--Select--</option>
+                                                    @foreach($programmeCategories as $programmeCategory)<option value="{{ $programmeCategory->id }}">{{ $programmeCategory->category }} Programme</option>@endforeach
+                                                </select>
+                                                <label for="session">Programme Category</label>
+                                            </div>
+                                        </div>
         
         
                                         <div class="col-lg-12">
@@ -147,6 +157,18 @@
                                                     @foreach($academicSessions as $session)<option value="{{ $session->year }}">{{ $session->year }}</option>@endforeach
                                                 </select>
                                                 <label for="session">Academic Session</label>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-12">
+                                            <div class="form-floating">
+                                                <select class="form-select" id="batch" name="batch" aria-label="Batch">
+                                                    <option value="" selected>--Select--</option>
+                                                    <option value="A">Batch A</option>
+                                                    <option value="B">Batch B</option>
+                                                    <option value="C">Batch C</option>
+                                                </select>
+                                                <label for="batch">Batch</label>
                                             </div>
                                         </div>
 
@@ -266,7 +288,7 @@
     <div class="col-lg-12">
         <div class="card">
             <div class="card-header align-items-center d-flex">
-                <h4 class="card-title mb-0 flex-grow-1">Summary of Result(s) for {{ $academiclevel->level }} Level,  {{ !empty($programme)?$programme->name:null }} for {{ $academicSession }} Academic Session</h4>
+                <h4 class="card-title mb-0 flex-grow-1">Summary of Result(s) for {{ $academiclevel->level }} Level, {{ $programmeCategory->category }}  {{ !empty($programme)?$programme->name:null }} for {{ $academicSession }} Academic Session</h4>
             </div><!-- end card header -->
         </div>
 
@@ -399,7 +421,7 @@
                             <div class="progress progress-lg rounded-pill">
                                 @foreach($degreeClassCounts as $degreeClass => $count)
                                 @php
-                                    $percentage = number_format(($count / $totalStudents) * 100, 2);
+                                    $percentage = $totalStudents > 0 ? number_format(($count / $totalStudents) * 100, 2) : 0;
                                 @endphp
                                     <div class="progress-bar @switch($degreeClass)
                                             @case('First Class')
@@ -453,7 +475,7 @@
                                     </div>
                                     <div class="flex-shrink-0">
                                         @php
-                                            $percentage = ($count / $totalStudents) * 100;
+                                            $percentage = $totalStudents > 0 ? number_format(($count / $totalStudents) * 100, 2) : 0;
                                         @endphp
                                         <p class="mb-0">{{ number_format($percentage, 2) }}%</p>
                                     </div>

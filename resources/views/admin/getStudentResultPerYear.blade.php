@@ -56,6 +56,16 @@
                                                 <label for="level">Present Academic Level</label>
                                             </div>
                                         </div>
+
+                                        <div class="col-lg-12">
+                                            <div class="form-floating">
+                                                <select class="form-select" id="programme_category" name="programme_category_id" aria-label="Programme Category">
+                                                    <option value="" selected>--Select--</option>
+                                                    @foreach($programmeCategories as $programmeCategory)<option value="{{ $programmeCategory->id }}">{{ $programmeCategory->category }} Programme</option>@endforeach
+                                                </select>
+                                                <label for="session">Programme Category</label>
+                                            </div>
+                                        </div>
         
         
                                         <div class="col-lg-12">
@@ -91,7 +101,7 @@
     <div class="col-lg-12">
         <div class="card">
             <div class="card-header align-items-center d-flex">
-                <h4 class="card-title mb-0 flex-grow-1">Summary of Result(s) for {{ $academicSession }} Academic Session</h4>
+                <h4 class="card-title mb-0 flex-grow-1">Summary of Result(s) of Faculty of {{ $faculty->name }} for {{ $programmeCategory->category }} programme for {{ $academicLevel->level }} Level for  {{ $academicSession }} Academic Session</h4>
             </div><!-- end card header -->
         </div>
 
@@ -102,7 +112,7 @@
     <div class="col-lg-12">
         <div class="card">
             <div class="card-header align-items-center d-flex">
-                <h4 class="card-title mb-0 flex-grow-1">Result(s) for {{ $academicSession }} Academic Session</h4>
+                <h4 class="card-title mb-0 flex-grow-1">Summary of Result(s) of Faculty of {{ $faculty->name }} for {{ $programmeCategory->category }} programme for {{ $academicLevel->level }} Level for  {{ $academicSession }} Academic Session</h4>
             </div><!-- end card header -->
 
             <div class="card-body table-responsive">

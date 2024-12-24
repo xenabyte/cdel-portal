@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Models\ProgrammeCategory;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -52,11 +53,13 @@ class ResultController extends Controller
         $academicLevels = AcademicLevel::get();
         $academicSessions = Session::orderBy('id', 'desc')->get();
         $faculties = Faculty::get();
+        $programmeCategories = ProgrammeCategory::get();
 
         return view('admin.getStudentResults',[
             'academicLevels' => $academicLevels,
             'academicSessions' => $academicSessions,
-            'faculties' => $faculties
+            'faculties' => $faculties,
+            'programmeCategories' => $programmeCategories
         ]);
     }
 
@@ -93,11 +96,13 @@ class ResultController extends Controller
         $globalData = $request->input('global_data');
         $academicSessions = Session::orderBy('id', 'desc')->get();
         $faculties = Faculty::get(); 
+        $programmeCategories = ProgrammeCategory::get();
 
         
         return view('admin.getStudentResultSummary',[
             'faculties' => $faculties,
             'academicSessions' => $academicSessions,
+            'programmeCategories' => $programmeCategories
         ]);
     }
 
@@ -111,6 +116,7 @@ class ResultController extends Controller
     
         $programme = Programme::find($request->programme_id);
         $academicLevel = AcademicLevel::find($request->level_id);
+        $programmeCategories = ProgrammeCategory::get();
     
         $studentsQuery = Student::
         with(['applicant', 'programme', 'registeredCourses', 'registeredCourses.course'])
@@ -120,10 +126,12 @@ class ResultController extends Controller
             'programme_id' => $request->programme_id,
             'department_id' => $request->department_id,
             'faculty_id' => $request->faculty_id,
+            'programme_category_id' => $request->programme_category_id
         ])
         ->whereHas('registeredCourses', function ($query) use ($request, $batch) {
             $query->where('level_id', $request->level_id)
-                  ->where('academic_session', $request->session);
+                    ->where('programme_category_id', $request->programme_category_id)
+                    ->where('academic_session', $request->session);
             if (!empty($batch)) {
                 $query->where('batch', $batch);
             }
@@ -135,7 +143,8 @@ class ResultController extends Controller
             return view('admin.getStudentResults',[
                 'academicLevels' => $academicLevels,
                 'academicSessions' => $academicSessions,
-                'faculties' => $faculties
+                'faculties' => $faculties,
+                'programmeCategories' => $programmeCategories
             ]);
         }
     
@@ -153,6 +162,8 @@ class ResultController extends Controller
             'faculty_id' => $request->faculty_id,
             'department_id' => $request->department_id,
             'classifiedCourses' => $classifiedCourses,
+            'programmeCategories' => $programmeCategories,
+            'programmeCategory' => ProgrammeCategory::find($request->programme_category_id)
         ]);
     }
 
@@ -163,6 +174,7 @@ class ResultController extends Controller
 
         $academicSessions = Session::orderBy('id', 'desc')->get();
         $faculties = Faculty::get(); 
+        $programmeCategories = ProgrammeCategory::get();
     
         $studentsQuery = Student::
         with(['applicant', 'programme', 'registeredCourses', 'registeredCourses.course', 'academicLevel', 'department', 'faculty'])
@@ -170,9 +182,10 @@ class ResultController extends Controller
             'is_active' => true,
             'is_rusticated' => false,
             'faculty_id' => $request->faculty_id,
+            'programme_category_id' => $request->programme_category_id
         ])
         ->whereHas('registeredCourses', function ($query) use ($request, $batch) {
-            $query->where('academic_session', $request->session);
+            $query->where('academic_session', $request->session)->where('programme_category_id', $request->programme_category_id);
             if (!empty($batch)) {
                 $query->where('batch', $batch);
             }
@@ -204,6 +217,7 @@ class ResultController extends Controller
             return view('admin.getStudentResultSummary',[
                 'faculties' => $faculties,
                 'academicSessions' => $academicSessions,
+                'programmeCategories' => $programmeCategories,
             ]);
         }
     
@@ -213,7 +227,8 @@ class ResultController extends Controller
             'academicSession' => $request->session,
             'semester' => $request->semester,
             'students' => $students,
-            'faculty' => $faculty
+            'faculty' => $faculty,
+            'programmeCategory' => ProgrammeCategory::find($request->programme_category_id),
         ]);
     }
     
@@ -658,18 +673,21 @@ class ResultController extends Controller
         $academicLevels = AcademicLevel::get();
         $academicSessions = Session::orderBy('id', 'desc')->get();
         $faculties = Faculty::get();
+        $programmeCategories = ProgrammeCategory::get();
 
         return view('admin.getStudentResultPerYear',[
             'academicLevels' => $academicLevels,
             'academicSessions' => $academicSessions,
-            'faculties' => $faculties
+            'faculties' => $faculties,
+            'programmeCategories' => $programmeCategories
         ]);
     }
 
     public function studentResultPerYear(Request $request){
         $request->validate([
-            'faculty_id' => 'nullable|integer|exists:faculties,id',
+            'faculty_id' => 'required|integer|exists:faculties,id',
             'level_id' => 'required|integer|exists:academic_levels,id',
+            'programme_category_id' => 'required|integer|exists:programme_categories,id',
         ]);
 
         $academicLevels = AcademicLevel::get();
@@ -680,10 +698,12 @@ class ResultController extends Controller
 
     
         $facultyId = $request->faculty_id;
+        $programmeCategoryId = $request->programme_category_id;
         $programmeIds = [];
-
+        
         if ($facultyId) {
-            $programmeIds = Programme::where('','=', $facultyId)->pluck('id')->toArray();
+            $departmentIds = Department::where('faculty_id', $facultyId)->pluck('id')->toArray();        
+            $programmeIds = Programme::whereIn('department_id', $departmentIds)->pluck('id')->toArray();
         } else {
             $programmeIds = Programme::pluck('id')->toArray();
         }
@@ -694,6 +714,7 @@ class ResultController extends Controller
             'is_active' => true,
             'is_rusticated' => false,
             'level_id' => $request->level_id,
+            'programme_category_id' => $programmeCategoryId
         ]);
     
         if (!empty($programmeIds)) {
@@ -719,6 +740,9 @@ class ResultController extends Controller
             'faculties' => $faculties,
             'academicSession' => $request->session,
             'academicLevel' => $academicLevel,
+            'programmeCategory' => ProgrammeCategory::find($programmeCategoryId),
+            'faculty' => Faculty::find($facultyId),
+            'academicLevel' => $academicLevel
         ]);
     }
 }
