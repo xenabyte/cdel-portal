@@ -415,7 +415,7 @@
 
 
 <div id="addAdviser" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
-    <div class="modal-dialog modal-md modal-dialog-centered">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content border-0 overflow-hidden">
             <div class="modal-header p-3">
                 <h4 class="card-title mb-0">Add Level Advisers</h4>
@@ -431,7 +431,7 @@
                         <select class="form-select" aria-label="category" name="programme_id">
                             <option selected value= "">Select Programme </option>
                             @foreach($department->programmes as $programme)
-                            <option value="{{ $programme->id }}">{{ $programme->name }}</option>
+                            <option value="{{ $programme->id }}">{{ $programme->name }} - {{ $programme->programmeCategory->category }} Programme</option>
                             @endforeach
                         </select>
                     </div>

@@ -23,7 +23,7 @@
     <div class="col-lg-12">
         <div class="card">
             <div class="card-header align-items-center d-flex">
-                <h4 class="card-title mb-0 flex-grow-1">Graduating Students </h4>
+                <h4 class="card-title mb-0 flex-grow-1">{{ $programmeCategory->category }} Programme Graduating Students for {{ $pageGlobalData->sessionSetting->academic_session }} Academic Session</h4>
                 <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#confirmModal">Submit Selected Students</button>
             </div><!-- end card header -->
 
@@ -75,7 +75,7 @@
                                                     $allRegisteredCourses = $student->registeredCourses->where('grade', '!=', null);
                                                     $allRegisteredCreditUnits = $allRegisteredCourses->sum('course_credit_unit');
                                                     $allRegisteredGradePoints = $allRegisteredCourses->sum('points');
-                                                    $CGPA = $allRegisteredGradePoints > 0 ? number_format($allRegisteredGradePoints / $allRegisteredCreditUnits, 2) : 0;
+                                                    $CGPA = $allRegisteredGradePoints > 0 ? number_format($allRegisteredGradePoints / $allRegisteredCreditUnits, 2) : 0.00;
 
                                                     $failedCourses = $student->registeredCourses->where('grade', 'F')->where('re_reg', null);
 
@@ -99,7 +99,7 @@
                                                             @foreach($failedCourses as $failedCourse)
                                                                 <ul>
                                                                     <li>
-                                                                        <span class="text-danger"> {{ $failedCourse->id }} - {{ $failedCourse->course_code }} - {{ $failedCourse->course->name }} ({{ $failedCourse->course_credit_unit }} unit)</span>
+                                                                        <span class="text-danger"> ({{ $failedCourse->id }}) - {{ $failedCourse->course_code }} - {{ $failedCourse->course->name }} ({{ $failedCourse->course_credit_unit }} unit)</span>
                                                                     </li>
                                                                 </ul>
                                                             @endforeach

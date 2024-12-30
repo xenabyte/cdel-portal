@@ -219,12 +219,12 @@
                                             $semesterRegisteredCourses = $student->registeredCourses->where('semester', $semester)->where('level_id', $academicLevel->id)->where('academic_session', $academicSession)->where('grade', '!=', null);
                                             $currentRegisteredCreditUnits =  $semesterRegisteredCourses->sum('course_credit_unit');
                                             $currentRegisteredGradePoints = $semesterRegisteredCourses->sum('points');
-                                            $currentGPA = $currentRegisteredGradePoints > 0 ? number_format($currentRegisteredGradePoints / $currentRegisteredCreditUnits, 2) : 0;
+                                            $currentGPA = $currentRegisteredGradePoints > 0 ? number_format($currentRegisteredGradePoints / $currentRegisteredCreditUnits, 2) : 0.00;
                     
                                             $allRegisteredCourses = $student->registeredCourses->where('grade', '!=', null);
                                             $allRegisteredCreditUnits =  $allRegisteredCourses->sum('course_credit_unit');
                                             $allRegisteredGradePoints = $allRegisteredCourses->sum('points');
-                                            $CGPA = $allRegisteredGradePoints > 0 ? number_format($allRegisteredGradePoints / $allRegisteredCreditUnits, 2) : 0;
+                                            $CGPA = $allRegisteredGradePoints > 0 ? number_format($allRegisteredGradePoints / $allRegisteredCreditUnits, 2) : 0.00;
                     
                                             $semesterClassGrade = $degreeClass->computeClass($currentGPA);
                                             $semesterClass = $semesterClassGrade->degree_class;

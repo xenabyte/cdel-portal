@@ -24,7 +24,7 @@
     <div class="col-lg-12">
         <div class="card">
             <div class="card-header align-items-center d-flex">
-                <h4 class="card-title mb-0 flex-grow-1">University Programmes (Undergraduates and Postgraduates)</h4>
+                <h4 class="card-title mb-0 flex-grow-1">{{ $programmeCategory->category }} Programme (Student Promotion)</h4>
             </div><!-- end card header -->
 
             @if(!empty($programmes) && $programmes->count() > 0)
@@ -67,6 +67,7 @@
                                                             <form action="{{ url('/admin/promoteStudent') }}" method="post" enctype="multipart/form-data">
                                                                 @csrf
                                                                 <input name="programme_id" type="hidden" value="{{$programme->id}}">
+                                                                <input name="programme_category_id" type="hidden" value="{{$programmeCategory->id}}" >
                                                                 <hr>
                                                                 <div class="text-end">
                                                                     <button type="submit" id="submit-button" class="btn btn-primary">Promote</button>

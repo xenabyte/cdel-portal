@@ -532,12 +532,35 @@
                                     <li class="nav-item">
                                         <a href="{{ url('/admin/allStudents') }}" class="nav-link">All Student</a>
                                     </li>
+
                                     <li class="nav-item">
-                                        <a href="{{ url('/admin/graduatingStudents') }}" class="nav-link">Graduating Student</a>
+                                        <a href="#graduatingStudents" class="nav-link" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="graduatingStudents" data-key="t-graduatingStudents"> Graduating Students</a>
+                                        <div class="collapse menu-dropdown" id="graduatingStudents">
+                                            <ul class="nav nav-sm flex-column">
+                                                <li class="nav-item">
+                                                    <a href="{{ url('/admin/graduatingStudents/'.$programmeCategory::UNDERGRADUATE) }}" class="nav-link" data-key="t-basic"> Undergraduates </a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a href="{{ url('/admin/graduatingStudents/'.$programmeCategory::TOPUP) }}" class="nav-link" data-key="t-basic"> Topup </a>
+                                                </li>
+                                            </ul>
+                                        </div>
                                     </li>
+
                                     <li class="nav-item">
-                                        <a href="{{ url('/admin/massPromotion') }}" class="nav-link">Promote Student</a>
+                                        <a href="#massPromotion" class="nav-link" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="massPromotion" data-key="t-massPromotion">Mass Promotion</a>
+                                        <div class="collapse menu-dropdown" id="massPromotion">
+                                            <ul class="nav nav-sm flex-column">
+                                                <li class="nav-item">
+                                                    <a href="{{ url('/admin/massPromotion/'.$programmeCategory::UNDERGRADUATE) }}" class="nav-link" data-key="t-basic"> Undergraduates </a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a href="{{ url('/admin/massPromotion/'.$programmeCategory::TOPUP) }}" class="nav-link" data-key="t-basic"> Topup </a>
+                                                </li>
+                                            </ul>
+                                        </div>
                                     </li>
+
                                     <li class="nav-item">
                                         <a href="{{ url('/admin/changeProgramme') }}" class="nav-link">Change Programme</a>
                                     </li>
@@ -556,6 +579,7 @@
                                     <li class="nav-item">
                                         <a href="{{ url('/admin/deletedStudents') }}" class="nav-link">Deleted Student Record</a>
                                     </li>
+
                                     <li class="nav-item">
                                         <a href="{{ url('/admin/alumni') }}" class="nav-link">Alumni (Graduated Students)</a>
                                     </li>

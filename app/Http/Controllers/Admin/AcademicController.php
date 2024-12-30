@@ -585,20 +585,40 @@ class AcademicController extends Controller
             alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
             return redirect()->back();
         }
+        $globalData = $request->input('global_data');
+        $academicSession = $globalData->sessionSetting['academic_session'];
 
-        $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $request->name)));
+        $programmeCategory = Category::where('id', $request->category)->first();
 
-        $newAddProgramme= ([
+
+        $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $request->name.' '.$programmeCategory->category)));
+
+        $newAddProgramme = [
             'faculty_id' => $request->faculty_id,
             'department_id' => $request->department_id,
             'slug' => $slug,
             'duration' => $request->duration,
             'name' => $request->name,
-            'category' => $request->category,
-        ]);
-
-        if(Programme::create($newAddProgramme)){
-            alert()->success('Programme added', 'A new programme have been added')->persistent('Close');
+            'category_id' => $request->category,
+            'award' -> $request->award,
+            'max_duration' => 0,
+            'code' => $request->code,
+            'academic_session' => $academicSession
+        ];
+        
+        // Check if a record with the same 'name' and 'code' already exists
+        $existingProgramme = Programme::where('name', $request->name)
+            ->where('category_id', $request->category)
+            ->exists();
+        
+        if ($existingProgramme) {
+            alert()->warning('Duplicate Programme', 'A programme with this name and category already exists')->persistent('Close');
+            return redirect()->back();
+        }
+        
+        // Create a new programme if it doesn't already exist
+        if (Programme::create($newAddProgramme)) {
+            alert()->success('Programme Added', 'A new programme has been added')->persistent('Close');
             return redirect()->back();
         }
 
@@ -625,6 +645,19 @@ class AcademicController extends Controller
         if(!empty($request->category) && $programme->category_id != $request->category){
             $programme->category = $request->category;
         }
+
+        if(!empty($request->award) && $programme->award != $request->award){
+            $programme->award = $request->award;
+        }
+
+        if(!empty($request->code) && $programme->code != $request->code){
+            $programme->code = $request->code;
+        }
+
+        if(!empty($request->max_duration) && $programme->max_duration != $request->max_duration){
+            $programme->max_duration = $request->max_duration;
+        }
+
         if(!empty($request->duration) && $programme->duration != $request->duration){
             $programme->duration = $request->duration;
         }
@@ -1169,23 +1202,28 @@ class AcademicController extends Controller
         ]);
     }
 
-    public function massPromotion(Request $request){
+    public function massPromotion(Request $request, $programmeCategory){
         $globalData = $request->input('global_data');
         $academicSession = $globalData->sessionSetting['academic_session'];
 
-        $programmes = Programme::with(['students' => function ($query) {
+        $programmeCategory = Category::where('category', $programmeCategory)->first();
+        $programmeCategoryId = $programmeCategory->id;
+
+        $programmes = Programme::with(['students' => function ($query) use ($programmeCategoryId) {
             $query->where('is_active', true)
-                  ->where('is_rusticated', false);
+                ->where('is_rusticated', false)
+                ->where('programme_category_id', $programmeCategoryId);
         }, 'programmeCategory'])
-        ->where(function ($query) use ($academicSession) {
-            $query->where('academic_session', '!=', $academicSession)
-                  ->orWhereNull('academic_session');
+        ->where(function ($query) use ($academicSession, $programmeCategoryId) {
+            $query->where('category_id', $programmeCategoryId)
+                ->where('academic_session', '!=', $academicSession)
+                ->orWhereNull('academic_session');
         })
         ->get();
-
          
         return view('admin.massPromotion', [
-            'programmes' => $programmes
+            'programmes' => $programmes,
+            'programmeCategory' => $programmeCategory
         ]);
     }
 
@@ -1195,17 +1233,22 @@ class AcademicController extends Controller
 
     public function promoteStudent(Request $request){
         $programmeId = $request->programme_id;
+        $programmeCategoryId = $request->programme_category_id;
+
         $globalData = $request->input('global_data');
         $academicSession = $globalData->sessionSetting['academic_session'];
+        
 
-        $programme = Programme::with(['students' => function ($query) {
+        $programme = Programme::with(['students' => function ($query) use ($programmeCategoryId){
             $query->where('is_active', true)
                   ->where('is_passed_out', false)
-                  ->where('is_rusticated', false);
+                  ->where('is_rusticated', false)
+                  ->where('programme_category_id', $programmeCategoryId);
         }, 'programmeCategory'])
-        ->where(function ($query) use ($academicSession) {
-            $query->where('academic_session', '!=', $academicSession)
-                  ->orWhereNull('academic_session');
+        ->where(function ($query) use ($academicSession, $programmeCategoryId) {
+            $query->where('category_id', $programmeCategoryId)
+                ->where('academic_session', '!=', $academicSession)
+                ->orWhereNull('academic_session');
         })
         ->where('id', $programmeId)
         ->first();

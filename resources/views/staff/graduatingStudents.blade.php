@@ -23,7 +23,7 @@
     <div class="col-lg-12">
         <div class="card">
             <div class="card-header align-items-center d-flex">
-                <h4 class="card-title mb-0 flex-grow-1">Graduating Students </h4>
+                <h4 class="card-title mb-0 flex-grow-1">{{ $programmeCategory->category }} Programme Graduating Students for {{ $pageGlobalData->sessionSetting->academic_session }} Academic Session</h4>
             </div><!-- end card header -->
 
             <div class="card-body table-responsive">
@@ -71,7 +71,7 @@
                                                 $allRegisteredCourses = $student->registeredCourses->where('grade', '!=', null);
                                                 $allRegisteredCreditUnits = $allRegisteredCourses->sum('course_credit_unit');
                                                 $allRegisteredGradePoints = $allRegisteredCourses->sum('points');
-                                                $CGPA = $allRegisteredGradePoints > 0 ? number_format($allRegisteredGradePoints / $allRegisteredCreditUnits, 2) : 0;
+                                                $CGPA = $allRegisteredGradePoints > 0 ? number_format($allRegisteredGradePoints / $allRegisteredCreditUnits, 2) : 0.00;
 
                                                 $failedCourses = $student->registeredCourses->where('grade', 'F')->where('re_reg', null);
 

@@ -151,6 +151,16 @@
                                                     <label for="name" class="form-label">Programme Name</label>
                                                     <input type="text" class="form-control" name="name" id="name" value="{{$programme->name}}">
                                                 </div>
+
+                                                <div class="mb-3">
+                                                    <label for="award" class="form-label">Programme Award</label>
+                                                    <input type="text" class="form-control" name="award" id="award" value="{{$programme->award}}">
+                                                </div>
+                            
+                                                <div class="mb-3">
+                                                    <label for="code" class="form-label">Programme Code</label>
+                                                    <input type="text" class="form-control" name="code" id="code" value="{{$programme->code}}">
+                                                </div>
                             
                                                 <div class="mb-3">
                                                     <label for="category" class="form-label">Select Programme Category</label>
@@ -474,7 +484,7 @@
 
 
 <div id="addAdviser" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
-    <div class="modal-dialog modal-md modal-dialog-centered">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content border-0 overflow-hidden">
             <div class="modal-header p-3">
                 <h4 class="card-title mb-0">Add Level Advisers</h4>
@@ -490,7 +500,7 @@
                         <select class="form-select" aria-label="category" name="programme_id">
                             <option selected value= "">Select Programme </option>
                             @foreach($department->programmes as $programme)
-                            <option value="{{ $programme->id }}">{{ $programme->name }}</option>
+                            <option value="{{ $programme->id }}">{{ $programme->name }} - {{ $programme->programmeCategory->category }} Programme</option>
                             @endforeach
                         </select>
                     </div>
@@ -665,9 +675,20 @@
                 <form action="{{ url('/admin/addProgramme') }}" method="post" enctype="multipart/form-data">
                     @csrf
                     <input type="hidden" name="department_id" value="{{ $department->id }}">
+                    <input type="hidden" name="faculty_id" value="{{ $department->faculty_id }}">
                     <div class="mb-3">
                         <label for="name" class="form-label">Programme Name</label>
                         <input type="text" class="form-control" name="name" id="name" placeholder="Enter Programme Name">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="award" class="form-label">Programme Award</label>
+                        <input type="text" class="form-control" name="award" id="award" placeholder="Enter Programme Award e.g (B. Sc. Physics with Electronics)">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="code" class="form-label">Programme Code</label>
+                        <input type="text" class="form-control" name="code" id="code" placeholder="Enter Programme Code e.g (P for Physics)">
                     </div>
 
                     <div class="mb-3">

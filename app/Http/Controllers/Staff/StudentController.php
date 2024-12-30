@@ -16,6 +16,7 @@ use App\Models\User as Applicant;
 use App\Models\Student;
 use App\Models\Guardian;
 use App\Models\FinalClearance;
+use App\Models\ProgrammeCategory;
 
 
 use App\Mail\NotificationMail;
@@ -29,12 +30,16 @@ use Carbon\Carbon;
 class StudentController extends Controller
 {
     //
-    public function graduatingStudents() {
+    public function graduatingStudents($programmeCategory) {
+
+        $programmeCategory = ProgrammeCategory::where('category', $programmeCategory)->first();
+        $programmeCategoryId = $programmeCategory->id;
 
         $studentsQuery = Student::with(['programme', 'programme.department', 'programme.department.faculty', 'registeredCourses', 'academicLevel'])
             ->where('is_active', true)
             ->where('is_passed_out', false)
             ->where('is_rusticated', false)
+            ->where('programme_category_id', $programmeCategoryId)
             ->whereHas('programme', function ($query) {
                 $query->whereRaw('students.level_id >= programmes.duration');
             });
@@ -71,6 +76,7 @@ class StudentController extends Controller
 
         return view('staff.graduatingStudents', [
             'classifiedStudents' => $classifiedStudents,
+            'programmeCategory' => $programmeCategory,
         ]);
     }
 

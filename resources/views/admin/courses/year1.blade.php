@@ -7,12 +7,6 @@
                 <a class="nav-link active" data-bs-toggle="tab" href="#year1first" role="tab" aria-selected="false">
                     Harmattan Semester
                 </a>
-
-                <br>
-                <div class="flex-shrink-0">
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#submitCourses"></button>
-                </div>
-                <br>
             </li>
             <li class="nav-item">
                 <a class="nav-link" data-bs-toggle="tab" href="#year1second" role="tab" aria-selected="false">

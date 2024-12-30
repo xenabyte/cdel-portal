@@ -49,6 +49,7 @@
                         <p><strong>Programme Max Duration: </strong> {{ $programme->max_duration }} Years </p>
                         <p><strong>Programme Code: </strong> {{ $programme->code }} </p>
                         <p><strong>Programme Last Matric Number: </strong> {{ $programme->matric_last_number }} </p>
+                        <p><strong>Programme Category: </strong> {{ $programme->programmeCategory->category }} Programme</p>
                     </div><!-- end card body -->
                 </div><!-- end card -->
             </div><!-- end col -->
