@@ -108,7 +108,7 @@
                                                                     <select class="form-select" aria-label="category" name="programme_id">
                                                                         <option selected value="">Select Programme</option>
                                                                         @foreach($programmes as $programme)
-                                                                        <option value="{{ $programme->id }}">{{ $programme->name }}</option>
+                                                                        <option value="{{ $programme->id }}">{{ $programme->name .'-'. $programme->programmeCategory->category.' Programme'}}</option>
                                                                         @endforeach
                                                                     </select>
                                                                 </div>
@@ -341,6 +341,8 @@
             <div class="modal-body">
                 <form action="{{ url('/admin/billsForSessions') }}" method="post" enctype="multipart/form-data">
                     @csrf
+
+                    <input type="hidden" name="programme_category_id" value="{{$programmeCategory->id}}">
 
                     <div class="col-lg-12">
                         <div class="form-floating">

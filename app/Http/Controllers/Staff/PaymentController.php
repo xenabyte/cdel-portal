@@ -53,8 +53,8 @@ class PaymentController extends Controller
         $programmeCategory = ProgrammeCategory::where('category', $programmeCategory)->first();
         $programmeCategoryId = $programmeCategory->id;
 
-        $payments = Payment::with(['structures', 'programme'])->where('academic_session', $academicSession)->get();
-        $programmes = Programme::get();
+        $payments = Payment::with(['structures', 'programme'])->where('academic_session', $academicSession)->where('programme_category_id', $programmeCategoryId)->get();
+        $programmes = Programme::where('category_id', $programmeCategoryId)->get();
         $levels = Level::get();
         $sessions = Session::orderBy('id', 'DESC')->get();
 
@@ -68,9 +68,11 @@ class PaymentController extends Controller
     }
 
     public function billsForSessions(Request $request) {
-        $globalData = $request->input('global_data');
         $academicSession = $request->academic_session;
+        $programmeCategoryId = $request->programme_category_id;
 
+        $programmeCategory = ProgrammeCategory::find($programmeCategoryId)->first();
+        $programmeCategoryId = $programmeCategory->id;
 
         $payments = Payment::with(['structures', 'programme'])->where('academic_session', $academicSession)->get();
         $programmes = Programme::get();
@@ -82,7 +84,9 @@ class PaymentController extends Controller
             'programmes' => $programmes,
             'levels' => $levels,
             'sessions' => $sessions,
-            'academicSession' => $academicSession
+            'academicSession' => $academicSession,
+            'programmeCategoryId' => $programmeCategoryId,
+            'programmeCategory' => $programmeCategory,
         ]);
     }
 
@@ -104,7 +108,8 @@ class PaymentController extends Controller
             return redirect()->back();
         }
 
-        $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $request->title)));
+        $programmeCategory = ProgrammeCategory::find($request->programme_category_id)->first();
+        $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $request->title.' '.$programmeCategory->category)));
 
         $addPayment = ([            
             'description' => $request->description,
@@ -204,15 +209,22 @@ class PaymentController extends Controller
     }
 
     public function payment($slug) {
+    
+        $payment = Payment::with(['structures'])->where('slug', $slug)->first();
+        $programmeCategoryId = $payment->category_id;
 
-        $payment = Payment::with(['structures', 'programmeCategory'])->where('slug', $slug)->first();
         $programmes = Programme::get();
         $levels = Level::get();
         $sessions = Session::orderBy('id', 'DESC')->get();
-
         $students = null;
+
         if(!empty($payment->level_id)){
-            $students = Student::with('applicant')->where('level_id', $payment->level_id)->where('academic_session', $payment->academic_session)->where('programme_id', $payment->programme_id)->where('is_active', TRUE)->get();
+            $students = Student::with('applicant')
+            ->where('level_id', $payment->level_id)
+            ->where('academic_session', $payment->academic_session)
+            ->where('programme_id', $payment->programme_id)
+            ->where('programme_category_id', $programmeCategoryId)
+            ->get();
 
             foreach($students as $student){
                 $transaction = Transaction::where('student_id', $student->id)->where('payment_id', $payment->id)->where('session', $payment->academic_session)->where('status', 1)->get();

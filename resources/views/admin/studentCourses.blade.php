@@ -4,7 +4,7 @@
 <div class="row">
     <div class="col-12">
         <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-            <h4 class="mb-sm-0">Student Course(s)</h4>
+            <h4 class="mb-sm-0">{{ $programmeCategory->category }} Programme Student Course(s) for {{ $pageGlobalData->sessionSetting->academic_session }} academic session</h4>
 
             <div class="page-title-right">
                 <ol class="breadcrumb m-0">
@@ -25,13 +25,13 @@
                 <div class="text-center">
                     <div class="row justify-content-center">
                         <div class="col-lg-9">
-                            <h4 class="mt-4 fw-semibold">Fetch Student Course(s)</h4>
+                            <h4 class="mt-4 fw-semibold">Fetch {{ $programmeCategory->category }} Programme Student Course(s) for {{ $pageGlobalData->sessionSetting->academic_session }}</h4>
                             <p class="text-muted mt-3"></p>
                             <div class="mt-4">
                                 <form action="{{ url('/admin/getStudentCourses') }}" method="POST">
                                     @csrf
                                     <div class="row g-3">
-
+                                        <input type="hidden" name="programme_category_id" value="{{ $programmeCategory->id }}">
                                         <div class="col-lg-12">
                                             <div class="form-floating">
                                                 <select class="form-select" id="programme" name="programme_id" aria-label="programme">
@@ -68,7 +68,7 @@
                                             </div>
                                         </div>
 
-                                        <div class="col-lg-12">
+                                        {{-- <div class="col-lg-12">
                                             <div class="form-floating">
                                                 <select class="form-select" id="programme_category" name="programme_category_id" aria-label="Programme Category">
                                                     <option value="" selected>--Select--</option>
@@ -76,7 +76,7 @@
                                                 </select>
                                                 <label for="session">Programme Category</label>
                                             </div>
-                                        </div>
+                                        </div> --}}
 
                                         <div class="col-lg-12">
                                             <div class="form-floating">

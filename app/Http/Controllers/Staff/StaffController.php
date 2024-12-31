@@ -296,10 +296,14 @@ class StaffController extends Controller
         ]);
     }
 
-    public function studentCourses(Request $request){
+    public function studentCourses(Request $request, $programmeCategory){
         $staff = Auth::guard('staff')->user();
         $staffId = $staff->id;
-        $programmes = Programme::with('department', 'department.faculty')->where('department_id', $staff->department_id)->get();
+
+        $programmeCategory = Category::where('category', $programmeCategory)->first();
+        $programmeCategoryId = $programmeCategory->id;
+
+        $programmes = Programme::with('department', 'department.faculty')->where('category_id', $programmeCategoryId)->where('department_id', $staff->department_id)->get();
 
 
         if(empty($staff->acad_department)){
@@ -341,7 +345,8 @@ class StaffController extends Controller
         return view('staff.studentCourses',[
             'programmes' => $programmes,
             'academicLevels' => $academicLevels,
-            'programmeCategories' => $programmeCategories
+            'programmeCategories' => $programmeCategories,
+            'programmeCategory' => $programmeCategory
         ]);
     }
 

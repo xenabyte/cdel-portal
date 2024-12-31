@@ -5,7 +5,7 @@
 <div class="row">
     <div class="col-12">
         <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-            <h4 class="mb-sm-0">Bills Setup for {{ $academicSession }} Academic Session</h4>
+            <h4 class="mb-sm-0">{{ $programmeCategory->category }} Programme Bills Setup for {{ $academicSession }} Academic Session</h4>
 
             <div class="page-title-right">
                 <ol class="breadcrumb m-0">
@@ -23,7 +23,7 @@
     <div class="col-lg-12">
         <div class="card">
             <div class="card-header align-items-center d-flex">
-                <h4 class="card-title mb-0 flex-grow-1">Bills</h4>
+                <h4 class="card-title mb-0 flex-grow-1">{{ $programmeCategory->category }} Programme Bills Setup for {{ $academicSession }} Academic Session</h4>
                 <div class="flex-shrink-0">
                     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addPayment">Create a Bill</button>
                     <a href="{{ asset('BulkPaymentFormat.csv') }}" class="btn btn-info" download>Download Format</a>
@@ -448,6 +448,8 @@
                 <form action="{{ url('/staff/billsForSessions') }}" method="post" enctype="multipart/form-data">
                     @csrf
 
+                    <input type="hidden" name="programme_category_id" value="{{$programmeCategory->id}}">
+
                     <div class="col-lg-12">
                         <div class="form-floating">
                             <select class="form-select" id="academic_session" name="academic_session" aria-label="academic_session">
@@ -482,6 +484,8 @@
                 <form action="{{ url('/staff/uploadBulkPayment') }}" method="post" enctype="multipart/form-data">
                     @csrf
                     <input type="hidden" name="academic_session" value="{{ $academicSession}}">
+                    <input type="hidden" name="programme_category_id" value="{{$programmeCategory->id}}">
+
                     <div class="mb-3">
                         <label for="file" class="form-label">File(CSV)</label>
                         <input type="file" class="form-control" name="file" id="type">

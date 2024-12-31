@@ -198,9 +198,11 @@ class ProgrammeController extends Controller
         return $programmes;
     }
 
-    public function studentCourses(Request $request){
+    public function studentCourses(Request $request, $programmeCategory){
+        $programmeCategory = ProgrammeCategory::where('category', $programmeCategory)->first();
+        $programmeCategoryId = $programmeCategory->id;
 
-        $programmes = Programme::get();
+        $programmes = Programme::where('category_id', $programmeCategoryId)->get();
         $academicLevels = AcademicLevel::get();
         $academicSessions = Session::orderBy('id', 'DESC')->get();
         $programmeCategories = ProgrammeCategory::get();
@@ -209,7 +211,8 @@ class ProgrammeController extends Controller
             'programmes' => $programmes,
             'academicLevels' => $academicLevels,
             'academicSessions' => $academicSessions,
-            'programmeCategories' => $programmeCategories
+            'programmeCategories' => $programmeCategories,
+            'programmeCategory' => $programmeCategory
         ]);
     }
 

@@ -67,6 +67,8 @@ class ApplicationController extends Controller
 
         $programmeCategories = ProgrammeCategory::get();
 
+        $this->programmes = Programme::where('programme_category_id', $$applicantProgrammeCategoryId)->get();
+
         $commonConditions = [
             'programme_category_id' => $applicantProgrammeCategoryId,
             'academic_session' => $applicationSession

@@ -57,7 +57,7 @@ class PaymentController extends Controller
 
 
         $payments = Payment::with(['structures', 'programme'])->where('academic_session', $academicSession)->where('programme_category_id', $programmeCategoryId)->get();
-        $programmes = Programme::get();
+        $programmes = Programme::where('category_id', $programmeCategoryId)->get();
         $levels = Level::get();
         $sessions = Session::orderBy('id', 'DESC')->get();
 
@@ -72,11 +72,18 @@ class PaymentController extends Controller
     }
 
     public function billsForSessions(Request $request) {
-        $globalData = $request->input('global_data');
         $academicSession = $request->academic_session;
+        $programmeCategoryId = $request->programme_category_id;
+
+        $programmeCategory = ProgrammeCategory::find($programmeCategoryId)->first();
+        $programmeCategoryId = $programmeCategory->id;
 
 
-        $payments = Payment::with(['structures', 'programme'])->where('academic_session', $academicSession)->get();
+        $payments = Payment::with(['structures', 'programme'])
+            ->where('academic_session', $academicSession)
+            ->where('programme_category_id', $programmeCategoryId)
+            ->get();
+
         $programmes = Programme::get();
         $levels = Level::get();
         $sessions = Session::orderBy('id', 'DESC')->get();
@@ -86,7 +93,9 @@ class PaymentController extends Controller
             'programmes' => $programmes,
             'levels' => $levels,
             'sessions' => $sessions,
-            'academicSession' => $academicSession
+            'academicSession' => $academicSession,
+            'programmeCategoryId' => $programmeCategoryId,
+            'programmeCategory' => $programmeCategory,
         ]);
     }
 
@@ -211,12 +220,19 @@ class PaymentController extends Controller
     public function payment($slug) {
 
         $payment = Payment::with(['structures'])->where('slug', $slug)->first();
+        $programmeCategoryId = $payment->category_id;
+
         $programmes = Programme::get();
         $levels = Level::get();
         $sessions = Session::orderBy('id', 'DESC')->get();
         $students = null;
         if(!empty($payment->level_id)){
-            $students = Student::with('applicant')->where('level_id', $payment->level_id)->where('academic_session', $payment->academic_session)->where('programme_id', $payment->programme_id)->get();
+            $students = Student::with('applicant')
+            ->where('level_id', $payment->level_id)
+            ->where('academic_session', $payment->academic_session)
+            ->where('programme_id', $payment->programme_id)
+            ->where('programme_category_id', $programmeCategoryId)
+            ->get();
 
             foreach($students as $student){
                 $transaction = Transaction::where('student_id', $student->id)->where('payment_id', $payment->id)->where('session', $payment->academic_session)->where('status', 1)->get();
@@ -472,6 +488,7 @@ class PaymentController extends Controller
             $validator = Validator::make($request->all(), [
                 'file' => 'required',
                 'academic_session' => 'required',
+                'programme_category_id' => 'required',
             ]);
     
             if($validator->fails()) {
@@ -496,6 +513,7 @@ class PaymentController extends Controller
 
                     $academicSession = $request->academic_session;
                     $programmeCategoryId = $request->programme_category_id;
+                    $programmeCategory = ProgrammeCategory::find($programmeCategoryId);
 
                     $title = $row['payment_name'];
                     $amount = !empty($row['payment_amount']) ? $row['payment_amount'] :null;
@@ -503,7 +521,7 @@ class PaymentController extends Controller
                     $programmeId = !empty($row['programme'])?$row['programme']: null;
 
                     if(!empty($title) && !empty($type) && !empty($amount)){
-                        $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $title.'-'.($level*100).'Level-'.$academicSession)));
+                        $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $title.'-'.$programmeCategory->category.'-'.($level*100).'Level-'.$academicSession)));
                         $paymentData = ([
                             'title' => $title,
                             'description' => $title,
