@@ -600,7 +600,7 @@ class AcademicController extends Controller
             'duration' => $request->duration,
             'name' => $request->name,
             'category_id' => $request->category,
-            'award' -> $request->award,
+            'award' => $request->award,
             'max_duration' => 0,
             'code' => $request->code,
             'academic_session' => $academicSession
