@@ -99,7 +99,7 @@
                                                             @foreach($failedCourses as $failedCourse)
                                                                 <ul>
                                                                     <li>
-                                                                        <span class="text-danger"> ({{ $failedCourse->id }}) - {{ $failedCourse->course_code }} - {{ $failedCourse->course->name }} ({{ $failedCourse->course_credit_unit }} unit)</span>
+                                                                        <span class="text-danger"> ({{ $failedCourse->id }}) - {{ $failedCourse->course_code }} - {{ ucwords(strtolower($failedCourse->course->name)) }} ({{ $failedCourse->course_credit_unit }} unit)</span>
                                                                     </li>
                                                                 </ul>
                                                             @endforeach

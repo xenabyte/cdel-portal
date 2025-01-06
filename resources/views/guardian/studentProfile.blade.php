@@ -460,7 +460,7 @@ $currentHostelAllocation = $student->currentHostelAllocation;
                                                                             <td>{{ $firstSemester++ }}</td>
                                                                             <td>{{ $course11->attendancePercentage() }}% </td>
                                                                             <td>{{ $course11->course->code }}</td>
-                                                                            <td>{{ $course11->course->name }}</td>
+                                                                            <td>{{ ucwords(strtolower($course11->course->name)) }}</td>
                                                                             <td>{{ $course11->course_credit_unit }}</td>
                                                                         </tr>
                                                                     @endforeach
@@ -497,7 +497,7 @@ $currentHostelAllocation = $student->currentHostelAllocation;
                                                                             <td>{{ $secondSemester++ }}</td>
                                                                             <td>{{ $course12->attendancePercentage() }}% </td>
                                                                             <td>{{ $course12->course->code }}</td>
-                                                                            <td>{{ $course12->course->name }}</td>
+                                                                            <td>{{ ucwords(strtolower($course12->course->name)) }}</td>
                                                                             <td>{{ $course12->course_credit_unit }}</td>
                                                                         </tr>
                                                                     @endforeach

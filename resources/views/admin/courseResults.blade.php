@@ -36,7 +36,7 @@
                                             <label>Select Course</label>
                                             <select class="form-select select2 selectWithSearch" id="selectWithSearch" name="course_id" aria-label="cstatus">
                                                  <option value="" selected>--Select--</option>
-                                                @foreach($allCourses as $allCourse)<option value="{{$allCourse->id}}">{{$allCourse->code}} - {{$allCourse->name}}</option>@endforeach
+                                                @foreach($allCourses as $allCourse)<option value="{{$allCourse->id}}">{{$allCourse->code}} - {{ucwords(strtolower($allCourse->name))}}</option>@endforeach
                                             </select>
                                         </div>
                                     </div>
@@ -96,7 +96,7 @@
             <div class="card-body p-4">
                 <div>
                     <div class="mt-4 text-center">
-                        <h5 class="mb-1">{{ $courseForReg->course->name }} - {{ $courseForReg->course->code }} - {{ $courseForReg->id }}</h5>
+                        <h5 class="mb-1">{{ ucwords(strtolower($courseForReg->course->name)) }} - {{ $courseForReg->course->code }} - {{ $courseForReg->id }}</h5>
                         <p class="text-muted"><strong>Academic Session:</strong> {{ $courseForReg->academic_session }} <br>
                             <strong>Programme:</strong> {{ $courseForReg->programme->name }}<br>
                             <strong>Credit Unit:</strong> {{ $courseForReg->credit_unit }}<br>

@@ -171,7 +171,7 @@ $staffCourses = $staff->staffCourses;
                                 <tr>
                                     <td scope="row"> {{ $loop->iteration }}</td>
                                     <td>{{$staffCourse->course->code}}</td>
-                                    <td>{{$staffCourse->course->name }}</td>
+                                    <td>{{ ucwords(strtolower($staffCourse->course->name)) }}</td>
                                     <td>{{ $courseData->credit_unit}}</td>
                                     <td>{{ $courseData->status}}</td>
                                     <td>{{ $courseData->level->level}}</td>

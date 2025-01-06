@@ -195,7 +195,7 @@
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{ $registeredCourse->semester }}</td>
                                 <td>{{ $registeredCourse->course->code }}</td>
-                                <td>{{ $registeredCourse->course->name }}</td>
+                                <td>{{ ucwords(strtolower($registeredCourse->course->name)) }}</td>
                                 <td>{{ $registeredCourse->course_credit_unit }}</td>
                                 <td>{{ $registeredCourse->ca_score }}</td>
                                 <td>{{ $registeredCourse->exam_score  }}</td>
@@ -230,7 +230,7 @@
                                                 </div>
             
                                                 <div class="modal-body">
-                                                    <h4 class="card-title mb-0">{{ $registeredCourse->course->code }} || {{ $registeredCourse->course->name }} || {{ $registeredCourse->course_credit_unit }} Unit</h4>
+                                                    <h4 class="card-title mb-0">{{ $registeredCourse->course->code }} || {{ ucwords(strtolower($registeredCourse->course->name)) }} || {{ $registeredCourse->course_credit_unit }} Unit</h4>
                                                     <hr>
                                                     <form action="{{ url('/admin/result/updateStudentResult') }}" method="post" enctype="multipart/form-data">
                                                         @csrf

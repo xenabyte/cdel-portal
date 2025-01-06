@@ -239,7 +239,7 @@
                                         <tr>
                                             <td>{{ $firstSemester++ }}</td>
                                             <td>{{ $firstSemsRegisteredCourse->course->code ?? 'N/A' }}</td>
-                                            <td>{{ $firstSemsRegisteredCourse->course->name ?? 'N/A' }}</td>
+                                            <td>{{ ucwords(strtolower($firstSemsRegisteredCourse->course->name)) ?? 'N/A' }}</td>
                                             <td>{{ $firstSemsRegisteredCourse->credit_unit ?? 'N/A' }}</td>
                                             <td>{{ strtoupper(substr($firstSemsRegisteredCourse->status ?? 'N/A', 0, 1)) }}</td>
                                         </tr>
@@ -273,7 +273,7 @@
                                             <tr>
                                                 <td>{{ $secondSemester++ }}</td>
                                                 <td>{{ $secondSemsRegisteredCourse->course->code ?? 'N/A' }}</td>
-                                                <td>{{ $secondSemsRegisteredCourse->course->name ?? 'N/A' }}</td>
+                                                <td>{{ ucwords(strtolower($secondSemsRegisteredCourse->course->name)) ?? 'N/A' }}</td>
                                                 <td>{{ $secondSemsRegisteredCourse->credit_unit ?? 'N/A' }}</td>
                                                 <td>{{ strtoupper(substr($secondSemsRegisteredCourse->status ?? 'N/A', 0, 1)) }}</td>
                                             </tr>

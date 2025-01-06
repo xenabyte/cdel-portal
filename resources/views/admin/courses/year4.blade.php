@@ -33,7 +33,7 @@
                         <tr>
                             <td scope="row"> {{ $loop->iteration }}</td>
                             <td>{{$course41->course->code}}</td>
-                            <td>{{$course41->course->name }}</td>
+                            <td>{{ucwords(strtolower($course41->course->name)) }}</td>
                             <td>{{$course41->credit_unit}}</td>
                             <td>{{$course41->status}}</td>
                         </tr>
@@ -59,7 +59,7 @@
                             <tr>
                                 <td scope="row"> {{ $loop->iteration }}</td>
                                 <td>{{$course42->course->code}}</td>
-                                <td>{{$course42->course->name }}</td>
+                                <td>{{ucwords(strtolower($course42->course->name)) }}</td>
                                 <td>{{$course42->credit_unit}}</td>
                                 <td>{{$course42->status}}</td>
                             </tr>

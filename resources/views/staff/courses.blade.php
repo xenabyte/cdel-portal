@@ -46,7 +46,7 @@ $staffCourses = $staff->staffCourses;
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($staffCourses as $staffCourse)
+                        @foreach($staffCourses->where('academic_session', $pageGlobalData->sessionSetting->academic_session) as $staffCourse)
                         @php
                             $courseData = $staffCourse->course->coursePerProgrammePerAcademicSession->where('academic_session', $pageGlobalData->sessionSetting->academic_session)->first();
                         @endphp
@@ -54,7 +54,7 @@ $staffCourses = $staff->staffCourses;
                         <tr>
                             <td scope="row"> {{ $loop->iteration }}</td>
                             <td>{{ $staffCourse->course->code}}</td>
-                            <td>{{ $staffCourse->course->name }}</td>
+                            <td>{{ ucwords(strtolower($staffCourse->course->name)) }}</td>
                             <td>{{ $courseData->credit_unit}}</td>
                             <td>{{ $courseData->status}}</td>
                             <td>{{ $courseData->registrations->where('academic_session', $pageGlobalData->sessionSetting->academic_session)->count()}}</td>

@@ -134,7 +134,7 @@
                                             <label>Select Course</label>
                                             <select class="form-select select2 selectWithSearch" id="selectWithSearch" name="course_id" aria-label="cstatus">
                                                     <option value="" selected>--Select--</option>
-                                                @foreach($allCourses as $allCourse)<option value="{{$allCourse->id}}">{{$allCourse->code}} - {{$allCourse->name}}</option>@endforeach
+                                                @foreach($allCourses as $allCourse)<option value="{{$allCourse->id}}">{{$allCourse->code}} - {{ucwords(strtolower($allCourse->name))}}</option>@endforeach
                                             </select>
                                         </div>
                                     </div>
@@ -235,7 +235,7 @@
                             <td scope="row"> {{ $loop->iteration }}</td>
                             <td>{{!empty($staff)? $staff : null }}</td>
                             <td>{{$course->course->code}}</td>
-                            <td>{{$course->course->name }}</td>
+                            <td>{{ucwords(strtolower($course->course->name)) }}</td>
                             <td>{{$course->credit_unit}} </td>
                             <td>{{$course->status}}</td>
                             <td>{{$course->level->level}}</td>
