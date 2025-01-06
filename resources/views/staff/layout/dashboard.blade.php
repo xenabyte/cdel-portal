@@ -459,7 +459,7 @@
                                     <ul class="nav nav-sm flex-column">
                                         
                                         <li class="nav-item">
-                                            <a href="#undergraduateAdmission" class="nav-link" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="undergraduateAdmission" data-key="t-undergraduateAdmission"> Undergraduate Admission
+                                            <a href="#undergraduateAdmission" class="nav-link" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="undergraduateAdmission" data-key="t-undergraduateAdmission"> Undergraduate
                                             </a>
                                             <div class="collapse menu-dropdown" id="undergraduateAdmission">
                                                 <ul class="nav nav-sm flex-column">
@@ -479,7 +479,7 @@
                                         </li>
 
                                         <li class="nav-item">
-                                            <a href="#topupAdmission" class="nav-link" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="topupAdmission" data-key="t-topupAdmission"> TOPUP Admission
+                                            <a href="#topupAdmission" class="nav-link" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="topupAdmission" data-key="t-topupAdmission"> Topup
                                             </a>
                                             <div class="collapse menu-dropdown" id="topupAdmission">
                                                 <ul class="nav nav-sm flex-column">
@@ -707,23 +707,15 @@
                                     <ul class="nav nav-sm flex-column">
                                         @if($staffBursaryRole)
                                         <li class="nav-item">
-                                            <a href="#undergraduateBursary" class="nav-link" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="undergraduateBursary" data-key="t-undergraduateBursary"> Undergraduate Bursary</a>
+                                            <a href="#bills" class="nav-link" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="bills" data-key="t-bills"> Bills</a>
                                             </a>
-                                            <div class="collapse menu-dropdown" id="undergraduateBursary">
+                                            <div class="collapse menu-dropdown" id="bills">
                                                 <ul class="nav nav-sm flex-column">
                                                     <li class="nav-item">
-                                                        <a href="{{ url('/staff/payments/'.$programmeCategory::UNDERGRADUATE) }}" class="nav-link"> Bills </a>
+                                                        <a href="{{ url('/staff/payments/'.$programmeCategory::UNDERGRADUATE) }}" class="nav-link"> Undergraduate </a>
                                                     </li>
-                                                </ul>
-                                            </div>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a href="#topupBursary" class="nav-link" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="topupBursary" data-key="t-topupBursary"> Top up Bursary</a>
-                                            </a>
-                                            <div class="collapse menu-dropdown" id="topupBursary">
-                                                <ul class="nav nav-sm flex-column">
                                                     <li class="nav-item">
-                                                        <a href="{{ url('/staff/payments/'.$programmeCategory::TOPUP) }}" class="nav-link"> Bills </a>
+                                                        <a href="{{ url('/staff/payments/'.$programmeCategory::TOPUP) }}" class="nav-link"> Topup </a>
                                                     </li>
                                                 </ul>
                                             </div>
