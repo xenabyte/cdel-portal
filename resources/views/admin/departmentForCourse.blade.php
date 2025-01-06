@@ -159,7 +159,7 @@
                                 $password = !empty($assignedCourse) ? $assignedCourse->passcode :null;
                             @endphp
                             <th scope="row">{{ $loop->iteration }}</th>
-                            <td>{{ $course->name }}</td>
+                            <td>{{ ucwords(strtolower($course->name)) }}</td>
                             <td>{{ $course->code }}</td>
                             <td>{{ $staff }}</td>
                             <td>{{ $password }}</td>

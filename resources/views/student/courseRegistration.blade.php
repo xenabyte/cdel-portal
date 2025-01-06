@@ -226,7 +226,7 @@
                                             <tr>
                                                 <td>{{ $firstSemester++ }}</td>
                                                 <td>{{ $failedCourse->course->code }}</td>
-                                                <td>{{ $failedCourse->course->name }}</td>
+                                                <td>{{ ucwords(strtolower($failedCourse->course->name)) }}</td>
                                                 <td>{{ $failedCourse->credit_unit }}</td>
                                                 <td>{{ $failedCourse->status }}</td>
                                                 <td>
@@ -240,7 +240,7 @@
                                             <tr>
                                                 <td>{{ $firstSemester++ }}</td>
                                                 <td>{{ $unregisteredCourse->course->code }}</td>
-                                                <td>{{ $unregisteredCourse->course->name }}</td>
+                                                <td>{{ ucwords(strtolower($unregisteredCourse->course->name)) }}</td>
                                                 <td>{{ $unregisteredCourse->credit_unit }}</td>
                                                 <td>{{ $unregisteredCourse->status }}</td>
                                                 <td>
@@ -252,7 +252,7 @@
                                             <tr>
                                                 <td>{{ $firstSemester++ }}</td>
                                                 <td>{{ $course11->course->code }}</td>
-                                                <td>{{ $course11->course->name }}</td>
+                                                <td>{{ ucwords(strtolower($course11->course->name)) }}</td>
                                                 <td>{{ $course11->credit_unit }}</td>
                                                 <td>{{ $course11->status }}</td>
                                                 <td>
@@ -293,7 +293,7 @@
                                             <tr>
                                                 <td>{{ $secondSemester++ }}</td>
                                                 <td>{{ $failedCourse2->course->code }}</td>
-                                                <td>{{ $failedCourse2->course->name }}</td>
+                                                <td>{{ ucwords(strtolower($failedCourse2->course->name)) }}</td>
                                                 <td>{{ $failedCourse2->credit_unit }}</td>
                                                 <td>{{ $failedCourse2->status }}</td>
                                                 <td>
@@ -307,7 +307,7 @@
                                             <tr>
                                                 <td>{{ $secondSemester++ }}</td>
                                                 <td>{{ $unregisteredCourse2->course->code }}</td>
-                                                <td>{{ $unregisteredCourse2->course->name }}</td>
+                                                <td>{{ ucwords(strtolower($unregisteredCourse2->course->name)) }}</td>
                                                 <td>{{ $unregisteredCourse2->credit_unit }}</td>
                                                 <td>{{ $unregisteredCourse2->status }}</td>
                                                 <td>
@@ -319,7 +319,7 @@
                                             <tr>
                                                 <td>{{ $secondSemester++ }}</td>
                                                 <td>{{ $course12->course->code }}</td>
-                                                <td>{{ $course12->course->name }}</td>
+                                                <td>{{ ucwords(strtolower($course12->course->name)) }}</td>
                                                 <td>{{ $course12->credit_unit }}</td>
                                                 <td>{{ $course12->status }}</td>
                                                 <td>

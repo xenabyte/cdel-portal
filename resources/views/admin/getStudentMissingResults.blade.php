@@ -52,7 +52,7 @@
                             <td>{{ $student->programme->name }}</td>
                             <td>
                                 @foreach($student->courses_with_missing_grades as $course)
-                                {{ $loop->iteration }}. {{ $course->code }}({{ $course->name }})<br>
+                                {{ $loop->iteration }}. {{ $course->code }}({{ ucwords(strtolower($course->name)) }})<br>
                                 @endforeach
                             </td>
                             <td>

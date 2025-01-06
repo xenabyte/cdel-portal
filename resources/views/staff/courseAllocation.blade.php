@@ -117,7 +117,7 @@
                         <tr>
                             <td scope="row"> {{ $loop->iteration }}</td>
                             <td>{{$course->code}}</td>
-                            <td>{{$course->name }}</td>
+                            <td>{{ucwords(strtolower($course->name)) }}</td>
                             <td>{{$course->credit_unit}} </td>
                             <td>{{$course->status}}</td>
                             <td>{{!empty($course->staff)?$course->staff->title.' '.$course->staff->lastname.' '.$course->staff->othernames : null }}</td>

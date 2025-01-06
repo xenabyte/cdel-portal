@@ -107,7 +107,7 @@ class AcademicController extends Controller
         }
 
         $newCourses = [
-            'name' => $request->name,
+            'name' => ucwords(strtolower($request->name)),
             'code' => strtoupper($request->code),
             'department_id' => $request->department_id,
         ];
@@ -138,7 +138,7 @@ class AcademicController extends Controller
         }
 
         if(!empty($request->name) &&  $request->name != $course->name){
-            $course->name = $request->name;
+            $course->name = ucwords(strtolower($request->name));
         }
 
         if(!empty($request->code) &&  $request->code != $course->code){
