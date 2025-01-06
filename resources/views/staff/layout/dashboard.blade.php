@@ -707,7 +707,26 @@
                                     <ul class="nav nav-sm flex-column">
                                         @if($staffBursaryRole)
                                         <li class="nav-item">
-                                            <a href="{{ url('/staff/payments') }}" class="nav-link"> Bills </a>
+                                            <a href="#undergraduateBursary" class="nav-link" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="undergraduateBursary" data-key="t-undergraduateBursary"> Undergraduate Bursary</a>
+                                            </a>
+                                            <div class="collapse menu-dropdown" id="undergraduateBursary">
+                                                <ul class="nav nav-sm flex-column">
+                                                    <li class="nav-item">
+                                                        <a href="{{ url('/staff/payments/'.$programmeCategory::UNDERGRADUATE) }}" class="nav-link"> Bills </a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a href="#topupBursary" class="nav-link" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="topupBursary" data-key="t-topupBursary"> Top up Bursary</a>
+                                            </a>
+                                            <div class="collapse menu-dropdown" id="topupBursary">
+                                                <ul class="nav nav-sm flex-column">
+                                                    <li class="nav-item">
+                                                        <a href="{{ url('/staff/payments/'.$programmeCategory::TOPUP) }}" class="nav-link"> Bills </a>
+                                                    </li>
+                                                </ul>
+                                            </div>
                                         </li>
                                         <li class="nav-item">
                                             <a href="{{('/staff/chargeStudent')}}" class="nav-link">Payment/Charge </a>
