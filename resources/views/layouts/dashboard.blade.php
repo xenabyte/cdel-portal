@@ -290,8 +290,6 @@
     <script src="{{asset('assets/libs/isotope-layout/isotope.pkgd.min.js')}}"></script>
     <script src="{{asset('assets/js/pages/gallery.init.js')}}"></script>
 
-
-
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const validateButton = document.querySelector('.validate-button');
@@ -405,6 +403,31 @@
             
         }
     }
+</script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        var table = $('#hofTable').DataTable({
+            dom: 'Bfrtip',
+            pageLength: 20,
+            lengthMenu: [ [10, 20, 50, -1], [10, 20, 50, "All"] ],  
+            buttons: [
+                'copy', 'csv', 'excel', 'pdf', 'print'
+            ]
+        });
+
+        // Filter functionality
+        $('#filter button').on('click', function () {
+            var filterValue = $(this).data('filter');
+            $('#filter button').removeClass('btn-primary').addClass('btn-secondary');
+            $(this).removeClass('btn-secondary').addClass('btn-primary');
+
+            if (filterValue === 'all') {
+                table.search('').draw();
+            } else {
+                table.search(filterValue + ' Level').draw();
+            }
+        });
+    });
 </script>
 </body>
 
