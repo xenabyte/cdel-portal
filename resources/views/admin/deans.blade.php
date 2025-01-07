@@ -43,7 +43,7 @@
                         <tr>
                             <th scope="row">{{ $loop->iteration }}</th>
                             <td>{{ $faculty->name }}</td>
-                            <td>{{ !empty($faculty->dean)?$faculty->dean->title.' '.$faculty->dean->lastname. ' '.$faculty->dean->othernames : null }}</td>
+                            <td>{{ !empty($faculty->dean)? ucwords(strtolower($faculty->dean->title.' '.$faculty->dean->lastname. ' '.$faculty->dean->othernames)) : null }}</td>
                             <td>
                                 {{-- <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#assignDean{{$faculty->id}}" class="btn btn-info">Assign Dean</a> --}}
                                 <form action="{{ url('/admin/assignDeanToFaculty') }}" method="post" enctype="multipart/form-data">

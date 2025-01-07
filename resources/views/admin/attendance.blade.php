@@ -103,7 +103,7 @@
                         <tr>
                             <th scope="row">{{ $loop->iteration }}</th>
                             <th scope="row">{{ $singleStaff->staffId }}</th>
-                            <td>{{ $singleStaff->title.' '.$singleStaff->lastname .' '. $singleStaff->othernames }}</td>
+                            <td>{{ ucwords(strtolower($singleStaff->title.' '.$singleStaff->lastname .' '. $singleStaff->othernames)) }}</td>
                             <td>{{ $singleStaff->attendance->count() }} / {{$capturedWorkingDays }} Days </td>
                             <td>
                                 <a href="{{ url('/admin/monthlyAttendance/'.$singleStaff->slug) }}" class="btn btn-primary"> <i class= "mdi mdi-monitor-eye"></i></a>

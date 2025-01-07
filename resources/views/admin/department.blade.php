@@ -329,7 +329,7 @@
                                 <td class="d-flex">
                                     <img src="{{ $staff->image }}" alt="" class="avatar-xs rounded-3 shadow me-2">
                                     <div>
-                                        <h5 class="fs-13 mb-0">{{ $staff->lastname.' '.$staff->othernames }}</h5>
+                                        <h5 class="fs-13 mb-0">{{ ucwords(strtolower($staff->lastname.' '.$staff->othernames)) }}</h5>
                                         <p class="fs-12 mb-0 text-muted">{{ $staff->qualification }}</p>
                                     </div>
                                 </td>
@@ -364,7 +364,7 @@
                                     <td class="d-flex">
                                         <img src="{{ $academicAdviser->staff->image }}" alt="" class="avatar-xs rounded-3 shadow me-2">
                                         <div>
-                                            <h5 class="fs-13 mb-0">{{ $academicAdviser->staff->title.' '.$academicAdviser->staff->lastname.' '.$academicAdviser->staff->othernames }}</h5>
+                                            <h5 class="fs-13 mb-0">{{ ucwords(strtolower($academicAdviser->staff->title.' '.$academicAdviser->staff->lastname.' '.$academicAdviser->staff->othernames)) }}</h5>
                                             <p class="fs-12 mb-0 text-muted"><strong>Programme:</strong> {{ $programmes->name }}</p>
                                             <p class="fs-12 mb-0 text-muted"><strong>Programme Category:</strong> {{ $academicAdviser->programmeCategory->category }}</p>
                                             <p class="fs-12 mb-0 text-muted"><strong>Level:</strong> {{ $academicAdviser->level->level }} Level</p>
@@ -530,7 +530,7 @@
                         <select class="form-select selectWithSearch" aria-label="staff_id" name="staff_id">
                             <option selected value= "">Select Staff </option>
                             @foreach($department->staffs as $staff)
-                            <option value="{{ $staff->id }}">{{ $staff->lastname.' '.$staff->othernames }}</option>
+                            <option value="{{ $staff->id }}">{{ ucwords(strtolower($staff->lastname.' '.$staff->othernames)) }}</option>
                             @endforeach
                         </select>
                     </div>
@@ -617,7 +617,7 @@
                         <select class="form-select selectWithSearch" aria-label="staff_id" name="staff_id">
                             <option selected value= "">Select Staff </option>
                             @foreach($department->staffs as $staff)
-                            <option value="{{ $staff->id }}">{{ $staff->lastname.' '.$staff->othernames }}</option>
+                            <option value="{{ $staff->id }}">{{ ucwords(strtolower($staff->lastname.' '.$staff->othernames)) }}</option>
                             @endforeach
                         </select>
                     </div>

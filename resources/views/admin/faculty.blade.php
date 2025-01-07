@@ -238,7 +238,7 @@
                                 <td class="d-flex">
                                     <img src="{{ $staff->image }}" alt="" class="avatar-xs rounded-3 shadow me-2">
                                     <div>
-                                        <h5 class="fs-13 mb-0">{{ $staff->lastname.' '.$staff->othernames }}</h5>
+                                        <h5 class="fs-13 mb-0">{{ ucwords(strtolower($staff->lastname.' '.$staff->othernames)) }}</h5>
                                         <p class="fs-12 mb-0 text-muted">{{ $staff->qualification }}</p>
                                     </div>
                                 </td>

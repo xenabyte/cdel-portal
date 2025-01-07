@@ -50,7 +50,7 @@
                             <td>
                                 <img class="img-thumbnail rounded-circle avatar-md"  src="{{ !empty($singleStaff->image) ? $singleStaff->image : asset('assets/images/users/user-dummy-img.jpg') }}">
                             </td>
-                            <td>{{ $singleStaff->title.' '.$singleStaff->lastname .' '. $singleStaff->othernames }}</td>
+                            <td>{{ ucwords(strtolower($singleStaff->title.' '.$singleStaff->lastname .' '. $singleStaff->othernames)) }}</td>
                             <td>{{ $singleStaff->staffId }}</td>
                             <td>{{ $singleStaff->email }} </td>
                             <td>{{ $singleStaff->phone_number }} </td>

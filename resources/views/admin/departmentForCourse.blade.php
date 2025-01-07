@@ -155,7 +155,7 @@
                             @php
                                 $courseManagement =  $course->courseManagement->where('academic_session', $pageGlobalData->sessionSetting->academic_session);
                                 $assignedCourse = $courseManagement->where('academic_session', $pageGlobalData->sessionSetting->academic_session)->first();
-                                $staff = !empty($assignedCourse) && !empty($assignedCourse->staff) ? $assignedCourse->staff->title.' '.$assignedCourse->staff->lastname.' '.$assignedCourse->staff->othernames :null;
+                                $staff = !empty($assignedCourse) && !empty($assignedCourse->staff) ? ucwords(strtolower($assignedCourse->staff->title.' '.$assignedCourse->staff->lastname.' '.$assignedCourse->staff->othernames)) :null;
                                 $password = !empty($assignedCourse) ? $assignedCourse->passcode :null;
                             @endphp
                             <th scope="row">{{ $loop->iteration }}</th>
@@ -254,7 +254,7 @@
                                                             <select class="form-select" aria-label="staff_id" name="staff_id">
                                                                 <option selected value= "">Select Staff </option>
                                                                 @foreach($department->staffs as $staff)
-                                                                <option value="{{ $staff->id }}">{{ $staff->title.' '.$staff->lastname.' '.$staff->othernames }}</option>
+                                                                <option value="{{ $staff->id }}">{{ ucwords(strtolower($staff->title.' '.$staff->lastname.' '.$staff->othernames)) }}</option>
                                                                 @endforeach
                                                             </select>
                                                         </div>

@@ -117,7 +117,7 @@
                             <td>{{ ucwords(strtolower($course->name)) }}</td>
                             <td>{{$course->credit_unit}} </td>
                             <td>{{$course->status}}</td>
-                            <td>{{!empty($course->staff)?$course->staff->title.' '.$course->staff->lastname.' '.$course->staff->othernames : null }}</td>
+                            <td>{{!empty($course->staff)? ucwords(strtolower($course->staff->title.' '.$course->staff->lastname.' '.$course->staff->othernames)) : null }}</td>
                             <td>
                                 <form action="{{ url('/staff/assignCourse') }}" method="POST">
                                     @csrf

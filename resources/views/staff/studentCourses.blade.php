@@ -229,11 +229,11 @@
                         @php
                             $courseManagement =  $course->course->courseManagement->where('academic_session', $pageGlobalData->sessionSetting->academic_session);
                             $assignedCourse = $courseManagement->where('academic_session', $pageGlobalData->sessionSetting->academic_session)->first();
-                            $staff = !empty($assignedCourse) && !empty($assignedCourse->staff) ? $assignedCourse->staff->title.' '.$assignedCourse->staff->lastname.' '.$assignedCourse->staff->othernames :null;
+                            $staff = !empty($assignedCourse) && !empty($assignedCourse->staff) ? ucwords(strtolower($assignedCourse->staff->title.' '.$assignedCourse->staff->lastname.' '.$assignedCourse->staff->othernames)) :null;
                         @endphp
                         <tr>
                             <td scope="row"> {{ $loop->iteration }}</td>
-                            <td>{{!empty($staff)? $staff : null }}</td>
+                            <td>{{!empty($staff)? $staff : 'N/A' }}</td>
                             <td>{{$course->course->code}}</td>
                             <td>{{ucwords(strtolower($course->course->name)) }}</td>
                             <td>{{$course->credit_unit}} </td>

@@ -43,7 +43,7 @@
                         <tr>
                             <th scope="row">{{ $loop->iteration }}</th>
                             <td>{{ $faculty->name }}</td>
-                            <td>{{ !empty($faculty->facultyOfficer)?$faculty->facultyOfficer->title.' '.$faculty->facultyOfficer->lastname. ' '.$faculty->facultyOfficer->othernames : null }}</td>
+                            <td>{{ !empty($faculty->facultyOfficer)? ucwords(strtolower($faculty->facultyOfficer->title.' '.$faculty->facultyOfficer->lastname. ' '.$faculty->facultyOfficer->othernames)) : null }}</td>
                             <td>
                                 {{-- <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#assign{{$faculty->id}}" class="btn btn-info">Assign facultyOfficer</a> --}}
                                 <form action="{{ url('/admin/assignFacultyOfficerToFaculty') }}" method="post" enctype="multipart/form-data">
@@ -54,7 +54,7 @@
                                         <select class="form-select select2 selectWithSearch" aria-label="staff" name="staff_id" required style="flex-grow: 1;">
                                             <option value="" selected>Select Staff</option>
                                             @foreach($staffMembers as $staffMember)
-                                                <option value="{{ $staffMember->id }}">{{ $staffMember->title.' '.$staffMember->lastname.' '.$staffMember->othernames }}</option>
+                                                <option value="{{ $staffMember->id }}">{{ ucwords(strtolower($staffMember->title.' '.$staffMember->lastname.' '.$staffMember->othernames)) }}</option>
                                             @endforeach
                                         </select>
                                         <button type="submit" class="btn btn-outline-secondary shadow-none" style="white-space: nowrap;">Assign</button>

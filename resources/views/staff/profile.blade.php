@@ -1,7 +1,7 @@
 @extends('staff.layout.dashboard')
 @php
     $staff = Auth::guard('staff')->user();
-    $name = $staff->title.' '.$staff->lastname.' '.$staff->othernames;
+    $name = ucwords(strtolower($staff->title.' '.$staff->lastname.' '.$staff->othernames));
 
     $staffDeanRole = false;
     $staffSubDeanRole = false;

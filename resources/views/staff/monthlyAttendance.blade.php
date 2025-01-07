@@ -22,7 +22,7 @@
     <div class="col-lg-12">
         <div class="card">
             <div class="card-header align-items-center d-flex">
-                <h4 class="card-title mb-0 flex-grow-1">{{ $staff->title.'. '.$staff->lastname .' '. $staff->othernames }} ({{ date('M Y') }}) Attendance Records </h4>
+                <h4 class="card-title mb-0 flex-grow-1">{{ ucwords(strtolower($staff->title.'. '.$staff->lastname .' '. $staff->othernames)) }} ({{ date('M Y') }}) Attendance Records </h4>
             </div><!-- end card header -->
 
             <div class="card-body table-responsive">

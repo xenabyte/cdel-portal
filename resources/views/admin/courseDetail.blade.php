@@ -15,7 +15,7 @@
 
     
     $staff = !empty($lecturerDetails) ? $lecturerDetails->staff : null;
-    $staffName = !empty($staff) ? $staff->title.' '.$staff->lastname.' '.$staff->othernames :null;
+    $staffName = !empty($staff) ? ucwords(strtolower($staff->title.' '.$staff->lastname.' '.$staff->othernames)) :null;
     $staffId = !empty($staff) ? $staff->id : null;
 @endphp
 @section('content')

@@ -45,7 +45,7 @@
                         @foreach($careerApplicants as $singleStaff)
                         <tr>
                             <th scope="row">{{ $loop->iteration }}</th>
-                            <td>{{ $singleStaff->lastname .' '. $singleStaff->othernames }}</td>
+                            <td>{{ ucwords(strtolower($singleStaff->lastname .' '. $singleStaff->othernames)) }}</td>
                             <td>{{ $singleStaff->email }} </td>
                             <td>{{ $singleStaff->phone_number }} </td>
                             <td>
@@ -78,7 +78,7 @@
                         </div>
                     </div>
                     <div class="flex-grow-1">
-                        <h5 class="fs-15 fw-semibold mb-0">{{ $singleStaff->lastname .' '. $singleStaff->othernames }}</h5>
+                        <h5 class="fs-15 fw-semibold mb-0">{{ ucwords(strtolower($singleStaff->lastname .' '. $singleStaff->othernames)) }}</h5>
                         <p class="text-muted mb-2">{{ $singleStaff->email.' | '.$singleStaff->phone_number }}</p>
                     </div>
                 </div>
