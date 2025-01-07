@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <title>{{ env('APP_NAME') }} </title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
     <meta content="{{ env('APP_NAME') }} Dashboard" name="description" />
     <meta content="Oladipo Damilare(KoderiaNG)" name="author" />
     <!-- App favicon -->
@@ -20,6 +20,7 @@
     <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.2.9/css/responsive.bootstrap.min.css" />
 
     <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.2.2/css/buttons.dataTables.min.css">
+    
 
     <!-- Layout config Js -->
     <script src="{{asset('assets/js/layout.js')}}"></script>
