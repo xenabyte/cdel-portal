@@ -122,6 +122,7 @@ class StudentController extends Controller
             'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
             'passEightyTuition' => $paymentCheck->passEightyTuition,
             'totalExpenditure' => $totalExpenditure,
+            'schoolPaymentTransaction' => $paymentCheck->schoolPaymentTransaction,
             'totalDeposit' => $totalDeposit
         ]);
     }

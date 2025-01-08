@@ -244,6 +244,63 @@ $studentRegistrations = $student->courseRegistrationDocument()->orderBy('created
     <!--end col-->
 
     <div class="col-xxl-8">
+        <div class="row">
+            <div class="col-lg-4 col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <div class="avatar-sm flex-shrink-0">
+                                <span class="avatar-title bg-light text-primary rounded-circle shadow fs-3">
+                                    <i class="ri-money-dollar-circle-fill align-middle"></i>
+                                </span>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <p class="text-uppercase fw-semibold fs-12 text-muted mb-1">
+                                    {{ $pageGlobalData->sessionSetting->academic_session }} Academic Session School Fee Bill</p>
+                                <h4 class=" mb-0">₦<span class="counter-value" data-target="{{ $payment->structures->sum('amount')/100 }}">0</span></h4>
+                            </div>
+                        </div>
+                    </div><!-- end card body -->
+                </div><!-- end card -->
+            </div><!-- end col -->
+            <div class="col-lg-4 col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <div class="avatar-sm flex-shrink-0">
+                                <span class="avatar-title bg-light text-primary rounded-circle shadow fs-3">
+                                    <i class="ri-money-dollar-circle-fill align-middle"></i>
+                                </span>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <p class="text-uppercase fw-semibold fs-12 text-muted mb-1">
+                                    {{ $pageGlobalData->sessionSetting->academic_session }} Academic Session School Fee Payment </p>
+                                <h4 class=" mb-0">₦<span class="counter-value" data-target="{{ $schoolPaymentTransaction->sum('amount_payed')/100 }}">0</span></h4>
+                            </div>
+                        </div>
+                    </div><!-- end card body -->
+                </div><!-- end card -->
+            </div><!-- end col -->
+            <div class="col-lg-4 col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <div class="avatar-sm flex-shrink-0">
+                                <span class="avatar-title bg-light text-primary rounded-circle shadow fs-3">
+                                    <i class="ri-money-dollar-circle-fill align-middle"></i>
+                                </span>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <p class="text-uppercase fw-semibold fs-12 text-muted mb-1"> 
+                                    {{ $pageGlobalData->sessionSetting->academic_session }} Academic Session School Fee Outstanding</p>
+                                <h4 class=" mb-0">₦<span class="counter-value" data-target="{{  ($payment->structures->sum('amount') - $schoolPaymentTransaction->sum('amount_payed'))/100 }}">0</span></h4>
+                            </div>
+                        </div>
+                    </div><!-- end card body -->
+                </div><!-- end card -->
+            </div><!-- end col -->
+        </div><!-- end row -->
+
         @if(env('WALLET_STATUS'))
         <div class="row">
             <div class="col-lg-4 col-md-6">
