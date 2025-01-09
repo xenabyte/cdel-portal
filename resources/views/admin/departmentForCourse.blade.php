@@ -166,7 +166,7 @@
                             <td>
                                 <div>
                                     {{-- <a href="{{ url('/admin/courseDetail/'.$course->id) }}" class="btn btn-lg btn-primary">Course Details</a> --}}
-                                    <form id="courseDetailForm{{ $loop->iteration }}" action="{{ url('/staff/courseDetail/'.$course->id) }}" method="get">
+                                    <form id="courseDetailForm{{ $loop->iteration }}" action="{{ url('/admin/courseDetail/'.$course->id) }}" method="get">
                                         @csrf
                                         <div class="input-group" style="display: flex; flex-wrap: nowrap;">
                                             <select id="programmeSelect{{ $loop->iteration }}" class="form-select select2 selectWithSearch" required style="flex-grow: 1;">
