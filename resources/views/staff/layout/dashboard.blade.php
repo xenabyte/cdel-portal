@@ -617,7 +617,7 @@
                                         @endif
 
                                         <li class="nav-item">
-                                            <a href="#studentCourses" class="nav-link" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="studentCourses" data-key="t-adviserProgrammes"> Student Courses </span>
+                                            <a href="#studentCourses" class="nav-link" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="studentCourses" data-key="t-adviserProgrammes"> Student Courses 
                                             </a>
                                             <div class="collapse menu-dropdown" id="studentCourses">
                                                 <ul class="nav nav-sm flex-column">
@@ -633,8 +633,20 @@
 
                                         @if($staffAcademicPlannerRole)
                                         <li class="nav-item">
-                                            <a href="{{ url('/staff/adviserProgrammes') }}" class="nav-link">Level Advisers <span class="badge badge-pill bg-danger" data-key="t-hot">{{ $pageGlobalData->adviserProgrammesCount }} </span></a>
+                                            <a href="#adviserProgrammes" class="nav-link" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="adviserProgrammes" data-key="t-adviserProgrammes"> Level Advisers <span class="badge badge-pill bg-danger" data-key="t-hot">{{ $pageGlobalData->adviserProgrammesCount }} </span>
+                                            </a>
+                                            <div class="collapse menu-dropdown" id="adviserProgrammes">
+                                                <ul class="nav nav-sm flex-column">
+                                                    <li class="nav-item">
+                                                        <a href="{{ url('/staff/adviserProgrammes/'.$programmeCategory::UNDERGRADUATE) }}" class="nav-link" data-key="t-basic"> Undergraduates </a>
+                                                    </li>
+                                                    <li class="nav-item">
+                                                        <a href="{{ url('/staff/adviserProgrammes/'.$programmeCategory::TOPUP) }}" class="nav-link" data-key="t-basic"> Topup </a>
+                                                    </li>
+                                                </ul>
+                                            </div>
                                         </li>
+
                                         @endif
                                     </ul>
                                 </div>
