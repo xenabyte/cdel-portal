@@ -637,6 +637,47 @@ $studentRegistrations = $student->courseRegistrationDocument()->orderBy('created
     <!--end col-->
 </div>
 <!--end row-->
+
+<div class="modal fade" id="subscribeModal" tabindex="-1" aria-labelledby="subscribeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content modal-bg-pattern border-0">
+            <div class="modal-body border-custom border m-3 rounded-3">
+                <button type="button" class="btn-close btn-close-white float-end" data-bs-dismiss="modal" aria-label="Close"></button>
+
+                <div class="px-4 pt-3">
+                    <img src="assets/images/sp-offer.png" alt="" class="img-fluid mx-auto d-block" style="max-height: 225px;">
+                </div>
+                <div class="text-center my-3">
+                    <div class="position-relative pb-5 mb-4">
+                        <h4 class="text-white text-shine">Campus Wide Important Announcement</h4>
+                    </div>
+
+                    <div class="d-flex gap-4 justify-content-center align-items-center flex-wrap mx-md-5 px-lg-4">
+                        <img src="{{ env('IMPORTANT_NOTICE_IMAGE') }}" alt="Important Notice Image" class="img-fluid">
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        firstTimeLoad();
+    });
+    function firstTimeLoad() {
+      var e = new bootstrap.Modal(document.getElementById("subscribeModal"), {
+          keyboard: false,
+          backdrop: "static",
+        }),
+        t = document.getElementById("subscribeModal");
+      setTimeout(function () {
+        e && e.show(t);
+      }, 1e3);
+    }
+</script>
 @endif
 
 

@@ -9,7 +9,7 @@
         </div>
 
         <div class="mt-4">
-            <form  method="POST" action="{{ url('/student/login') }}">
+            <form method="POST" action="{{ url('/student/login') }}">
             @csrf
 
                 <div class="form-group{{ $errors->has('email') ? ' has-error' : '' }}">
@@ -31,7 +31,6 @@
                         <input type="password" class="form-control pe-5 password-input" name="password" placeholder="Enter password" id="password-input">
                         <button class="btn btn-link position-absolute end-0 top-0 text-decoration-none text-muted password-addon" type="button" id="password-addon"><i class="ri-eye-fill align-middle"></i></button>
                     </div>
-
 
                     @if ($errors->has('password'))
                         <br>
