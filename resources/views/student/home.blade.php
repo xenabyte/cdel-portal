@@ -642,14 +642,14 @@ $studentRegistrations = $student->courseRegistrationDocument()->orderBy('created
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content modal-bg-pattern border-0">
             <div class="modal-body border-custom border m-3 rounded-3">
-                <button type="button" class="btn-close btn-close-white float-end" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close float-end" data-bs-dismiss="modal" aria-label="Close"></button>
 
                 <div class="px-4 pt-3">
                     <img src="assets/images/sp-offer.png" alt="" class="img-fluid mx-auto d-block" style="max-height: 225px;">
                 </div>
                 <div class="text-center my-3">
                     <div class="position-relative pb-5 mb-4">
-                        <h4 class="text-white text-shine">Campus Wide Important Announcement</h4>
+                        <h4 class="text-shine">Campus Wide Important Announcement</h4>
                     </div>
 
                     <div class="d-flex gap-4 justify-content-center align-items-center flex-wrap mx-md-5 px-lg-4">
