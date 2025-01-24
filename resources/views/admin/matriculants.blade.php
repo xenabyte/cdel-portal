@@ -36,6 +36,7 @@
                             <th scope="col">Othernames</th>
                             <th scope="col">Religion</th>
                             <th scope="col">Applicant Number</th>
+                            <th scope="col">Batch</th>
                             <th scope="col">Matric Number</th>
                             <th scope="col">Programme</th>
                             <th scope="col">Email</th>
@@ -57,6 +58,7 @@
                                 <td>{{ ucwords(strtolower($matriculant->othernames)) }}</td>
                                 <td>{{ $matriculant->religion }}</td>
                                 <td>{{ $matriculant->application_number }}</td>
+                                <td> Batch {{ $matriculant->student->batch }}</td>
                                 <td>{{ $matriculant->student->matric_number }}</td>
                                 <td>{{ $matriculant->student->programme->name }}</td>
                                 <td>{{ $matriculant->student->email }} </td>
