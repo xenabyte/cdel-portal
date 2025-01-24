@@ -374,12 +374,12 @@ $studentRegistrations = $student->courseRegistrationDocument()->orderBy('created
                             </div>
 
                             <div class="accordion-item shadow">
-                                <h2 class="accordion-header" id="accordionwithiconExample4">
-                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#accor_iconExamplecollapse4" aria-expanded="false" aria-controls="accor_iconExamplecollapse3">
+                                <h2 class="accordion-header" id="accordionwithiconExample2">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#accor_iconExamplecollapse2" aria-expanded="false" aria-controls="accor_iconExamplecollapse2">
                                         Update Student Name
                                     </button>
                                 </h2>
-                                <div id="accor_iconExamplecollapse4" class="accordion-collapse collapse" data-bs-parent="#accordionWithicon">
+                                <div id="accor_iconExamplecollapse2" class="accordion-collapse collapse" data-bs-parent="#accordionWithicon">
                                     <div class="accordion-body">
                                         <form action="{{ url('admin/changeStudentName') }}" method="POST">
                                             @csrf
@@ -437,12 +437,12 @@ $studentRegistrations = $student->courseRegistrationDocument()->orderBy('created
                             </div>
 
                             <div class="accordion-item shadow">
-                                <h2 class="accordion-header" id="accordionwithiconExample5">
-                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#accor_iconExamplecollapse5" aria-expanded="false" aria-controls="accor_iconExamplecollapse3">
+                                <h2 class="accordion-header" id="accordionwithiconExample3">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#accor_iconExamplecollapse3" aria-expanded="false" aria-controls="accor_iconExamplecollapse3">
                                         Update Student Level
                                     </button>
                                 </h2>
-                                <div id="accor_iconExamplecollapse5" class="accordion-collapse collapse" data-bs-parent="#accordionWithicon">
+                                <div id="accor_iconExamplecollapse3" class="accordion-collapse collapse" data-bs-parent="#accordionWithicon">
                                     <div class="accordion-body">
                                         <form action="{{ url('admin/changeStudentLevel') }}" method="POST">
                                             @csrf
@@ -473,12 +473,12 @@ $studentRegistrations = $student->courseRegistrationDocument()->orderBy('created
                             </div>
 
                             <div class="accordion-item shadow">
-                                <h2 class="accordion-header" id="accordionwithiconExample2">
-                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#accor_iconExamplecollapse2" aria-expanded="false" aria-controls="accor_iconExamplecollapse2">
+                                <h2 class="accordion-header" id="accordionwithiconExample4">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#accor_iconExamplecollapse4" aria-expanded="false" aria-controls="accor_iconExamplecollapse4">
                                     Update Student Password
                                     </button>
                                 </h2>
-                                <div id="accor_iconExamplecollapse2" class="accordion-collapse collapse" aria-labelledby="accordionwithiconExample2" data-bs-parent="#accordionWithicon">
+                                <div id="accor_iconExamplecollapse4" class="accordion-collapse collapse" aria-labelledby="accordionwithiconExample4" data-bs-parent="#accordionWithicon">
                                     <div class="accordion-body">
                                         <form action="{{ url('admin/changeStudentPassword') }}" method="POST">
                                             @csrf
@@ -515,12 +515,12 @@ $studentRegistrations = $student->courseRegistrationDocument()->orderBy('created
                             </div>
 
                             <div class="accordion-item shadow">
-                                <h2 class="accordion-header" id="accordionwithiconExample3">
-                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#accor_iconExamplecollapse3" aria-expanded="false" aria-controls="accor_iconExamplecollapse3">
+                                <h2 class="accordion-header" id="accordionwithiconExample5">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#accor_iconExamplecollapse5" aria-expanded="false" aria-controls="accor_iconExamplecollapse45">
                                         Update Student Credit Load
                                     </button>
                                 </h2>
-                                <div id="accor_iconExamplecollapse3" class="accordion-collapse collapse" aria-labelledby="accordionwithiconExample2" data-bs-parent="#accordionWithicon">
+                                <div id="accor_iconExamplecollapse5" class="accordion-collapse collapse" aria-labelledby="accordionwithiconExample5" data-bs-parent="#accordionWithicon">
                                     <div class="accordion-body">
                                         <form action="{{ url('admin/changeStudentCreditLoad') }}" method="POST">
                                             @csrf
@@ -550,12 +550,12 @@ $studentRegistrations = $student->courseRegistrationDocument()->orderBy('created
                             </div>
 
                             <div class="accordion-item shadow">
-                                <h2 class="accordion-header" id="accordionwithiconExample4">
-                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#accor_iconExamplecollapse4" aria-expanded="false" aria-controls="accor_iconExamplecollapse4">
-                                        Update Student Credit Load
+                                <h2 class="accordion-header" id="accordionwithiconExample6">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#accor_iconExamplecollapse6" aria-expanded="false" aria-controls="accor_iconExamplecollapse6">
+                                        Update Student Batch (Batch {{ $student->batch }})
                                     </button>
                                 </h2>
-                                <div id="accor_iconExamplecollapse3" class="accordion-collapse collapse" aria-labelledby="accordionwithiconExample2" data-bs-parent="#accordionWithicon">
+                                <div id="accor_iconExamplecollapse6" class="accordion-collapse collapse" aria-labelledby="accordionwithiconExample6" data-bs-parent="#accordionWithicon">
                                     <div class="accordion-body">
                                         <form action="{{ url('admin/changeStudentBatch') }}" method="POST">
                                             @csrf
@@ -563,7 +563,7 @@ $studentRegistrations = $student->courseRegistrationDocument()->orderBy('created
 
                                             <div class="row g-2">
                                                 <div class="mb-3">
-                                                    <label for="choices-batch-input" class="form-label">Student Batch</label>
+                                                    <label for="choices-batch-input" class="form-label">Student Batch (Batch {{ $student->batch }})</label>
                                                     <select class="form-select" name="batch" id="choices-batch-input" data-choices data-choices-search-false required>
                                                         <option value="" selected>Choose...</option>
                                                         <option value="A">Batch A</option>

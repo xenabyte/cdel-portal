@@ -36,6 +36,11 @@ return [
     */
 
     'guards' => [
+        'center' => [
+            'driver' => 'session',
+            'provider' => 'centers',
+        ],
+
         'career' => [
             'driver' => 'session',
             'provider' => 'careers',
@@ -100,6 +105,11 @@ return [
     */
 
     'providers' => [
+        'centers' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Center::class,
+        ],
+
         'careers' => [
             'driver' => 'eloquent',
             'model' => App\Models\Career::class,
@@ -162,6 +172,12 @@ return [
     */
 
     'passwords' => [
+        'centers' => [
+            'provider' => 'centers',
+            'table' => 'center_password_resets',
+            'expire' => 60,
+        ],
+
         'careers' => [
             'provider' => 'careers',
             'table' => 'career_password_resets',
