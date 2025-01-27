@@ -32,7 +32,7 @@ class Attendance
             $staffId = 'TAU/'.$row['Enrolled ID'];
             $date = $row['Date'];
             $date = trim($date); 
-            $formattedDate = Carbon::createFromFormat('d/m/Y', $date)->format('Y-m-d');
+            $formattedDate = Carbon::createFromFormat('m/d/Y', $date)->format('Y-m-d');
             $year = carbon::parse($formattedDate)->format('Y');
             $month = carbon::parse($formattedDate)->format('M');
             $clockIn = !empty($row['Clock In'])? $row['Clock In'] : null;
@@ -107,7 +107,7 @@ class Attendance
                     'status' => $status,
                 ]);
 
-                $addAttendance = StaffAttandance::create($newAttendance);
+                StaffAttandance::create($newAttendance);
             } 
         }
 
