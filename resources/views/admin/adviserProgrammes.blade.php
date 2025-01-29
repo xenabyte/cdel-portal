@@ -88,7 +88,7 @@
                                      <form action="{{ url('/admin/resetStudentCourseReg') }}" method="post" enctype="multipart/form-data">
                                          @csrf
                                          <input name="level_adviser_id" type="hidden" value="{{$adviserProgramme->id}}">
-                                         <input name="programme_course_id" type="hidden" value="{{$adviserProgramme->programme_course_id}}">
+                                         <input name="programme_category_id" type="hidden" value="{{$programmeCategory->id}}">
                                          <div class="text-end">
                                              <button type="submit" id="submit-button" class="btn btn-warning">Reset</button>
                                          </div>
