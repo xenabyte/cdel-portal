@@ -81,17 +81,17 @@ class StudentController extends Controller
             ]);
         }
         
-        if ((($levelId == 1 && strtolower($applicationType) == 'utme') || 
-            ($levelId == 2 && strtolower($applicationType) != 'utme')) && 
-            ($student->clearance_status != 1)) {
-            return view('student.clearance', [
-                'payment' => $paymentCheck->schoolPayment,
-                'passTuition' => $paymentCheck->passTuitionPayment,
-                'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
-                'passEightyTuition' => $paymentCheck->passEightyTuition,
-                'studentPendingTransactions' => $paymentCheck->studentPendingTransactions
-            ]);
-        }
+        // if ((($levelId == 1 && strtolower($applicationType) == 'utme') || 
+        //     ($levelId == 2 && strtolower($applicationType) != 'utme')) && 
+        //     ($student->clearance_status != 1)) {
+        //     return view('student.clearance', [
+        //         'payment' => $paymentCheck->schoolPayment,
+        //         'passTuition' => $paymentCheck->passTuitionPayment,
+        //         'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
+        //         'passEightyTuition' => $paymentCheck->passEightyTuition,
+        //         'studentPendingTransactions' => $paymentCheck->studentPendingTransactions
+        //     ]);
+        // }
 
         if(!$student->is_active && !$paymentCheck->passTuitionPayment){
             return view('student.schoolFee', [
