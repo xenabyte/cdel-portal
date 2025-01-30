@@ -82,7 +82,7 @@
                                     </a>
                                   
                                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                                        @if(!empty($student->clearance_status))<li><a class="dropdown-item link-primary" data-bs-toggle="modal" data-bs-target="#view{{$student->applicant->id}}" href="#"><i class="ri-eye-fill"></i> View Clearance</a></li>@endif
+                                        {{-- @if(!empty($student->clearance_status))<li><a class="dropdown-item link-primary" data-bs-toggle="modal" data-bs-target="#view{{$student->applicant->id}}" href="#"><i class="ri-eye-fill"></i> View Clearance</a></li>@endif --}}
                                         <li><a class="dropdown-item link-muted" href="{{ url('admin/student/'.$student->slug) }}"><i class="ri-folder-open-fill"></i> Applicant Profile</a></li>
                                         <li><a class="dropdown-item link-danger" href="#" data-bs-toggle="modal" data-bs-target="#delete{{$student->id}}"><i class="ri-delete-bin-5-line"></i> Reverse Admission</a></li>
                                         <li><a class="dropdown-item link-success" href="{{ asset($student->admission_letter) }}"><i class="ri-download-cloud-2-fill"></i> Download Admission Letter</a></li>
@@ -121,7 +121,7 @@
 <!-- end row -->
 
 @foreach($students as $student)
-<div id="view{{$student->applicant->id}}" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
+{{-- <div id="view{{$student->applicant->id}}" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
     <div class="modal-dialog modal-xl modal-dialog-centered">
         <div class="modal-content border-0 overflow-hidden">
             <div class="modal-header p-3">
@@ -295,7 +295,7 @@
             </div>
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
+</div><!-- /.modal --> --}}
 
 <div id="delete{{$student->id}}" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
     <div class="modal-dialog modal-dialog-centered modal-lg">
