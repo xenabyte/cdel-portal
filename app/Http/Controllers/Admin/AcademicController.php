@@ -869,6 +869,7 @@ class AcademicController extends Controller
         
         $programmeId = $levelAdviser->programme_id;
         $levelId = $levelAdviser->level_id;
+        $academicSession = $levelAdviser->academic_session;
 
         $programmeStudents = Student::where('programme_id', $programmeId)
             ->where('programme_category_id', $request->programme_category_id)
@@ -880,7 +881,6 @@ class AcademicController extends Controller
         
         foreach ($studentCourseRegistrations as $studentCourseReg){
             $studentId = $studentCourseReg->student_id;
-            $academicSession = $studentCourseReg->academic_session;
 
             $courseRegistrations = CourseRegistration::where('student_id', $studentId)
             ->where('programme_category_id', $request->programme_category_id)
