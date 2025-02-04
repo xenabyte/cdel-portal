@@ -26,7 +26,7 @@
 
             <div class="card-body table-responsive">
                 <!-- Bordered Tables -->
-                <table class="display table table-stripped" style="width:100%">
+                <table id="buttons-datatables" class="display table table-stripped" style="width:100%">
                     <thead>
                         <tr>
                             <th scope="col">Id</th>
