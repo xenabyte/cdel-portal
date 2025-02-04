@@ -80,15 +80,15 @@ class AcademicController extends Controller
         $paymentCheck = $this->checkSchoolFees($student, $academicSession, $levelId);
         $checkNewStudentStatus = $this->checkNewStudentStatus($student);
 
-        if(!$paymentCheck->passTuitionPayment){
-            return view('student.schoolFee', [
-                'payment' => $paymentCheck->schoolPayment,
-                'passTuition' => $paymentCheck->passTuitionPayment,
-                'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
-                'passEightyTuition' => $paymentCheck->passEightyTuition,
-                'studentPendingTransactions' => $paymentCheck->studentPendingTransactions
-            ]);
-        }
+        // if(!$paymentCheck->passTuitionPayment){
+        //     return view('student.schoolFee', [
+        //         'payment' => $paymentCheck->schoolPayment,
+        //         'passTuition' => $paymentCheck->passTuitionPayment,
+        //         'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
+        //         'passEightyTuition' => $paymentCheck->passEightyTuition,
+        //         'studentPendingTransactions' => $paymentCheck->studentPendingTransactions
+        //     ]);
+        // }
 
         $coursePerProgrammePerAcademicSession = CoursePerProgrammePerAcademicSession::where('programme_id', $student->programme_id)
             ->where('level_id', $student->level_id)
@@ -222,15 +222,15 @@ class AcademicController extends Controller
         $academicSession = $globalData->sessionSetting['academic_session'];
 
         $paymentCheck = $this->checkSchoolFees($student, $academicSession, $levelId);
-        if(!$paymentCheck->passTuitionPayment){
-            return view('student.schoolFee', [
-                'payment' => $paymentCheck->schoolPayment,
-                'passTuition' => $paymentCheck->passTuitionPayment,
-                'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
-                'passEightyTuition' => $paymentCheck->passEightyTuition,
-                'studentPendingTransactions' => $paymentCheck->studentPendingTransactions
-            ]);
-        }
+        // if(!$paymentCheck->passTuitionPayment){
+        //     return view('student.schoolFee', [
+        //         'payment' => $paymentCheck->schoolPayment,
+        //         'passTuition' => $paymentCheck->passTuitionPayment,
+        //         'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
+        //         'passEightyTuition' => $paymentCheck->passEightyTuition,
+        //         'studentPendingTransactions' => $paymentCheck->studentPendingTransactions
+        //     ]);
+        // }
 
         // Collect semester information from selected courses
         $semesters = [
