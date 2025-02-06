@@ -187,6 +187,15 @@
             </p>
         @endif
     </div>
+    <div class="row mt-4">
+        <div class="col-md-6 text-left">
+            <strong>Date Generated:</strong> {{ date('F j, Y') }}
+        </div>
+        <div class="col-md-6 text-right">
+            <strong>Course Registration Date:</strong> {{ date('F j, Y', strtotime($staffData->studentCourseReg->created_at)) }}
+        </div>
+    </div>
+    
 </div>
 <div class="watermark"></div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
