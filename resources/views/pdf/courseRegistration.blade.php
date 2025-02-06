@@ -191,9 +191,11 @@
         <div class="col-md-6 text-left">
             <strong>Date Generated:</strong> {{ date('F j, Y') }}
         </div>
+        @if(!empty($studentCourseReg))
         <div class="col-md-6 text-right">
-            <strong>Course Registration Date:</strong> {{ date('F j, Y', strtotime($staffData->studentCourseReg->created_at)) }}
+            <strong>Course Registration Date:</strong> {{ date('F j, Y', strtotime($studentCourseReg->created_at)) }}
         </div>
+        @endif
     </div>
     
 </div>

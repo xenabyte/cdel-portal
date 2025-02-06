@@ -118,7 +118,7 @@ Class Pdf {
         if(!empty($otherData->courseRegId)){
             $studentCourseReg = StudentCourseRegistration::find($otherData->courseRegId);
         }
-
+        
         $staffData = null;
         if(!empty($staff)){
             $staffData = new \stdClass();
@@ -155,7 +155,7 @@ Class Pdf {
             }
         }
 
-        $data = ['info'=>$student, 'registeredCourses' => $courseReg, 'staffData' => $staffData];
+        $data = ['info'=>$student, 'registeredCourses' => $courseReg, 'studentCourseReg' => $studentCourseReg, 'staffData' => $staffData];
 
         $pdf = PDFDocument::loadView('pdf.courseRegistration', $data)
         ->setOptions($options)
