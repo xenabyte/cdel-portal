@@ -60,7 +60,7 @@
                                 @endif
                             </td>
                             <td>
-                                <a href="{{ url('staff/studentProfile/'.$student->slug) }}" class="btn btn-primary m-1"><i class= "ri-user-6-fill"></i> View Student</a>
+                                <a href="{{ url('admin/studentProfile/'.$student->slug) }}" class="btn btn-primary m-1"><i class= "ri-user-6-fill"></i> View Student</a>
                             </td>
                         </tr>
                         @endforeach
