@@ -108,7 +108,7 @@
                                         <h4 class="mt-4 fw-semibold">Examination Card</h4>
                                         <p class="text-muted mt-3"></p>
                                         <div class="mt-4">
-                                            Kindly note that access to the examination card (docket) page requires payment 80% of school fees. 
+                                            Kindly note that access to the examination card (docket) page requires payment 70% of school fees. 
                                         </div>
                                     </div>
                                 </div>
