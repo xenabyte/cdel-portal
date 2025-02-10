@@ -176,15 +176,17 @@ Class Pdf {
         $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $name .' examination card '. $semester .' '. $academicSession)));
 
         $courseRegs = CourseRegistration::with('course')
-            ->where('student_id', $studentId)
-            ->where('academic_session', $academicSession)
-            ->where('total', null)
-            ->where('semester', $semester)
-            ->where('status', 'approved')
-            ->get()
-            ->filter(function ($courseReg) {
-                return round($courseReg->attendancePercentage()) > 75;
-            });
+        ->where('student_id', $studentId)
+        ->where('academic_session', $academicSession)
+        ->where('total', null)
+        ->where('semester', $semester)
+        ->where('status', 'approved')
+        ->get()
+        ->filter(function ($courseReg) use ($student) {
+            $isFreshStudent = is_null($student->cgpa) || $student->cgpa == 0.00;
+
+            return $isFreshStudent ? round($courseReg->attendancePercentage()) > 75 : true;
+        });
 
         $dir = public_path('uploads/files/exam_card');
         if (!file_exists($dir)) {
