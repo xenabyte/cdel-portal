@@ -351,7 +351,7 @@
                 <form action="{{ url('/admin/uploadVocationResult') }}" method="post" enctype="multipart/form-data">
                     @csrf
                     <div class="row">
-                        <div class="col-lg-12">
+                        <div class="col-lg-12 mb-3">
                             <div>
                                 <label for="formSizeLarge" class="form-label">Result (CSV)</label>
                                 <input name="result"  class="form-control form-control-lg" id="formSizeLarge" type="file" required>

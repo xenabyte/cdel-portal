@@ -592,8 +592,17 @@ class ResultController extends Controller
         }
 
         if (!$programmeCourse) {
-            alert()->error('Oops!', 'Course not registered for student in programme and session')->persistent('Close');
-            return $this->getSingleStudent($studentIdCode, $request->url, $data);
+            $studentExistingReg = CourseRegistration::where([
+                'student_id' => $student->id,
+                'course_id' => $course->id,
+            ])->first();
+            
+            $programmeCourse = CoursePerProgrammePerAcademicSession::find($studentExistingReg->programme_course_id);
+
+            if (!$programmeCourse) {
+                alert()->error('Oops!', 'Course not registered for student in programme and session')->persistent('Close');
+                return $this->getSingleStudent($studentIdCode, $request->url, $data);
+            }
         }
 
 
