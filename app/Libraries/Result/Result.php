@@ -152,7 +152,8 @@ class Result
         $csv->setHeaderOffset(0);
 
         $records = $csv->getRecords();
-        $academicSession = $globalSettings->sessionSetting['academic_session'];
+        // $academicSession = $globalSettings->sessionSetting['academic_session'];
+        $academicSession = "2023/2024";
 
         foreach ($records as $row) {
             $email = $row['email'];
