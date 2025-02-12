@@ -360,7 +360,7 @@
                     </div>
 
                     <div class="input-group" style="display: flex; flex-wrap: nowrap;">
-                        <select id="programmeSelect{{ $loop->iteration }}" class="form-select select2 selectWithSearch" required style="flex-grow: 1;">
+                        <select class="form-select select2 selectWithSearch" required style="flex-grow: 1;">
                             <option value="" selected>Select Programme Category</option>
                             @foreach($programmeCategories as $category)
                                 <option value="{{ $category->category }}">{{ $category->category }} Programme</option>
