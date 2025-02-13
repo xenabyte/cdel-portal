@@ -178,15 +178,11 @@ Class Pdf {
         $courseRegs = CourseRegistration::with('course')
         ->where('student_id', $studentId)
         ->where('academic_session', $academicSession)
-        ->where('total', null)
+        ->whereNull('total')
         ->where('semester', $semester)
         ->where('status', 'approved')
         ->get()
-        ->filter(function ($courseReg) use ($student) {
-            $isFreshStudent = is_null($student->cgpa) || $student->cgpa == 0.00;
-
-            return $isFreshStudent ? round($courseReg->attendancePercentage()) > 75 : true;
-        });
+        ->reject(fn($courseReg) => !is_null($student->cgpa) && round($courseReg->attendancePercentage()) <= 75);
 
         $dir = public_path('uploads/files/exam_card');
         if (!file_exists($dir)) {
