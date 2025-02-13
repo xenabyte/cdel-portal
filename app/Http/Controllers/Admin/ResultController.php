@@ -587,7 +587,6 @@ class ResultController extends Controller
                 'course_id' => $courseId,
                 'programme_id' => $programmeId,
                 'semester' => $semester,
-                'academic_session' => $academicSession,
             ])->first();
         }
 
