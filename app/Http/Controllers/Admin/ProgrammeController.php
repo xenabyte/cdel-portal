@@ -32,6 +32,7 @@ use App\Models\LevelAdviser;
 use App\Models\StudentCourseRegistration;
 use App\Models\CourseLecture;
 use App\Models\LectureAttendance;
+use App\Models\Faculty;
 
 
 use App\Mail\NotificationMail;
@@ -925,6 +926,8 @@ class ProgrammeController extends Controller
         $studentId = $student->id;
         $courseId = $request->course_id;
 
+        $course = Course::find($courseId);
+
         $studentRegistration = CourseRegistration::where([
             'student_id' => $studentId,
             'course_id' => $courseId,
@@ -966,14 +969,24 @@ class ProgrammeController extends Controller
             $grade = $grading->grade;
             $points = $grading->point;
     
-            $courseCode = $studentRegistration->course_code;
-    
-            if (strpos($courseCode, 'NSC') !== false && $student->programme_id == 15) {
-                if($totalScore < 50){
-                    $grade = 'F';
-                    $points = 0;
+
+            $studentFaculty = Faculty::find($student->faculty_id);
+            if($studentFaculty == 3 || $studentFaculty == 7){
+                if($student->department_id == $course->department_id){
+                    if($totalScore < 50){
+                        $grade = 'F';
+                        $points = 0;
+                    }
                 }
             }
+    
+            // $courseCode = $studentRegistration->course_code;
+            // if (strpos($courseCode, 'NSC') !== false && $student->programme_id == 15) {
+            //     if($totalScore < 50){
+            //         $grade = 'F';
+            //         $points = 0;
+            //     }
+            // }
 
             $studentRegistration->exam_score = $examScore;
             $studentRegistration->total = $totalScore;

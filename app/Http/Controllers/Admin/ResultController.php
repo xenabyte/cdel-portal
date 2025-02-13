@@ -652,12 +652,22 @@ class ResultController extends Controller
 
             $courseCode = $studentCourseReg->course_code;
 
-            if (strpos($courseCode, 'NSC') !== false && $student->programme_id == 15) {
-                if($totalScore < 50){
-                    $grade = 'F';
-                    $points = 0;
+            $studentFaculty = Faculty::find($student->faculty_id);
+            if($studentFaculty == 3 || $studentFaculty == 7){
+                if($student->department_id == $course->department_id){
+                    if($totalScore < 50){
+                        $grade = 'F';
+                        $points = 0;
+                    }
                 }
             }
+
+            // if (strpos($courseCode, 'NSC') !== false && $student->programme_id == 15) {
+            //     if($totalScore < 50){
+            //         $grade = 'F';
+            //         $points = 0;
+            //     }
+            // }
 
             $studentCourseReg->ca_score = $caScore;
             $studentCourseReg->exam_score = $examScore;

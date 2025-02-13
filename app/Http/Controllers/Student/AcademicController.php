@@ -209,6 +209,8 @@ class AcademicController extends Controller
         
         $txId = $request->input('tx_id');
 
+        
+
         if(empty($selectedCourses)){
             alert()->info('Kindly select your courses', '')->persistent('Close');
             return redirect()->back();
@@ -220,6 +222,16 @@ class AcademicController extends Controller
         $globalData = $request->input('global_data');
         $admissionSession = $globalData->sessionSetting['admission_session'];
         $academicSession = $globalData->sessionSetting['academic_session'];
+
+        $checkCourseRegistration = CourseRegistration::where([
+            'student_id' => $studentId,
+            'academic_session' => $academicSession
+        ])->get();
+
+        if($checkCourseRegistration->count() > 0){
+            alert()->info('You have already registered for courses', '')->persistent('Close');
+            return redirect()->back();
+        }
 
         $paymentCheck = $this->checkSchoolFees($student, $academicSession, $levelId);
         // if(!$paymentCheck->passTuitionPayment){

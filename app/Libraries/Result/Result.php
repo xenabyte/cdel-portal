@@ -15,6 +15,7 @@ use App\Models\Notification;
 use App\Models\GradeScale;
 use App\Models\ResultApprovalStatus;
 use App\Models\DegreeClass;
+use App\Models\Faculty;
 
 
 use Log;
@@ -101,14 +102,23 @@ class Result
                 $grade = $grading->grade;
                 $points = $grading->point;
         
-                $courseCode = $studentRegistration->course_code;
-        
-                if (strpos($courseCode, 'NSC') !== false && $student->programme_id == 15) {
-                    if($totalScore < 50){
-                        $grade = 'F';
-                        $points = 0;
+                $studentFaculty = Faculty::find($student->faculty_id);
+                if($studentFaculty == 3 || $studentFaculty == 7){
+                    if($student->department_id == $course->department_id){
+                        if($totalScore < 50){
+                            $grade = 'F';
+                            $points = 0;
+                        }
                     }
                 }
+
+                // $courseCode = $studentRegistration->course_code;
+                // if (strpos($courseCode, 'NSC') !== false && $student->programme_id == 15) {
+                //     if($totalScore < 50){
+                //         $grade = 'F';
+                //         $points = 0;
+                //     }
+                // }
 
                 $studentRegistration->total = $totalScore;
                 $studentRegistration->grade = $grade;
