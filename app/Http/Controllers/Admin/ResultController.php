@@ -645,7 +645,7 @@ class ResultController extends Controller
         }
 
         $studentCourseReg->status = 'approved';
-        if(!empty($totalScore)){
+        if(!empty($totalScore) || $totalScore > 0){
             $grading = GradeScale::computeGrade($totalScore);
             $grade = $grading->grade;
             $points = $grading->point;
