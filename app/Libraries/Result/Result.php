@@ -205,8 +205,8 @@ class Result
             $studentRegistration = CourseRegistration::where([
                 'student_id' => $studentId,
                 'course_id' => $course->id,
-                'academic_session' => $academicSession,
-                'programme_category_id' => $programmeCategoryId,
+                // 'academic_session' => $academicSession,
+                // 'programme_category_id' => $programmeCategoryId,
             ])->first();
 
             if(!$studentRegistration){
