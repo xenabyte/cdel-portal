@@ -702,7 +702,7 @@
                                                                 @if(strtolower($applicant->programmeCategory->category) == "undergraduate")
                                                                 <div class="col-sm-2">
                                                                     <label for="year_0">Year</label>
-                                                                    <input type="number" min="1998" max="2099" step="1" name="subjects[0][year]" class="form-control" id="year_0" required>
+                                                                    <input type="number" min="2010" max="2099" step="1" name="subjects[0][year]" class="form-control" id="year_0" required>
                                                                 </div><!--end col-->
                                                                 @else
                                                                 <div class="col-sm-2">
@@ -744,7 +744,7 @@
                                                                 @if(strtolower($applicant->programmeCategory->category) == "undergraduate")
                                                                 <div class="col-sm-2">
                                                                     <label for="year_1">Year</label>
-                                                                    <input type="number" min="1998" max="2099" step="1" name="subjects[1][year]" class="form-control" id="year_1" required>
+                                                                    <input type="number" min="2010" max="2099" step="1" name="subjects[1][year]" class="form-control" id="year_1" required>
                                                                 </div><!--end col-->
                                                                 @else
                                                                 <div class="col-sm-2">
@@ -836,7 +836,7 @@
                                                                 @if(strtolower($applicant->programmeCategory->category) == "undergraduate")
                                                                 <div class="col-sm-2">
                                                                     <label for="year_{{ $i }}">Year</label>
-                                                                    <input type="number" min="1998" max="2099" step="1" name="subjects[{{ $i }}][year]" class="form-control" id="year_{{ $i }}" >
+                                                                    <input type="number" min="2010" max="2099" step="1" name="subjects[{{ $i }}][year]" class="form-control" id="year_{{ $i }}" >
                                                                 </div><!--end col-->
                                                                 @else
                                                                 <div class="col-sm-2">
@@ -1003,7 +1003,7 @@
                                                                                             @if(strtolower($applicant->programmeCategory->category) == "undergraduate")
                                                                                             <div class="mb-3">
                                                                                                 <label for="year">Year</label>
-                                                                                                <input type="number" min="1998" max="2099" step="1" value="{{ $olevel->year }}" name="year" class="form-control" id="year" >
+                                                                                                <input type="number" min="2010" max="2099" step="1" value="{{ $olevel->year }}" name="year" class="form-control" id="year" >
                                                                                             </div><!--end col-->
                                                                                             @else
                                                                                             <div class="mb-3">

@@ -858,7 +858,7 @@ class ApplicationController extends Controller
                 $validator = Validator::make($subject, [
                     'subject' => 'nullable|string|max:255',
                     'grade' => 'required|string',
-                    'year' => 'required|integer|min:2010|max:2099',
+                    'year' => 'required|integer|min:1998|max:2099',
                     'reg_no' => 'required|string|max:255',
                 ]);
         
