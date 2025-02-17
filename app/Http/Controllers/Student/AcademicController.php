@@ -569,9 +569,15 @@ class AcademicController extends Controller
         $student = Auth::guard('student')->user();
         $studentId = $student->id;
         $globalData = $request->input('global_data');
-        $admissionSession = $globalData->sessionSetting['admission_session'];
         $academicSession = $globalData->sessionSetting['academic_session'];
         $semester  = $globalData->examSetting['semester'];
+
+        if(!empty($request->exam_card_id)){
+            $examCard = StudentExamCard::find($request->exam_card_id);
+
+            $academicSession = $examCard->academic_session;
+            $semester  = $examCard->semester;
+        }
 
         $courseRegs = CourseRegistration::with('course')
             ->where('student_id', $studentId)

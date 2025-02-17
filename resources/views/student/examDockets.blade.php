@@ -50,6 +50,14 @@
                             <td><span class="badge badge-soft-{{ $studentExamCard->status == 1 ? 'success' : 'warning' }}">{{ $studentExamCard->hod_status == 1 ? 'Approved' : 'Pending' }}</span></td> --}}
                             <td>
                                 <a href="{{ asset($studentExamCard->file) }}" target="_blank" style="margin: 5px" class="btn btn-warning">Download Form</a>
+                                <form action="{{ url('/student/genExamDocket') }}" method="post" enctype="multipart/form-data">
+                                    @csrf
+                                    <input type="hidden" name="exam_card_id" value="{{ $studentExamCard->id }}">
+
+                                    <button type="submit" id="submit-button" class="btn btn-info">
+                                       Re-generate Exam Docket
+                                    </button>
+                                </form>
                             </td>
                         </tr>
                         @endforeach

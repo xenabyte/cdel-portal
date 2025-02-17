@@ -173,7 +173,7 @@ Class Pdf {
 
         $student = Student::with('applicant', 'academicLevel', 'faculty', 'department', 'programme')->where('id', $studentId)->first();
         $name = $student->applicant->lastname.' '.$student->applicant->othernames.' '.time();
-        $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $name .' examination card '. $semester .' '. $academicSession)));
+        $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $name .' examination card '. $semester .' '. $academicSession.' '.time())));
 
         $courseRegs = CourseRegistration::with('course')
         ->where('student_id', $studentId)
@@ -181,8 +181,8 @@ Class Pdf {
         ->whereNull('total')
         ->where('semester', $semester)
         ->where('status', 'approved')
-        ->get()
-        ->reject(fn($courseReg) => !is_null($student->cgpa) && round($courseReg->attendancePercentage()) <= 75);
+        ->get();
+        // ->reject(fn($courseReg) => !is_null($student->cgpa) && round($courseReg->attendancePercentage()) <= 75);
 
         $dir = public_path('uploads/files/exam_card');
         if (!file_exists($dir)) {
