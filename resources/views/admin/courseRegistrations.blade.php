@@ -224,7 +224,7 @@ use \App\Models\ProgrammeCategory;
                                 </td>
                             </tr>
 
-                            <div id="approve{{$studentRegistration->id}}" class="modal fade" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" style="display: none;">
+                            {{-- <div id="approve{{$studentRegistration->id}}" class="modal fade" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" style="display: none;">
                                 <div class="modal-dialog modal-dialog-centered">
                                     <div class="modal-content">
                                         <div class="modal-body text-center p-5">
@@ -248,9 +248,9 @@ use \App\Models\ProgrammeCategory;
                                         </div>
                                     </div><!-- /.modal-content -->
                                 </div><!-- /.modal-dialog -->
-                            </div><!-- /.modal -->
+                            </div><!-- /.modal --> --}}
 
-                            <div id="undo{{$studentRegistration->id}}" class="modal fade" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" style="display: none;">
+                            {{-- <div id="undo{{$studentRegistration->id}}" class="modal fade" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" style="display: none;">
                                 <div class="modal-dialog modal-dialog-centered">
                                     <div class="modal-content">
                                         <div class="modal-body text-center p-5">
@@ -275,7 +275,7 @@ use \App\Models\ProgrammeCategory;
                                         </div>
                                     </div><!-- /.modal-content -->
                                 </div><!-- /.modal-dialog -->
-                            </div><!-- /.modal -->
+                            </div><!-- /.modal --> --}}
                             @endif
                         @endforeach
                     </tbody>
