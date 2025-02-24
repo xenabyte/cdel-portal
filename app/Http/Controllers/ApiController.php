@@ -130,4 +130,36 @@ class ApiController extends Controller
         }
 
     }
+
+
+    public function getStudent(Request $request){
+        $validator = Validator::make($request->all(), [
+            'matric_number' => 'required',
+        ]);
+
+        if($validator->fails()) {
+            return $this->dataResponse($validator->messages()->all()[0], null, 'error');
+        }
+
+        $matricNumber = $request->matric_number;
+
+        $user = Student::with("applicant")->where('matric_number', $matricNumber)->first();
+
+    
+        // Check if the user exists and if the password matches
+        if ($user) {
+            $response = new \stdClass();
+            $response->application_id = $user->applicant->id;
+            $response->lastname = $user->applicant->lastname;
+            $response->othernames = $user->applicant->othernames;
+            $response->email = $user->email;
+            $response->image = $user->image;
+            $response->phone_number =  $user->applicant->phone_number;
+
+            return $this->dataResponse(' record found!', $response);
+        } else {
+            return $this->dataResponse(' record not found', null, 'error');
+        }
+
+    }
 }
