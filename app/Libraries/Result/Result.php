@@ -31,7 +31,7 @@ class Result
         $records = $csv->getRecords();
 
         foreach ($records as $row) {
-            $matricNumber = $row['Matric No'];
+            $matricNumber = $row['Matric Number'];
             $courseCodeMain = $row['Course Code'];
             $testScore = $row['Test Score'];
             $examScore = $row['Exam Score'];

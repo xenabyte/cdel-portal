@@ -125,7 +125,7 @@ class Attendance
 
 
         foreach ($records as $row) {
-            $matricNumber = $row['Matric No'];
+            $matricNumber = $row['Matric Number'];
 
             $student = Student::with('applicant')->where('matric_number', $matricNumber)->first();
             if(!$student){
