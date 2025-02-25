@@ -55,7 +55,7 @@
                                     @foreach($jobVacancies as $jobVacancy)
                                     <tr>
                                         <th scope="row">{{ $loop->iteration }}</th>
-                                        <td class="wrap-text">{{ $jobVacancy->title }} </>
+                                        <td>{{ $jobVacancy->title }} </>
                                         <td>{{ $jobVacancy->type }} </td>
                                         <td>{{ $jobVacancy->jobLevel?$jobVacancy->jobLevel->name .' @ ₦'. number_format($jobVacancy->jobLevel->hourly_rate/100, 2) .'/hour':null }}</td>
                                         <td>{{ ucwords($jobVacancy->status) }} </td>
