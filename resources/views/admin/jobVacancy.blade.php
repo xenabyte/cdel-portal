@@ -22,7 +22,7 @@
         .wrap-text {
             white-space: normal;
             word-wrap: break-word;
-            max-width: 200px; /* Adjust as needed */
+            max-width: 100px; /* Adjust as needed */
         }
         </style>
 
