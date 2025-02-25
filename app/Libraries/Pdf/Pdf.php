@@ -2,6 +2,7 @@
 
 namespace App\Libraries\Pdf;
 
+use App\Models\ProgrammeCategory;
 use PDF as PDFDocument;
 use App\Models\User as Applicant;
 use App\Models\Student;
@@ -83,9 +84,17 @@ Class Pdf {
             'logo' => asset($setting->logo)
         ];
 
-        $pdf = PDFDocument::loadView('pdf.admissionLetter', $studentData)
-        ->setOptions($options)
-        ->save($fileDirectory);
+        if($programmeCategory == ProgrammeCategory::getProgrammeCategory(ProgrammeCategory::UNDERGRADUATE)){
+            $pdf = PDFDocument::loadView('pdf.admissionLetter', $studentData)
+            ->setOptions($options)
+            ->save($fileDirectory);
+        }
+
+        if($programmeCategory == ProgrammeCategory::getProgrammeCategory(ProgrammeCategory::TOPUP)){
+            $pdf = PDFDocument::loadView('pdf.topAdmissionLetter', $studentData)
+            ->setOptions($options)
+            ->save($fileDirectory);
+        }
 
         return $fileDirectory;
     }
