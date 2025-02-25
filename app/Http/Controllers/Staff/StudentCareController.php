@@ -106,6 +106,55 @@ class StudentCareController extends Controller
         return redirect()->back();
     }
 
+    public function bulkManageExitApplications(Request $request){
+        $validator = Validator::make($request->all(), [
+            'exit_ids' => 'required|array',
+            'action' => 'required',
+        ]);
+    
+        if ($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+    
+        $globalData = $request->input('global_data');
+        $academicSession = $globalData['sessionSetting']['academic_session'];
+        $exitIds = $request->exit_ids;
+    
+        foreach ($exitIds as $exitId) {
+            if (!$studentExit = StudentExit::find($exitId)) {
+                continue; // Skip if record not found
+            }
+    
+            $studentExit->status = $request->action;
+            if ($studentExit->save()) {
+                $student = Student::find($studentExit->student_id);
+                
+                $pdf = new Pdf();
+                $exitApplication = $pdf->generateExitApplication($academicSession, $student->id, $studentExit->id);
+                $studentExit->file = $exitApplication;
+                $studentExit->save();
+    
+                $senderName = env('SCHOOL_NAME');
+                $receiverName = $student->applicant->lastname . ' ' . $student->applicant->othernames;
+                $message = 'Your exit application has been ' . $request->action;
+    
+                $mail = new NotificationMail($senderName, $message, $receiverName, $exitApplication);
+                Mail::to($student->email)->send($mail);
+                
+                Notification::create([
+                    'student_id' => $student->id,
+                    'description' => $message,
+                    'attachment' => $exitApplication,
+                    'status' => 0
+                ]);
+            }
+        }
+    
+        alert()->success('Success', 'Applications ' . $request->action)->persistent('Close');
+        return redirect()->back();
+    }
+
     public function verifyStudentExits(Request $request){
 
         return view('staff.verifyStudentExit');

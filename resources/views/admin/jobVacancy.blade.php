@@ -18,6 +18,13 @@
     </div>
 
     <div class="row">
+        <style type="text/css">
+        .wrap-text {
+            white-space: normal;
+            word-wrap: break-word;
+            max-width: 200px; /* Adjust as needed */
+        }
+        </style>
 
         <div class="col-lg-12">
             <div class="card">
@@ -48,7 +55,7 @@
                                     @foreach($jobVacancies as $jobVacancy)
                                     <tr>
                                         <th scope="row">{{ $loop->iteration }}</th>
-                                        <td>{{ $jobVacancy->title }} </td>
+                                        <td class="wrap-text">{{ $jobVacancy->title }} </>
                                         <td>{{ $jobVacancy->type }} </td>
                                         <td>{{ $jobVacancy->jobLevel?$jobVacancy->jobLevel->name .' @ ₦'. number_format($jobVacancy->jobLevel->hourly_rate/100, 2) .'/hour':null }}</td>
                                         <td>{{ ucwords($jobVacancy->status) }} </td>
@@ -57,109 +64,6 @@
                                                 <a href="{{ url('admin/viewJobVacancy/'.$jobVacancy->slug) }}" class="link-secondary m-1"><i class= "ri-eye-fill"></i></a>
                                                 <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#edit{{$jobVacancy->id}}" class="link-primary"><i class="ri-edit-circle-fill"></i></a>
                                                 <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#delete{{$jobVacancy->id}}" class="link-danger"><i class="ri-delete-bin-5-line"></i></a>
-
-                                                <div id="delete{{$jobVacancy->id}}" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
-                                                    <div class="modal-dialog modal-dialog-centered">
-                                                        <div class="modal-content">
-                                                            <div class="modal-body text-center p-5">
-                                                                <div class="text-end">
-                                                                    <button type="button" class="btn-close text-end" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                                </div>
-                                                                <div class="mt-2">
-                                                                    <lord-icon src="https://cdn.lordicon.com/gsqxdxog.json" trigger="hover" style="width:150px;height:150px">
-                                                                    </lord-icon>
-                                                                    <h4 class="mb-3 mt-4">Are you sure you want to delete <br/> {{ $jobVacancy->title }}?</h4>
-                                                                    <form action="{{ url('/admin/deleteJobVacancy') }}" method="POST">
-                                                                        @csrf
-                                                                        <input name="job_id" type="hidden" value="{{$jobVacancy->id}}">
-                                                                        <hr>
-                                                                        <button type="submit" id="submit-button" class="btn btn-danger w-100">Yes, Delete</button>
-                                                                    </form>
-                                                                </div>
-                                                            </div>
-                                                            <div class="modal-footer bg-light p-3 justify-content-center">
-
-                                                            </div>
-                                                        </div><!-- /.modal-content -->
-                                                    </div><!-- /.modal-dialog -->
-                                                </div><!-- /.modal -->
-
-                                                <div id="edit{{$jobVacancy->id}}" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
-                                                    <div class="modal-dialog modal-xl modal-dialog-centered">
-                                                        <div class="modal-content border-0 overflow-hidden">
-                                                            <div class="modal-header p-3">
-                                                                <h4 class="card-title mb-0">Edit Job Vacancy</h4>
-                                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                            </div>
-                                    
-                                                            <div class="modal-body">
-                                                                <form action="{{ url('/admin/updateJobVacancy') }}" method="post" enctype="multipart/form-data">
-                                                                    @csrf
-
-                                                                        <input name="job_id" type="hidden" value="{{$jobVacancy->id}}">
-
-                                                                        <div class="mb-3">
-                                                                            <label for="role" class="form-label">Vacancy Type</label>
-                                                                            <select class="form-select" aria-label="role" name="type" required>
-                                                                                <option @if($jobVacancy->type == 'Job Vacancy') selected  @endif value="Job Vacancy">Job Vacancy</option>
-                                                                                <option @if($jobVacancy->type == 'Work Study') selected @endif value="Work Study">Work Study</option>
-                                                                            </select>
-                                                                        </div>
-                                                                    
-                                                                        <div class="mb-3">
-                                                                            <label for="title" class="form-label">Title</label>
-                                                                            <input type="text" class="form-control" name="title" value="{{ $jobVacancy->title }}" id="title">
-                                                                        </div>
-                                                                    
-                                                                        <div class="mb-3">
-                                                                            <label for="description">Description</label>
-                                                                            <textarea class="ckeditor" id="description" name="description">{!! $jobVacancy->description !!}</textarea>
-                                                                        </div>
-                                                                    
-                                                                        <div class="mb-3">
-                                                                            <label for="requirements">Requirements</label>
-                                                                            <textarea class="ckeditor" id="requirements" name="requirements">{!! $jobVacancy->requirements !!}</textarea>
-                                                                        </div>
-                                                                    
-                                                                        <div class="mb-3">
-                                                                            <label for="applicationDeadline" class="form-label">Application Deadline</label>
-                                                                            <input type="date" class="form-control" name="application_deadline" value="{{ $jobVacancy->application_deadline }}" id="applicationDeadline">
-                                                                        </div>
-                                                                    
-                                                                        @if($jobVacancy->type == 'Work Study')
-                                                                        <!-- CGPA Field Wrapper -->
-                                                                        <div class="mb-3">
-                                                                            <label for="cgpa" class="form-label">Minimum Student CGPA</label>
-                                                                            <input type="text" class="form-control" name="cgpa" value="{{ $jobVacancy->cgpa }}" id="cgpa">
-                                                                        </div>
-
-                                                                        <div class="mb-3">
-                                                                            <label for="role" class="form-label">Job Level</label>
-                                                                            <select class="form-select" aria-label="role" name="level_id" id="level_id">
-                                                                                @foreach($jobLevels as $jobLevel)<option @if($jobLevel->id == $jobVacancy->level_id) selected @endif value="{{ $jobLevel->id }}">{{ $jobLevel->name .' @ ₦'. number_format($jobLevel->hourly_rate/100, 2) .'/hour' }}</option>@endforeach
-                                                                            </select>
-                                                                        </div>
-                                                                        @endif
-
-                                                                        <div class="mb-3">
-                                                                            <label for="role" class="form-label">Status</label>
-                                                                            <select class="form-select" aria-label="role" name="status">
-                                                                                <option selected value="">Select Option </option>
-                                                                                <option value="active">Active</option>
-                                                                                <option value="closed">Closed</option>
-                                                                                <option value="reset">Reset (This will remove all applicant)</option>
-                                                                            </select>
-                                                                        </div>
-
-                                                                    <hr>
-                                                                    <div class="text-end">
-                                                                        <button type="submit" id="submit-button" class="btn btn-primary">Save Changes</button>
-                                                                    </div>
-                                                                </form>
-                                                            </div>
-                                                        </div><!-- /.modal-content -->
-                                                    </div><!-- /.modal-dialog -->
-                                                </div><!-- /.modal -->
                                             </div>
                                         </td>
                                     </tr>
@@ -176,6 +80,113 @@
     <!-- end row -->
 </div>
 <!-- end page title -->
+
+@foreach($jobVacancies as $jobVacancy)
+
+<div id="delete{{$jobVacancy->id}}" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body text-center p-5">
+                <div class="text-end">
+                    <button type="button" class="btn-close text-end" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="mt-2">
+                    <lord-icon src="https://cdn.lordicon.com/gsqxdxog.json" trigger="hover" style="width:150px;height:150px">
+                    </lord-icon>
+                    <h4 class="mb-3 mt-4">Are you sure you want to delete <br/> {{ $jobVacancy->title }}?</h4>
+                    <form action="{{ url('/admin/deleteJobVacancy') }}" method="POST">
+                        @csrf
+                        <input name="job_id" type="hidden" value="{{$jobVacancy->id}}">
+                        <hr>
+                        <button type="submit" id="submit-button" class="btn btn-danger w-100">Yes, Delete</button>
+                    </form>
+                </div>
+            </div>
+            <div class="modal-footer bg-light p-3 justify-content-center">
+
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+
+<div id="edit{{$jobVacancy->id}}" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content border-0 overflow-hidden">
+            <div class="modal-header p-3">
+                <h4 class="card-title mb-0">Edit Job Vacancy</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body">
+                <form action="{{ url('/admin/updateJobVacancy') }}" method="post" enctype="multipart/form-data">
+                    @csrf
+
+                        <input name="job_id" type="hidden" value="{{$jobVacancy->id}}">
+
+                        <div class="mb-3">
+                            <label for="role" class="form-label">Vacancy Type</label>
+                            <select class="form-select" aria-label="role" name="type" required>
+                                <option @if($jobVacancy->type == 'Job Vacancy') selected  @endif value="Job Vacancy">Job Vacancy</option>
+                                <option @if($jobVacancy->type == 'Work Study') selected @endif value="Work Study">Work Study</option>
+                            </select>
+                        </div>
+                    
+                        <div class="mb-3">
+                            <label for="title" class="form-label">Title</label>
+                            <input type="text" class="form-control" name="title" value="{{ $jobVacancy->title }}" id="title">
+                        </div>
+                    
+                        <div class="mb-3">
+                            <label for="description">Description</label>
+                            <textarea class="ckeditor" id="description" name="description">{!! $jobVacancy->description !!}</textarea>
+                        </div>
+                    
+                        <div class="mb-3">
+                            <label for="requirements">Requirements</label>
+                            <textarea class="ckeditor" id="requirements" name="requirements">{!! $jobVacancy->requirements !!}</textarea>
+                        </div>
+                    
+                        <div class="mb-3">
+                            <label for="applicationDeadline" class="form-label">Application Deadline</label>
+                            <input type="date" class="form-control" name="application_deadline" value="{{ $jobVacancy->application_deadline }}" id="applicationDeadline">
+                        </div>
+                    
+                        @if($jobVacancy->type == 'Work Study')
+                        <!-- CGPA Field Wrapper -->
+                        <div class="mb-3">
+                            <label for="cgpa" class="form-label">Minimum Student CGPA</label>
+                            <input type="text" class="form-control" name="cgpa" value="{{ $jobVacancy->cgpa }}" id="cgpa">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="role" class="form-label">Job Level</label>
+                            <select class="form-select" aria-label="role" name="level_id" id="level_id">
+                                @foreach($jobLevels as $jobLevel)<option @if($jobLevel->id == $jobVacancy->level_id) selected @endif value="{{ $jobLevel->id }}">{{ $jobLevel->name .' @ ₦'. number_format($jobLevel->hourly_rate/100, 2) .'/hour' }}</option>@endforeach
+                            </select>
+                        </div>
+                        @endif
+
+                        <div class="mb-3">
+                            <label for="role" class="form-label">Status</label>
+                            <select class="form-select" aria-label="role" name="status">
+                                <option selected value="">Select Option </option>
+                                <option value="active">Active</option>
+                                <option value="closed">Closed</option>
+                                <option value="reset">Reset (This will remove all applicant)</option>
+                            </select>
+                        </div>
+
+                    <hr>
+                    <div class="text-end">
+                        <button type="submit" id="submit-button" class="btn btn-primary">Save Changes</button>
+                    </div>
+                </form>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+@endforeach
 
 <div id="add" class="modal fade" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" style="display: none;">
     <!-- Fullscreen Modals -->

@@ -333,6 +333,9 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'admin'],
   Route::get('/studentExits', [App\Http\Controllers\Admin\StudentCareController::class, 'studentExits'])->name('studentExits')->middleware(['auth:admin']);
   Route::post('getExitApplication', [App\Http\Controllers\Admin\StudentCareController::class, 'getExitApplication'])->name('getExitApplication')->middleware(['auth:admin']);
   Route::post('manageExitApplication', [App\Http\Controllers\Admin\StudentCareController::class, 'manageExitApplication'])->name('manageExitApplication')->middleware(['auth:admin']);
+  Route::post('bulkManageExitApplications', [App\Http\Controllers\Admin\StudentCareController::class, 'bulkManageExitApplications'])->name('bulkManageExitApplications')->middleware(['auth:admin']);
+
+  
 
   Route::get('/studentResult', [App\Http\Controllers\Admin\ResultController::class, 'studentResult'])->name('studentResult')->middleware(['auth:admin']);
   Route::post('/result/getStudent', [App\Http\Controllers\Admin\ResultController::class, 'getStudent'])->name('getStudent')->middleware(['auth:admin']);
@@ -714,6 +717,9 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'staff'],
   Route::get('/studentExits', [App\Http\Controllers\Staff\StudentCareController::class, 'studentExits'])->name('studentExits')->middleware(['auth:staff']);
   Route::post('getExitApplication', [App\Http\Controllers\Staff\StudentCareController::class, 'getExitApplication'])->name('getExitApplication')->middleware(['auth:staff']);
   Route::post('manageExitApplication', [App\Http\Controllers\Staff\StudentCareController::class, 'manageExitApplication'])->name('manageExitApplication')->middleware(['auth:staff']);
+  Route::post('bulkManageExitApplications', [App\Http\Controllers\Staff\StudentCareController::class, 'bulkManageExitApplications'])->name('bulkManageExitApplications')->middleware(['auth:staff']);
+
+
 
   Route::get('/committees', [App\Http\Controllers\Staff\CommitteeController::class, 'committees'])->name('committees')->middleware(['auth:staff']);
   Route::post('/addCommittee', [App\Http\Controllers\Staff\CommitteeController::class, 'addCommittee'])->name('addCommittee')->middleware(['auth:staff']);

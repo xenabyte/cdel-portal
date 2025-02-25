@@ -5,14 +5,12 @@
     <div class="col-12">
         <div class="page-title-box d-sm-flex align-items-center justify-content-between">
             <h4 class="mb-sm-0">Student Exit Application(s)</h4>
-
             <div class="page-title-right">
                 <ol class="breadcrumb m-0">
                     <li class="breadcrumb-item"><a href="javascript: void(0);">Pages</a></li>
                     <li class="breadcrumb-item active">Student Exit Application(s)</li>
                 </ol>
             </div>
-
         </div>
     </div>
 </div>
@@ -26,95 +24,63 @@
                 <div class="flex-shrink-0">
                     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#getApplication">Get Application</button>
                 </div>
-            </div><!-- end card header -->
-        </div><!-- end card -->
+            </div>
+        </div>
     </div>
 </div>
 <!-- end row -->
 
 <div class="row">
     <div class="col-lg-12">
-        <div class="tab-content text-muted">
-            <div class="tab-pane fade show active" id="project-overview" role="tabpanel">
-                <div class="row">
-                    <div class="col-lg-12">
-                        <div class="card">
-                            @if(!empty($exitApplications) && $exitApplications->count() > 0)
-                            <div class="card-body">
-                                <div class="text-muted">
-                                    <h6 class="mb-3 fw-semibold text-uppercase">Pending Student Exit Application(s)</h6>
-                                    <div class="border-top border-top-dashed pt-3">
-                                        <div class="table-responsive">
-                                            <!-- Bordered Tables -->
-                                            <table id="fixed-header" class="table table-borderedless dt-responsive nowrap table-striped align-middle" style="width:100%">
-                                                <thead>
-                                                    <tr>
-                                                        <th scope="col">Id</th>
-                                                        <th scope="col">Application ID </th>
-                                                        <th scope="col">Student Name</th>
-                                                        <th scope="col">Purpose</th>
-                                                        <th scope="col">Destination</th>
-                                                        <th scope="col">Outing Date</th>
-                                                        <th scope="col">Returning Date</th>
-                                                        <th scope="col">File</th>
-                                                        <th scope="col">Status</th>
-                                                        <th scope="col"></th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    @foreach($exitApplications as $exitApplication)
-                                                        <tr>
-                                                            <th scope="row">{{ $loop->iteration }}</th>
-                                                            <th>#{{ sprintf("%06d", $exitApplication->id) }}</th>
-                                                            <td>
-                                                                @if(isset($exitApplication->student->applicant))
-                                                                    {{ $exitApplication->student->applicant->lastname . ' ' . $exitApplication->student->applicant->othernames }}
-                                                                @else
-                                                                    N/A
-                                                                @endif
-                                                            </td>
-                                                            <td>{{ $exitApplication->purpose }} </td>
-                                                            <td>{{ $exitApplication->destination }} </td>
-                                                            <td>{{ empty($exitApplication->exit_date) ? null : date('F j, Y', strtotime($exitApplication->exit_date)) }} </td>
-                                                            <td>{{ empty($exitApplication->return_date) ? null : date('F j, Y \a\t g:i A', strtotime($exitApplication->return_date)) }} </td>
-                                                            <td>
-                                                                <a href="{{ asset($exitApplication->file) }}" class="btn btn-outline-primary" target="_blank" rel="noopener noreferrer">View Document</a>
-                                                            </td>
-                                                            <td>{{ ucwords($exitApplication->status) }} </td>
-                                                            <td>
-                                                                <div class="hstack gap-3 fs-15">
-                                                                    <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#decline{{$exitApplication->id}}" class="link-danger">
-                                                                        <i class="ri-close-circle-fill"></i>
-                                                                    </a>
-                                                                    <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#approve{{$exitApplication->id}}" class="link-success">
-                                                                        <i class="ri-checkbox-circle-fill"></i>
-                                                                    </a>
-                                                                </div>
-                                                            </td>
-                                                        </tr>
-                                                    @endforeach
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                    
-                                </div>
-                            </div>
-                            <!-- end card body -->
-                            @endif
-
-                        </div>
-                        <!-- end card -->
+        <div class="card">
+            @if(!empty($exitApplications) && $exitApplications->count() > 0)
+            <div class="card-body">
+                <h6 class="mb-3 fw-semibold text-uppercase">Pending Student Exit Application(s)</h6>
+                <form action="{{ url('/admin/bulkManageExitApplications') }}" method="POST">
+                    @csrf
+                    <div class="table-responsive">
+                        <table id="fixed-header" class="table table-bordered dt-responsive nowrap table-striped align-middle" style="width:100%">
+                            <thead>
+                                <tr>
+                                    <th scope="col"><input type="checkbox" id="select-all"></th>
+                                    <th scope="col">Application ID</th>
+                                    <th scope="col">Student Name</th>
+                                    <th scope="col">Purpose</th>
+                                    <th scope="col">Destination</th>
+                                    <th scope="col">Outing Date</th>
+                                    <th scope="col">Returning Date</th>
+                                    <th scope="col">File</th>
+                                    <th scope="col">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($exitApplications as $exitApplication)
+                                    <tr>
+                                        <td><input type="checkbox" name="exit_ids[]" value="{{ $exitApplication->id }}"></td>
+                                        <td>#{{ sprintf("%06d", $exitApplication->id) }}</td>
+                                        <td>{{ $exitApplication->student->applicant->lastname ?? 'N/A' }} {{ $exitApplication->student->applicant->othernames ?? '' }}</td>
+                                        <td>{{ $exitApplication->purpose }}</td>
+                                        <td>{{ $exitApplication->destination }}</td>
+                                        <td>{{ empty($exitApplication->exit_date) ? null : date('F j, Y', strtotime($exitApplication->exit_date)) }}</td>
+                                        <td>{{ empty($exitApplication->return_date) ? null : date('F j, Y \a\t g:i A', strtotime($exitApplication->return_date)) }}</td>
+                                        <td><a href="{{ asset($exitApplication->file) }}" class="btn btn-outline-primary" target="_blank">View Document</a></td>
+                                        <td>{{ ucwords($exitApplication->status) }}</td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
                     </div>
-                    <!-- end col -->
-                </div>
-                <!-- end row -->
+                    <div class="d-flex justify-content-end mt-3">
+                        <button type="submit" name="action" value="approved" class="btn btn-success me-2">Approve Selected</button>
+                        <button type="submit" name="action" value="declined" class="btn btn-danger">Decline Selected</button>
+                    </div>
+                </form>
             </div>
+            @endif
         </div>
     </div>
-    <!-- end col -->
 </div>
-<!-- end row -->
+
 
 @foreach($exitApplications as $exitApplication)
 <div id="decline{{$exitApplication->id}}" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
@@ -127,7 +93,7 @@
                 <div class="mt-2">
                     <lord-icon src="https://cdn.lordicon.com/gsqxdxog.json" trigger="loop" colors="primary:#f7b84b,secondary:#f06548" style="width:100px;height:100px"></lord-icon>
                     </lord-icon>
-                    <h4 class="mb-3 mt-4">Are you sure you want to approve <br/> {{ isset($exitApplication->student->applicant)? $exitApplication->student->applicant->lastname .' ' . $exitApplication->student->applicant->othernames: null }} exit application?</h4>
+                    <h4 class="mb-3 mt-4">Are you sure you want to decline <br/> {{ isset($exitApplication->student->applicant)?$exitApplication->student->applicant->lastname .' ' . $exitApplication->student->applicant->othernames:null}} exit application?</h4>
                     <form action="{{ url('/admin/manageExitApplication') }}" method="POST">
                         @csrf
                         <input name="exit_id" type="hidden" value="{{$exitApplication->id}}">
@@ -154,7 +120,7 @@
                 <div class="mt-2">
                     <lord-icon src="https://cdn.lordicon.com/gsqxdxog.json" trigger="hover" style="width:150px;height:150px">
                     </lord-icon>
-                    <h4 class="mb-3 mt-4">Are you sure you want to approve <br/> {{ isset($exitApplication->student->applicant)?$exitApplication->student->applicant->lastname .' ' . $exitApplication->student->applicant->othernames:null}} exit application?</h4>
+                    <h4 class="mb-3 mt-4">Are you sure you want to approve <br/> {{ isset($exitApplication->student->applicant)? $exitApplication->student->applicant->lastname .' ' . $exitApplication->student->applicant->othernames: null }} exit application?</h4>
                     <form action="{{ url('/admin/manageExitApplication') }}" method="POST">
                         @csrf
                         <input name="exit_id" type="hidden" value="{{$exitApplication->id}}">
@@ -196,4 +162,11 @@
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
+
+<script>
+    document.getElementById("select-all").addEventListener("change", function() {
+        let checkboxes = document.querySelectorAll("input[name='exit_ids[]']");
+        checkboxes.forEach(checkbox => checkbox.checked = this.checked);
+    });
+</script>
 @endsection
