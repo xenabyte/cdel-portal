@@ -807,7 +807,7 @@ class StaffController extends Controller
 
     
         $file = $request->file('result');
-        $processResult = Result::processResult($file, $courseId, $uploadType, $programmeCategoryId, $globalData);
+        $processResult = Result::processResult($file, $courseId, $uploadType, $programmeCategoryId, $academicSession);
 
         if($processResult != 'success'){
             alert()->error('oops!', $processResult)->persistent('Close');
