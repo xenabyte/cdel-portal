@@ -78,7 +78,7 @@ class Result
                 $studentRegistration->exam_score = $examScore;
             }else{
                 $examScore = $studentRegistration->exam_score;
-                $studentRegistration->test_score = $testScore;
+                $studentRegistration->ca_score = $testScore;
             }
 
 
