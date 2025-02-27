@@ -118,7 +118,7 @@ class StudentCareController extends Controller
         }
     
         $globalData = $request->input('global_data');
-        $academicSession = $globalData['sessionSetting']['academic_session'];
+        $academicSession = $globalData->sessionSetting['academic_session'];
         $exitIds = $request->exit_ids;
     
         foreach ($exitIds as $exitId) {
