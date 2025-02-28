@@ -4,6 +4,8 @@
     $programme = $student->programme;
     $maxUnit = !empty($student->credit_load)?$student->credit_load:24;
     $levelAdviser = $programme->academicAdvisers->where('level_id', $student->level_id)->where('academic_session', $student->academic_session)->first();
+
+    $allowedMatrics = ['23/04NSS357']; 
 ?>
 @section('content')
 <style>
@@ -152,8 +154,8 @@
             </div>
             <!--end col-->
         </div>
-        @elseif($levelAdviser && $levelAdviser->course_registration != 'start')        
-            <div class="row justify-content-center">
+        @if(($levelAdviser && $levelAdviser->course_registration != 'start') || ($levelAdviser && $levelAdviser->course_registration == 'stop' && in_array($student->matric_number, $allowedMatrics)))
+        <div class="row justify-content-center">
                 <div class="col-lg-6">
                     <div class="card">
                         <div class="card-body">
