@@ -27,6 +27,7 @@ class CreateProgrammesTable extends Migration
             $table->unsignedBigInteger('web_id')->unique();
             $table->string('slug')->nullable();
             $table->string('academic_session')->nullable();
+            $table->string('minimum_cgpa')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

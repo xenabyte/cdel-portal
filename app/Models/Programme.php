@@ -23,7 +23,8 @@ class Programme extends Model
         'code_number',
         'matric_last_number',
         'academic_session',
-        'course_registration'
+        'course_registration',
+        'minimum_cgpa'
     ];
 
     /**

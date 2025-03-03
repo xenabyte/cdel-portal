@@ -431,7 +431,7 @@ class AcademicController extends Controller
 
         $pdf = new Pdf();
 
-        if(empty($studentRegistration)){
+        if(!empty($studentRegistration)){
             $courseReg = $pdf->generateCourseRegistration($studentId, $academicSession);
 
             $studentRegistration = StudentCourseRegistration::create([
