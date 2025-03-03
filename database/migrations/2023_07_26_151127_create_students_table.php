@@ -22,6 +22,9 @@ class CreateStudentsTable extends Migration
             $table->unsignedBigInteger('programme_id')->nullable();
             $table->string('academic_session')->nullable();
             $table->string('image')->nullable();
+            $table->string('signature')->nullable();
+            $table->string('anti_drug_status')->nullable();
+            $table->string('matriculation_status')->nullable();
             $table->unsignedBigInteger('level_id')->nullable();
             $table->integer('credit_load')->default(0);
             $table->boolean('is_passed_out')->default(false);

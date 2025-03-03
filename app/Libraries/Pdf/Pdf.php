@@ -404,5 +404,33 @@ Class Pdf {
 
         return $fileDirectory;
     }
+
+    public function generateAntiDrugDeclaration($studentId){
+        $options = [
+            'isRemoteEnabled' => true,
+            'encryption' => '128',
+            'no_modify' => true,
+        ];
+
+        $student = Student::with('applicant', 'academicLevel', 'faculty', 'department', 'programme')->where('id', $studentId)->first();
+        $name = $student->applicant->lastname.' '.$student->applicant->othernames;
+        $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $name .' anti-drug declaration')));
+
+
+        $dir = public_path('uploads/student/anti_drug_declarations');
+        if (!file_exists($dir)) {
+            mkdir($dir, 0755, true);
+        }
+
+        $fileDirectory = 'uploads/student/anti_drug_declarations/'.$slug.'.pdf';
+
+        $data = ['info' => $student];
+
+        $pdf = PDFDocument::loadView('pdf.antiDrugDeclaration', $data)
+        ->setOptions($options)
+        ->save($fileDirectory);
+
+        return $fileDirectory;
+    }
     
 }

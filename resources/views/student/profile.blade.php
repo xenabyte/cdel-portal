@@ -18,7 +18,7 @@
 </div>
 
 <div class="row">
-    <div class="col-xxl-3">
+    <div class="col-xxl-4">
         <div class="card mt-n5">
             <div class="card-body p-4">
                 <div class="text-center">
@@ -29,6 +29,45 @@
                     <p class="text-muted mb-0">Programme: {{ $student->programme->name }}</p>
                     <p class="text-muted mb-0 text-bold">Matric Number: {{  $student->matric_number }}</p>
                     <p class="text-muted mb-0 text-bold">Level: {{ $student->academicLevel->level }} Level</p>
+
+                    @if(empty($student->signature))
+                    <hr>
+                    <form class="text-start" action="{{ url('student/profile/saveBioData') }}" method="POST" enctype="multipart/form-data">
+                        @csrf
+
+                        <div class="alert alert-info">
+                            <h5 class="alert-heading text-black">Steps to Upload a Signature Without Background</h5>
+                            <ol>
+                                <li><strong>Sign on a White Paper</strong> – Use a clean white sheet and sign with a black or dark-colored pen.</li>
+                                <li><strong>Take a Picture</strong> – Use your phone camera to snap a clear and well-lit photo of your signature. Ensure there are no shadows or extra marks.</li>
+                                <li><strong>Remove Background</strong> –  
+                                    <ul>
+                                        <li>Visit <a href="https://www.remove.bg" target="_blank">remove.bg</a>.</li>
+                                        <li>Upload the signature image.</li>
+                                        <li>The website will automatically remove the background.</li>
+                                    </ul>
+                                </li>
+                                <li><strong>Download the Transparent Image</strong> – Click the download button to save the processed image with a transparent background.</li>
+                                <li><strong>Upload the Signature</strong> – Use the downloaded transparent signature file below (e.g., documents, forms, or digital signing).</li>
+                            </ol>
+                            <p>This method ensures a clean and professional-looking signature without any unwanted background. 🚀</p>
+                        </div>
+
+                        <input type="hidden" name="student_id" value="{{ $student->id }}">
+
+                        <div class="col-lg-12">
+                            <div class="form-floating">
+                                <input type="file" class="form-control" id="signature" name="signature">
+                                <label for="signature"></label>
+                            </div>
+                        </div>
+                        <br>
+                        <button type="submit" id="submit-button" class="btn btn-block btn-fill btn-primary"> Submit</button>
+                    </form>
+                    @else
+                    <hr>
+                    <img src="{{asset($student->signature)}}" class="avatar-xl img-thumbnail shadow" alt="user-profile-image"> 
+                    @endif
 
                     <hr>
                     <form class="text-start" action="{{ url('student/setMode') }}" method="POST">
@@ -54,7 +93,7 @@
     
     </div>
     <!--end col-->
-    <div class="col-xxl-9">
+    <div class="col-xxl-8">
         <div class="card mt-xxl-n5">
             <div class="card-header">
                 <ul class="nav nav-tabs-custom rounded card-header-tabs border-bottom-0" role="tablist">
@@ -148,7 +187,6 @@
                                         <input type="date" class="form-control"  id="dob" name="dob" value="{{ $applicant->dob }}" required />
                                     </div>
                                 </div>
-                                
 
 
                                 <div class="col-lg-4">

@@ -168,8 +168,6 @@ $studentRegistrations = $student->courseRegistrationDocument()->orderBy('created
                         @endif
                     </div>
 
-
-
                     <div class="table-responsive border-top border-top-dashed mt-4">
                         <table class="table mb-0 table-borderless">
                             <tbody>

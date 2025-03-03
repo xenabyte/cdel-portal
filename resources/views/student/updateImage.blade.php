@@ -81,7 +81,7 @@
                             </div>
 
                             <div class="mt-4">
-                                <button class="btn btn-success w-100" id='submit-button' type="submit">Uploade Image</button>
+                                <button class="btn btn-success w-100" id='submit-button' type="submit">Upload Image</button>
                             </div>
 
                         </form>

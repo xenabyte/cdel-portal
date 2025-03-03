@@ -193,6 +193,16 @@ class StudentController extends Controller
             $applicant->lga = $request->lga;
         }
 
+        if(!empty($request->signature) && $request->signature != $applicant->signature){
+            $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $student->slug.'-signature')));
+
+            $imageUrl = 'uploads/student/signature/'.$slug.'.'.$request->file('signature')->getClientOriginalExtension();
+            $image = $request->file('signature')->move('uploads/student/signature/', $imageUrl);
+
+            $student->signature = $imageUrl;
+            $student->save();
+        }
+
         if($applicant->save()){
             alert()->success('Changes Saved', 'Bio data saved successfully')->persistent('Close');
             return redirect()->back();
@@ -1284,7 +1294,6 @@ class StudentController extends Controller
         $studentId = $student->id;
         $levelId = $student->level_id;
         $globalData = $request->input('global_data');
-        $admissionSession = $globalData->sessionSetting['admission_session'];
         $academicSession = $globalData->sessionSetting['academic_session'];
 
         $paymentCheck = $this->checkSchoolFees($student, $academicSession, $levelId);
@@ -1401,5 +1410,65 @@ class StudentController extends Controller
 
         return response()->json(['message' => 'Not authenticated'], 401);
     }
+
+
+    public function antiDrugDeclaration(Request $request){
+        $student = Auth::guard('student')->user();
+        $levelId = $student->level_id;
+        $globalData = $request->input('global_data');
+        $academicSession = $globalData->sessionSetting['academic_session'];
+
+        $paymentCheck = $this->checkSchoolFees($student, $academicSession, $levelId);
+
+        if(empty($student->image)){
+            return view('student.updateImage', [
+                'payment' => $paymentCheck->schoolPayment,
+                'passTuition' => $paymentCheck->passTuitionPayment,
+                'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
+                'passEightyTuition' => $paymentCheck->passEightyTuition,
+                'studentPendingTransactions' => $paymentCheck->studentPendingTransactions
+            ]);
+        }
+
+        return view('student.antiDrugDeclaration', [
+            'payment' => $paymentCheck->schoolPayment,
+            'passTuition' => $paymentCheck->passTuitionPayment,
+            'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
+            'passEightyTuition' => $paymentCheck->passEightyTuition
+        ]);
+    }
+
+
+    
+
+    public function saveAntiDrugDeclaration(Request $request){
+        $validator = Validator::make($request->all(), [
+            'anti_drug_status' => 'required',
+        ]);
+
+        if($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+
+        $student = Auth::guard('student')->user();
+        $studentId = $student->id;
+
+        $pdf = new Pdf();
+        $antiDrug = $pdf->generateAntiDrugDeclaration($studentId);
+
+        if(!empty($antiDrug)){
+            $student->anti_drug_status = $antiDrug;
+            $student->save();
+
+            return redirect(asset($antiDrug));
+        }
+
+        alert()->error('Oops!', 'Something went wrong')->persistent('Close');
+        return redirect()->back();
+
+    }
+
+    
     
 }

@@ -433,4 +433,28 @@ class CommitteeController extends Controller
         alert()->error('Oops!', 'Something went wrong')->persistent('Close');
         return redirect()->back();
     }
+
+    public function deleteMember(Request $request){
+        $validator = Validator::make($request->all(), [
+            'member_id' => 'required',
+        ]);
+
+        if($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+
+        if(!$member = CommitteeMember::find($request->member_id)){
+            alert()->error('Oops', 'Invalid Member ')->persistent('Close');
+            return redirect()->back();
+        }
+
+        if($member->delete()){
+            alert()->success('Meeting Deleted Successfully', '')->persistent('Close');
+            return redirect()->back();
+        }
+
+        alert()->error('Oops!', 'Something went wrong')->persistent('Close');
+        return redirect()->back();
+    }
 }

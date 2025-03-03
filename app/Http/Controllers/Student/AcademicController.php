@@ -24,6 +24,8 @@ use App\Models\ResultApprovalStatus;
 use App\Models\CoursePerProgrammePerAcademicSession;
 
 use App\Libraries\Pdf\Pdf;
+use App\Mail\NotificationMail;
+
 
 use SweetAlert;
 use Mail;
@@ -439,11 +441,17 @@ class AcademicController extends Controller
                 'level_id' => $student->level_id,
                 'programme_category_id' => $student->programme_category_id
             ]);
+
+            $senderName = env('SCHOOL_NAME');
+            $receiverName = $student->applicant->lastname .' ' . $student->applicant->othernames;
+            $message = 'Your course registration has been regenerated';
+    
+            $mail = new NotificationMail($senderName, $message, $receiverName, $courseReg);
+            Mail::to($student->email)->send($mail);
+
+            return redirect(asset($courseReg));
         }
 
-        $courseReg = $pdf->generateCourseRegistration($studentId, $academicSession);
-
-        return redirect(asset($studentRegistration->file));
     }
 
     public function allCourseRegs(Request $request){

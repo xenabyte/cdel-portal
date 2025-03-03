@@ -352,6 +352,8 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'admin'],
   Route::get('/committee/{slug}', [App\Http\Controllers\Admin\CommitteeController::class, 'committee'])->name('committee')->middleware(['auth:admin']);
   Route::post('/assignCommitteePosition', [App\Http\Controllers\Admin\CommitteeController::class, 'assignCommitteePosition'])->name('assignCommitteePosition')->middleware(['auth:admin']);
   Route::post('/addMember', [App\Http\Controllers\Admin\CommitteeController::class, 'addMember'])->name('addMember')->middleware(['auth:admin']);
+  Route::post('/deleteMember', [App\Http\Controllers\Admin\CommitteeController::class, 'deleteMember'])->name('deleteMember')->middleware(['auth:admin']);
+
 
   Route::post('/createMeeting', [App\Http\Controllers\Admin\CommitteeController::class, 'createMeeting'])->name('createMeeting')->middleware(['auth:admin']);
   Route::post('/updateMeeting', [App\Http\Controllers\Admin\CommitteeController::class, 'updateMeeting'])->name('updateMeeting')->middleware(['auth:admin']);
@@ -476,6 +478,9 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'student'
   Route::post('/updatePassword', [App\Http\Controllers\Student\StudentController::class, 'updatePassword'])->name('updatePassword')->middleware(['auth:student']);
   Route::post('/uploadImage', [App\Http\Controllers\Student\StudentController::class, 'uploadImage'])->name('uploadImage')->middleware(['auth:student']);
 
+  Route::get('/antiDrugDeclaration', [App\Http\Controllers\Student\StudentController::class, 'antiDrugDeclaration'])->name('antiDrugDeclaration')->middleware(['auth:student']);
+  Route::post('/saveAntiDrugDeclaration', [App\Http\Controllers\Student\StudentController::class, 'saveAntiDrugDeclaration'])->name('saveAntiDrugDeclaration')->middleware(['auth:student']);
+  
   
   Route::get('/transactions', [App\Http\Controllers\Student\StudentController::class, 'transactions'])->name('transactions')->middleware(['auth:student']);
   Route::get('/walletTransactions', [App\Http\Controllers\Student\StudentController::class, 'walletTransactions'])->name('walletTransactions')->middleware(['auth:student']);

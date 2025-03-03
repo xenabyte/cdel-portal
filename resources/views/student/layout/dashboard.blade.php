@@ -297,30 +297,14 @@
                                 <i class="mdi mdi-view-dashboard"></i> <span>Dashboard</span>
                             </a>
                         </li>
-                        @if($student->programme_category == ProgrammeCategory::getProgrammeCategory(ProgrammeCategory::UNDERGRADUATE))
+
+                        @if($student->programme_category != ProgrammeCategory::getProgrammeCategory(ProgrammeCategory::UNDERGRADUATE))
                         <li class="nav-item">
                             <a class="nav-link menu-link" href="{{ url('/student/hostelBooking') }}">
                                 <i class="mdi mdi-warehouse"></i> <span>Hostel Booking</span>
                             </a>
                         </li>
                         @endif
-
-                        <li class="nav-item">
-                            <a class="nav-link menu-link" href="#workStudy" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="workStudy">
-                                <i class="mdi mdi-account-tie"></i> <span data-key="t-workStudy">Work Study</span>
-                            </a>
-                            <div class="collapse menu-dropdown" id="workStudy">
-                                <ul class="nav nav-sm flex-column">
-                                    <li class="nav-item">
-                                        <a href="{{ url('/student/vacancies') }}" class="nav-link">Vacancies</a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a href="{{ url('/student/applications') }}" class="nav-link">Applications</a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </li>
-
                         
                         {{-- @if(!empty($student->image) && !empty($student->linkedIn) && !empty($student->bandwidth_username))
                             @if($passTuition) --}}
@@ -335,6 +319,42 @@
                                     <i class="mdi mdi-account-child-circle"></i> <span data-key="t-transaction">Mentor</span>
                                 </a>
                             </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link menu-link" href="#workStudy" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="workStudy">
+                                    <i class="mdi mdi-account-tie"></i> <span data-key="t-workStudy">Work Study</span>
+                                </a>
+                                <div class="collapse menu-dropdown" id="workStudy">
+                                    <ul class="nav nav-sm flex-column">
+                                        <li class="nav-item">
+                                            <a href="{{ url('/student/vacancies') }}" class="nav-link">Vacancies</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a href="{{ url('/student/applications') }}" class="nav-link">Applications</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+    
+    
+                            @if($student->programme_category != ProgrammeCategory::getProgrammeCategory(ProgrammeCategory::UNDERGRADUATE))
+                            <li class="nav-item">
+                                <a class="nav-link menu-link" href="#eMatric" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="eMatric">
+                                    <i class="mdi mdi-nut"></i> <span data-key="t-eMatric">E-Matriculation</span>
+                                </a>
+                                <div class="collapse menu-dropdown" id="eMatric">
+                                    
+                                    <ul class="nav nav-sm flex-column">
+                                        <li class="nav-item">
+                                            <a href="{{ url('/student/profile') }}" class="nav-link">Upload Signature</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a href="{{ url('/student/antiDrugDeclaration') }}" class="nav-link">Anti-Drug <br> Declaration </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+                            @endif
 
                             <li class="nav-item">
                                 <a class="nav-link menu-link" href="#bandwidth" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="transaction">
@@ -427,9 +447,16 @@
 
                             <li class="nav-item">
                                 <a class="nav-link menu-link" href="{{ url('student/exits') }}">
-                                    <i class="mdi mdi-arrow-top-right-bold-box"></i> <span data-key="t-transaction">Exit(s)</span>
+                                    <i class="mdi mdi-arrow-top-right-bold-box"></i> <span data-key="t-transaction">Exit(s) Applications</span>
                                 </a>
                             </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link menu-link" href="{{ url('student/profile') }}">
+                                    <i class="mdi mdi-cog-outline"></i> <span data-key="t-cog">Settings</span>
+                                </a>
+                            </li>
+                            
                             {{-- @endif
                         @endif --}}
                        

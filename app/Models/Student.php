@@ -52,7 +52,10 @@ class Student extends Authenticatable
         'graduation_session',
         'clearance_status',
         'one_signal_token',
-        'programme_category_id'
+        'programme_category_id',
+        'signature',
+        'anti_drug_status',
+        'matriculation_status',
     ];
 
     /**
