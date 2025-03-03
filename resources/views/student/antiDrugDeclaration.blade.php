@@ -51,9 +51,8 @@
     </div>
     <!--end col-->
 </div>
-@endif
 
-@if(!empty($student->anti_drug_status))
+@elseif(!empty($student->anti_drug_status))
 <div class="row justify-content-center">
     <div class="col-lg-6">
         <div class="card">
@@ -84,9 +83,7 @@
     </div>
     <!--end col-->
 </div>
-@endif
-
-@if(empty($student->anti_drug_status))
+@elseif(empty($student->anti_drug_status))
 <div class="row justify-content-center">
     <div class="col-lg-6">
         <div class="card">
