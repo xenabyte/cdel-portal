@@ -489,7 +489,7 @@
                         <select class="form-select" aria-label="staff_id" name="staff_id">
                             <option selected value= "">Select Staff </option>
                             @foreach($committee->members as $member)
-                            <option value="{{ $member->staff->id }}">{{ $member->staff->lastname.' '.$member->staff->othernames }}</option>
+                            @if(!empty($member->staff))<option value="{{ $member->staff->id }}">{{ $member->staff->lastname.' '.$member->staff->othernames }}</option>@endif
                             @endforeach
                         </select>
                     </div>
