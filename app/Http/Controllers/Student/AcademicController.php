@@ -434,13 +434,15 @@ class AcademicController extends Controller
         if(!empty($studentRegistration)){
             $courseReg = $pdf->generateCourseRegistration($studentId, $academicSession);
 
-            $studentRegistration = StudentCourseRegistration::create([
-                'student_id' => $studentId,
-                'academic_session' => $academicSession,
-                'file' => $courseReg,
-                'level_id' => $student->level_id,
-                'programme_category_id' => $student->programme_category_id
-            ]);
+            // $studentRegistration = StudentCourseRegistration::create([
+            //     'student_id' => $studentId,
+            //     'academic_session' => $academicSession,
+            //     'file' => $courseReg,
+            //     'level_id' => $student->level_id,
+            //     'programme_category_id' => $student->programme_category_id
+            // ]);
+
+            $studentRegistration = $studentRegistration->save();
 
             $senderName = env('SCHOOL_NAME');
             $receiverName = $student->applicant->lastname .' ' . $student->applicant->othernames;
