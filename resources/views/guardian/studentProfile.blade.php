@@ -6,6 +6,8 @@ $name = $student->applicant->lastname.' '.$student->applicant->othernames;
 $transactions = $student->transactions()->orderBy('created_at', 'desc')->get();
 $studentRegistrations = $student->courseRegistrationDocument()->orderBy('created_at', 'desc')->take(10)->get();
 $currentHostelAllocation = $student->currentHostelAllocation;
+$failedCourses = $student->registeredCourses()->where('grade', 'F')->where('re_reg', null)->get();
+
 @endphp
 @section('content')
 <!-- start page title -->
@@ -330,6 +332,8 @@ $currentHostelAllocation = $student->currentHostelAllocation;
                                         <p class="text-muted border-top border-top-dashed"><strong>CGPA:</strong> {{ $student->cgpa }} <br>
                                             <strong>Class:</strong> {{ $student->degree_class }}<br>
                                             <strong>Standing:</strong> {{ $student->standing }}<br>
+                                            @if($failedCourses->count() > 0)<strong>Failed Courses:</strong> <span class="text-danger">@foreach($failedCourses as $failedCourse) {{ $failedCourse.',' }} @endforeach</span> @endif <br>
+
                                         </p>
                                     </div>
                                     <div class="table-responsive border-top border-top-dashed">
@@ -551,6 +555,8 @@ $currentHostelAllocation = $student->currentHostelAllocation;
                                             <strong>Class:</strong> {{ $student->degree_class }}<br>
                                             <strong>Standing:</strong> {{ $student->standing }}<br>
                                             <strong>Batch:</strong> {{ $student->batch }}<br>
+                                            @if($failedCourses->count() > 0)<strong>Failed Courses:</strong> <span class="text-danger">@foreach($failedCourses as $failedCourse) {{ $failedCourse.',' }} @endforeach</span> @endif <br>
+
                                         </p>
                                     </div>
                                     <div class="table-responsive border-top border-top-dashed">

@@ -213,6 +213,7 @@
                 @if($applicant->workStudyApplicant)
                     @php
                         $student = $applicant->workStudyApplicant;
+                        $failedCourses = $student->registeredCourses()->where('grade', 'F')->where('re_reg', null)->get();
                     @endphp
 
                     <div class="d-flex align-items-center mb-3">
@@ -237,6 +238,8 @@
                                 <p class="text-muted"><strong>CGPA:</strong> {{ $student->cgpa }} <br>
                                     <strong>Class:</strong> {{ $student->degree_class }}<br>
                                     <strong>Standing:</strong> {{ $student->standing }}<br>
+                                    @if($failedCourses->count() > 0)<strong>Failed Courses:</strong> <span class="text-danger">@foreach($failedCourses as $failedCourse) {{ $failedCourse.',' }} @endforeach</span> @endif <br>
+
                                 </p>
                             </div>
                         </div>

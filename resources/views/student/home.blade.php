@@ -6,6 +6,7 @@ $qrcode = 'https://quickchart.io/chart?chs=300x300&cht=qr&chl='.env('APP_URL').'
 $name = $student->applicant->lastname.' '.$student->applicant->othernames;
 $transactions = $student->transactions()->orderBy('created_at', 'desc')->take(10)->get();
 $studentRegistrations = $student->courseRegistrationDocument()->orderBy('created_at', 'desc')->take(10)->get();
+$failedCourses = $student->registeredCourses()->where('grade', 'F')->where('re_reg', null)->get();
 
 @endphp
 @section('content')
@@ -139,6 +140,7 @@ $studentRegistrations = $student->courseRegistrationDocument()->orderBy('created
                         <p class="text-muted border-top border-top-dashed pt-2"><strong>CGPA:</strong> {{ $student->cgpa }} <br>
                             <strong>Class:</strong> {{ $student->degree_class }}<br>
                             <strong>Standing:</strong> {{ $student->standing }}<br>
+                            @if($failedCourses->count() > 0)<strong>Failed Courses:</strong> <span class="text-danger">@foreach($failedCourses as $failedCourse) {{ $failedCourse.',' }} @endforeach</span> @endif <br>
                         </p>
 
                         @if($student->level_id >= $student->programme->duration && $student->is_passed_out)

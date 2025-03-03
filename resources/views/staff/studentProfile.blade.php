@@ -5,6 +5,8 @@ $qrcode = 'https://quickchart.io/chart?chs=300x300&cht=qr&chl='.env('APP_URL').'
 $name = $student->applicant->lastname.' '.$student->applicant->othernames;
 $transactions = $student->transactions()->orderBy('created_at', 'desc')->get();
 $studentRegistrations = $student->courseRegistrationDocument()->orderBy('created_at', 'desc')->take(10)->get();
+$failedCourses = $student->registeredCourses()->where('grade', 'F')->where('re_reg', null)->get();
+
 
     $staff = Auth::guard('staff')->user();
     $staffDeanRole = false;
@@ -282,6 +284,8 @@ $studentRegistrations = $student->courseRegistrationDocument()->orderBy('created
                                             <strong>Class:</strong> {{ $student->degree_class }}<br>
                                             <strong>Standing:</strong> {{ $student->standing }}<br>
                                             <strong>Batch:</strong> {{ $student->batch }}<br>
+                                            @if($failedCourses->count() > 0)<strong>Failed Courses:</strong> <span class="text-danger">@foreach($failedCourses as $failedCourse) {{ $failedCourse.',' }} @endforeach</span> @endif <br>
+
                                         </p>
                                     </div>
                                     <div class="table-responsive border-top border-top-dashed">

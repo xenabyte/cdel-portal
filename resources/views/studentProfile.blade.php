@@ -3,6 +3,8 @@
 
 $qrcode = 'https://quickchart.io/chart?chs=300x300&cht=qr&chl='.env('APP_URL').'/studentDetails/'.$student->slug;
 $name = $student->applicant->lastname.' '.$student->applicant->othernames;
+$failedCourses = $student->registeredCourses()->where('grade', 'F')->where('re_reg', null)->get();
+
 @endphp
 @section('content')
 <!-- start page title -->
@@ -98,6 +100,8 @@ $name = $student->applicant->lastname.' '.$student->applicant->othernames;
                                         <p class="text-muted border-top border-top-dashed">
                                             <strong>Class:</strong> {{ $student->degree_class }}<br>
                                             <strong>Standing:</strong> {{ $student->standing }}<br>
+                                            @if($failedCourses->count() > 0)<strong>Failed Courses:</strong> <span class="text-danger">@foreach($failedCourses as $failedCourse) {{ $failedCourse.',' }} @endforeach</span> @endif <br>
+
                                         </p>
                                     </div>
                                     <div class="table-responsive border-top border-top-dashed">
