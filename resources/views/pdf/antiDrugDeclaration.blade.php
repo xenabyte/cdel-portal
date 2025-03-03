@@ -97,9 +97,9 @@
         <div class="col-md-12">
             <div class="declaration">
                 <p>
-                    I, <strong>[Your Name]</strong>, having been admitted to the Physics Department of Thomas Adewumi University, 
-                    hereby declare that I have been made aware that possessing, consuming, or dealing in narcotic and intoxicating 
-                    drugs is an offense punishable by expulsion under Section 10.3, vii of the Student's Handbook of Information and Regulations.
+                    I, <strong>{{ $info->lastame.', '.$info->othernames }}</strong>, having been admitted to the {{ $info->department->name }} Department of {{env('SCHOOL_NAME')}} 
+                    Hereby declare that I have been made aware that possessing, consuming, or dealing in narcotic and intoxicating 
+                    drugs is an offense punishable by expulsion under Section 10.3, VII of the Student's Handbook of Information and Regulations.
                 </p>
                 
                 <p>
@@ -118,7 +118,7 @@
     <br>
     <div class="row text-justify">
         <p>
-            <img src="{{ asset($info->signature ) }}" width="10%"> DATE: {{ date('F j, Y') }}<br><br>
+            Student Signature: <img src="{{ asset($info->signature ) }}" width="10%">          DATE: {{ date('F j, Y') }}<br><br>
         </p>
     </div>
     <div class="row mt-4">
