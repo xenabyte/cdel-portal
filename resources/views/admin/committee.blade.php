@@ -223,7 +223,7 @@
                                 </td>
                             </tr><!-- end tr -->
 
-                            <div id="deleteMember{{$meeting->id}}" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
+                            <div id="deleteMember{{$member->id}}" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
                                 <div class="modal-dialog modal-dialog-centered">
                                     <div class="modal-content">
                                         <div class="modal-body text-center p-5">

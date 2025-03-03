@@ -434,7 +434,7 @@ class CommitteeController extends Controller
         return redirect()->back();
     }
 
-    public function deleteMember(Request $request){
+    public function p(Request $request){
         $validator = Validator::make($request->all(), [
             'member_id' => 'required',
         ]);

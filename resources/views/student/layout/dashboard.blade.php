@@ -298,7 +298,7 @@
                             </a>
                         </li>
 
-                        @if($student->programme_category != ProgrammeCategory::getProgrammeCategory(ProgrammeCategory::UNDERGRADUATE))
+                        @if($student->programme_category == ProgrammeCategory::getProgrammeCategory(ProgrammeCategory::UNDERGRADUATE))
                         <li class="nav-item">
                             <a class="nav-link menu-link" href="{{ url('/student/hostelBooking') }}">
                                 <i class="mdi mdi-warehouse"></i> <span>Hostel Booking</span>
@@ -337,7 +337,7 @@
                             </li>
     
     
-                            @if($student->programme_category != ProgrammeCategory::getProgrammeCategory(ProgrammeCategory::UNDERGRADUATE))
+                            @if($student->programme_category == ProgrammeCategory::getProgrammeCategory(ProgrammeCategory::UNDERGRADUATE))
                             <li class="nav-item">
                                 <a class="nav-link menu-link" href="#eMatric" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="eMatric">
                                     <i class="mdi mdi-nut"></i> <span data-key="t-eMatric">E-Matriculation</span>

@@ -108,7 +108,7 @@
                                 <br><br> I also commit to reporting any irregular behavior related to the possession, use, sale, or distribution of alcohol, tobacco, or any psychoactive/psychotropic substances that may occur within the institution or during activities involving its students.
                             </div>
                             <div class="mt-4">
-                                <form action="{{ url('/student/antiDrugDeclaration') }}" method="post" enctype="multipart/form-data">
+                                <form action="{{ url('/student/saveAntiDrugDeclaration') }}" method="post" enctype="multipart/form-data">
                                     @csrf
                                     <div class="form-check">
                                         <input type="checkbox" class="form-check-input" id="agreeCheckbox" name="anti_drug_status" required>

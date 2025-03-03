@@ -92,110 +92,39 @@
     <br>
     <div class="row">
         <div class="col-md-12 text-center">
-            <h4>Harmattan Semester Courses</h4>
+            <h4>Anti-Drug Declaration Form</h4>
         </div>
         <div class="col-md-12">
-            <div class="table-responsive">
-                <table class="table table-bordered table-striped">
-                    <thead>
-                    <tr>
-                        <th>SN</th>
-                        <th>Code</th>
-                        <th>Course Title</th>
-                        <th>Unit</th>
-                        <th>Status</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                        @php
-                            $firstSemester = 1;
-                            $secondSemester = 1;
-                            $totalFirstSemesterCreditUnits = 0;
-                            $totalSecondSemesterCreditUnits = 0;
-                        @endphp
-                        @foreach($registeredCourses as $firstSemsRegisteredCourse)
-                            @if($firstSemsRegisteredCourse->semester == 1)
-                            @php
-                                $totalFirstSemesterCreditUnits += $firstSemsRegisteredCourse->course_credit_unit;
-                            @endphp
-                                <tr>
-                                    <td>{{ $firstSemester++ }}</td>
-                                    <td>{{ $firstSemsRegisteredCourse->course->code }}</td>
-                                    <td>{{ ucwords(strtolower($firstSemsRegisteredCourse->course->name)) }}</td>
-                                    <td>{{ $firstSemsRegisteredCourse->course_credit_unit }}</td>
-                                    <td>{{ strtoupper(substr($firstSemsRegisteredCourse->course_status, 0, 1)) }}</td>
-                                </tr>
-                            @endif
-                        @endforeach
-                        <tr>
-                            <td colspan="3"><strong>Total Credit Units</strong></td>
-                            <td><strong>{{ $totalFirstSemesterCreditUnits }}</strong></td>
-                            <td></td>
-                        </tr>
-                    </tbody>
-                </table>
+            <div class="declaration">
+                <p>
+                    I, <strong>[Your Name]</strong>, having been admitted to the Physics Department of Thomas Adewumi University, 
+                    hereby declare that I have been made aware that possessing, consuming, or dealing in narcotic and intoxicating 
+                    drugs is an offense punishable by expulsion under Section 10.3, vii of the Student's Handbook of Information and Regulations.
+                </p>
+                
+                <p>
+                    In the event of such indulgence or suspicion, I am willing to undergo a medical examination, including blood tests 
+                    and urine analysis, as required by the institution.
+                </p>
+                
+                <p>
+                    I also commit to reporting any irregular behavior that I observe in relation to the possession, use, sale, or distribution 
+                    of alcohol, tobacco, or any psychoactive/psychotropic substances that may occur within the institution or during activities 
+                    conducted by any student of the institution.
+                </p>
             </div>
         </div>
     </div>
     <br>
-    <div class="row">
-        <div class="col-md-12 text-center">
-            <h4>Rain Semester Courses</h4>
-        </div>
-        <div class="col-md-12">
-            <div class="table-responsive">
-                <table class="table table-bordered table-stripped">
-                    <thead>
-                    <tr>
-                        <th>SN</th>
-                        <th>Code</th>
-                        <th>Course Title</th>
-                        <th>Unit</th>
-                        <th>Status</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                        @foreach($registeredCourses as $secondSemsRegisteredCourse)
-                            @if($secondSemsRegisteredCourse->semester == 2)
-                                @php
-                                    $totalSecondSemesterCreditUnits += $secondSemsRegisteredCourse->course_credit_unit;
-                                @endphp
-                                <tr>
-                                    <td>{{ $secondSemester++ }}</td>
-                                    <td>{{ $secondSemsRegisteredCourse->course->code }}</td>
-                                    <td>{{ ucwords(strtolower($secondSemsRegisteredCourse->course->name)) }}</td>
-                                    <td>{{ $secondSemsRegisteredCourse->course_credit_unit }}</td>
-                                    <td>{{ strtoupper(substr($secondSemsRegisteredCourse->course_status, 0, 1)) }}</td>
-                                </tr>
-                            @endif
-                        @endforeach
-                        <tr>
-                            <td colspan="3"><strong>Total Credit Units</strong></td>
-                            <td><strong>{{ $totalSecondSemesterCreditUnits }}</strong></td>
-                            <td></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
     <div class="row text-justify">
-        <p>By this CourseForm, I undertake that as a {{ $info->academicLevel->level }} Level student of {{ $info->department->name }} (Department) in the {{ $info->academic_session }} session, I shall remain in good standing, and maintain the minimum CGPA required by the laws and regulations of the Department/Faculty. If I do not meet the minimum required CGPA, I will be held solely responsible, and the department/Faculty shall take the required measures against me, as the case may be, in accordance with the University&apos;s Rules and regulations.</p>
-        @if(!empty($staffData))
-            <p>@if(!empty($staffData->studentCourseReg->level_adviser_id)) LEVEL ADVISER'S SIGNATURE: <img src="{{ asset($staffData->studentCourseReg->levelAdviser->signature ) }}" width="10%"> DATE: {{ date('F j, Y \a\t g:i A', strtotime($staffData->studentCourseReg->level_adviser_approved_date)) }}<br><br>@endif
-                @if(!empty($staffData->studentCourseReg->hod_id)) HOD'S SIGNATURE: <img src="{{ asset($staffData->studentCourseReg->hod->signature ) }}" width="10%"> DATE: {{ date('F j, Y \a\t g:i A', strtotime($staffData->studentCourseReg->hod_approved_date)) }}<br><br> @endif
-            </p>
-        @endif
+        <p>
+            <img src="{{ asset($info->signature ) }}" width="10%"> DATE: {{ date('F j, Y') }}<br><br>
+        </p>
     </div>
     <div class="row mt-4">
         <div class="col-md-6 text-left">
             <strong>Date Generated:</strong> {{ date('F j, Y') }}
         </div>
-        @if(!empty($studentCourseReg))
-        <div class="col-md-6 text-right">
-            <strong>Course Registration Date:</strong> {{ date('F j, Y', strtotime($studentCourseReg->created_at)) }}
-        </div>
-        @endif
     </div>
     
 </div>
