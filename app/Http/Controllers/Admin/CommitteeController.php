@@ -450,7 +450,7 @@ class CommitteeController extends Controller
         }
 
         if($member->delete()){
-            alert()->success('Meeting Deleted Successfully', '')->persistent('Close');
+            alert()->success('Member Deleted Successfully', '')->persistent('Close');
             return redirect()->back();
         }
 

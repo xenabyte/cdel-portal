@@ -530,7 +530,7 @@ $failedCourses = $student->registeredCourses()->where('grade', 'F')->where('re_r
                     <table id="buttons-datatables" class="display table table-stripped" style="width:100%">
                         <thead>
                             <tr>
-                                <th scope="col">Id</th>bhm
+                                <th scope="col">Id</th>
                                 <th scope="col">Reference</th>
                                 <th scope="col">Amount(₦)</th>
                                 <th scope="col">Payment For</th>
