@@ -147,7 +147,7 @@ $failedCourses = $student->registeredCourses()->where('grade', 'F')->where('re_r
                                         <p class="text-muted border-top border-top-dashed"><strong>CGPA:</strong> {{ $student->cgpa }} <br>
                                             <strong>Class:</strong> {{ $student->degree_class }}<br>
                                             <strong>Standing:</strong> {{ $student->standing }}<br>
-                                            @if($failedCourses->count() > 0)<strong>Failed Courses:</strong> <span class="text-danger">@foreach($failedCourses as $failedCourse) {{ $failedCourse->course_code.',' }} @endforeach</span> @endif <br>
+                                            @if($failedCourses->count() > 0)<strong class="text-danger">Failed Courses:</strong> <span class="text-danger">@foreach($failedCourses as $failedCourse) {{ $failedCourse->course_code.',' }} @endforeach</span> @endif <br>
 
                                         </p>
                                     </div>
