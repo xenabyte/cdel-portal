@@ -236,7 +236,7 @@
                                                 <h4 class="mb-3 mt-4">Are you sure you want to delete?</h4>
                                                 <form action="{{ url('/admin/deleteMember') }}" method="POST">
                                                     @csrf
-                                                    <input name="member_id" type="hidden" value="{{$deleteMember->id}}">
+                                                    <input name="member_id" type="hidden" value="{{$member->id}}">
                                                     <hr>
                                                     <button type="submit" id="submit-button" class="btn btn-danger w-100">Yes, Delete</button>
                                                 </form>

@@ -33,7 +33,6 @@ use App\Mail\NotificationMail;
 
 class AcademicController extends Controller
 {
-    //
 
     public function faculties(Request $request){
         $faculties = Faculty::with('departments')->get();
@@ -75,7 +74,19 @@ class AcademicController extends Controller
     public function departmentForCourses(){
         $staff = Auth::guard('staff')->user();
         $staffId = $staff->id;
+
+        $academicPlanningUnits = Unit::UNIT_ACADEMIC_PLANNING;
+
+        $isUnitHead = Unit::whereIn('name', $academicPlanningUnits)
+                    ->where('unit_head_id', $staff->id)
+                    ->exists();
+
+
         $department = Department::with('courses')->where('hod_id', $staff->id)->orderBy('id', 'DESC')->get();
+
+        if($isUnitHead){
+            $department = Department::with('courses')->orderBy('id', 'DESC')->get();
+        }
         // ->orWhere('faculty_id', 0)
         return view('staff.departmentForCourses', [
             'departments' => $department

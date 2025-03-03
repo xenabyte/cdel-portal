@@ -566,7 +566,7 @@
                             @endif
 
 
-                            @if($staffHODRole)
+                            @if($staffHODRole || $staffAcademicPlannerRole)
                             <li class="nav-item">
                                 <a class="nav-link menu-link" href="#deptSettings" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="deptSettings">
                                     <i class="mdi mdi-cards-variant"></i> <span  data-key="t-hot">Dept. Management</span>
