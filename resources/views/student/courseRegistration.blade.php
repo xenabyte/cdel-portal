@@ -154,7 +154,8 @@
             </div>
             <!--end col-->
         </div>
-        @elseif(($levelAdviser && $levelAdviser->course_registration != 'start') || ($levelAdviser && $levelAdviser->course_registration == 'stop' && in_array($student->matric_number, $allowedMatrics)))
+        @endif
+        @if(($levelAdviser && $levelAdviser->course_registration != 'start') || ($levelAdviser && $levelAdviser->course_registration == 'stop' && !in_array($student->matric_number, $allowedMatrics)))
         <div class="row justify-content-center">
                 <div class="col-lg-6">
                     <div class="card">
