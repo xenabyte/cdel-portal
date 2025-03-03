@@ -66,7 +66,7 @@
     </table>
     <div class="row" style="margin-top: 20%;">
         <div class="text-center">
-            <h1>Course Registration Form</h1>
+            <h1>Anti-Drug Declaration Form</h1>
             <br>
         </div>
     </div>
@@ -91,9 +91,6 @@
     </table>
     <br>
     <div class="row">
-        <div class="col-md-12 text-center">
-            <h4>Anti-Drug Declaration Form</h4>
-        </div>
         <div class="col-md-12">
             <div class="declaration">
                 <p>
