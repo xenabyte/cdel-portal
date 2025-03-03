@@ -6,7 +6,6 @@
     $name = $admin->name;
 
     $programmeCategory = new \App\Models\ProgrammeCategory;
-    
 ?>
 
 <head>
