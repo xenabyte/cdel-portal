@@ -452,7 +452,7 @@ class AcademicController extends Controller
             if (!empty($staffIds)) {
                 $otherData = new \stdClass();
                 $otherData->staffId = implode(',', $staffIds); // Join multiple IDs if both exist
-                $otherData->courseRegId = $request->reg_id;
+                $otherData->courseRegId = $studentRegistration->id;
 
                 if (!empty($studentRegistration->level_adviser_id)) {
                     $otherData->type = 'Level Adviser';
