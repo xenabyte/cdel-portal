@@ -62,6 +62,9 @@
             text-align: center;
             font-size: 14px; /* Slightly reduced font size */
         }
+        .congratulations {
+            text-transform: uppercase;
+        }
         .content ul {
             list-style-type: disc;
             margin-left: 20px;
@@ -108,9 +111,9 @@
             <p class="date"><strong>Date:</strong> {{ date('F j, Y', strtotime($created_at)) }}</p>
             <p>Dear <strong>{{ $student_name }}</strong>,</p>
             
-            <p class="congratulations"><strong>CONGRATULATIONS ON YOUR ADMISSION TO THE {{ $academic_session }} {{ $programmeCategory }} Degree PROGRAMME AT THOMAS ADEWUMI UNIVERSITY</strong></p>
+            <p class="congratulations"><strong>CONGRATULATIONS ON YOUR ADMISSION TO THE {{ $academic_session }} {{ $programmeCategory }} DEGREE PROGRAMME AT THOMAS ADEWUMI UNIVERSITY</strong></p>
 
-            <p>Congratulations! On behalf of Thomas Adewumi University, we are pleased to offer you a Provisional Admission into the {{ $programmeCategory }} Degree Programme for the {{ $programme_name }} under the {{ $faculty_name }} for the {{ $academic_session }} academic session.</p>
+            <p>Congratulations! On behalf of {{ env('SCHOOL_NAME') }}, we are pleased to offer you a Provisional Admission into the {{ $programmeCategory }} Degree Programme for the {{ $programme_name }} under the {{ $faculty_name }} for the {{ $academic_session }} academic session.</p>
 
             <p>This admission is for a full-time study period of two (2) years, consisting of six (6) semesters. We recognize your potential and are excited to welcome you into our academic community.</p>
                         
