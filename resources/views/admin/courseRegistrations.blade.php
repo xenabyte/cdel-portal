@@ -162,7 +162,7 @@ use \App\Models\ProgrammeCategory;
                                                     <a href="{{ url('admin/studentProfile/'.$pendingStudent->slug) }}" class="btn btn-success m-1"><i class= "ri-user-6-fill"></i> View Student</a>
                                                 </td>
                                             </tr>
-                                            @endforeach
+                                            @endif
                                         @endforeach
                                     </tbody>
                                 </table>
