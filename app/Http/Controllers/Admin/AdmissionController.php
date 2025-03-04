@@ -227,9 +227,12 @@ class AdmissionController extends Controller
 
         if(strtolower($status) == 'reverse_admission'){
             $student = Student::where('user_id', $applicantId)->first();
-            unlink($student->admission_letter);
-            $student->forceDelete();
 
+            if (file_exists($student->admission_letter)) {
+                unlink($student->admission_letter);
+            } 
+
+            $student->forceDelete();
 
             $applicant->status = 'submitted';
         }
