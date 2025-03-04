@@ -310,7 +310,7 @@ class AdmissionController extends Controller
         $pdf = new Pdf();
         $admissionLetter = $pdf->generateAdmissionLetter($applicant->slug);
 
-        if($admissionLetter){
+        if(!empty($admissionLetter)){
             $student = Student::with('programme', 'applicant')->where('user_id', $applicant->id)->first();
             $student->admission_letter = $admissionLetter;
             $student->save();
