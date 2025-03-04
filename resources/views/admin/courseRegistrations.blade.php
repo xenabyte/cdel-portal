@@ -149,6 +149,7 @@ use \App\Models\ProgrammeCategory;
                                     </thead>
                                     <tbody>
                                         @foreach($pendingStudents as $pendingStudent)
+                                            @if(!($pendingStudent->is_passed_out))
                                             <tr>
                                                 <th scope="row">{{ $loop->iteration }}</th>
                                                 <td>{{ $pendingStudent->applicant->lastname .' '. $pendingStudent->applicant->othernames}}</td>
@@ -161,6 +162,7 @@ use \App\Models\ProgrammeCategory;
                                                     <a href="{{ url('admin/studentProfile/'.$pendingStudent->slug) }}" class="btn btn-success m-1"><i class= "ri-user-6-fill"></i> View Student</a>
                                                 </td>
                                             </tr>
+                                            @endforeach
                                         @endforeach
                                     </tbody>
                                 </table>
