@@ -20,7 +20,7 @@
             position: relative;
             z-index: 1;
         }
-        .watermark {
+        /* .watermark {
             position: absolute;
             top: 0;
             left: 0;
@@ -29,8 +29,8 @@
             z-index: -1;
             background: url('{{ env('SCHOOL_LOGO') }}') center center no-repeat;
             background-size: 50%;
-            opacity: 0.1; /* Adjust for visibility */
-        }
+            opacity: 0.1; 
+        } */
         .header {
             text-align: center;
         }

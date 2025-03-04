@@ -49,7 +49,7 @@
             }
         }
 
-        .watermark {
+        /* .watermark {
             position: absolute;
             top: 0;
             left: 0;
@@ -61,6 +61,20 @@
             background-size: 40%;
             opacity: 0.1;
             background-image: url('{{ env('SCHOOL_LOGO') }}');
+        } */
+
+        @media print {
+            .watermark {
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                opacity: 0.1;
+                width: 50%;
+                height: auto;
+                z-index: -1;
+                page-break-before: always;
+            }
         }
 
         .watermark-text {

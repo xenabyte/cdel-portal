@@ -459,23 +459,26 @@ class AcademicController extends Controller
                 } elseif (!empty($studentRegistration->hod_id)) {
                     $otherData->type = 'Hod';
                 }
+
+                $courseReg = $pdf->generateCourseRegistration($studentId, $academicSession, $otherData);
+
+                $studentRegistration->file = $courseReg;
+                $studentRegistration->save();
+
+                $senderName = env('SCHOOL_NAME');
+                $receiverName = $student->applicant->lastname .' ' . $student->applicant->othernames;
+                $message = 'Your course registration has been regenerated';
+        
+                $mail = new NotificationMail($senderName, $message, $receiverName, $courseReg);
+                Mail::to($student->email)->send($mail);
+
+                return redirect(asset($courseReg));
             }
 
-            $courseReg = $pdf->generateCourseRegistration($studentId, $academicSession, $otherData);
-
-            $studentRegistration->file = $courseReg;
-            $studentRegistration->save();
-
-            $senderName = env('SCHOOL_NAME');
-            $receiverName = $student->applicant->lastname .' ' . $student->applicant->othernames;
-            $message = 'Your course registration has been regenerated';
-    
-            $mail = new NotificationMail($senderName, $message, $receiverName, $courseReg);
-            Mail::to($student->email)->send($mail);
-
-            return redirect(asset($courseReg));
         }
 
+        alert()->error('Oops!', 'Course registration is yet to be approved')->persistent('Close');
+        return redirect()->back();
     }
 
     public function allCourseRegs(Request $request){

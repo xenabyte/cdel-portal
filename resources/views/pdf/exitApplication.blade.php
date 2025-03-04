@@ -10,7 +10,7 @@ $qrcode = 'https://quickchart.io/chart?chs=300x300&cht=qr&chl='.env('APP_URL').'
         body {
             font-size: 12px;
         }
-        .watermark {
+        /* .watermark {
             position: absolute;
             top: 0;
             left: 0;
@@ -19,8 +19,8 @@ $qrcode = 'https://quickchart.io/chart?chs=300x300&cht=qr&chl='.env('APP_URL').'
             z-index: -1;
             background: url('{{ env('SCHOOL_LOGO') }}') center center no-repeat;
             background-size: 50%;
-            opacity: 0.1; /* Adjust for visibility */
-        }
+            opacity: 0.1; 
+        } */
         .header-logo {
             text-align: right;
         }
@@ -48,6 +48,19 @@ $qrcode = 'https://quickchart.io/chart?chs=300x300&cht=qr&chl='.env('APP_URL').'
             .info-column {
                 column-count: 2;
                 column-gap: 5px;
+            }
+        }
+        @media print {
+            .watermark {
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                opacity: 0.1;
+                width: 50%;
+                height: auto;
+                z-index: -1;
+                page-break-before: always;
             }
         }
     </style>
