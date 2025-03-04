@@ -457,9 +457,9 @@ class AcademicController extends Controller
                 if (!empty($studentRegistration->level_adviser_id) && !empty($studentRegistration->hod_id)) {
                     $otherData->type = 'both';
                 } elseif (!empty($studentRegistration->level_adviser_id)) {
-                    $otherData->type = 'level_adviser';
+                    $otherData->type = 'Level Adviser';
                 } elseif (!empty($studentRegistration->hod_id)) {
-                    $otherData->type = 'hod';
+                    $otherData->type = 'Hod';
                 }
             }
 
