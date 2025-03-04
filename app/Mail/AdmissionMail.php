@@ -7,6 +7,8 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
+use App\Models\ProgrammeCategory;
+
 class AdmissionMail extends Mailable
 {
     use Queueable, SerializesModels;
@@ -35,8 +37,10 @@ class AdmissionMail extends Mailable
             if(env('SEND_ADMISSION_LETTER')){
                 $message->attach($this->applicationData->admission_letter);
             }
-            $message->attach(asset('documents_for_resumption.pdf'));
-            $message->attach(asset('dress_code.pdf'));
+            if($this->applicationData->programme_category_id == ProgrammeCategory::getProgrammeCategory(ProgrammeCategory::UNDERGRADUATE)){
+                $message->attach(asset('documents_for_resumption.pdf'));
+                $message->attach(asset('dress_code.pdf'));
+            }
         }
         
         return $message;

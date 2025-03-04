@@ -61,7 +61,7 @@ Class Pdf {
             mkdir($dir, 0755, true);
         }
 
-        $fileDirectory = 'uploads/files/admission/'.$slug.'.pdf';
+        $fileDirectory = 'uploads/files/admission/'.$slug.time().'.pdf';
         if (file_exists($fileDirectory)) {
             unlink($fileDirectory);
         } 
