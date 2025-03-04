@@ -122,7 +122,7 @@ use \App\Models\ProgrammeCategory;
         </div>
     </div>
 
-    {{-- <div class="col-lg-12">
+    <div class="col-lg-12">
         <div class="card">
             <div class="card-body">
                 <div class="accordion" id="default-accordion-example">
@@ -170,7 +170,7 @@ use \App\Models\ProgrammeCategory;
                 </div>
             </div>
         </div>
-    </div> --}}
+    </div>
 
     <div class="col-lg-12">
         <div class="card">
