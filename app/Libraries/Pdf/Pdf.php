@@ -84,13 +84,13 @@ Class Pdf {
             'logo' => asset($setting->logo)
         ];
 
-        if($programmeCategory == ProgrammeCategory::getProgrammeCategory(ProgrammeCategory::UNDERGRADUATE)){
+        if($programmeCategoryId == ProgrammeCategory::getProgrammeCategory(ProgrammeCategory::UNDERGRADUATE)){
             $pdf = PDFDocument::loadView('pdf.admissionLetter', $studentData)
             ->setOptions($options)
             ->save($fileDirectory);
         }
 
-        if($programmeCategory == ProgrammeCategory::getProgrammeCategory(ProgrammeCategory::TOPUP)){
+        if($programmeCategoryId == ProgrammeCategory::getProgrammeCategory(ProgrammeCategory::TOPUP)){
             $pdf = PDFDocument::loadView('pdf.topAdmissionLetter', $studentData)
             ->setOptions($options)
             ->save($fileDirectory);
