@@ -454,9 +454,7 @@ class AcademicController extends Controller
                 $otherData->staffId = implode(',', $staffIds); // Join multiple IDs if both exist
                 $otherData->courseRegId = $request->reg_id;
 
-                if (!empty($studentRegistration->level_adviser_id) && !empty($studentRegistration->hod_id)) {
-                    $otherData->type = 'both';
-                } elseif (!empty($studentRegistration->level_adviser_id)) {
+                if (!empty($studentRegistration->level_adviser_id)) {
                     $otherData->type = 'Level Adviser';
                 } elseif (!empty($studentRegistration->hod_id)) {
                     $otherData->type = 'Hod';
