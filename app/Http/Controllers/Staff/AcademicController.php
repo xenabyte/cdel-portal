@@ -77,7 +77,7 @@ class AcademicController extends Controller
 
         $academicPlanningUnits = Unit::UNIT_ACADEMIC_PLANNING;
 
-        $isUnitHead = Unit::whereIn('name', $academicPlanningUnits)
+        $isUnitHead = Unit::where('name', $academicPlanningUnits)
                     ->where('unit_head_id', $staff->id)
                     ->exists();
 
