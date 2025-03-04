@@ -26,6 +26,7 @@ use App\Models\AcademicLevel;
 use App\Models\Notification;
 use App\Models\BankAccount;
 use App\Models\ProgrammeCategory;
+use App\Models\PaymentType;
 
 use App\Libraries\Pdf\Pdf;
 use App\Mail\TransactionMail;
@@ -55,6 +56,7 @@ class PaymentController extends Controller
         $programmeCategory = ProgrammeCategory::where('category', $programmeCategory)->first();
         $programmeCategoryId = $programmeCategory->id;
 
+        $paymentTypes = PaymentType::get();
 
         $payments = Payment::with(['structures', 'programme'])->where('academic_session', $academicSession)->where('programme_category_id', $programmeCategoryId)->get();
         $programmes = Programme::where('category_id', $programmeCategoryId)->get();
@@ -67,7 +69,7 @@ class PaymentController extends Controller
             'levels' => $levels,
             'sessions' => $sessions,
             'programmeCategory'=> $programmeCategory,
-
+            'paymentTypes' => $paymentTypes
         ]);
     }
 
@@ -86,6 +88,7 @@ class PaymentController extends Controller
 
         $programmes = Programme::get();
         $levels = Level::get();
+        $paymentTypes = PaymentType::get();
         $sessions = Session::orderBy('id', 'DESC')->get();
 
         return view('admin.otherSessionPayments', [
@@ -96,6 +99,7 @@ class PaymentController extends Controller
             'academicSession' => $academicSession,
             'programmeCategoryId' => $programmeCategoryId,
             'programmeCategory' => $programmeCategory,
+            'paymentTypes' => $paymentTypes
         ]);
     }
 
@@ -224,6 +228,7 @@ class PaymentController extends Controller
 
         $programmes = Programme::get();
         $levels = Level::get();
+        $paymentTypes = PaymentType::get();
         $sessions = Session::orderBy('id', 'DESC')->get();
         $students = null;
         if(!empty($payment->level_id)){
@@ -247,7 +252,8 @@ class PaymentController extends Controller
             'programmes' => $programmes,
             'levels' => $levels,
             'sessions' => $sessions,
-            'students' => $students
+            'students' => $students,
+            'paymentTypes' => $paymentTypes
         ]);
     }
 

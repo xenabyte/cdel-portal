@@ -517,7 +517,8 @@
                             <label for="applicationType" class="form-label">Select Application Type<span class="text-danger">*</span></label>
                             <select class="form-select" aria-label="applicationType" name="applicationType" required>
                                 <option value= "" selected>Select Application Type</option>
-                                <option value="General Application">General Application(UTME & DE)</option>
+                                <option value="UTME">General Application(UTME)</option>
+                                <option value="Direct Entry">General Application(Direct Entry)</option>
                                 <option value="Inter Transfer Application">Inter Transfer Application</option>
                             </select>
                         </div>
