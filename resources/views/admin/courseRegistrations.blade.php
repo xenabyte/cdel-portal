@@ -149,7 +149,7 @@ use \App\Models\ProgrammeCategory;
                                     </thead>
                                     <tbody>
                                         @foreach($pendingStudents as $pendingStudent)
-                                            @if(!($pendingStudent->is_passed_out))
+                                            @if(!$pendingStudent->is_passed_out)
                                             <tr>
                                                 <th scope="row">{{ $loop->iteration }}</th>
                                                 <td>{{ $pendingStudent->applicant->lastname .' '. $pendingStudent->applicant->othernames}}</td>
