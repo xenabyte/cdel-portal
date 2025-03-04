@@ -672,6 +672,9 @@ class ProgrammeController extends Controller
             $studentId = $studentCourseReg->student_id;
             $student = Student::find($studentId);
 
+            $studentCourseReg->file = $courseReg;
+            $studentCourseReg->save();
+
             $senderName = env('SCHOOL_NAME');
             $receiverName = $student->applicant->lastname .' ' . $student->applicant->othernames;
             $message = 'Your course registration has been successfully approved. Please proceed to print at your earliest convenience.';

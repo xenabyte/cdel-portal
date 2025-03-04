@@ -1573,6 +1573,7 @@ class AcademicController extends Controller
         $pdf = new Pdf();
         $courseReg = $pdf->generateCourseRegistration($studentId, $academicSession, $otherData);
 
+        $studentCourseReg->file = $courseReg;
 
         if($studentCourseReg->save()){
             $senderName = env('SCHOOL_NAME');

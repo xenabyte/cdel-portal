@@ -432,7 +432,6 @@ class AcademicController extends Controller
         $pdf = new Pdf();
 
         if(!empty($studentRegistration)){
-            $courseReg = $pdf->generateCourseRegistration($studentId, $academicSession);
 
             // $studentRegistration = StudentCourseRegistration::create([
             //     'student_id' => $studentId,
@@ -442,7 +441,32 @@ class AcademicController extends Controller
             //     'programme_category_id' => $student->programme_category_id
             // ]);
 
-            $studentRegistration = $studentRegistration->save();
+            $staffIds = [];
+            if (!empty($studentRegistration->level_adviser_id)) {
+                $staffIds[] = $studentRegistration->level_adviser_id;
+            }
+            if (!empty($studentRegistration->hod_id)) {
+                $staffIds[] = $studentRegistration->hod_id;
+            }
+
+            if (!empty($staffIds)) {
+                $otherData = new \stdClass();
+                $otherData->staffId = implode(',', $staffIds); // Join multiple IDs if both exist
+                $otherData->courseRegId = $request->reg_id;
+
+                if (!empty($studentRegistration->level_adviser_id) && !empty($studentRegistration->hod_id)) {
+                    $otherData->type = 'both';
+                } elseif (!empty($studentRegistration->level_adviser_id)) {
+                    $otherData->type = 'level_adviser';
+                } elseif (!empty($studentRegistration->hod_id)) {
+                    $otherData->type = 'hod';
+                }
+            }
+
+            $courseReg = $pdf->generateCourseRegistration($studentId, $academicSession, $otherData);
+
+            $studentRegistration->file = $courseReg;
+            $studentRegistration->save();
 
             $senderName = env('SCHOOL_NAME');
             $receiverName = $student->applicant->lastname .' ' . $student->applicant->othernames;
