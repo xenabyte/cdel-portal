@@ -58,6 +58,7 @@ use App\Models\RoomBedSpace;
 use App\Models\Room;
 use App\Models\Allocation;
 use App\Models\ShortUrl;
+use App\Models\PaymentType;
 
 
 
@@ -387,6 +388,8 @@ class Controller extends BaseController
         $departments = Department::get();
         $faculties = Faculty::get();
         $sessions = Session::orderBy('id', 'DESC')->get();
+        $paymentTypes = PaymentType::get();
+
 
         // Initialize $studentUserId and $studentStudentId
         $studentUserId = $student->user_id; 
@@ -432,7 +435,8 @@ class Controller extends BaseController
             'programmes' => $programmes,
             'departments' => $departments,
             'faculties' => $faculties,
-            'sessions' => $sessions   
+            'sessions' => $sessions,
+            'paymentTypes' => $paymentTypes
         ]);
     }
 
@@ -451,6 +455,7 @@ class Controller extends BaseController
         $departments = Department::get();
         $faculties = Faculty::get();
         $sessions = Session::orderBy('id', 'DESC')->get();
+        $paymentTypes = PaymentType::get();
 
         $transactions = Transaction::with('paymentType')->where('student_id', $studentId)->orderBy('id', 'DESC')->get();
 
@@ -527,6 +532,7 @@ class Controller extends BaseController
             'path' => $path,
             'transactions' => $filteredTransactions,
             'payment' => $schoolPayment,
+            'paymentTypes' => $paymentTypes,
             'passTuition' => $passTuitionPayment,
             'fullTuitionPayment' => $fullTuitionPayment,
             'passEightyTuition' => $passEightyTuition,
