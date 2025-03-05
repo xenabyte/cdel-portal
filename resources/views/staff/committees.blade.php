@@ -75,8 +75,8 @@
                             <td>{{ $committee->name }}</td>
                             <td>
                                 <a href="{{ url('staff/committee/'.$committee->slug) }}" class="btn btn-primary m-1"><i class= "mdi mdi-database-eye"></i> View Committee</a>
-                                <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#editCommittee{{$committee->id}}" class="btn btn-info">Edit</a>
-                                <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#delete{{$committee->id}}" class="btn btn-danger">Delete</a>
+                                {{-- <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#editCommittee{{$committee->id}}" class="btn btn-info">Edit</a>
+                                <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#delete{{$committee->id}}" class="btn btn-danger">Delete</a> --}}
                             </td>
                             <div id="editCommittee{{$committee->id}}" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
                                 <div class="modal-dialog modal-lg modal-dialog-centered">

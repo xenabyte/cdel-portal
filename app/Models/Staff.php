@@ -138,7 +138,7 @@ class Staff extends Authenticatable
      */
     public function committeeMembers()
     {
-        return $this->hasMany(CommitteeMember::class);
+        return $this->hasMany(CommitteeMember::class, 'staff_id', 'id');
     }
     
 
