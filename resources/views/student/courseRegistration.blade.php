@@ -5,7 +5,7 @@
     $maxUnit = !empty($student->credit_load)?$student->credit_load:24;
     $levelAdviser = $programme->academicAdvisers->where('level_id', $student->level_id)->where('academic_session', $student->academic_session)->first();
 
-    $allowedMatrics = ['23/04NSS357', '23/05NSS379']; 
+    $allowedMatrics = ['22/04PTP026']; 
 ?>
 @section('content')
 <style>
