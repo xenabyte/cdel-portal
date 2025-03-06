@@ -963,6 +963,7 @@ class PaymentController extends Controller
 
         $levels = AcademicLevel::orderBy('id', 'DESC')->get();
         $sessions = Session::orderBy('id', 'DESC')->get();
+        $paymentTypes = PaymentType::get();
 
         $transactionsQuery = Transaction::where([
             'session' => $session,
@@ -1004,7 +1005,8 @@ class PaymentController extends Controller
             'student' => $student,
             'transactions' => $transactions,
             'levels' => $levels,
-            'sessions' => $sessions
+            'sessions' => $sessions,
+            'paymentTypes' => $paymentTypes
         ]);
 
     }

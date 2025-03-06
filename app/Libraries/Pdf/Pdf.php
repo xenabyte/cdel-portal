@@ -36,7 +36,7 @@ Class Pdf {
         $acceptancePayment = Payment::with('structures')->where('programme_category_id', $programmeCategoryId)->where('type', Payment::PAYMENT_TYPE_ACCEPTANCE)->where('academic_session', $student->academic_session)->first();
         $type = Payment::PAYMENT_TYPE_SCHOOL;
 
-        if($applicationType != 'UTME' && ($student->level_id == 2)){
+        if($applicationType != 'UTME' && ($student->level_id == 2) && ($student->programmeCategoryId == ProgrammeCategory::getProgrammeCategory(ProgrammeCategory::UNDERGRADUATE))){
             $type = Payment::PAYMENT_TYPE_SCHOOL_DE;
         }
 
