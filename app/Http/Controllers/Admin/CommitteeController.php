@@ -351,7 +351,7 @@ class CommitteeController extends Controller
         }
 
         if(!empty($request->agenda) && $request->agenda!= $meeting->agenda){
-            if (!file_exists($meeting->agenda)) {
+            if (file_exists($meeting->agenda)) {
                 unlink($meeting->agenda);
             }
 
@@ -361,7 +361,7 @@ class CommitteeController extends Controller
         }
 
         if(!empty($request->minute) && $request->minute!= $meeting->minute){
-            if (!file_exists($meeting->minute)) {
+            if (file_exists($meeting->minute)) {
                 unlink($meeting->minute);
             }
 
@@ -390,7 +390,7 @@ class CommitteeController extends Controller
         }
 
         if(!empty($request->excerpt) && $request->excerpt!= $meeting->excerpt){
-            if (!file_exists($meeting->excerpt)) {
+            if (file_exists($meeting->excerpt)) {
                 unlink($meeting->excerpt);
             }
 
