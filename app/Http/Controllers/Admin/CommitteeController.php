@@ -173,18 +173,28 @@ class CommitteeController extends Controller
             'committee_id' => 'required|string',
         ]);
 
-        if($validator->fails()) {
+        if ($validator->fails()) {
             alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
             return redirect()->back();
         }
 
-        if(!$staff = Staff::find($request->staff_id)){
-            alert()->error('Oops', 'Invalid Staff ')->persistent('Close');
+        if (!$staff = Staff::find($request->staff_id)) {
+            alert()->error('Oops', 'Invalid Staff')->persistent('Close');
             return redirect()->back();
         }
 
-        if(!$committee = Committee::find($request->committee_id)){
-            alert()->error('Oops', 'Invalid Committee ')->persistent('Close');
+        if (!$committee = Committee::find($request->committee_id)) {
+            alert()->error('Oops', 'Invalid Committee')->persistent('Close');
+            return redirect()->back();
+        }
+
+        // Check if staff is already a member of the committee
+        $existingMember = CommitteeMember::where('staff_id', $request->staff_id)
+            ->where('committee_id', $request->committee_id)
+            ->exists();
+
+        if ($existingMember) {
+            alert()->error('Oops!', 'Staff is already a member of this committee')->persistent('Close');
             return redirect()->back();
         }
 
@@ -192,14 +202,14 @@ class CommitteeController extends Controller
             'staff_id' => $request->staff_id,
             'committee_id' => $request->committee_id,
         ];
-        
-        if(CommitteeMember::create($newCommitteeMember)){
+
+        if (CommitteeMember::create($newCommitteeMember)) {
             $member = Staff::find($request->staff_id);
-            if($member){
+            if ($member) {
                 $memberEmail = $member->email;
                 $senderName = env('SCHOOL_NAME');
-                $receiverName = $member->lastname .' ' . $member->othernames;
-                $message = "You have been added as a member to ".$committee->name;
+                $receiverName = $member->lastname . ' ' . $member->othernames;
+                $message = "You have been added as a member to " . $committee->name;
                 $mail = new NotificationMail($senderName, $message, $receiverName);
 
                 Notification::create([
@@ -215,7 +225,6 @@ class CommitteeController extends Controller
 
         alert()->error('Oops!', 'Something went wrong')->persistent('Close');
         return redirect()->back();
-        
     }
 
      
