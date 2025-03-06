@@ -22,6 +22,7 @@ class Payment extends Model
     const PAYMENT_TYPE_WALLET_DEPOSIT = 'Wallet Deposit';
     const PAYMENT_TYPE_BANDWIDTH = 'Bandwidth Fee';
     const PAYMENT_TYPE_ACCOMONDATION = 'Accomondation Fee';
+    const PAYMENT_TYPE_INTRA_TRANSFER_APPLICATION = 'Intra Transfer Application Fee';
 
 
     protected $fillable = [
