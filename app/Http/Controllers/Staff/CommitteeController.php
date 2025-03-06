@@ -60,13 +60,13 @@ class CommitteeController extends Controller
             'slug' => $slug
         ];
         
-        if($committe =  Committee::create($newCommittee)){
+        if($committee =  Committee::create($newCommittee)){
 
             $committee->chairman_id = $staff->id;
 
             $newCommitteeMember = [
                 'staff_id' => $staff->id,
-                'committee_id' => $committe->id,
+                'committee_id' => $committee->id,
             ];
             
             CommitteeMember::create($newCommitteeMember);

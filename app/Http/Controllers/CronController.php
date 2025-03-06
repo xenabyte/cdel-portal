@@ -71,7 +71,14 @@ class CronController extends Controller
             return $this->dataResponse('No pending transactions found that can be deleted.', null);
         }
 
-        $deletedCount = $transactions->each->forceDelete();
+        // $deletedCount = $transactions->each->forceDelete();
+
+        foreach ($transactions as $transaction) {
+            
+            $paymentReference = $transaction->reference;
+
+            return $this->upperlinkVerifyPayment($paymentReference);
+        }
 
         return $this->dataResponse('Pending transactions deleted successfully.', null);
     }

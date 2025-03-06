@@ -3,6 +3,8 @@
     $staff = Auth::guard('staff')->user();
     $committeeIds = $staff->committeeMembers->pluck('committee_id');
 
+    dd($committeeIds);
+
     $staffVCRole = false;
     $staffRegistrarRole = false;
     $staffDeanRole = false;
