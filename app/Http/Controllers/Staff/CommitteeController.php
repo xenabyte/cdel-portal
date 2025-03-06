@@ -354,12 +354,20 @@ class CommitteeController extends Controller
         }
 
         if(!empty($request->agenda) && $request->agenda!= $meeting->agenda){
+            if (!file_exists($meeting->agenda)) {
+                unlink($meeting->agenda);
+            }
+
             $fileUrl = 'uploads/meetings/'.$slug.'-agenda.'.$request->file('agenda')->getClientOriginalExtension();
             $image = $request->file('agenda')->move('uploads/meetings', $fileUrl);
             $meeting->agenda = $fileUrl;
         }
 
         if(!empty($request->minute) && $request->minute!= $meeting->minute){
+            if (!file_exists($meeting->minute)) {
+                unlink($meeting->minute);
+            }
+
             $minuteUrl = 'uploads/meetings/'.$slug.'-minute.'.$request->file('minute')->getClientOriginalExtension();
             $image = $request->file('minute')->move('uploads/meetings', $minuteUrl);
             $meeting->minute = $minuteUrl;
@@ -385,6 +393,10 @@ class CommitteeController extends Controller
         }
 
         if(!empty($request->excerpt) && $request->excerpt!= $meeting->excerpt){
+            if (!file_exists($meeting->excerpt)) {
+                unlink($meeting->excerpt);
+            }
+
             $excerptUrl = 'uploads/meetings/'.$slug.'.'.$request->file('excerpt')->getClientOriginalExtension();
             $image = $request->file('excerpt')->move('uploads/meetings', $excerptUrl);
             $meeting->excerpt = $excerptUrl;

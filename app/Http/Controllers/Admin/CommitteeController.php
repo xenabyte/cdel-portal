@@ -342,13 +342,21 @@ class CommitteeController extends Controller
         }
 
         if(!empty($request->agenda) && $request->agenda!= $meeting->agenda){
-            $fileUrl = 'uploads/meetings/'.$slug.'-agenda.'.$request->file('agenda')->getClientOriginalExtension();
+            if (!file_exists($meeting->agenda)) {
+                unlink($meeting->agenda);
+            }
+
+            $fileUrl = 'uploads/meetings/'.$slug.time().'-agenda.'.$request->file('agenda')->getClientOriginalExtension();
             $image = $request->file('agenda')->move('uploads/meetings', $fileUrl);
             $meeting->agenda = $fileUrl;
         }
 
         if(!empty($request->minute) && $request->minute!= $meeting->minute){
-            $minuteUrl = 'uploads/meetings/'.$slug.'-minute.'.$request->file('minute')->getClientOriginalExtension();
+            if (!file_exists($meeting->minute)) {
+                unlink($meeting->minute);
+            }
+
+            $minuteUrl = 'uploads/meetings/'.$slug.time().'-minute.'.$request->file('minute')->getClientOriginalExtension();
             $image = $request->file('minute')->move('uploads/meetings', $minuteUrl);
             $meeting->minute = $minuteUrl;
 
@@ -373,7 +381,11 @@ class CommitteeController extends Controller
         }
 
         if(!empty($request->excerpt) && $request->excerpt!= $meeting->excerpt){
-            $excerptUrl = 'uploads/meetings/'.$slug.'-excerpt.'.$request->file('excerpt')->getClientOriginalExtension();
+            if (!file_exists($meeting->excerpt)) {
+                unlink($meeting->excerpt);
+            }
+
+            $excerptUrl = 'uploads/meetings/'.$slug.time().'-excerpt.'.$request->file('excerpt')->getClientOriginalExtension();
             $image = $request->file('excerpt')->move('uploads/meetings', $excerptUrl);
             $meeting->excerpt = $excerptUrl;
 
