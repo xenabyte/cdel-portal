@@ -48,6 +48,11 @@ class CreateStudentsTable extends Migration
             $table->string('graduation_session')->nullable();
             $table->datetime('graduation_date')->nullable();
             $table->integer('clearance_status')->nullable();
+            $table->string('one_signal_token')->nullable();
+            $table->integer('programme_category_id')->nullable();
+            $table->string('anti_drug_status')->nullable();
+            $table->string('matriculation_status')->nullable();
+            $table->string('transcript')->nullable();
             $table->softDeletes();
             $table->rememberToken();
             $table->timestamps();

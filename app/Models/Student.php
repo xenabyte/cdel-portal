@@ -56,6 +56,7 @@ class Student extends Authenticatable
         'signature',
         'anti_drug_status',
         'matriculation_status',
+        'transcript'
     ];
 
     /**

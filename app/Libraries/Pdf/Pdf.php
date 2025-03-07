@@ -432,5 +432,43 @@ Class Pdf {
 
         return $fileDirectory;
     }
+
+
+    public function generateTranscript($studentId, $otherData = null){
+        $options = [
+            'isRemoteEnabled' => true,
+            'encryption' => '128',
+            'no_modify' => true,
+        ];
+
+        $staff = null;
+        if(!empty($otherData->staffId)){
+            $staff = Staff::find($otherData->staffId);
+        }
+
+        $student = Student::with('applicant', 'academicLevel', 'faculty', 'department', 'programme')->where('id', $studentId)->first();
+        $name = $student->applicant->lastname.' '.$student->applicant->othernames;
+        $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $name .' transcripts')));
+
+        $dir = public_path('uploads/files/transcript');
+        if (!file_exists($dir)) {
+            mkdir($dir, 0755, true);
+        }
+
+        $fileDirectory = 'uploads/files/transcript/'.$slug.time().'.pdf';
+        $courseReg = CourseRegistration::with('course')->where('student_id', $studentId)->get();
+                
+        
+        $staffData = null;
+        
+
+        $data = ['info'=>$student, 'registeredCourses' => $courseReg, 'staffData' => $staffData];
+
+        $pdf = PDFDocument::loadView('pdf.transcript', $data)
+        ->setOptions($options)
+        ->save($fileDirectory);
+
+        return $fileDirectory;
+    }
     
 }
