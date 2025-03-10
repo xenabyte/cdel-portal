@@ -79,6 +79,16 @@ class CareerController extends Controller
 
         $slug = md5(strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $request->title.time()))));
 
+        if(!empty($request->flyer)){
+            $dir = public_path('uploads/career');
+            if (!file_exists($dir)) {
+                mkdir($dir, 0755, true);
+            }
+
+            $imageUrl = 'uploads/career/'.$slug.'.'.$request->file('flyer')->getClientOriginalExtension();
+            $image = $request->file('flyer')->move('uploads/career', $imageUrl);
+        }
+
         $jobVacancyData = ([
             'title' => $request->title,
             'description' => $request->description,
@@ -88,7 +98,8 @@ class CareerController extends Controller
             'status' => 'active',
             'cgpa' => $request->cgpa,
             'level_id' => $request->level_id,
-            'slug' => $slug
+            'slug' => $slug,
+            'image' => $imageUrl
         ]);
 
         if(JobVacancy::create($jobVacancyData)){
@@ -124,6 +135,10 @@ class CareerController extends Controller
             alert()->error('Oops', 'Invalid Job ')->persistent('Close');
             return redirect()->back();
         }
+
+        if (file_exists($jobVacancy->image)) {
+            unlink($jobVacancy->image);
+        } 
 
         if(JobVacancy::delete($request->job_id)){
             alert()->success('Job vacancy deleted successfully', '')->persistent('Close');
@@ -183,6 +198,20 @@ class CareerController extends Controller
 
         if(!empty($request->cgpa) && $request->cgpa != $jobVacancy->cgpa){
             $jobVacancy->cgpa = $request->cgpa;
+        }
+
+        if(!empty($request->flyer)){
+            $dir = public_path('uploads/career');
+            if (!file_exists($dir)) {
+                mkdir($dir, 0755, true);
+            }
+
+            $slug = $jobVacancy->slug;
+
+            $imageUrl = 'uploads/career/'.$slug.time().'.'.$request->file('flyer')->getClientOriginalExtension();
+            $image = $request->file('flyer')->move('uploads/career', $imageUrl);
+
+            $jobVacancy->image = $imageUrl;
         }
 
         if($jobVacancy->save()){

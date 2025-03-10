@@ -24,7 +24,8 @@ class JobVacancy extends Model
         'cgpa',
         'level_id',
         'employment_letter',
-        'slug'
+        'slug',
+        'image'
     ];
 
     public function applications()

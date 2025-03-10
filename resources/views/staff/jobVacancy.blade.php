@@ -37,6 +37,7 @@
                                 <thead>
                                     <tr>
                                         <th scope="col">Id</th>
+                                        <th scope="col">Flyer</th>
                                         <th scope="col">Title</th>
                                         <th scope="col">Application Type</th>
                                         <th scope="col">Job Level</th>
@@ -48,6 +49,7 @@
                                     @foreach($jobVacancies as $jobVacancy)
                                     <tr>
                                         <th scope="row">{{ $loop->iteration }}</th>
+                                        <td><img class="img-thumbnail" alt="200x200" width="200" src="{{ asset($jobVacancy->image) }}"></td>
                                         <td>{{ $jobVacancy->title }} </td>
                                         <td>{{ $jobVacancy->type }} </td>
                                         <td>{{ $jobVacancy->jobLevel?$jobVacancy->jobLevel->name .' @ ₦'. number_format($jobVacancy->jobLevel->hourly_rate/100, 2) .'/hour':null }}</td>
@@ -104,6 +106,11 @@
                                                                                 <option @if($jobVacancy->type == 'Job Vacancy') selected  @endif value="Job Vacancy">Job Vacancy</option>
                                                                                 <option @if($jobVacancy->type == 'Work Study') selected @endif value="Work Study">Work Study</option>
                                                                             </select>
+                                                                        </div>
+
+                                                                        <div class="mb-3">
+                                                                            <label for="flyer" class="form-label">Application Flyer</label>
+                                                                            <input type="file" class="form-control" name="flyer" id="flyer">
                                                                         </div>
                                                                     
                                                                         <div class="mb-3">
@@ -197,6 +204,11 @@
                             <option value="Job Vacancy">Job Vacancy</option>
                             <option value="Work Study">Work Study</option>
                         </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="flyer" class="form-label">Application Flyer</label>
+                        <input type="file" class="form-control" name="flyer" id="flyer">
                     </div>
                 
                     <div class="mb-3">
