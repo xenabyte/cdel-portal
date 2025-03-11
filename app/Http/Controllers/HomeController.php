@@ -160,15 +160,15 @@ class HomeController extends Controller
         //     return redirect()->back();
         // }
 
-        if(empty(strpos($request->staffId, 'AU'))) {
-            alert()->error('Error', 'Invalid staff ID, please kindly follow the format(TAUSSPFID)')->persistent('Close');
+        if (!str_starts_with($request->staffId, 'TAU')) {
+            alert()->error('Error', 'Invalid staff ID, please kindly follow the format (TAU)')->persistent('Close');
             return redirect()->back();
         }
 
-        if((strpos($request->staffId, '/') !== false)) {
-            alert()->error('Error', 'Invalid staff ID, please kindly follow the format ('.env("SCHOOL_CODE").'SSPFID)')->persistent('Close');
-            return redirect()->back();
-        }
+        // if((strpos($request->staffId, '/') !== false)) {
+        //     alert()->error('Error', 'Invalid staff ID, please kindly follow the format ('.env("SCHOOL_CODE").'SSPFID)')->persistent('Close');
+        //     return redirect()->back();
+        // }
         
 
         if($request->password == $request->confirm_password){
