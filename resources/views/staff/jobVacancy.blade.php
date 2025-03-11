@@ -47,18 +47,29 @@
                                 </thead>
                                 <tbody>
                                     @foreach($jobVacancies as $jobVacancy)
-                                    <tr>
-                                        <th scope="row">{{ $loop->iteration }}</th>
-                                        <td><img class="img-thumbnail" alt="{{ $jobVacancy->title }}" width="50" src="{{ asset($jobVacancy->image) }}"></td>
-                                        <td>{{ $jobVacancy->title }} </td>
-                                        <td>{{ $jobVacancy->type }} </td>
-                                        <td>{{ $jobVacancy->jobLevel?$jobVacancy->jobLevel->name .' @ ₦'. number_format($jobVacancy->jobLevel->hourly_rate/100, 2) .'/hour':null }}</td>
-                                        <td>{{ ucwords($jobVacancy->status) }} </td>
-                                        <td>
-                                            <div class="hstack gap-3 fs-15">
-                                                <a href="{{ url('staff/viewJobVacancy/'.$jobVacancy->slug) }}" class="link-secondary m-1"><i class= "ri-eye-fill"></i></a>
-                                                <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#edit{{$jobVacancy->id}}" class="link-primary"><i class="ri-edit-circle-fill"></i></a>
-                                                <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#delete{{$jobVacancy->id}}" class="link-danger"><i class="ri-delete-bin-5-line"></i></a>
+                                        <tr>
+                                            <th scope="row">{{ $loop->iteration }}</th>
+                                            <td><img class="img-thumbnail" alt="{{ $jobVacancy->title }}" width="50" src="{{ asset($jobVacancy->image) }}"></td>
+                                            <td>{{ $jobVacancy->title }} </td>
+                                            <td>{{ $jobVacancy->type }} </td>
+                                            <td>{{ $jobVacancy->jobLevel ? $jobVacancy->jobLevel->name .' @ ₦'. number_format($jobVacancy->jobLevel->hourly_rate/100, 2) .'/hour' : null }}</td>
+                                            <td>{{ ucwords($jobVacancy->status) }} </td>
+                                            <td>
+                                                <div class="hstack gap-3 fs-15">
+                                                    <a href="{{ url('staff/viewJobVacancy/'.$jobVacancy->slug) }}" class="link-secondary m-1">
+                                                        <i class="ri-eye-fill"></i>
+                                                    </a>
+                                                    <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#edit{{$jobVacancy->id}}" class="link-primary">
+                                                        <i class="ri-edit-circle-fill"></i>
+                                                    </a>
+                                                    <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#delete{{$jobVacancy->id}}" class="link-danger">
+                                                        <i class="ri-delete-bin-5-line"></i>
+                                                    </a>
+                                                    <a href="javascript:void(0);" class="link-secondary m-1" onclick="copyToClipboard('{{ url(env('CAREER_URL').'/jobVacancy/'.$jobVacancy->slug) }}')">
+                                                        <i class="ri-file-copy-fill"></i>
+                                                    </a>
+                                                </div>
+                                                        
 
                                                 <div id="delete{{$jobVacancy->id}}" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
                                                     <div class="modal-dialog modal-dialog-centered">
@@ -167,9 +178,10 @@
                                                         </div><!-- /.modal-content -->
                                                     </div><!-- /.modal-dialog -->
                                                 </div><!-- /.modal -->
-                                            </div>
-                                        </td>
-                                    </tr>
+
+                                                
+                                            </td>
+                                        </tr>
                                     @endforeach
                                 </tbody>
                             </table>
@@ -270,5 +282,15 @@
 
         }
     });
+</script>
+
+<script>
+    function copyToClipboard(link) {
+        navigator.clipboard.writeText(link).then(() => {
+            alert("Job vacancy link copied to clipboard!");
+        }).catch(err => {
+            console.error("Failed to copy: ", err);
+        });
+    }
 </script>
 @endsection
