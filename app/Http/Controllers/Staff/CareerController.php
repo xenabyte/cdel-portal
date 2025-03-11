@@ -63,6 +63,16 @@ class CareerController extends Controller
         ]);
     }
 
+    public function siwesApplicants(){
+        $siwesVacancyId = JobVacancy::where('type',JobVacancy::TYPE_JOB_SIWES)->pluck('id');
+
+        $siwesApplications = JobApplication::with('jobApplicant', 'vacancy')->whereIn('job_vacancy_id', $siwesVacancyId)->where('status', 'applied')->get(); 
+
+        return view('staff.siwesApplications', [
+            'siwesApplications' => $siwesApplications
+        ]);
+    }
+
     public function postJobVacancy(Request $request){  
         $validator = Validator::make($request->all(), [
             'title' => 'required|string|max:255',

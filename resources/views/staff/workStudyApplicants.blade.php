@@ -44,6 +44,7 @@
                     </thead>
                     <tbody>
                         @foreach($wordStudyApplications as $wordStudyApplication)
+                        @if($wordStudyApplication && $wordStudyApplication->vacancy && $wordStudyApplication->workStudyApplicant && $wordStudyApplication->workStudyApplicant->applicant))
                         <tr>
                             <th scope="row">{{ $loop->iteration }}</th>
                             <td>{{ $wordStudyApplication->workStudyApplicant->applicant->lastname .' '. $wordStudyApplication->workStudyApplicant->applicant->othernames }}</td>
@@ -55,15 +56,16 @@
                                     <a href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
                                         <i class="ri-more-2-fill"></i>
                                     </a>
-                                  
+                                
                                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
                                         <li><a class="dropdown-item link-primary" href="{{ url('staff/studentProfile/'.$wordStudyApplication->workStudyApplicant->slug) }}"><i class="ri-folder-open-fill"></i> Student Profile</a></li>
-                                        <li><a class="dropdown-item link-secondary" href="{{ url('staff/viewJobVacancy/'.$wordStudyApplication->Vacancy->slug) }}"><i class="ri-eye-fill"></i> Job Vacancy</a></li>
+                                        <li><a class="dropdown-item link-secondary" href="{{ url('staff/viewJobVacancy/'.$wordStudyApplication->vacancy->slug) }}"><i class="ri-eye-fill"></i> Job Vacancy</a></li>
                                     </ul>
                                 </div>
                             </td>
                         </tr>
-                        @endforeach
+                        @endif
+                    @endforeach
                     </tbody>
                 </table>
             </div>

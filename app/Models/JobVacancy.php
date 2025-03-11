@@ -13,6 +13,7 @@ class JobVacancy extends Model
 
     const TYPE_JOB = 'Job Vacancy';
     const TYPE_WORKSTUDY = 'Work Study';
+    const TYPE_JOB_SIWES =  'SIWES';
 
     protected $fillable = [
         'title', 

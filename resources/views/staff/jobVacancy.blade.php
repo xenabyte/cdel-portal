@@ -49,7 +49,7 @@
                                     @foreach($jobVacancies as $jobVacancy)
                                     <tr>
                                         <th scope="row">{{ $loop->iteration }}</th>
-                                        <td><img class="img-thumbnail" alt="200x200" width="200" src="{{ asset($jobVacancy->image) }}"></td>
+                                        <td><img class="img-thumbnail" alt="{{ $jobVacancy->title }}" width="50" src="{{ asset($jobVacancy->image) }}"></td>
                                         <td>{{ $jobVacancy->title }} </td>
                                         <td>{{ $jobVacancy->type }} </td>
                                         <td>{{ $jobVacancy->jobLevel?$jobVacancy->jobLevel->name .' @ ₦'. number_format($jobVacancy->jobLevel->hourly_rate/100, 2) .'/hour':null }}</td>
@@ -203,6 +203,7 @@
                             <option selected value="">Select Option </option>
                             <option value="Job Vacancy">Job Vacancy</option>
                             <option value="Work Study">Work Study</option>
+                            <option value="SIWES">SIWES</option>
                         </select>
                     </div>
 

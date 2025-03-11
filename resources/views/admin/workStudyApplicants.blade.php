@@ -44,25 +44,27 @@
                     </thead>
                     <tbody>
                         @foreach($wordStudyApplications as $wordStudyApplication)
-                        <tr>
-                            <th scope="row">{{ $loop->iteration }}</th>
-                            <td>{{ $wordStudyApplication->workStudyApplicant->applicant->lastname .' '. $wordStudyApplication->workStudyApplicant->applicant->othernames }}</td>
-                            <td>{{ $wordStudyApplication->workStudyApplicant->email }} </td>
-                            <td>{{ $wordStudyApplication->workStudyApplicant->applicant->phone_number }} </td>
-                            <td>{{ $wordStudyApplication->vacancy->title }} </td>
-                            <td>
-                                <div class="dropdown">
-                                    <a href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
-                                        <i class="ri-more-2-fill"></i>
-                                    </a>
-                                  
-                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                                        <li><a class="dropdown-item link-primary" href="{{ url('admin/studentProfile/'.$wordStudyApplication->workStudyApplicant->slug) }}"><i class="ri-folder-open-fill"></i> Student Profile</a></li>
-                                        <li><a class="dropdown-item link-secondary" href="{{ url('admin/viewJobVacancy/'.$wordStudyApplication->Vacancy->slug) }}"><i class="ri-eye-fill"></i> Job Vacancy</a></li>
-                                    </ul>
-                                </div>
-                            </td>
-                        </tr>
+                            @if($wordStudyApplication && $wordStudyApplication->vacancy && $wordStudyApplication->workStudyApplicant && $wordStudyApplication->workStudyApplicant->applicant))
+                            <tr>
+                                <th scope="row">{{ $loop->iteration }}</th>
+                                <td>{{ $wordStudyApplication->workStudyApplicant->applicant->lastname .' '. $wordStudyApplication->workStudyApplicant->applicant->othernames }}</td>
+                                <td>{{ $wordStudyApplication->workStudyApplicant->email }} </td>
+                                <td>{{ $wordStudyApplication->workStudyApplicant->applicant->phone_number }} </td>
+                                <td>{{ $wordStudyApplication->vacancy->title }} </td>
+                                <td>
+                                    <div class="dropdown">
+                                        <a href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <i class="ri-more-2-fill"></i>
+                                        </a>
+                                    
+                                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                                            <li><a class="dropdown-item link-primary" href="{{ url('admin/studentProfile/'.$wordStudyApplication->workStudyApplicant->slug) }}"><i class="ri-folder-open-fill"></i> Student Profile</a></li>
+                                            <li><a class="dropdown-item link-secondary" href="{{ url('admin/viewJobVacancy/'.$wordStudyApplication->Vacancy->slug) }}"><i class="ri-eye-fill"></i> Job Vacancy</a></li>
+                                        </ul>
+                                    </div>
+                                </td>
+                            </tr>
+                            @endif
                         @endforeach
                     </tbody>
                 </table>

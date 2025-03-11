@@ -40,38 +40,40 @@
                     <div class="row mb-2">
                         <div class="col-sm-6 col-xl-12">
                             
-                            <table id="fixed-header" class="table table-borderedless dt-responsive nowrap table-striped align-middle" style="width:100%">
-                                <thead>
-                                    <tr>
-                                        <th scope="col">Id</th>
-                                        <th scope="col">Flyer</th>
-                                        <th scope="col">Title</th>
-                                        <th scope="col">Application Type</th>
-                                        <th scope="col">Job Level</th>
-                                        <th scope="col">Status</th>
-                                        <th scope="col"></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach($jobVacancies as $jobVacancy)
-                                    <tr>
-                                        <th scope="row">{{ $loop->iteration }}</th>
-                                        <td><img class="img-thumbnail" alt="200x200" width="200" src="{{ asset($jobVacancy->image) }}"></td>
-                                        <td>{{ $jobVacancy->title }} </>
-                                        <td>{{ $jobVacancy->type }} </td>
-                                        <td>{{ $jobVacancy->jobLevel?$jobVacancy->jobLevel->name .' @ ₦'. number_format($jobVacancy->jobLevel->hourly_rate/100, 2) .'/hour':null }}</td>
-                                        <td>{{ ucwords($jobVacancy->status) }} </td>
-                                        <td>
-                                            <div class="hstack gap-3 fs-15">
-                                                <a href="{{ url('admin/viewJobVacancy/'.$jobVacancy->slug) }}" class="link-secondary m-1"><i class= "ri-eye-fill"></i></a>
-                                                <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#edit{{$jobVacancy->id}}" class="link-primary"><i class="ri-edit-circle-fill"></i></a>
-                                                <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#delete{{$jobVacancy->id}}" class="link-danger"><i class="ri-delete-bin-5-line"></i></a>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
+                            <div class="table-responsive">
+                                <table id="fixed-header" class="table table-borderedless dt-responsive nowrap table-striped align-middle" style="width:100%">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">Id</th>
+                                            <th scope="col">Flyer</th>
+                                            <th scope="col">Title</th>
+                                            <th scope="col">Application Type</th>
+                                            <th scope="col">Job Level</th>
+                                            <th scope="col">Status</th>
+                                            <th scope="col"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach($jobVacancies as $jobVacancy)
+                                        <tr>
+                                            <th scope="row">{{ $loop->iteration }}</th>
+                                            <td><img class="img-thumbnail" alt="{{ $jobVacancy->title }}" width="50" src="{{ asset($jobVacancy->image) }}"></td>
+                                            <td>{{ $jobVacancy->title }} </>
+                                            <td>{{ $jobVacancy->type }} </td>
+                                            <td>{{ $jobVacancy->jobLevel?$jobVacancy->jobLevel->name .' @ ₦'. number_format($jobVacancy->jobLevel->hourly_rate/100, 2) .'/hour':null }}</td>
+                                            <td>{{ ucwords($jobVacancy->status) }} </td>
+                                            <td>
+                                                <div class="hstack gap-3 fs-15">
+                                                    <a href="{{ url('admin/viewJobVacancy/'.$jobVacancy->slug) }}" class="link-secondary m-1"><i class= "ri-eye-fill"></i></a>
+                                                    <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#edit{{$jobVacancy->id}}" class="link-primary"><i class="ri-edit-circle-fill"></i></a>
+                                                    <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#delete{{$jobVacancy->id}}" class="link-danger"><i class="ri-delete-bin-5-line"></i></a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
                         </div><!-- end col -->
                     </div>
                 </div>
@@ -214,6 +216,7 @@
                             <option selected value="">Select Option </option>
                             <option value="Job Vacancy">Job Vacancy</option>
                             <option value="Work Study">Work Study</option>
+                            <option value="SIWES">SIWES</option>
                         </select>
                     </div>
 

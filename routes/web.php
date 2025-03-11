@@ -435,6 +435,7 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'admin'],
   Route::get('/prospectiveStaff', [App\Http\Controllers\Admin\CareerController::class, 'prospectiveStaff'])->name('prospectiveStaff')->middleware(['auth:admin']);
   Route::get('/workStudyApplicants', [App\Http\Controllers\Admin\CareerController::class, 'workStudyApplicants'])->name('workStudyApplicants')->middleware(['auth:admin']);
   Route::get('/jobVacancy', [App\Http\Controllers\Admin\CareerController::class, 'jobVacancy'])->name('jobVacancy')->middleware(['auth:admin']);
+  Route::get('/siwesApplicants', [App\Http\Controllers\Admin\CareerController::class, 'siwesApplicants'])->name('siwesApplicant')->middleware(['auth:admin']);
 
 
   Route::get('/deans', [App\Http\Controllers\Admin\AcademicController::class, 'deans'])->name('deans')->middleware(['auth:admin']);
@@ -802,6 +803,8 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'staff'],
   Route::get('/prospectiveStaff', [App\Http\Controllers\Staff\CareerController::class, 'prospectiveStaff'])->name('prospectiveStaff')->middleware(['auth:staff']);
   Route::get('/workStudyApplicants', [App\Http\Controllers\Staff\CareerController::class, 'workStudyApplicants'])->name('workStudyApplicants')->middleware(['auth:staff']);
   Route::get('/jobVacancy', [App\Http\Controllers\Staff\CareerController::class, 'jobVacancy'])->name('jobVacancy')->middleware(['auth:staff']);
+  Route::get('/siwesApplicants', [App\Http\Controllers\Staff\CareerController::class, 'siwesApplicants'])->name('siwesApplicant')->middleware(['auth:staff']);
+
 
 
 });
