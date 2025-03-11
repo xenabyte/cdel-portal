@@ -39,7 +39,7 @@
                 <form action="{{ url('/staff/bulkManageExitApplications') }}" method="POST">
                     @csrf
                     <div class="table-responsive">
-                        <table id="fixed-header" class="table table-bordered dt-responsive nowrap table-striped align-middle" style="width:100%">
+                        <table id="fixed-header" class="table table-bordered table-responsive nowrap table-striped align-middle" style="width:100%">
                             <thead>
                                 <tr>
                                     <th scope="col"><input type="checkbox" id="select-all"></th>

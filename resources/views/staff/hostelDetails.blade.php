@@ -141,7 +141,7 @@
         <div class="card card-height-100">
             
             <div class="card-body mb-3">
-                <table id="fixed-header" class="table table-borderedless dt-responsive nowrap table-striped align-middle" style="width:100%">
+                <table id="fixed-header" class="table table-borderedless table-responsive nowrap table-striped align-middle" style="width:100%">
                     <thead>
                         <tr>
                             <th scope="col">Id</th>

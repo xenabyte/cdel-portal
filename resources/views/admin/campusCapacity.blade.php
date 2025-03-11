@@ -33,7 +33,7 @@
                 <div class="row mb-2">
                     <div class="col-sm-6 col-xl-12">
                         
-                        <table id="fixed-header" class="table table-borderedless dt-responsive nowrap table-striped align-middle" style="width:100%">
+                        <table id="fixed-header" class="table table-borderedless table-responsive nowrap table-striped align-middle" style="width:100%">
                             <thead>
                                 <tr>
                                     <th scope="col">Id</th>
@@ -75,7 +75,7 @@
                 <div class="row mb-2">
                     <div class="col-sm-6 col-xl-12">
                         
-                        <table id="fixed-header" class="table table-borderedless dt-responsive nowrap table-striped align-middle" style="width:100%">
+                        <table id="fixed-header" class="table table-borderedless table-responsive nowrap table-striped align-middle" style="width:100%">
                             <thead>
                                 <tr>
                                     <th scope="col">Id</th>
