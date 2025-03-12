@@ -57,8 +57,8 @@ class Paygate {
             "Authorization: Basic ". base64_encode($this->username . ":" . $this->password),
         );
 
-        // $url = $this->requeryEndPoint.'?merchantId='.$this->merchantId.'&ref='.$ref;
-        $url = $this->requeryEndPoint . '?merchantId=' . $this->merchantId . '&ref=' . $ref . '&transactionType=card';
+        $url = $this->requeryEndPoint.'?merchantId='.$this->merchantId.'&ref='.$ref;
+        // $url = $this->requeryEndPoint . '?merchantId=' . $this->merchantId . '&ref=' . $ref . '&transactionType=card';
     
         $response = $this->makeCurlRequest($url, null, $header, "GET");
 
