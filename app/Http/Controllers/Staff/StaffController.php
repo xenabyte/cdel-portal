@@ -1102,7 +1102,7 @@ class StaffController extends Controller
             'student_id' => $studentId,
             'course_id' => $courseId,
             'academic_session' => $academicSession,
-            'programme_category-id' => $request->programme_category_id
+            'programme_category_id' => $request->programme_category_id
         ])->first();
 
         if(!$studentRegistration){
