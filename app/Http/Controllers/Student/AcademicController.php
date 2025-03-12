@@ -230,7 +230,7 @@ class AcademicController extends Controller
             'academic_session' => $academicSession
         ])->get();
 
-        if($checkCourseRegistration->count() > 0){
+        if($checkCourseRegistration->count() > 0 && empty($txId)){
             alert()->info('You have already registered for courses', '')->persistent('Close');
             return redirect()->back();
         }
