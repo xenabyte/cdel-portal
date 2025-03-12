@@ -1140,7 +1140,7 @@ class StaffController extends Controller
             $points = $grading->point;
 
             $studentFaculty = Faculty::find($student->faculty_id);
-            if($studentFaculty == 3 || $studentFaculty == 7){
+            if($studentFaculty->id == 3 || $studentFaculty->id == 7){
                 if($student->department_id == $course->department_id){
                     if($totalScore < 50){
                         $grade = 'F';

@@ -39,7 +39,18 @@ class Result
                 $examScore = floatval($examScore);
                 $examScore =  number_format($examScore, 2);
             }
+
             if(strtolower($type) != 'exam' && $type != 'test'){
+                $testScore = $row['Test Score'];
+                $testScore = floatval($testScore);
+                $testScore =  number_format($testScore, 2);
+            }
+
+            if(strtolower($type) == 'both'){
+                $examScore = $row['Exam Score'];
+                $examScore = floatval($examScore);
+                $examScore =  number_format($examScore, 2);
+
                 $testScore = $row['Test Score'];
                 $testScore = floatval($testScore);
                 $testScore =  number_format($testScore, 2);
@@ -86,7 +97,6 @@ class Result
                 $studentRegistration->ca_score = $testScore;
             }
 
-
             $totalScore = 0;
             if($examScore > 0 && strtolower($type) != 'test'){
                 $totalScore = $testScore + $examScore;
@@ -96,7 +106,6 @@ class Result
                 $totalScore = $testScore + $examScore;
             }
             
-
             if($totalScore > 0 && $totalScore > 100){
                 alert()->success('Oops', 'Total score is greater than 100.')->persistent('Close');
                 return redirect()->back();
@@ -108,7 +117,7 @@ class Result
                 $points = $grading->point;
         
                 $studentFaculty = Faculty::find($student->faculty_id);
-                if($studentFaculty == 3 || $studentFaculty == 7){
+                if($studentFaculty->id == 3 || $studentFaculty->id == 7){
                     if($student->department_id == $course->department_id){
                         if($totalScore < 50){
                             $grade = 'F';
