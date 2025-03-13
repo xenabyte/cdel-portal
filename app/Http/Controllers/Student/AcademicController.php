@@ -176,7 +176,7 @@ class AcademicController extends Controller
 
         $failedCourses = CourseRegistration::with('course')->where('student_id', $studentId)->where('grade', 'F')->where('re_reg', null)->get();
         $failedCourseIds = $failedCourses->pluck('programme_course_id')->toArray();
-        $carryOverCourses = CoursePerProgrammePerAcademicSession::where('programme_id', $student->programme_id)->whereIn('id', $failedCourseIds)->get();
+        $carryOverCourses = CoursePerProgrammePerAcademicSession::whereIn('id', $failedCourseIds)->get(); //where('programme_id', $student->programme_id)->
 
         $unregisteredRequiredCourses = CoursePerProgrammePerAcademicSession::where('programme_id', $student->programme_id)
          ->whereIn('course_id', $unregisteredRequiredCoursesIds)
@@ -210,8 +210,6 @@ class AcademicController extends Controller
         $failedSelectedCourses = $request->input('failed_selected_courses', []);
         
         $txId = $request->input('tx_id');
-
-        
 
         if(empty($selectedCourses)){
             alert()->info('Kindly select your courses', '')->persistent('Close');
