@@ -1115,16 +1115,23 @@ class StaffController extends Controller
             return redirect()->back();
         }
 
-        $testScore = $studentRegistration->ca_score;
-        $examScore = $studentRegistration->exam_score;
+        $testScore = $request->test;
+        $examScore = $request->exam;
 
-        if(strtolower($uploadType) != 'test'){
-            $examScore = $request->exam;
-        }else{
-            $testScore = $request->test;
+        if ($uploadType == 'test') {
+            $examScore = $studentRegistration->exam_score;
+            $studentRegistration->ca_score = $testScore;
         }
 
-        $studentRegistration->ca_score = $testScore;
+        if($uploadType == 'exam') {
+            $testScore = $studentRegistration->ca_score;
+            $studentRegistration->exam_score = $examScore;
+        }
+
+        if ($uploadType == 'both') {
+            $studentRegistration->ca_score = $testScore;
+            $studentRegistration->exam_score = $examScore;
+        }
 
 
         if($examScore > 0 && strtolower($uploadType) != 'test'){
