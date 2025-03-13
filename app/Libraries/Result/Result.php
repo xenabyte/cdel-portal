@@ -34,13 +34,14 @@ class Result
 
             $matricNumber = $row['Matric Number'];
             $courseCodeMain = $row['Course Code'];
+
             if(strtolower($type) == 'exam'){
                 $examScore = $row['Exam Score'];
                 $examScore = floatval($examScore);
                 $examScore =  number_format($examScore, 2);
             }
 
-            if(strtolower($type) != 'exam' && $type != 'test'){
+            if(strtolower($type) == 'test'){
                 $testScore = $row['Test Score'];
                 $testScore = floatval($testScore);
                 $testScore =  number_format($testScore, 2);
