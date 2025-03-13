@@ -23,117 +23,83 @@ use Log;
 
 class Result
 {
-    public static function processResult(UploadedFile $file, $courseId, $type, $programmeCategoryId, $academicSession)
-    {
+    public static function processResult(UploadedFile $file, $courseId, $type, $programmeCategoryId, $academicSession){
         $csv = Reader::createFromPath($file->getPathname());
         $csv->setHeaderOffset(0);
-
         $records = $csv->getRecords();
 
+        $type = strtolower($type); // Normalize type
+
         foreach ($records as $row) {
-
-            $matricNumber = $row['Matric Number'];
-            $courseCodeMain = $row['Course Code'];
-
-            if(strtolower($type) == 'exam'){
-                $examScore = $row['Exam Score'];
-                $examScore = floatval($examScore);
-                $examScore =  number_format($examScore, 2);
-            }
-
-            if(strtolower($type) == 'test'){
-                $testScore = $row['Test Score'];
-                $testScore = floatval($testScore);
-                $testScore =  number_format($testScore, 2);
-            }
-
-            if(strtolower($type) == 'both'){
-                $examScore = $row['Exam Score'];
-                $examScore = floatval($examScore);
-                $examScore =  number_format($examScore, 2);
-
-                $testScore = $row['Test Score'];
-                $testScore = floatval($testScore);
-                $testScore =  number_format($testScore, 2);
-            }
-
-            $student = Student::with('applicant')->where('matric_number', $matricNumber)->first();
-            if(!$student){
-                Log::info("Student with ". $matricNumber ." didnt register for this course.");
+            if (!isset($row['Matric Number'], $row['Course Code'])) {
+                Log::warning("Skipping row due to missing columns", ['row' => $row]);
                 continue;
             }
 
-            $studentId = $student->id;
+            $matricNumber = trim($row['Matric Number']);
+            $courseCodeMain = trim($row['Course Code']);
+
+            $examScore = $testScore = 0;
+
+            if ($type == 'exam' || $type == 'both') {
+                $examScore = isset($row['Exam Score']) ? round(floatval($row['Exam Score']), 2) : 0;
+            }
+            if ($type == 'test' || $type == 'both') {
+                $testScore = isset($row['Test Score']) ? round(floatval($row['Test Score']), 2) : 0;
+            }
+
+            $student = Student::with('applicant')->where('matric_number', $matricNumber)->first();
+            if (!$student) {
+                Log::info("Student not found", ['matricNumber' => $matricNumber]);
+                continue;
+            }
 
             $course = Course::find($courseId);
-            $courseCode = $course->code;
-
-            if($courseCode != $courseCodeMain){
-                Log::info("Result Uploaded is not for course: " . $courseCode);
+            if (!$course || $course->code !== $courseCodeMain) {
+                Log::info("Course mismatch", ['expected' => $course->code ?? 'N/A', 'uploaded' => $courseCodeMain]);
                 continue;
             }
 
             $studentRegistration = CourseRegistration::where([
-                'student_id' => $studentId,
+                'student_id' => $student->id,
                 'course_id' => $courseId,
                 'result_approval_id' => null,
                 'academic_session' => $academicSession,
                 'programme_category_id' => $programmeCategoryId
             ])->first();
 
-            if(!$studentRegistration){
-                Log::info($student->applicant->lastname."  ".$student->applicant->othernames." course registration not found for ".$courseCode." @ ".$academicSession);
+            if (!$studentRegistration) {
+                Log::info("Registration not found", ['student' => $student->applicant->lastname . " " . $student->applicant->othernames, 'course' => $courseCode]);
                 continue;
             }
 
-            if(strtolower($type) == 'both'){
+            if ($type == 'both') {
                 $studentRegistration->ca_score = $testScore;
                 $studentRegistration->exam_score = $examScore;
-            }elseif(strtolower($type) == 'exam'){
-                $testScore = $studentRegistration->ca_score;
-                $studentRegistration->ca_score = $testScore;
+            } elseif ($type == 'exam') {
                 $studentRegistration->exam_score = $examScore;
-            }else{
-                $examScore = $studentRegistration->exam_score;
+            } else {
                 $studentRegistration->ca_score = $testScore;
             }
 
-            $totalScore = 0;
-            if($examScore > 0 && strtolower($type) != 'test'){
-                $totalScore = $testScore + $examScore;
-            }
+            $totalScore = ($type == 'test') ? $testScore : ($testScore + $examScore);
 
-            if(strtolower($type) == 'both'){
-                $totalScore = $testScore + $examScore;
-            }
-            
-            if($totalScore > 0 && $totalScore > 100){
+            if ($totalScore > 100) {
                 alert()->success('Oops', 'Total score is greater than 100.')->persistent('Close');
                 return redirect()->back();
             }
-    
-            if($totalScore > 0){
+
+            if ($totalScore > 0) {
                 $grading = GradeScale::computeGrade($totalScore);
                 $grade = $grading->grade;
                 $points = $grading->point;
-        
-                $studentFaculty = Faculty::find($student->faculty_id);
-                if($studentFaculty->id == 3 || $studentFaculty->id == 7){
-                    if($student->department_id == $course->department_id){
-                        if($totalScore < 50){
-                            $grade = 'F';
-                            $points = 0;
-                        }
-                    }
-                }
 
-                // $courseCode = $studentRegistration->course_code;
-                // if (strpos($courseCode, 'NSC') !== false && $student->programme_id == 15) {
-                //     if($totalScore < 50){
-                //         $grade = 'F';
-                //         $points = 0;
-                //     }
-                // }
+                $facultyId = $student->faculty_id;
+                $isMedicineOrNursing = ($facultyId == 3 || $facultyId == 7);
+                if ($isMedicineOrNursing && $student->department_id == $course->department_id && $totalScore < 50) {
+                    $grade = 'F';
+                    $points = 0;
+                }
 
                 $studentRegistration->total = $totalScore;
                 $studentRegistration->grade = $grade;
