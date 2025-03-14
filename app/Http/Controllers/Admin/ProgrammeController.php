@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\Hash;
 use App\Http\Requests;
 use Illuminate\Support\Facades\Validator;
 
+
+use App\Models\ProgrammeRequirement;
 use App\Models\ProgrammeCategory;
 use App\Models\Programme;
 use App\Models\AcademicLevel;
@@ -1503,4 +1505,96 @@ class ProgrammeController extends Controller
         return redirect()->back();
     }
 
+
+    public function programmeRequirement(){
+
+        $programmes = Programme::with('programmeRequirement')->get();
+        $levels = AcademicLevel::get();
+
+
+        return view('admin.programmeRequirements', [
+            'programmes' => $programmes,
+            'levels' => $levels
+        ]);
+    }
+
+    /**
+     * Add a new programme requirement.
+     */
+    public function addProgrammeRequirement(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'programme_id' => 'required|integer',
+            'level_id' => 'required|integer',
+            'min_cgpa' => 'required|numeric|min:0|max:5',
+            // 'additional_criteria' => 'nullable|json',
+        ]);
+
+        if ($validator->fails()) {
+            alert()->error('Validation Error', $validator->errors()->first())->persistent('Close');
+            return redirect()->back();
+        }
+
+        ProgrammeRequirement::create([
+            'programme_id' => $request->programme_id,
+            'level_id' => $request->level_id,
+            'min_cgpa' => $request->min_cgpa,
+            'additional_criteria' => $request->additional_criteria,
+        ]);
+
+        alert()->success('Success', 'Programme Requirement Added Successfully')->persistent('Close');
+        return redirect()->back();
+    }
+
+
+    /**
+     * Update an existing programme requirement.
+     */
+    public function updateProgrammeRequirement(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'id' => 'required|exists:programme_requirements,id',
+            'programme_id' => 'required|integer',
+            'level_id' => 'required|integer',
+            'min_cgpa' => 'required|numeric|min:0|max:5',
+            // 'additional_criteria' => 'nullable|json',
+        ]);
+
+        if ($validator->fails()) {
+            alert()->error('Validation Error', $validator->errors()->first())->persistent('Close');
+            return redirect()->back();
+        }
+
+        $requirement = ProgrammeRequirement::find($request->id);
+
+        $requirement->update([
+            'programme_id' => $request->programme_id,
+            'level_id' => $request->level_id,
+            'min_cgpa' => $request->min_cgpa,
+            'additional_criteria' => $request->additional_criteria,
+        ]);
+
+        alert()->success('Success', 'Programme Requirement Updated Successfully')->persistent('Close');
+        return redirect()->back();
+    }
+
+    /**
+     * Delete a programme requirement.
+     */
+    public function deleteProgrammeRequirement(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'id' => 'required|exists:programme_requirements,id',
+        ]);
+
+        if ($validator->fails()) {
+            alert()->error('Validation Error', $validator->errors()->first())->persistent('Close');
+            return redirect()->back();
+        }
+
+        ProgrammeRequirement::find($request->id)->delete();
+
+        alert()->success('Success', 'Programme Requirement Deleted Successfully')->persistent('Close');
+        return redirect()->back();
+    }
 }

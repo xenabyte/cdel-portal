@@ -249,4 +249,22 @@ class Student extends Authenticatable
     {
         return $this->belongsTo(ProgrammeCategory::class, 'programme_category_id');
     }
+
+
+    public function canPromote() {
+        $requirement = ProgrammeRequirement::where('programme_id', $this->programme_id)
+            ->where('level_id', $this->level_id)
+            ->first();
+
+        if (!$requirement) {
+            return true; 
+        }
+
+        // Check if CGPA meets the minimum requirement
+        if ($this->cgpa < $requirement->min_cgpa) {
+            return false;
+        }
+
+        return true;
+    }
 }

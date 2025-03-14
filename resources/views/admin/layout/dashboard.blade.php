@@ -411,6 +411,9 @@
                                         <a href="{{ url('/admin/faculties') }}" class="nav-link">Faculties</a>
                                     </li>
                                     <li class="nav-item">
+                                        <a href="{{ url('/admin/programmeRequirement') }}" class="nav-link">Programme Requirement</a>
+                                    </li>
+                                    <li class="nav-item">
                                         <a href="#academicSettingsRole" class="nav-link" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="academicSettingsRole" data-key="t-academicSettingsRole"> Academic Roles
                                         </a>
                                         <div class="collapse menu-dropdown" id="academicSettingsRole">

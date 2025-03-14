@@ -88,4 +88,14 @@ class Programme extends Model
     {
         return $this->hasMany(LevelAdviser::class, 'programme_id');
     }
+
+    /**
+     * Get all of the programmeRequirements for the Programme
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function programmeRequirement()
+    {
+        return $this->hasMany(ProgrammeRequirement::class, 'programme_id');
+    }
 }

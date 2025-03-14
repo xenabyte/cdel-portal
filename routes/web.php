@@ -128,6 +128,15 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'admin'],
   Route::post('/addProgrammeCategory', [App\Http\Controllers\Admin\ProgrammeController::class, 'addProgrammeCategory'])->name('addProgrammeCategory')->middleware(['auth:admin']);
   Route::post('/updateProgrammeCategory', [App\Http\Controllers\Admin\ProgrammeController::class, 'updateProgrammeCategory'])->name('updateProgrammeCategory')->middleware(['auth:admin']);
   Route::post('/deleteProgrammeCategory', [App\Http\Controllers\Admin\ProgrammeController::class, 'deleteProgrammeCategory'])->name('deleteProgrammeCategory')->middleware(['auth:admin']);
+  
+
+  Route::get('/programmeRequirement', [App\Http\Controllers\Admin\ProgrammeController::class, 'programmeRequirement'])->name('programmeRequirement')->middleware(['auth:admin']);
+  Route::post('/addProgrammeRequirement', [App\Http\Controllers\Admin\ProgrammeController::class, 'addProgrammeRequirement'])->name('addProgrammeRequirement')->middleware(['auth:admin']);
+  Route::post('/updateProgrammeRequirement', [App\Http\Controllers\Admin\ProgrammeController::class, 'updateProgrammeRequirement'])->name('updateProgrammeRequirement')->middleware(['auth:admin']);
+  Route::post('/deleteProgrammeRequirement', [App\Http\Controllers\Admin\ProgrammeController::class, 'deleteProgrammeRequirement'])->name('deleteProgrammeRequirement')->middleware(['auth:admin']);
+  
+
+
   Route::get('/populateFaculty', [App\Http\Controllers\Admin\CronController::class, 'populateFaculty'])->name('populateFaculty')->middleware(['auth:admin']);
   Route::get('/populateCourse', [App\Http\Controllers\Admin\CronController::class, 'populateCourse'])->name('populateCourse')->middleware(['auth:admin']);
   Route::get('/populateStaff', [App\Http\Controllers\Admin\CronController::class, 'populateStaff'])->name('populateStaff')->middleware(['auth:admin']);
