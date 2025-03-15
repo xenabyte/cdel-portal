@@ -205,6 +205,7 @@
                         <thead>
                             <tr>
                                 <th scope="col">Id</th>
+                                <th scope="col">Student Batch</th>
                                 <th scope="col">Course Code</th>
                                 <th scope="col">Attendance Percentage</th>
                                 <th scope="col">Lastname</th>
@@ -225,6 +226,7 @@
                                 <tr>
                                     <th scope="row">{{ $loop->iteration }}</th>
                                     <td>{{ $course->code }}</td>
+                                    <td>{{ $registration->student->batch }}</td>
                                     <td>{{ round($registration->attendancePercentage()) }}% </td>
                                     <td>{{ ucwords(strtolower($registration->student->applicant->lastname)) }}</td>
                                     <td>{{ ucwords(strtolower($registration->student->applicant->othernames)) }}</td>
