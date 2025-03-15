@@ -16,6 +16,7 @@ class CreateProgrameRequirementsTable extends Migration
         Schema::create('programme_requirements', function (Blueprint $table) {
             $table->id();
             $table->integer('programme_id')->nullable(); 
+            $table->integer('programme_category_id')->nullable();
             $table->integer('level_id')->nullable(); 
             $table->decimal('min_cgpa', 3, 2)->nullable(); 
             $table->text('additional_criteria')->nullable(); 

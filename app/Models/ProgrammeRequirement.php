@@ -11,7 +11,8 @@ class ProgrammeRequirement extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'programme_id', 
+        'programme_id',
+        'programme_category_id',
         'level_id', 
         'min_cgpa', 
         'additional_criteria'

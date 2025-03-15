@@ -1508,7 +1508,10 @@ class ProgrammeController extends Controller
 
     public function programmeRequirement(){
 
-        $programmes = Programme::with('programmeRequirement')->get();
+        $programmes = Programme::with('programmeRequirement')
+        ->orderBy('department_id', 'ASC')
+        ->orderBy('category_id', 'ASC')
+        ->get();
         $levels = AcademicLevel::get();
 
 
@@ -1537,6 +1540,7 @@ class ProgrammeController extends Controller
 
         ProgrammeRequirement::create([
             'programme_id' => $request->programme_id,
+            'programme_category_id' => $request->programme_category_id,
             'level_id' => $request->level_id,
             'min_cgpa' => $request->min_cgpa,
             'additional_criteria' => $request->additional_criteria,
@@ -1553,7 +1557,7 @@ class ProgrammeController extends Controller
     public function updateProgrammeRequirement(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'id' => 'required|exists:programme_requirements,id',
+            'requirement_id' => 'required|exists:programme_requirements,id',
             'programme_id' => 'required|integer',
             'level_id' => 'required|integer',
             'min_cgpa' => 'required|numeric|min:0|max:5',
@@ -1565,13 +1569,14 @@ class ProgrammeController extends Controller
             return redirect()->back();
         }
 
-        $requirement = ProgrammeRequirement::find($request->id);
+        $requirement = ProgrammeRequirement::find($request->requirement_id);
 
         $requirement->update([
             'programme_id' => $request->programme_id,
+            'programme_category_id' => $request->programme_category_id,
             'level_id' => $request->level_id,
             'min_cgpa' => $request->min_cgpa,
-            'additional_criteria' => $request->additional_criteria,
+            'additional_criteria' => $request->additional_criteria
         ]);
 
         alert()->success('Success', 'Programme Requirement Updated Successfully')->persistent('Close');
@@ -1584,7 +1589,7 @@ class ProgrammeController extends Controller
     public function deleteProgrammeRequirement(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'id' => 'required|exists:programme_requirements,id',
+            'requirement_id' => 'required|exists:programme_requirements,id',
         ]);
 
         if ($validator->fails()) {
@@ -1592,7 +1597,7 @@ class ProgrammeController extends Controller
             return redirect()->back();
         }
 
-        ProgrammeRequirement::find($request->id)->delete();
+        ProgrammeRequirement::find($request->requirement_id)->delete();
 
         alert()->success('Success', 'Programme Requirement Deleted Successfully')->persistent('Close');
         return redirect()->back();

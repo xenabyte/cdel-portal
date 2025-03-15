@@ -132,13 +132,16 @@ class Result
         $CGPA = floor($allRegisteredGradePoints / $allRegisteredCreditUnits * 100) / 100;
         $classGrade = DegreeClass::computeClass($CGPA);
         $class = $classGrade->degree_class;
-        $standing = $classGrade->id > 4 ? 'Not in Good Standing(NGS)' : 'Good Standing(GS)'; 
 
         $student = Student::find($studentId);
         $student->cgpa = $CGPA;
         $student->degree_class = $class;
-        $student->standing = $standing;
         $student->save();
+
+
+        $standing = $classGrade->id > 4 ? 'Not in Good Standing(NGS)' : 'Good Standing(GS)'; 
+        $student->standing = $standing;
+
 
         return true;
     }

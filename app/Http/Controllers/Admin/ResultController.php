@@ -330,6 +330,9 @@ class ResultController extends Controller
                 ->where('semester', $request->semester)
                 ->whereNotNull('grade')
                 ->update(['result_approval_id' => ResultApprovalStatus::getApprovalStatusId(ResultApprovalStatus::SENATE_APPROVED)]);
+
+
+                
             
         }
     

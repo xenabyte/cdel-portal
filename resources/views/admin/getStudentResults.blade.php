@@ -531,7 +531,7 @@
                 <div class="flex-shrink-0">
                     @if(!empty($programme))
                     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#approveResult">Approve Result(s)</button>
-                    {{-- <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#generateResult">Download Result Broadsheet</button> --}}
+                    <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#generateResult">Download Result Broadsheet</button>
                     @endif
                 </div>
             </div><!-- end card header -->

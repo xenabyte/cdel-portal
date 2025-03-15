@@ -56,7 +56,9 @@ class Student extends Authenticatable
         'signature',
         'anti_drug_status',
         'matriculation_status',
-        'transcript'
+        'transcript',
+        'academic_status',
+        'prev_cgpa'
     ];
 
     /**
@@ -253,6 +255,7 @@ class Student extends Authenticatable
 
     public function canPromote() {
         $requirement = ProgrammeRequirement::where('programme_id', $this->programme_id)
+            ->where('programme_category_id', $this->programme_category_id)
             ->where('level_id', $this->level_id)
             ->first();
 

@@ -53,6 +53,8 @@ class CreateStudentsTable extends Migration
             $table->string('anti_drug_status')->nullable();
             $table->string('matriculation_status')->nullable();
             $table->string('transcript')->nullable();
+            $table->string('academic_status')->nullable();
+            $table->string('prev_cgpa')->nullable();
             $table->softDeletes();
             $table->rememberToken();
             $table->timestamps();
