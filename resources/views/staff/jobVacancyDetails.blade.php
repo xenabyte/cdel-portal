@@ -1,4 +1,7 @@
 @extends('staff.layout.dashboard')
+@php
+    use \App\Models\ResultApprovalStatus;
+@endphp
 
 @section('content')
  <!-- start page title -->
@@ -213,7 +216,7 @@
                 @if($applicant->workStudyApplicant)
                     @php
                         $student = $applicant->workStudyApplicant;
-                        $failedCourses = $student->registeredCourses()->where('grade', 'F')->where('re_reg', null)->get();
+                        $failedCourses = $student->registeredCourses()->where('grade', 'F')->where('re_reg', null)->where('result_approval_id', ResultApprovalStatus::getApprovalStatusId(ResultApprovalStatus::SENATE_APPROVED))->get();
                     @endphp
 
                     <div class="d-flex align-items-center mb-3">
