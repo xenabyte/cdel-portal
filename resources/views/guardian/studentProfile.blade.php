@@ -1,12 +1,13 @@
     @extends('guardian.layout.dashboard')
 @php
+use \App\Models\ResultApprovalStatus;
 
 $qrcode = 'https://quickchart.io/chart?chs=300x300&cht=qr&chl='.env('APP_URL').'/studentDetails/'.$student->slug;
 $name = $student->applicant->lastname.' '.$student->applicant->othernames;
 $transactions = $student->transactions()->orderBy('created_at', 'desc')->get();
 $studentRegistrations = $student->courseRegistrationDocument()->orderBy('created_at', 'desc')->take(10)->get();
 $currentHostelAllocation = $student->currentHostelAllocation;
-$failedCourses = $student->registeredCourses()->where('grade', 'F')->where('re_reg', null)->get();
+$failedCourses = $student->registeredCourses()->where('grade', 'F')->where('re_reg', null)->where('result_approval_id', ResultApprovalStatus::getApprovalStatusId(ResultApprovalStatus::SENATE_APPROVED))->get();
 
 @endphp
 @section('content')
