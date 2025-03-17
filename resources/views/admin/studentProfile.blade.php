@@ -107,6 +107,122 @@ $failedCourses = $student->registeredCourses()->where('grade', 'F')->where('re_r
             <div class="tab-pane fade show active" id="project-overview" role="tabpanel">
                 <div class="row">
                     <div class="col-lg-8">
+                        
+                        <div class="card">
+                            <div class="card-header border-0 align-items-center d-flex">
+                                <h4 class="card-title mb-0 flex-grow-1">Documents</h4>
+                            </div><!-- end card header -->
+                
+                            <div class="card-body border-top border-top-dashed">
+                                <div class="vstack gap-2">
+                                    <div class="border rounded border-dashed p-2">
+                                        <div class="d-flex align-items-center">
+                                            <div class="flex-shrink-0 me-3">
+                                                <div class="avatar-sm">
+                                                    <div class="avatar-title bg-light text-secondary rounded fs-24 shadow">
+                                                        <i class="ri-file-pdf-fill"></i>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="flex-grow-1 overflow-hidden">
+                                                <h5 class="fs-13 mb-1"><a href="{{ asset($student->admission_letter) }}" class="text-body text-truncate d-block">Admission Letter</a></h5>
+                                            </div>
+                                            <div class="flex-shrink-0 ms-2">
+                                                <div class="d-flex gap-1">
+                                                    <a href="{{ asset($student->admission_letter) }}"  class="btn btn-icon text-muted btn-sm fs-18 shadow-none"><i class="ri-download-2-line"></i></a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                
+                                    @if(strtolower($student->applicant->application_type) == 'utme')
+                                    <div class="border rounded border-dashed p-2">
+                                        <div class="d-flex align-items-center">
+                                            <div class="flex-shrink-0 me-3">
+                                                <div class="avatar-sm">
+                                                    <div class="avatar-title bg-light text-secondary rounded fs-24 shadow">
+                                                        <i class="ri-image-fill"></i>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="flex-grow-1 overflow-hidden">
+                                                <h5 class="fs-13 mb-1"><a href="{{ asset($student->applicant->utme) }}" class="text-body text-truncate d-block">Jamb Result</a></h5>
+                                            </div>
+                                            <div class="flex-shrink-0 ms-2">
+                                                <div class="d-flex gap-1">
+                                                    <a href="{{ asset($student->applicant->utme) }}"  class="btn btn-icon text-muted btn-sm fs-18 shadow-none"><i class="ri-download-2-line"></i></a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    @else
+                                    <div class="border rounded border-dashed p-2">
+                                        <div class="d-flex align-items-center">
+                                            <div class="flex-shrink-0 me-3">
+                                                <div class="avatar-sm">
+                                                    <div class="avatar-title bg-light text-secondary rounded fs-24 shadow">
+                                                        <i class="ri-image-fill"></i>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="flex-grow-1 overflow-hidden">
+                                                <h5 class="fs-13 mb-1"><a href="{{ asset($student->applicant->de_result) }}" class="text-body text-truncate d-block">Direct Entry/Prev Institution Result</a></h5>
+                                            </div>
+                                            <div class="flex-shrink-0 ms-2">
+                                                <div class="d-flex gap-1">
+                                                    <a href="{{ asset($student->applicant->de_result) }}"  class="btn btn-icon text-muted btn-sm fs-18 shadow-none"><i class="ri-download-2-line"></i></a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    @endif
+                
+                                    <div class="border rounded border-dashed p-2">
+                                        <div class="d-flex align-items-center">
+                                            <div class="flex-shrink-0 me-3">
+                                                <div class="avatar-sm">
+                                                    <div class="avatar-title bg-light text-secondary rounded fs-24 shadow">
+                                                        <i class="ri-image-fill"></i>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="flex-grow-1 overflow-hidden">
+                                                <h5 class="fs-13 mb-1"><a href="{{ asset($student->applicant->olevel_1) }}" class="text-body text-truncate d-block">Olevel Result</a></h5>
+                                            </div>
+                                            <div class="flex-shrink-0 ms-2">
+                                                <div class="d-flex gap-1">
+                                                    <a href="{{ asset($student->applicant->olevel_1) }}"  class="btn btn-icon text-muted btn-sm fs-18 shadow-none"><i class="ri-download-2-line"></i></a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                
+                                    @if(!empty($student->applicant->olevel_2))
+                                    <div class="border rounded border-dashed p-2">
+                                        <div class="d-flex align-items-center">
+                                            <div class="flex-shrink-0 me-3">
+                                                <div class="avatar-sm">
+                                                    <div class="avatar-title bg-light text-secondary rounded fs-24 shadow">
+                                                        <i class="ri-image-fill"></i>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="flex-grow-1 overflow-hidden">
+                                                <h5 class="fs-13 mb-1"><a href="{{ asset($student->applicant->olevel_2) }}" class="text-body text-truncate d-block">Olevel Result(Second Sitting)</a></h5>
+                                            </div>
+                                            <div class="flex-shrink-0 ms-2">
+                                                <div class="d-flex gap-1">
+                                                    <a href="{{ asset($student->applicant->olevel_2) }}"  class="btn btn-icon text-muted btn-sm fs-18 shadow-none"><i class="ri-download-2-line"></i></a> 
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+
+
                         <div class="card">
                             <div class="card-body">
                                 <div class="text-muted">
