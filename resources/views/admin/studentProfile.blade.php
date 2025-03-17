@@ -129,7 +129,7 @@ $failedCourses = $student->registeredCourses()->where('grade', 'F')->where('re_r
                                             </div>
                                             <div class="flex-shrink-0 ms-2">
                                                 <div class="d-flex gap-1">
-                                                    @if(empty($student->admission_letter))
+                                                    @if(!empty($student->admission_letter))
                                                     <a href="{{ asset($student->admission_letter) }}"  class="btn btn-icon text-muted btn-sm fs-18 shadow-none"><i class="ri-download-2-line"></i></a>
                                                     @else
                                                     <form action="{{ url('admin/generateAdmissionLetter') }}" method="POST">
