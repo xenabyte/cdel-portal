@@ -6,6 +6,8 @@ header('Access-Control-Allow-Origin: *');
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\GlobalDataMiddleware;
+use App\Http\Middleware\StudentAccess;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -93,6 +95,10 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'admin'],
 
   Route::post('/createNewApplicant', [App\Http\Controllers\Admin\AdmissionController::class, 'createNewApplicant'])->name('createNewApplicant')->middleware(['auth:admin']);
 
+  Route::post('/expel', [App\Http\Controllers\Admin\StudentDisciplinaryController::class, 'expel'])->name('expel')->middleware(['auth:admin']);
+  Route::post('/suspend', [App\Http\Controllers\Admin\StudentDisciplinaryController::class, 'suspend'])->name('suspend')->middleware(['auth:admin']);
+  Route::post('/recall', [App\Http\Controllers\Admin\StudentDisciplinaryController::class, 'recall'])->name('recall')->middleware(['auth:admin']);
+
   Route::get('/messageStudent', [App\Http\Controllers\Admin\CommunicationController::class, 'messageStudent'])->name('messageStudent')->middleware(['auth:admin']);
   Route::get('/messageParent', [App\Http\Controllers\Admin\CommunicationController::class, 'messageParent'])->name('messageParent')->middleware(['auth:admin']);
   Route::get('/messageAllStudent', [App\Http\Controllers\Admin\CommunicationController::class, 'messageAllStudent'])->name('messageAllStudent')->middleware(['auth:admin']);
@@ -129,14 +135,11 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'admin'],
   Route::post('/updateProgrammeCategory', [App\Http\Controllers\Admin\ProgrammeController::class, 'updateProgrammeCategory'])->name('updateProgrammeCategory')->middleware(['auth:admin']);
   Route::post('/deleteProgrammeCategory', [App\Http\Controllers\Admin\ProgrammeController::class, 'deleteProgrammeCategory'])->name('deleteProgrammeCategory')->middleware(['auth:admin']);
   
-
   Route::get('/programmeRequirement', [App\Http\Controllers\Admin\ProgrammeController::class, 'programmeRequirement'])->name('programmeRequirement')->middleware(['auth:admin']);
   Route::post('/addProgrammeRequirement', [App\Http\Controllers\Admin\ProgrammeController::class, 'addProgrammeRequirement'])->name('addProgrammeRequirement')->middleware(['auth:admin']);
   Route::post('/updateProgrammeRequirement', [App\Http\Controllers\Admin\ProgrammeController::class, 'updateProgrammeRequirement'])->name('updateProgrammeRequirement')->middleware(['auth:admin']);
   Route::post('/deleteProgrammeRequirement', [App\Http\Controllers\Admin\ProgrammeController::class, 'deleteProgrammeRequirement'])->name('deleteProgrammeRequirement')->middleware(['auth:admin']);
   
-
-
   Route::get('/populateFaculty', [App\Http\Controllers\Admin\CronController::class, 'populateFaculty'])->name('populateFaculty')->middleware(['auth:admin']);
   Route::get('/populateCourse', [App\Http\Controllers\Admin\CronController::class, 'populateCourse'])->name('populateCourse')->middleware(['auth:admin']);
   Route::get('/populateStaff', [App\Http\Controllers\Admin\CronController::class, 'populateStaff'])->name('populateStaff')->middleware(['auth:admin']);
@@ -479,98 +482,96 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'student'
   Route::get('/password/reset', [App\Http\Controllers\Student\Auth\ForgotPasswordController::class, 'showLinkRequestForm'])->name('password.reset');
   Route::get('/password/reset/{token}', [App\Http\Controllers\Student\Auth\ResetPasswordController::class, 'showResetForm']);
 
-  Route::get('/home', [App\Http\Controllers\Student\StudentController::class, 'index'])->name('home')->middleware(['auth:student']);
-  Route::post('/makePayment', [App\Http\Controllers\Student\StudentController::class, 'makePayment'])->name('makePayment')->middleware(['auth:student']);
-  Route::post('/setMode', [App\Http\Controllers\Student\StudentController::class, 'setMode'])->name('setMode')->middleware(['auth:student']);
-
-  Route::get('/profile', [App\Http\Controllers\Student\StudentController::class, 'profile'])->name('profile')->middleware(['auth:student']);
-  Route::post('/profile/saveBioData', [App\Http\Controllers\Student\StudentController::class, 'saveBioData'])->name('saveBioData')->middleware(['auth:student']);
-  Route::post('/updatePassword', [App\Http\Controllers\Student\StudentController::class, 'updatePassword'])->name('updatePassword')->middleware(['auth:student']);
-  Route::post('/uploadImage', [App\Http\Controllers\Student\StudentController::class, 'uploadImage'])->name('uploadImage')->middleware(['auth:student']);
-
-  Route::get('/antiDrugDeclaration', [App\Http\Controllers\Student\StudentController::class, 'antiDrugDeclaration'])->name('antiDrugDeclaration')->middleware(['auth:student']);
-  Route::post('/saveAntiDrugDeclaration', [App\Http\Controllers\Student\StudentController::class, 'saveAntiDrugDeclaration'])->name('saveAntiDrugDeclaration')->middleware(['auth:student']);
-  
-  
-  Route::get('/transactions', [App\Http\Controllers\Student\StudentController::class, 'transactions'])->name('transactions')->middleware(['auth:student']);
-  Route::get('/walletTransactions', [App\Http\Controllers\Student\StudentController::class, 'walletTransactions'])->name('walletTransactions')->middleware(['auth:student']);
-  Route::post('/getPayment', [App\Http\Controllers\Student\StudentController::class, 'getPayment'])->name('getPayment')->middleware(['auth:student']);
-
-
-  Route::get('/courseRegistration', [App\Http\Controllers\Student\AcademicController::class, 'courseRegistration'])->name('courseRegistration')->middleware(['auth:student']);
-  Route::post('/registerCourses', [App\Http\Controllers\Student\AcademicController::class, 'registerCourses'])->name('registerCourses')->middleware(['auth:student']);
-  Route::post('/printCourseReg', [App\Http\Controllers\Student\AcademicController::class, 'printCourseReg'])->name('printCourseReg')->middleware(['auth:student']);
-  Route::get('/editCourseReg', [App\Http\Controllers\Student\AcademicController::class, 'editCourseReg'])->name('editCourseReg')->middleware(['auth:student']);
-  Route::get('/allCourseRegs', [App\Http\Controllers\Student\AcademicController::class, 'allCourseRegs'])->name('allCourseRegs')->middleware(['auth:student']);
-
-  Route::get('/examDocket', [App\Http\Controllers\Student\AcademicController::class, 'examDocket'])->name('examDocket')->middleware(['auth:student']);
-  Route::post('/genExamDocket', [App\Http\Controllers\Student\AcademicController::class, 'genExamDocket'])->name('genExamDocket')->middleware(['auth:student']);
-  Route::get('/allExamDockets', [App\Http\Controllers\Student\AcademicController::class, 'allExamDockets'])->name('allExamDockets')->middleware(['auth:student']);
-  Route::post('/printExamCard', [App\Http\Controllers\Student\AcademicController::class, 'printExamCard'])->name('printExamCard')->middleware(['auth:student']);
-
-  Route::get('/examResult', [App\Http\Controllers\Student\AcademicController::class, 'examResult'])->name('examResult')->middleware(['auth:student']);
-  Route::post('/generateResult', [App\Http\Controllers\Student\AcademicController::class, 'generateResult'])->name('generateResult')->middleware(['auth:student']);
-
-  Route::get('/transcript', [App\Http\Controllers\Student\AcademicController::class, 'transcript'])->name('transcript')->middleware(['auth:student']);
-  Route::post('/generateInvoice', [App\Http\Controllers\Student\StudentController::class, 'generateInvoice'])->name('generateInvoice')->middleware(['auth:student']);
-
-  Route::get('/mentor', [App\Http\Controllers\Student\StudentController::class, 'mentor'])->name('mentor')->middleware(['auth:student']);
-  Route::get('/exits', [App\Http\Controllers\Student\StudentController::class, 'exits'])->name('exits')->middleware(['auth:student']);
-  Route::post('exitApplication', [App\Http\Controllers\Student\StudentController::class, 'exitApplication'])->name('exitApplication')->middleware(['auth:student']);
-
-  Route::get('/hallOfFame', [App\Http\Controllers\HomeController::class, 'hallOfFame']);
-  Route::get('/purchaseBandwidth', [App\Http\Controllers\Student\StudentController::class, 'purchaseBandwidth'])->name('purchaseBandwidth')->middleware(['auth:student']);
-  Route::post('createBandwidthPayment', [App\Http\Controllers\Student\StudentController::class, 'createBandwidthPayment'])->name('createBandwidthPayment')->middleware(['auth:student']);
-
   Route::get('/verifyStudentExits', [App\Http\Controllers\HomeController::class, 'verifyStudentExits'])->name('verifyStudentExits');
   Route::post('/verifyStudentExit', [App\Http\Controllers\HomeController::class, 'verifyStudentExit'])->name('verifyStudentExit');
+  Route::post('/requeryUpperlinkPayment', [App\Http\Controllers\PaymentController::class, 'requeryUpperlinkPayment']);
 
-  Route::get('/reffs', [App\Http\Controllers\Student\StudentController::class, 'reffs'])->name('reffs')->middleware(['auth:student']);
-  Route::post('/applicantWithSession', [App\Http\Controllers\Student\StudentController::class, 'applicantWithSession'])->name('applicantWithSession')->middleware(['auth:student']);
-  Route::get('/student/{slug}', [App\Http\Controllers\Student\StudentController::class, 'student'])->name('student')->middleware(['auth:student']);
-  
-  Route::post('/submitClearanceApplication', [App\Http\Controllers\Student\ClearanceController::class, 'submitClearanceApplication'])->name('submitClearanceApplication')->middleware(['auth:student']);
-  Route::post('/saveBioData', [App\Http\Controllers\Student\ClearanceController::class, 'saveBioData'])->middleware(['auth:student']);
-  Route::post('/guardianBioData', [App\Http\Controllers\Student\ClearanceController::class, 'guardianBioData'])->middleware(['auth:student']);
-  Route::post('/saveUtme', [App\Http\Controllers\Student\ClearanceController::class, 'saveUtme'])->middleware(['auth:student']);
-  Route::post('/saveSitting', [App\Http\Controllers\Student\ClearanceController::class, 'saveSitting'])->middleware(['auth:student']);
-  Route::post('/addOlevel', [App\Http\Controllers\Student\ClearanceController::class, 'addOlevel'])->middleware(['auth:student']);
-  Route::post('/addUtme', [App\Http\Controllers\Student\ClearanceController::class, 'addUtme'])->middleware(['auth:student']);
-  Route::post('/updateUtme', [App\Http\Controllers\Student\ClearanceController::class, 'updateUtme'])->middleware(['auth:student']);
-  Route::post('/updateOlevel', [App\Http\Controllers\Student\ClearanceController::class, 'updateOlevel'])->middleware(['auth:student']);
+  Route::group(['middleware' => ['auth:student', StudentAccess::class]], function () {
+    Route::get('/home', [App\Http\Controllers\Student\StudentController::class, 'index'])->name('home');
 
-  Route::post('/deleteUtme', [App\Http\Controllers\Student\ClearanceController::class, 'deleteUtme'])->middleware(['auth:student']);
-  Route::post('/deleteOlevel', [App\Http\Controllers\Student\ClearanceController::class, 'deleteOlevel'])->middleware(['auth:student']);
-  Route::post('/nokBioData', [App\Http\Controllers\Student\ClearanceController::class, 'nokBioData'])->middleware(['auth:student']);
+    Route::post('/makePayment', [App\Http\Controllers\Student\StudentController::class, 'makePayment'])->name('makePayment');
+    Route::post('/setMode', [App\Http\Controllers\Student\StudentController::class, 'setMode'])->name('setMode');
 
-  Route::post('/saveDe', [App\Http\Controllers\Student\ClearanceController::class, 'saveDe'])->middleware(['auth:student']);
-  Route::post('/saveProgramme', [App\Http\Controllers\Student\ClearanceController::class, 'saveProgramme'])->middleware(['auth:student']);
-  Route::post('/uploadOlevel', [App\Http\Controllers\Student\ClearanceController::class, 'uploadOlevel'])->middleware(['auth:student']);
-  Route::post('/uploadUtme', [App\Http\Controllers\Student\ClearanceController::class, 'uploadUtme'])->middleware(['auth:student']);
-  Route::post('/deleteFile', [App\Http\Controllers\Student\ClearanceController::class, 'deleteFile'])->middleware(['auth:student']);
+    Route::get('/profile', [App\Http\Controllers\Student\StudentController::class, 'profile'])->name('student.profile');
+    Route::post('/profile/saveBioData', [App\Http\Controllers\Student\StudentController::class, 'saveBioData'])->name('student.saveBioData');
+    Route::post('/updatePassword', [App\Http\Controllers\Student\StudentController::class, 'updatePassword'])->name('student.updatePassword');
+    Route::post('/uploadImage', [App\Http\Controllers\Student\StudentController::class, 'uploadImage'])->name('student.uploadImage');
 
-  Route::post('/requeryUpperlinkPayment', [App\Http\Controllers\PaymentController::class, 'requeryUpperlinkPayment'])->middleware(['auth:student']);
+    Route::get('/antiDrugDeclaration', [App\Http\Controllers\Student\StudentController::class, 'antiDrugDeclaration'])->name('antiDrugDeclaration');
+    Route::post('/saveAntiDrugDeclaration', [App\Http\Controllers\Student\StudentController::class, 'saveAntiDrugDeclaration'])->name('saveAntiDrugDeclaration');
+    
+    Route::get('/transactions', [App\Http\Controllers\Student\StudentController::class, 'transactions'])->name('student.transactions');
+    Route::get('/walletTransactions', [App\Http\Controllers\Student\StudentController::class, 'walletTransactions'])->name('student.walletTransactions');
+    Route::post('/getPayment', [App\Http\Controllers\Student\StudentController::class, 'getPayment'])->name('student.getPayment');
 
-  Route::get('/hostelBooking', [App\Http\Controllers\Student\StudentController::class, 'hostelBooking'])->name('hostelBooking')->middleware(['auth:student']); 
-  Route::post('/getHostels', [App\Http\Controllers\Student\HostelController::class, 'getHostels'])->name('getHostels'); 
-  Route::post('/getRoomTypes', [App\Http\Controllers\Student\HostelController::class, 'getRoomTypes'])->name('getRoomTypes'); 
-  Route::post('/getTypes', [App\Http\Controllers\Student\HostelController::class, 'getTypes'])->name('getTypes'); 
-  Route::post('/getRooms', [App\Http\Controllers\Student\HostelController::class, 'getRooms'])->name('getRooms'); 
+    Route::get('/courseRegistration', [App\Http\Controllers\Student\AcademicController::class, 'courseRegistration'])->name('courseRegistration');
+    Route::post('/registerCourses', [App\Http\Controllers\Student\AcademicController::class, 'registerCourses'])->name('registerCourses');
+    Route::post('/printCourseReg', [App\Http\Controllers\Student\AcademicController::class, 'printCourseReg'])->name('printCourseReg');
+    Route::get('/editCourseReg', [App\Http\Controllers\Student\AcademicController::class, 'editCourseReg'])->name('editCourseReg');
+    Route::get('/allCourseRegs', [App\Http\Controllers\Student\AcademicController::class, 'allCourseRegs'])->name('allCourseRegs');
 
-  Route::post('/startClearance', [App\Http\Controllers\Student\ClearanceController::class, 'startClearance'])->name('startClearance')->middleware(['auth:student']); 
-  Route::post('/downloadClearance', [App\Http\Controllers\Student\ClearanceController::class, 'downloadClearance'])->name('downloadClearance')->middleware(['auth:student']);
+    Route::get('/examDocket', [App\Http\Controllers\Student\AcademicController::class, 'examDocket'])->name('examDocket');
+    Route::post('/genExamDocket', [App\Http\Controllers\Student\AcademicController::class, 'genExamDocket'])->name('genExamDocket');
+    Route::get('/allExamDockets', [App\Http\Controllers\Student\AcademicController::class, 'allExamDockets'])->name('allExamDockets');
+    Route::post('/printExamCard', [App\Http\Controllers\Student\AcademicController::class, 'printExamCard'])->name('printExamCard');
 
-  Route::get('/registeredCourses', [App\Http\Controllers\Student\AcademicController::class, 'registeredCourses'])->name('registeredCourses')->middleware(['auth:student']); 
+    Route::get('/examResult', [App\Http\Controllers\Student\AcademicController::class, 'examResult'])->name('student.examResult');
+    Route::post('/generateResult', [App\Http\Controllers\Student\AcademicController::class, 'generateResult'])->name('student.generateResult');
 
-  Route::post('/save-player-id', [App\Http\Controllers\Student\StudentController::class, 'savePlayerId'])->name('savePlayerId')->middleware(['auth:student']);
+    Route::get('/transcript', [App\Http\Controllers\Student\AcademicController::class, 'transcript'])->name('transcript');
+    Route::post('/generateInvoice', [App\Http\Controllers\Student\StudentController::class, 'generateInvoice'])->name('generateInvoice');
 
+    Route::get('/mentor', [App\Http\Controllers\Student\StudentController::class, 'mentor'])->name('mentor');
+    Route::get('/exits', [App\Http\Controllers\Student\StudentController::class, 'exits'])->name('exits');
+    Route::post('exitApplication', [App\Http\Controllers\Student\StudentController::class, 'exitApplication'])->name('exitApplication');
 
-  Route::get('/vacancies', [App\Http\Controllers\Student\CareerController::class, 'vacancies'])->name('vacancies')->middleware(['auth:student']);
-  Route::get('/applications', [App\Http\Controllers\Student\CareerController::class, 'applications'])->name('applications')->middleware(['auth:student']);
-  Route::post('/apply', [App\Http\Controllers\Student\CareerController::class, 'apply'])->name('apply')->middleware(['auth:student']);
-  Route::post('/deleteApplication', [App\Http\Controllers\Student\CareerController::class, 'deleteApplication'])->name('deleteApplication')->middleware(['auth:student']);
-  Route::post('/manageApplication', [App\Http\Controllers\Student\CareerController::class, 'manageApplication'])->name('manageApplication')->middleware(['auth:student']);  
+    Route::get('/hallOfFame', [App\Http\Controllers\HomeController::class, 'hallOfFame']);
+    Route::get('/purchaseBandwidth', [App\Http\Controllers\Student\StudentController::class, 'purchaseBandwidth'])->name('purchaseBandwidth');
+    Route::post('createBandwidthPayment', [App\Http\Controllers\Student\StudentController::class, 'createBandwidthPayment'])->name('createBandwidthPayment');
 
+    Route::get('/reffs', [App\Http\Controllers\Student\StudentController::class, 'reffs'])->name('reffs');
+    Route::post('/applicantWithSession', [App\Http\Controllers\Student\StudentController::class, 'applicantWithSession'])->name('applicantWithSession');
+    Route::get('/student/{slug}', [App\Http\Controllers\Student\StudentController::class, 'student'])->name('student');
+    
+    Route::post('/submitClearanceApplication', [App\Http\Controllers\Student\ClearanceController::class, 'submitClearanceApplication'])->name('submitClearanceApplication');
+    Route::post('/saveBioData', [App\Http\Controllers\Student\ClearanceController::class, 'saveBioData']);
+    Route::post('/guardianBioData', [App\Http\Controllers\Student\ClearanceController::class, 'guardianBioData']);
+    Route::post('/saveUtme', [App\Http\Controllers\Student\ClearanceController::class, 'saveUtme']);
+    Route::post('/saveSitting', [App\Http\Controllers\Student\ClearanceController::class, 'saveSitting']);
+    Route::post('/addOlevel', [App\Http\Controllers\Student\ClearanceController::class, 'addOlevel']);
+    Route::post('/addUtme', [App\Http\Controllers\Student\ClearanceController::class, 'addUtme']);
+    Route::post('/updateUtme', [App\Http\Controllers\Student\ClearanceController::class, 'updateUtme']);
+    Route::post('/updateOlevel', [App\Http\Controllers\Student\ClearanceController::class, 'updateOlevel']);
+
+    Route::post('/deleteUtme', [App\Http\Controllers\Student\ClearanceController::class, 'deleteUtme']);
+    Route::post('/deleteOlevel', [App\Http\Controllers\Student\ClearanceController::class, 'deleteOlevel']);
+    Route::post('/nokBioData', [App\Http\Controllers\Student\ClearanceController::class, 'nokBioData']);
+
+    Route::post('/saveDe', [App\Http\Controllers\Student\ClearanceController::class, 'saveDe']);
+    Route::post('/saveProgramme', [App\Http\Controllers\Student\ClearanceController::class, 'saveProgramme']);
+    Route::post('/uploadOlevel', [App\Http\Controllers\Student\ClearanceController::class, 'uploadOlevel']);
+    Route::post('/uploadUtme', [App\Http\Controllers\Student\ClearanceController::class, 'uploadUtme']);
+    Route::post('/deleteFile', [App\Http\Controllers\Student\ClearanceController::class, 'deleteFile']);
+
+    Route::get('/hostelBooking', [App\Http\Controllers\Student\StudentController::class, 'hostelBooking'])->name('hostelBooking'); 
+    Route::post('/getHostels', [App\Http\Controllers\Student\HostelController::class, 'getHostels'])->name('getHostels'); 
+    Route::post('/getRoomTypes', [App\Http\Controllers\Student\HostelController::class, 'getRoomTypes'])->name('getRoomTypes'); 
+    Route::post('/getTypes', [App\Http\Controllers\Student\HostelController::class, 'getTypes'])->name('getTypes'); 
+    Route::post('/getRooms', [App\Http\Controllers\Student\HostelController::class, 'getRooms'])->name('getRooms'); 
+
+    Route::post('/startClearance', [App\Http\Controllers\Student\ClearanceController::class, 'startClearance'])->name('startClearance'); 
+    Route::post('/downloadClearance', [App\Http\Controllers\Student\ClearanceController::class, 'downloadClearance'])->name('downloadClearance');
+
+    Route::get('/registeredCourses', [App\Http\Controllers\Student\AcademicController::class, 'registeredCourses'])->name('registeredCourses'); 
+
+    Route::post('/save-player-id', [App\Http\Controllers\Student\StudentController::class, 'savePlayerId'])->name('savePlayerId');
+
+    Route::get('/vacancies', [App\Http\Controllers\Student\CareerController::class, 'vacancies'])->name('vacancies');
+    Route::get('/applications', [App\Http\Controllers\Student\CareerController::class, 'applications'])->name('applications');
+    Route::post('/apply', [App\Http\Controllers\Student\CareerController::class, 'apply'])->name('apply');
+    Route::post('/deleteApplication', [App\Http\Controllers\Student\CareerController::class, 'deleteApplication'])->name('deleteApplication');
+    Route::post('/manageApplication', [App\Http\Controllers\Student\CareerController::class, 'manageApplication'])->name('manageApplication');  
+  });
 });
 
 Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'staff'], function () {

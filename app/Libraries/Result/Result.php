@@ -317,24 +317,31 @@ class Result
         return round($gpa, 2); // Round to 2 decimal places
     }
 
-    public static function checkProbation($student, $cgpa, $currentGPA, $previousGPA)
+    public static function checkProbation($student, $semester, $cgpa, $currentGPA, $previousGPA)
     {
-        $status = "Good Stading";
+        $status = "Good Standing"; // Default status
 
-        if ($cgpa < 1.50) {
+        // Fetch student's programme
+        $programme = Programme::find($student->programme_id);
+
+        // Use 1.50 if programme->minimum_cgpa is null
+        $probationCGPA = $programme ? (float) ($programme->minimum_cgpa ?? 1.50) : 1.50;
+
+        // Probation check
+        if ($cgpa < $probationCGPA) {
             $status = 'Probation';
         }
 
-        if ($student->level >= 200 && $cgpa < 1.50) {
-            if ($currentGPA < 1.5 && $previousGPA < 1.5) {
-                $status = 'Withdrawn';
-            }
+        // Withdrawal check for 200 level and above
+        if ($semester == 2 && $student->level >= 200 && $cgpa < $probationCGPA) {
+            $status = 'Withdrawn';
         }
 
+        // Save and return academic status
         $student->academic_status = $status;
         $student->save();
-        
-        return $student->academic_status;
+
+        return $status;
     }
     
 }

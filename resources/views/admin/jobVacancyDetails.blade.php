@@ -237,7 +237,7 @@
                                 </p>
                                 <p class="text-muted"><strong>CGPA:</strong> {{ $student->cgpa }} <br>
                                     <strong>Class:</strong> {{ $student->degree_class }}<br>
-                                    <strong>Standing:</strong> {{ $student->standing }}<br>
+                                    <strong>Standing:</strong> {{ $student->academic_status }}<br>
                                     @if($failedCourses->count() > 0)<strong class="text-danger">Failed Courses:</strong> <span class="text-danger">@foreach($failedCourses as $failedCourse) {{ $failedCourse->course_code.',' }} @endforeach</span> @endif <br>
 
                                 </p>

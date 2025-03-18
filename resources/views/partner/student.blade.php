@@ -44,7 +44,17 @@ $failedCourses = $student->registeredCourses()->where('grade', 'F')->where('re_r
                                 </div>
                                 <div class="col-md">
                                     <div>
-                                        <h4 class="fw-bold">{{$name}}</h4>
+                                        <h4 class="fw-bold">{{$name}}
+
+                                            <span class="badge 
+                                                @if($student->academic_status == 'Good Standing') bg-success
+                                                @elseif($student->academic_status == 'Suspended' || $student->academic_status == 'Probation') bg-warning
+                                                @elseif($student->academic_status == 'Expelled') bg-danger
+                                                @else bg-secondary
+                                                @endif">
+                                                {{ $student->academic_status }}
+                                            </span>
+                                        </h4>
                                         <div class="hstack gap-3 flex-wrap">
                                             <div><i class="ri-building-line align-bottom me-1"></i> {{ $student->programme->name }}</div>
                                             <div class="vr"></div>
@@ -149,7 +159,7 @@ $failedCourses = $student->registeredCourses()->where('grade', 'F')->where('re_r
                                         </p>
                                         <p class="text-muted border-top border-top-dashed"><strong>CGPA:</strong> {{ $student->cgpa }} <br>
                                             <strong>Class:</strong> {{ $student->degree_class }}<br>
-                                            <strong>Standing:</strong> {{ $student->standing }}<br>
+                                            <strong>Standing:</strong> {{ $student->academic_status }}<br>
                                             @if($failedCourses->count() > 0)<strong class="text-danger">Failed Courses:</strong> <span class="text-danger">@foreach($failedCourses as $failedCourse) {{ $failedCourse->course_code.',' }} @endforeach</span> @endif <br>
 
                                         </p>

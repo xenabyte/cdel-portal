@@ -31,7 +31,7 @@ $failedCourses = $student->registeredCourses()->where('grade', 'F')->where('re_r
 <div class="row">
     <div class="col-lg-12">
         <div class="card mt-n4 mx-n4">
-            <div class="bg-soft-primary">
+            <div class="{{$student->isExpelled() ?"bg-soft-danger": "bg-soft-primary"}}">
                 <div class="card-body pb-0 px-4">
                     <div class="row mb-3">
                         <div class="col-md">
@@ -43,7 +43,14 @@ $failedCourses = $student->registeredCourses()->where('grade', 'F')->where('re_r
                                 </div>
                                 <div class="col-md">
                                     <div>
-                                        <h4 class="fw-bold">{{$name}}</h4>
+                                        <h4 class="fw-bold">{{$name}} <span class="badge 
+                                            @if($student->academic_status == 'Good Standing') bg-success
+                                            @elseif($student->academic_status == 'Suspended' || $student->academic_status == 'Probation') bg-warning
+                                            @elseif($student->academic_status == 'Expelled') bg-danger
+                                            @else bg-secondary
+                                            @endif">
+                                            {{ $student->academic_status }}
+                                        </span></h4>
                                         <div class="hstack gap-3 flex-wrap">
                                             <div><i class="ri-building-line align-bottom me-1"></i> {{ $student->programme->name }}</div>
                                             <div class="vr"></div>
@@ -64,10 +71,14 @@ $failedCourses = $student->registeredCourses()->where('grade', 'F')->where('re_r
                                     <input type="hidden" name="student_id" value="{{ $student->id }}">
                                     <button type="submit" class="btn btn-success">Send Guardian Onboarding Mail</button>
                                 </form>
+
+                                <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#expelStudent">Expel Student</button>
+                                <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#suspendStudent">Suspend Student</button>
+
                                 @if(empty($student->deleted_at))
-                                <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#expelStudent">Disable Student</button>
-                                @else
-                                <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#enableStudent">Enable Student</button>
+                                    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteStudent">Delete Student</button>
+                                @else             
+                                   <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#enableStudent">Enable Student</button>
                                 @endif
                             </div>
                         </div>
@@ -77,6 +88,18 @@ $failedCourses = $student->registeredCourses()->where('grade', 'F')->where('re_r
                         <li class="nav-item">
                             <a class="nav-link active fw-semibold" data-bs-toggle="tab" href="#project-overview" role="tab">
                                 Overview
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link fw-semibold" data-bs-toggle="tab" href="#suspension" role="tab">
+                                Student Suspension
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link fw-semibold" data-bs-toggle="tab" href="#expulsion" role="tab">
+                                Student Expulsion
                             </a>
                         </li>
                         
@@ -374,7 +397,7 @@ $failedCourses = $student->registeredCourses()->where('grade', 'F')->where('re_r
                                         </p>
                                         <p class="text-muted border-top border-top-dashed"><strong>CGPA:</strong> {{ $student->cgpa }} <br>
                                             <strong>Class:</strong> {{ $student->degree_class }}<br>
-                                            <strong>Standing:</strong> {{ $student->standing }}<br>
+                                            <strong>Standing:</strong> {{ $student->academic_status }}<br>
                                             <strong>Batch:</strong> {{ $student->batch }}<br>
                                             @if($failedCourses->count() > 0)<strong class="text-danger">Failed Courses:</strong> <span class="text-danger">@foreach($failedCourses as $failedCourse) {{ $failedCourse->course_code.',' }} @endforeach</span> @endif <br>
                                         </p>
@@ -455,7 +478,342 @@ $failedCourses = $student->registeredCourses()->where('grade', 'F')->where('re_r
                 <!-- end row -->
             </div>
 
-            <!-- end tab pane -->
+            <div class="tab-pane fade" id="suspension" role="tabpanel">
+                <div class="row">
+                    <div class="col-lg-8">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="text-muted">
+                                    <h4 class="card-title mb-0 flex-grow-1">Student Suspension Records</h4>
+                                    <div class="border-top border-top-dashed pt-3">
+                                        <div class="table-responsive">
+                                            <!-- Bordered Tables -->
+                                            @if($student->suspensions->isNotEmpty())
+                                                <h4 class="mt-4">Suspension Record</h4>
+                                                <table class="table table-bordered">
+                                                    <thead>
+                                                        <tr>
+                                                            <th scope="col">Reason</th>
+                                                            <th scope="col">Start Date</th>
+                                                            <th scope="col">End Date</th>
+                                                            <th scope="col">File</th>
+                                                            <th scope="col">Action</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @foreach($student->suspensions as $suspension)
+                                                        <tr>
+                                                            <td>{!! $suspension->reason !!}</td>
+                                                            <td>{{ $suspension->start_date }}</td>
+                                                            <td>
+                                                                @if($suspension->end_date)
+                                                                    {{ $suspension->end_date }}
+                                                                @else
+                                                                    <span class="badge bg-warning">Ongoing</span>
+                                                                @endif
+                                                            </td>
+                                                            <td>
+                                                                @if($suspension->file)
+                                                                    <a href="{{ asset($suspension->file) }}" class="btn btn-sm btn-info" target="_blank">
+                                                                        <i class="ri-file-download-line"></i> View File
+                                                                    </a>
+                                                                @else
+                                                                    <span class="text-muted">No file</span>
+                                                                @endif
+                                                            </td>
+                                                            <td>
+                                                                <form action="{{ url('admin.recall') }}" method="POST" style="display:inline;">
+                                                                    @csrf
+                                                                    <input type="hidden" name="suspension_id" value="{{ $suspension->id }}">
+                                                                    <input type="hidden" name="student_id"" value="{{ $student->id}}">
+                                                                    <button type="submit" class="btn btn-sm btn-danger">
+                                                                        <i class="ri-delete-bin-6-line"></i> Lift Suspension
+                                                                    </button>
+                                                                </form>
+                                                            </td>
+                                                        </tr>
+                                                        @endforeach
+                                                    </tbody>
+                                                </table>
+                                            @else
+                                                <p class="text-muted">No suspension records found.</p>
+                                            @endif
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- end card body -->
+                        </div>
+                        <!-- end card -->
+                    </div>
+                    <!-- ene col -->
+                    <div class="col-lg-4">
+                        <div class="card">
+                            <div class="card-body p-4">
+                                <div>
+                                    <div class="flex-shrink-0 avatar-md mx-auto">
+                                        <div class="avatar-title bg-light rounded">
+                                            <img src="{{empty($student->image)?asset('assets/images/users/user-dummy-img.jpg'):asset($student->image)}}" alt="" height="50" />
+                                        </div>
+                                    </div>
+                                    <div class="mt-4 text-center">
+                                        <h5 class="mb-1">{{$name}}</h5>
+                                        <p class="text-muted">{{ $student->programme->name }} <br>
+                                            <strong>Programme Category:</strong> {{ $student->programmeCategory->category }} Programme<br>
+                                            <strong>Matric Number:</strong> {{ $student->matric_number }}<br>
+                                            <strong>Jamb Reg. Number:</strong> {{ $student->applicant->jamb_reg_no }}<br> <br>
+                                            <strong>Support Code:</strong> <span class="text-danger">{{ $student->applicant->id }}-ST{{ sprintf("%03d", $student->id) }}</span> 
+                                            <hr>
+                                            @if(env('WALLET_STATUS'))<a class="dropdown-item" href="#"><i class="mdi mdi-wallet text-muted fs-16 align-middle me-1"></i> <span class="align-middle">Balance : <b>₦{{ number_format($student->amount_balance/100, 2) }}</b></span></a>@endif
+                                        </p>
+                                        <p class="text-muted border-top border-top-dashed"><strong>CGPA:</strong> {{ $student->cgpa }} <br>
+                                            <strong>Class:</strong> {{ $student->degree_class }}<br>
+                                            <strong>Standing:</strong> {{ $student->academic_status }}<br>
+                                            <strong>Batch:</strong> {{ $student->batch }}<br>
+                                            @if($failedCourses->count() > 0)<strong class="text-danger">Failed Courses:</strong> <span class="text-danger">@foreach($failedCourses as $failedCourse) {{ $failedCourse->course_code.',' }} @endforeach</span> @endif <br>
+
+                                        </p>
+                                    </div>
+                                    <div class="table-responsive border-top border-top-dashed">
+                                        <table class="table mb-0 table-borderless">
+                                            <tbody>
+                                                <tr>
+                                                    <th><span class="fw-medium">Department:</span></th>
+                                                    <td>{{ $student->department->name }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th><span class="fw-medium">Faculty:</span></th>
+                                                    <td>{{ $student->faculty->name }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th><span class="fw-medium">Email:</span></th>
+                                                    <td>{{ $student->email }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th><span class="fw-medium">Contact No.:</span></th>
+                                                    <td>{{ $student->applicant->phone_number }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th><span class="fw-medium">Address:</span></th>
+                                                    <td>{!! $student->applicant->address !!}</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--end card-body-->
+                            <div class="card-body p-4 border-top border-top-dashed">
+                                <div class="avatar-title bg-light rounded">
+                                    <img src="{{ $qrcode }}" style="border: 1px solid black;">
+                                </div>
+                            </div>
+                
+                            @if(!empty($student->applicant->guardian))
+                            <div class="card-body border-top border-top-dashed p-4">
+                                <div>
+                                    <h6 class="text-muted text-uppercase fw-semibold mb-4">Guardian Info</h6>
+                                    <div class="table-responsive">
+                                        <table class="table mb-0 table-borderless">
+                                            <tbody>
+                                                <tr>
+                                                    <th><span class="fw-medium">SN</span></th>
+                                                    <td class="text-danger">#{{ $student->applicant->guardian->id }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th><span class="fw-medium">Name</span></th>
+                                                    <td>{{ $student->applicant->guardian->name }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th><span class="fw-medium">Email</span></th>
+                                                    <td>{{ $student->applicant->guardian->email }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th><span class="fw-medium">Contact No.</span></th>
+                                                    <td>{{ $student->applicant->guardian->phone_number }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th><span class="fw-medium">Address</span></th>
+                                                    <td>{!! $student->applicant->guardian->address !!}</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            @endif
+                        </div>
+                        <!-- end card -->
+                    </div>
+                    <!-- end col -->
+                </div>
+                <!-- end row -->
+            </div>
+
+            <div class="tab-pane fade" id="expulsion" role="tabpanel">
+                <div class="row">
+                    <div class="col-lg-8">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="text-muted">
+                                    <h4 class="card-title mb-0 flex-grow-1">Student Expulsion Records</h4>
+                                    <div class="border-top border-top-dashed pt-3">
+                                        <div class="table-responsive">
+                                            <!-- Bordered Tables -->
+                                            @if($student->expulsions->isNotEmpty())
+                                                <h4 class="mt-4">Expulsion Record</h4>
+                                                <table class="table table-bordered">
+                                                    <thead>
+                                                        <tr>
+                                                            <th scope="col">Reason</th>
+                                                            <th scope="col">Start Date</th>
+                                                            <th scope="col">File</th>
+                                                            <th scope="col">Action</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @foreach($student->expulsions as $expulsion)
+                                                        <tr>
+                                                            <td>{!! $expulsion->reason !!}</td>
+                                                            <td>{{ $expulsion->start_date }}</td>
+                                                            <td>
+                                                                @if($expulsion->file)
+                                                                    <a href="{{ asset($expulsion->file) }}" class="btn btn-sm btn-info" target="_blank">
+                                                                        <i class="ri-file-download-line"></i> View File
+                                                                    </a>
+                                                                @else
+                                                                    <span class="text-muted">No file</span>
+                                                                @endif
+                                                            </td>
+                                                            <td>
+                                                                <form action="{{ url('admin/recall') }}" method="POST" style="display:inline;">
+                                                                    @csrf
+                                                                    <input type="hidden" name="expulsion_id" value="{{ $expulsion->id }}">
+                                                                    <input type="hidden" name="student_id" value="{{ $student->id }}">
+                                                                    <button type="submit" class="btn btn-sm btn-danger">
+                                                                        <i class="ri-delete-bin-6-line"></i> Lift Expulsion
+                                                                    </button>
+                                                                </form>
+                                                            </td>
+                                                        </tr>
+                                                        @endforeach
+                                                    </tbody>
+                                                </table>
+                                            @else
+                                                <p class="text-muted">No suspension records found.</p>
+                                            @endif
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- end card body -->
+                        </div>
+                        <!-- end card -->
+                    </div>
+                    <!-- ene col -->
+                    <div class="col-lg-4">
+                        <div class="card">
+                            <div class="card-body p-4">
+                                <div>
+                                    <div class="flex-shrink-0 avatar-md mx-auto">
+                                        <div class="avatar-title bg-light rounded">
+                                            <img src="{{empty($student->image)?asset('assets/images/users/user-dummy-img.jpg'):asset($student->image)}}" alt="" height="50" />
+                                        </div>
+                                    </div>
+                                    <div class="mt-4 text-center">
+                                        <h5 class="mb-1">{{$name}}</h5>
+                                        <p class="text-muted">{{ $student->programme->name }} <br>
+                                            <strong>Programme Category:</strong> {{ $student->programmeCategory->category }} Programme<br>
+                                            <strong>Matric Number:</strong> {{ $student->matric_number }}<br>
+                                            <strong>Jamb Reg. Number:</strong> {{ $student->applicant->jamb_reg_no }}<br> <br>
+                                            <strong>Support Code:</strong> <span class="text-danger">{{ $student->applicant->id }}-ST{{ sprintf("%03d", $student->id) }}</span> 
+                                            <hr>
+                                            @if(env('WALLET_STATUS'))<a class="dropdown-item" href="#"><i class="mdi mdi-wallet text-muted fs-16 align-middle me-1"></i> <span class="align-middle">Balance : <b>₦{{ number_format($student->amount_balance/100, 2) }}</b></span></a>@endif
+                                        </p>
+                                        <p class="text-muted border-top border-top-dashed"><strong>CGPA:</strong> {{ $student->cgpa }} <br>
+                                            <strong>Class:</strong> {{ $student->degree_class }}<br>
+                                            <strong>Standing:</strong> {{ $student->academic_status }}<br>
+                                            <strong>Batch:</strong> {{ $student->batch }}<br>
+                                            @if($failedCourses->count() > 0)<strong class="text-danger">Failed Courses:</strong> <span class="text-danger">@foreach($failedCourses as $failedCourse) {{ $failedCourse->course_code.',' }} @endforeach</span> @endif <br>
+
+                                        </p>
+                                    </div>
+                                    <div class="table-responsive border-top border-top-dashed">
+                                        <table class="table mb-0 table-borderless">
+                                            <tbody>
+                                                <tr>
+                                                    <th><span class="fw-medium">Department:</span></th>
+                                                    <td>{{ $student->department->name }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th><span class="fw-medium">Faculty:</span></th>
+                                                    <td>{{ $student->faculty->name }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th><span class="fw-medium">Email:</span></th>
+                                                    <td>{{ $student->email }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th><span class="fw-medium">Contact No.:</span></th>
+                                                    <td>{{ $student->applicant->phone_number }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th><span class="fw-medium">Address:</span></th>
+                                                    <td>{!! $student->applicant->address !!}</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--end card-body-->
+                            <div class="card-body p-4 border-top border-top-dashed">
+                                <div class="avatar-title bg-light rounded">
+                                    <img src="{{ $qrcode }}" style="border: 1px solid black;">
+                                </div>
+                            </div>
+                
+                            @if(!empty($student->applicant->guardian))
+                            <div class="card-body border-top border-top-dashed p-4">
+                                <div>
+                                    <h6 class="text-muted text-uppercase fw-semibold mb-4">Guardian Info</h6>
+                                    <div class="table-responsive">
+                                        <table class="table mb-0 table-borderless">
+                                            <tbody>
+                                                <tr>
+                                                    <th><span class="fw-medium">SN</span></th>
+                                                    <td class="text-danger">#{{ $student->applicant->guardian->id }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th><span class="fw-medium">Name</span></th>
+                                                    <td>{{ $student->applicant->guardian->name }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th><span class="fw-medium">Email</span></th>
+                                                    <td>{{ $student->applicant->guardian->email }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th><span class="fw-medium">Contact No.</span></th>
+                                                    <td>{{ $student->applicant->guardian->phone_number }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th><span class="fw-medium">Address</span></th>
+                                                    <td>{!! $student->applicant->guardian->address !!}</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            @endif
+                        </div>
+                        <!-- end card -->
+                    </div>
+                    <!-- end col -->
+                </div>
+                <!-- end row -->
+            </div>
+
             <div class="tab-pane fade" id="settings" role="tabpanel">
                <div class="row">
                     <div class="col-lg-8">
@@ -739,7 +1097,7 @@ $failedCourses = $student->registeredCourses()->where('grade', 'F')->where('re_r
                                         </p>
                                         <p class="text-muted border-top border-top-dashed"><strong>CGPA:</strong> {{ $student->cgpa }} <br>
                                             <strong>Class:</strong> {{ $student->degree_class }}<br>
-                                            <strong>Standing:</strong> {{ $student->standing }}<br>
+                                            <strong>Standing:</strong> {{ $student->academic_status }}<br>
                                             <strong>Batch:</strong> {{ $student->batch }}<br>
                                             @if($failedCourses->count() > 0)<strong class="text-danger">Failed Courses:</strong> <span class="text-danger">@foreach($failedCourses as $failedCourse) {{ $failedCourse->course_code.',' }} @endforeach</span> @endif <br>
                                         </p>
@@ -818,7 +1176,6 @@ $failedCourses = $student->registeredCourses()->where('grade', 'F')->where('re_r
                     <!-- end col -->
                </div>
             </div>
-            <!-- end tab pane -->
 
             <div class="tab-pane fade" id="partners" role="tabpanel">
                 <div class="row">
@@ -892,7 +1249,7 @@ $failedCourses = $student->registeredCourses()->where('grade', 'F')->where('re_r
                                         </p>
                                         <p class="text-muted border-top border-top-dashed"><strong>CGPA:</strong> {{ $student->cgpa }} <br>
                                             <strong>Class:</strong> {{ $student->degree_class }}<br>
-                                            <strong>Standing:</strong> {{ $student->standing }}<br>
+                                            <strong>Standing:</strong> {{ $student->academic_status }}<br>
                                             <strong>Batch:</strong> {{ $student->batch }}<br>
                                             @if($failedCourses->count() > 0)<strong class="text-danger">Failed Courses:</strong> <span class="text-danger">@foreach($failedCourses as $failedCourse) {{ $failedCourse->course_code.',' }} @endforeach</span> @endif <br>
 
@@ -979,7 +1336,90 @@ $failedCourses = $student->registeredCourses()->where('grade', 'F')->where('re_r
 </div>
 <!-- end row -->
 
+<!-- Expel Student Modal -->
 <div id="expelStudent" class="modal fade" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" style="display: none;">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body text-center p-5">
+                <div class="text-end">
+                    <button type="button" class="btn-close text-end" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="mt-2">
+                    <h4 class="mb-3 mt-4 text-danger">
+                        Are you sure you want to expel <br/> {{ $student->applicant->lastname.' '.$student->applicant->othernames }}?
+                    </h4>
+                    <form action="{{ url('/admin/expel') }}" method="POST" enctype="multipart/form-data">
+                        @csrf
+                        <input name="student_id" type="hidden" value="{{ $student->id }}">
+
+                        <!-- Reason for Expulsion -->
+                        <div class="mb-3">
+                            <label for="reason" class="form-label">Reason for Expulsion <span class="text-danger">*</span></label>
+                            <textarea name="reason" id="reason" class="form-control ckeditor" rows="3"></textarea>
+                        </div>
+
+                        <!-- Upload Expulsion File -->
+                        <div class="mb-3">
+                            <label for="file" class="form-label">Upload Document <span class="text-danger">*</span></label>
+                            <input type="file" name="file" id="file" class="form-control" accept=".pdf,.doc,.docx,.jpg,.png" required>
+                            <small class="text-muted">Accepted formats: PDF, DOC, DOCX, JPG, PNG</small>
+                        </div>
+
+                        <hr>
+                        <button type="submit" class="btn btn-danger w-100">Yes, Expel Student</button>
+                    </form>
+                </div>
+            </div>
+            <div class="modal-footer bg-light p-3 justify-content-center">
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+
+<!-- Expel Student Modal -->
+<div id="suspendStudent" class="modal fade" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" style="display: none;">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body text-center p-5">
+                <div class="text-end">
+                    <button type="button" class="btn-close text-end" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="mt-2">
+                    <h4 class="mb-3 mt-4 text-warning">
+                        Are you sure you want to expend <br/> {{ $student->applicant->lastname.' '.$student->applicant->othernames }}?
+                    </h4>
+                    <form action="{{ url('/admin/suspend') }}" method="POST" enctype="multipart/form-data">
+                        @csrf
+                        <input name="student_id" type="hidden" value="{{ $student->id }}">
+
+                        <!-- Reason for Suspension -->
+                        <div class="mb-3">
+                            <label for="reason" class="form-label">Reason for Suspension <span class="text-danger">*</span></label>
+                            <textarea name="reason" id="reason" class="form-control ckeditor" rows="3" required></textarea>
+                        </div>
+
+                        <!-- Upload Suspension File -->
+                        <div class="mb-3">
+                            <label for="file" class="form-label">Upload Document <span class="text-danger">*</span></label>
+                            <input type="file" name="file" id="file" class="form-control" accept=".pdf,.doc,.docx,.jpg,.png">
+                            <small class="text-muted">Accepted formats: PDF, DOC, DOCX, JPG, PNG</small>
+                        </div>
+
+                        <hr>
+                        <button type="submit" class="btn btn-danger w-100">Yes, Suspension Student</button>
+                    </form>
+                </div>
+            </div>
+            <div class="modal-footer bg-light p-3 justify-content-center">
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+
+
+<div id="deleteStudent" class="modal fade" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" style="display: none;">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-body text-center p-5">

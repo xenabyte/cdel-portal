@@ -662,6 +662,10 @@ class AcademicController extends Controller
             $programme->duration = $request->duration;
         }
 
+        if(!empty($request->minimum_cgpa) && $programme->minimum_cgpa != $request->minimum_cgpa){
+            $programme->minimum_cgpa = $request->minimum_cgpa;
+        }
+
         if($programme->update()){
             alert()->success('Good job!!', 'Programme changes saved successfully')->persistent('Close');
             return redirect()->back();  

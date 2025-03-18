@@ -39,6 +39,7 @@
                                         <tr>
                                             <th scope="col">ID</th>
                                             <th scope="col">Programme Name</th>
+                                            <th scope="col">Programme Probation CGPA</th>
                                             <th scope="col">Programme Requirements</th>
                                             <th scope="col">Actions</th>
                                         </tr>
@@ -48,7 +49,7 @@
                                         <tr>
                                             <th scope="row">{{ $loop->iteration }}</th>
                                             <td>{{ $programme->name }} - {{ $programme->programmeCategory->category }} Programme</td>
-                                            
+                                            <td>{{ $programme->minimum_cgpa }}</td>
                                             <td>
                                                 @foreach($programme->programmeRequirement as $requirement)
                                                 <div class="d-flex justify-content-between align-items-center mb-3">
@@ -77,8 +78,41 @@
                                                 <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#addRequirement{{$programme->id}}" class="link-success">
                                                     <i class="ri-add-circle-line"></i>
                                                 </a>
+
+                                                <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#addProbationCGPA{{$programme->id}}" class="link-primary">
+                                                    <i class="ri-edit-circle-fill"></i>
+                                                </a>
                                             </td>
                                         </tr>
+
+
+                                        <div id="addProbationCGPA{{$programme->id}}" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
+                                            <div class="modal-dialog modal-dialog-centered">
+                                                <div class="modal-content border-0 overflow-hidden">
+                                                    <div class="modal-header p-3">
+                                                        <h4 class="card-title mb-0">Update Programme Probation CGPA</h4>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                    </div>
+                
+                                                    <div class="modal-body">
+                                                        <form action="{{ url('/admin/updateProgramme') }}" method="post" enctype="multipart/form-data">
+                                                            @csrf
+                                                            <input type="hidden" name='programme_id' value="{{ $programme->id }}">
+                                        
+                                                            <div class="mb-3">
+                                                                <label for="mininum_cgpa" class="form-label">Programme Probation CGPA</label>
+                                                                <input type="text" class="form-control" name="mininum_cgpa" id="mininum_cgpa" value="{{$programme->mininum_cgpa}}">
+                                                            </div>
+                                        
+                                                            <hr>
+                                                            <div class="text-end">
+                                                                <button type="submit" id="submit-button" class="btn btn-primary">Save Changes</button>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </div><!-- /.modal-content -->
+                                            </div><!-- /.modal-dialog -->
+                                        </div><!-- /.modal -->
                                 
                                         <!-- Add Requirement Modal -->
                                         <div id="addRequirement{{$programme->id}}" class="modal fade" tabindex="-1" aria-hidden="true">

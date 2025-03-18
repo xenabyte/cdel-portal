@@ -161,6 +161,11 @@
                                                     <label for="code" class="form-label">Programme Code</label>
                                                     <input type="text" class="form-control" name="code" id="code" value="{{$programme->code}}">
                                                 </div>
+
+                                                <div class="mb-3">
+                                                    <label for="mininum_cgpa" class="form-label">Programme Probation CGPA</label>
+                                                    <input type="text" class="form-control" name="mininum_cgpa" id="mininum_cgpa" value="{{$programme->mininum_cgpa}}">
+                                                </div>
                             
                                                 <div class="mb-3">
                                                     <label for="category" class="form-label">Select Programme Category</label>
@@ -184,6 +189,8 @@
                                     </div><!-- /.modal-content -->
                                 </div><!-- /.modal-dialog -->
                             </div><!-- /.modal -->
+
+                            
                             <div id="delete{{$programme->id}}" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
                                 <div class="modal-dialog modal-dialog-centered">
                                     <div class="modal-content">

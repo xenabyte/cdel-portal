@@ -7,6 +7,10 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+use App\Models\StudentExpulsion;
+use App\Models\StudentSuspension;
+use Carbon\Carbon;
+
 class Student extends Authenticatable
 {
     use Notifiable, SoftDeletes;
@@ -58,7 +62,6 @@ class Student extends Authenticatable
         'matriculation_status',
         'transcript',
         'academic_status',
-        'prev_cgpa'
     ];
 
     /**
@@ -252,6 +255,18 @@ class Student extends Authenticatable
         return $this->belongsTo(ProgrammeCategory::class, 'programme_category_id');
     }
 
+   
+    public function suspensions()
+    {
+        return $this->hasMany(StudentSuspension::class, 'student_id', 'id');
+    }
+
+
+    public function expulsions()
+    {
+        return $this->hasMany(StudentExpulsion::class, 'student_id', 'id');
+    }
+
 
     public function canPromote() {
         $requirement = ProgrammeRequirement::where('programme_id', $this->programme_id)
@@ -269,5 +284,31 @@ class Student extends Authenticatable
         }
 
         return true;
+    }
+
+    /**
+     * Check if a student is expelled.
+     *
+     * @param int $studentId
+     * @return bool
+     */
+    public function isExpelled()
+    {
+        return StudentExpulsion::where('student_id', $this->id)->exists();
+    }
+
+    /**
+     * Check if a student is currently suspended.
+     *
+     * @param int $studentId
+     * @return bool
+     */
+    public function isSuspended()
+    {
+        return StudentSuspension::where('student_id', $this->id)
+            ->where(function ($query) {
+                $query->whereNull('end_date')->orWhere('end_date', '>=', Carbon::now());
+            })
+            ->exists();
     }
 }

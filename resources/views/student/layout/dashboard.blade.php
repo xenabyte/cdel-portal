@@ -461,7 +461,7 @@
                         @endif --}}
                        
                         <li class="nav-item">
-                            <a class="nav-link menu-link" href="{{ url('user/logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                            <a class="nav-link menu-link" href="{{ url('student/logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                                 <i class="mdi mdi-power"></i> <span data-key="t-logout">Logout</span>
                             </a>
                         </li> <!-- end Logout Menu -->
