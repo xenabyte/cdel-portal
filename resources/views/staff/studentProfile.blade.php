@@ -428,14 +428,16 @@ $failedCourses = $student->registeredCourses()->where('grade', 'F')->where('re_r
                                                                 @endif
                                                             </td>
                                                             <td>
-                                                                <form action="{{ url('admin.recall') }}" method="POST" style="display:inline;">
+                                                                @if(empty($suspension->end_date))
+                                                                <form action="{{ url('staff/recall') }}" method="POST" style="display:inline;">
                                                                     @csrf
                                                                     <input type="hidden" name="suspension_id" value="{{ $suspension->id }}">
-                                                                    <input type="hidden" name="student_id"" value="{{ $student->id}}">
+                                                                    <input type="hidden" name="student_id" value="{{ $student->id}}">
                                                                     <button type="submit" class="btn btn-sm btn-danger">
                                                                         <i class="ri-delete-bin-6-line"></i> Lift Suspension
                                                                     </button>
                                                                 </form>
+                                                                @endif
                                                             </td>
                                                         </tr>
                                                         @endforeach
@@ -592,7 +594,7 @@ $failedCourses = $student->registeredCourses()->where('grade', 'F')->where('re_r
                                                                 @endif
                                                             </td>
                                                             <td>
-                                                                <form action="{{ url('admin/recall') }}" method="POST" style="display:inline;">
+                                                                <form action="{{ url('staff/recall') }}" method="POST" style="display:inline;">
                                                                     @csrf
                                                                     <input type="hidden" name="expulsion_id" value="{{ $expulsion->id }}">
                                                                     <input type="hidden" name="student_id" value="{{ $student->id }}">

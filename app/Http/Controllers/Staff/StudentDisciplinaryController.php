@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Staff;
+namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -37,7 +37,7 @@ class StudentDisciplinaryController extends Controller
         $validator = Validator::make($request->all(), [
             'reason' => 'required',
             'student_id' => 'required|exists:students,id',
-            'file' => 'required'
+            'file' => 'nullable'
         ]);
 
         if ($validator->fails()) {
@@ -76,7 +76,6 @@ class StudentDisciplinaryController extends Controller
 
         // Update student academic status
         $student->academic_status = 'Expelled';
-        $student->is_rusticated = 1;
         $student->save();
 
         // Send notification
@@ -104,7 +103,7 @@ class StudentDisciplinaryController extends Controller
         $validator = Validator::make($request->all(), [
             'reason' => 'required|string|max:500',
             'student_id' => 'required|exists:students,id',
-            'file' => 'required|file' 
+            'file' => 'nullable|file' 
         ]);
 
         if ($validator->fails()) {
@@ -174,6 +173,8 @@ class StudentDisciplinaryController extends Controller
         // Validate request
         $validator = Validator::make($request->all(), [
             'student_id' => 'required|exists:students,id',
+            'suspension_id' => 'nullable',
+            'expulsion_id' => 'nullable'
         ]);
 
         if ($validator->fails()) {
@@ -189,35 +190,40 @@ class StudentDisciplinaryController extends Controller
         }
 
         // Check if student is expelled
-        $expulsion = StudentExpulsion::where('student_id', $student->id)->first();
-        if ($expulsion) {
-            $expulsion->delete();
-            $student->academic_status = 'Good Standing'; // Reset status
-            $student->save();
+        if(!empty($request->expulsion_id)) {
+            $expulsion = StudentExpulsion::where('id', $request->expulsion_id)->first();
+            if ($expulsion) {
+                $expulsion->delete();
+                $student->academic_status = 'Good Standing'; // Reset status
+                $student->save();
 
-            // Send notification for recall
-            $this->sendRecallNotification($student, 'expulsion');
+                // Send notification for recall
+                $this->sendRecallNotification($student, 'expulsion');
 
-            alert()->success('Success', 'Student expulsion has been revoked.')->persistent('Close');
-            return redirect()->back();
+                alert()->success('Success', 'Student expulsion has been revoked.')->persistent('Close');
+                return redirect()->back();
+            }
         }
 
-        // Check if student is suspended
-        $suspension = StudentSuspension::where('student_id', $student->id)
-            ->whereNull('end_date')
-            ->orWhere('end_date', '>=', now())
-            ->first();
+        if(!empty($request->suspension_id)) {
+            // Check if student is suspended
+            $suspension = StudentSuspension::where('id', $request->suspension_id)
+                ->whereNull('end_date')
+                ->orWhere('end_date', '>=', now())
+                ->first();
 
-        if ($suspension) {
-            $suspension->end_date = now();
-            $student->academic_status = 'Good Standing'; // Reset status
-            $student->save();
+            if ($suspension) {
+                $suspension->end_date = Carbon::now();
+                $student->academic_status = 'Good Standing'; // Reset status
+                $student->save();
+                $suspension->save();
 
-            // Send notification for recall
-            $this->sendRecallNotification($student, 'suspension');
+                // Send notification for recall
+                $this->sendRecallNotification($student, 'suspension');
 
-            alert()->success('Success', 'Student suspension has been lifted.')->persistent('Close');
-            return redirect()->back();
+                alert()->success('Success', 'Student suspension has been lifted.')->persistent('Close');
+                return redirect()->back();
+            }
         }
 
         alert()->error('Action Denied', 'No active expulsion or suspension found.')->persistent('Close');

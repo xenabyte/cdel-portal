@@ -207,7 +207,7 @@ class StudentDisciplinaryController extends Controller
 
         if(!empty($request->suspension_id)) {
             // Check if student is suspended
-            $suspension = StudentSuspension::where('id', $student->id)
+            $suspension = StudentSuspension::where('id', $request->suspension_id)
                 ->whereNull('end_date')
                 ->orWhere('end_date', '>=', now())
                 ->first();

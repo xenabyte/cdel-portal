@@ -1980,5 +1980,29 @@ class AcademicController extends Controller
             'deletedStudents' => $deletedStudents
         ]);
     }
+
+    /**
+     * Get all suspended students.
+     */
+    public function suspendedStudents()
+    {
+        $suspendedStudents = Student::where('academic_status', 'suspended')->get();
+
+        return view('admin.suspendedStudents', [
+            'suspendedStudents' => $suspendedStudents
+        ]);
+    }
+
+    /**
+     * Get all expelled students.
+     */
+    public function expelledStudents()
+    {
+        $expelledStudents = Student::where('academic_status', 'expelled')->get();
+
+        return view('admin.expelledStudents', [
+            'expelledStudents' => $expelledStudents
+        ]);
+    }
     
 }

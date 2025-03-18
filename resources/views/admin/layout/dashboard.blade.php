@@ -591,7 +591,12 @@
                                     <li class="nav-item">
                                         <a href="{{ url('/admin/deletedStudents') }}" class="nav-link">Deleted Student Record</a>
                                     </li>
-
+                                    <li class="nav-item">
+                                        <a href="{{ url('/admin/expelledStudents') }}" class="nav-link">Expelled Student Record</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="{{ url('/admin/suspendedStudents') }}" class="nav-link">Suspended Student Record</a>
+                                    </li>
                                     <li class="nav-item">
                                         <a href="{{ url('/admin/alumni') }}" class="nav-link">Alumni (Graduated Students)</a>
                                     </li>
