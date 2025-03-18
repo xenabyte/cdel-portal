@@ -319,28 +319,65 @@ class ResultController extends Controller
         return \Excel::download($export, $slug);
     }
     
-    public function approveResult(Request $request){
+    public function approveResult(Request $request)
+    {
         $studentIds = $request->input('student_ids', []);
         $url = $request->url;
         $students = Student::whereIn('id', $studentIds)->get();
-    
+        $semester = $request->semester;
+        $academicSession = $request->session;
+
         foreach ($students as $student) {
+            // Approve result only for students who have grades
             $studentRegistration = CourseRegistration::where('student_id', $student->id)
-                ->where('academic_session', $request->session)
-                ->where('semester', $request->semester)
+                ->where('academic_session', $academicSession)
+                ->where('semester', $semester)
                 ->whereNotNull('grade')
                 ->update(['result_approval_id' => ResultApprovalStatus::getApprovalStatusId(ResultApprovalStatus::SENATE_APPROVED)]);
 
+            // Calculate CGPA and GPA values
+            $cgpa = Result::calculateCGPA($student->id);
+            $previousGPA = Result::getPreviousGPA($student, $academicSession, $semester);
+            $currentGPA = Result::getPresentGPA($student, $academicSession, $semester);
 
-                
+            // Check probation/withdrawal status
+            $academicStatus = Result::checkProbation($student, $cgpa, $currentGPA, $previousGPA);
+            $academicStatus = strtolower($academicStatus);
+
+            // Define default message
+            $senderName = env('SCHOOL_NAME');
+            $receiverName = $student->applicant->lastname . ' ' . $student->applicant->othernames;
+
+            if ($academicStatus == 'withdrawn') {
+                $message = "We regret to inform you that due to academic performance, you have been withdrawn from the programme. For further details, please contact the academic office.";
+            } elseif ($academicStatus == 'probation') {
+                $message = "You have been placed on academic probation due to your CGPA being below the required threshold. Please consult your academic advisor for guidance.";
+            } else {
+                $message = "Your results for $semester semester of $academicSession have been successfully approved. Keep up the good work!";
+            }
+
             
+            // Send email notification
+            $mail = new NotificationMail($senderName, $message, $receiverName);
+            Mail::to($student->email)->send($mail);
+
+            // Store notification
+            Notification::create([
+                'student_id' => $student->id,
+                'description' => $message,
+                'attachment' => null,
+                'status' => 0
+            ]);
         }
-    
+
+        // Fetch necessary data for the view
         $academicLevels = AcademicLevel::get();
         $academicSessions = Session::orderBy('id', 'desc')->get();
         $faculties = Faculty::get();
-    
-        alert()->success('Result Approved', '')->persistent('Close');
+
+        // Success alert
+        alert()->success('Results Approved Successfully', '')->persistent('Close');
+
         return view($url, [
             'academicLevels' => $academicLevels,
             'academicSessions' => $academicSessions,

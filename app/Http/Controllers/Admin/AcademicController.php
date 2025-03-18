@@ -1288,9 +1288,36 @@ class AcademicController extends Controller
                 ]);
             }
 
+            $promotionLevel = $student->level_id + $promotionOffset;
+            if (!$student->canPromote()) {
+                $promotionLevel = $student->level_id;
+            
+                $senderName = env('SCHOOL_NAME');
+                $receiverName = $student->applicant->lastname . ' ' . $student->applicant->othernames;
+                $message = "We regret to inform you that you have not met the required academic criteria for promotion to the next level. 
+                Please review your academic performance and consult with your department for guidance on improving your standing. 
+                For further inquiries, kindly visit the academic office.";
+            
+                try {
+                    $mail = new NotificationMail($senderName, $message, $receiverName);
+                    Mail::to($student->email)->send($mail);
+                } catch (\Exception $e) {
+                    Log::error('Email Notification Failed: ' . $e->getMessage());
+                }
+            
+                // Save notification in the database
+                Notification::create([
+                    'student_id' => $student->id,
+                    'description' => $message,
+                    'attachment' => null,
+                    'status' => 0
+                ]);
+            }
+        
+
             $student->update([
                 'batch' => 'A',
-                'level_id' => $student->level_id + $promotionOffset,
+                'level_id' => $promotionLevel,
                 'academic_session' => $academicSession,
                 'credit_load' => null
             ]);

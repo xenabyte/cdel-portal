@@ -16,6 +16,7 @@ use App\Models\GradeScale;
 use App\Models\ResultApprovalStatus;
 use App\Models\DegreeClass;
 use App\Models\Faculty;
+use App\Models\ProgrammeCategory;
 
 
 use Log;
@@ -61,7 +62,7 @@ class Result
             ])->first();
 
             if (!$studentRegistration) {
-                Log::info("{$student->applicant->lastname} {$student->applicant->othernames} not registered for {$courseCode} @ {$academicSession}");
+                Log::info("{$student->applicant->lastname} {$student->applicant->othernames} not registered for {$course->code} @ {$academicSession}");
                 continue;
             }
 
@@ -139,11 +140,11 @@ class Result
         $student->save();
 
 
-        $standing = $classGrade->id > 4 ? 'Not in Good Standing(NGS)' : 'Good Standing(GS)'; 
-        $student->standing = $standing;
+        // $standing = $classGrade->id > 4 ? 'Not in Good Standing(NGS)' : 'Good Standing(GS)'; 
+        // $student->standing = $standing;
 
 
-        return true;
+        return $CGPA;
     }
 
     public static function processVocationResult(UploadedFile $file, $programmeCategoryId, $globalSettings){
@@ -214,6 +215,126 @@ class Result
 
         return 'success';
 
+    }
+
+
+
+    public static function getPreviousSemester($academicSession, $semester, $totalSemesters = 2)
+    {
+
+        [$startYear, $endYear] = explode('/', $academicSession);
+        
+
+        $startYear = (int) $startYear;
+        $endYear = (int) $endYear;
+
+        if ($semester > 1) {
+
+            $previousSemester = $semester - 1;
+            $previousAcademicSession = $academicSession;
+        } else {
+
+            $previousSemester = $totalSemesters;
+            $previousAcademicSession = ($startYear - 1) . '/' . ($endYear - 1);
+        }
+
+        return [
+            'academicSession' => $previousAcademicSession,
+            'semester' => $previousSemester,
+        ];
+    }
+
+
+    public static function getPreviousGPA($student, $academicSession, $semester)
+    {
+
+        $totalSemesters = 2;
+        $programmeCategoryId = $student->programme_category_id;
+
+        if($programmeCategoryId != ProgrammeCategory::getProgrammeCategory(ProgrammeCategory::UNDERGRADUATE)){
+            $totalSemesters = 3;
+        }
+
+        $studentId = $student->id;
+        // Determine the previous academic session and semester
+        $previousSemesterData = self::getPreviousSemester($academicSession, $semester, $totalSemesters);
+        $previousAcademicSession = $previousSemesterData['academicSession'];
+        $previousSemester = $previousSemesterData['semester'];
+    
+        // Fetch all course registrations for the previous session and semester
+        $registrations = CourseRegistration::where('student_id', $studentId)
+            ->where('academic_session', $previousAcademicSession)
+            ->where('semester', $previousSemester)
+            ->get();
+    
+        // If no records found, return null
+        if ($registrations->isEmpty()) {
+            return null;
+        }
+    
+        // Compute total points and total credit units
+        $totalPoints = $registrations->sum('point');
+        $totalCreditUnits = $registrations->sum('course_credit_unit');
+    
+        // Avoid division by zero
+        if ($totalCreditUnits == 0) {
+            return 0;
+        }
+    
+        // Calculate CGPA
+        $gpa = $totalPoints / $totalCreditUnits;
+    
+        return round($gpa, 2); // Round to 2 decimal places
+    }
+
+    public static function getPresentGPA($student, $academicSession, $semester)
+    {
+        $studentId = $student->id;
+        
+        // Fetch all course registrations for the previous session and semester
+        $registrations = CourseRegistration::where('student_id', $studentId)
+            ->where('academic_session', $academicSession)
+            ->where('semester', $semester)
+            ->get();
+    
+        // If no records found, return null
+        if ($registrations->isEmpty()) {
+            return 0;
+        }
+    
+        // Compute total points and total credit units
+        $totalPoints = $registrations->sum('point');
+        $totalCreditUnits = $registrations->sum('course_credit_unit');
+    
+        // Avoid division by zero
+        if ($totalCreditUnits == 0) {
+            return 0;
+        }
+    
+        // Calculate CGPA
+        $gpa = $totalPoints / $totalCreditUnits;
+    
+        return round($gpa, 2); // Round to 2 decimal places
+    }
+
+    public static function checkProbation($student, $cgpa, $currentGPA, $previousGPA)
+    {
+        $status = "Good Stading";
+
+        if ($cgpa < 1.50) {
+            $status = 'Probation';
+        }
+
+        if ($student->level >= 200 && $cgpa < 1.50) {
+            if ($currentGPA < 1.5 && $previousGPA < 1.5) {
+                $status = 'Withdrawn';
+            }
+        }
+
+        $student->academic_status = $status;
+        $student->save();
+        
+        return $student->academic_status;
     }
     
 }
