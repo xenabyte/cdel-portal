@@ -9,7 +9,7 @@
                 <div class="text-center">
                     <div class="row justify-content-center mt-5 mb-2">
                         <div class="col-sm-7 col-8">
-                            <img src="{{asset('tau_cancel.png')}}" alt="" width="30%" class="img-fluid">
+                            <img src="{{asset('tau_cancel.png')}}" alt="" width="50%" class="img-fluid">
                         </div>
                     </div>
                     <div class="row justify-content-center">

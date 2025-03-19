@@ -36,6 +36,7 @@ use App\Models\User as Applicant;
 use App\Models\Allocation;
 use App\Models\LevelAdviser;
 use App\Models\Staff;
+use App\Models\StudentSuspension;
 
 use App\Mail\NotificationMail;
 
@@ -1986,10 +1987,10 @@ class AcademicController extends Controller
      */
     public function suspendedStudents()
     {
-        $suspendedStudents = Student::where('academic_status', 'suspended')->get();
+        $suspensions = StudentSuspension::with('student')->whereNull('end_date')->get();
 
         return view('admin.suspendedStudents', [
-            'suspendedStudents' => $suspendedStudents
+            'suspensions' => $suspensions
         ]);
     }
 

@@ -54,12 +54,14 @@ class ResultController extends Controller
         $academicSessions = Session::orderBy('id', 'desc')->get();
         $faculties = Faculty::get();
         $programmeCategories = ProgrammeCategory::get();
+        $courses = Course::get();
 
         return view('admin.getStudentResults',[
             'academicLevels' => $academicLevels,
             'academicSessions' => $academicSessions,
             'faculties' => $faculties,
-            'programmeCategories' => $programmeCategories
+            'programmeCategories' => $programmeCategories,
+            'courses' => $courses
         ]);
     }
 

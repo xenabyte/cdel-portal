@@ -37,13 +37,18 @@ class StudentAccess
         if ($suspension = $this->checkSuspension($student)) {
             // Allow only specific routes while suspended
             $allowedRoutes = [
-                'student.profile',   // Viewing profile
-                'student.transactions', // Viewing past transactions
-                'student.examResult',   // Checking past results
+                'student.home',
+                'student.profile', 
+                'student.transactions',
+                'student.examResult',
                 'student.saveBioData',
                 'student.updatePassword',
                 'student.uploadImage',
-                'student.generateResult'
+                'student.generateResult',
+                'student.studentDisciplinary',
+                'student.makePayment',
+                'student.viewSuspension',
+                'student.manageSuspension'
             ];
             
             if (!in_array(request()->route()->getName(), $allowedRoutes)) {

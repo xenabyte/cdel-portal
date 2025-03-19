@@ -12,7 +12,12 @@ class StudentExpulsion extends Model
 
     use HasFactory;
 
-    protected $fillable = ['student_id', 'reason', 'start_date'];
+    protected $fillable = [
+        'student_id', 
+        'reason', 
+        'start_date',
+        'academic_session'
+    ];
 
     public function student()
     {

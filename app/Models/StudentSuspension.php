@@ -12,7 +12,22 @@ class StudentSuspension extends Model
 
     use HasFactory;
 
-    protected $fillable = ['student_id', 'reason', 'start_date', 'end_date', 'file'];
+    protected $fillable = [
+        'slug',
+        'student_id',
+        'reason', 
+        'start_date', 
+        'end_date', 
+        'file',
+        'status',
+        'academic_session',
+        'transaction_id',
+        'court_affidavit',
+        'undertaking_letter',
+        'traditional_ruler_reference',
+        'ps_reference',
+        'admin_comment',
+    ];
 
     public function student()
     {

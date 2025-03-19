@@ -46,23 +46,23 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($suspendedStudents as $student)
+                        @foreach($suspensions as $suspension)
                         <tr>
                             <th scope="row">{{ $loop->iteration }}</th>
-                            <td><span class="text-danger">#{{ $student->id }}</span></td>
-                            <td><span class="text-primary">{{ $student->cgpa }}</span></td>
+                            <td><span class="text-danger">#{{ $suspension->student->id }}</span></td>
+                            <td><span class="text-primary">{{ $suspension->student->cgpa }}</span></td>
                             <td>
-                                <img class="img-thumbnail rounded-circle avatar-md"  src="{{ !empty($student->image) ? asset($student->image) : asset('assets/images/users/user-dummy-img.jpg') }}">
+                                <img class="img-thumbnail rounded-circle avatar-md"  src="{{ !empty($suspension->student->image) ? asset($suspension->student->image) : asset('assets/images/users/user-dummy-img.jpg') }}">
                             </td>
-                            <td>{{ $student->applicant? $student->applicant->lastname .' '. $student->applicant->othernames : null }}</td>
-                            <td>{{ $student->academicLevel->level }} </td>
-                            <td>{{ $student->passcode }} </td>
-                            <td>{{ $student->matric_number }}</td>
-                            <td>{{ $student->applicant? $student->applicant->application_number:null }}</td>
-                            <td>{{ $student->programme->name }}</td>
-                            <td>{{ $student->email }} </td>
+                            <td>{{ $suspension->student->applicant? $suspension->student->applicant->lastname .' '. $suspension->student->applicant->othernames : null }}</td>
+                            <td>{{ $suspension->student->academicLevel->level }} </td>
+                            <td>{{ $suspension->student->passcode }} </td>
+                            <td>{{ $suspension->student->matric_number }}</td>
+                            <td>{{ $suspension->student->applicant? $suspension->student->applicant->application_number:null }}</td>
+                            <td>{{ $suspension->student->programme->name }}</td>
+                            <td>{{ $suspension->student->email }} </td>
                             <td>
-                                <a href="{{ url('admin/studentProfile/'.$student->slug) }}" class="btn btn-primary m-1"><i class= "ri-user-6-fill"></i> View Student</a>
+                                <a href="{{ url('admin/viewSuspension/'.$suspension->slug) }}" class="btn btn-sm btn-primary"><i class= "ri-eye-fill"></i> View Suspension</a>
                             </td>
                         </tr>
                         @endforeach

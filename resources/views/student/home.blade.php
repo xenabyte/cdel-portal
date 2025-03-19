@@ -2,6 +2,7 @@
 @php
 use \App\Models\ProgrammeCategory;
 use \App\Models\ResultApprovalStatus;
+use \App\Models\StudentSuspension;
 
 $student = Auth::guard('student')->user();
 $qrcode = 'https://quickchart.io/chart?chs=300x300&cht=qr&chl='.env('APP_URL').'/studentDetails/'.$student->slug;
@@ -9,6 +10,8 @@ $name = $student->applicant->lastname.' '.$student->applicant->othernames;
 $transactions = $student->transactions()->orderBy('created_at', 'desc')->take(10)->get();
 $studentRegistrations = $student->courseRegistrationDocument()->orderBy('created_at', 'desc')->take(10)->get();
 $failedCourses = $student->registeredCourses()->where('grade', 'F')->where('re_reg', null)->where('result_approval_id', ResultApprovalStatus::getApprovalStatusId(ResultApprovalStatus::SENATE_APPROVED))->get();
+$suspension = StudentSuspension::where('student_id', $student->id)->whereNull('end_date')->first();
+
 
 @endphp
 @section('content')
@@ -213,6 +216,31 @@ $failedCourses = $student->registeredCourses()->where('grade', 'F')->where('re_r
                     </div>
                 </div>
             </div>
+
+            @if($suspension)
+            <div class="card-body p-4 bg-soft-warning border-top border-top-dashed">
+                <div class="text-center">
+                    <div class="row justify-content-center mt-5 mb-2">
+                        <div class="col-sm-7 col-8">
+                            <img src="{{asset('tau_cancel.png')}}" alt="" width="50%" class="img-fluid">
+                        </div>
+                    </div>
+                    <div class="row justify-content-center">
+                        <div class="col-lg-9">
+                            <h4 class="mt-4 text-danger fw-semibold">Student Suspended</h4>
+                            <p class="text-muted mt-3">
+                                <p>
+                                <strong>Reason:</strong>{!! $suspension->reason ?? 'No reason provided.' !!}
+                                </p>
+                                <br>
+                                <strong>Effective from:</strong> {{ Carbon\Carbon::parse($suspension->start_date)->format('d, M Y') }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            @endif
+
             <!--end card-body-->
             <div class="card-body p-4 border-top border-top-dashed">
                 <div class="avatar-title bg-light rounded">

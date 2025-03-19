@@ -463,6 +463,8 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'admin'],
   Route::post('/updateBoard', [App\Http\Controllers\Admin\ApplaudController::class, 'updateBoard'])->name('updateBoard')->middleware(['auth:admin']);
   Route::post('/deleteBoard', [App\Http\Controllers\Admin\ApplaudController::class, 'deleteBoard'])->name('deleteBoard')->middleware(['auth:admin']);
 
+  Route::get('/viewSuspension/{slug}', [App\Http\Controllers\Admin\StudentDisciplinaryController::class, 'viewSuspension'])->name('admin.viewSuspension')->middleware(['auth:admin']);
+  Route::post('/manageSuspension', [App\Http\Controllers\Admin\StudentDisciplinaryController::class, 'manageSuspension'])->name('admin.manageSuspension')->middleware(['auth:admin']);  
 
 });
 
@@ -490,9 +492,9 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'student'
   Route::post('/requeryUpperlinkPayment', [App\Http\Controllers\PaymentController::class, 'requeryUpperlinkPayment']);
 
   Route::group(['middleware' => ['auth:student', StudentAccess::class]], function () {
-    Route::get('/home', [App\Http\Controllers\Student\StudentController::class, 'index'])->name('home');
+    Route::get('/home', [App\Http\Controllers\Student\StudentController::class, 'index'])->name('student.home');
 
-    Route::post('/makePayment', [App\Http\Controllers\Student\StudentController::class, 'makePayment'])->name('makePayment');
+    Route::post('/makePayment', [App\Http\Controllers\Student\StudentController::class, 'makePayment'])->name('student.makePayment');
     Route::post('/setMode', [App\Http\Controllers\Student\StudentController::class, 'setMode'])->name('setMode');
 
     Route::get('/profile', [App\Http\Controllers\Student\StudentController::class, 'profile'])->name('student.profile');
@@ -574,6 +576,11 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'student'
     Route::post('/apply', [App\Http\Controllers\Student\CareerController::class, 'apply'])->name('apply');
     Route::post('/deleteApplication', [App\Http\Controllers\Student\CareerController::class, 'deleteApplication'])->name('deleteApplication');
     Route::post('/manageApplication', [App\Http\Controllers\Student\CareerController::class, 'manageApplication'])->name('manageApplication');  
+
+    Route::get('/studentDisciplinary', [App\Http\Controllers\Student\StudentDisciplinaryController::class, 'studentDisciplinary'])->name('student.studentDisciplinary');
+    Route::get('/viewSuspension/{slug}', [App\Http\Controllers\Student\StudentDisciplinaryController::class, 'viewSuspension'])->name('student.viewSuspension');
+    Route::post('/manageSuspension', [App\Http\Controllers\Student\StudentDisciplinaryController::class, 'manageSuspension'])->name('student.manageSuspension');  
+
   });
 });
 
@@ -818,6 +825,12 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'staff'],
   Route::get('/jobVacancy', [App\Http\Controllers\Staff\CareerController::class, 'jobVacancy'])->name('jobVacancy')->middleware(['auth:staff']);
   Route::get('/siwesApplicants', [App\Http\Controllers\Staff\CareerController::class, 'siwesApplicants'])->name('siwesApplicant')->middleware(['auth:staff']);
 
+
+  Route::get('/viewSuspension/{slug}', [App\Http\Controllers\Staff\StudentDisciplinaryController::class, 'viewSuspension'])->name('admin.viewSuspension')->middleware(['auth:admin']);
+  Route::post('/manageSuspension', [App\Http\Controllers\Staff\StudentDisciplinaryController::class, 'manageSuspension'])->name('admin.manageSuspension')->middleware(['auth:admin']);  
+  Route::post('/expel', [App\Http\Controllers\Staff\StudentDisciplinaryController::class, 'expel'])->name('expel')->middleware(['auth:admin']);
+  Route::post('/suspend', [App\Http\Controllers\Staff\StudentDisciplinaryController::class, 'suspend'])->name('suspend')->middleware(['auth:admin']);
+  Route::post('/recall', [App\Http\Controllers\Staff\StudentDisciplinaryController::class, 'recall'])->name('recall')->middleware(['auth:admin']);
 
 
 });

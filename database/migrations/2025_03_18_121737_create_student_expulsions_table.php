@@ -19,6 +19,7 @@ class CreateStudentExpulsionsTable extends Migration
             $table->text('reason')->nullable();
             $table->date('start_date');
             $table->string('file')->nullable();
+            $table->string('academic_session')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

@@ -1,0 +1,303 @@
+@extends('student.layout.dashboard')
+@php
+$student = Auth::guard('student')->user();
+$qrcode = 'https://quickchart.io/chart?chs=300x300&cht=qr&chl='.env('APP_URL').'/studentDetails/'.$student->slug;
+$name = $student->applicant->lastname.' '.$student->applicant->othernames;
+$failedCourses = $student->registeredCourses()->where('grade', 'F')->where('re_reg', null)->get();
+
+
+$stage = 0;
+@endphp
+@section('content')
+
+<!-- start page title -->
+<div class="row">
+    <div class="col-12">
+        <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+            <h4 class="mb-sm-0">Suspension Details</h4>
+
+            <div class="page-title-right">
+                <ol class="breadcrumb m-0">
+                    <li class="breadcrumb-item"><a href="javascript: void(0);">Pages</a></li>
+                    <li class="breadcrumb-item active">Suspension Details</li>
+                </ol>
+            </div>
+
+        </div>
+    </div>
+</div>
+<!-- end page title -->
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card mt-n4 mx-n4">
+            <div class="bg-soft-info">
+                <div class="card-body pb-0 px-4">
+                    <div class="row mb-3">
+                        <div class="col-md">
+                            <div class="row align-items-center g-3">
+                                <div class="col-md-auto">
+                                    <div class="avatar-md">
+                                        <div class="avatar-title bg-white rounded-circle">
+                                            <img src="{{ !empty($student->image) ? $student->image : asset('assets/images/users/user-dummy-img.jpg') }}" alt="" class="img-thumbnail rounded-circle avatar-md">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md">
+                                    <div>
+                                        <h4 class="fw-bold">{{ $student->applicant->lastname .' '. $student->applicant->othernames }}</h4>
+                                        <div class="hstack gap-3 flex-wrap">
+                                            <div><i class="ri-building-line align-bottom me-1"></i> {{  $student->academic_status }}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- end card body -->
+            </div>
+        </div>
+        <!-- end card -->
+    </div>
+    <!-- end col -->
+</div>
+
+<div class="row">
+    <div class="col-xl-4">
+        <div class="card card-height-100">
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-xl-12">
+                        <h6 class="fs-14 mb-2">Suspension Details</h6>
+                        <hr>
+                        <p class="text-muted"><strong>Academic Session:</strong> {{ $suspension->academic_session }} Academic Session</p>
+                        <p class="text-muted"><strong>Reason:</strong> {!! $suspension->reason !!}</p>
+                        <p class="text-muted"><strong>Suspension Letter:</strong> {!! $suspension->file !!}</p>
+                        <p class="text-muted"><strong>Start Date:</strong> {{ \Carbon\Carbon::parse($suspension->start_date)->format('jS \o\f F, Y') }}</p>
+                        <p class="text-muted"><strong>End Date:</strong> {{ $suspension->end_date? \Carbon\Carbon::parse($suspension->end_date)->format('jS \o\f F, Y') : '' }}</p>
+                    </div>
+                    <!-- end col -->
+                </div>    
+                <hr>
+                <div>
+                    <div class="flex-shrink-0 avatar-md mx-auto">
+                        <div class="avatar-title bg-light rounded">
+                            <img src="{{empty($student->image)?asset('assets/images/users/user-dummy-img.jpg'):asset($student->image)}}" alt="" height="50" />
+                        </div>
+                    </div>
+                    <div class="mt-4 text-center">
+                        <h5 class="mb-1">{{$name}}</h5>
+                        <p class="text-muted">{{ $student->programme->name }} <br>
+                            <strong>Programme Category:</strong> {{ $student->programmeCategory->category }} Programme<br>
+                            <strong>Matric Number:</strong> {{ $student->matric_number }}<br>
+                            <strong>Jamb Reg. Number:</strong> {{ $student->applicant->jamb_reg_no }}<br> <br>
+                            <strong>Support Code:</strong> <span class="text-danger">{{ $student->applicant->id }}-ST{{ sprintf("%03d", $student->id) }}</span> 
+                            
+                            @if(env('WALLET_STATUS'))<hr><a class="dropdown-item" href="#"><i class="mdi mdi-wallet text-muted fs-16 align-middle me-1"></i> <span class="align-middle">Balance : <b>₦{{ number_format($student->amount_balance/100, 2) }}</b></span></a>@endif
+                        </p>
+                        <p class="text-muted border-top border-top-dashed"><strong>CGPA:</strong> {{ $student->cgpa }} <br>
+                            <strong>Class:</strong> {{ $student->degree_class }}<br>
+                            <strong>Standing:</strong> {{ $student->academic_status }}<br>
+                            <strong>Batch:</strong> {{ $student->batch }}<br>
+                            @if($failedCourses->count() > 0)<strong class="text-danger">Failed Courses:</strong> <span class="text-danger">@foreach($failedCourses as $failedCourse) {{ $failedCourse->course_code.',' }} @endforeach</span> @endif <br>
+
+                        </p>
+                    </div>
+                    <div class="table-responsive border-top border-top-dashed">
+                        <table class="table mb-0 table-borderless">
+                            <tbody>
+                                <tr>
+                                    <th><span class="fw-medium">Department:</span></th>
+                                    <td>{{ $student->department->name }}</td>
+                                </tr>
+                                <tr>
+                                    <th><span class="fw-medium">Faculty:</span></th>
+                                    <td>{{ $student->faculty->name }}</td>
+                                </tr>
+                                <tr>
+                                    <th><span class="fw-medium">Email:</span></th>
+                                    <td>{{ $student->email }}</td>
+                                </tr>
+                                <tr>
+                                    <th><span class="fw-medium">Contact No.:</span></th>
+                                    <td>{{ $student->applicant->phone_number }}</td>
+                                </tr>
+                                <tr>
+                                    <th><span class="fw-medium">Address:</span></th>
+                                    <td>{!! $student->applicant->address !!}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="border-top border-top-dashed mb-3">
+                        <div class="avatar-title bg-light rounded">
+                            <img src="{{ $qrcode }}" style="border: 1px solid black;">
+                        </div>
+                    </div>
+                    @if(!empty($student->applicant->guardian))
+                    <div class="card-body border-top border-top-dashed p-4">
+                        <div>
+                            <h6 class="text-muted text-uppercase fw-semibold mb-4">Guardian Info</h6>
+                            <div class="table-responsive">
+                                <table class="table mb-0 table-borderless">
+                                    <tbody>
+                                        <tr>
+                                            <th><span class="fw-medium">SN</span></th>
+                                            <td class="text-danger">#{{ $student->applicant->guardian->id }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th><span class="fw-medium">Name</span></th>
+                                            <td>{{ $student->applicant->guardian->name }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th><span class="fw-medium">Email</span></th>
+                                            <td>{{ $student->applicant->guardian->email }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th><span class="fw-medium">Contact No.</span></th>
+                                            <td>{{ $student->applicant->guardian->phone_number }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th><span class="fw-medium">Address</span></th>
+                                            <td>{!! $student->applicant->guardian->address !!}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    @endif
+                    
+                </div>
+            </div>
+        </div>
+
+        
+    </div>
+    <!--end col-->
+    <div class="col-xl-8">
+
+        <div class="card card-height-100">
+            <div class="card-header border-bottom-dashed align-items-center d-flex">
+                <h4 class="card-title mb-0 flex-grow-1">Suspension Approval Activities</h4>
+            </div><!-- end cardheader -->
+            <div class="card-body p-0">
+                <div data-simplebar="init" style="max-height: 364px;" class="p-3 simplebar-scrollable-y"><div class="simplebar-wrapper" style="margin: -16px;"><div class="simplebar-height-auto-observer-wrapper"><div class="simplebar-height-auto-observer"></div></div><div class="simplebar-mask"><div class="simplebar-offset" style="right: 0px; bottom: 0px;"><div class="simplebar-content-wrapper" tabindex="0" role="region" aria-label="scrollable content" style="height: auto; overflow: hidden scroll;"><div class="simplebar-content" style="padding: 16px;">
+                    <div class="acitivity-timeline acitivity-main">
+                        @php $stage = 0; @endphp
+                        
+                        @if(empty($suspension->transaction_id))
+                            <div class="acitivity-item d-flex mb-3">
+                                <div class="flex-grow-1 ms-3">
+                                    <h6 class="mb-1">Payment is pending, kindly proceed to pay for re-admission</h6>
+                                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#paymentModal">Pay Now</button>
+                                </div>
+                            </div>
+                        @else
+                            <div class="acitivity-item d-flex mb-3">
+                                <div class="flex-grow-1 ms-3">
+                                    <h6 class="mb-2 ms-2">- Payment received</h6>
+                                </div>
+                            </div>
+                            @php $stage = 1; @endphp
+                        @endif
+                    
+                        @if($stage >= 1)
+                            <div class="acitivity-item d-flex mb-3">
+                                <div class="flex-grow-1 ms-3">
+                                    <h6 class="mb-2 ms-2">- {{ empty($suspension->court_affidavit) ? 'Court affidavit upload is pending' : 'Court affidavit uploaded' }}</h6>
+                                    @if(empty($suspension->court_affidavit))
+                                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#courtaffidavitModal">Upload</button>
+                                    @endif
+                                </div>
+                            </div>
+                            @php $stage = !empty($suspension->court_affidavit) ? 2 : $stage; @endphp
+                        @endif
+                    
+                        @if($stage >= 2)
+                            <div class="acitivity-item d-flex mb-3">
+                                <div class="flex-grow-1 ms-3">
+                                    <h6 class="mb-2 ms-2">- {{ empty($suspension->undertaking_letter) ? 'Guardian letter of undertaking upload is pending' : 'Guardian letter uploaded' }}</h6>
+                                    @if(empty($suspension->undertaking_letter))
+                                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#undertakingletterModal">Upload</button>
+                                    @endif
+                                </div>
+                            </div>
+                            @php $stage = !empty($suspension->undertaking_letter) ? 3 : $stage; @endphp
+                        @endif
+                    
+                        @if($stage >= 3)
+                            <div class="acitivity-item d-flex mb-3">
+                                <div class="flex-grow-1 ms-3">
+                                    <h6 class="mb-2 ms-2">- {{ empty($suspension->traditional_ruler_reference) ? 'Traditional ruler reference upload is pending' : 'Reference uploaded' }}</h6>
+                                    @if(empty($suspension->traditional_ruler_reference))
+                                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#traditionalrulerreferenceModal">Upload</button>
+                                    @endif
+                                </div>
+                            </div>
+                            @php $stage = !empty($suspension->traditional_ruler_reference) ? 4 : $stage; @endphp
+                        @endif
+                    
+                        @if($stage >= 4)
+                            <div class="acitivity-item d-flex mb-3">
+                                <div class="flex-grow-1 ms-3">
+                                    <h6 class="mb-2 ms-2">- {{ empty($suspension->ps_reference) ? 'Public servant reference upload is pending' : 'Reference uploaded' }}</h6>
+                                    @if(empty($suspension->ps_reference))
+                                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#psreferenceModal">Upload</button>
+                                    @endif
+                                </div>
+                            </div>
+                            @php $stage = !empty($suspension->ps_reference) ? 5 : $stage; @endphp
+                        @endif
+                    
+                        @if($stage >= 5)
+                            <div class="acitivity-item d-flex mb-3">
+                                <div class="flex-grow-1 ms-3">
+                                    <h6 class="mb-2 ms-2">- {{ empty($suspension->admin_comment) ? 'Admin review is pending' : 'Admin has reviewed your documents' }}</h6>
+                                </div>
+                            </div>
+                            @php $stage = !empty($suspension->admin_comment) ? 6 : $stage; @endphp
+                        @endif
+                    
+                        @if($stage == 6)
+                            <div class="acitivity-item d-flex mb-3">
+                                <div class="flex-grow-1 ms-3">
+                                    <h6 class="mb-2 ms-2">-Your re-admission process has been completed successfully.</h6>
+                                </div>
+                            </div>
+                        @endif
+                    </div>
+                    
+                </div></div></div></div><div class="simplebar-placeholder" style="width: 342px; height: 895px;"></div></div><div class="simplebar-track simplebar-horizontal" style="visibility: hidden;"><div class="simplebar-scrollbar" style="width: 0px; display: none;"></div></div><div class="simplebar-track simplebar-vertical" style="visibility: visible;"><div class="simplebar-scrollbar" style="height: 148px; transform: translate3d(0px, 0px, 0px); display: block;"></div></div></div>
+            </div><!-- end card body -->
+        </div>
+    </div>
+</div>
+<!--end row-->
+
+
+<!-- Upload Modals -->
+@foreach(['court_affidavit', 'undertaking_letter', 'traditional_ruler_reference', 'ps_reference'] as $doc)
+<div id="{{ str_replace('_', '', $doc) }}Modal" class="modal fade" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" style="display: none;">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Upload {{ ucfirst(str_replace('_', ' ', $doc)) }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form action="{{ url('student/manageSuspension') }}" method="POST" enctype="multipart/form-data">
+                    @csrf
+                    <input type="hidden" name="suspension_id" value="{{ $suspension->id }}">
+                    <input type="file" name="{{ $doc }}" class="form-control" required>
+                    <button type="submit" class="btn btn-success mt-3">Upload</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+@endforeach
+
+@endsection

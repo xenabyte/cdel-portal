@@ -2,11 +2,15 @@
 <!doctype html>
 <?php 
     use \App\Models\ProgrammeCategory;
+    use \App\Models\StudentSuspension;
 
     $student = Auth::guard('student')->user();
     $notifications = $student->notifications()->orderBy('created_at', 'desc')->get();
     $name = $student->applicant->lastname. ' ' . $student->applicant->othernames;
     $mode = $student->dashboard_mode;
+
+    $suspension = StudentSuspension::where('student_id', $student->id)->whereNull('end_date')->first();
+
 ?>
 <html lang="en" data-layout="vertical" data-topbar="light" data-layout-mode="{{ $mode }}" data-sidebar="dark" data-sidebar-size="lg" data-sidebar-image="none" data-preloader="disable">
 
@@ -447,7 +451,13 @@
 
                             <li class="nav-item">
                                 <a class="nav-link menu-link" href="{{ url('student/exits') }}">
-                                    <i class="mdi mdi-arrow-top-right-bold-box"></i> <span data-key="t-transaction">Exit(s) Applications</span>
+                                    <i class="mdi mdi-arrow-top-right-bold-box"></i> <span data-key="t-exit">Exit(s) Applications</span>
+                                </a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link menu-link" href="{{ url('student/studentDisciplinary') }}">
+                                    <i class="mdi mdi-arrow-top-right-bold-box"></i> <span data-key="t-sdc">Student Disciplinary</span>
                                 </a>
                             </li>
 

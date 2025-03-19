@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Staff;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -71,11 +71,13 @@ class StudentDisciplinaryController extends Controller
             'student_id' => $student->id,
             'reason' => $request->reason,
             'start_date' => Carbon::now(),
+            'academic_session' => $student->academic_session,
             'file' => $fileUrl
         ]);
 
         // Update student academic status
         $student->academic_status = 'Expelled';
+        $student->is_rusticated = true;
         $student->save();
 
         // Send notification
@@ -139,9 +141,11 @@ class StudentDisciplinaryController extends Controller
 
         // Create suspension record
         StudentSuspension::create([
+            'slug' => md5($student->slug.time()),
             'student_id' => $student->id,
             'reason' => $request->reason,
             'start_date' => Carbon::now(),
+            'academic_session' => $student->academic_session,
             'file' => $fileUrl
         ]);
 
@@ -195,6 +199,7 @@ class StudentDisciplinaryController extends Controller
             if ($expulsion) {
                 $expulsion->delete();
                 $student->academic_status = 'Good Standing'; // Reset status
+                $student->is_rusticated = false;
                 $student->save();
 
                 // Send notification for recall
@@ -246,6 +251,70 @@ class StudentDisciplinaryController extends Controller
             'description' => $message,
             'status' => 0,
         ]);
+    }
+
+    public function viewSuspension($slug){
+
+        $suspension = StudentSuspension::with('student')->where('slug', $slug)->first();
+
+        return view('admin.viewSuspension', [
+            'suspension' => $suspension
+        ]);
+
+    }
+
+
+    public function manageSuspension(Request $request)
+    {
+        // Validation rules
+        $validator = Validator::make($request->all(), [
+            'suspension_id' => 'nullable|string',
+            'court_affidavit' => 'nullable|file|mimes:pdf,jpg,png,jpeg',
+            'undertaking_letter' => 'nullable|file|mimes:pdf,jpg,png,jpeg',
+            'traditional_ruler_reference' => 'nullable|file|mimes:pdf,jpg,png,jpeg',
+            'ps_reference' => 'nullable|file|mimes:pdf,jpg,png,jpeg',
+            'admin_comment' => 'nullable|string',
+        ]);
+
+        if ($validator->fails()) {
+            alert()->error('Validation Error', $validator->errors()->first())->persistent('Close');
+            return redirect()->back();
+        }
+
+        $suspension = StudentSuspension::find($request->suspension_id);
+        
+        if (!$suspension) {
+            alert()->error('Error', 'Suspension record not found.')->persistent('Close');
+            return redirect()->back();
+        }
+
+        // Handle file uploads
+        $fields = ['court_affidavit', 'undertaking_letter', 'traditional_ruler_reference', 'ps_reference'];
+        foreach ($fields as $field) {
+            if ($request->hasFile($field)) {
+                // Delete existing file if any
+                if ($suspension->$field) {
+                    @unlink(public_path('uploads/' . $suspension->$field));
+                }
+                // Store new file
+                $file = $request->file($field);
+                $filename = time() . '_' . $file->getClientOriginalName();
+                $file->move(public_path('uploads'), $filename);
+                $suspension->$field = $filename;
+            }
+        }
+
+        $suspension->admin_comment = !empty($request->admin_comment)?$request->admin_comment:null;
+        $suspension->status = !empty($request->status)?$request->status:null;
+
+        // Update fields        
+        if($suspension->save()){
+            alert()->success('Success', 'Suspension details updated successfully.')->persistent('Close');
+            return redirect()->back();
+        }
+
+        alert()->error('Error', 'Failed to update suspension details.')->persistent('Close');
+        return redirect()->back();
     }
 
 }
