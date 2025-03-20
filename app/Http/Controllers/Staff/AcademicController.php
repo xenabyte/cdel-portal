@@ -20,6 +20,8 @@ use App\Models\Unit;
 use App\Models\LevelAdviser;
 use App\Models\CoursePerProgrammePerAcademicSession;
 use App\Models\ProgrammeCategory;
+use App\Models\Student;
+use App\Models\StudentSuspension;
 
 use SweetAlert;
 use Mail;
@@ -266,6 +268,31 @@ class AcademicController extends Controller
 
         alert()->error('Oops!', 'Something went wrong')->persistent('Close');
         return redirect()->back();
+    }
+
+
+    /**
+     * Get all suspended students.
+     */
+    public function suspendedStudents()
+    {
+        $suspensions = StudentSuspension::with('student')->whereNull('end_date')->get();
+
+        return view('staff.suspendedStudents', [
+            'suspensions' => $suspensions
+        ]);
+    }
+
+    /**
+     * Get all expelled students.
+     */
+    public function expelledStudents()
+    {
+        $expelledStudents = Student::where('academic_status', 'expelled')->get();
+
+        return view('staff.expelledStudents', [
+            'expelledStudents' => $expelledStudents
+        ]);
     }
 
 }
