@@ -255,10 +255,11 @@ class StudentController extends Controller
         $globalData = $request->input('global_data');
         $admissionSession = $globalData->sessionSetting['admission_session'];
         $paymentId = $request->payment_id;
-        $redirectLocation = 'student/walletTransactions';
+        $redirectLocation = 'student/home';
         $amount = $request->amount * 100;
         $transaction = Transaction::find($request->transaction_id);
         $paymentType = 'Other Fee';
+        $suspensionId = $request->suspension_id;
 
         if($paymentId > 0){
             if(!$payment = Payment::with('structures')->where('id', $paymentId)->first()){
@@ -285,7 +286,7 @@ class StudentController extends Controller
             $redirectLocation = 'student/purchaseBandwidth';
         }
 
-        if(strtolower($paymentType) == "accomondation") {
+        if(strtolower($paymentType) == strtolower(Payment::PAYMENT_TYPE_ACCOMONDATION)) {
             $validator = Validator::make($request->all(), [
                 'campus' => 'required',
                 'hostel_id' => 'required',
@@ -409,6 +410,7 @@ class StudentController extends Controller
                     "academic_session" => $student->academic_session,
                     "redirect_path" => $redirectLocation,
                     "payment_Type" => $paymentType,
+                    "suspension_id" => $suspensionId,
                     'plan_id' => !empty($bandwidthPlan)?$bandwidthPlan->id:null,
                 ),
             );
@@ -448,6 +450,7 @@ class StudentController extends Controller
                     "academic_session" => $student->academic_session,
                     "redirect_path" => $redirectLocation,
                     "payment_Type" => $paymentType,
+                    "suspension_id" => $suspensionId,
                     "plan_id" => !empty($bandwidthPlan)?$bandwidthPlan->id:null,
                 ),
                 "customizations" => array(
@@ -487,6 +490,7 @@ class StudentController extends Controller
             $transactionData->payment_gateway = $paymentGateway;
             $transactionData->transaction_id = $request->transaction_id;
             $transactionData->plan_id = !empty($bandwidthPlan)?$bandwidthPlan->id:null;
+            $transactionData->suspension_id = $suspensionId;
             $transactionData->hostel_meta =!empty($hostelMeta)?$hostelMeta:null;
 
             return $this->billStudent($transactionData);
@@ -504,6 +508,7 @@ class StudentController extends Controller
                 "redirect_path" => $redirectLocation,
                 "payment_Type" => $paymentType,
                 "plan_id" => !empty($bandwidthPlan)?$bandwidthPlan->id:null,
+                "suspension_id" => $suspensionId,
             );
 
 

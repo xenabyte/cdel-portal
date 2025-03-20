@@ -184,7 +184,8 @@ $stage = 0;
                 <h4 class="card-title mb-0 flex-grow-1">Suspension Approval Activities</h4>
             </div><!-- end cardheader -->
             <div class="card-body p-0">
-                <div data-simplebar="init" style="max-height: 364px;" class="p-3 simplebar-scrollable-y"><div class="simplebar-wrapper" style="margin: -16px;"><div class="simplebar-height-auto-observer-wrapper"><div class="simplebar-height-auto-observer"></div></div><div class="simplebar-mask"><div class="simplebar-offset" style="right: 0px; bottom: 0px;"><div class="simplebar-content-wrapper" tabindex="0" role="region" aria-label="scrollable content" style="height: auto; overflow: hidden scroll;"><div class="simplebar-content" style="padding: 16px;">
+                <div data-simplebar="init" style="max-height: ;" class="p-3 simplebar-scrollable-y"><div class="simplebar-wrapper" style="margin: -16px;"><div class="simplebar-height-auto-observer-wrapper"><div class="simplebar-height-auto-observer"></div></div><div class="simplebar-mask"><div class="simplebar-offset" style="right: 0px; bottom: 0px;"><div class="simplebar-content-wrapper" tabindex="0" role="region" aria-label="scrollable content" style="height: auto; overflow: hidden scroll;"><div class="simplebar-content" style="padding: 16px;">
+                    
                     <div class="acitivity-timeline acitivity-main">
                         @php $stage = 0; @endphp
                         
@@ -192,7 +193,7 @@ $stage = 0;
                             <div class="acitivity-item d-flex mb-3">
                                 <div class="flex-grow-1 ms-3">
                                     <h6 class="mb-1">Payment is pending, kindly proceed to pay for re-admission</h6>
-                                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#paymentModal">Pay Now</button>
+                                    <button class="btn btn-primary mt-2" data-bs-toggle="modal" data-bs-target="#paymentModal">Pay Now</button>
                                 </div>
                             </div>
                         @else
@@ -207,10 +208,15 @@ $stage = 0;
                         @if($stage >= 1)
                             <div class="acitivity-item d-flex mb-3">
                                 <div class="flex-grow-1 ms-3">
-                                    <h6 class="mb-2 ms-2">- {{ empty($suspension->court_affidavit) ? 'Court affidavit upload is pending' : 'Court affidavit uploaded' }}</h6>
-                                    @if(empty($suspension->court_affidavit))
-                                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#courtaffidavitModal">Upload</button>
-                                    @endif
+                                    <h6 class="mb-2 ms-2">
+                                        - {{ empty($suspension->court_affidavit) ? 'Court affidavit upload is pending' : 'Court affidavit uploaded' }}
+                                        @if(!empty($suspension->court_affidavit))
+                                            <br>
+                                            <img class="img-thumbnail mt-3" width="50%" src="{{ url('uploads/'.$suspension->court_affidavit) }}">
+                                            <hr style="width:30%">
+                                            <a href="{{ url('uploads/'.$suspension->court_affidavit) }}" target="_blank" class="btn btn-sm btn-secondary">View</a>
+                                        @endif
+                                    </h6>
                                 </div>
                             </div>
                             @php $stage = !empty($suspension->court_affidavit) ? 2 : $stage; @endphp
@@ -219,10 +225,15 @@ $stage = 0;
                         @if($stage >= 2)
                             <div class="acitivity-item d-flex mb-3">
                                 <div class="flex-grow-1 ms-3">
-                                    <h6 class="mb-2 ms-2">- {{ empty($suspension->undertaking_letter) ? 'Guardian letter of undertaking upload is pending' : 'Guardian letter uploaded' }}</h6>
-                                    @if(empty($suspension->undertaking_letter))
-                                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#undertakingletterModal">Upload</button>
-                                    @endif
+                                    <h6 class="mb-2 ms-2">
+                                        - {{ empty($suspension->undertaking_letter) ? 'Guardian letter of undertaking upload is pending' : 'Guardian letter uploaded' }}
+                                        @if(!empty($suspension->undertaking_letter))
+                                            <br>
+                                            <img class="img-thumbnail mt-3" width="50%" src="{{ url('uploads/'.$suspension->undertaking_letter) }}">
+                                            <hr style="width:30%">
+                                            <a href="{{ url('uploads/'.$suspension->undertaking_letter) }}" target="_blank" class="btn btn-sm btn-secondary">View</a>
+                                        @endif
+                                    </h6>
                                 </div>
                             </div>
                             @php $stage = !empty($suspension->undertaking_letter) ? 3 : $stage; @endphp
@@ -231,10 +242,15 @@ $stage = 0;
                         @if($stage >= 3)
                             <div class="acitivity-item d-flex mb-3">
                                 <div class="flex-grow-1 ms-3">
-                                    <h6 class="mb-2 ms-2">- {{ empty($suspension->traditional_ruler_reference) ? 'Traditional ruler reference upload is pending' : 'Reference uploaded' }}</h6>
-                                    @if(empty($suspension->traditional_ruler_reference))
-                                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#traditionalrulerreferenceModal">Upload</button>
-                                    @endif
+                                    <h6 class="mb-2 ms-2">
+                                        - {{ empty($suspension->traditional_ruler_reference) ? 'Traditional ruler reference upload is pending' : 'Traditional ruler reference uploaded' }}
+                                        @if(!empty($suspension->traditional_ruler_reference))
+                                            <br>
+                                            <img class="img-thumbnail mt-3" width="50%" src="{{ url('uploads/'.$suspension->traditional_ruler_reference) }}">
+                                            <hr style="width:30%">
+                                            <a href="{{ url('uploads/'.$suspension->traditional_ruler_reference) }}" target="_blank" class="btn btn-sm btn-secondary">View</a>
+                                        @endif
+                                    </h6>
                                 </div>
                             </div>
                             @php $stage = !empty($suspension->traditional_ruler_reference) ? 4 : $stage; @endphp
@@ -243,10 +259,15 @@ $stage = 0;
                         @if($stage >= 4)
                             <div class="acitivity-item d-flex mb-3">
                                 <div class="flex-grow-1 ms-3">
-                                    <h6 class="mb-2 ms-2">- {{ empty($suspension->ps_reference) ? 'Public servant reference upload is pending' : 'Reference uploaded' }}</h6>
-                                    @if(empty($suspension->ps_reference))
-                                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#psreferenceModal">Upload</button>
-                                    @endif
+                                    <h6 class="mb-2 ms-2">
+                                        - {{ empty($suspension->ps_reference) ? 'Public servant reference upload is pending' : 'Public servant reference uploaded' }}
+                                        @if(!empty($suspension->ps_reference))
+                                            <br>
+                                            <img class="img-thumbnail mt-3" width="50%" src="{{ url('uploads/'.$suspension->ps_reference) }}">
+                                            <hr style="width:30%">
+                                            <a href="{{ url('uploads/'.$suspension->ps_reference) }}" target="_blank" class="btn btn-sm btn-secondary">View</a>
+                                        @endif
+                                    </h6>
                                 </div>
                             </div>
                             @php $stage = !empty($suspension->ps_reference) ? 5 : $stage; @endphp
@@ -256,6 +277,7 @@ $stage = 0;
                             <div class="acitivity-item d-flex mb-3">
                                 <div class="flex-grow-1 ms-3">
                                     <h6 class="mb-2 ms-2">- {{ empty($suspension->admin_comment) ? 'Admin review is pending' : 'Admin has reviewed your documents' }}</h6>
+                                    {!! $suspension->admin_comment !!}
                                 </div>
                             </div>
                             @php $stage = !empty($suspension->admin_comment) ? 6 : $stage; @endphp
@@ -277,6 +299,82 @@ $stage = 0;
 </div>
 <!--end row-->
 
+
+<div class="modal fade" id="paymentModal" tabindex="-1" aria-labelledby="paymentModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header p-3">
+                <h5 class="modal-title text-uppercase fw-bold" id="paymentModalLabel">Re-admission Fee</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body border-top border-top-dashed">
+                <div class="tab-content">
+                    <div class="tab-pane fade show active" id="pills-bill-info" role="tabpanel" aria-labelledby="pills-bill-info-tab">
+                        
+                        <form action="{{ url('/student/makePayment') }}" method="post" enctype="multipart/form-data">
+                            @csrf
+                            <input type="hidden" name="payment_id" value="{{ $suspensionPayment->id }}">
+                            <input type="hidden" name="student_id" value="{{ $student->id }}">
+                            <input type="hidden" name="amount" value="{{ $suspensionPayment->structures->sum('amount') }}">
+                            <input type="hidden" name="suspension_id" value="{{ $suspension->id }}">
+
+                            <div class="alert alert-warning text-center">
+                                <strong>Notice:</strong> You are about to make a payment of <strong>₦{{ number_format($suspensionPayment->structures->sum('amount')/100, 2) }}</strong>.  
+                                This payment is <strong>non-refundable</strong>. Please ensure that all details are correct before proceeding.
+                            </div>
+        
+                            <div class="mb-3">
+                                <label for="paymentGateway" class="form-label">Select Payment Gateway<span class="text-danger">*</span></label>
+                                <select class="form-select" aria-label="paymentGateway" name="paymentGateway" required onchange="handlePaymentMethodChange(event)">
+                                    <option value= "" selected>Select Payment Gateway</option>
+                                    @if(env('UPPERLINK_STATUS'))<option value="Upperlink">Upperlink</option>@endif
+                                    @if(env('FLUTTERWAVE_STATUS'))<option value="Rave">Flutterwave</option>@endif
+                                    @if(env('MONNIFY_STATUS'))<option value="Monnify">Monnify</option>@endif
+                                    @if(env('PAYSTACK_STATUS'))<option value="Paystack">Paystack</option>@endif
+                                    @if(env('BANK_TRANSFER_STATUS'))<option value="BankTransfer">Transfer</option>@endif
+                                    @if(env('WALLET_STATUS'))<option value="Wallet">Wallet</option>@endif
+                                </select>
+                            </div>
+        
+                            <!-- Primary Alert -->
+                            <div class="alert alert-primary alert-dismissible alert-additional fade show" role="alert" style="display: none" id="transferInfo">
+                                <div class="alert-body">
+                                    <div class="d-flex">
+                                        <div class="flex-shrink-0 me-3">
+                                            <i class="mdi mdi-check-bold fs-16 align-middle"></i>
+                                        </div>
+                                        <div class="flex-grow-1">
+                                            <h5 class="alert-heading">Well done !</h5>
+                                            <p class="mb-0">Kindly make transfer to the below transaction </p>
+                                            <br>
+                                            <ul class="list-group">
+                                                <li class="list-group-item"><i class="mdi mdi-check-bold align-middle lh-1 me-2"></i><strong>Bank Name:</strong> {{env('BANK_NAME')}}</li>
+                                                <li class="list-group-item"><i class="mdi mdi-check-bold align-middle lh-1 me-2"></i><strong>Bank Account Number:</strong> {{env('BANK_ACCOUNT_NUMBER')}}</li>
+                                                <li class="list-group-item"><i class="mdi mdi-check-bold align-middle lh-1 me-2"></i><strong>Bank Account Name:</strong> {{env('BANK_ACCOUNT_NAME')}}</li>
+                                            </ul>
+                                            <br>
+                                            <p>Please send proof of payment as an attachment to {{ env('ACCOUNT_EMAIL') }}, including your name, registration number, and purpose of payment. For any inquiries, you can also call {{ env('ACCOUNT_PHONE') }}.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="alert-content">
+                                    <p class="mb-0">NOTE: PLEASE ENSURE TO VERIFY THE TRANSACTION DETAILS PROPERLY. TRANSFER ONLY TO THE ACCOUNT ABOVE. STUDENTS TAKE RESPONSIBILITY FOR ANY MISPLACEMENT OF FUNDS.</p>
+                                </div>
+                            </div>
+        
+                            <div class="border-top border-top-dashed ">
+                                <button type="submit" id="submit-button" id='submit-button' class="btn btn-primary mt-1">Make payment</button>
+                            </div>
+                        </form>
+                    </div>
+                    <!-- end tab pane -->
+                </div>
+                <!-- end tab content -->
+            </div>
+        </div>
+    </div>
+</div>
+<!--end modal-->
 
 <!-- Upload Modals -->
 @foreach(['court_affidavit', 'undertaking_letter', 'traditional_ruler_reference', 'ps_reference'] as $doc)

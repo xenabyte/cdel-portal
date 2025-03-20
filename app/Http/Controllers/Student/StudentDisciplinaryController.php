@@ -34,12 +34,17 @@ class StudentDisciplinaryController extends Controller
     }
 
 
-    public function viewSuspension($slug){
+    public function viewSuspension(Request $request, $slug){
+
+        $globalData = $request->input('global_data');
+        $academicSession = $globalData->sessionSetting['academic_session'];
 
         $suspension = StudentSuspension::where('slug', $slug)->first();
+        $suspensionPayment = Payment::where("type", Payment::PAYMENT_TYPE_READMISSION_FEE)->where('academic_session', $academicSession)->first();
 
         return view('student.viewSuspension', [
-            'suspension' => $suspension
+            'suspension' => $suspension,
+            'suspensionPayment' => $suspensionPayment
         ]);
 
     }

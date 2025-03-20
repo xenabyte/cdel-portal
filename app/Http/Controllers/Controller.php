@@ -59,6 +59,7 @@ use App\Models\Room;
 use App\Models\Allocation;
 use App\Models\ShortUrl;
 use App\Models\PaymentType;
+use App\Models\StudentSuspension;
 
 
 
@@ -111,6 +112,7 @@ class Controller extends BaseController
         $planId = !empty($paymentDetails['data']['metadata']['plan_id'])?$paymentDetails['data']['metadata']['plan_id']:null;
         $reference = $paymentDetails['data']['reference'];
         $session = $paymentDetails['data']['metadata']['academic_session'];
+        $suspensionId = !empty($paymentDetails['data']['metadata']['suspension_id'])?$paymentDetails['data']['metadata']['suspension_id']:null;
 
 
         if(!empty($txRef)){
@@ -119,6 +121,10 @@ class Controller extends BaseController
                 $existTx->status = 1;
                 $existTx->payment_method = $paymentGateway;
                 $existTx->save();
+
+                if(!empty($suspensionId)){
+                    StudentSuspension::where('id', $suspensionId)->update(['transaction_id' => $existTx->id]);
+                }
                 
                 return true;
             }
@@ -144,6 +150,10 @@ class Controller extends BaseController
             'plan_id' => !empty($planId)?$planId:null,
         ]);
 
+        if(!empty($suspensionId)){
+            StudentSuspension::where('id', $suspensionId)->update(['transaction_id' => $transaction->id]);
+        }
+
        return true;
     }
 
@@ -160,6 +170,7 @@ class Controller extends BaseController
         $applicationId = !empty($paymentDetails['data']['meta']['application_id'])?$paymentDetails['data']['meta']['application_id']:null;
         $studentId = !empty($paymentDetails['data']['meta']['student_id'])?$paymentDetails['data']['meta']['student_id']:null;
         $planId = !empty($paymentDetails['data']['meta']['plan_id'])?$paymentDetails['data']['meta']['plan_id']:null;
+        $suspensionId = !empty($paymentDetails['data']['meta']['suspension_id'])?$paymentDetails['data']['meta']['suspension_id']:null;
         $paymentId = $paymentDetails['data']['meta']['payment_id'];
         $paymentGateway = $paymentDetails['data']['meta']['payment_gateway'];
         $amount = $paymentDetails['data']['meta']['amount'];
@@ -179,6 +190,10 @@ class Controller extends BaseController
                 $existTx->payment_method = $paymentGateway;
                 $existTx->redirect_url = $redirectUrl;
                 $existTx->save();
+
+                if(!empty($suspensionId)){
+                    StudentSuspension::where('id', $suspensionId)->update(['transaction_id' => $existTx->id]);
+                }
                 
                 return true;
             }
@@ -203,6 +218,10 @@ class Controller extends BaseController
             'status' => 1
         ]);
 
+        if(!empty($suspensionId)){
+            StudentSuspension::where('id', $suspensionId)->update(['transaction_id' => $transaction->id]);
+        }
+
        return true;
     }
 
@@ -223,6 +242,7 @@ class Controller extends BaseController
         $applicationId = !empty($paymentData['application_id'])?$paymentData['application_id']:null;
         $studentId = !empty($paymentData['student_id'])?$paymentData['student_id']:null;
         $planId = !empty($paymentData['plan_id'])?$paymentData['plan_id']:null;
+        $suspensionId = !empty($paymentData['suspension_id'])?$paymentData['suspension_id']:null;
         $paymentId = $paymentData['payment_id'];
         $paymentGateway = $paymentData['payment_gateway'];
         $amount = $paymentDetails['amount'];
@@ -240,6 +260,10 @@ class Controller extends BaseController
                 $existTx->payment_method = $paymentGateway;
                 $existTx->redirect_url = $redirectUrl;
                 $existTx->save();
+
+                if(!empty($suspensionId)){
+                    StudentSuspension::where('id', $suspensionId)->update(['transaction_id' => $existTx->id]);
+                }
                 
                 return true;
             }
@@ -263,6 +287,10 @@ class Controller extends BaseController
             'plan_id' => !empty($planId)?$planId:null,
             'status' => 1
         ]);
+
+        if(!empty($suspensionId)){
+            StudentSuspension::where('id', $suspensionId)->update(['transaction_id' => $transaction->id]);
+        }
 
        return true;
 

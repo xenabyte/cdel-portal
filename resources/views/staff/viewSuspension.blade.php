@@ -190,7 +190,7 @@ $stage = 0;
                 <h4 class="card-title mb-0 flex-grow-1">Suspension Approval Activities</h4>
             </div><!-- end cardheader -->
             <div class="card-body p-0">
-                <div data-simplebar="init" style="max-height: 364px;" class="p-3 simplebar-scrollable-y"><div class="simplebar-wrapper" style="margin: -16px;"><div class="simplebar-height-auto-observer-wrapper"><div class="simplebar-height-auto-observer"></div></div><div class="simplebar-mask"><div class="simplebar-offset" style="right: 0px; bottom: 0px;"><div class="simplebar-content-wrapper" tabindex="0" role="region" aria-label="scrollable content" style="height: auto; overflow: hidden scroll;"><div class="simplebar-content" style="padding: 16px;">
+                <div data-simplebar="init" style="" class="p-3 simplebar-scrollable-y"><div class="simplebar-wrapper" style="margin: -16px;"><div class="simplebar-height-auto-observer-wrapper"><div class="simplebar-height-auto-observer"></div></div><div class="simplebar-mask"><div class="simplebar-offset" style="right: 0px; bottom: 0px;"><div class="simplebar-content-wrapper" tabindex="0" role="region" aria-label="scrollable content" style="height: auto; overflow: hidden scroll;"><div class="simplebar-content" style="padding: 16px;">
                     <div class="acitivity-timeline acitivity-main">
                         @php $stage = 0; @endphp
                         
@@ -198,7 +198,6 @@ $stage = 0;
                             <div class="acitivity-item d-flex mb-3">
                                 <div class="flex-grow-1 ms-3">
                                     <h6 class="mb-1">Payment is pending, kindly proceed to pay for re-admission</h6>
-                                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#paymentModal">Pay Now</button>
                                 </div>
                             </div>
                         @else
@@ -213,7 +212,15 @@ $stage = 0;
                         @if($stage >= 1)
                             <div class="acitivity-item d-flex mb-3">
                                 <div class="flex-grow-1 ms-3">
-                                    <h6 class="mb-2 ms-2">- {{ empty($suspension->court_affidavit) ? 'Court affidavit upload is pending' : 'Court affidavit uploaded' }}</h6>
+                                    <h6 class="mb-2 ms-2">
+                                        - {{ empty($suspension->court_affidavit) ? 'Court affidavit upload is pending' : 'Court affidavit uploaded' }}
+                                        @if(!empty($suspension->court_affidavit))
+                                            <br>
+                                            <img class="img-thumbnail mt-3" width="50%" src="{{ url('uploads/'.$suspension->court_affidavit) }}">
+                                            <hr style="width:30%">
+                                            <a href="{{ url('uploads/'.$suspension->court_affidavit) }}" target="_blank" class="btn btn-sm btn-secondary">View</a>
+                                        @endif
+                                    </h6>
                                 </div>
                             </div>
                             @php $stage = !empty($suspension->court_affidavit) ? 2 : $stage; @endphp
@@ -222,7 +229,15 @@ $stage = 0;
                         @if($stage >= 2)
                             <div class="acitivity-item d-flex mb-3">
                                 <div class="flex-grow-1 ms-3">
-                                    <h6 class="mb-2 ms-2">- {{ empty($suspension->undertaking_letter) ? 'Guardian letter of undertaking upload is pending' : 'Guardian letter uploaded' }}</h6>
+                                    <h6 class="mb-2 ms-2">
+                                        - {{ empty($suspension->undertaking_letter) ? 'Guardian letter of undertaking upload is pending' : 'Guardian letter uploaded' }}
+                                        @if(!empty($suspension->undertaking_letter))
+                                            <br>
+                                            <img class="img-thumbnail mt-3" width="50%" src="{{ url('uploads/'.$suspension->undertaking_letter) }}">
+                                            <hr style="width:30%">
+                                            <a href="{{ url('uploads/'.$suspension->undertaking_letter) }}" target="_blank" class="btn btn-sm btn-secondary">View</a>
+                                        @endif
+                                    </h6>
                                 </div>
                             </div>
                             @php $stage = !empty($suspension->undertaking_letter) ? 3 : $stage; @endphp
@@ -231,7 +246,15 @@ $stage = 0;
                         @if($stage >= 3)
                             <div class="acitivity-item d-flex mb-3">
                                 <div class="flex-grow-1 ms-3">
-                                    <h6 class="mb-2 ms-2">- {{ empty($suspension->traditional_ruler_reference) ? 'Traditional ruler reference upload is pending' : 'Reference uploaded' }}</h6>
+                                    <h6 class="mb-2 ms-2">
+                                        - {{ empty($suspension->traditional_ruler_reference) ? 'Traditional ruler reference upload is pending' : 'Reference uploaded' }}
+                                        @if(!empty($suspension->traditional_ruler_reference))
+                                            <br>
+                                            <img class="img-thumbnail mt-3" width="50%" src="{{ url('uploads/'.$suspension->traditional_ruler_reference) }}">
+                                            <hr style="width:30%">
+                                            <a href="{{ url('uploads/'.$suspension->traditional_ruler_reference) }}" target="_blank" class="btn btn-sm btn-secondary">View</a>
+                                        @endif
+                                    </h6>
                                 </div>
                             </div>
                             @php $stage = !empty($suspension->traditional_ruler_reference) ? 4 : $stage; @endphp
@@ -240,7 +263,15 @@ $stage = 0;
                         @if($stage >= 4)
                             <div class="acitivity-item d-flex mb-3">
                                 <div class="flex-grow-1 ms-3">
-                                    <h6 class="mb-2 ms-2">- {{ empty($suspension->ps_reference) ? 'Public servant reference upload is pending' : 'Reference uploaded' }}</h6>
+                                    <h6 class="mb-2 ms-2">
+                                        - {{ empty($suspension->ps_reference) ? 'Public Servant reference upload is pending' : 'Reference uploaded' }}
+                                        @if(!empty($suspension->ps_reference))
+                                            <br>
+                                            <img class="img-thumbnail mt-3" width="50%" src="{{ url('uploads/'.$suspension->ps_reference) }}">
+                                            <hr style="width:30%">
+                                            <a href="{{ url('uploads/'.$suspension->ps_reference) }}" target="_blank" class="btn btn-sm btn-secondary">View</a>
+                                        @endif
+                                    </h6>
                                 </div>
                             </div>
                             @php $stage = !empty($suspension->ps_reference) ? 5 : $stage; @endphp
@@ -249,10 +280,11 @@ $stage = 0;
                         @if($stage >= 5)
                             <div class="acitivity-item d-flex mb-3">
                                 <div class="flex-grow-1 ms-3">
-                                    <h6 class="mb-2 ms-2">- {{ empty($suspension->staff_comment) ? 'Admin review is pending' : 'Admin has reviewed your documents' }}</h6>
+                                    <h6 class="mb-2 ms-2">- {{ empty($suspension->admin_comment) ? 'Admin review is pending' : 'Admin has reviewed your documents' }}</h6>
+                                    {!! $suspension->admin_comment !!}
                                 </div>
                             </div>
-                            @php $stage = !empty($suspension->staff_comment) ? 6 : $stage; @endphp
+                            @php $stage = !empty($suspension->admin_comment) ? 6 : $stage; @endphp
                         @endif
                     
                         @if($stage == 6)

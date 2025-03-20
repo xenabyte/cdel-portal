@@ -100,6 +100,7 @@ class StudentAccess
                 'message' => 'You are currently suspended.',
                 'reason' => $suspension->reason ?? 'No reason provided.',
                 'suspension_start' => $suspension->start_date,
+                'slug' => $suspension->slug
             ];
         }
 
