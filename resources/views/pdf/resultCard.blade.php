@@ -49,7 +49,7 @@
             }
         }
 
-        /* .watermark {
+        .watermark {
             position: absolute;
             top: 0;
             left: 0;
@@ -61,7 +61,9 @@
             background-size: 40%;
             opacity: 0.1;
             background-image: url('{{ env('SCHOOL_LOGO') }}');
-        } */
+            page-break-before: always;
+
+        }
 
         @media print {
             .watermark {
@@ -88,6 +90,7 @@
             white-space: nowrap;
             z-index: -2;
             pointer-events: none; 
+            page-break-before: always;
         }
     </style>
 </head>

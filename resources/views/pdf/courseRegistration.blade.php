@@ -8,7 +8,7 @@
         body {
             font-size: 12px;
         }
-        /* .watermark {
+        .watermark {
             position: absolute;
             top: 0;
             left: 0;
@@ -18,7 +18,8 @@
             background: url('{{ env('SCHOOL_LOGO') }}') center center no-repeat;
             background-size: 50%;
             opacity: 0.1; 
-        } */
+            page-break-before: always;
+        }
         .header-logo {
             text-align: right;
         }
@@ -48,7 +49,7 @@
                 column-gap: 5px;
             }
         }
-        @media print {
+        /* @media print {
             .watermark {
                 position: fixed;
                 top: 50%;
@@ -60,7 +61,7 @@
                 z-index: -1;
                 page-break-before: always;
             }
-        }
+        } */
     </style>
 </head>
 <body>
