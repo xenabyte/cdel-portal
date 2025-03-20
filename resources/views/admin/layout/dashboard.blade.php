@@ -534,7 +534,7 @@
 
                         <li class="nav-item">
                             <a class="nav-link menu-link" href="#studentMgt" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="studentMgt">
-                                <i class="mdi mdi-account-tie"></i> <span data-key="t-student">Students</span>
+                                <i class="mdi mdi-account-tie"></i> <span data-key="t-student">Students MGT</span>
                             </a>
                             <div class="collapse menu-dropdown" id="studentMgt">
                                 <ul class="nav nav-sm flex-column">
@@ -589,8 +589,18 @@
                                         <a href="{{ url('/admin/demoteStudentRecord') }}" class="nav-link">Demoted Student Record</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a href="{{ url('/admin/deletedStudents') }}" class="nav-link">Deleted Student Record</a>
+                                        <a href="{{ url('/admin/alumni') }}" class="nav-link">Alumni (Graduated Students)</a>
                                     </li>
+                                </ul>
+                            </div>
+                        </li> <!-- end Dashboard Menu -->
+
+                        <li class="nav-item">
+                            <a class="nav-link menu-link" href="#studentMgtSDC" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="studentMgtSDC">
+                                <i class="mdi mdi-account-lock"></i> <span data-key="t-student">Students Disciplinary</span>
+                            </a>
+                            <div class="collapse menu-dropdown" id="studentMgtSDC">
+                                <ul class="nav nav-sm flex-column">
                                     <li class="nav-item">
                                         <a href="{{ url('/admin/expelledStudents') }}" class="nav-link">Expelled Student Record</a>
                                     </li>
@@ -598,11 +608,11 @@
                                         <a href="{{ url('/admin/suspendedStudents') }}" class="nav-link">Suspended Student Record</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a href="{{ url('/admin/alumni') }}" class="nav-link">Alumni (Graduated Students)</a>
+                                        <a href="{{ url('/admin/deletedStudents') }}" class="nav-link">Deleted Student Record</a>
                                     </li>
                                 </ul>
                             </div>
-                        </li> <!-- end Dashboard Menu -->
+                        </li> 
 
                         <li class="menu-title"><i class="ri-more-fill"></i> <span data-key="t-student">Student Care</span></li>
 

@@ -391,6 +391,27 @@
                             </li>
                             {{-- @endif --}}
 
+                            @if($staffRegistrarRole || $staffVCRole || $staffBursaryRole)
+                            <li class="nav-item">
+                                <a class="nav-link menu-link" href="#studentMgtSDC" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="studentMgtSDC">
+                                    <i class="mdi mdi-account-lock"></i> <span data-key="t-student">Students Disciplinary</span>
+                                </a>
+                                <div class="collapse menu-dropdown" id="studentMgtSDC">
+                                    <ul class="nav nav-sm flex-column">
+                                        <li class="nav-item">
+                                            <a href="{{ url('/staff/expelledStudents') }}" class="nav-link">Expelled Student Record</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a href="{{ url('/staff/suspendedStudents') }}" class="nav-link">Suspended Student Record</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a href="{{ url('/staff/deletedStudents') }}" class="nav-link">Deleted Student Record</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li> 
+                            @endif
+
                             <li class="nav-item">
                                 <a class="nav-link menu-link" href="#leaveMGT" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarForms">
                                     <i class="mdi mdi-wrench-clock"></i> <span data-key="t-leaveMGT">Leave MGT</span>

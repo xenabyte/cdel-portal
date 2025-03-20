@@ -457,7 +457,7 @@
 
                             <li class="nav-item">
                                 <a class="nav-link menu-link" href="{{ url('student/studentDisciplinary') }}">
-                                    <i class="mdi mdi-arrow-top-right-bold-box"></i> <span data-key="t-sdc">Student Disciplinary</span>
+                                    <i class="mdi mdi-account-lock"></i> <span data-key="t-sdc">Student Disciplinary</span>
                                 </a>
                             </li>
 
