@@ -348,7 +348,6 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'admin'],
   Route::post('bulkManageExitApplications', [App\Http\Controllers\Admin\StudentCareController::class, 'bulkManageExitApplications'])->name('bulkManageExitApplications')->middleware(['auth:admin']);
 
   
-
   Route::get('/studentResult', [App\Http\Controllers\Admin\ResultController::class, 'studentResult'])->name('studentResult')->middleware(['auth:admin']);
   Route::post('/result/getStudent', [App\Http\Controllers\Admin\ResultController::class, 'getStudent'])->name('getStudent')->middleware(['auth:admin']);
   Route::post('/result/getStudentResult', [App\Http\Controllers\Admin\ResultController::class, 'getStudentResult'])->name('getStudentResult')->middleware(['auth:admin']);
@@ -445,8 +444,6 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'admin'],
   Route::post('/updateApplicantStatus', [App\Http\Controllers\Admin\CareerController::class, 'updateApplicantStatus'])->name('updateApplicantStatus')->middleware(['auth:admin']);
   Route::post('/uploadApplicantAppointmentLetter', [App\Http\Controllers\Admin\CareerController::class, 'uploadApplicantAppointmentLetter'])->name('uploadApplicantAppointmentLetter')->middleware(['auth:admin']);
 
-  
-
   Route::get('/prospectiveStaff', [App\Http\Controllers\Admin\CareerController::class, 'prospectiveStaff'])->name('prospectiveStaff')->middleware(['auth:admin']);
   Route::get('/workStudyApplicants', [App\Http\Controllers\Admin\CareerController::class, 'workStudyApplicants'])->name('workStudyApplicants')->middleware(['auth:admin']);
   Route::get('/jobVacancy', [App\Http\Controllers\Admin\CareerController::class, 'jobVacancy'])->name('jobVacancy')->middleware(['auth:admin']);
@@ -465,6 +462,11 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'admin'],
 
   Route::get('/viewSuspension/{slug}', [App\Http\Controllers\Admin\StudentDisciplinaryController::class, 'viewSuspension'])->name('admin.viewSuspension')->middleware(['auth:admin']);
   Route::post('/manageSuspension', [App\Http\Controllers\Admin\StudentDisciplinaryController::class, 'manageSuspension'])->name('admin.manageSuspension')->middleware(['auth:admin']);  
+
+  Route::get('/studyCenters', [App\Http\Controllers\Admin\StudyCenterController::class, 'studyCenters'])->name('admin.studyCenters')->middleware(['auth:admin']);
+  Route::get('/studyCenter/{slug}', [App\Http\Controllers\Admin\StudyCenterController::class, 'studyCenter'])->name('admin.studyCenter')->middleware(['auth:admin']);
+
+  
 
 });
 

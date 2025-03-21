@@ -80,7 +80,7 @@
         <div class="card">
             <div class="card-body">
                 <h5 class="fs-15 fw-semibold">Course code: {{ $course->code  }}</h5>
-                <p class="text-muted">{{  ucwords(strtolower($course->name)) }}</p>
+                <p class="text-muted">{{ ucwords(strtolower($course->name)) }}</p>
                 <p class="text-muted">Credit Unit: {{ !empty($registrationDetails) ? $registrationDetails->course_credit_unit : null }}</p>
                 <p class="text-muted">Lecturer: {{ $staffName }}</p>
                 <hr>
@@ -225,8 +225,8 @@
                                 @if($registration->student)
                                 <tr>
                                     <th scope="row">{{ $loop->iteration }}</th>
-                                    <td>{{ $course->code }}</td>
                                     <td>{{ $registration->student->batch }}</td>
+                                    <td>{{ $course->code }}</td>
                                     <td>{{ round($registration->attendancePercentage()) }}% </td>
                                     <td>{{ ucwords(strtolower($registration->student->applicant->lastname)) }}</td>
                                     <td>{{ ucwords(strtolower($registration->student->applicant->othernames)) }}</td>

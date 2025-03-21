@@ -236,15 +236,15 @@
                     </div>
                     <ul class="navbar-nav" id="navbar-nav">
                         <li class="menu-title"><span data-key="t-menu">Menu</span></li>
-                        <li class="nav-item">
+                        <li class="nav-item border-top border-top-dashed mb-3">
                             <a class="nav-link menu-link" href="{{ url('/admin/home') }}">
                                 <i class="mdi mdi-view-dashboard"></i> <span>Dashboard</span>
                             </a>
                         </li>
 
-                        <li class="menu-title"><i class="ri-more-fill"></i> <span data-key="t-admin">Administrator Settings</span></li>
+                        <li class="menu-title border-top border-top-dashed mb-3"><i class="ri-more-fill"></i> <span data-key="t-admin">Administrator Settings</span></li>
 
-                        <li class="nav-item">
+                        <li class="nav-item border-top border-top-dashed mb-3">
                             <a class="nav-link menu-link" href="#admin" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarForms">
                                 <i class="mdi mdi-account-box-multiple"></i> <span data-key="t-forms">Admins</span>
                             </a>
@@ -257,7 +257,7 @@
                             </div>
                         </li>
 
-                        <li class="menu-title"><i class="ri-more-fill"></i> <span data-key="t-communications">Communications</span></li>
+                        <li class="menu-title border-top border-top-dashed mb-3"><i class="ri-more-fill"></i> <span data-key="t-communications">Communications</span></li>
 
                         <li class="nav-item">
                             <a class="nav-link menu-link" href="#communications" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarForms">
@@ -786,9 +786,23 @@
                             </div>
                         </li> <!-- end Dashboard Menu -->
 
+                        <li class="menu-title"><i class="ri-more-fill"></i> <span data-key="t-student">Study Centers</span></li>
+
+                        <li class="nav-item">
+                            <a class="nav-link menu-link" href="#studyCenter" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="studyCenter">
+                                <i class="mdi mdi-office-building"></i> <span data-key="t-studyCenter">Study Centers</span>
+                            </a>
+                            <div class="collapse menu-dropdown" id="studyCenter">
+                                <ul class="nav nav-sm flex-column">
+                                    <li class="nav-item">
+                                        <a href="{{url('/admin/studyCenters')}}" class="nav-link" data-key="t-study-center">Study Center </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li> <!-- end Dashboard Menu -->
 
                         <li class="menu-title"><i class="ri-more-fill"></i> <span data-key="t-pages"></span></li>
-                        <li class="nav-item">
+                        <li class="nav-item border-top border-top-dashed mb-3">
                             <a class="nav-link menu-link" href="{{ url('admin/logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                                 <i class="mdi mdi-power"></i> <span data-key="t-logout">Logout</span>
                             </a>
