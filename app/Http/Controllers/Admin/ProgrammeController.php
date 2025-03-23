@@ -1314,18 +1314,7 @@ class ProgrammeController extends Controller
         $programmeCategory = ProgrammeCategory::where('category', $programmeCategory)->first();
         $programmeCategoryId = $programmeCategory->id;
 
-        // $adviserProgrammesQuery = LevelAdviser::with('programme', 'level')->where('programme_category_id', $programmeCategoryId)->where('academic_session', $academicSession);
-        // $adviserProgrammes = $adviserProgrammesQuery->get();
-
-        $adviserProgrammesQuery = LevelAdviser::with('programme', 'level')
-            ->where('programme_category_id', $programmeCategoryId)
-            ->where('academic_session', $academicSession)
-            ->withCount(['students' => function ($query) {
-                $query->whereColumn('students.programme_category_id', 'level_advisers.programme_category_id')
-                    ->whereColumn('students.level_id', 'level_advisers.level_id')
-                    ->whereColumn('students.programme_id', 'level_advisers.programme_id');
-            }]);
-
+        $adviserProgrammesQuery = LevelAdviser::with('programme', 'level')->where('programme_category_id', $programmeCategoryId)->where('academic_session', $academicSession);
         $adviserProgrammes = $adviserProgrammesQuery->get();
 
 

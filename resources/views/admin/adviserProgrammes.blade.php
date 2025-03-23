@@ -49,7 +49,7 @@
                             <td>{{$adviserProgramme->staff? ucwords(strtolower($adviserProgramme->staff->title.' '.$adviserProgramme->staff->lastname.' '.$adviserProgramme->staff->othernames)) : null}}</td>
                             <td>{{$adviserProgramme->programme->name}}</td>
                             <td>{{$adviserProgramme->level->level}} Level <span class="badge badge-pill bg-danger" data-key="t-hot">{{ $adviserProgramme->studentRegistrationsCount }} </span></td>
-                            <td>{{$adviserProgramme->students_count}}</td>
+                            <td>{{$adviserProgramme->studentCount}}</td>
                             <td> 
                                 @if(!empty($adviserProgramme->comment))
                                 <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#viewComment{{ $adviserProgramme->id }}">View Comment</button>                                   
