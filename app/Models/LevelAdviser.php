@@ -60,4 +60,11 @@ class LevelAdviser extends Model
     {
         return $this->belongsTo(ProgrammeCategory::class, 'programme_category_id');
     }
+
+    public function students()
+    {
+        return $this->hasMany(Student::class, 'programme_category_id', 'programme_category_id')
+            ->where('level_id', $this->level_id)
+            ->where('programme_id', $this->programme_id);
+    }
 }
