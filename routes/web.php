@@ -255,7 +255,7 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'admin'],
   Route::post('/setExamSetting', [App\Http\Controllers\Admin\AcademicController::class, 'setExamSetting'])->name('setExamSetting')->middleware(['auth:admin']);
 
   Route::get('/campusCapacity', [App\Http\Controllers\Admin\AcademicController::class, 'campusCapacity'])->name('campusCapacity')->middleware(['auth:admin']);
-  Route::get('/allStudents', [App\Http\Controllers\Admin\AcademicController::class, 'allStudents'])->name('allStudents')->middleware(['auth:admin']);
+  Route::get('/allStudents/{programmeCategory}', [App\Http\Controllers\Admin\AcademicController::class, 'allStudents'])->name('allStudents')->middleware(['auth:admin']);
   Route::get('/massPromotion/{programmeCategory}', [App\Http\Controllers\Admin\AcademicController::class, 'massPromotion'])->name('massPromotion')->middleware(['auth:admin']);
   Route::get('/demoteStudent', [App\Http\Controllers\Admin\AcademicController::class, 'demoteStudent'])->name('demoteStudent')->middleware(['auth:admin']);
   Route::get('/graduatingStudents/{programmeCategory}', [App\Http\Controllers\Admin\StudentController::class, 'graduatingStudents'])->name('graduatingStudents')->middleware(['auth:admin']);
@@ -469,6 +469,8 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'admin'],
   Route::post('/addStudyCenter', [App\Http\Controllers\Admin\StudyCenterController::class, 'addStudyCenter'])->name('admin.addStudyCenter')->middleware(['auth:admin']);  
   Route::post('/updateStudyCenter', [App\Http\Controllers\Admin\StudyCenterController::class, 'updateStudyCenter'])->name('admin.updateStudyCenter')->middleware(['auth:admin']);  
   Route::post('/deleteStudyCenter', [App\Http\Controllers\Admin\StudyCenterController::class, 'deleteStudyCenter'])->name('admin.deleteStudyCenter')->middleware(['auth:admin']);  
+
+  Route::post('/assignStudyCenter', [App\Http\Controllers\Admin\StudyCenterController::class, 'assignStudyCenter'])->name('admin.assignStudyCenter')->middleware(['auth:admin']);  
 
   
   
@@ -734,7 +736,7 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'staff'],
 
   Route::get('/students/{programmeCategory}', [App\Http\Controllers\Staff\AdmissionController::class, 'students'])->name('students')->middleware(['auth:staff']);
   Route::get('/student/{slug}', [App\Http\Controllers\Staff\AdmissionController::class, 'student'])->name('student')->middleware(['auth:staff']);
-  Route::get('/allStudents', [App\Http\Controllers\Staff\AdmissionController::class, 'allStudents'])->name('allStudents')->middleware(['auth:staff']);
+  Route::get('/allStudents/{programmeCategory}', [App\Http\Controllers\Staff\AdmissionController::class, 'allStudents'])->name('allStudents')->middleware(['auth:staff']);
   Route::get('/graduatingStudents/{programmeCategory}', [App\Http\Controllers\Staff\StudentController::class, 'graduatingStudents'])->name('graduatingStudents')->middleware(['auth:staff']);
 
   Route::get('/departmentForCourses', [App\Http\Controllers\Staff\AcademicController::class, 'departmentForCourses'])->name('departmentForCourses')->middleware(['auth:staff']);

@@ -147,4 +147,95 @@ class StudyCenterController extends Controller
         alert()->error('Oops!', 'Something went wrong')->persistent('Close');
         return redirect()->back();
     }
+
+    public function assignStudyCenter(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'center_id' => 'required|exists:centers,id',
+            'student_id' => 'required|exists:students,id',
+        ]);
+
+        if ($validator->fails()) {
+            alert()->error('Validation Failed', $validator->errors()->first())->persistent('Close');
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
+
+        $student = Student::find($request->student_id);
+
+        if (!$student) {
+            alert()->error('Not Found', 'Student not found')->persistent('Close');
+            return redirect()->back();
+        }
+
+        $priorCenter = $student->center; // Get previous center before updating
+
+        // Update Student's Study Center
+        $student->center_id = $request->center_id;
+        
+        if ($student->save()) {
+            $senderName = env('SCHOOL_NAME');
+            $receiverName = $student->applicant->lastname . ' ' . $student->applicant->othernames;
+            $newCenter = Center::find($request->center_id);
+            $newCenterAdminEmail = $newCenter->email;
+            $newCenterName = $newCenter->center_name;
+
+            // Notify Student
+            $studentMessage = "Dear $receiverName,  
+            You have been successfully assigned to the study center: $newCenterName.  
+            Please check your email for further details regarding your classes and schedule.  
+
+            Best regards,  
+            $senderName Team";
+
+            Mail::to($student->email)->send(new NotificationMail($senderName, $studentMessage, $receiverName));
+
+            Notification::create([
+                'student_id' => $student->id,
+                'description' => "Assigned to $newCenterName",
+                'status' => 0
+            ]);
+
+            // Notify New Study Center Admin
+            $newCenterMessage = "Dear $newCenterName Admin,  
+            A new student, $receiverName, has been assigned to your study center.  
+            Kindly ensure they receive all necessary guidance and information.  
+
+            Best regards,  
+            $senderName Team";
+
+            Mail::to($newCenterAdminEmail)->send(new NotificationMail($senderName, $newCenterMessage, $newCenterName));
+
+            Notification::create([
+                'center_id' => $newCenter->id,
+                'description' => "New student ($receiverName) assigned to $newCenterName",
+                'status' => 0
+            ]);
+
+            // **Notify Prior Study Center if Student Had One**
+            if ($priorCenter) {
+                $priorCenterAdminEmail = $priorCenter->email;
+                $priorCenterName = $priorCenter->center_name;
+
+                $priorCenterMessage = "Dear $priorCenterName Admin,  
+                Please be informed that the student $receiverName has been reassigned to another study center ($newCenterName).  
+
+                Best regards,  
+                $senderName Team";
+
+                Mail::to($priorCenterAdminEmail)->send(new NotificationMail($senderName, $priorCenterMessage, $priorCenterName));
+
+                Notification::create([
+                    'center_id' => $priorCenter->id,
+                    'description' => "Student ($receiverName) reassigned to $newCenterName",
+                    'status' => 0
+                ]);
+            }
+
+            alert()->success('Success', 'Student reassigned successfully, both centers notified')->persistent('Close');
+            return redirect()->back();
+        }
+
+        alert()->error('Oops!', 'Something went wrong')->persistent('Close');
+        return redirect()->back();
+    }
 }

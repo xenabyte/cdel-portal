@@ -46,6 +46,12 @@ $failedCourses = $student->registeredCourses()->where('grade', 'F')->where('re_r
                                             <div class="vr"></div>
                                             <div>Level: <span class="fw-medium">{{ $student->academicLevel->level }} Level</span></div>
                                         </div>
+                                        @if($student->studyCenter)
+                                        <div class="hstack gap-3 flex-wrap">
+                                            <div><i class="ri-building-line align-bottom me-1"></i> {{ $student->studyCenter ? $student->studyCentre->center_name : null }}</div>
+                                            <div class="vr"></div>
+                                        </div>
+                                        @endif
                                     </div>
                                 </div>
                             </div>

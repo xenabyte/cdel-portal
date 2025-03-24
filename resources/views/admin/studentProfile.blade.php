@@ -60,6 +60,12 @@ $failedCourses = $student->registeredCourses()->where('grade', 'F')->where('re_r
                                             <div class="vr"></div>
                                             <strong>Support Code:</strong> <span class="text-danger">{{ $student->applicant->id }}-ST{{ sprintf("%03d", $student->id) }}</span> 
                                         </div>
+                                        @if($student->studyCenter)
+                                        <div class="hstack gap-3 flex-wrap">
+                                            <div><i class="ri-building-line align-bottom me-1"></i> {{ $student->studyCenter ? $student->studyCentre->center_name : null }}</div>
+                                            <div class="vr"></div>
+                                        </div>
+                                        @endif
                                     </div>
                                 </div>
                             </div>
@@ -71,7 +77,7 @@ $failedCourses = $student->registeredCourses()->where('grade', 'F')->where('re_r
                                     <input type="hidden" name="student_id" value="{{ $student->id }}">
                                     <button type="submit" class="btn btn-success">Send Guardian Onboarding Mail</button>
                                 </form>
-
+                                <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#assignStudyCenter">Assign Study Center</button>
                                 <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#expelStudent">Expel Student</button>
                                 <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#suspendStudent">Suspend Student</button>
 
@@ -1371,6 +1377,35 @@ $failedCourses = $student->registeredCourses()->where('grade', 'F')->where('re_r
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
 
+<div id="assignStudyCenter" class="modal fade" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" style="display: none;">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body text-center p-5">
+                <div class="text-end">
+                    <button type="button" class="btn-close text-end" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="mt-2">
+                    <form action="{{ url('/admin/assignStudyCenter') }}" method="POST" enctype="multipart/form-data">
+                        @csrf
+                        <input name="student_id" type="hidden" value="{{ $student->id }}">
+
+                        <div class="mb-3">
+                            <label for="centerId" class="form-label">Select Study Center</label>
+                            <select class="form-select" aria-label="centerId" name="center_id" required>
+                                @foreach($studyCenters as $studyCenter)<option @if($student->center_id == $studyCenter->id) selected @endif value="{{ $studyCenter->id }}">{{ $studyCenter->name }}</option>@endforeach
+                            </select>
+                        </div>
+
+                        <hr>
+                        <button type="submit" class="btn btn-danger w-100">Yes, proceed</button>
+                    </form>
+                </div>
+            </div>
+            <div class="modal-footer bg-light p-3 justify-content-center">
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
 
 <!-- Expel Student Modal -->
 <div id="suspendStudent" class="modal fade" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" style="display: none;">

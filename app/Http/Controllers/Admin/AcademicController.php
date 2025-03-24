@@ -37,6 +37,7 @@ use App\Models\Allocation;
 use App\Models\LevelAdviser;
 use App\Models\Staff;
 use App\Models\StudentSuspension;
+use App\Models\Center;
 
 use App\Mail\NotificationMail;
 
@@ -1164,10 +1165,14 @@ class AcademicController extends Controller
         ]);
     }
 
-    public function allStudents(){
+    public function allStudents($programmeCategory){
+
+        $programmeCategory = Category::where('category', $programmeCategory)->first();
+        $programmeCategoryId = $programmeCategory->id;
 
         $students = Student::
             with(['applicant', 'programme', 'transactions', 'courseRegistrationDocument', 'registeredCourses', 'partner', 'academicLevel', 'department', 'faculty'])
+            ->where('programme_category_id', $programmeCategoryId)
             ->where('is_active', true)
             ->where('is_passed_out', false)
             ->where('is_rusticated', false)
@@ -1181,6 +1186,7 @@ class AcademicController extends Controller
     public function studentProfile(Request $request, $slug){
         $academicLevels = AcademicLevel::orderBy('id', 'desc')->get();
         $sessions = Session::orderBy('id', 'desc')->get();
+        $studyCenters = Center::all();
 
         $globalData = $request->input('global_data');
         $applicationSession = $globalData->sessionSetting['application_session'];
@@ -1203,7 +1209,8 @@ class AcademicController extends Controller
             'student' => $student,
             'academicLevels' => $academicLevels,
             'sessions' => $sessions,
-            'applicants' => $applicants
+            'applicants' => $applicants,
+            'studyCenters' => $studyCenters
         ]);
     }
 

@@ -268,6 +268,16 @@ class Student extends Authenticatable
         return $this->hasMany(StudentExpulsion::class, 'student_id', 'id');
     }
 
+    /**
+     * Get the studyCenter that owns the student
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function studyCenter()
+    {
+        return $this->belongsTo(Center::class, 'center_id');
+    }
+
 
     public function canPromote() {
         $requirement = ProgrammeRequirement::where('programme_id', $this->programme_id)
