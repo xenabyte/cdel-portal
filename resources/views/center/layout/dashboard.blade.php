@@ -3,8 +3,8 @@
 <!doctype html>
 <html lang="en" data-layout="vertical" data-layout-style="default" data-layout-position="fixed" data-topbar="light" data-sidebar="dark" data-sidebar-size="lg" data-layout-width="fluid" data-preloader="disable">
 @php
-    $guardian = Auth::guard('guardian')->user();
-    $notifications = $guardian->notifications()->orderBy('created_at', 'desc')->get();
+    $center = Auth::guard('center')->user();
+    $notifications = $center->notifications()->orderBy('created_at', 'desc')->get();
 @endphp
 
 <head>
@@ -76,7 +76,7 @@
                     <div class="d-flex">
                         <!-- LOGO -->
                         <div class="navbar-brand-box horizontal-logo">
-                            <a href="{{url('guardian/home')}}" class="logo logo-dark">
+                            <a href="{{url('center/home')}}" class="logo logo-dark">
                                 <span class="logo-sm">
                                     <img src="{{ !empty($pageGlobalData->setting) ? asset($pageGlobalData->setting->logo) : null }}" alt="" width="50">
                                 </span>
@@ -85,7 +85,7 @@
                                 </span>
                             </a>
 
-                            <a href="{{ url('guardian/home') }}" class="logo logo-light">
+                            <a href="{{ url('center/home') }}" class="logo logo-light">
                                 <span class="logo-sm">
                                     <img src="{{ !empty($pageGlobalData->setting) ? asset($pageGlobalData->setting->logo) : null }}" alt="" width="50">
                                 </span>
@@ -175,19 +175,19 @@
                                 <span class="d-flex align-items-center">
                                     <img class="rounded-circle header-profile-user" src="{{asset('assets/images/users/user-dummy-img.jpg')}}" alt="Header Avatar">
                                     <span class="text-start ms-xl-2">
-                                        <span class="d-none d-xl-inline-block ms-1 fw-medium user-name-text">{{ $guardian->name }}</span>
-                                        <span class="d-none d-xl-block ms-1 fs-12 text-muted user-name-sub-text">Guardian</span>
+                                        <span class="d-none d-xl-inline-block ms-1 fw-medium user-name-text">{{ $center->name }}</span>
+                                        <span class="d-none d-xl-block ms-1 fs-12 text-muted user-name-sub-text">Study Center</span>
                                     </span>
                                 </span>
                             </button>
                             <div class="dropdown-menu dropdown-menu-end">
                                 <!-- item-->
-                                <h6 class="dropdown-header">Welcome {{ $guardian->name }}!</h6>
-                                <a class="dropdown-item" href="{{url('/guardian/students')}}"><i class="mdi mdi-account text-muted fs-16 align-middle me-1"></i> <span class="align-middle">Students</span></a>
+                                <h6 class="dropdown-header">Welcome {{ $center->name }}!</h6>
+                                <a class="dropdown-item" href="{{url('/center/students')}}"><i class="mdi mdi-account text-muted fs-16 align-middle me-1"></i> <span class="align-middle">Students</span></a>
                                 <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="{{url('/guardian/profile')}}"><i class="mdi mdi-cog-outline text-muted fs-16 align-middle me-1"></i> <span class="align-middle">Settings</span></a>
-                                <a class="dropdown-item" href="{{ url('/guardian/logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();"><i class="mdi mdi-logout text-muted fs-16 align-middle me-1"></i> <span class="align-middle" data-key="t-logout">Logout</span></a>
-                                <form id="logout-form" action="{{ url('/guardian/logout') }}" method="POST" style="display: none;">@csrf</form>
+                                <a class="dropdown-item" href="{{url('/center/profile')}}"><i class="mdi mdi-cog-outline text-muted fs-16 align-middle me-1"></i> <span class="align-middle">Settings</span></a>
+                                <a class="dropdown-item" href="{{ url('/center/logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();"><i class="mdi mdi-logout text-muted fs-16 align-middle me-1"></i> <span class="align-middle" data-key="t-logout">Logout</span></a>
+                                <form id="logout-form" action="{{ url('/center/logout') }}" method="POST" style="display: none;">@csrf</form>
                             </div>
                         </div>
                     </div>
@@ -201,7 +201,7 @@
             <!-- LOGO -->
             <div class="navbar-brand-box">
                 <!-- Dark Logo-->
-                <a href="{{url('guardian/home')}}" class="logo logo-dark">
+                <a href="{{url('center/home')}}" class="logo logo-dark">
                     <span class="logo-sm">
                         <img src="{{ !empty($pageGlobalData->setting) ? asset($pageGlobalData->setting->logo) : null }}" alt="" width="50">
                     </span>
@@ -210,7 +210,7 @@
                     </span>
                 </a>
                 <!-- Light Logo-->
-                <a href="{{ url('guardian/home') }}" class="logo logo-light">
+                <a href="{{ url('center/home') }}" class="logo logo-light">
                     <span class="logo-sm">
                         <img src="{{ !empty($pageGlobalData->setting) ? asset($pageGlobalData->setting->logo) : null }}" alt="" width="50">
                     </span>
@@ -231,25 +231,25 @@
                     <ul class="navbar-nav" id="navbar-nav">
                         <li class="menu-title"><span data-key="t-menu">Menu</span></li>
                         <li class="nav-item">
-                            <a class="nav-link menu-link" href="{{ url('/guardian/home') }}">
+                            <a class="nav-link menu-link" href="{{ url('/center/home') }}">
                                 <i class="mdi mdi-view-dashboard"></i> <span>Dashboard</span>
                             </a>
                         </li>
 
                         <li class="nav-item">
-                            <a class="nav-link menu-link" href="{{ url('/guardian/students') }}">
+                            <a class="nav-link menu-link" href="{{ url('/center/students') }}">
                                 <i class="mdi mdi-account-multiple-outline"></i> <span>Students</span>
                             </a>
                         </li>
                        
                         <li class="nav-item">
-                            <a class="nav-link menu-link" href="{{ url('/guardian/profile') }}">
+                            <a class="nav-link menu-link" href="{{ url('/center/profile') }}">
                                 <i class="mdi mdi-account-cog"></i> <span>Profile</span>
                             </a>
                         </li>
 
                         <li class="nav-item">
-                            <a class="nav-link menu-link" href="{{ url('guardian/logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                            <a class="nav-link menu-link" href="{{ url('center/logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                                 <i class="mdi mdi-power"></i> <span data-key="t-logout">Logout</span>
                             </a>
                         </li> <!-- end Logout Menu -->

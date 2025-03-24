@@ -5,26 +5,13 @@ namespace App\Http\Controllers\Guardian;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Hash;
-use App\Http\Requests;
 use Illuminate\Support\Facades\Validator;
 
-use App\Models\Guardian;
-use App\Models\User as Applicant;
 use App\Models\Student;
-use App\Models\Programme;
 use App\Models\AcademicLevel;
 use App\Models\Session;
-use App\Models\Course;
-use App\Models\Notification;
-use App\Models\GradeScale;
 use App\Models\CourseRegistration;
-use App\Models\Role;
-use App\Models\Faculty;
-use App\Models\Department;
-use App\Models\LevelAdviser;
 use App\Models\Payment;
 use App\Models\ResultApprovalStatus;
 use App\Models\Transaction;
@@ -286,11 +273,12 @@ class GuardianController extends Controller
             $now = Carbon::now();
             $future = $now->addHours(48);
             $invoiceExpire = $future->format('Y-m-d H:i:s');
+            $monnifyAmount = $this->getMonnifyAmount($amount);
 
             $monnifyPaymentdata = array(
-                'amount' => ceil($newTx->amount_payed/100),
-                'invoiceReference' => $newTx->reference,
-                'description' =>  $newTx->narration,
+                'amount' => ceil($monnifyAmount/100),
+                'invoiceReference' => $transaction->reference,
+                'description' =>  $transaction->narration,
                 'currencyCode' => "NGN",
                 'contractCode' => env('MONNIFY_CONTRACT_CODE'),
                 'customerEmail' => $student->email,
