@@ -984,7 +984,7 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'career']
 });
 
 Route::group(['prefix' => 'center'], function () {
-  Route::get('/', [App\Http\Controllers\Center\Auth\LoginController::class, 'showLoginForm'])->name('guardian.login');
+  Route::get('/', [App\Http\Controllers\Center\Auth\LoginController::class, 'showLoginForm'])->name('center.login');
   Route::get('/login', [App\Http\Controllers\Center\Auth\LoginController::class, 'showLoginForm'])->name('login');
   Route::post('/login', [App\Http\Controllers\Center\Auth\LoginController::class, 'login']);
   Route::post('/logout', [App\Http\Controllers\Center\Auth\LoginController::class, 'logout'])->name('logout');
@@ -996,5 +996,14 @@ Route::group(['prefix' => 'center'], function () {
   Route::post('/password/reset', [App\Http\Controllers\Center\Auth\ResetPasswordController::class, 'reset'])->name('password.email');
   Route::get('/password/reset', [App\Http\Controllers\Center\Auth\ForgotPasswordController::class, 'showLinkRequestForm'])->name('password.reset');
   Route::get('/password/reset/{token}', [App\Http\Controllers\Center\Auth\ResetPasswordController::class, 'showResetForm']);
+
+
+  Route::get('/home', [App\Http\Controllers\Center\StudyCenterController::class, 'index'])->name('home')->middleware(['auth:center']);
+  Route::get('/students', [App\Http\Controllers\Center\StudyCenterController::class, 'students'])->name('students')->middleware(['auth:center']);
+  Route::get('/profile', [App\Http\Controllers\Center\StudyCenterController::class, 'profile'])->name('profile')->middleware(['auth:center']);
+
+  Route::get('/studentProfile/{slug}', [App\Http\Controllers\Center\StudyCenterController::class, 'studentProfile'])->name('studentProfile')->middleware(['auth:center']);
+
+  Route::post('/updatePassword', [App\Http\Controllers\Center\StudyCenterController::class, 'updatePassword'])->name('updatePassword')->middleware(['auth:center']);
 
 });

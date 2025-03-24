@@ -17,6 +17,7 @@ class Notification extends Model
         'guardian_id',
         'partner_id',
         'career_id',
+        'center_id',
         'attachment',
         'description',
         'status',

@@ -62,6 +62,7 @@ class Student extends Authenticatable
         'matriculation_status',
         'transcript',
         'academic_status',
+        'center_id'
     ];
 
     /**
