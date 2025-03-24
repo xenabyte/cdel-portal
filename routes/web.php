@@ -466,8 +466,12 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'admin'],
   Route::get('/studyCenters', [App\Http\Controllers\Admin\StudyCenterController::class, 'studyCenters'])->name('admin.studyCenters')->middleware(['auth:admin']);
   Route::get('/studyCenter/{slug}', [App\Http\Controllers\Admin\StudyCenterController::class, 'studyCenter'])->name('admin.studyCenter')->middleware(['auth:admin']);
 
-  
+  Route::post('/addStudyCenter', [App\Http\Controllers\Admin\StudyCenterController::class, 'addStudyCenter'])->name('admin.addStudyCenter')->middleware(['auth:admin']);  
+  Route::post('/updateStudyCenter', [App\Http\Controllers\Admin\StudyCenterController::class, 'updateStudyCenter'])->name('admin.updateStudyCenter')->middleware(['auth:admin']);  
+  Route::post('/deleteStudyCenter', [App\Http\Controllers\Admin\StudyCenterController::class, 'deleteStudyCenter'])->name('admin.deleteStudyCenter')->middleware(['auth:admin']);  
 
+  
+  
 });
 
 Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'student'], function () {
