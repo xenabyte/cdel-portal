@@ -670,6 +670,9 @@
                                     $currentRegisteredGradePoints = $semesterRegisteredCourses->sum('points');
                                     $currentGPA = $currentRegisteredGradePoints > 0 ? number_format($currentRegisteredGradePoints / $currentRegisteredCreditUnits, 2) : 0;
                                     $failedSemesterCourses = $semesterRegisteredCourses->where('grade', 'F');
+
+                                    $missingSemesterCourses = $semesterRegisteredCourse->where('grade', null);
+
                                     $allRegisteredCourses = $student->registeredCourses->where('grade', '!=', null);
                                     $allRegisteredCreditUnits =  $allRegisteredCourses->sum('course_credit_unit');
                                     $allRegisteredGradePoints = $allRegisteredCourses->sum('points');
@@ -691,7 +694,13 @@
                                             <div class="accordion-item shadow">
                                                 <h2 class="accordion-header" id="headingTwo">
                                                     <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#studentCourses{{ $student->id  }}" aria-expanded="false" aria-controls="studentCourses">
-                                                        View Courses - {{ strtoupper($student->applicant->lastname).', '.$student->applicant->othernames }} - {{ $CGPA }}
+                                                        View Courses - {{ strtoupper($student->applicant->lastname).', '.$student->applicant->othernames }} - {{ $CGPA }} -  @if($missingSemesterCourses->count() > 0)
+                                                        <span class="text-danger">
+                                                            @foreach($missingSemesterCourses as $missingSemesterCourse)
+                                                                {{ $missingSemesterCourse->course_code }}, <br>
+                                                            @endforeach
+                                                        </span>
+                                                    @endif
                                                     </button>
                                                 </h2>
                                                 <div id="studentCourses{{ $student->id  }}" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#default-accordion-example">
