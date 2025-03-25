@@ -671,7 +671,7 @@
                                     $currentGPA = $currentRegisteredGradePoints > 0 ? number_format($currentRegisteredGradePoints / $currentRegisteredCreditUnits, 2) : 0;
                                     $failedSemesterCourses = $semesterRegisteredCourses->where('grade', 'F');
 
-                                    $missingSemesterCourses = $semesterRegisteredCourse->where('grade', null);
+                                    $missingSemesterCourses = $semesterRegisteredCourses->where('grade', null);
 
                                     $allRegisteredCourses = $student->registeredCourses->where('grade', '!=', null);
                                     $allRegisteredCreditUnits =  $allRegisteredCourses->sum('course_credit_unit');
