@@ -360,7 +360,17 @@
                                 <div class="collapse menu-dropdown" id="student">
                                     <ul class="nav nav-sm flex-column">
                                         <li class="nav-item">
-                                            <a class="nav-link menu-link" href="{{ url('staff/allStudents') }}" data-key="t-profile">All Students</a>
+                                            <a href="#allStudent" class="nav-link" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="allStudent" data-key="t-allStudent">All Student</a>
+                                            <div class="collapse menu-dropdown" id="allStudent">
+                                                <ul class="nav nav-sm flex-column">
+                                                    <li class="nav-item">
+                                                        <a href="{{ url('/staff/allStudents/'.$programmeCategory::UNDERGRADUATE) }}" class="nav-link" data-key="t-basic"> Undergraduates </a>
+                                                    </li>
+                                                    <li class="nav-item">
+                                                        <a href="{{ url('/staff/allStudents/'.$programmeCategory::TOPUP) }}" class="nav-link" data-key="t-basic"> Topup </a>
+                                                    </li>
+                                                </ul>
+                                            </div>
                                         </li>
 
                                         <li class="nav-item">
