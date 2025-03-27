@@ -405,7 +405,7 @@ class ResultController extends Controller
             'academicSessions' => $academicSessions,
             'faculties' => $faculties,
             'semester' => $semester,
-            'programmeCategory' => ProgrammeCategory::find($request->programme_category_id),
+            'programmeCategories' => ProgrammeCategory::get(),
         ]);
     }
 
