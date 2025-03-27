@@ -37,6 +37,7 @@ use App\Models\CoursePerProgrammePerAcademicSession;
 use App\Libraries\Result\Result;
 use App\Libraries\Pdf\Pdf;
 use App\Exports\StudentResultBroadSheet;
+use App\Mail\NotificationMail;
 
 
 use SweetAlert;

@@ -40,7 +40,6 @@ use App\Models\StudentSuspension;
 use App\Models\Center;
 
 use App\Mail\NotificationMail;
-
 use App\Libraries\Pdf\Pdf;
 
 use SweetAlert;
