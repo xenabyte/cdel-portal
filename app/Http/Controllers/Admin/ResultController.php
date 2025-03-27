@@ -403,7 +403,9 @@ class ResultController extends Controller
         return view($url, [
             'academicLevels' => $academicLevels,
             'academicSessions' => $academicSessions,
-            'faculties' => $faculties
+            'faculties' => $faculties,
+            'semester' => $semester,
+            'programmeCategory' => ProgrammeCategory::find($request->programme_category_id),
         ]);
     }
 
