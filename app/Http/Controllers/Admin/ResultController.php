@@ -380,8 +380,8 @@ class ResultController extends Controller
 
             
             // Send email notification
-            $mail = new NotificationMail($senderName, $message, $receiverName);
-            Mail::to($student->email)->send($mail);
+            // $mail = new NotificationMail($senderName, $message, $receiverName);
+            // Mail::to($student->email)->send($mail);
 
             // Store notification
             Notification::create([
