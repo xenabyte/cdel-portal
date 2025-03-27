@@ -38,6 +38,7 @@ use App\Libraries\Result\Result;
 use App\Libraries\Pdf\Pdf;
 use App\Exports\StudentResultBroadSheet;
 use App\Mail\NotificationMail;
+use App\Mail\Notification;
 
 
 use SweetAlert;
