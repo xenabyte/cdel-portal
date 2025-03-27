@@ -99,12 +99,14 @@ class ResultController extends Controller
         $academicSessions = Session::orderBy('id', 'desc')->get();
         $faculties = Faculty::get(); 
         $programmeCategories = ProgrammeCategory::get();
+        $academicLevels = AcademicLevel::get();
 
         
         return view('admin.getStudentResultSummary',[
             'faculties' => $faculties,
             'academicSessions' => $academicSessions,
-            'programmeCategories' => $programmeCategories
+            'programmeCategories' => $programmeCategories,
+            'academicLevels' => $academicLevels
         ]);
     }
 
@@ -179,18 +181,30 @@ class ResultController extends Controller
         $programmeCategories = ProgrammeCategory::get();
     
         $studentsQuery = Student::
-        with(['applicant', 'programme', 'registeredCourses', 'registeredCourses.course', 'academicLevel', 'department', 'faculty'])
-        ->where([
-            'is_active' => true,
-            'is_rusticated' => false,
-            'faculty_id' => $request->faculty_id,
-            'programme_category_id' => $request->programme_category_id
-        ])
-        ->whereHas('registeredCourses', function ($query) use ($request, $batch) {
-            $query->where('academic_session', $request->session)->where('programme_category_id', $request->programme_category_id);
-            if (!empty($batch)) {
-                $query->where('batch', $batch);
-            }
+            with([
+                'applicant', 
+                'programme', 
+                'registeredCourses', 
+                'registeredCourses.course', 
+                'academicLevel', 
+                'department', 
+                'faculty'
+            ])
+            ->where([
+                'is_active' => true,
+                'is_rusticated' => false,
+                'faculty_id' => $request->faculty_id,
+                'programme_category_id' => $request->programme_category_id,
+                'level_id' => $request->level_id
+            ]);
+
+        if (!empty($batch)) {
+            $studentsQuery->where('batch', $batch);
+        }
+
+        $studentsQuery->whereHas('registeredCourses', function ($query) use ($request) {
+            $query->where('academic_session', $request->session)
+                ->where('programme_category_id', $request->programme_category_id);
         });
     
         $students = $studentsQuery->get();
@@ -220,6 +234,7 @@ class ResultController extends Controller
                 'faculties' => $faculties,
                 'academicSessions' => $academicSessions,
                 'programmeCategories' => $programmeCategories,
+                'academicLevels' => $academicLevels
             ]);
         }
     

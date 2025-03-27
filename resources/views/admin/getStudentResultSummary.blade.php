@@ -66,6 +66,18 @@
                                             </div>
                                         </div>
 
+                                        <div class="col-lg-12">
+                                            <div class="form-floating">
+                                                <select class="form-select" id="level" name="level_id" aria-label="level">
+                                                    <option value="" selected>--Select--</option>
+                                                    @foreach($academicLevels as $academicLevel)
+                                                        <option value="{{ $academicLevel->id }}">{{ $academicLevel->level }} Level</option>
+                                                    @endforeach
+                                                </select>
+                                                <label for="level">Academic Level</label>
+                                            </div>
+                                        </div>
+
 
                                         <div class="col-lg-12">
                                             <div class="form-floating">
