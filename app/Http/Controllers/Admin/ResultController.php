@@ -195,11 +195,14 @@ class ResultController extends Controller
                 'is_rusticated' => false,
                 'faculty_id' => $request->faculty_id,
                 'programme_category_id' => $request->programme_category_id,
-                'level_id' => $request->level_id
             ]);
 
         if (!empty($batch)) {
             $studentsQuery->where('batch', $batch);
+        }
+
+        if(!empty($request->level_id)){
+            $studentsQuery->where('level_id', $request->level_id);
         }
 
         $studentsQuery->whereHas('registeredCourses', function ($query) use ($request) {
