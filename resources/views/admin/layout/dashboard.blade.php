@@ -366,9 +366,71 @@
                                             </ul>
                                         </div>
                                     </li>
+
+                                    <li class="nav-item">
+                                        <a href="#pgdAdmission" class="nav-link" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="pgdAdmission" data-key="t-pgdAdmission"> {{ $programmeCategory::POSTGRADUATE }}
+                                        </a>
+                                        <div class="collapse menu-dropdown" id="pgdAdmission">
+                                            <ul class="nav nav-sm flex-column">
+                                                <li class="nav-item">
+                                                    <a href="{{ url('/admin/applicants/'.$programmeCategory::POSTGRADUATE) }}" class="nav-link">Applicants</a>
+                                                </li>
+                        
+                                                <li class="nav-item">
+                                                    <a href="{{ url('/admin/students/'.$programmeCategory::POSTGRADUATE) }}" class="nav-link">Students</a>
+                                                </li>
+            
+                                                <li class="nav-item">
+                                                    <a href="{{ url('/admin/matriculants/'.$programmeCategory::POSTGRADUATE) }}" class="nav-link">Matriculating List</a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </li>
+
+                                    <li class="nav-item">
+                                        <a href="#mastersAdmission" class="nav-link" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="mastersAdmission" data-key="t-mastersAdmission"> {{ $programmeCategory::MASTER }}
+                                        </a>
+                                        <div class="collapse menu-dropdown" id="mastersAdmission">
+                                            <ul class="nav nav-sm flex-column">
+                                                <li class="nav-item">
+                                                    <a href="{{ url('/admin/applicants/'.$programmeCategory::MASTER) }}" class="nav-link">Applicants</a>
+                                                </li>
+                        
+                                                <li class="nav-item">
+                                                    <a href="{{ url('/admin/students/'.$programmeCategory::MASTER) }}" class="nav-link">Students</a>
+                                                </li>
+            
+                                                <li class="nav-item">
+                                                    <a href="{{ url('/admin/matriculants/'.$programmeCategory::MASTER) }}" class="nav-link">Matriculating List</a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </li>
+
+                                    <li class="nav-item">
+                                        <a href="#phdAdmission" class="nav-link" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="phdAdmission" data-key="t-phdAdmission"> {{ $programmeCategory::DOCTORATE }}
+                                        </a>
+                                        <div class="collapse menu-dropdown" id="phdAdmission">
+                                            <ul class="nav nav-sm flex-column">
+                                                <li class="nav-item">
+                                                    <a href="{{ url('/admin/applicants/'.$programmeCategory::DOCTORATE) }}" class="nav-link">Applicants</a>
+                                                </li>
+                        
+                                                <li class="nav-item">
+                                                    <a href="{{ url('/admin/students/'.$programmeCategory::DOCTORATE) }}" class="nav-link">Students</a>
+                                                </li>
+            
+                                                <li class="nav-item">
+                                                    <a href="{{ url('/admin/matriculants/'.$programmeCategory::DOCTORATE) }}" class="nav-link">Matriculating List</a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </li>
                                 </ul>
                             </div>
                         </li> <!-- end Dashboard Menu -->
+
+                        
 
                         <li class="menu-title"><i class="ri-more-fill"></i> <span data-key="t-celebrate">Applaud Board</span></li>
                         <li class="nav-item">
@@ -456,10 +518,19 @@
                                         <div class="collapse menu-dropdown" id="adviserProgrammes">
                                             <ul class="nav nav-sm flex-column">
                                                 <li class="nav-item">
-                                                    <a href="{{ url('/admin/adviserProgrammes/'.$programmeCategory::UNDERGRADUATE) }}" class="nav-link" data-key="t-basic"> Undergraduates </a>
+                                                    <a href="{{ url('/admin/adviserProgrammes/'.$programmeCategory::UNDERGRADUATE) }}" class="nav-link" data-key="t-basic"> {{ $programmeCategory::UNDERGRADUATE }} </a>
                                                 </li>
                                                 <li class="nav-item">
-                                                    <a href="{{ url('/admin/adviserProgrammes/'.$programmeCategory::TOPUP) }}" class="nav-link" data-key="t-basic"> Topup </a>
+                                                    <a href="{{ url('/admin/adviserProgrammes/'.$programmeCategory::TOPUP) }}" class="nav-link" data-key="t-basic"> {{ $programmeCategory::TOPUP }} </a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a href="{{ url('/admin/adviserProgrammes/'.$programmeCategory::POSTGRADUATE) }}" class="nav-link" data-key="t-basic"> {{ $programmeCategory::POSTGRADUATE }} </a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a href="{{ url('/admin/adviserProgrammes/'.$programmeCategory::MASTER) }}" class="nav-link" data-key="t-basic"> {{ $programmeCategory::MASTER }} </a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a href="{{ url('/admin/adviserProgrammes/'.$programmeCategory::DOCTORATE) }}" class="nav-link" data-key="t-basic"> {{ $programmeCategory::DOCTORATE }} </a>
                                                 </li>
                                             </ul>
                                         </div>
@@ -471,10 +542,19 @@
                                         <div class="collapse menu-dropdown" id="studentCourses">
                                             <ul class="nav nav-sm flex-column">
                                                 <li class="nav-item">
-                                                    <a href="{{ url('/admin/studentCourses/'.$programmeCategory::UNDERGRADUATE) }}" class="nav-link" data-key="t-basic"> Undergraduates </a>
+                                                    <a href="{{ url('/admin/studentCourses/'.$programmeCategory::UNDERGRADUATE) }}" class="nav-link" data-key="t-basic">{{ $programmeCategory::UNDERGRADUATE }}  </a>
                                                 </li>
                                                 <li class="nav-item">
-                                                    <a href="{{ url('/admin/studentCourses/'.$programmeCategory::TOPUP) }}" class="nav-link" data-key="t-basic"> Topup </a>
+                                                    <a href="{{ url('/admin/studentCourses/'.$programmeCategory::TOPUP) }}" class="nav-link" data-key="t-basic"> {{ $programmeCategory::TOPUP }} </a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a href="{{ url('/admin/studentCourses/'.$programmeCategory::POSTGRADUATE) }}" class="nav-link" data-key="t-basic"> {{ $programmeCategory::POSTGRADUATE }} </a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a href="{{ url('/admin/studentCourses/'.$programmeCategory::MASTER) }}" class="nav-link" data-key="t-basic"> {{ $programmeCategory::MASTER }} </a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a href="{{ url('/admin/studentCourses/'.$programmeCategory::DOCTORATE) }}" class="nav-link" data-key="t-basic"> {{ $programmeCategory::DOCTORATE }} </a>
                                                 </li>
                                             </ul>
                                         </div>
@@ -486,10 +566,19 @@
                                         <div class="collapse menu-dropdown" id="courseRegistrations">
                                             <ul class="nav nav-sm flex-column">
                                                 <li class="nav-item">
-                                                    <a href="{{ url('/admin/courseRegistrations/'.$programmeCategory::UNDERGRADUATE) }}" class="nav-link" data-key="t-basic"> Undergraduates </a>
+                                                    <a href="{{ url('/admin/courseRegistrations/'.$programmeCategory::UNDERGRADUATE) }}" class="nav-link" data-key="t-basic"> {{ $programmeCategory::UNDERGRADUATE }} </a>
                                                 </li>
                                                 <li class="nav-item">
-                                                    <a href="{{ url('/admin/courseRegistrations/'.$programmeCategory::TOPUP) }}" class="nav-link" data-key="t-basic"> Topup </a>
+                                                    <a href="{{ url('/admin/courseRegistrations/'.$programmeCategory::TOPUP) }}" class="nav-link" data-key="t-basic"> {{ $programmeCategory::TOPUP }} </a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a href="{{ url('/admin/courseRegistrations/'.$programmeCategory::POSTGRADUATE) }}" class="nav-link" data-key="t-basic"> {{ $programmeCategory::POSTGRADUATE }} </a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a href="{{ url('/admin/courseRegistrations/'.$programmeCategory::MASTER) }}" class="nav-link" data-key="t-basic"> {{ $programmeCategory::MASTER }} </a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a href="{{ url('/admin/courseRegistrations/'.$programmeCategory::DOCTORATE) }}" class="nav-link" data-key="t-basic"> {{ $programmeCategory::DOCTORATE }} </a>
                                                 </li>
                                             </ul>
                                         </div>
@@ -547,10 +636,19 @@
                                         <div class="collapse menu-dropdown" id="allStudent">
                                             <ul class="nav nav-sm flex-column">
                                                 <li class="nav-item">
-                                                    <a href="{{ url('/admin/allStudents/'.$programmeCategory::UNDERGRADUATE) }}" class="nav-link" data-key="t-basic"> Undergraduates </a>
+                                                    <a href="{{ url('/admin/allStudents/'.$programmeCategory::UNDERGRADUATE) }}" class="nav-link" data-key="t-basic"> {{ $programmeCategory::UNDERGRADUATE }} </a>
                                                 </li>
                                                 <li class="nav-item">
-                                                    <a href="{{ url('/admin/allStudents/'.$programmeCategory::TOPUP) }}" class="nav-link" data-key="t-basic"> Topup </a>
+                                                    <a href="{{ url('/admin/allStudents/'.$programmeCategory::TOPUP) }}" class="nav-link" data-key="t-basic"> {{ $programmeCategory::TOPUP }} </a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a href="{{ url('/admin/allStudents/'.$programmeCategory::POSTGRADUATE) }}" class="nav-link" data-key="t-basic"> {{ $programmeCategory::POSTGRADUATE }} </a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a href="{{ url('/admin/allStudents/'.$programmeCategory::MASTER) }}" class="nav-link" data-key="t-basic"> {{ $programmeCategory::MASTER }} </a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a href="{{ url('/admin/allStudents/'.$programmeCategory::DOCTORATE) }}" class="nav-link" data-key="t-basic"> {{ $programmeCategory::DOCTORATE }} </a>
                                                 </li>
                                             </ul>
                                         </div>
@@ -561,10 +659,19 @@
                                         <div class="collapse menu-dropdown" id="graduatingStudents">
                                             <ul class="nav nav-sm flex-column">
                                                 <li class="nav-item">
-                                                    <a href="{{ url('/admin/graduatingStudents/'.$programmeCategory::UNDERGRADUATE) }}" class="nav-link" data-key="t-basic"> Undergraduates </a>
+                                                    <a href="{{ url('/admin/graduatingStudents/'.$programmeCategory::UNDERGRADUATE) }}" class="nav-link" data-key="t-basic"> {{ $programmeCategory::UNDERGRADUATE }} </a>
                                                 </li>
                                                 <li class="nav-item">
-                                                    <a href="{{ url('/admin/graduatingStudents/'.$programmeCategory::TOPUP) }}" class="nav-link" data-key="t-basic"> Topup </a>
+                                                    <a href="{{ url('/admin/graduatingStudents/'.$programmeCategory::TOPUP) }}" class="nav-link" data-key="t-basic"> {{ $programmeCategory::TOPUP }} </a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a href="{{ url('/admin/graduatingStudents/'.$programmeCategory::POSTGRADUATE) }}" class="nav-link" data-key="t-basic"> {{ $programmeCategory::POSTGRADUATE }} </a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a href="{{ url('/admin/graduatingStudents/'.$programmeCategory::MASTER) }}" class="nav-link" data-key="t-basic"> {{ $programmeCategory::MASTER }} </a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a href="{{ url('/admin/graduatingStudents/'.$programmeCategory::DOCTORATE) }}" class="nav-link" data-key="t-basic"> {{ $programmeCategory::DOCTORATE }} </a>
                                                 </li>
                                             </ul>
                                         </div>
@@ -575,10 +682,19 @@
                                         <div class="collapse menu-dropdown" id="massPromotion">
                                             <ul class="nav nav-sm flex-column">
                                                 <li class="nav-item">
-                                                    <a href="{{ url('/admin/massPromotion/'.$programmeCategory::UNDERGRADUATE) }}" class="nav-link" data-key="t-basic"> Undergraduates </a>
+                                                    <a href="{{ url('/admin/massPromotion/'.$programmeCategory::UNDERGRADUATE) }}" class="nav-link" data-key="t-basic"> {{ $programmeCategory::UNDERGRADUATE }} </a>
                                                 </li>
                                                 <li class="nav-item">
-                                                    <a href="{{ url('/admin/massPromotion/'.$programmeCategory::TOPUP) }}" class="nav-link" data-key="t-basic"> Topup </a>
+                                                    <a href="{{ url('/admin/massPromotion/'.$programmeCategory::TOPUP) }}" class="nav-link" data-key="t-basic"> {{ $programmeCategory::TOPUP }} </a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a href="{{ url('/admin/massPromotion/'.$programmeCategory::POSTGRADUATE) }}" class="nav-link" data-key="t-basic"> {{ $programmeCategory::POSTGRADUATE }} </a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a href="{{ url('/admin/massPromotion/'.$programmeCategory::MASTER) }}" class="nav-link" data-key="t-basic"> {{ $programmeCategory::MASTER }} </a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a href="{{ url('/admin/massPromotion/'.$programmeCategory::DOCTORATE) }}" class="nav-link" data-key="t-basic"> {{ $programmeCategory::DOCTORATE }} </a>
                                                 </li>
                                             </ul>
                                         </div>
@@ -779,10 +895,19 @@
                                         <div class="collapse menu-dropdown" id="bills">
                                             <ul class="nav nav-sm flex-column">
                                                 <li class="nav-item">
-                                                    <a href="{{ url('/admin/payments/'.$programmeCategory::UNDERGRADUATE) }}" class="nav-link"> Undergraduate </a>
+                                                    <a href="{{ url('/admin/payments/'.$programmeCategory::UNDERGRADUATE) }}" class="nav-link"> {{ $programmeCategory::UNDERGRADUATE }} </a>
                                                 </li>
                                                 <li class="nav-item">
-                                                    <a href="{{ url('/admin/payments/'.$programmeCategory::TOPUP) }}" class="nav-link"> Topup </a>
+                                                    <a href="{{ url('/admin/payments/'.$programmeCategory::TOPUP) }}" class="nav-link"> {{ $programmeCategory::TOPUP }} </a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a href="{{ url('/admin/payments/'.$programmeCategory::POSTGRADUATE) }}" class="nav-link"> {{ $programmeCategory::POSTGRADUATE }} </a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a href="{{ url('/admin/payments/'.$programmeCategory::MASTER) }}" class="nav-link"> {{ $programmeCategory::MASTER }} </a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a href="{{ url('/admin/payments/'.$programmeCategory::DOCTORATE) }}" class="nav-link"> {{ $programmeCategory::DOCTORATE }} </a>
                                                 </li>
                                             </ul>
                                         </div>
