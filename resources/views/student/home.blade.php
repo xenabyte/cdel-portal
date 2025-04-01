@@ -234,6 +234,13 @@ $suspension = StudentSuspension::where('student_id', $student->id)->whereNull('e
                                 </p>
                                 <br>
                                 <strong>Effective from:</strong> {{ Carbon\Carbon::parse($suspension->start_date)->format('d, M Y') }}
+                                <div class="col-lg-12 mt-2 border-top border-top-dashed">
+                                    <div class="d-flex mt-3 justify-content-center">
+                                        <a href="{{ url('student/viewSuspension/'.$suspension->slug) }}" class="btn btn-primary btn-label nexttab right" data-nexttab="pills-bill-address-tab">
+                                            <i class="ri-arrow-right-line label-icon align-middle fs-16 ms-2"></i> Apply for re-admission
+                                        </a>
+                                    </div>
+                                </div>
                             </p>
                         </div>
                     </div>

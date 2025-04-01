@@ -210,11 +210,15 @@ $stage = 0;
                                 <div class="flex-grow-1 ms-3">
                                     <h6 class="mb-2 ms-2">
                                         - {{ empty($suspension->court_affidavit) ? 'Court affidavit upload is pending' : 'Court affidavit uploaded' }}
+                            
                                         @if(!empty($suspension->court_affidavit))
                                             <br>
                                             <img class="img-thumbnail mt-3" width="50%" src="{{ url('uploads/'.$suspension->court_affidavit) }}">
                                             <hr style="width:30%">
                                             <a href="{{ url('uploads/'.$suspension->court_affidavit) }}" target="_blank" class="btn btn-sm btn-secondary">View</a>
+                                        @else
+                                        <hr width="30%">
+                                        <button class="btn btn-primary mt-2" data-bs-toggle="modal" data-bs-target="#courtaffidavitModal">Upload Court affidavit</button>
                                         @endif
                                     </h6>
                                 </div>
@@ -227,11 +231,15 @@ $stage = 0;
                                 <div class="flex-grow-1 ms-3">
                                     <h6 class="mb-2 ms-2">
                                         - {{ empty($suspension->undertaking_letter) ? 'Guardian letter of undertaking upload is pending' : 'Guardian letter uploaded' }}
+                                        
                                         @if(!empty($suspension->undertaking_letter))
                                             <br>
                                             <img class="img-thumbnail mt-3" width="50%" src="{{ url('uploads/'.$suspension->undertaking_letter) }}">
                                             <hr style="width:30%">
                                             <a href="{{ url('uploads/'.$suspension->undertaking_letter) }}" target="_blank" class="btn btn-sm btn-secondary">View</a>
+                                        @else
+                                        <hr width="30%">
+                                        <button class="btn btn-primary mt-2" data-bs-toggle="modal" data-bs-target="#undertakingletterModal">Upload guardian letter of undertaking</button>
                                         @endif
                                     </h6>
                                 </div>
@@ -244,11 +252,15 @@ $stage = 0;
                                 <div class="flex-grow-1 ms-3">
                                     <h6 class="mb-2 ms-2">
                                         - {{ empty($suspension->traditional_ruler_reference) ? 'Traditional ruler reference upload is pending' : 'Traditional ruler reference uploaded' }}
+                                        
                                         @if(!empty($suspension->traditional_ruler_reference))
                                             <br>
                                             <img class="img-thumbnail mt-3" width="50%" src="{{ url('uploads/'.$suspension->traditional_ruler_reference) }}">
                                             <hr style="width:30%">
                                             <a href="{{ url('uploads/'.$suspension->traditional_ruler_reference) }}" target="_blank" class="btn btn-sm btn-secondary">View</a>
+                                        @else
+                                        <hr width="30%">
+                                        <button class="btn btn-primary mt-2" data-bs-toggle="modal" data-bs-target="#traditionalrulerreferenceModal">Upload traditional ruler reference</button>
                                         @endif
                                     </h6>
                                 </div>
@@ -261,11 +273,15 @@ $stage = 0;
                                 <div class="flex-grow-1 ms-3">
                                     <h6 class="mb-2 ms-2">
                                         - {{ empty($suspension->ps_reference) ? 'Public servant reference upload is pending' : 'Public servant reference uploaded' }}
+                                        
                                         @if(!empty($suspension->ps_reference))
                                             <br>
                                             <img class="img-thumbnail mt-3" width="50%" src="{{ url('uploads/'.$suspension->ps_reference) }}">
                                             <hr style="width:30%">
                                             <a href="{{ url('uploads/'.$suspension->ps_reference) }}" target="_blank" class="btn btn-sm btn-secondary">View</a>
+                                        @else
+                                        <hr width="30%">
+                                        <button class="btn btn-primary mt-2" data-bs-toggle="modal" data-bs-target="#psreferenceModal">Upload public servant reference</button>
                                         @endif
                                     </h6>
                                 </div>
