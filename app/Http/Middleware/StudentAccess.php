@@ -39,7 +39,6 @@ class StudentAccess
             $allowedRoutes = [
                 'student.home',
                 'student.profile', 
-                'student.transactions',
                 'student.examResult',
                 'student.saveBioData',
                 'student.updatePassword',

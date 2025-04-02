@@ -5,9 +5,21 @@ $qrcode = 'https://quickchart.io/chart?chs=300x300&cht=qr&chl='.env('APP_URL').'
 $name = $student->applicant->lastname.' '.$student->applicant->othernames;
 $failedCourses = $student->registeredCourses()->where('grade', 'F')->where('re_reg', null)->get();
 
+$programmeCategory = new \App\Models\ProgrammeCategory;
+
+
+    $staff = Auth::guard('staff')->user();
+    $staffRegistrarRole = false;
+    
+    foreach ($staff->staffRoles as $staffRole) {
+        if (strtolower($staffRole->role->role) == 'registrar') {
+            $staffRegistrarRole = true;
+        }  
+    }
 
 $stage = 0;
 @endphp
+
 @section('content')
 
 <!-- start page title -->
@@ -55,8 +67,10 @@ $stage = 0;
                         </div>
                         <div class="col-md-auto">
                             <div class="hstack gap-1 flex-wrap">
+                                @if($staffDeanRole || $staffHODRole || $staffRegistrarRole || $isUnitHead)
                                 <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#manageSuspension"> Manage Suspension</button>
                                 <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#liftSuspension"> Lift Suspension</button>
+                                @endif
                             </div>
                         </div>
                     </div>
