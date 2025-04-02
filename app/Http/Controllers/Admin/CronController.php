@@ -313,6 +313,8 @@ class CronController extends Controller
     public function populateStudendBandwidth() {
         $students = Student::with('applicant')->get();
         $bandwidthAmount = 32212254720;
+        $bandwidth = new Bandwidth();
+
 
 
         foreach($students as $student){
