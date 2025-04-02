@@ -17,6 +17,8 @@ use App\Models\Student;
 use App\Models\Guardian;
 
 use App\Libraries\Result\Result;
+use App\Libraries\Bandwidth\Bandwidth;
+
 
 use Illuminate\Support\Facades\Http;
 use App\Jobs\SendGuardianOnboardingMail;
@@ -301,6 +303,26 @@ class CronController extends Controller
                 if(!empty($guardianEmail) && filter_var($guardianEmail, FILTER_VALIDATE_EMAIL)){
                     SendGuardianOnboardingMail::dispatch($guardian)->delay(now()->addSeconds(10));
                 }
+            }
+        }
+        
+        return $students;
+    }
+
+
+    public function populateStudendBandwidth() {
+        $students = Student::with('applicant')->get();
+        $bandwidthAmount = 32212254720;
+
+
+        foreach($students as $student){
+            $username = $student->bandwidth_username;
+            $creditStudent = $bandwidth->addToDataBalance($username, $bandwidthAmount);
+
+            if ($creditStudent && isset($creditStudent['status']) && $creditStudent['status'] === 'success') {
+                Log::info("********************** credit student bandwidth**********************: ". $bandwidthAmount .' - '.$student);
+                Log::info("Student Bandwidth Credited: ". json_encode($creditStudent));
+
             }
         }
         
