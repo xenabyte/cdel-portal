@@ -257,6 +257,31 @@
                             </div>
                         </li>
 
+                        <li class="menu-title border-top border-top-dashed mb-3"><i class="ri-more-fill"></i> <span data-key="t-spgs">SPGS Website</span></li>
+
+                        <li class="nav-item">
+                            <a class="nav-link menu-link" href="#spgs" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarForms">
+                                <i class="mdi mdi-broadcast"></i> <span data-key="t-spgs">SPGS Website</span>
+                            </a>
+                            <div class="collapse menu-dropdown" id="spgs">
+                                <ul class="nav nav-sm flex-column">
+                                    <li class="nav-item">
+                                        <a class="nav-link menu-link" href="{{ url('admin/messageStudent') }}" data-key="t-profile">Message Student/Parent</a>
+                                    </li>
+                                    
+                                    <li class="nav-item">
+                                        <a class="nav-link menu-link" href="{{ url('admin/messageAllStudent') }}" data-key="t-profile">About Page</a>
+                                    </li> 
+
+                                    <li class="nav-item">
+                                        <a class="nav-link menu-link" href="{{ url('admin/messageAllParent') }}" data-key="t-profile">Admission Requirements</a>
+                                    </li> 
+                                    
+                                </ul>
+        
+                            </div>
+                        </li>
+
                         <li class="menu-title border-top border-top-dashed mb-3"><i class="ri-more-fill"></i> <span data-key="t-communications">Communications</span></li>
 
                         <li class="nav-item">

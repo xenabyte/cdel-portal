@@ -596,7 +596,8 @@ class StudentController extends Controller
             'passTuition' => $paymentCheck->passTuitionPayment,
             'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
             'passEightyTuition' => $paymentCheck->passEightyTuition,
-            'studentPendingTransactions' => $paymentCheck->studentPendingTransactions
+            'studentPendingTransactions' => $paymentCheck->studentPendingTransactions,
+            'schoolPaymentTransaction' => $paymentCheck->schoolPaymentTransaction
         ]);
     }
 
