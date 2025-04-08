@@ -1,4 +1,4 @@
-@extends('staff.layout.dashboard')
+@extends('admin.layout.dashboard')
 @php
 $student = $suspension->student;
 $qrcode = 'https://quickchart.io/chart?chs=300x300&cht=qr&chl='.env('APP_URL').'/studentDetails/'.$student->slug;

@@ -1,4 +1,4 @@
-    @extends('guardian.layout.dashboard')
+@extends('guardian.layout.dashboard')
 @php
 use \App\Models\ResultApprovalStatus;
 
