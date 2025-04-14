@@ -655,6 +655,15 @@ class ResultController extends Controller
         }
 
         if (!$programmeCourse) {
+            $programmeCourse = CoursePerProgrammePerAcademicSession::where([
+                'course_id' => $courseId,
+                'programme_id' => $programmeId,
+                'semester' => $semester,
+                'academic_session' => $academicSession,
+            ])->first();
+        }
+
+        if (!$programmeCourse) {
             $studentExistingReg = CourseRegistration::where([
                 'student_id' => $student->id,
                 'course_id' => $course->id,

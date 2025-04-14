@@ -676,15 +676,27 @@
                     </thead>
                     <tbody>
                         @foreach($students as $student)
-                            @if(!empty($student))
+                            {{-- @if(!empty($student)) --}}
                                 @php
                                     $degreeClass = new \App\Models\DegreeClass;
                                     $viewSemesterRegisteredCourses = $student->registeredCourses->where('semester', $semester)->where('level_id', $academiclevel->id)->where('academic_session', $academicSession);
+                                    $countRegCourses = count($viewSemesterRegisteredCourses);
+                                    $approvedSemesterCourse = $student->registeredCourses->where('semester', $semester)->where('level_id', $academiclevel->id)->where('academic_session', $academicSession)->where('result_approval_id', '!=', null);
+                                    $countApprovedResult = count($approvedSemesterCourse);
+                                    $approvedStudentStatus = false;
+
+                                    if($countRegCourses == $countApprovedResult){
+                                        $approvedStudentStatus = true;
+                                    }
+
                                     $semesterRegisteredCourses = $student->registeredCourses->where('semester', $semester)->where('level_id', $academiclevel->id)->where('academic_session', $academicSession)->where('grade', '!=', null);
                                     $currentRegisteredCreditUnits =  $semesterRegisteredCourses->sum('course_credit_unit');
                                     $currentRegisteredGradePoints = $semesterRegisteredCourses->sum('points');
-                                    $currentGPA = $currentRegisteredGradePoints > 0 ? number_format($currentRegisteredGradePoints / $currentRegisteredCreditUnits, 2) : 0.00;
+                                    $currentGPA = $currentRegisteredGradePoints > 0 ? number_format($currentRegisteredGradePoints / $currentRegisteredCreditUnits, 2) : 0;
                                     $failedSemesterCourses = $semesterRegisteredCourses->where('grade', 'F');
+
+                                    $missingSemesterCourses = $semesterRegisteredCourses->where('grade', null);
+
                                     $allRegisteredCourses = $student->registeredCourses->where('grade', '!=', null);
                                     $allRegisteredCreditUnits =  $allRegisteredCourses->sum('course_credit_unit');
                                     $allRegisteredGradePoints = $allRegisteredCourses->sum('points');
@@ -700,12 +712,19 @@
                                 @endphp
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
+                                    <td class="bg bg-soft-info">{{ $approvedStudentStatus?'Approved':'Not Approved' }}</td>
                                     <td width="200px">
                                         <div class="accordion" id="default-accordion-example">
                                             <div class="accordion-item shadow">
                                                 <h2 class="accordion-header" id="headingTwo">
                                                     <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#studentCourses{{ $student->id  }}" aria-expanded="false" aria-controls="studentCourses">
-                                                        View Courses - {{ strtoupper($student->applicant->lastname).', '.$student->applicant->othernames }} - {{ $CGPA }}
+                                                        View Courses - {{ strtoupper($student->applicant->lastname).', '.$student->applicant->othernames }} - {{ $CGPA }} -  @if($missingSemesterCourses->count() > 0)
+                                                        <span class="text-danger">
+                                                            @foreach($missingSemesterCourses as $missingSemesterCourse)
+                                                                {{ $missingSemesterCourse->course_code }}, <br>
+                                                            @endforeach
+                                                        </span>
+                                                    @endif
                                                     </button>
                                                 </h2>
                                                 <div id="studentCourses{{ $student->id  }}" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#default-accordion-example">
@@ -758,15 +777,15 @@
                                             </span>
                                         @endif    
                                     </td>
-                                    <td>{{ $prevRegisteredCreditUnits }}</td>
-                                    <td>{{ $prevRegisteredGradePoints }}</td>
-                                    <td>{{ $prevCGPA }}</td>
+                                    <td class="bg bg-soft-info">{{ $prevRegisteredCreditUnits }}</td>
+                                    <td class="bg bg-soft-info">{{ $prevRegisteredGradePoints }}</td>
+                                    <td class="bg bg-soft-info">{{ $prevCGPA }}</td>
                                     <td class="bg bg-soft-primary">{{ $currentRegisteredCreditUnits }}</td>
                                     <td class="bg bg-soft-primary">{{ $currentRegisteredGradePoints }}</td>
                                     <td class="bg bg-soft-primary">{{ $currentGPA }}</td>
-                                    <td>{{ $allRegisteredCreditUnits }}</td>
-                                    <td>{{ $allRegisteredGradePoints }}</td>
-                                    <td>{{ $CGPA }}</td>
+                                    <td class="bg bg-soft-dark">{{ $allRegisteredCreditUnits }}</td>
+                                    <td class="bg bg-soft-dark">{{ $allRegisteredGradePoints }}</td>
+                                    <td class="bg bg-soft-dark">{{ $CGPA }}</td>
                                     @foreach($classifiedCourses as $courseName => $students)
                                         @php
                                             $courseDetails = $student->registeredCourses->where('course_code', $courseName)->where('semester', $semester)->where('level_id', $academiclevel->id)->where('academic_session', $academicSession)->first();
@@ -804,7 +823,7 @@
                                     @endforeach
                                     
                                 </tr>
-                            @endif
+                            {{-- @endif --}}
                         @endforeach
                     </tbody>
                 </table>

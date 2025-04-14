@@ -25,6 +25,8 @@ use App\Models\GradeScale;
 use App\Libraries\Bandwidth\Bandwidth;
 use App\Libraries\Google\Google;
 
+App\Http\Controllers\PaymentController;
+
 
 use SweetAlert;
 use Mail;
@@ -76,8 +78,11 @@ class CronController extends Controller
         foreach ($transactions as $transaction) {
             
             $paymentReference = $transaction->reference;
+            
 
-            return $this->upperlinkVerifyPayment($paymentReference);
+            $paymentController = new PaymentController;
+
+            return $paymentController->upperlinkVerifyPayment($paymentReference);
         }
 
         return $this->dataResponse('Pending transactions deleted successfully.', null);
