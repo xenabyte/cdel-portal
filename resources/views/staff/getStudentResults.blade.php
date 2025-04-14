@@ -641,6 +641,7 @@
                     <thead>
                         <tr>
                             <th rowspan="2">SN</th>
+                            <th class="bg bg-info text-light" rowspan="2">Result Approval Status</th>
                             <th rowspan="2">Student Result</th>
                             <th rowspan="2">Student Name</th>
                             <th rowspan="2">Matric Number</th>
@@ -649,28 +650,28 @@
                             <th rowspan="2">No of failed course</th>
                             <th rowspan="2">Total failed unit</th>
                             <th rowspan="2">Failed courses</th>
-                            <th rowspan="2">Previous Total Credit Units</th>
-                            <th rowspan="2">Previous Total Credit Points</th>
-                            <th rowspan="2">Previous CGPA</th>
+                            <th class="bg bg-info text-light" rowspan="2">Previous Total Credit Units</th>
+                            <th class="bg bg-info text-light" rowspan="2">Previous Total Credit Points</th>
+                            <th class="bg bg-info text-light" rowspan="2">Previous CGPA</th>
                             <th class="bg bg-primary text-light" rowspan="2">Current Total Credit Units</th>
                             <th class="bg bg-primary text-light" rowspan="2">Current Total Credit Points</th>
                             <th class="bg bg-primary text-light" rowspan="2">Current GPA</th>
-                            <th rowspan="2">Cumulative Total Credit Units</th>
-                            <th rowspan="2">Cumulative Total Credit Points</th>
-                            <th rowspan="2">Cumulative CGPA</th>
+                            <th class="bg bg-dark text-light" rowspan="2">Cumulative Total Credit Units</th>
+                            <th class="bg bg-dark text-light" rowspan="2">Cumulative Total Credit Points</th>
+                            <th class="bg bg-dark text-light" rowspan="2">Cumulative CGPA</th>
                             @foreach($classifiedCourses as $courseName => $allStudents)
-                                <th colspan="6">{{ $courseName }}</th>
+                                <th class="bg bg-dark text-light" colspan="6">{{ $courseName }}</th>
                             @endforeach
                         </tr>
                         <tr>
                             <!-- Subtable headers -->
                             @foreach($classifiedCourses as $courseName => $allStudents)
-                                <th>Credit Unit</th>
-                                <th>Test Score</th>
-                                <th>Exam Score</th>
-                                <th>Total Score</th>
-                                <th>Point</th>
-                                <th>Grade</th>
+                                <th class="bg bg-soft-dark">Credit Unit</th>
+                                <th class="bg bg-soft-dark">Test Score</th>
+                                <th class="bg bg-soft-dark">Exam Score</th>
+                                <th class="bg bg-soft-dark">Total Score</th>
+                                <th class="bg bg-soft-dark">Point</th>
+                                <th class="bg bg-soft-dark">Grade</th>
                             @endforeach
                         </tr>
                     </thead>
