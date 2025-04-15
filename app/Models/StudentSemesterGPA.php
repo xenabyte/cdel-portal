@@ -16,6 +16,7 @@ class StudentSemesterGPA extends Model
         'level_id',
         'session', 
         'semester', 
+        'level',
         'gpa'
     ];
 
