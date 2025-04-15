@@ -18,6 +18,10 @@ class ProgrammeRequirement extends Model
         'additional_criteria'
     ];
 
+    protected $casts = [
+        'additional_criteria' => 'array',
+    ];  
+
     /**
      * Get the programme that owns the ProgrammeRequirement
      *

@@ -17,6 +17,7 @@ use App\Models\ResultApprovalStatus;
 use App\Models\DegreeClass;
 use App\Models\Faculty;
 use App\Models\ProgrammeCategory;
+use App\Models\ProgrammeRequirement;
 
 
 use Log;
@@ -35,9 +36,21 @@ class Result
             $matricNumber = trim($row['Matric Number']);
             $courseCodeMain = trim($row['Course Code']);
 
-            // Extract Scores
-            $examScore = isset($row['Exam Score']) ? self::formatScore($row['Exam Score']) : 0;
-            $testScore = isset($row['Test Score']) ? self::formatScore($row['Test Score']) : 0;
+            $testScore = null;
+            $examScore = null;
+
+            if ($type == 'test' && isset($row['Test Score'])) {
+                $testScore = self::formatScore($row['Test Score']);
+            }
+
+            if ($type == 'exam' && isset($row['Exam Score'])) {
+                $examScore = self::formatScore($row['Exam Score']);
+            }
+
+            if ($type == 'both') {
+                $testScore = isset($row['Test Score']) ? self::formatScore($row['Test Score']) : 0;
+                $examScore = isset($row['Exam Score']) ? self::formatScore($row['Exam Score']) : 0;
+            }
 
             
             $student = Student::with('applicant')->where('matric_number', $matricNumber)->first();
@@ -52,6 +65,7 @@ class Result
                 Log::info("Uploaded result does not match course: {$courseCodeMain}");
                 continue;
             }
+            $courseCode = $course->code;
 
             $studentRegistration = CourseRegistration::where([
                 'student_id' => $studentId,
@@ -66,17 +80,17 @@ class Result
                 continue;
             }
 
+            // Initialize scores with existing ones
+            $existingTestScore = $studentRegistration->ca_score ?? 0;
+            $existingExamScore = $studentRegistration->exam_score ?? 0;
+
             if ($type == 'test') {
-                $examScore = $studentRegistration->exam_score;
                 $studentRegistration->ca_score = $testScore;
-            }
-
-            if($type == 'exam') {
-                $testScore = $studentRegistration->ca_score;
+                $examScore = $existingExamScore;
+            } elseif ($type == 'exam') {
                 $studentRegistration->exam_score = $examScore;
-            }
-
-            if ($type == 'both') {
+                $testScore = $existingTestScore;
+            } elseif ($type == 'both') {
                 $studentRegistration->ca_score = $testScore;
                 $studentRegistration->exam_score = $examScore;
             }
@@ -92,13 +106,14 @@ class Result
                 $grading = GradeScale::computeGrade($totalScore);
                 $grade = $grading->grade;
                 $points = $grading->point;
-
-                $studentFaculty = Faculty::find($student->faculty_id);
-                if (in_array($studentFaculty->id, [3, 7]) && $student->department_id == $course->department_id && $totalScore < 50) {
+            
+                $requiredPassMark = self::getRequiredPassMark($student, $courseCode);
+            
+                if ($totalScore < $requiredPassMark) {
                     $grade = 'F';
                     $points = 0;
                 }
-
+            
                 $studentRegistration->total = $totalScore;
                 $studentRegistration->grade = $grade;
                 $studentRegistration->points = $studentRegistration->course_credit_unit * $points;
@@ -342,6 +357,31 @@ class Result
         $student->save();
 
         return $status;
+    }
+
+
+    public static function getRequiredPassMark($student, $courseCode){
+
+        $requirement = ProgrammeRequirement::where('programme_id', $student->programme_id)->first();
+        $requiredPassMark = 40;
+
+        if ($requirement && $requirement->additional_criteria) {
+            $additional = json_decode($requirement->additional_criteria, true);
+
+            if (
+                isset($additional['course_code_50_pass']['enabled']) &&
+                $additional['course_code_50_pass']['enabled'] &&
+                isset($additional['course_code_50_pass']['prefixes'])
+            ) {
+                foreach ($additional['course_code_50_pass']['prefixes'] as $prefix) {
+                    if (stripos($courseCode, $prefix) === 0) {
+                        return 50;
+                    }
+                }
+            }
+        }
+
+        return $requiredPassMark;
     }
     
 }

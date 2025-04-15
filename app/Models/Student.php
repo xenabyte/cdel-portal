@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 use App\Models\StudentExpulsion;
 use App\Models\StudentSuspension;
+use App\Models\ResultApprovalStatus;
 use Carbon\Carbon;
 
 class Student extends Authenticatable
@@ -257,12 +258,23 @@ class Student extends Authenticatable
     }
 
    
+    /**
+     * Get all of the studentSuspensions for the Student
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function suspensions()
     {
         return $this->hasMany(StudentSuspension::class, 'student_id', 'id');
     }
 
 
+
+    /**
+     * Get all of the studentExpulsions for the Student
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function expulsions()
     {
         return $this->hasMany(StudentExpulsion::class, 'student_id', 'id');
@@ -278,23 +290,115 @@ class Student extends Authenticatable
         return $this->belongsTo(Center::class, 'center_id');
     }
 
+    /**
+     * Get the student's semester GPA records.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function semesterWithGPA(){
+        return $this->hasMany(StudentSemesterGPA::class, 'student_id');
+    }
 
-    public function canPromote() {
+
+    /**
+     * Determine if a student can be promoted to the next level.
+     *
+     * This method checks if the student has met the promotion requirements for their current level.
+     * The requirements are as follows:
+     * 1. The student's CGPA must be at or above the minimum required CGPA.
+     * 2. The student must not have any carry overs if the programme requires no carry overs.
+     *
+     * @return array An array containing a boolean 'status' key and an array 'reasons' key.
+     *               The 'status' key is true if the student can be promoted and false otherwise.
+     *               The 'reasons' key contains an array of strings explaining why the student cannot be promoted.
+     */
+    public function canPromote(){
         $requirement = ProgrammeRequirement::where('programme_id', $this->programme_id)
             ->where('programme_category_id', $this->programme_category_id)
             ->where('level_id', $this->level_id)
             ->first();
 
         if (!$requirement) {
-            return true; 
+            return ['status' => true];
         }
 
-        // Check if CGPA meets the minimum requirement
+        $reasons = [];
+
+        // 1️⃣ Check CGPA
         if ($this->cgpa < $requirement->min_cgpa) {
-            return false;
+            $reasons[] = "Your CGPA ({$this->cgpa}) is below the minimum required ({$requirement->min_cgpa}).";
         }
 
-        return true;
+        // 2️⃣ Check for carry over if required
+        $criteria = $requirement->additional_criteria;
+
+        if (
+            isset($criteria['no_carry_over']['enabled']) &&
+            $criteria['no_carry_over']['enabled'] === true &&
+            isset($criteria['no_carry_over']['applicable_from_level_id']) &&
+            $this->level_id >= $criteria['no_carry_over']['applicable_from_level_id']
+        ) {
+            $failedCourses = $this->registeredCourses()
+                ->where('grade', 'F')
+                ->whereNull('re_reg')
+                ->where('result_approval_id', ResultApprovalStatus::getApprovalStatusId(ResultApprovalStatus::SENATE_APPROVED))
+                ->get();
+
+            if ($failedCourses->isNotEmpty()) {
+                $courseCodes = $failedCourses->pluck('course_code')->implode(', ');
+                $reasons[] = "You have carry over(s) in the following courses: {$courseCodes}.";
+            }
+        }
+
+        return [
+            'status' => count($reasons) === 0,
+            'reasons' => $reasons
+        ];
+    }
+
+
+    /**
+     * Get a list of programmes that the student is qualified to transfer into.
+     *
+     * This method evaluates the student's CGPA against the minimum CGPA required
+     * for intra-transfer as specified in the programme requirements. It returns
+     * a collection of programmes where the student meets or exceeds the minimum
+     * CGPA for transfer eligibility.
+     *
+     * @return \Illuminate\Database\Eloquent\Collection  A collection of qualified transfer programmes.
+     */
+
+    public function getQualifiedTransferProgrammes(){
+        
+        $studentCgpa = $this->cgpa;
+        $programmeCategoryId = $this->programme_category_id;
+
+        // Get all programme requirements under the same programme category and level
+        $requirements = ProgrammeRequirement::where('programme_category_id', $programmeCategoryId)
+            ->where('level_id', $this->level_id)
+            ->get();
+
+        $qualifiedProgrammeIds = [];
+
+        foreach ($requirements as $requirement) {
+            $criteria = json_decode($requirement->additional_criteria, true);
+
+            // Skip if intra_transfer not enabled
+            if (!isset($criteria['intra_transfer']['enabled']) || !$criteria['intra_transfer']['enabled']) {
+                continue;
+            }
+
+            $minCgpa = $criteria['intra_transfer']['min_cgpa'] ?? 0;
+
+            if ($studentCgpa >= $minCgpa) {
+                $qualifiedProgrammeIds[] = $requirement->programme_id;
+            }
+        }
+
+        // Ensure no duplicates
+        $uniqueProgrammeIds = array_unique($qualifiedProgrammeIds);
+
+        return Programme::whereIn('id', $uniqueProgrammeIds)->get();
     }
 
     /**

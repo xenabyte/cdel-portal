@@ -61,6 +61,9 @@ Route::post('/getPayments', [App\Http\Controllers\HomeController::class, 'getPay
 Route::post('/getProgrammeCategory', [App\Http\Controllers\HomeController::class, 'getProgrammeCategory']);
 
 Route::get('/populateStudendBandwidth', [App\Http\Controllers\Admin\CronController::class, 'populateStudendBandwidth']);
+Route::get('/getSemesterGPA', [App\Http\Controllers\CronController::class, 'getSemesterGPA']);
+Route::get('/updateStudentGrade', [App\Http\Controllers\CronController::class, 'updateStudentGrade']);
+
 
 
 Route::post('/addStaffRecord', [App\Http\Controllers\HomeController::class, 'addStaffRecord'])->name('addStaffRecord');

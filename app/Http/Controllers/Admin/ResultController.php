@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Models\ProgrammeCategory;
+use App\Models\StudentSemesterGPA;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -377,6 +378,21 @@ class ResultController extends Controller
             } else {
                 $message = "Your results for $semester semester of $academicSession have been successfully approved. Keep up the good work!";
             }
+
+
+            $semesterName = $semester==1 ? "Harmattan Semester" : "Rain Semester";
+            $levelName = $student->level_id * 100 . " Level";
+            StudentSemesterGPA::updateOrCreate(
+                [
+                    'student_id' => $student->id,
+                    'session' => $academicSession,
+                    'semester' => $semesterName,
+                    'level' => $levelName,
+                ],
+                [
+                    'gpa' => $currentGPA,
+                ]
+            );
 
             
             // Send email notification

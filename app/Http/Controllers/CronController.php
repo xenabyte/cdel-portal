@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Libraries\Result\Result;
+use App\Models\ProgrammeRequirement;
+use App\Models\StudentSemesterGPA;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -229,5 +232,100 @@ class CronController extends Controller
         return response()->json(['message' => 'record updated.']);
     }
     
+
+    public static function populateSemesterRecords($student){
+
+        $registrations = CourseRegistration::where('student_id', $student->id)->where('result_approval_id', 1)
+            ->select('academic_session', 'semester', 'level_id')
+            ->distinct()
+            ->get();
+
+        foreach ($registrations as $record) {
+            $academicSession = $record->academic_session;
+            $semester = $record->semester;
+            $levelName = $record->level_id * 100 . " Level";
+            $semesterName = $semester==1 ? "Harmattan Semester" : "Rain Semester";
+
+            $gpa = Result::getPresentGPA($student, $academicSession, $semester);
+
+            StudentSemesterGPA::updateOrCreate(
+                [
+                    'student_id' => $student->id,
+                    'session' => $academicSession,
+                    'semester' => $semesterName,
+                    'level' => $levelName
+                ],
+                [
+                    'gpa' => $gpa,
+                ]
+            );
+        }
+    }
+
+    public function getSemesterGPA() {
+        $students = Student::orderBy('id', 'DESC')->get();
+    
+        foreach($students as $student) {
+            $this::populateSemesterRecords($student);
+        }
+    
+        return response()->json(['message' => 'record updated.']);
+    }
+
+    public function updateStudentGrade(){
+        $registrations = CourseRegistration::whereNotNull('total')
+        ->where(function ($query) {
+            $query->whereNull('grade')
+                  ->orWhere('grade', '!=', 'F'); // Optional: only update non-Fs if needed
+        })
+        ->get();
+
+        foreach ($registrations as $studentRegistration) {
+            $totalScore = $studentRegistration->total;
+    
+            if ($totalScore > 0) {
+                $student = Student::find($studentRegistration->student_id);
+                $courseCode = $studentRegistration->course_code;
+    
+                $grading = GradeScale::computeGrade($totalScore);
+                $grade = $grading->grade;
+                $points = $grading->point;
+    
+                // Default to 40 unless otherwise specified
+                $requiredPassMark = 40;
+    
+                if ($student) {
+                    $studentProgrammeRequirement = ProgrammeRequirement::find($student->programme_id);
+                    if ($studentProgrammeRequirement) {
+                        $additionalCriteria = json_decode($studentProgrammeRequirement->additional_criteria, true);
+    
+                        if (
+                            isset($additionalCriteria['course_code_50_pass']['enabled']) &&
+                            $additionalCriteria['course_code_50_pass']['enabled'] &&
+                            isset($additionalCriteria['course_code_50_pass']['prefixes'])
+                        ) {
+                            foreach ($additionalCriteria['course_code_50_pass']['prefixes'] as $prefix) {
+                                if (stripos($courseCode, $prefix) === 0) {
+                                    $requiredPassMark = 50;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+    
+                if ($totalScore < $requiredPassMark) {
+                    $grade = 'F';
+                    $points = 0;
+                }
+    
+                $studentRegistration->grade = $grade;
+                $studentRegistration->points = $studentRegistration->course_credit_unit * $points;
+                $studentRegistration->save();
+            }
+        }
+
+        return response()->json(['message' => 'record updated.']);
+    }
 
 }

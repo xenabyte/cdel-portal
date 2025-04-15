@@ -10,6 +10,12 @@ class Programme extends Model
 {
     use HasFactory, SoftDeletes;
 
+    const MLS = "Bachelor of  Medical Laboratory Science";
+    const D_PHYSIOTHERAPY = "Doctor of Physiotherapy";
+    const B_PHYSIOTHERAPY = "Bachelor of Physiotherapy";
+    const NURSING = "Bachelor of Nursing Science";
+    const LAW = "Bachelor of Law";
+
     protected $fillable = [
         'name',
         'category_id',
@@ -97,5 +103,12 @@ class Programme extends Model
     public function programmeRequirement()
     {
         return $this->hasMany(ProgrammeRequirement::class, 'programme_id');
+    }
+
+    public static function getProgrammeId ($name){
+        if($programme = self::where('name', $name)->first()) {
+            return $programme->id;
+        }
+        return null;
     }
 }
