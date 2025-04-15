@@ -234,7 +234,6 @@ class CronController extends Controller
     
 
     public static function populateSemesterRecords($student){
-        set_time_limit(300);
 
         // Fetch all registrations with distinct academic session, semester, and level_id
        $registrations = CourseRegistration::where('student_id', $student->id)
@@ -278,6 +277,9 @@ class CronController extends Controller
 
     public function getSemesterGPA() {
         $students = Student::orderBy('id', 'DESC')->get();
+
+        set_time_limit(600);
+
     
         foreach($students as $student) {
             $this::populateSemesterRecords($student);

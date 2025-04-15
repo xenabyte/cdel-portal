@@ -62,7 +62,7 @@
                             <td>{{ $suspension->student->programme->name }}</td>
                             <td>{{ $suspension->student->email }} </td>
                             <td>
-                                <a href="{{ url('admin/viewSuspension/'.$suspension->slug) }}" class="btn btn-sm btn-primary"><i class= "ri-eye-fill"></i> View Suspension</a>
+                                <a href="{{ url('staff/viewSuspension/'.$suspension->slug) }}" class="btn btn-sm btn-primary"><i class= "ri-eye-fill"></i> View Suspension</a>
                             </td>
                         </tr>
                         @endforeach

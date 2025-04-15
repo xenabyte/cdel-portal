@@ -33,7 +33,7 @@
                         <tr>
                             <th scope="col">Id</th>
                             <th scope="col">Support Code</th>
-                            {{-- <th scope="col">CGPA</th> --}}
+                            <th scope="col">CGPA</th>
                             {{-- <th scope="col">Image</th> --}}
                             <th scope="col">Name</th>
                             <th scope="col">Level</th>
@@ -42,10 +42,8 @@
                             <th scope="col">Matric Number</th>
                             <th scope="col">Application Number</th>
                             <th scope="col">Programme</th>
-                            <th scope="col">Department</th>
-                            <th scope="col">Faculty</th>
-                            <th scope="col">Gender</th>
-                            {{-- <th scope="col"></th> --}}
+                            <th scope="col">Email</th>
+                            <th scope="col"></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -53,7 +51,7 @@
                         <tr>
                             <th scope="row">{{ $loop->iteration }}</th>
                             <td><span class="text-danger">#{{ $student->id }}</span></td>
-                            {{-- <td><span class="text-primary">{{ $student->cgpa }}</span></td> --}}
+                            <td><span class="text-primary">{{ $student->cgpa }}</span></td>
                             {{-- <td>
                                 <img class="img-thumbnail rounded-circle avatar-md"  src="{{ !empty($student->image) ? asset($student->image) : asset('assets/images/users/user-dummy-img.jpg') }}">
                             </td> --}}
@@ -64,12 +62,10 @@
                             <td>{{ $student->matric_number }}</td>
                             <td>{{ $student->applicant->application_number }}</td>
                             <td>{{ $student->programme->name }}</td>
-                            <td>{{ $student->department->name }}</td>
-                            <td>{{ $student->faculty->name }}</td>
-                            <td>{{ $student->applicant->gender }} </td>
-                            {{-- <td>
+                            <td>{{ $student->email }} </td>
+                            <td>
                                 <a href="{{ url('admin/studentProfile/'.$student->slug) }}" class="btn btn-primary m-1"><i class= "ri-user-6-fill"></i> View Student</a>
-                            </td> --}}
+                            </td>
                         </tr>
                         @endforeach
                     </tbody>
