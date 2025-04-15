@@ -419,7 +419,7 @@
                             </li>
                             {{-- @endif --}}
 
-                            {{-- @if($staffRegistrarRole || $staffVCRole || $staffBursaryRole) --}}
+                            @if($staffRegistrarRole || $staffVCRole || $staffBursaryRole)
                             <li class="nav-item">
                                 <a class="nav-link menu-link" href="#studentMgtSDC" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="studentMgtSDC">
                                     <i class="mdi mdi-account-lock"></i> <span data-key="t-student">Students Disciplinary</span>
@@ -438,7 +438,7 @@
                                     </ul>
                                 </div>
                             </li> 
-                            {{-- @endif --}}
+                            @endif
 
                             <li class="nav-item">
                                 <a class="nav-link menu-link" href="#leaveMGT" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarForms">
