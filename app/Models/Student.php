@@ -426,4 +426,114 @@ class Student extends Authenticatable
             })
             ->exists();
     }
+
+
+    public function getAcademicAdvisory()
+{
+    $advisory = [
+        'promotion_eligible' => true,
+        'promotion_message' => '',
+        'transfer_options' => [],
+        'failed_courses' => [],
+        'advisory_notes' => [],
+        'graduation_ready' => false,
+        'graduation_message' => '',
+        'trajectory_analysis' => [
+            'cgpa_trend' => 'unknown',
+            'academic_risk' => null,
+            'strengths' => [],
+            'weaknesses' => [],
+            'tips' => [],
+        ]
+    ];
+
+    // === Promotion check
+    if (!$this->canPromote()) {
+        $advisory['promotion_eligible'] = false;
+        $advisory['promotion_message'] = $this->promotion_failure_reason ?? "You are not eligible for promotion.";
+        $advisory['advisory_notes'][] = $advisory['promotion_message'];
+    } else {
+        $advisory['promotion_message'] = "You are eligible for promotion.";
+    }
+
+    // === Failed Courses
+    $failedCourses = $this->registeredCourses()
+        ->where('grade', 'F')
+        ->whereNull('re_reg')
+        ->where('result_approval_id', ResultApprovalStatus::getApprovalStatusId(ResultApprovalStatus::SENATE_APPROVED))
+        ->with('course')
+        ->get();
+
+    if ($failedCourses->count() > 0) {
+        $advisory['failed_courses'] = $failedCourses->pluck('course.code')->toArray();
+        $advisory['advisory_notes'][] = "You have failed courses: " . implode(', ', $advisory['failed_courses']);
+    }
+
+    // === Transfer options
+    $transferProgrammes = $this->getQualifiedTransferProgrammes();
+    if ($transferProgrammes->count() > 0) {
+        $advisory['transfer_options'] = $transferProgrammes->pluck('name')->toArray();
+        $advisory['advisory_notes'][] = "You're eligible to transfer to: " . implode(', ', $advisory['transfer_options']);
+    }
+
+    // === Graduation readiness
+    if ($this->level_id >= 5) {
+        $advisory['graduation_ready'] = false;
+        $advisory['graduation_message'] = "Graduation readiness check not yet implemented.";
+    }
+
+    // === CGPA Trend Analysis
+    $gpas = $this->semesters()->orderBy('id')->pluck('gpa')->toArray();
+
+    if (count($gpas) >= 2) {
+        $first = $gpas[0];
+        $last = end($gpas);
+        if ($last > $first) $trend = 'upward';
+        elseif ($last < $first) $trend = 'downward';
+        else $trend = 'flat';
+        $advisory['trajectory_analysis']['cgpa_trend'] = $trend;
+    }
+
+    // === Academic Risk Level
+    if ($this->cgpa < 1.5) {
+        $advisory['trajectory_analysis']['academic_risk'] = 'high risk of withdrawal';
+    } elseif ($this->cgpa < 2.0) {
+        $advisory['trajectory_analysis']['academic_risk'] = 'at risk of probation';
+    } elseif ($this->cgpa < 2.5) {
+        $advisory['trajectory_analysis']['academic_risk'] = 'needs improvement';
+    }
+
+    // === Strengths / Weaknesses
+    $courseResults = $this->registeredCourses()
+        ->whereNotNull('grade')
+        ->with('course')
+        ->get()
+        ->groupBy(function ($reg) {
+            return explode(' ', $reg->course->code)[0]; // e.g., "CSC" from "CSC 201"
+        });
+
+    foreach ($courseResults as $prefix => $regs) {
+        $average = $regs->avg('total');
+        if ($average >= 60) {
+            $advisory['trajectory_analysis']['strengths'][] = $prefix;
+        } elseif ($average < 45) {
+            $advisory['trajectory_analysis']['weaknesses'][] = $prefix;
+        }
+    }
+
+    // === Tips
+    if ($advisory['trajectory_analysis']['cgpa_trend'] === 'downward') {
+        $advisory['trajectory_analysis']['tips'][] = "Your CGPA is declining. Consider reducing elective load or seeking tutoring.";
+    }
+
+    if (count($advisory['trajectory_analysis']['strengths']) > 0) {
+        $advisory['trajectory_analysis']['tips'][] = "You perform well in: " . implode(', ', $advisory['trajectory_analysis']['strengths']) . ". Focus on excelling there.";
+    }
+
+    if (count($advisory['trajectory_analysis']['weaknesses']) > 0) {
+        $advisory['trajectory_analysis']['tips'][] = "Consider revisiting your understanding in: " . implode(', ', $advisory['trajectory_analysis']['weaknesses']) . ".";
+    }
+
+    return $advisory;
+}
 }

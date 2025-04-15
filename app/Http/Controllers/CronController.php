@@ -28,7 +28,7 @@ use App\Models\GradeScale;
 use App\Libraries\Bandwidth\Bandwidth;
 use App\Libraries\Google\Google;
 
-App\Http\Controllers\PaymentController;
+use App\Http\Controllers\PaymentController;
 
 
 use SweetAlert;
