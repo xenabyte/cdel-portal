@@ -130,32 +130,6 @@ $stage = 0;
                             <strong>Tips:</strong> @foreach($studentAdvisoryData->trajectory_analysis['tips'] as $tips) {{ $tips }} @endforeach<br>
                         </p>
                     </div>
-                    <div class="table-responsive border-top border-top-dashed">
-                        <table class="table mb-0 table-borderless">
-                            <tbody>
-                                <tr>
-                                    <th><span class="fw-medium">Department:</span></th>
-                                    <td>{{ $student->department->name }}</td>
-                                </tr>
-                                <tr>
-                                    <th><span class="fw-medium">Faculty:</span></th>
-                                    <td>{{ $student->faculty->name }}</td>
-                                </tr>
-                                <tr>
-                                    <th><span class="fw-medium">Email:</span></th>
-                                    <td>{{ $student->email }}</td>
-                                </tr>
-                                <tr>
-                                    <th><span class="fw-medium">Contact No.:</span></th>
-                                    <td>{{ $student->applicant->phone_number }}</td>
-                                </tr>
-                                <tr>
-                                    <th><span class="fw-medium">Address:</span></th>
-                                    <td>{!! $student->applicant->address !!}</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
 
                     <div class="border-top border-top-dashed mb-3">
                         <div class="avatar-title bg-light rounded">

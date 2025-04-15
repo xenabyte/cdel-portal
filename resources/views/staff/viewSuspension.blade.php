@@ -68,7 +68,7 @@ $stage = 0;
                         </div>
                         <div class="col-md-auto">
                             <div class="hstack gap-1 flex-wrap">
-                                @if($staffDeanRole || $staffHODRole || $staffRegistrarRole || $isUnitHead)
+                                @if($staffRegistrarRole)
                                 <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#manageSuspension"> Manage Suspension</button>
                                 <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#liftSuspension"> Lift Suspension</button>
                                 @endif
@@ -145,33 +145,6 @@ $stage = 0;
                             <strong>Tips:</strong> @foreach($studentAdvisoryData->trajectory_analysis['tips'] as $tips) {{ $tips }} @endforeach<br>
                         </p>
                     </div>
-                    <div class="table-responsive border-top border-top-dashed">
-                        <table class="table mb-0 table-borderless">
-                            <tbody>
-                                <tr>
-                                    <th><span class="fw-medium">Department:</span></th>
-                                    <td>{{ $student->department->name }}</td>
-                                </tr>
-                                <tr>
-                                    <th><span class="fw-medium">Faculty:</span></th>
-                                    <td>{{ $student->faculty->name }}</td>
-                                </tr>
-                                <tr>
-                                    <th><span class="fw-medium">Email:</span></th>
-                                    <td>{{ $student->email }}</td>
-                                </tr>
-                                <tr>
-                                    <th><span class="fw-medium">Contact No.:</span></th>
-                                    <td>{{ $student->applicant->phone_number }}</td>
-                                </tr>
-                                <tr>
-                                    <th><span class="fw-medium">Address:</span></th>
-                                    <td>{!! $student->applicant->address !!}</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-
                     <div class="border-top border-top-dashed mb-3">
                         <div class="avatar-title bg-light rounded">
                             <img src="{{ $qrcode }}" style="border: 1px solid black;">

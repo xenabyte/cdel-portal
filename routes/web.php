@@ -839,8 +839,8 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'staff'],
   Route::get('/siwesApplicants', [App\Http\Controllers\Staff\CareerController::class, 'siwesApplicants'])->name('siwesApplicant')->middleware(['auth:staff']);
 
 
-  Route::get('/viewSuspension/{slug}', [App\Http\Controllers\Staff\StudentDisciplinaryController::class, 'viewSuspension'])->name('admin.viewSuspension')->middleware(['auth:staff']);
-  Route::post('/manageSuspension', [App\Http\Controllers\Staff\StudentDisciplinaryController::class, 'manageSuspension'])->name('admin.manageSuspension')->middleware(['auth:staff']);  
+  Route::get('/viewSuspension/{slug}', [App\Http\Controllers\Staff\StudentDisciplinaryController::class, 'viewSuspension'])->name('staff.viewSuspension')->middleware(['auth:staff']);
+  Route::post('/manageSuspension', [App\Http\Controllers\Staff\StudentDisciplinaryController::class, 'manageSuspension'])->name('staff.manageSuspension')->middleware(['auth:staff']);  
   Route::post('/expel', [App\Http\Controllers\Staff\StudentDisciplinaryController::class, 'expel'])->name('expel')->middleware(['auth:staff']);
   Route::post('/suspend', [App\Http\Controllers\Staff\StudentDisciplinaryController::class, 'suspend'])->name('suspend')->middleware(['auth:staff']);
   Route::post('/recall', [App\Http\Controllers\Staff\StudentDisciplinaryController::class, 'recall'])->name('recall')->middleware(['auth:staff']);

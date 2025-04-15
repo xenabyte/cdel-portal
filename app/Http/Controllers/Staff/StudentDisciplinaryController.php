@@ -257,7 +257,7 @@ class StudentDisciplinaryController extends Controller
 
         $suspension = StudentSuspension::with('student')->where('slug', $slug)->first();
 
-        return view('admin.viewSuspension', [
+        return view('staff.viewSuspension', [
             'suspension' => $suspension
         ]);
 

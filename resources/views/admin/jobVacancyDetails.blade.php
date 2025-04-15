@@ -267,34 +267,6 @@
                                 </p>
                             </div>
                         </div>
-                        <div class="col-md-7">
-                            <div class="table-responsive border-start border-start-dashed">
-                                <table class="table mb-0 table-borderless">
-                                    <tbody>
-                                        <tr>
-                                            <th><span class="fw-medium">Department:</span></th>
-                                            <td>{{ $student->department->name }}</td>
-                                        </tr>
-                                        <tr>
-                                            <th><span class="fw-medium">Faculty:</span></th>
-                                            <td>{{ $student->faculty->name }}</td>
-                                        </tr>
-                                        <tr>
-                                            <th><span class="fw-medium">Email:</span></th>
-                                            <td>{{ $student->email }}</td>
-                                        </tr>
-                                        <tr>
-                                            <th><span class="fw-medium">Contact No.:</span></th>
-                                            <td>{{ $student->applicant->phone_number }}</td>
-                                        </tr>
-                                        <tr>
-                                            <th><span class="fw-medium">Address:</span></th>
-                                            <td>{!! $student->applicant->address !!}</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
                     </div>                
                 @else
                     @php
