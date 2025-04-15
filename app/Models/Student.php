@@ -483,7 +483,7 @@ class Student extends Authenticatable
     }
 
     // === CGPA Trend Analysis
-    $gpas = $this->semesters()->orderBy('id')->pluck('gpa')->toArray();
+    $gpas = $this->semesterWithGPA()->orderBy('id')->pluck('gpa')->toArray();
 
     if (count($gpas) >= 2) {
         $first = $gpas[0];

@@ -292,7 +292,7 @@ class Result
         $totalCreditUnits = $registrations->sum('course_credit_unit');
     
         // Avoid division by zero
-        if ($totalCreditUnits == 0) {
+        if ($totalCreditUnits < 1) {
             return 0;
         }
     
@@ -314,18 +314,18 @@ class Result
     
         // If no records found, return null
         if ($registrations->isEmpty()) {
-            return 0;
+            return null;
         }
-    
+
         // Compute total points and total credit units
-        $totalPoints = $registrations->sum('point');
-        $totalCreditUnits = $registrations->sum('course_credit_unit');
+        $totalPoints = (int) $registrations->sum('points');
+        $totalCreditUnits = (int) $registrations->sum('course_credit_unit');
     
         // Avoid division by zero
-        if ($totalCreditUnits == 0) {
+        if ($totalCreditUnits < 1) {
             return 0;
         }
-    
+
         // Calculate CGPA
         $gpa = $totalPoints / $totalCreditUnits;
     

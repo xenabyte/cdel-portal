@@ -234,26 +234,40 @@ class CronController extends Controller
     
 
     public static function populateSemesterRecords($student){
+        set_time_limit(300);
 
-        $registrations = CourseRegistration::where('student_id', $student->id)->where('result_approval_id', 1)
-            ->get();
-
-        dd($registrations);
-
+        // Fetch all registrations with distinct academic session, semester, and level_id
+       $registrations = CourseRegistration::where('student_id', $student->id)
+        ->where('result_approval_id', 1)
+        ->select('academic_session', 'semester', 'level_id')
+        ->distinct()
+        ->orderBy('level_id') // Order by level_id in ascending order
+        ->get();
+    
+        // Check if the $registrations collection is empty
+        if ($registrations->isEmpty()) {
+            // Log the empty case if necessary
+            Log::info('No registrations found for student: ' . $student->id);
+            return; // Exit the function if there are no records
+        }
+    
+        // Loop through each registration record to populate semester records
         foreach ($registrations as $record) {
             $academicSession = $record->academic_session;
             $semester = $record->semester;
             $levelName = $record->level_id * 100 . " Level";
-            $semesterName = $semester==1 ? "Harmattan Semester" : "Rain Semester";
-
+            $semesterName = $semester == 1 ? "Harmattan Semester" : "Rain Semester";
+    
+            // Fetch GPA for the student for the particular academic session and semester
             $gpa = Result::getPresentGPA($student, $academicSession, $semester);
 
+            // Create or update the StudentSemesterGPA record
             StudentSemesterGPA::updateOrCreate(
                 [
                     'student_id' => $student->id,
                     'session' => $academicSession,
                     'semester' => $semesterName,
-                    'level' => $levelName
+                    'level' => $levelName,
                 ],
                 [
                     'gpa' => $gpa,
