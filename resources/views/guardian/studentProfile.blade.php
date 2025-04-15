@@ -8,6 +8,7 @@ $transactions = $student->transactions()->orderBy('created_at', 'desc')->get();
 $studentRegistrations = $student->courseRegistrationDocument()->orderBy('created_at', 'desc')->take(10)->get();
 $currentHostelAllocation = $student->currentHostelAllocation;
 $failedCourses = $student->registeredCourses()->where('grade', 'F')->where('re_reg', null)->where('result_approval_id', ResultApprovalStatus::getApprovalStatusId(ResultApprovalStatus::SENATE_APPROVED))->get();
+$studentAdvisoryData = (object) $student->getAcademicAdvisory();
 
 @endphp
 @section('content')
@@ -331,16 +332,39 @@ $failedCourses = $student->registeredCourses()->where('grade', 'F')->where('re_r
                                     <div class="mt-4 text-center">
                                         <h5 class="mb-1">{{$name}}</h5>
                                         <p class="text-muted">{{ $student->programme->name }} <br>
-                                            <strong>Programme Category:</strong> {{ $student->programmeCategory->category }} Programme<br>
                                             <strong>Matric Number:</strong> {{ $student->matric_number }}<br>
-                                            <strong>Jamb Reg. Number:</strong> {{ $student->applicant->jamb_reg_no }}<br>
+                                            <strong>Wifi Username:</strong> {{ $student->bandwidth_username }}<br>
+                                            <strong>Email:</strong> {{ $student->email }}<br>
+                                            <strong>Phone Number:</strong> {{ $student->applicant->phone_number }}<br>
+                                            <strong>Address:</strong> {{ $student->applicant->address }}<br>
+                                            @if(env('WALLET_STATUS'))<a class="dropdown-item" href="#"><i class="mdi mdi-wallet text-muted fs-16 align-middle me-1"></i> <span class="align-middle">Balance : <b>₦{{ number_format($student->amount_balance/100, 2) }}</b></span></a>@endif
+                                        </p>
+                                        <p class="text-muted border-top border-top-dashed pt-2">
+                                            <strong>Programme Category:</strong> {{ $student->programmeCategory->category }} Programme<br>
+                                            <strong>Department:</strong> {{ $student->department->name }}<br>
+                                            <strong>Faculty:</strong> {{ $student->faculty->name }}<br>
+                                            <strong>Jamb Reg. Number:</strong> {{ $student->applicant->jamb_reg_no }} <br>
+                                            <strong>Academic Level:</strong> <span class="text-primary">{{ $student->level_id * 100 }} Level</span><br>
+                                            <strong>Academic session:</strong> {{ $student->academic_session }}</span>
+                                            <br>
+                                            @if($student->level_id >= $student->programme->duration && !$student->is_passed_out)
+                                            <span class="text-warning"><strong>Graduating Set</strong></span> <br>
+                                            @endif
                                             <strong>Support Code:</strong> <span class="text-danger">{{ $student->applicant->id }}-ST{{ sprintf("%03d", $student->id) }}</span> 
                                         </p>
-                                        <p class="text-muted border-top border-top-dashed"><strong>CGPA:</strong> {{ $student->cgpa }} <br>
+                                        <p class="text-muted border-top border-top-dashed pt-2">
+                                            <strong>CGPA:</strong> {{ $student->cgpa }} <br>
                                             <strong>Class:</strong> {{ $student->degree_class }}<br>
-                                            <strong>Standing:</strong> {{ $student->academic_status }}<br>
+                                        </p>
+                                        <p class="text-muted border-top border-top-dashed pt-2 text-start">
                                             @if($failedCourses->count() > 0)<strong class="text-danger">Failed Courses:</strong> <span class="text-danger">@foreach($failedCourses as $failedCourse) {{ $failedCourse->course_code.',' }} @endforeach</span> @endif <br>
-
+                                            <strong>Promotion Eligibility:</strong> {{ $studentAdvisoryData->promotion_eligible?'You are eligible to promote':'You are not eligible to promote' }}<br>
+                                            <strong>Promotion Message:</strong> {{ $studentAdvisoryData->promotion_message }}<br>
+                                            <strong>GPA Trend:</strong> {{ $studentAdvisoryData->trajectory_analysis['cgpa_trend'] }}<br>
+                                            <strong>CGPA Trajectory Analysis:</strong> {{ $studentAdvisoryData->trajectory_analysis['academic_risk'] }}<br>
+                                            <strong>Course Strength:</strong> @foreach($studentAdvisoryData->trajectory_analysis['strengths'] as $strength) {{ $strength.', ' }} @endforeach<br>
+                                            <strong>Course Weakness:</strong> @foreach($studentAdvisoryData->trajectory_analysis['weaknesses'] as $weakness) {{ $weakness.', ' }} @endforeach<br>
+                                            <strong>Tips:</strong> @foreach($studentAdvisoryData->trajectory_analysis['tips'] as $tips) {{ $tips }} @endforeach<br>
                                         </p>
                                     </div>
                                     <div class="table-responsive border-top border-top-dashed">
@@ -551,19 +575,39 @@ $failedCourses = $student->registeredCourses()->where('grade', 'F')->where('re_r
                                     <div class="mt-4 text-center">
                                         <h5 class="mb-1">{{$name}}</h5>
                                         <p class="text-muted">{{ $student->programme->name }} <br>
-                                            <strong>Programme Category:</strong> {{ $student->programmeCategory->category }} Programme<br>
                                             <strong>Matric Number:</strong> {{ $student->matric_number }}<br>
-                                            <strong>Jamb Reg. Number:</strong> {{ $student->applicant->jamb_reg_no }}<br> <br>
-                                            <strong>Support Code:</strong> <span class="text-danger">{{ $student->applicant->id }}-ST{{ sprintf("%03d", $student->id) }}</span> 
-                                            <hr>
+                                            <strong>Wifi Username:</strong> {{ $student->bandwidth_username }}<br>
+                                            <strong>Email:</strong> {{ $student->email }}<br>
+                                            <strong>Phone Number:</strong> {{ $student->applicant->phone_number }}<br>
+                                            <strong>Address:</strong> {{ $student->applicant->address }}<br>
                                             @if(env('WALLET_STATUS'))<a class="dropdown-item" href="#"><i class="mdi mdi-wallet text-muted fs-16 align-middle me-1"></i> <span class="align-middle">Balance : <b>₦{{ number_format($student->amount_balance/100, 2) }}</b></span></a>@endif
                                         </p>
-                                        <p class="text-muted border-top border-top-dashed"><strong>CGPA:</strong> {{ $student->cgpa }} <br>
+                                        <p class="text-muted border-top border-top-dashed pt-2">
+                                            <strong>Programme Category:</strong> {{ $student->programmeCategory->category }} Programme<br>
+                                            <strong>Department:</strong> {{ $student->department->name }}<br>
+                                            <strong>Faculty:</strong> {{ $student->faculty->name }}<br>
+                                            <strong>Jamb Reg. Number:</strong> {{ $student->applicant->jamb_reg_no }} <br>
+                                            <strong>Academic Level:</strong> <span class="text-primary">{{ $student->level_id * 100 }} Level</span><br>
+                                            <strong>Academic session:</strong> {{ $student->academic_session }}</span>
+                                            <br>
+                                            @if($student->level_id >= $student->programme->duration && !$student->is_passed_out)
+                                            <span class="text-warning"><strong>Graduating Set</strong></span> <br>
+                                            @endif
+                                            <strong>Support Code:</strong> <span class="text-danger">{{ $student->applicant->id }}-ST{{ sprintf("%03d", $student->id) }}</span> 
+                                        </p>
+                                        <p class="text-muted border-top border-top-dashed pt-2">
+                                            <strong>CGPA:</strong> {{ $student->cgpa }} <br>
                                             <strong>Class:</strong> {{ $student->degree_class }}<br>
-                                            <strong>Standing:</strong> {{ $student->academic_status }}<br>
-                                            <strong>Batch:</strong> {{ $student->batch }}<br>
+                                        </p>
+                                        <p class="text-muted border-top border-top-dashed pt-2 text-start">
                                             @if($failedCourses->count() > 0)<strong class="text-danger">Failed Courses:</strong> <span class="text-danger">@foreach($failedCourses as $failedCourse) {{ $failedCourse->course_code.',' }} @endforeach</span> @endif <br>
-
+                                            <strong>Promotion Eligibility:</strong> {{ $studentAdvisoryData->promotion_eligible?'You are eligible to promote':'You are not eligible to promote' }}<br>
+                                            <strong>Promotion Message:</strong> {{ $studentAdvisoryData->promotion_message }}<br>
+                                            <strong>GPA Trend:</strong> {{ $studentAdvisoryData->trajectory_analysis['cgpa_trend'] }}<br>
+                                            <strong>CGPA Trajectory Analysis:</strong> {{ $studentAdvisoryData->trajectory_analysis['academic_risk'] }}<br>
+                                            <strong>Course Strength:</strong> @foreach($studentAdvisoryData->trajectory_analysis['strengths'] as $strength) {{ $strength.', ' }} @endforeach<br>
+                                            <strong>Course Weakness:</strong> @foreach($studentAdvisoryData->trajectory_analysis['weaknesses'] as $weakness) {{ $weakness.', ' }} @endforeach<br>
+                                            <strong>Tips:</strong> @foreach($studentAdvisoryData->trajectory_analysis['tips'] as $tips) {{ $tips }} @endforeach<br>
                                         </p>
                                     </div>
                                     <div class="table-responsive border-top border-top-dashed">
