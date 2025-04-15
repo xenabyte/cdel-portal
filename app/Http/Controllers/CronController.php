@@ -240,6 +240,8 @@ class CronController extends Controller
             ->distinct()
             ->get();
 
+        dd($registrations);
+
         foreach ($registrations as $record) {
             $academicSession = $record->academic_session;
             $semester = $record->semester;
