@@ -235,9 +235,7 @@ class CronController extends Controller
 
     public static function populateSemesterRecords($student){
 
-        $registrations = CourseRegistration::where('student_id', $student->id)
-            ->select('academic_session', 'semester', 'level_id')
-            ->distinct()
+        $registrations = CourseRegistration::where('student_id', $student->id)->where('result_approval_id', 1)
             ->get();
 
         dd($registrations);
