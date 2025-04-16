@@ -228,6 +228,8 @@
         $currentRegisteredGradePoints = $semesterRegisteredCourses->sum('points');
         $currentGPA = $currentRegisteredGradePoints > 0 ? number_format($currentRegisteredGradePoints / $currentRegisteredCreditUnits, 2) : 0.00;
 
+        $semesterRegisteredMissingCourses = $student->registeredCourses->where('semester', $semester)->where('level_id', $academiclevel->id)->where('academic_session', $academicSession)->where('grade', null);
+
         $allRegisteredCourses = $student->registeredCourses->where('grade', '!=', null);
         $allRegisteredCreditUnits =  $allRegisteredCourses->sum('course_credit_unit');
         $allRegisteredGradePoints = $allRegisteredCourses->sum('points');
@@ -641,6 +643,7 @@
                         <tr>
                             <th rowspan="2">SN</th>
                             <th class="bg bg-info text-light" rowspan="2">Result Approval Status</th>
+                            <th rowspan="2">Student Missing Result</th>
                             <th rowspan="2">Student Result</th>
                             <th rowspan="2">Student Name</th>
                             <th rowspan="2">Matric Number</th>
@@ -695,7 +698,7 @@
                                     $currentGPA = $currentRegisteredGradePoints > 0 ? number_format($currentRegisteredGradePoints / $currentRegisteredCreditUnits, 2) : 0;
                                     $failedSemesterCourses = $semesterRegisteredCourses->where('grade', 'F');
 
-                                    $missingSemesterCourses = $semesterRegisteredCourses->where('grade', null);
+                                    $missingSemesterCourses = $student->registeredCourses->where('semester', $semester)->where('level_id', $academiclevel->id)->where('academic_session', $academicSession)->where('grade', null);
 
                                     $allRegisteredCourses = $student->registeredCourses->where('grade', '!=', null);
                                     $allRegisteredCreditUnits =  $allRegisteredCourses->sum('course_credit_unit');
@@ -713,6 +716,11 @@
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
                                     <td class="bg bg-soft-info">{{ $approvedStudentStatus?'Approved':'Not Approved' }}</td>
+                                    <td class="bg bg-soft-danger">
+                                        @foreach($missingSemesterCourses as $missingSemesterCourse)
+                                            {{ $missingSemesterCourse->course_code }},
+                                        @endforeach
+                                    </td>
                                     <td width="200px">
                                         <div class="accordion" id="default-accordion-example">
                                             <div class="accordion-item shadow">
