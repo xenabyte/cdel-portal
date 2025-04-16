@@ -763,7 +763,7 @@ class ProgrammeController extends Controller
         $query = Programme::where('department_id', $id);
     
         if ($programmeCategoryId) {
-            $query->where('programme_category_id', $programmeCategoryId);
+            $query->where('category_id', $programmeCategoryId);
         }
     
         $programmes = $query->get();
