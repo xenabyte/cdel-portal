@@ -319,19 +319,22 @@ class Student extends Authenticatable
             ->first();
 
         if (!$requirement) {
-            return ['status' => true];
+            return [
+                'promotion' => ['status' => true],
+                'professional_exam' => ['status' => true]
+            ];
         }
 
+        $criteria = $requirement->additional_criteria;
         $reasons = [];
+        $examRejection = null;
 
-        // 1️⃣ Check CGPA
+        // 1️⃣ Check CGPA for promotion
         if ($this->cgpa < $requirement->min_cgpa) {
             $reasons[] = "Your CGPA ({$this->cgpa}) is below the minimum required ({$requirement->min_cgpa}).";
         }
 
-        // 2️⃣ Check for carry over if required
-        $criteria = $requirement->additional_criteria;
-
+        // 2️⃣ Check for carry-overs
         if (
             isset($criteria['no_carry_over']['enabled']) &&
             $criteria['no_carry_over']['enabled'] === true &&
@@ -346,13 +349,25 @@ class Student extends Authenticatable
 
             if ($failedCourses->isNotEmpty()) {
                 $courseCodes = $failedCourses->pluck('course_code')->implode(', ');
-                $reasons[] = "You have carry over(s) in the following courses: {$courseCodes}.";
+                $type = $criteria['no_carry_over']['type'] ?? null;
+
+                if ($type === 'promotion') {
+                    $reasons[] = "You have carry over(s) in the following courses: {$courseCodes}. You are not eligible for promotion.";
+                } elseif ($type === 'professional_exam') {
+                    $examRejection = "You are not eligible to write the professional exam due to carry-overs in: {$courseCodes}.";
+                }
             }
         }
 
         return [
-            'status' => count($reasons) === 0,
-            'reasons' => $reasons
+            'promotion' => [
+                'status' => count($reasons) === 0,
+                'reasons' => $reasons
+            ],
+            'professional_exam' => [
+                'status' => $examRejection === null,
+                'message' => $examRejection
+            ]
         ];
     }
 
@@ -432,6 +447,8 @@ class Student extends Authenticatable
         $advisory = [
             'promotion_eligible' => true,
             'promotion_message' => '',
+            'professional_exam_eligible' => true,
+            'professional_exam_message' => '',
             'transfer_options' => [],
             'failed_courses' => [],
             'advisory_notes' => [],
@@ -447,12 +464,25 @@ class Student extends Authenticatable
         ];
 
         // === Promotion check
-        if (!$this->canPromote()) {
+        $promotionCheck = $this->canPromote(); // assumed to return array with both promotion and professional_exam
+
+        // Handle promotion
+        if (!$promotionCheck['promotion']['status']) {
             $advisory['promotion_eligible'] = false;
-            $advisory['promotion_message'] = $this->promotion_failure_reason ?? "You are not eligible for promotion.";
+            $advisory['promotion_message'] = implode("; ", $promotionCheck['promotion']['reasons']);
             $advisory['advisory_notes'][] = $advisory['promotion_message'];
         } else {
             $advisory['promotion_message'] = "You are eligible for promotion.";
+        }
+
+        // Handle professional exam eligibility
+        $advisory['professional_exam_eligible'] = $promotionCheck['professional_exam']['status'];
+        $advisory['professional_exam_message'] = $promotionCheck['professional_exam']['status']
+            ? "You are eligible to take the professional exam."
+            : implode("; ", $promotionCheck['professional_exam']['reasons']);
+
+        if (!$promotionCheck['professional_exam']['status']) {
+            $advisory['advisory_notes'][] = $advisory['professional_exam_message'];
         }
 
         // === Failed Courses

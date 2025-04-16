@@ -1302,18 +1302,18 @@ class AcademicController extends Controller
             $promotionLevel = $student->level_id + $promotionOffset;
             $promotionCheck = $student->canPromote();
 
-            if (!$promotionCheck['status']) {
+            if (!$promotionCheck['promotion']['status']) {
                 $promotionLevel = $student->level_id;
 
                 $senderName = env('SCHOOL_NAME');
                 $receiverName = $student->applicant->lastname . ' ' . $student->applicant->othernames;
 
                 // Compile detailed reason message
-                $reasonMessage = implode("\n- ", $promotionCheck['reasons']);
+                $reasonMessage = implode("\n- ", $promotionCheck['promotion']['reasons']);
                 $message = "We regret to inform you that you have not met the required academic criteria for promotion to the next level.\n\n"
-                        . "Reason(s):\n- " . $reasonMessage . "\n\n"
-                        . "Please review your academic performance and consult with your department for guidance on improving your standing. "
-                        . "For further inquiries, kindly visit the academic office.";
+                    . "Reason(s):\n- " . $reasonMessage . "\n\n"
+                    . "Please review your academic performance and consult with your department for guidance on improving your standing. "
+                    . "For further inquiries, kindly visit the academic office.";
 
                 try {
                     $mail = new NotificationMail($senderName, $message, $receiverName);
@@ -1335,6 +1335,27 @@ class AcademicController extends Controller
                     'status' => "Withdrawn",
                     'academic_session' => $academicSession,
                     'credit_load' => null
+                ]);
+            }
+
+            if (!$promotionCheck['professional_exam']['status']) {
+                $examReasonMessage = implode("\n- ", $promotionCheck['professional_exam']['reasons']);
+                $examMessage = "This is to inform you that you are currently not eligible to sit for the upcoming professional examination due to the following reason(s):\n\n"
+                    . "- " . $examReasonMessage . "\n\n"
+                    . "Kindly ensure you resolve these issues as soon as possible. For more information or clarification, please contact your department or visit the academic office.";
+            
+                try {
+                    $mail = new NotificationMail($senderName, $examMessage, $receiverName);
+                    Mail::to($student->email)->send($mail);
+                } catch (\Exception $e) {
+                    Log::error('Exam Notification Email Failed: ' . $e->getMessage());
+                }
+            
+                Notification::create([
+                    'student_id' => $student->id,
+                    'description' => $examMessage,
+                    'attachment' => null,
+                    'status' => 0
                 ]);
             }
         
