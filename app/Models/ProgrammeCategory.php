@@ -14,7 +14,7 @@ class ProgrammeCategory extends Model
     const UNDERGRADUATE = 'Undergraduate';
     const POSTGRADUATE = 'Postgraduate';
     const TOPUP = 'Topup';
-    const MASTER = 'Master';
+    const MASTER = 'Masters';
     const DOCTORATE = 'Doctorate';
 
     protected $fillable = [
