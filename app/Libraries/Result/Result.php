@@ -362,7 +362,7 @@ class Result
 
     public static function getRequiredPassMark($student, $courseCode){
 
-        $requirement = ProgrammeRequirement::where('programme_id', $student->programme_id)->first();
+        $requirement = ProgrammeRequirement::where('programme_id', $student->programme_id)->where('level_id', $student->level_id)->first();
         $requiredPassMark = 40;
 
         if ($requirement && $requirement->additional_criteria) {

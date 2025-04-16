@@ -290,60 +290,110 @@ class CronController extends Controller
         return response()->json(['message' => 'record updated.']);
     }
 
-    public function updateStudentGrade(){
+
+
+    public function updateStudentGrade()
+    {
         $registrations = CourseRegistration::whereNotNull('total')
-        ->where(function ($query) {
-            $query->whereNull('grade')
-                  ->orWhere('grade', '!=', 'F'); // Optional: only update non-Fs if needed
-        })
-        ->get();
+            ->where(function ($query) {
+                $query->whereNull('grade')
+                    ->orWhere('grade', '!=', 'F');
+            })
+            ->get();
+
+        $updatedRecords = [];
+        $fiftyPassAffected = [];
 
         foreach ($registrations as $studentRegistration) {
             $totalScore = $studentRegistration->total;
-    
+
             if ($totalScore > 0) {
                 $student = Student::find($studentRegistration->student_id);
                 $courseCode = $studentRegistration->course_code;
-    
+
                 $grading = GradeScale::computeGrade($totalScore);
                 $grade = $grading->grade;
                 $points = $grading->point;
-    
-                // Default to 40 unless otherwise specified
-                $requiredPassMark = 40;
-    
+
+                $requiredPassMark = 40; // Default
+                $fiftyPassTriggered = false;
+
                 if ($student) {
-                    $studentProgrammeRequirement = ProgrammeRequirement::find($student->programme_id);
+                    $studentProgrammeRequirement = ProgrammeRequirement::where('programme_id', $student->programme_id)
+                        ->where('level_id', $student->level_id)
+                        ->first();
+
                     if ($studentProgrammeRequirement) {
                         $additionalCriteria = json_decode($studentProgrammeRequirement->additional_criteria, true);
-    
+
+                        $fiftyPassSetting = $additionalCriteria['course_code_50_pass'] ?? null;
+
                         if (
-                            isset($additionalCriteria['course_code_50_pass']['enabled']) &&
-                            $additionalCriteria['course_code_50_pass']['enabled'] &&
-                            isset($additionalCriteria['course_code_50_pass']['prefixes'])
+                            $fiftyPassSetting &&
+                            isset($fiftyPassSetting['enabled']) && $fiftyPassSetting['enabled'] &&
+                            isset($fiftyPassSetting['prefixes']) && is_array($fiftyPassSetting['prefixes'])
                         ) {
-                            foreach ($additionalCriteria['course_code_50_pass']['prefixes'] as $prefix) {
+                            foreach ($fiftyPassSetting['prefixes'] as $prefix) {
                                 if (stripos($courseCode, $prefix) === 0) {
                                     $requiredPassMark = 50;
+                                    $fiftyPassTriggered = true;
+
+                                    $fiftyPassAffected[] = [
+                                        'student_id' => $student->id,
+                                        'level_id' => $student->level_id,
+                                        'programme_id' => $student->programme_id,
+                                        'course_code' => $courseCode,
+                                        'total' => $totalScore,
+                                        'new_required_pass_mark' => 50,
+                                    ];
                                     break;
                                 }
                             }
                         }
                     }
+                    // If no special rule matched, requiredPassMark remains 40
                 }
-    
+
+                // Re-grade if student didn't meet pass mark
                 if ($totalScore < $requiredPassMark) {
                     $grade = 'F';
                     $points = 0;
                 }
-    
-                $studentRegistration->grade = $grade;
-                $studentRegistration->points = $studentRegistration->course_credit_unit * $points;
-                $studentRegistration->save();
+
+                $calculatedPoints = $studentRegistration->course_credit_unit * $points;
+
+                // Only update if something changed
+                if (
+                    $studentRegistration->grade !== $grade ||
+                    $studentRegistration->points !== $calculatedPoints
+                ) {
+                    $studentRegistration->grade = $grade;
+                    $studentRegistration->points = $calculatedPoints;
+                    $studentRegistration->save();
+
+                    $updatedRecords[] = [
+                        'student_id' => $studentRegistration->student_id,
+                        'course_code' => $courseCode,
+                        'total' => $totalScore,
+                        'grade' => $grade,
+                        'points' => $calculatedPoints,
+                        'required_pass_mark' => $requiredPassMark,
+                    ];
+                }
             }
         }
 
-        return response()->json(['message' => 'record updated.']);
+        if (!empty($fiftyPassAffected)) {
+            Log::info('Records affected by course_code_50_pass rule:', $fiftyPassAffected);
+        }
+
+        return response()->json([
+            'message' => 'Grade update completed.',
+            'updated_count' => count($updatedRecords),
+            '50_pass_affected_count' => count($fiftyPassAffected),
+            'sample_updates' => array_slice($updatedRecords, 0, 5),
+            'sample_50_pass_affected' => array_slice($fiftyPassAffected, 0, 5),
+        ]);
     }
 
 }
