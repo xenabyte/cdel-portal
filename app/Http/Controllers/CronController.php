@@ -294,6 +294,8 @@ class CronController extends Controller
 
     public function updateStudentGrade()
     {
+        set_time_limit(600);
+        
         $registrations = CourseRegistration::whereNotNull('total')
             ->where(function ($query) {
                 $query->whereNull('grade')
