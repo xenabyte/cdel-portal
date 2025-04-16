@@ -85,7 +85,7 @@ class CronController extends Controller
 
             $paymentController = new PaymentController;
 
-            return $paymentController->upperlinkVerifyPayment($paymentReference);
+            $paymentController->upperlinkVerifyPayment($paymentReference);
         }
 
         return $this->dataResponse('Pending transactions deleted successfully.', null);
