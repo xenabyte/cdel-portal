@@ -643,7 +643,7 @@
                         <tr>
                             <th rowspan="2">SN</th>
                             <th class="bg bg-info text-light" rowspan="2">Result Approval Status</th>
-                            <th rowspan="2">Student Missing Result</th>
+                            <th class="bg bg-danger text-light" rowspan="2">Student Missing Result</th>
                             <th rowspan="2">Student Result</th>
                             <th rowspan="2">Student Name</th>
                             <th rowspan="2">Matric Number</th>
