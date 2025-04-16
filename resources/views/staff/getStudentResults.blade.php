@@ -80,7 +80,16 @@
                                 <form action="{{ url('/staff/generateStudentResults') }}" method="POST">
                                     @csrf
                                     <div class="row g-3">
-
+                                        
+                                        <div class="col-lg-12">
+                                            <div class="form-floating">
+                                                <select class="form-select" id="programme_category" name="programme_category_id" aria-label="Programme Category">
+                                                    <option value="" selected>--Select--</option>
+                                                    @foreach($programmeCategories as $programmeCategory)<option value="{{ $programmeCategory->id }}">{{ $programmeCategory->category }} Programme</option>@endforeach
+                                                </select>
+                                                <label for="session">Programme Category</label>
+                                            </div>
+                                        </div>
                                         
                                         <div class="col-lg-12">
                                             <div class="form-floating">
@@ -139,17 +148,7 @@
                                             </div>
                                         </div>
 
-                                        <div class="col-lg-12">
-                                            <div class="form-floating">
-                                                <select class="form-select" id="programme_category" name="programme_category_id" aria-label="Programme Category">
-                                                    <option value="" selected>--Select--</option>
-                                                    @foreach($programmeCategories as $programmeCategory)<option value="{{ $programmeCategory->id }}">{{ $programmeCategory->category }} Programme</option>@endforeach
-                                                </select>
-                                                <label for="session">Programme Category</label>
-                                            </div>
-                                        </div>
-        
-        
+                                       
                                         <div class="col-lg-12">
                                             <div class="form-floating">
                                                 <select class="form-select" id="session" name="session" aria-label="Academic Session">

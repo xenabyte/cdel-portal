@@ -34,6 +34,16 @@
 
                                         <div class="col-lg-12">
                                             <div class="form-floating">
+                                                <select class="form-select" id="programme_category" name="programme_category_id" aria-label="Programme Category">
+                                                    <option value="" selected>--Select--</option>
+                                                    @foreach($programmeCategories as $programmeCategory)<option value="{{ $programmeCategory->id }}">{{ $programmeCategory->category }} Programme</option>@endforeach
+                                                </select>
+                                                <label for="session">Programme Category</label>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-12">
+                                            <div class="form-floating">
                                                 <select class="form-select" id="faculty" name="faculty_id" aria-label="faculty" onchange="handleFacultyChange(event)">
                                                     <option value="" selected>--Select--</option>
                                                     @foreach($faculties as $faculty)
@@ -84,17 +94,6 @@
                                                 <label for="semester">Semester</label>
                                             </div>
                                         </div>
-
-                                        <div class="col-lg-12">
-                                            <div class="form-floating">
-                                                <select class="form-select" id="programme_category" name="programme_category_id" aria-label="Programme Category">
-                                                    <option value="" selected>--Select--</option>
-                                                    @foreach($programmeCategories as $programmeCategory)<option value="{{ $programmeCategory->id }}">{{ $programmeCategory->category }} Programme</option>@endforeach
-                                                </select>
-                                                <label for="session">Programme Category</label>
-                                            </div>
-                                        </div>
-        
         
                                         <div class="col-lg-12">
                                             <div class="form-floating">

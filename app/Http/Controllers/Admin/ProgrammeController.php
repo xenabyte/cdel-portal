@@ -195,10 +195,19 @@ class ProgrammeController extends Controller
         return $departments;
     }
 
-    public function getProgrammes($id){
-        $programmes = Programme::where('department_id', $id)->get();
-
-        return $programmes;
+    public function getProgrammes($id, Request $request){
+        
+        $programmeCategoryId = $request->query('programme_category_id');
+    
+        $query = Programme::where('department_id', $id);
+    
+        if ($programmeCategoryId) {
+            $query->where('programme_category_id', $programmeCategoryId);
+        }
+    
+        $programmes = $query->get();
+    
+        return response()->json($programmes);
     }
 
     public function studentCourses(Request $request, $programmeCategory){

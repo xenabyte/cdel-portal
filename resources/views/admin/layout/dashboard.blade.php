@@ -1140,11 +1140,15 @@
         function handleDepartmentChange(event) {
             const selectedDepartment = event.target.value;
             const programmeSelect = $('#programme');
+            const selectedProgrammeCategory = $('#programme_category').val();
 
-            if(selectedDepartment != ''){
-                axios.get("{{ url('/admin/getProgrammes') }}/"+selectedDepartment)
+            if (selectedDepartment !== '') {
+                axios.get("{{ url('/admin/getProgrammes') }}/" + selectedDepartment, {
+                    params: {
+                        programme_category_id: selectedProgrammeCategory
+                    }
+                })
                 .then(function (response) {
-
                     programmeSelect.empty().append($('<option>', {
                         value: '',
                         text: '--Select--'
@@ -1157,10 +1161,8 @@
                     });
                 })
                 .catch(function (error) {
-                    console.error("Error fetching departments:", error);
+                    console.error("Error fetching programmes:", error);
                 });
-            }else{
-                
             }
         }
     </script>
