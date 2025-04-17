@@ -299,19 +299,12 @@ class CronController extends Controller
         set_time_limit(600);
 
         $registrations = CourseRegistration::whereNotNull('total')
-            ->where(function ($query) {
-                $query->whereNull('grade');
-            })
+            // ->where(function ($query) {
+            //     $query->whereNull('grade')
+            //         ->orWhere('grade', '!=', 'F');
+            // })
+            ->whereDate('updated_at', Carbon::today())
             ->get();
-
-
-        // $registrations = CourseRegistration::whereNotNull('total')
-        //     ->where(function ($query) {
-        //         $query->whereNull('grade')
-        //             ->orWhere('grade', '!=', 'F');
-        //     })
-        //     ->whereDate('updated_at', Carbon::today())
-        //     ->get();
 
         $updatedRecords = [];
         $fiftyPassAffected = [];
