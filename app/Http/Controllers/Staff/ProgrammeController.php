@@ -680,7 +680,9 @@ class ProgrammeController extends Controller
             $message = 'Your course registration has been successfully approved. Please proceed to print at your earliest convenience.';
 
             $mail = new NotificationMail($senderName, $message, $receiverName, $courseReg);
-            Mail::to($student->email)->send($mail);
+            if(env('SEND_MAIL')){
+                Mail::to($student->email)->send($mail);
+            }
             Notification::create([
                 'student_id' => $student->id,
                 'description' => $message,

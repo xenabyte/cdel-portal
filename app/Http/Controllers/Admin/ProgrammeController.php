@@ -863,8 +863,10 @@ class ProgrammeController extends Controller
                 'status' => 0
             ]);
 
-            //send a notification mail
-            Mail::to($request->email)->send(new NotificationMail($staffName, $message, $receiverName));
+            if(env('SEND_MAIL')){
+                //send a notification mail
+                Mail::to($request->email)->send(new NotificationMail($staffName, $message, $receiverName));
+            }
         }
 
         alert()->success('Message sent', '')->persistent('Close');
@@ -1480,7 +1482,9 @@ class ProgrammeController extends Controller
             if($levelAdviser->staff){
                 $mail = new NotificationMail($senderName, $message, $levelAdviser->staff->title.' '.$levelAdviser->staff->lastname.' '.$levelAdviser->staff->othernames);
 
-                Mail::to($levelAdviser->staff->email)->send($mail);
+                if(env('SEND_MAIL')){
+                    Mail::to($levelAdviser->staff->email)->send($mail);
+                }
                 Notification::create([
                     'staff_id' => $levelAdviser->staff->id,
                     'description' => $message,
@@ -1502,7 +1506,9 @@ class ProgrammeController extends Controller
             $adminEmail = env('APP_EMAIL');
             
             $mail = new NotificationMail($senderName, $message, $receiverName);
-            Mail::to($adminEmail)->send($mail);
+            if(env('SEND_MAIL')){
+                Mail::to($adminEmail)->send($mail);
+            }
         }
 
         if($levelAdviser->save()){

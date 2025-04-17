@@ -90,8 +90,10 @@ class PaymentController extends Controller
                         $data->othernames = $student->applicant->othernames;
                         $data->amount = $amount;
                         $data->invoice = $invoice;
-                        
-                        Mail::to($student->email)->send(new TransactionMail($data));
+                        if(env('SEND_MAIL')){
+                            Mail::to($student->email)->send(new TransactionMail($data));
+                        }
+
                         if($paymentType == Payment::PAYMENT_TYPE_WALLET_DEPOSIT){
                             $creditStudent = $this->creditStudentWallet($studentId, $amount);
                             if(!$creditStudent){
@@ -206,9 +208,9 @@ class PaymentController extends Controller
                         $data->othernames = $student->applicant->othernames;
                         $data->amount = $amount;
                         $data->invoice = $invoice;
-                        
-                        Mail::to($student->email)->send(new TransactionMail($data));
-
+                        if(env('SEND_MAIL')){
+                            Mail::to($student->email)->send(new TransactionMail($data));
+                        }
                         if($paymentType == Payment::PAYMENT_TYPE_WALLET_DEPOSIT){
                             $creditStudent = $this->creditStudentWallet($studentId, $amount);
                             if(!$creditStudent){
@@ -325,8 +327,9 @@ class PaymentController extends Controller
                     $data->othernames = $student->applicant->othernames;
                     $data->amount = $amount;
                     $data->invoice = $invoice;
-                    
-                    Mail::to($student->email)->send(new TransactionMail($data));
+                    if(env('SEND_MAIL')){
+                        Mail::to($student->email)->send(new TransactionMail($data));
+                    }
 
                     if($paymentType == Payment::PAYMENT_TYPE_WALLET_DEPOSIT){
                         $creditStudent = $this->creditStudentWallet($studentId, $amount);
@@ -441,8 +444,9 @@ class PaymentController extends Controller
                             $data->othernames = $student->applicant->othernames;
                             $data->amount = $amount;
                             $data->invoice = $invoice;
-                            
-                            Mail::to($student->email)->send(new TransactionMail($data));
+                            if(env('SEND_MAIL')){
+                                Mail::to($student->email)->send(new TransactionMail($data));
+                            }
 
                             if($paymentType == Payment::PAYMENT_TYPE_WALLET_DEPOSIT){
                                 $creditStudent = $this->creditStudentWallet($studentId, $amount);

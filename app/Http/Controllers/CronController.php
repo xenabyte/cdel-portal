@@ -112,11 +112,13 @@ class CronController extends Controller
             return response()->json(['error' => 'Failed to create the backup file.'], 500);
         }
 
-        Mail::send([], [], function ($message) use ($exportPath, $fileName) {
-            $message->to(env('BACKUP_EMAIL'))
-                ->subject('Database Backup ' . date('Y-m-d H:i:s'))
-                ->attach($exportPath, ['as' => $fileName]);
-        });
+        if(env('SEND_MAIL')){
+            Mail::send([], [], function ($message) use ($exportPath, $fileName) {
+                $message->to(env('BACKUP_EMAIL'))
+                    ->subject('Database Backup ' . date('Y-m-d H:i:s'))
+                    ->attach($exportPath, ['as' => $fileName]);
+            });
+        }
 
         unlink($exportPath);
 

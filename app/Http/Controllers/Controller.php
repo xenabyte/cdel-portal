@@ -760,8 +760,10 @@ class Controller extends BaseController
             }
             
             if(!$isStudentActive){
-                Mail::to($studentPreviousEmail)->send(new StudentActivated($student));
-                $this->sendGuardianOnboardingMail($student);
+                if(env('SEND_MAIL')){
+                    Mail::to($studentPreviousEmail)->send(new StudentActivated($student));
+                    $this->sendGuardianOnboardingMail($student);
+                }
             }
 
             return true;
@@ -894,8 +896,9 @@ class Controller extends BaseController
 
             $transaction->status = 1;
             $transaction->save();
-            
-            Mail::to($student->email)->send(new TransactionMail($data));   
+            if(env('SEND_MAIL')){
+                Mail::to($student->email)->send(new TransactionMail($data)); 
+            }  
         }
 
         if($paymentType == Payment::PAYMENT_TYPE_WALLET_DEPOSIT){
@@ -1039,9 +1042,9 @@ class Controller extends BaseController
             $tx->user_id = $checkApplicant->id;
             $tx->save();
         }
-
-        Mail::to($applicant->email)->send(new ApplicationMail($applicant));
-
+        if(env('SEND_MAIL')){
+            Mail::to($applicant->email)->send(new ApplicationMail($applicant));
+        }
         return true;
     }
 
@@ -1053,8 +1056,9 @@ class Controller extends BaseController
             if ($guardian) {
                 $guardianEmail = $guardian->email;
                 $guardianPasscode = $guardian->passcode;
-
-                Mail::to($guardianEmail)->send(new GuardianOnboardingMail($guardian));
+                if(env('SEND_MAIL')){
+                    Mail::to($guardianEmail)->send(new GuardianOnboardingMail($guardian));
+                }
 
                 return true;
             }

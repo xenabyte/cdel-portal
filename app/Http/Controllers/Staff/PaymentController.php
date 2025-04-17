@@ -763,8 +763,9 @@ class PaymentController extends Controller
                 $data->othernames = $student->applicant->othernames;
                 $data->amount = $amount;
                 $data->invoice = $invoice;
-                
-                Mail::to($student->email)->send(new TransactionMail($data));
+                if(env('SEND_MAIL')){
+                    Mail::to($student->email)->send(new TransactionMail($data));
+                }
             }
 
             if(!empty($student) && ($payment->type == Payment::PAYMENT_TYPE_SCHOOL || $payment->type == Payment::PAYMENT_TYPE_SCHOOL_DE) && $request->paymentStatus == 1){
@@ -1124,9 +1125,9 @@ class PaymentController extends Controller
             $data->othernames = $student->applicant->othernames;
             $data->amount = $amount;
             $data->invoice = $invoice;
-            
-            Mail::to($student->email)->send(new TransactionMail($data));
-
+            if(env('SEND_MAIL')){
+                Mail::to($student->email)->send(new TransactionMail($data));
+            }
             alert()->success('Good job!!', 'Wallet credited successfully')->persistent('Close');
             return $this->getSingleStudent($studentIdCode, 'staff.chargeStudent');
         }

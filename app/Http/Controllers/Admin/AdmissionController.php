@@ -210,8 +210,9 @@ class AdmissionController extends Controller
             $student = Student::with('programme', 'applicant')->where('id', $studentId)->first();
             $student->admission_letter = $admissionLetter;
             $student->save();
-            Mail::to($student->email)->send(new AdmissionMail($student));
-
+            if(env('SEND_MAIL')){
+                Mail::to($student->email)->send(new AdmissionMail($student));
+            }
             $smsInstance = new Sms();
             $file = asset($admissionLetter);
             $fileUrl = $this->shortURL($file);
@@ -318,9 +319,10 @@ class AdmissionController extends Controller
             $student->admission_letter = $admissionLetter;
             $student->save();
     
-            //In the email, create and provide student portal login information
-            Mail::to($student->email)->send(new AdmissionMail($student));
-    
+            if(env('SEND_MAIL')){
+                //In the email, create and provide student portal login information
+                Mail::to($student->email)->send(new AdmissionMail($student));
+            }
             alert()->success('Changes Saved', '')->persistent('Close');
             return redirect()->back();
         }

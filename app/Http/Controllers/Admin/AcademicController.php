@@ -928,7 +928,9 @@ class AcademicController extends Controller
                 $message = 'Your course registration has been successfully reset. Please proceed to re-register as soon as possible.';
 
                 $mail = new NotificationMail($senderName, $message, $receiverName);
-                Mail::to($student->email)->send($mail);
+                if(env('SEND_MAIL')){
+                    Mail::to($student->email)->send($mail);
+                }
                 Notification::create([
                     'student_id' => $student->id,
                     'description' => $message,
@@ -1317,7 +1319,9 @@ class AcademicController extends Controller
 
                 try {
                     $mail = new NotificationMail($senderName, $message, $receiverName);
-                    Mail::to($student->email)->send($mail);
+                    if(env('SEND_MAIL')){
+                        Mail::to($student->email)->send($mail);
+                    }
                 } catch (\Exception $e) {
                     Log::error('Email Notification Failed: ' . $e->getMessage());
                 }
@@ -1346,7 +1350,9 @@ class AcademicController extends Controller
             
                 try {
                     $mail = new NotificationMail($senderName, $examMessage, $receiverName);
-                    Mail::to($student->email)->send($mail);
+                    if(env('SEND_MAIL')){
+                        Mail::to($student->email)->send($mail);
+                    }
                 } catch (\Exception $e) {
                     Log::error('Exam Notification Email Failed: ' . $e->getMessage());
                 }
@@ -1653,7 +1659,9 @@ class AcademicController extends Controller
             $message = 'Your course registration has been successfully approved. Please proceed to print at your earliest convenience.';
 
             $mail = new NotificationMail($senderName, $message, $receiverName);
-            Mail::to($student->email)->send($mail);
+            if(env('SEND_MAIL')){
+                Mail::to($student->email)->send($mail);
+            }
             Notification::create([
                 'student_id' => $student->id,
                 'description' => $message,
@@ -1725,7 +1733,9 @@ class AcademicController extends Controller
             $message = 'Your course registration has been successfully reset. Please proceed to re-register as soon as possible.';
 
             $mail = new NotificationMail($senderName, $message, $receiverName);
-            Mail::to($student->email)->send($mail);
+            if(env('SEND_MAIL')){
+                Mail::to($student->email)->send($mail);
+            }
             Notification::create([
                 'student_id' => $student->id,
                 'description' => $message,

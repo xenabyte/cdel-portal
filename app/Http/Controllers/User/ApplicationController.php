@@ -553,8 +553,9 @@ class ApplicationController extends Controller
             $userData->amount = $this->getPaystackAmount($amount);
             
             //create email to sennd bank details
-            Mail::to($request->email)->send(new BankDetailsMail($userData));
-
+            if(env('SEND_MAIL')){
+                Mail::to($request->email)->send(new BankDetailsMail($userData));
+            }
             $message = 'Kindly proceed to your email to complete application';
             alert()->info('Nice Work!', $message)->persistent('Close');
             return redirect()->back();

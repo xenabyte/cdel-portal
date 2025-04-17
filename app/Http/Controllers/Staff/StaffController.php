@@ -730,9 +730,10 @@ class StaffController extends Controller
                 'description' => $staffDescription,
                 'status' => 0
             ]);
-
-            //send a notification mail
-            Mail::to($request->email)->send(new NotificationMail($staffName, $message, $receiverName));
+            if(env('SEND_MAIL')){
+                //send a notification mail
+                Mail::to($request->email)->send(new NotificationMail($staffName, $message, $receiverName));
+            }
         }
 
         alert()->success('Message sent', '')->persistent('Close');

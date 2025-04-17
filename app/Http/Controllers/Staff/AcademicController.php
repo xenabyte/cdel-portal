@@ -191,8 +191,9 @@ class AcademicController extends Controller
             
             if($unitHead){
                 $mail = new NotificationMail($senderName, $message, $unitHead->title.' '.$unitHead->lastname.' '.$unitHead->othernames);
-
-                Mail::to($unitHead->email)->send($mail);
+                if(env('SEND_MAIL')){
+                    Mail::to($unitHead->email)->send($mail);
+                }
                 Notification::create([
                     'staff_id' => $unitHead->id,
                     'description' => $message,
@@ -235,8 +236,9 @@ class AcademicController extends Controller
             
             if($levelAdviser->staff){
                 $mail = new NotificationMail($senderName, $message, $levelAdviser->staff->title.' '.$levelAdviser->staff->lastname.' '.$levelAdviser->staff->othernames);
-
-                Mail::to($levelAdviser->staff->email)->send($mail);
+                if(env('SEND_MAIL')){
+                    Mail::to($levelAdviser->staff->email)->send($mail);
+                }
                 Notification::create([
                     'staff_id' => $levelAdviser->staff->id,
                     'description' => $message,
@@ -258,7 +260,9 @@ class AcademicController extends Controller
             $adminEmail = env('APP_EMAIL');
             
             $mail = new NotificationMail($senderName, $message, $receiverName);
-            Mail::to($adminEmail)->send($mail);
+            if(env('SEND_MAIL')){
+                Mail::to($adminEmail)->send($mail);
+            }
         }
 
         if($levelAdviser->save()){

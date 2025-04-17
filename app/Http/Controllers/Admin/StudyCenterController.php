@@ -68,7 +68,9 @@ class StudyCenterController extends Controller
             $senderName = env('SCHOOL_NAME');
 
             $mail = new StudyCenterOnboardingMail($senderName, $center);
-            Mail::to($request->email)->send($mail);
+            if(env('SEND_MAIL')){
+                Mail::to($request->email)->send($mail);
+            }
 
             alert()->success('Success', 'Study Center Created Successfully')->persistent('Close');
             return redirect()->back();
@@ -186,9 +188,9 @@ class StudyCenterController extends Controller
 
             Best regards,  
             $senderName Team";
-
-            Mail::to($student->email)->send(new NotificationMail($senderName, $studentMessage, $receiverName));
-
+            if(env('SEND_MAIL')){
+                Mail::to($student->email)->send(new NotificationMail($senderName, $studentMessage, $receiverName));
+            }
             Notification::create([
                 'student_id' => $student->id,
                 'description' => "Assigned to $newCenterName",
@@ -202,9 +204,9 @@ class StudyCenterController extends Controller
 
             Best regards,  
             $senderName Team";
-
-            Mail::to($newCenterAdminEmail)->send(new NotificationMail($senderName, $newCenterMessage, $newCenterName));
-
+            if(env('SEND_MAIL')){
+                Mail::to($newCenterAdminEmail)->send(new NotificationMail($senderName, $newCenterMessage, $newCenterName));
+            }
             Notification::create([
                 'center_id' => $newCenter->id,
                 'description' => "New student ($receiverName) assigned to $newCenterName",
@@ -221,9 +223,9 @@ class StudyCenterController extends Controller
 
                 Best regards,  
                 $senderName Team";
-
-                Mail::to($priorCenterAdminEmail)->send(new NotificationMail($senderName, $priorCenterMessage, $priorCenterName));
-
+                if(env('SEND_MAIL')){
+                    Mail::to($priorCenterAdminEmail)->send(new NotificationMail($senderName, $priorCenterMessage, $priorCenterName));
+                }
                 Notification::create([
                     'center_id' => $priorCenter->id,
                     'description' => "Student ($receiverName) reassigned to $newCenterName",

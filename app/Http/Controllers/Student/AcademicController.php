@@ -468,7 +468,9 @@ class AcademicController extends Controller
                 $message = 'Your course registration has been regenerated';
         
                 $mail = new NotificationMail($senderName, $message, $receiverName, $courseReg);
-                Mail::to($student->email)->send($mail);
+                if(env('SEND_MAIL')){
+                    Mail::to($student->email)->send($mail);
+                }
 
                 return redirect(asset($courseReg));
             }

@@ -76,8 +76,9 @@ class PartnerController extends Controller
             $receiverEmail = $partner->email;
             
             $mail = new NotificationMail($senderName, $message, $receiverName);
-            Mail::to($receiverEmail)->send($mail);
-
+            if(env('SEND_MAIL')){
+                Mail::to($receiverEmail)->send($mail);
+            }
             Notification::create([
                 'partner_id' => $partner->id,
                 'description' => $message,

@@ -278,7 +278,9 @@ class CareerController extends Controller
             }
 
 
-            Mail::to($applicant->email)->send(new ApplicantStatusUpdateMail($applicant, $message));
+            if(env('SEND_MAIL')){
+                Mail::to($applicant->email)->send(new ApplicantStatusUpdateMail($applicant, $message));
+            }
         }
 
         alert()->success('Status updated successfully', '')->persistent('Close');

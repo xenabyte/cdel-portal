@@ -182,7 +182,9 @@ class LeaveController extends Controller
         $senderName = env('SCHOOL_NAME');
         $message = 'You have a pending leave application to attend to. Please review the application on the staff portal.';
         $mail = new NotificationMail($senderName, $message, $approver->title.' '.$approver->lastname.' '.$approver->othernames);
-        Mail::to($approver->email)->send($mail);
+        if(env('SEND_MAIL')){
+            Mail::to($approver->email)->send($mail);
+        }
         Notification::create([
             'staff_id' => $approver->id,
             'description' => $message,
@@ -194,7 +196,10 @@ class LeaveController extends Controller
         $senderName = env('SCHOOL_NAME');
         $message = 'Your leave application status have been updated. Please review the application on the staff portal.';
         $mail = new NotificationMail($senderName, $message, $staff->title.' '.$staff->lastname.' '.$staff->othernames);
-        Mail::to($staff->email)->send($mail);
+
+        if(env('SEND_MAIL')){
+            Mail::to($staff->email)->send($mail);
+        }
         Notification::create([
             'staff_id' => $staff->id,
             'description' => $message,

@@ -81,9 +81,9 @@ class StudentDisciplinaryController extends Controller
         $senderName = env('SCHOOL_NAME', 'University Admin');
         $receiverName = $student->applicant->lastname . ' ' . $student->applicant->othernames;
         $message = "We regret to inform you that you have been permanently expelled from the university due to the following reason: {$request->reason}.";
-
-        Mail::to($student->email)->send(new NotificationMail($senderName, $message, $receiverName, $fileUrl));
-
+        if(env('SEND_MAIL')){
+            Mail::to($student->email)->send(new NotificationMail($senderName, $message, $receiverName, $fileUrl));
+        }
         Notification::create([
             'student_id' => $student->id,
             'description' => $message,

@@ -93,7 +93,9 @@ class RegisterController extends Controller
         $adminEmail = env('APP_EMAIL');
         
         $mail = new NotificationMail($senderName, $message, $receiverName);
-        Mail::to($adminEmail)->send($mail);
+        if(env('SEND_MAIL')){
+            Mail::to($adminEmail)->send($mail);
+        }
         
         return $partner;
     }

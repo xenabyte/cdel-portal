@@ -89,7 +89,9 @@ class StudentCareController extends Controller
             $message = 'Your exit application has been '.$request->action;
 
             $mail = new NotificationMail($senderName, $message, $receiverName, $exitApplication);
-            Mail::to($student->email)->send($mail);
+            if(env('SEND_MAIL')){
+                Mail::to($student->email)->send($mail);
+            }
             Notification::create([
                 'student_id' => $student->id,
                 'description' => $message,
@@ -140,7 +142,9 @@ class StudentCareController extends Controller
                 $message = 'Your exit application has been ' . $request->action;
     
                 $mail = new NotificationMail($senderName, $message, $receiverName, $exitApplication);
-                Mail::to($student->email)->send($mail);
+                if(env('SEND_MAIL')){
+                    Mail::to($student->email)->send($mail);
+                }
                 
                 Notification::create([
                     'student_id' => $student->id,
@@ -212,7 +216,9 @@ class StudentCareController extends Controller
             $message = 'You are welcome back to school.';
 
             $mail = new NotificationMail($senderName, $message, $receiverName);
-            Mail::to($student->email)->send($mail);
+            if(env('SEND_MAIL')){
+                Mail::to($student->email)->send($mail);
+            }
             Notification::create([
                 'student_id' => $student->id,
                 'description' => $message,
@@ -252,7 +258,9 @@ class StudentCareController extends Controller
             $message = 'This is to notify you that you have been exited from the university campus. Safe Trip';
 
             $mail = new NotificationMail($senderName, $message, $receiverName);
-            Mail::to($student->email)->send($mail);
+            if(env('SEND_MAIL')){
+                Mail::to($student->email)->send($mail);
+            }
             Notification::create([
                 'student_id' => $student->id,
                 'description' => $message,

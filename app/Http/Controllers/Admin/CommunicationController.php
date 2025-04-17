@@ -108,10 +108,12 @@ class CommunicationController extends Controller
 
         if ($type !== 'sms') {
             $mail = new NotificationMail($senderName, $message, $receiverName, $attachmentUrl);
-            if (!empty($ccEmail)) {
-                Mail::to($student->email)->cc($ccEmail)->send($mail);
-            }else{
-                Mail::to($student->email)->send($mail);
+            if(env('SEND_MAIL')){
+                if (!empty($ccEmail)) {
+                    Mail::to($student->email)->cc($ccEmail)->send($mail);
+                }else{
+                    Mail::to($student->email)->send($mail);
+                }
             }
         }
 
@@ -188,7 +190,9 @@ class CommunicationController extends Controller
 
         if ($type !== 'sms') {
             $mail = new NotificationMail($senderName, $message, $receiverName, $attachmentUrl);
-            Mail::to($receiverEmail)->send($mail);
+            if(env('SEND_MAIL')){
+                Mail::to($receiverEmail)->send($mail);
+            }
         }
 
         $smsInstance = new Sms();

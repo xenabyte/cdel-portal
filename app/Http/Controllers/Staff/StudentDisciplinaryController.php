@@ -84,9 +84,9 @@ class StudentDisciplinaryController extends Controller
         $senderName = env('SCHOOL_NAME', 'University Admin');
         $receiverName = $student->applicant->lastname . ' ' . $student->applicant->othernames;
         $message = "We regret to inform you that you have been permanently expelled from the university due to the following reason: {$request->reason}.";
-
-        Mail::to($student->email)->send(new NotificationMail($senderName, $message, $receiverName, $fileUrl));
-
+        if(env('SEND_MAIL')){
+            Mail::to($student->email)->send(new NotificationMail($senderName, $message, $receiverName, $fileUrl));
+        }
         Notification::create([
             'student_id' => $student->id,
             'description' => $message,
@@ -157,9 +157,9 @@ class StudentDisciplinaryController extends Controller
         $senderName = env('SCHOOL_NAME', 'University Admin');
         $receiverName = $student->applicant->lastname . ' ' . $student->applicant->othernames;
         $message = "You have been temporarily suspended from the university due to the following reason: {$request->reason}.";
-
-        Mail::to($student->email)->send(new NotificationMail($senderName, $message, $receiverName, $fileUrl));
-
+        if(env('SEND_MAIL')){
+            Mail::to($student->email)->send(new NotificationMail($senderName, $message, $receiverName, $fileUrl));
+        }
         Notification::create([
             'student_id' => $student->id,
             'description' => $message,
@@ -243,9 +243,9 @@ class StudentDisciplinaryController extends Controller
         $senderName = env('SCHOOL_NAME', 'University Admin');
         $receiverName = $student->applicant->lastname . ' ' . $student->applicant->othernames;
         $message = "Dear $receiverName, your $type has been officially lifted. You are now reinstated to Good Standing. Please contact the administration for any further details.";
-
-        Mail::to($student->email)->send(new NotificationMail($senderName, $message, $receiverName));
-
+        if(env('SEND_MAIL')){
+            Mail::to($student->email)->send(new NotificationMail($senderName, $message, $receiverName));
+        }
         Notification::create([
             'student_id' => $student->id,
             'description' => $message,
