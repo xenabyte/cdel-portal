@@ -353,6 +353,12 @@ class CronController extends Controller
                     }
                 }
 
+                // Re-grade if student didn't meet pass mark
+                if ($totalScore < $requiredPassMark) {
+                    $grade = 'F';
+                    $points = 0;
+                }
+
                 $calculatedPoints = $studentRegistration->course_credit_unit * $points;
 
                 // Only update if something changed
