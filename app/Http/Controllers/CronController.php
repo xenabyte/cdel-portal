@@ -296,11 +296,20 @@ class CronController extends Controller
     {
         set_time_limit(600);
 
+        // $registrations = CourseRegistration::whereNotNull('total')
+        //     ->where(function ($query) {
+        //         $query->whereNull('grade')
+        //             ->orWhere('grade', '!=', 'F');
+        //     })
+        //     ->get();
+
+
         $registrations = CourseRegistration::whereNotNull('total')
             ->where(function ($query) {
                 $query->whereNull('grade')
                     ->orWhere('grade', '!=', 'F');
             })
+            ->whereDate('updated_at', Carbon::today())
             ->get();
 
         $updatedRecords = [];
@@ -320,41 +329,40 @@ class CronController extends Controller
                 $requiredPassMark = 40; // Default
                 $fiftyPassTriggered = false;
 
-                if ($student) {
-                    $studentProgrammeRequirement = ProgrammeRequirement::where('programme_id', $student->programme_id)
-                        ->where('level_id', $student->level_id)
-                        ->first();
+                // if ($student) {
+                //     $studentProgrammeRequirement = ProgrammeRequirement::where('programme_id', $student->programme_id)
+                //         ->where('level_id', $student->level_id)
+                //         ->first();
 
-                    if ($studentProgrammeRequirement) {
-                        $additionalCriteria = json_decode($studentProgrammeRequirement->additional_criteria, true);
+                //     if ($studentProgrammeRequirement) {
+                //         $additionalCriteria = json_decode($studentProgrammeRequirement->additional_criteria, true);
 
-                        $fiftyPassSetting = $additionalCriteria['course_code_50_pass'] ?? null;
+                //         $fiftyPassSetting = $additionalCriteria['course_code_50_pass'] ?? null;
 
-                        if (
-                            $fiftyPassSetting &&
-                            isset($fiftyPassSetting['enabled']) && $fiftyPassSetting['enabled'] &&
-                            isset($fiftyPassSetting['prefixes']) && is_array($fiftyPassSetting['prefixes'])
-                        ) {
-                            foreach ($fiftyPassSetting['prefixes'] as $prefix) {
-                                if (stripos($courseCode, $prefix) === 0) {
-                                    $requiredPassMark = 50;
-                                    $fiftyPassTriggered = true;
+                //         if (
+                //             $fiftyPassSetting &&
+                //             isset($fiftyPassSetting['enabled']) && $fiftyPassSetting['enabled'] &&
+                //             isset($fiftyPassSetting['prefixes']) && is_array($fiftyPassSetting['prefixes'])
+                //         ) {
+                //             foreach ($fiftyPassSetting['prefixes'] as $prefix) {
+                //                 if (stripos($courseCode, $prefix) === 0) {
+                //                     $requiredPassMark = 50;
+                //                     $fiftyPassTriggered = true;
 
-                                    $fiftyPassAffected[] = [
-                                        'student_id' => $student->id,
-                                        'level_id' => $student->level_id,
-                                        'programme_id' => $student->programme_id,
-                                        'course_code' => $courseCode,
-                                        'total' => $totalScore,
-                                        'new_required_pass_mark' => 50,
-                                    ];
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                    // If no special rule matched, requiredPassMark remains 40
-                }
+                //                     $fiftyPassAffected[] = [
+                //                         'student_id' => $student->id,
+                //                         'level_id' => $student->level_id,
+                //                         'programme_id' => $student->programme_id,
+                //                         'course_code' => $courseCode,
+                //                         'total' => $totalScore,
+                //                         'new_required_pass_mark' => 50,
+                //                     ];
+                //                     break;
+                //                 }
+                //             }
+                //         }
+                //     }
+                // }
 
                 $calculatedPoints = $studentRegistration->course_credit_unit * $points;
 
