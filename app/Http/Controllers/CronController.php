@@ -295,7 +295,7 @@ class CronController extends Controller
     public function updateStudentGrade()
     {
         set_time_limit(600);
-        
+
         $registrations = CourseRegistration::whereNotNull('total')
             ->where(function ($query) {
                 $query->whereNull('grade')
@@ -354,12 +354,6 @@ class CronController extends Controller
                         }
                     }
                     // If no special rule matched, requiredPassMark remains 40
-                }
-
-                // Re-grade if student didn't meet pass mark
-                if ($totalScore < $requiredPassMark) {
-                    $grade = 'F';
-                    $points = 0;
                 }
 
                 $calculatedPoints = $studentRegistration->course_credit_unit * $points;
