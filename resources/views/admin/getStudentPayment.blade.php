@@ -54,6 +54,7 @@ $balance = $paymentAmount>0? $paymentAmount - $totalPaid : 0;
                         <h5 class="mb-1">{{$student->applicant->lastname.' '.$student->applicant->othernames}}</h5>
                         @php
                             $studentAdvisoryData = (object) $student->getAcademicAdvisory();
+                            $failedCourses = $student->registeredCourses()->where('grade', 'F')->where('re_reg', null)->get();
                         @endphp
                         <p class="text-muted">{{ $student->programme->name }} <br>
                             <strong>Matric Number:</strong> {{ $student->matric_number }}<br>

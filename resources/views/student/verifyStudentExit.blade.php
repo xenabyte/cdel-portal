@@ -1,5 +1,10 @@
 @extends('layouts.dashboard')
-
+@php
+    use \App\Models\ResultApprovalStatus;
+    
+    $studentAdvisoryData = (object) $student->getAcademicAdvisory();
+    $failedCourses = $student->registeredCourses()->where('grade', 'F')->where('re_reg', null)->where('result_approval_id', ResultApprovalStatus::getApprovalStatusId(ResultApprovalStatus::SENATE_APPROVED))->get();
+@endphp
 @section('content')
 
 <!-- start page title -->
@@ -46,9 +51,6 @@
                     </div>
                     <div class="mt-4 text-center">
                         <h5 class="mb-1">{{$student->applicant->lastname.' '.$student->applicant->othernames}}</h5>
-                        @php
-                            $studentAdvisoryData = (object) $student->getAcademicAdvisory();
-                        @endphp
                         <p class="text-muted">{{ $student->programme->name }} <br>
                             <strong>Matric Number:</strong> {{ $student->matric_number }}<br>
                             <strong>Wifi Username:</strong> {{ $student->bandwidth_username }}<br>

@@ -1,11 +1,12 @@
 @extends('student.layout.dashboard')
 @php
+use \App\Models\ResultApprovalStatus;
+
 $student = Auth::guard('student')->user();
 $qrcode = 'https://quickchart.io/chart?chs=300x300&cht=qr&chl='.env('APP_URL').'/studentDetails/'.$student->slug;
 $name = $student->applicant->lastname.' '.$student->applicant->othernames;
-$failedCourses = $student->registeredCourses()->where('grade', 'F')->where('re_reg', null)->get();
 $studentAdvisoryData = (object) $student->getAcademicAdvisory();
-
+$failedCourses = $student->registeredCourses()->where('grade', 'F')->where('re_reg', null)->where('result_approval_id', ResultApprovalStatus::getApprovalStatusId(ResultApprovalStatus::SENATE_APPROVED))->get();
 
 $stage = 0;
 @endphp

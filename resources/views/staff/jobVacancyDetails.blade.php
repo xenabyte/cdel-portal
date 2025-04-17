@@ -216,7 +216,7 @@
                 @if($applicant->workStudyApplicant)
                     @php
                         $student = $applicant->workStudyApplicant;
-                        $failedCourses = $student->registeredCourses()->where('grade', 'F')->where('re_reg', null)->where('result_approval_id', ResultApprovalStatus::getApprovalStatusId(ResultApprovalStatus::SENATE_APPROVED))->get();
+                        $failedCourses = $student->registeredCourses()->where('grade', 'F')->where('re_reg', null)->get();                        
                         $studentAdvisoryData = (object) $student->getAcademicAdvisory();
                     @endphp
 
