@@ -300,8 +300,7 @@ class CronController extends Controller
 
         $registrations = CourseRegistration::whereNotNull('total')
             ->where(function ($query) {
-                $query->whereNull('grade')
-                    ->orWhere('grade', '!=', 'F');
+                $query->whereNull('grade');
             })
             ->get();
 
