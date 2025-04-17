@@ -212,10 +212,9 @@ $stage = 0;
                                             <img class="img-thumbnail mt-3" width="50%" src="{{ url('uploads/'.$suspension->court_affidavit) }}">
                                             <hr style="width:30%">
                                             <a href="{{ url('uploads/'.$suspension->court_affidavit) }}" target="_blank" class="btn btn-sm btn-secondary">View</a>
-                                        @else
+                                        @endif
                                         <hr width="30%">
                                         <button class="btn btn-primary mt-2" data-bs-toggle="modal" data-bs-target="#courtaffidavitModal">Upload Court affidavit</button>
-                                        @endif
                                     </h6>
                                 </div>
                             </div>
@@ -233,10 +232,9 @@ $stage = 0;
                                             <img class="img-thumbnail mt-3" width="50%" src="{{ url('uploads/'.$suspension->undertaking_letter) }}">
                                             <hr style="width:30%">
                                             <a href="{{ url('uploads/'.$suspension->undertaking_letter) }}" target="_blank" class="btn btn-sm btn-secondary">View</a>
-                                        @else
+                                        @endif
                                         <hr width="30%">
                                         <button class="btn btn-primary mt-2" data-bs-toggle="modal" data-bs-target="#undertakingletterModal">Upload guardian letter of undertaking</button>
-                                        @endif
                                     </h6>
                                 </div>
                             </div>
@@ -254,10 +252,9 @@ $stage = 0;
                                             <img class="img-thumbnail mt-3" width="50%" src="{{ url('uploads/'.$suspension->traditional_ruler_reference) }}">
                                             <hr style="width:30%">
                                             <a href="{{ url('uploads/'.$suspension->traditional_ruler_reference) }}" target="_blank" class="btn btn-sm btn-secondary">View</a>
-                                        @else
+                                        @endif
                                         <hr width="30%">
                                         <button class="btn btn-primary mt-2" data-bs-toggle="modal" data-bs-target="#traditionalrulerreferenceModal">Upload traditional ruler reference</button>
-                                        @endif
                                     </h6>
                                 </div>
                             </div>
@@ -275,10 +272,9 @@ $stage = 0;
                                             <img class="img-thumbnail mt-3" width="50%" src="{{ url('uploads/'.$suspension->ps_reference) }}">
                                             <hr style="width:30%">
                                             <a href="{{ url('uploads/'.$suspension->ps_reference) }}" target="_blank" class="btn btn-sm btn-secondary">View</a>
-                                        @else
+                                        @endif
                                         <hr width="30%">
                                         <button class="btn btn-primary mt-2" data-bs-toggle="modal" data-bs-target="#psreferenceModal">Upload public servant reference</button>
-                                        @endif
                                     </h6>
                                 </div>
                             </div>
