@@ -478,7 +478,7 @@ class Student extends Authenticatable
             'graduation_ready' => false,
             'graduation_message' => '',
             'trajectory_analysis' => [
-                'cgpa_trend' => 'unknown',
+                'cgpa_trend' => null,
                 'academic_risk' => null,
                 'strengths' => [],
                 'weaknesses' => [],
