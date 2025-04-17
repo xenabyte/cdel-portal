@@ -443,6 +443,29 @@ class Student extends Authenticatable
     }
 
 
+    /**
+     * Generates an academic advisory for the student.
+     * 
+     * The advisory is an associative array with the following elements:
+     * 
+     * - `promotion_eligible`: boolean indicating if the student is eligible for promotion
+     * - `promotion_message`: string explaining the reason for promotion eligibility
+     * - `professional_exam_eligible`: boolean indicating if the student is eligible for the professional exam
+     * - `professional_exam_message`: string explaining the reason for professional exam eligibility
+     * - `transfer_options`: array of programme names the student is eligible to transfer to
+     * - `failed_courses`: array of course codes the student has failed
+     * - `advisory_notes`: array of strings summarizing the student's advisory
+     * - `graduation_ready`: boolean indicating if the student is ready to graduate
+     * - `graduation_message`: string explaining the reason for graduation readiness
+     * - `trajectory_analysis`: associative array with the following elements
+     *   - `cgpa_trend`: string indicating the trend of the student's CGPA (Upward, Downward, Flat)
+     *   - `academic_risk`: string indicating the academic risk level of the student (High risk of withdrawal, At risk of not meeting promotion criteria, Needs improvement)
+     *   - `strengths`: array of course prefixes the student excels in
+     *   - `weaknesses`: array of course prefixes the student struggles with
+     *   - `tips`: array of strings offering advice to the student
+     * 
+     * @return array
+     */
     public function getAcademicAdvisory(){
         $advisory = [
             'promotion_eligible' => true,
@@ -463,10 +486,24 @@ class Student extends Authenticatable
             ]
         ];
 
-        // === Promotion check
-        $promotionCheck = $this->canPromote(); // assumed to return array with both promotion and professional_exam
+        // === Check for fresh student
+        $hasCGPA = $this->cgpa !== null && $this->cgpa > 0;
+        $hasGPARecords = $this->semestersWithGPA()->count() > 0;
 
-        // Handle promotion
+        if (!$hasCGPA && !$hasGPARecords) {
+            $advisory['promotion_eligible'] = false;
+            $advisory['promotion_message'] = "You are a fresh student. Promotion checks will begin after your first semester.";
+            $advisory['professional_exam_eligible'] = false;
+            $advisory['professional_exam_message'] = "Eligibility for professional exam will be assessed after your first semester.";
+            $advisory['advisory_notes'][] = "You're a fresh student. Academic advisory will become available once you complete at least one semester.";
+            $advisory['trajectory_analysis']['cgpa_trend'] = 'Not applicable yet';
+
+            return $advisory;
+        }
+
+        // === Promotion check
+        $promotionCheck = $this->canPromote();
+
         if (!$promotionCheck['promotion']['status']) {
             $advisory['promotion_eligible'] = false;
             $advisory['promotion_message'] = implode("; ", $promotionCheck['promotion']['reasons']);
@@ -475,7 +512,7 @@ class Student extends Authenticatable
             $advisory['promotion_message'] = "You are eligible for promotion.";
         }
 
-        // Handle professional exam eligibility
+        // Professional exam
         $advisory['professional_exam_eligible'] = $promotionCheck['professional_exam']['status'];
         $advisory['professional_exam_message'] = $promotionCheck['professional_exam']['status']
             ? "You are eligible to take the professional exam."
@@ -511,44 +548,35 @@ class Student extends Authenticatable
             $advisory['graduation_message'] = "Graduation readiness check not yet implemented.";
         }
 
-        // === CGPA Trend Analysis
+        // === CGPA Trend
         $gpas = $this->semestersWithGPA()->orderBy('level')->pluck('gpa')->toArray();
-
         if (count($gpas) >= 2) {
             $first = $gpas[0];
             $last = end($gpas);
-            if ($last > $first) $trend = 'Upward';
-            elseif ($last < $first) $trend = 'Downward';
-            else $trend = 'Flat';
+            $trend = $last > $first ? 'Upward' : ($last < $first ? 'Downward' : 'Flat');
             $advisory['trajectory_analysis']['cgpa_trend'] = $trend;
         }
 
-        // === Academic Risk Level
+        // === Academic Risk
         $requirement = ProgrammeRequirement::where('programme_id', $this->programme_id)
-        ->where('programme_category_id', $this->programme_category_id)
-        ->where('level_id', $this->level_id)
-        ->first();
+            ->where('programme_category_id', $this->programme_category_id)
+            ->where('level_id', $this->level_id)
+            ->first();
+
+        $cgpa = $this->cgpa;
 
         if ($requirement) {
             $minCgpa = $requirement->min_cgpa;
-
-            if ($this->cgpa < 1.5) {
-                $advisory['trajectory_analysis']['academic_risk'] = 'High risk of withdrawal';
-            } elseif ($this->cgpa < $minCgpa) {
-                $advisory['trajectory_analysis']['academic_risk'] = 'At risk of not meeting promotion criteria';
-            } elseif ($this->cgpa < 2.5) {
-                $advisory['trajectory_analysis']['academic_risk'] = 'Needs improvement';
-            }
+            if ($cgpa < 1.5) $risk = 'High risk of withdrawal';
+            elseif ($cgpa < $minCgpa) $risk = 'At risk of not meeting promotion criteria';
+            elseif ($cgpa < 2.5) $risk = 'Needs improvement';
         } else {
-            // fallback if no requirement data found
-            if ($this->cgpa < 1.5) {
-                $advisory['trajectory_analysis']['academic_risk'] = 'High risk of withdrawal';
-            } elseif ($this->cgpa < 2.0) {
-                $advisory['trajectory_analysis']['academic_risk'] = 'At risk of probation';
-            } elseif ($this->cgpa < 2.5) {
-                $advisory['trajectory_analysis']['academic_risk'] = 'Needs improvement';
-            }
+            if ($cgpa < 1.5) $risk = 'High risk of withdrawal';
+            elseif ($cgpa < 2.0) $risk = 'At risk of probation';
+            elseif ($cgpa < 2.5) $risk = 'Needs improvement';
         }
+
+        if (isset($risk)) $advisory['trajectory_analysis']['academic_risk'] = $risk;
 
         // === Strengths / Weaknesses
         $courseResults = $this->registeredCourses()
@@ -556,7 +584,7 @@ class Student extends Authenticatable
             ->with('course')
             ->get()
             ->groupBy(function ($reg) {
-                return explode(' ', $reg->course->code)[0]; // e.g., "CSC" from "CSC 201"
+                return explode(' ', $reg->course->code)[0];
             });
 
         foreach ($courseResults as $prefix => $regs) {
@@ -569,7 +597,7 @@ class Student extends Authenticatable
         }
 
         // === Tips
-        if ($advisory['trajectory_analysis']['cgpa_trend'] === 'downward') {
+        if ($advisory['trajectory_analysis']['cgpa_trend'] === 'Downward') {
             $advisory['trajectory_analysis']['tips'][] = "Your CGPA is declining. Consider seeking tutoring.";
         }
 
