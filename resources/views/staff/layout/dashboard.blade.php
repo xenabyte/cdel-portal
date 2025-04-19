@@ -370,7 +370,7 @@
                                                         <a href="{{ url('/staff/allStudents/'.$programmeCategory::TOPUP) }}" class="nav-link" data-key="t-basic"> {{ $programmeCategory::TOPUP }} </a>
                                                     </li>
                                                     <li class="nav-item">
-                                                        <a href="{{ url('/staff/allStudents/'.$programmeCategory::POSTGRADUATE) }}" class="nav-link" data-key="t-basic"> {{ $programmeCategory::POSTGRADUATE }} </a>
+                                                        <a href="{{ url('/staff/allStudents/'.$programmeCategory::PGD) }}" class="nav-link" data-key="t-basic"> {{ $programmeCategory::PGD }} </a>
                                                     </li>
                                                     <li class="nav-item">
                                                         <a href="{{ url('/staff/allStudents/'.$programmeCategory::MASTER) }}" class="nav-link" data-key="t-basic"> {{ $programmeCategory::MASTER }} </a>
@@ -393,7 +393,7 @@
                                                         <a href="{{ url('/staff/graduatingStudents/'.$programmeCategory::TOPUP) }}" class="nav-link" data-key="t-basic"> {{ $programmeCategory::TOPUP }} </a>
                                                     </li>
                                                     <li class="nav-item">
-                                                        <a href="{{ url('/staff/graduatingStudents/'.$programmeCategory::POSTGRADUATE) }}" class="nav-link" data-key="t-basic"> {{ $programmeCategory::POSTGRADUATE }} </a>
+                                                        <a href="{{ url('/staff/graduatingStudents/'.$programmeCategory::PGD) }}" class="nav-link" data-key="t-basic"> {{ $programmeCategory::PGD }} </a>
                                                     </li>
                                                     <li class="nav-item">
                                                         <a href="{{ url('/staff/graduatingStudents/'.$programmeCategory::MASTER) }}" class="nav-link" data-key="t-basic"> {{ $programmeCategory::MASTER }} </a>
@@ -548,20 +548,20 @@
                                         </li>
 
                                         <li class="nav-item">
-                                            <a href="#pgdAdmission" class="nav-link" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="pgdAdmission" data-key="t-pgdAdmission"> {{ $programmeCategory::POSTGRADUATE }}
+                                            <a href="#pgdAdmission" class="nav-link" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="pgdAdmission" data-key="t-pgdAdmission"> {{ $programmeCategory::PGD }}
                                             </a>
                                             <div class="collapse menu-dropdown" id="pgdAdmission">
                                                 <ul class="nav nav-sm flex-column">
                                                     <li class="nav-item">
-                                                        <a href="{{ url('/staff/applicants/'.$programmeCategory::POSTGRADUATE) }}" class="nav-link">Applicants</a>
+                                                        <a href="{{ url('/staff/applicants/'.$programmeCategory::PGD) }}" class="nav-link">Applicants</a>
                                                     </li>
                             
                                                     <li class="nav-item">
-                                                        <a href="{{ url('/staff/students/'.$programmeCategory::POSTGRADUATE) }}" class="nav-link">Students</a>
+                                                        <a href="{{ url('/staff/students/'.$programmeCategory::PGD) }}" class="nav-link">Students</a>
                                                     </li>
                 
                                                     <li class="nav-item">
-                                                        <a href="{{ url('/staff/matriculants/'.$programmeCategory::POSTGRADUATE) }}" class="nav-link">Matriculating List</a>
+                                                        <a href="{{ url('/staff/matriculants/'.$programmeCategory::PGD) }}" class="nav-link">Matriculating List</a>
                                                     </li>
                                                 </ul>
                                             </div>
@@ -711,7 +711,7 @@
                                                         <a href="{{ url('/staff/adviserProgrammes/'.$programmeCategory::TOPUP) }}" class="nav-link" data-key="t-basic"> {{ $programmeCategory::TOPUP }} </a>
                                                     </li>
                                                     <li class="nav-item">
-                                                        <a href="{{ url('/staff/adviserProgrammes/'.$programmeCategory::POSTGRADUATE) }}" class="nav-link" data-key="t-basic"> {{ $programmeCategory::POSTGRADUATE }} </a>
+                                                        <a href="{{ url('/staff/adviserProgrammes/'.$programmeCategory::PGD) }}" class="nav-link" data-key="t-basic"> {{ $programmeCategory::PGD }} </a>
                                                     </li>
                                                     <li class="nav-item">
                                                         <a href="{{ url('/staff/adviserProgrammes/'.$programmeCategory::MASTER) }}" class="nav-link" data-key="t-basic"> {{ $programmeCategory::MASTER }} </a>
@@ -746,7 +746,7 @@
                                                         <a href="{{ url('/staff/studentCourses/'.$programmeCategory::TOPUP) }}" class="nav-link" data-key="t-basic"> {{ $programmeCategory::TOPUP }} </a>
                                                     </li>
                                                     <li class="nav-item">
-                                                        <a href="{{ url('/staff/studentCourses/'.$programmeCategory::POSTGRADUATE) }}" class="nav-link" data-key="t-basic"> {{ $programmeCategory::POSTGRADUATE }} </a>
+                                                        <a href="{{ url('/staff/studentCourses/'.$programmeCategory::PGD) }}" class="nav-link" data-key="t-basic"> {{ $programmeCategory::PGD }} </a>
                                                     </li>
                                                     <li class="nav-item">
                                                         <a href="{{ url('/staff/studentCourses/'.$programmeCategory::MASTER) }}" class="nav-link" data-key="t-basic"> {{ $programmeCategory::MASTER }} </a>
@@ -771,7 +771,7 @@
                                                         <a href="{{ url('/staff/adviserProgrammes/'.$programmeCategory::TOPUP) }}" class="nav-link" data-key="t-basic"> {{ $programmeCategory::TOPUP }} </a>
                                                     </li>
                                                     <li class="nav-item">
-                                                        <a href="{{ url('/staff/adviserProgrammes/'.$programmeCategory::POSTGRADUATE) }}" class="nav-link" data-key="t-basic"> {{ $programmeCategory::POSTGRADUATE }} </a>
+                                                        <a href="{{ url('/staff/adviserProgrammes/'.$programmeCategory::PGD) }}" class="nav-link" data-key="t-basic"> {{ $programmeCategory::PGD }} </a>
                                                     </li>
                                                     <li class="nav-item">
                                                         <a href="{{ url('/staff/adviserProgrammes/'.$programmeCategory::MASTER) }}" class="nav-link" data-key="t-basic"> {{ $programmeCategory::MASTER }} </a>
@@ -866,7 +866,7 @@
                                                         <a href="{{ url('/staff/payments/'.$programmeCategory::TOPUP) }}" class="nav-link"> {{ $programmeCategory::TOPUP }} </a>
                                                     </li>
                                                     <li class="nav-item">
-                                                        <a href="{{ url('/staff/payments/'.$programmeCategory::POSTGRADUATE) }}" class="nav-link"> {{ $programmeCategory::POSTGRADUATE }} </a>
+                                                        <a href="{{ url('/staff/payments/'.$programmeCategory::PGD) }}" class="nav-link"> {{ $programmeCategory::PGD }} </a>
                                                     </li>
                                                     <li class="nav-item">
                                                         <a href="{{ url('/staff/payments/'.$programmeCategory::MASTER) }}" class="nav-link"> {{ $programmeCategory::MASTER }} </a>

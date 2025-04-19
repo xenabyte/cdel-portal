@@ -957,7 +957,9 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'applican
   Route::post('/uploadOlevel', [App\Http\Controllers\User\ApplicationController::class, 'uploadOlevel'])->middleware(['auth:user']);
   Route::post('/uploadUtme', [App\Http\Controllers\User\ApplicationController::class, 'uploadUtme'])->middleware(['auth:user']);
   Route::post('/deleteFile', [App\Http\Controllers\User\ApplicationController::class, 'deleteFile'])->middleware(['auth:user']);
-  
+
+  Route::post('/uploadSpgsDocuments', [App\Http\Controllers\User\ApplicationController::class, 'uploadSpgsDocuments'])->middleware(['auth:user']);
+  Route::post('/saveSpgsExtraDetails', [App\Http\Controllers\User\ApplicationController::class, 'saveSpgsExtraDetails'])->middleware(['auth:user']);
 
   Route::get('/programmeById/{id}', [App\Http\Controllers\User\ApplicationController::class, 'programmeById'])->name('programmeById');
   Route::get('/facultyById/{id}', [App\Http\Controllers\User\ApplicationController::class, 'facultyById'])->name('facultyById');

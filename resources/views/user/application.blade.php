@@ -1,8 +1,11 @@
-@php
-    $formSession =  session('previous_section');
-@endphp
 @extends('user.layout.dashboard')
+@php
+     use \App\Models\ProgrammeCategory;
 
+    $formSession =  session('previous_section');
+    $applicant = Auth::guard('user')->user();
+    
+@endphp
 @section('content')
 
 <div class="container-fluid">
@@ -70,25 +73,42 @@
                             </a>
                         </li>
 
-                        <li class="nav-item">
-                            <a class="nav-link fs-14 {{ $formSession == 'olevel'?'active':null }}" data-bs-toggle="tab" href="#olevel" role="tab">
-                                <i class="ri-price-tag-line d-inline-block d-md-none"></i> <span class="d-none d-md-inline-block">Olevel Result</span>
-                            </a>
-                        </li>
+                        @if($applicant->programme_category_id == ProgrammeCategory::getProgrammeCategory(ProgrammeCategory::UNDERGRADUATE) || $applicant->programme_category_id == ProgrammeCategory::getProgrammeCategory(ProgrammeCategory::TOPUP))
+                            <li class="nav-item">
+                                <a class="nav-link fs-14 {{ $formSession == 'olevel'?'active':null }}" data-bs-toggle="tab" href="#olevel" role="tab">
+                                    <i class="ri-price-tag-line d-inline-block d-md-none"></i> <span class="d-none d-md-inline-block">Olevel Result</span>
+                                </a>
+                            </li>
 
-                        @if(!empty($applicant->application_type) && $applicant->application_type == 'UTME')
-                        <li class="nav-item">
-                            <a class="nav-link fs-14 {{ $formSession == 'utme'?'active':null }}" data-bs-toggle="tab" href="#jamb" role="tab">
-                                <i class="ri-folder-4-line d-inline-block d-md-none"></i> <span class="d-none d-md-inline-block">Jamb Result</span>
-                            </a>
-                        </li>
-                        @elseif(!empty($applicant->application_type) && $applicant->application_type != 'UTME')
-                        <li class="nav-item">
-                            <a class="nav-link fs-14 {{ $formSession == 'de'?'active':null }}" data-bs-toggle="tab" href="#deresult" role="tab">
-                                <i class="ri-folder-4-line d-inline-block d-md-none"></i> <span class="d-none d-md-inline-block">Direct Entry/Previous Institution Result</span>
-                            </a>
-                        </li>
+                            @if(!empty($applicant->application_type) && $applicant->application_type == 'UTME')
+                            <li class="nav-item">
+                                <a class="nav-link fs-14 {{ $formSession == 'utme'?'active':null }}" data-bs-toggle="tab" href="#jamb" role="tab">
+                                    <i class="ri-folder-4-line d-inline-block d-md-none"></i> <span class="d-none d-md-inline-block">Jamb Result</span>
+                                </a>
+                            </li>
+                            @elseif(!empty($applicant->application_type) && $applicant->application_type != 'UTME')
+                            <li class="nav-item">
+                                <a class="nav-link fs-14 {{ $formSession == 'de'?'active':null }}" data-bs-toggle="tab" href="#deresult" role="tab">
+                                    <i class="ri-folder-4-line d-inline-block d-md-none"></i> <span class="d-none d-md-inline-block">Direct Entry/Previous Institution Result</span>
+                                </a>
+                            </li>
+                            @endif
                         @endif
+
+                        @if($applicant->programme_category_id == ProgrammeCategory::getProgrammeCategory(ProgrammeCategory::PGD) || $applicant->programme_category_id == ProgrammeCategory::getProgrammeCategory(ProgrammeCategory::MASTER) || $applicant->programme_category_id == ProgrammeCategory::getProgrammeCategory(ProgrammeCategory::DOCTORATE))
+                            <li class="nav-item">
+                                <a class="nav-link fs-14 {{ $formSession == 'spgsDocs'?'active':null }}" data-bs-toggle="tab" href="#spgsDocs" role="tab">
+                                    <i class="ri-price-tag-line d-inline-block d-md-none"></i> <span class="d-none d-md-inline-block">Documents</span>
+                                </a>
+                            </li>
+                        
+                            <li class="nav-item">
+                                <a class="nav-link fs-14 {{ $formSession == 'interest'?'active':null }}" data-bs-toggle="tab" href="#interest" role="tab">
+                                    <i class="ri-price-tag-line d-inline-block d-md-none"></i> <span class="d-none d-md-inline-block">Other Details</span>
+                                </a>
+                            </li>
+                        @endif
+
 
                         <li class="nav-item">
                             <a class="nav-link fs-14 {{ $formSession == 'guardian'?'active':null }}" data-bs-toggle="tab" href="#guardian" role="tab">
@@ -1097,6 +1117,108 @@
                     </div>
 
                     <!--end tab-pane-->
+                    <div class="tab-pane {{ $formSession == 'spgsDocs'?'active':null }}" id="spgsDocs" role="tabpanel">
+                        <div class="row">
+                            @include('user.layout.applicantProgress')
+    
+                            <div class="col-xxl-8">
+                                <div class="card">
+                                    <div class="card-body">
+                            
+                                        @php $isDoctorate = $applicant->programme_category_id == ProgrammeCategory::getProgrammeCategory(ProgrammeCategory::DOCTORATE); @endphp
+                            
+                                        <h5 class="card-title mb-3">Upload Required Documents</h5>
+                                        <form action="{{ url('applicant/uploadSpgsDocuments') }}" method="POST" enctype="multipart/form-data">
+                                            @csrf
+                                            <div class="row">
+                            
+                                                {{-- O'Level Certificate --}}
+                                                <div class="col-md-12 mt-3">
+                                                    <label for="olevel_cert">Upload O'Level Certificate <span class="text-danger">*</span></label>
+                                                    <input type="file" name="olevel_certificate" class="form-control" id="olevel_cert" required>
+                                                    <small class="text-muted">
+                                                        If more than one sitting, kindly merge all results into a single document before uploading.
+                                                    </small>
+                                                </div>
+                            
+                                                {{-- Degree Certificate --}}
+                                                <div class="col-md-12 mt-3">
+                                                    <label for="degree_cert">Upload Degree Certificate <span class="text-danger">*</span></label>
+                                                    <input type="file" name="degree_certificate" class="form-control" id="degree_cert" required>
+                                                </div>
+                            
+                                                {{-- Transcript --}}
+                                                <div class="col-md-12 mt-3">
+                                                    <label for="transcript">Upload Transcript <span class="text-danger">*</span></label>
+                                                    <input type="file" name="academic_transcript" class="form-control" id="transcript">
+                                                </div>
+                            
+                                                {{-- NYSC Certificate --}}
+                                                <div class="col-md-12 mt-3">
+                                                    <label for="nysc_cert">Upload NYSC Certificate <span class="text-danger">*</span></label>
+                                                    <input type="file" name="nysc_certificate" class="form-control" id="nysc_cert" required>
+                                                </div>
+                            
+                                                {{-- Doctorate-Only Fields --}}
+                                                @if($isDoctorate)
+                                                    <div class="col-md-12 mt-3">
+                                                        <label for="masters_cert">Upload Master's Degree Certificate <span class="text-danger">*</span></label>
+                                                        <input type="file" name="masters_certificate" class="form-control" id="masters_cert" required>
+                                                    </div>
+                            
+                                                    <div class="col-md-12 mt-3">
+                                                        <label for="proposal">Upload Research Proposal <span class="text-danger">*</span></label>
+                                                        <input type="file" name="research_proposal" class="form-control" id="proposal" required>
+                                                    </div>
+                                                @endif
+                            
+                                                <div class="col-auto">
+                                                    <br>
+                                                    <button type="submit" class="btn btn-primary">Upload Documents</button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div> <!-- end card-body -->
+                                </div> <!-- end card -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane fade" {{ $formSession == 'interest'?'active':null }} id="interest" role="tabpanel">
+                        <div class="row">
+                            @include('user.layout.applicantProgress')
+    
+                            <div class="col-xxl-8">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h5 class="card-title mb-3">Extra Details</h5>
+                                        <form action="{{ url('applicant/saveSpgsExtraDetails') }}" method="POST">
+                                            @csrf
+                                            <div class="form-group">
+                                                <label for="field_of_interest">Field of Interest</label>
+                                                <input type="text" name="field_of_interest" class="form-control" value="{{ old('field_of_interest', $applicant->field_of_interest) }}">
+                                            </div>
+                                    
+                                            <div class="form-group">
+                                                <label for="previous_institutions">Previous Tertiary Institutions Attended</label>
+                                                <textarea name="previous_institutions" class="form-control" rows="4">{{ old('previous_institutions', $applicant->previous_institutions) }}</textarea>
+                                            </div>
+                                    
+                                            <div class="form-group">
+                                                <label for="work_experience">Work Experience</label>
+                                                <textarea name="work_experience" class="form-control" rows="4">{{ old('work_experience', $applicant->work_experience) }}</textarea>
+                                            </div>
+                                    
+                                            <button type="submit" class="btn btn-primary mt-2">Save</button>
+                                        </form>
+                                    </div> <!-- end card-body -->
+                                </div> <!-- end card -->
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!--end tab-pane-->
                     <div class="tab-pane {{ $formSession == 'utme'?'active':null }}" id="jamb" role="tabpanel">
                         <div class="row">
                             @include('user.layout.applicantProgress')
@@ -1473,7 +1595,7 @@
                             <div class="col-xxl-8">
                                 <div class="card">
                                     <div class="card-body">
-                                        <h5 class="card-title mb-3">Guardian Information</h5>
+                                        <h5 class="card-title mb-3">Guardian/Sponsor's Information</h5>
                                         <hr>
                                         <form action="{{ url('applicant/guardianBioData') }}" method="POST" enctype="multipart/form-data">
                                             @csrf
@@ -1486,7 +1608,7 @@
                                                         <label for="name" class="form-label">Name</label>
                                                         <input type="text" class="form-control" id="name" name="name" value="{{ empty($applicant->guardian)?'':$applicant->guardian->name }}" required>
                                                     </div>
-                                                </div>
+                                                </div>  
     
                                                 <div class="col-lg-6">
                                                     <div class="mb-3">

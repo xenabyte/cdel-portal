@@ -58,45 +58,38 @@ class ApplicationController extends Controller
 
     public function index(Request $request)
     {
-        $userId = Auth::guard('user')->user()->id;
+        $user = Auth::guard('user')->user();
+        $userId = $user->id;
+
         $globalData = $request->input('global_data');
         $applicationSession = $globalData->sessionSetting['application_session'];
-        
-        $applicant = Applicant::with('programme', 'olevels', 'guardian')->where('id', $userId)->first();
+
+        $applicant = Applicant::with('programme', 'olevels', 'guardian')->find($userId);
         $applicantProgrammeCategoryId = $applicant->programme_category_id;
 
         $programmeCategories = ProgrammeCategory::get();
-
         $this->programmes = Programme::where('category_id', $applicantProgrammeCategoryId)->get();
 
-        $commonConditions = [
-            'programme_category_id' => $applicantProgrammeCategoryId,
-            'academic_session' => $applicationSession
+        // Payment and Transaction check
+        $paymentTypes = [
+            Payment::PAYMENT_TYPE_GENERAL_APPLICATION,
+            Payment::PAYMENT_TYPE_INTER_TRANSFER_APPLICATION
         ];
-        
-        $applicationPayments = Payment::with('structures')
-            ->where($commonConditions)
-            ->where('type', Payment::PAYMENT_TYPE_GENERAL_APPLICATION)
-            ->first();
-        
-        $interApplicationPayments = Payment::with('structures')
-            ->where($commonConditions)
-            ->where('type', Payment::PAYMENT_TYPE_INTER_TRANSFER_APPLICATION)
-            ->first();
 
-        $paymentId = !empty($applicationPayments) ? $applicationPayments->id : null;
-        $interPaymentId = !empty($interApplicationPayments) ? $interApplicationPayments->id : null;
+        $payments = Payment::with('structures')
+            ->where('programme_category_id', $applicantProgrammeCategoryId)
+            ->where('academic_session', $applicationSession)
+            ->whereIn('type', $paymentTypes)
+            ->get()
+            ->keyBy('type');
 
         $transaction = Transaction::where('user_id', $userId)
-        ->where('session', $applicationSession)
-        ->where('status', 1)
-        ->where(function($query) use ($paymentId, $interPaymentId) {
-            $query->where('payment_id', $paymentId)
-                  ->orWhere('payment_id', $interPaymentId);
-        })
-        ->first();
+            ->where('session', $applicationSession)
+            ->where('status', 1)
+            ->whereIn('payment_id', $payments->pluck('id'))
+            ->first();
 
-        if(!$transaction){
+        if (!$transaction) {
             return view('user.auth.register', [
                 'programmes' => $this->programmes,
                 'applicant' => $applicant,
@@ -104,49 +97,8 @@ class ApplicationController extends Controller
             ]);
         }
 
-        // if(strtolower($applicant->status) == 'admitted'){
-        //     alert()->success('Congratulation', 'You have been admitted, proceed to student portal, check our mail for more information')->persistent('Close');
-        //     return view('student.auth.login');
-        // }
-
-        $percent = 1;
-        $total = 5;
-        if(!empty($applicant->lastname)){
-            $percent = $percent + 1;
-        }
-        if(!empty($applicant->programme)){
-            $percent = $percent + 1;
-        }
-        if(!empty($applicant->guardian)){
-            $percent = $percent + 1;
-        }
-        if(count($applicant->olevels) > 4 && $applicant->sitting_no != 0){
-            $percent = $percent + 1;
-        }
-        if(!empty($applicant->olevel_1)){
-            $percent = $percent + 1;
-        }
-        if(!empty($applicant->application_type) && $applicant->application_type == 'UTME'){
-            if(count($applicant->utmes) > 3){
-                $percent = $percent + 1;
-            }
-            if(!empty($applicant->utme)){
-                $percent = $percent + 1;
-            }
-            $total = $total + 2;
-        }elseif(!empty($applicant->application_type) && $applicant->application_type != 'UTME'){
-            if(!empty($applicant->de_result)){
-                $percent = $percent + 1;
-            }
-            $total = $total + 1;
-        }
-
-        if(!empty($applicant->nok)){
-            $percent = $percent + 1;
-            $total = $total + 1;
-        }
-
-        $percent = round(($percent/$total)*100);
+        // 📊 Calculate application progress based on category
+        $percent = $this->calculateApplicationProgress($applicant);
 
         return view('user.application', [
             'applicant' => $applicant,
@@ -1141,6 +1093,152 @@ class ApplicationController extends Controller
         alert()->error('Oops!', 'Something went wrong')->persistent('Close');
         return redirect()->back();
 
+    }
+
+    public function uploadSpgsDocuments(Request $request)
+    {
+        $user = Auth::guard('user')->user();
+
+        // Base validation rules
+        $rules = [
+            'olevel_certificate' => 'required|file|mimes:pdf,jpg,jpeg,png',
+            'degree_certificate' => 'required|file|mimes:pdf,jpg,jpeg,png',
+            'academic_transcript' => 'nullable|file|mimes:pdf,jpg,jpeg,png',
+            'nysc_certificate'   => 'required|file|mimes:pdf,jpg,jpeg,png',
+        ];
+
+        // Doctorate-specific fields
+        if ($user->programme_category_id == ProgrammeCategory::getProgrammeCategory(ProgrammeCategory::DOCTORATE)) {
+            $rules['masters_certificate'] = 'required|file|mimes:pdf,jpg,jpeg,png';
+            $rules['research_proposal']  = 'required|file|mimes:pdf,doc,docx';
+        }
+
+        $validator = Validator::make($request->all(), $rules);
+
+        if ($validator->fails()) {
+            alert()->error('Error', $validator->messages()->first())->persistent('Close');
+            return redirect()->back();
+        }
+
+        // Helper function for upload
+        $uploadFile = function($fieldName, $slugSuffix) use ($request, $user) {
+            if ($request->hasFile($fieldName)) {
+                // Delete old file if exists
+                if (!empty($user->{$fieldName}) && file_exists(public_path($user->{$fieldName}))) {
+                    unlink(public_path($user->{$fieldName}));
+                }
+
+                $slug = $user->slug . '-' . $slugSuffix;
+                $extension = $request->file($fieldName)->getClientOriginalExtension();
+                $filePath = 'uploads/spgs/' . $slug . '.' . $extension;
+
+                $request->file($fieldName)->move(public_path('uploads/spgs'), $slug . '.' . $extension);
+                $user->{$fieldName} = $filePath;
+            }
+        };
+
+        // Perform uploads
+        $uploadFile('olevel_certificate', 'olevel_1');
+        $uploadFile('degree_certificate', 'degree_certificate');
+        $uploadFile('transcript', 'academic_transcript');
+        $uploadFile('nysc_certificate', 'nysc_certificate');
+
+        if ($user->programme_category_id == ProgrammeCategory::getProgrammeCategory(ProgrammeCategory::DOCTORATE)) {
+            $uploadFile('masters_certificate', 'masters');
+            $uploadFile('research_proposal', 'proposal');
+        }
+
+        session()->put('previous_section', 'spgsDocs');
+
+        if ($user->save()) {
+            alert()->success('Good Job', 'Documents uploaded successfully')->persistent('Close');
+            return redirect()->back();
+        }
+
+        alert()->error('Oops!', 'Something went wrong')->persistent('Close');
+        return redirect()->back();
+    }
+
+    public function saveSpgsExtraDetails(Request $request)
+    {
+        $user = Auth::guard('user')->user();
+
+        $validator = Validator::make($request->all(), [
+            'field_of_interest' => 'nullable|string|max:255',
+            'previous_institutions' => 'nullable|string',
+            'work_experience' => 'nullable|string',
+        ]);
+
+        if ($validator->fails()) {
+            alert()->error('Error', $validator->messages()->first())->persistent('Close');
+            return redirect()->back();
+        }
+
+        $user->field_of_interest = $request->input('field_of_interest');
+        $user->previous_institutions = $request->input('previous_institutions');
+        $user->work_experience = $request->input('work_experience');
+
+        if ($user->save()) {
+            alert()->success('Success', 'Details saved successfully')->persistent('Close');
+            return redirect()->back();
+        }
+
+        alert()->error('Oops!', 'Something went wrong')->persistent('Close');
+        return redirect()->back();
+    }
+
+    private function calculateApplicationProgress($applicant)
+    {
+        if ($applicant->programme_category_type === 'SPGS') {
+            return $this->calculateSpgsProgress($applicant);
+        }
+
+        return $this->calculateUndergraduateProgress($applicant);
+    }
+
+    private function calculateSpgsProgress($applicant)
+    {
+        $docRequirements = [
+            ProgrammeCategory::getProgrammeCategory(ProgrammeCategory::POSTGRADUATE) => [
+                'olevel_1', 'degree_certificate', 'nysc_certificate', 'academic_transcript'
+            ],
+            ProgrammeCategory::getProgrammeCategory(ProgrammeCategory::DOCTORATE) => [
+                'olevel_certificate', 'degree_certificate', 'nysc_certificate', 'academic_transcript',
+                'masters_certificate', 'research_proposal'
+            ]
+        ];
+
+        $docs = $docRequirements[$applicant->programme_category_id] ?? [];
+        $uploadedCount = collect($docs)->filter(fn($field) => filled($applicant->$field))->count();
+        return round(($uploadedCount / count($docs)) * 100);
+    }
+
+    private function calculateUndergraduateProgress($applicant)
+    {
+        $score = 0;
+        $total = 5;
+
+        if (filled($applicant->lastname)) $score++;
+        if (filled($applicant->programme)) $score++;
+        if (filled($applicant->guardian)) $score++;
+        if (count($applicant->olevels) > 4 && $applicant->sitting_no != 0) $score++;
+        if (filled($applicant->olevel_1)) $score++;
+
+        if ($applicant->application_type === 'UTME') {
+            if ($applicant->utmes->count() > 3) $score++;
+            if (filled($applicant->utme)) $score++;
+            $total += 2;
+        } elseif (!empty($applicant->application_type)) {
+            if (filled($applicant->de_result)) $score++;
+            $total += 1;
+        }
+
+        if (filled($applicant->nok)) {
+            $score++;
+            $total += 1;
+        }
+
+        return round(($score / $total) * 100);
     }
 
 }

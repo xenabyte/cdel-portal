@@ -329,8 +329,9 @@ class Student extends Authenticatable
         $reasons = [];
         $examRejection = null;
 
+        $minCgpa = $requirement ? $requirement->min_cgpa : (!empty($this->programme->min_cgpa) ? $this->programme->min_cgpa : 1.5);
         // 1️⃣ Check CGPA for promotion
-        if ($this->cgpa < $requirement->min_cgpa) {
+        if ($this->cgpa < $minCgpa) {
             $reasons[] = "Your CGPA ({$this->cgpa}) is below the minimum required ({$requirement->min_cgpa}).";
         }
 
@@ -564,17 +565,23 @@ class Student extends Authenticatable
             ->first();
 
         $cgpa = $this->cgpa;
+        $minCgpa = $requirement ? $requirement->min_cgpa : (!empty($this->programme->min_cgpa) ? $this->programme->min_cgpa : 1.5);
 
-        if ($requirement) {
-            $minCgpa = $requirement->min_cgpa;
-            if ($cgpa < 1.5) $risk = 'High risk of withdrawal';
-            elseif ($cgpa < $minCgpa) $risk = 'At risk of not meeting promotion criteria';
-            elseif ($cgpa < 2.5) $risk = 'Needs improvement';
-        } else {
-            if ($cgpa < 1.5) $risk = 'High risk of withdrawal';
-            elseif ($cgpa < 2.0) $risk = 'At risk of probation';
-            elseif ($cgpa < 2.5) $risk = 'Needs improvement';
-        }
+        if ($cgpa < 1.5) $risk = 'High risk of withdrawal';
+        elseif ($cgpa < $minCgpa) $risk = 'At risk of not meeting promotion criteria';
+        elseif ($cgpa < 2.5) $risk = 'Needs improvement';
+
+        // if ($requirement) {
+        //     $minCgpa = $requirement->min_cgpa??$this->programme->min_cgpa;
+        //     if ($cgpa < 1.5) $risk = 'High risk of withdrawal';
+        //     elseif ($cgpa < $minCgpa) $risk = 'At risk of not meeting promotion criteria';
+        //     elseif ($cgpa < 2.5) $risk = 'Needs improvement';
+        // } else {
+        //     $minCgpa = $requirement->min_cgpa;
+        //     if ($cgpa < 1.5) $risk = 'High risk of withdrawal';
+        //     elseif ($cgpa < 2.0) $risk = 'At risk of probation';
+        //     elseif ($cgpa < 2.5) $risk = 'Needs improvement';
+        // }
 
         if (isset($risk)) $advisory['trajectory_analysis']['academic_risk'] = $risk;
 

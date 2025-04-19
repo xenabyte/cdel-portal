@@ -1,13 +1,35 @@
 @php
-    $imageStatus = !empty($applicant->image)?1:0;
-    $programmeStatus = !empty($applicant->programme_id)?1:0;
-    $guardianStatus = !empty($applicant->guardian_id)?1:0;
-    $nokStatus = !empty($applicant->next_of_kin_id)?1:0;
+    use \App\Models\ProgrammeCategory;
+    
+    // Basic information checks
+    $imageStatus = !empty($applicant->image) ? 1 : 0;
+    $programmeStatus = !empty($applicant->programme_id) ? 1 : 0;
+    $guardianStatus = !empty($applicant->guardian_id) ? 1 : 0;
+    $nokStatus = !empty($applicant->next_of_kin_id) ? 1 : 0;
+
+    // Document uploads
     $utmeStatus = count($applicant->utmes) > 3 ? 1 : 0;
-    $utmeResultStatus = !empty($applicant->utme)?1:0;
-    $deResultStatus = !empty($applicant->de_result)?1:0;  
-    $olevelStatus = count($applicant->olevels) > 4?1:0;
-    $olevelResultStatus = !empty($applicant->olevel_1)?1:0;  
+    $utmeResultStatus = !empty($applicant->utme) ? 1 : 0;
+    $deResultStatus = !empty($applicant->de_result) ? 1 : 0;  
+    $olevelStatus = count($applicant->olevels) > 4 ? 1 : 0;
+
+    $olevelResultStatus = !empty($applicant->olevel_1) ? 1 : 0; 
+
+    // Additional status for PGD, Masters, and Doctorate applicants
+    $degreeCertificateStatus = !empty($applicant->degree_certificate) ? 1 : 0;
+    $nyscCertificateStatus = !empty($applicant->nysc_certificate) ? 1 : 0;
+    $transcriptStatus = !empty($applicant->academic_transcript) ? 1 : 0;
+
+    // Doctorate-specific documents
+    $mastersCertificateStatus = !empty($applicant->masters_certificate) ? 1 : 0;
+    $researchProposalStatus = !empty($applicant->research_proposal) ? 1 : 0;
+
+    // Programme category checks
+    $isPGD = $applicant->programme_category_id == ProgrammeCategory::getProgrammeCategory(ProgrammeCategory::PGD);
+    $isMaster = $applicant->programme_category_id == ProgrammeCategory::getProgrammeCategory(ProgrammeCategory::MASTER);
+    $isDoctorate = $applicant->programme_category_id == ProgrammeCategory::getProgrammeCategory(ProgrammeCategory::DOCTORATE);
+
+    $isSPGS = $isPGD || $isMaster || $isDoctorate;
 
 @endphp
 <div class="col-xxl-4">
@@ -151,44 +173,90 @@
                     <strong>{{ $programmeStatus?'Good Job! Programme of study selected':'You are yet to select a programme of choice' }}</strong>
                 </div>
             </a>
-            
-            @if(strtolower($applicant->application_type) == 'utme')
-            <a href="#jamb">
-                <div class="alert alert-{{ $utmeStatus?'success':'danger' }} shadow" role="alert">
-                    <strong>{{ $utmeStatus?'Good Job! UTME Result added successfully':'You are yet to add your Jamb Result' }}</strong>
-                </div>
-            </a>
+            @if($applicant->programme_category_id == ProgrammeCategory::getProgrammeCategory(ProgrammeCategory::UNDERGRADUATE))
+                @if(strtolower($applicant->application_type) == 'utme')
+                <a href="#jamb">
+                    <div class="alert alert-{{ $utmeStatus?'success':'danger' }} shadow" role="alert">
+                        <strong>{{ $utmeStatus?'Good Job! UTME Result added successfully':'You are yet to add your Jamb Result' }}</strong>
+                    </div>
+                </a>
 
-            <a href="#jamb">
-                <div class="alert alert-{{ $utmeResultStatus?'success':'danger' }} shadow" role="alert">
-                    <strong>{{ $utmeResultStatus?'Good Job! UTME Result uploaded successfully':'You are yet to upload your Jamb Result Printout' }}</strong>
-                </div>
-            </a>
+                <a href="#jamb">
+                    <div class="alert alert-{{ $utmeResultStatus?'success':'danger' }} shadow" role="alert">
+                        <strong>{{ $utmeResultStatus?'Good Job! UTME Result uploaded successfully':'You are yet to upload your Jamb Result Printout' }}</strong>
+                    </div>
+                </a>
+                @endif
+
+                @if(strtolower($applicant->application_type) == 'de')
+                <a href="#jamb">
+                    <div class="alert alert-{{ $deResultStatus?'success':'danger' }} shadow" role="alert">
+                        <strong>{{ $deResultStatus?'Good Job! DE/A-Level Result uploaded successfully':'You are yet to upload your DE/A-Level Result' }}</strong>
+                    </div>
+                </a>
+                @endif
+
+                <a href="#olevel">
+                    <div class="alert alert-{{ $olevelStatus?'success':'danger' }} shadow" role="alert">
+                        <strong>{{ $olevelStatus?'Good Job! OLevel Result added successfully':'You are yet to fill your OLevel Result' }}</strong>
+                    </div>
+                </a>
+
+                <a data-bs-toggle="tab" href="#olevel">
+                    <div class="alert alert-{{ $olevelResultStatus?'success':'danger' }} shadow" role="alert">
+                        <strong>{{ $olevelResultStatus?'Good Job! OLevel Result uploaded successfully':'You are yet to upload your Olevel Result printout (optional for awaiting result)' }}</strong>
+                    </div>
+                </a>
             @endif
+            @if($isSPGS)
+                {{-- OLevel Certificate --}}
+                <a data-bs-toggle="tab" href="#olevel">
+                    <div class="alert alert-{{ $olevelResultStatus ? 'success' : 'danger' }} shadow" role="alert">
+                        <strong>{{ $olevelResultStatus ? 'Good Job! OLevel Result uploaded successfully' : 'You are yet to upload your O\'Level Result printout' }}</strong>
+                    </div>
+                </a>
 
-            @if(strtolower($applicant->application_type) == 'de')
-            <a href="#jamb">
-                <div class="alert alert-{{ $deResultStatus?'success':'danger' }} shadow" role="alert">
-                    <strong>{{ $deResultStatus?'Good Job! DE/A-Level Result uploaded successfully':'You are yet to upload your DE/A-Level Result' }}</strong>
-                </div>
-            </a>
+                {{-- Degree Certificate --}}
+                <a data-bs-toggle="tab" href="#degree_certificate">
+                    <div class="alert alert-{{ $degreeCertificateStatus ? 'success' : 'danger' }} shadow" role="alert">
+                        <strong>{{ $degreeCertificateStatus ? 'Degree Certificate uploaded successfully' : 'You are yet to upload your Degree Certificate' }}</strong>
+                    </div>
+                </a>
+
+                {{-- NYSC Certificate --}}
+                <a data-bs-toggle="tab" href="#nysc_certificate">
+                    <div class="alert alert-{{ $nyscCertificateStatus ? 'success' : 'danger' }} shadow" role="alert">
+                        <strong>{{ $nyscCertificateStatus ? 'NYSC Certificate uploaded successfully' : 'You are yet to upload your NYSC Certificate' }}</strong>
+                    </div>
+                </a>
+
+                {{-- Transcript --}}
+                <a data-bs-toggle="tab" href="#transcript">
+                    <div class="alert alert-{{ $transcriptStatus ? 'success' : 'danger' }} shadow" role="alert">
+                        <strong>{{ $transcriptStatus ? 'Transcript uploaded successfully' : 'You are yet to upload your Transcript' }}</strong>
+                    </div>
+                </a>
+
+                @if($isDoctorate)
+                    {{-- Masters Certificate --}}
+                    <a data-bs-toggle="tab" href="#masters_certificate">
+                        <div class="alert alert-{{ $mastersCertificateStatus ? 'success' : 'danger' }} shadow" role="alert">
+                            <strong>{{ $mastersCertificateStatus ? 'Masters Certificate uploaded successfully' : 'You are yet to upload your Masters Certificate' }}</strong>
+                        </div>
+                    </a>
+
+                    {{-- Research Proposal --}}
+                    <a data-bs-toggle="tab" href="#research_proposal">
+                        <div class="alert alert-{{ $researchProposalStatus ? 'success' : 'danger' }} shadow" role="alert">
+                            <strong>{{ $researchProposalStatus ? 'Research Proposal uploaded successfully' : 'You are yet to upload your Research Proposal' }}</strong>
+                        </div>
+                    </a>
+                @endif
             @endif
-
-            <a href="#olevel">
-                <div class="alert alert-{{ $olevelStatus?'success':'danger' }} shadow" role="alert">
-                    <strong>{{ $olevelStatus?'Good Job! OLevel Result added successfully':'You are yet to fill your OLevel Result' }}</strong>
-                </div>
-            </a>
-
-            <a data-bs-toggle="tab" href="#olevel">
-                <div class="alert alert-{{ $olevelResultStatus?'success':'danger' }} shadow" role="alert">
-                    <strong>{{ $olevelResultStatus?'Good Job! OLevel Result uploaded successfully':'You are yet to upload your Olevel Result printout (optional for awaiting result)' }}</strong>
-                </div>
-            </a>
 
             <a href="#guardian">
                 <div class="alert alert-{{ $guardianStatus?'success':'danger' }} shadow" role="alert">
-                    <strong>{{ $guardianStatus?'Good Job! Guardian details added successfully':'You are yet to add Guardian details' }}</strong>
+                    <strong>{{ $guardianStatus?'Good Job! Guardian/Sponsor details added successfully':'You are yet to add Guardian details' }}</strong>
                 </div>
             </a>
 

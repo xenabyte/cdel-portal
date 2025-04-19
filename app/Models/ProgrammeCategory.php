@@ -12,7 +12,7 @@ class ProgrammeCategory extends Model
 
     const DIPLOMA = 'Diploma';
     const UNDERGRADUATE = 'Undergraduate';
-    const POSTGRADUATE = 'Postgraduate';
+    const PGD = 'Postgraduate-Diploma';
     const TOPUP = 'Topup';
     const MASTER = 'Masters';
     const DOCTORATE = 'Doctorate';
