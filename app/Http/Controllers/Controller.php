@@ -60,6 +60,7 @@ use App\Models\Allocation;
 use App\Models\ShortUrl;
 use App\Models\PaymentType;
 use App\Models\StudentSuspension;
+use App\Models\ProgrammeChangeRequest;
 
 
 
@@ -1154,6 +1155,20 @@ class Controller extends BaseController
         } catch (\Exception $e) {
             DB::rollBack();
             return 'Failed to allocate accommodation: ' . $e->getMessage();
+        }
+    }
+
+    public function initChangeProgramme(Transaction $transaction, $studentId){
+        $existing = ProgrammeChangeRequest::where('transaction_id', $transaction->id)->first();
+
+        if (!$existing) {
+            ProgrammeChangeRequest::create([
+                'transaction_id' => $transaction->id,
+                'student_id' => $studentId,
+                'slug' => md5($studentId . time()),
+            ]);
+
+            return true; 
         }
     }
     

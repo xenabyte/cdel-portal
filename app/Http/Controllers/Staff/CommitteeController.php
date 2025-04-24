@@ -366,7 +366,7 @@ class CommitteeController extends Controller
                 unlink($meeting->agenda);
             }
 
-            $fileUrl = 'uploads/meetings/'.$slug.'-agenda.'.$request->file('agenda')->getClientOriginalExtension();
+            $fileUrl = 'uploads/meetings/'.$slug.time().'-agenda.'.$request->file('agenda')->getClientOriginalExtension();
             $image = $request->file('agenda')->move('uploads/meetings', $fileUrl);
             $meeting->agenda = $fileUrl;
         }
@@ -376,7 +376,7 @@ class CommitteeController extends Controller
                 unlink($meeting->minute);
             }
 
-            $minuteUrl = 'uploads/meetings/'.$slug.'-minute.'.$request->file('minute')->getClientOriginalExtension();
+            $minuteUrl = 'uploads/meetings/'.$slug.time().'-minute.'.$request->file('minute')->getClientOriginalExtension();
             $image = $request->file('minute')->move('uploads/meetings', $minuteUrl);
             $meeting->minute = $minuteUrl;
 
@@ -405,7 +405,7 @@ class CommitteeController extends Controller
                 unlink($meeting->excerpt);
             }
 
-            $excerptUrl = 'uploads/meetings/'.$slug.'.'.$request->file('excerpt')->getClientOriginalExtension();
+            $excerptUrl = 'uploads/meetings/'.$slug.time().'.'.$request->file('excerpt')->getClientOriginalExtension();
             $image = $request->file('excerpt')->move('uploads/meetings', $excerptUrl);
             $meeting->excerpt = $excerptUrl;
 

@@ -1144,7 +1144,7 @@ class ApplicationController extends Controller
         $uploadFile('nysc_certificate', 'nysc_certificate');
 
         if ($user->programme_category_id == ProgrammeCategory::getProgrammeCategory(ProgrammeCategory::DOCTORATE)) {
-            $uploadFile('masters_certificate', 'masters');
+            $uploadFile('masters_certificate', 'masters_certificate');
             $uploadFile('research_proposal', 'proposal');
         }
 

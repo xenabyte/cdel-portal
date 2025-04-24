@@ -325,6 +325,12 @@
                             </li>
 
                             <li class="nav-item">
+                                <a class="nav-link menu-link" href="{{ url('student/programmeChangeRequests') }}">
+                                    <i class="mdi mdi-account-child-circle"></i> <span data-key="t-transaction">Change of programme</span>
+                                </a>
+                            </li>
+
+                            <li class="nav-item">
                                 <a class="nav-link menu-link" href="#workStudy" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="workStudy">
                                     <i class="mdi mdi-account-tie"></i> <span data-key="t-workStudy">Work Study</span>
                                 </a>

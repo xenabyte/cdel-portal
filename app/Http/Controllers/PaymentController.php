@@ -124,6 +124,14 @@ class PaymentController extends Controller
                                 alert()->error('Oops', $creditStudent)->persistent('Close');
                             }
                         }
+
+                        if($paymentType == Payment::PAYMENT_TYPE_PROGRAMME_CHANGE){
+                            $transaction = Transaction::where('reference', $txRef)->first();
+                            $changeProgramme = $this->initChangeProgramme($transaction);
+                            if (is_string($changeProgramme)) {
+                                alert()->error('Oops', $changeProgramme)->persistent('Close');
+                            }
+                        }
                     }
 
                     alert()->success('Good Job', 'Payment successful')->persistent('Close');

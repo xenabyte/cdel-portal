@@ -296,7 +296,17 @@ class Student extends Authenticatable
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function semestersWithGPA(){
-        return $this->hasMany(StudentSemesterGPA::class, 'student_id');
+        return $this->hasMany(StudentSemesterGPA::class, 'student_id', 'id');
+    }
+
+    /**
+     * Get all of the programmeChangeRequest for the Student
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function programmeChangeRequests()
+    {
+        return $this->hasMany(ProgrammeChangeRequest::class, 'student_id', 'id');
     }
 
 
@@ -313,17 +323,14 @@ class Student extends Authenticatable
      *               The 'reasons' key contains an array of strings explaining why the student cannot be promoted.
      */
     public function canPromote(){
-        $requirement = ProgrammeRequirement::where('programme_id', $this->programme_id)
-            ->where('programme_category_id', $this->programme_category_id)
-            ->where('level_id', $this->level_id)
-            ->first();
+        $programmeCategoryId = $this->programme_category_id;
+        $currentProgrammeId = $this->programme_id;
+        $levelId = $this->level_id;
 
-        if (!$requirement) {
-            return [
-                'promotion' => ['status' => true],
-                'professional_exam' => ['status' => true]
-            ];
-        }
+        $requirement = ProgrammeRequirement::where('programme_id', $currentProgrammeId)
+            ->where('programme_category_id', $programmeCategoryId)
+            ->where('level_id', $levelId)
+            ->first();
 
         $criteria = $requirement->additional_criteria;
         $reasons = [];
@@ -384,38 +391,58 @@ class Student extends Authenticatable
      * @return \Illuminate\Database\Eloquent\Collection  A collection of qualified transfer programmes.
      */
 
-    public function getQualifiedTransferProgrammes(){
-        
-        $studentCgpa = $this->cgpa;
-        $programmeCategoryId = $this->programme_category_id;
-
-        // Get all programme requirements under the same programme category and level
-        $requirements = ProgrammeRequirement::where('programme_category_id', $programmeCategoryId)
-            ->where('level_id', $this->level_id)
-            ->get();
-
-        $qualifiedProgrammeIds = [];
-
-        foreach ($requirements as $requirement) {
-            $criteria = json_decode($requirement->additional_criteria, true);
-
-            // Skip if intra_transfer not enabled
-            if (!isset($criteria['intra_transfer']['enabled']) || !$criteria['intra_transfer']['enabled']) {
-                continue;
-            }
-
-            $minCgpa = $criteria['intra_transfer']['min_cgpa'] ?? 0;
-
-            if ($studentCgpa >= $minCgpa) {
-                $qualifiedProgrammeIds[] = $requirement->programme_id;
-            }
-        }
-
-        // Ensure no duplicates
-        $uniqueProgrammeIds = array_unique($qualifiedProgrammeIds);
-
-        return Programme::whereIn('id', $uniqueProgrammeIds)->get();
-    }
+     public function getQualifiedTransferProgrammes()
+     {
+         $studentCgpa = $this->cgpa;
+         $programmeCategoryId = $this->programme_category_id;
+         $currentProgrammeId = $this->programme_id;
+     
+         $qualifiedProgrammeIds = [];
+     
+         // Fetch all programme requirements for the same level and category
+         $requirements = ProgrammeRequirement::where('programme_category_id', $programmeCategoryId)
+             ->where('level_id', $this->level_id)
+             ->get()
+             ->keyBy('programme_id');
+     
+         // Fetch all other programmes in the category (excluding current)
+         $programmes = Programme::where('category_id', $programmeCategoryId)
+             ->where('id', '!=', $currentProgrammeId)
+                 ->get();
+     
+         foreach ($programmes as $programme) {
+             $requirement = $requirements->get($programme->id);
+             $minCgpa = 1.5; // default fallback
+     
+             if (!$requirement) {
+                 // No requirement, use programme->min_cgpa or default
+                 $minCgpa = $programme->min_cgpa ?: 1.5;
+             } else {
+                 $criteria = json_decode($requirement->additional_criteria, true);
+     
+                 if (!isset($criteria['intra_transfer'])) {
+                     // Has requirement, but no intra_transfer: use requirement->min_cgpa
+                     $minCgpa = $requirement->min_cgpa ?: 1.5;
+                 } else {
+                     // intra_transfer is set (enabled or not)
+                     if (!empty($criteria['intra_transfer']['enabled'])) {
+                         // intra_transfer enabled: use its min_cgpa if set, else programme->min_cgpa, else default
+                         $minCgpa = $criteria['intra_transfer']['min_cgpa'] 
+                             ?? ($programme->min_cgpa ?: 1.5);
+                     } else {
+                         // intra_transfer exists but not enabled
+                         continue;
+                     }
+                 }
+             }
+     
+             if ($studentCgpa >= $minCgpa) {
+                 $qualifiedProgrammeIds[] = $programme->id;
+             }
+         }
+     
+         return Programme::whereIn('id', $qualifiedProgrammeIds)->get();
+     }
 
     /**
      * Check if a student is expelled.

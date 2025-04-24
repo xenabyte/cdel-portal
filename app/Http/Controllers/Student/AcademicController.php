@@ -22,6 +22,7 @@ use App\Models\Session;
 use App\Models\AcademicLevel;
 use App\Models\ResultApprovalStatus;
 use App\Models\CoursePerProgrammePerAcademicSession;
+use App\Models\ProgrammeChangeRequest;
 
 use App\Libraries\Pdf\Pdf;
 use App\Mail\NotificationMail;
@@ -824,6 +825,36 @@ class AcademicController extends Controller
 
 
         return view('student.transcripts', [
+            'passTuition' => $paymentCheck->passTuitionPayment,
+            'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
+            'passEightyTuition' => $paymentCheck->passEightyTuition
+        ]);
+    }
+
+    public function programmeChangeRequests(Request $request){
+        $student = Auth::guard('student')->user();
+        $studentId = $student->id;
+        $levelId = $student->level_id;
+        $globalData = $request->input('global_data');
+        $academicSession = $globalData->sessionSetting['academic_session'];
+
+        $paymentCheck = $this->checkSchoolFees($student, $academicSession, $levelId);
+        // if(!$paymentCheck->passTuitionPayment){
+        //     return view('student.schoolFee', [
+        //         'payment' => $paymentCheck->schoolPayment,
+        //         'passTuition' => $paymentCheck->passTuitionPayment,
+        //         'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
+        //         'passEightyTuition' => $paymentCheck->passEightyTuition,
+        //         'studentPendingTransactions' => $paymentCheck->studentPendingTransactions
+        //     ]);
+        // }
+
+        $programmeChangePayment = Payment::where("type", "Programme Change Fee")->where("academic_session", $academicSession)->first();
+        $programmeChangeRequests = ProgrammeChangeRequest::where('student_id', $studentId)->get();
+
+        return view('student.programmeChangeRequests', [
+            'programmeChangePayment' => $programmeChangePayment,
+            'programmeChangeRequests' => $programmeChangeRequests,
             'passTuition' => $paymentCheck->passTuitionPayment,
             'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
             'passEightyTuition' => $paymentCheck->passEightyTuition

@@ -55,6 +55,15 @@ class User extends Authenticatable
         'de_school_attended',
         'referrer',
         'programme_category_id',
+
+        'field_of_interest',
+        'previous_institutions',
+        'work_experience',
+        'degree_certificate',
+        'academic_transcript',
+        'nysc_certificate',
+        'masters_certificate',
+        'proposal'
     ];
 
     /**

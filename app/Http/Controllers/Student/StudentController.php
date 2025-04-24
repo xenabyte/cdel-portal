@@ -21,6 +21,7 @@ use App\Models\Plan;
 use App\Models\StudentCourseRegistration;
 use App\Models\Programme;
 use App\Models\BankAccount;
+use App\Models\ProgrammeChangeRequest;
 
 use App\Libraries\Pdf\Pdf;
 use App\Libraries\Bandwidth\Bandwidth;
@@ -368,6 +369,18 @@ class StudentController extends Controller
             }
         
         }
+
+        if(strtolower($paymentType) == strtolower(Payment::PAYMENT_TYPE_PROGRAMME_CHANGE)) {
+
+            $pendingRequest = ProgrammeChangeRequest::where('student_id', $studentId)
+            ->where('status', '!=', 'completed')
+            ->first();
+
+            if ($pendingRequest) {
+                alert()->error('Oops', 'You already have a pending request.')->persistent('Close');
+                return redirect()->back();
+            }
+        }
         
 
         $paymentGateway = $request->paymentGateway;
@@ -499,7 +512,7 @@ class StudentController extends Controller
         if(strtolower($paymentGateway) == 'upperlink') {
             Log::info("Upperlink Amount ****************: ". round($this->getUpperlinkAmount($amount)));
 
-            $meta = array(
+            $meta = [
                 "student_id" => $studentId,
                 "payment_id" => $paymentId,
                 "payment_gateway" => $paymentGateway,
@@ -507,10 +520,15 @@ class StudentController extends Controller
                 "academic_session" => $student->academic_session,
                 "redirect_path" => $redirectLocation,
                 "payment_Type" => $paymentType,
-                "plan_id" => !empty($bandwidthPlan)?$bandwidthPlan->id:null,
-                "suspension_id" => $suspensionId,
-            );
-
+            ];
+            
+            if (!empty($bandwidthPlan)) {
+                $meta['plan_id'] = $bandwidthPlan->id;
+            }
+            
+            if (!empty($suspensionId)) {
+                $meta['suspension_id'] = $suspensionId;
+            }
 
             $data = array(
                 "amount" => round($this->getUpperlinkAmount($amount)/100),
