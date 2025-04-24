@@ -332,7 +332,7 @@ class Student extends Authenticatable
             ->where('level_id', $levelId)
             ->first();
 
-        $criteria = $requirement->additional_criteria;
+        $criteria = $requirement? $requirement->additional_criteria : null;
         $reasons = [];
         $examRejection = null;
 
