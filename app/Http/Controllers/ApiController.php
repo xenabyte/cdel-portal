@@ -116,20 +116,20 @@ class ApiController extends Controller
     
         if ($user) {
             $response = new \stdClass();
-            $response->application_id = $role == 'student'? $user->applicant->id:null;
+            $response->application_id = $role == 'student' ? ($user->applicant->id ?? null) : null;
             $response->id = $user->id;
-            $response->lastname =  $role == 'student'? $user->applicant->lastname: $user->lastname;
-            $response->othernames = $role == 'student'? $user->applicant->othernames: $user->othernames;
+            $response->lastname = $role == 'student' ? ($user->applicant->lastname ?? null) : ($user->lastname ?? null);
+            $response->othernames = $role == 'student' ? ($user->applicant->othernames ?? null) : ($user->othernames ?? null);
             $response->email = $user->email;
-            $response->matric_number = $role == 'student'? $user->matric_number: null;
-            $response->programme = $role == 'student'? $user->programme->name: null;
-            $response->department = $user->department->name;
-            $response->faculty = $user->faculty->name;
-            $response->staff_id = $role == 'staff'? $user->staffId: null;
-            $response->image = $role == 'student'? 'https://portal.tau.edu.ng/'.$user->image : $user->image;
-            $response->phone_number = $role == 'student'? $user->applicant->phone_number: $user->phone_number;
-
-            return $this->dataResponse($role.' record found!', $response);
+            $response->matric_number = $role == 'student' ? ($user->matric_number ?? null) : null;
+            $response->programme = $role == 'student' ? ($user->programme->name ?? null) : null;
+            $response->department = $user->department->name ?? null;
+            $response->faculty = $user->faculty->name ?? null;
+            $response->staff_id = $role == 'staff' ? ($user->staffId ?? null) : null;
+            $response->image = $role == 'student' ? ('https://portal.tau.edu.ng/' . ($user->image ?? '')) : ($user->image ?? null);
+            $response->phone_number = $role == 'student' ? ($user->applicant->phone_number ?? null) : ($user->phone_number ?? null);
+        
+            return $this->dataResponse($role . ' record found!', $response);
         } else {
             return $this->dataResponse($role.' record not found', null, 'error');
         }
