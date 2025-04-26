@@ -105,7 +105,7 @@ class ApiController extends Controller
 
         switch ($role) {
             case 'staff':
-                $user = Staff::where('email', $uniqueId)->first();
+                $user = Staff::where('staffId', $uniqueId)->orWhere('email', $uniqueId)->first();
                 break;
             case 'student':
                 $user = Student::with("applicant")->where('matric_number', $uniqueId)->first();
