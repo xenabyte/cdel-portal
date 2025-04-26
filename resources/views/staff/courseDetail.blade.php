@@ -106,6 +106,7 @@
                         <thead>
                             <tr>
                                 <th scope="col">Id</th>
+                                <th scope="col">Lecture Code</th>
                                 <th scope="col">Course Code</th>
                                 <th scope="col">Topic</th>
                                 <th scope="col">Date</th>
@@ -119,6 +120,7 @@
                             @foreach($courseLectures as $courseLecture)
                                 <tr>
                                     <th scope="row">{{ $loop->iteration }}</th>
+                                    <td>{{ $courseLecture->code }}</td>
                                     <td>{{ $course->code }}</td>
                                     <td>{{ $courseLecture->topic }}</td>
                                     <td>{{ $courseLecture->date }}</td>
