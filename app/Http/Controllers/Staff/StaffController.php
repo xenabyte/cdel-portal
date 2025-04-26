@@ -847,6 +847,8 @@ class StaffController extends Controller
 
         $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $course->code.$request->topic)));
 
+        $code = $this->generateRandomString(5);
+
         $createLectureData = ([
             'course_id' => $request->course_id,
             'topic' => $request->topic,
@@ -854,7 +856,8 @@ class StaffController extends Controller
             'date' => $request->date,
             'slug' => $slug,
             'academic_session' => $academicSession,
-            'programme_category_id' => $request->programme_category_id
+            'programme_category_id' => $request->programme_category_id,
+            'code' => $code
         ]);
 
         if(CourseLecture::create($createLectureData)){

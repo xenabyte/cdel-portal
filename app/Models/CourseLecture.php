@@ -21,6 +21,7 @@ class CourseLecture extends Model
         'video_link',
         'slug',
         'programme_category_id',
+        'code'
     ];
 
     /**
