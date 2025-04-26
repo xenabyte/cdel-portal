@@ -114,13 +114,18 @@ class ApiController extends Controller
                 return $this->dataResponse('Invalid role', null, 'error');
         }
     
-        // Check if the user exists and if the password matches
         if ($user) {
             $response = new \stdClass();
             $response->application_id = $role == 'student'? $user->applicant->id:null;
+            $response->id = $user->id;
             $response->lastname =  $role == 'student'? $user->applicant->lastname: $user->lastname;
             $response->othernames = $role == 'student'? $user->applicant->othernames: $user->othernames;
             $response->email = $user->email;
+            $response->matric_number = $role == 'student'? $user->matric_number: null;
+            $response->programme = $role == 'student'? $user->programme->name: null;
+            $response->department = $user->department->name;
+            $response->faculty = $user->faculty->name;
+            $response->staff_id = $role == 'staff'? $user->staffId: null;
             $response->image = $role == 'student'? 'https://portal.tau.edu.ng/'.$user->image : $user->image;
             $response->phone_number = $role == 'student'? $user->applicant->phone_number: $user->phone_number;
 
