@@ -170,6 +170,8 @@ class ApiController extends Controller
 
             $courseLecture->lecturerDetails = $lecturerDetails;
             $courseLecture->registrations = $registrations;
+            $courseLecture->totalRegisteredStudent = count($registrations);
+            $courseLecture->totalAttendedStudent = count($courseLecture->lectureAttendance);
 
             return $this->dataResponse('Lecture record found!', $courseLecture);
         } else {
