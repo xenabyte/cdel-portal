@@ -165,8 +165,8 @@ class ApiController extends Controller
             $academicSession = $courseLecture->academic_session;
             $courseId = $courseLecture->course_id;
             $programmeCategoryId = $courseLecture->programme_category_id;
-            $lecturerDetails = CourseManagement::where('course_id', $courseId)->where('academic_session', $academicSession)->first(); 
-            $registrations = CourseRegistration::where('course_id', $courseId)->where('programme_category_id', $programmeCategoryId)->where('academic_session', $academicSession)->get();
+            $lecturerDetails = CourseManagement::with('staff')->where('course_id', $courseId)->where('academic_session', $academicSession)->first(); 
+            $registrations = CourseRegistration::with('student', 'student.applicant')->where('course_id', $courseId)->where('programme_category_id', $programmeCategoryId)->where('academic_session', $academicSession)->get();
 
             $courseLecture->lecturerDetails = $lecturerDetails;
             $courseLecture->registrations = $registrations;
