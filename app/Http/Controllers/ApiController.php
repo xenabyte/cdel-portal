@@ -20,6 +20,9 @@ use App\Models\SessionSetting;
 use App\Models\Admin;
 use App\Models\Staff;
 use App\Models\CourseLecture;
+use App\Models\CourseManagement;
+use App\Models\CourseRegistration;
+
 
 use App\Libraries\Google\Google;
 use App\Libraries\Pdf\Pdf;
