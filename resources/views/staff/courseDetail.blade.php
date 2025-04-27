@@ -120,7 +120,7 @@
                             @foreach($courseLectures as $courseLecture)
                                 <tr>
                                     <th scope="row">{{ $loop->iteration }}</th>
-                                    <td>{{ $courseLecture->code }}</td>
+                                    <td>{{ sprintf("%06d", $courseLecture->id) }}</td>
                                     <td>{{ $course->code }}</td>
                                     <td>{{ $courseLecture->topic }}</td>
                                     <td>{{ $courseLecture->date }}</td>

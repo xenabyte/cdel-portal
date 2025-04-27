@@ -27,4 +27,8 @@ Route::group(['prefix' => 'user'], function () {
     Route::post('/getStudent', [App\Http\Controllers\ApiController::class, 'getStudent'])->name('getStudent');
 });
 
+Route::group(['prefix' => 'lecture'], function () {
+    Route::post('/getCourseLecture', [App\Http\Controllers\ApiController::class, 'getCourseLecture'])->name('getCourseLecture');
+});
+
 Route::get('/changeCourseManagementPasscode', [App\Http\Controllers\CronController::class, 'changeCourseManagementPasscode'])->name('changeCourseManagementPasscode');

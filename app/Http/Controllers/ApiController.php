@@ -19,6 +19,7 @@ use App\Models\Student;
 use App\Models\SessionSetting;
 use App\Models\Admin;
 use App\Models\Staff;
+use App\Models\CourseLecture;
 
 use App\Libraries\Google\Google;
 use App\Libraries\Pdf\Pdf;
@@ -132,6 +133,44 @@ class ApiController extends Controller
             return $this->dataResponse($role . ' record found!', $response);
         } else {
             return $this->dataResponse($role.' record not found', null, 'error');
+        }
+
+    }
+
+    public function getCourseLecture(Request $request){
+        $validator = Validator::make($request->all(), [
+            'code' => 'required',
+            'api_key' => 'required',
+        ]);
+
+        if($validator->fails()) {
+            return $this->dataResponse($validator->messages()->all()[0], null, 'error');
+        }
+
+        $appApiKey = env('APP_API_KEY');
+
+        $code = $request->code;
+        $apiKey = $request->api_key;
+
+        if($appApiKey != $apiKey){
+            return $this->dataResponse('Invalid Api Key', null, 'error');
+        }
+
+        $courseLecture = CourseLecture::with('course', 'lectureAttendance')->where('id', $code)->first();
+        
+        if ($courseLecture) {
+            $academicSession = $courseLecture->academic_session;
+            $courseId = $courseLecture->course_id;
+            $programmeCategoryId = $courseLecture->programme_category_id;
+            $lecturerDetails = CourseManagement::where('course_id', $courseId)->where('academic_session', $academicSession)->first(); 
+            $registrations = CourseRegistration::where('course_id', $courseId)->where('programme_category_id', $programmeCategoryId)->where('academic_session', $academicSession)->get();
+
+            $courseLecture->lecturerDetails = $lecturerDetails;
+            $courseLecture->registrations = $registrations;
+
+            return $this->dataResponse('Lecture record found!', $courseLecture);
+        } else {
+            return $this->dataResponse('Lecture record not found', null, 'error');
         }
 
     }
