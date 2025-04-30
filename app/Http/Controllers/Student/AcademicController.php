@@ -860,4 +860,15 @@ class AcademicController extends Controller
             'passEightyTuition' => $paymentCheck->passEightyTuition
         ]);
     }
+
+    public function viewProgrammeChangeRequest(Request $request, $slug){
+        $student = Auth::guard('student')->user();
+        $studentId = $student->id;
+
+        $programmeChangeRequest = ProgrammeChangeRequest::where('slug', $slug)->first();
+
+        return view('student.viewProgrammeChangeRequest', [
+            'programmeChangeRequest' => $programmeChangeRequest
+        ]);
+    }
 }

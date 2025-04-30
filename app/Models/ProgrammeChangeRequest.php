@@ -46,4 +46,55 @@ class ProgrammeChangeRequest extends Model
         'dap_approved_at' => 'datetime',
         'registrar_approved_at' => 'datetime',
     ];
+
+    public function student()
+    {
+        return $this->belongsTo(Student::class, 'student_id');
+    }
+
+    public function transaction()
+    {
+        return $this->belongsTo(Transaction::class, 'transaction_id');
+    }
+
+    public function newProgramme()
+    {
+        return $this->belongsTo(Programme::class, 'new_programme_id');
+    }
+
+    public function oldProgramme()
+    {
+        return $this->belongsTo(Programme::class, 'old_programme_id');
+    }
+
+    public function oldHod()
+    {
+        return $this->belongsTo(Staff::class, 'old_programme_hod_id');
+    }
+
+    public function newHod()
+    {
+        return $this->belongsTo(Staff::class, 'new_programme_hod_id');
+    }
+
+    public function oldDean()
+    {
+        return $this->belongsTo(Staff::class, 'old_programme_dean_id');
+    }
+
+    public function newDean()
+    {
+        return $this->belongsTo(Staff::class, 'new_programme_dean_id');
+    }
+
+    public function dap()
+    {
+        return $this->belongsTo(Staff::class, 'dap_id');
+    }
+
+    public function registrar()
+    {
+        return $this->belongsTo(Staff::class, 'registrar_id');
+    }
+
 }

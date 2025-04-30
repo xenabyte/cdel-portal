@@ -31,7 +31,7 @@
                 <h4 class="card-title mb-0 flex-grow-1">Student Programme Changes</h4>
 
                 <div class="flex-shrink-0">
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#changeProgramme">Apply for Change of Programme</button>
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#changeProgramme">Pay for Change of Programme</button>
                 </div>
             </div><!-- end card header -->
 
@@ -44,39 +44,31 @@
                             @if($programmeChangeRequests->isNotEmpty())
                                 <h4 class="mt-4">Change of Programme Record</h4>
 
-                                <table class="table table-bordered">
+                                <table id="buttons-datatables" class="table table-stripped">
                                     <thead>
                                         <tr>
-                                            <th scope="col">Reason</th>
-                                            <th scope="col">Start Date</th>
-                                            <th scope="col">End Date</th>
-                                            <th scope="col">File</th>
+                                            <th scope="col">S/N</th>
+                                            <th scope="col">Present Programme</th>
+                                            <th scope="col">New Programme Date</th>
+                                            <th scope="col">Status</th>
+                                            <th scope="col">Current Status</th>
                                             <th scope="col">Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         @foreach($programmeChangeRequests as $programmeChangeRequest)
                                         <tr>
-                                            <td>{!! $programmeChangeRequest->reason !!}</td>
-                                            <td>{{ $programmeChangeRequest->start_date }}</td>
+                                            <td>{{ $loop->iteration }}</td>
+                                            <td>{{ $student->programme->name }}</td>
+                                            <td>{{ $programmeChangeRequest->newProgramme->name ?? '' }}</td>
                                             <td>
-                                                @if($programmeChangeRequest->end_date)
-                                                    {{ $programmeChangeRequest->end_date }}
-                                                @else
-                                                    <span class="badge bg-warning">Ongoing</span>
-                                                @endif
+                                                {{ $programmeChangeRequest->status }}
                                             </td>
                                             <td>
-                                                @if($programmeChangeRequest->file)
-                                                    <a href="{{ asset($programmeChangeRequest->file) }}" class="btn btn-sm btn-info" target="_blank">
-                                                        <i class="ri-file-download-line"></i> View File
-                                                    </a>
-                                                @else
-                                                    <span class="text-muted">No file</span>
-                                                @endif
+                                                {{ str_replace('_', ' ', $programmeChangeRequest->current_stage) }}
                                             </td>
                                             <td>
-                                                <a href="{{ url('student/viewprogrammeChangeRequest/'.$programmeChangeRequest->slug) }}" class="btn btn-sm btn-info">
+                                                <a href="{{ url('student/viewProgrammeChangeRequest/'.$programmeChangeRequest->slug) }}" class="btn btn-sm btn-info">
                                                     <i class="ri-eye-line"></i> View Details
                                                 </a>
                                             </td>
@@ -122,23 +114,11 @@
                                     This payment is <strong>non-refundable</strong>. Please ensure that all details are correct before proceeding.
                                 </div>
                                 
-                                {{-- @if($eligibleProgrammes->isEmpty())
+                                @if($eligibleProgrammes->isEmpty())
                                     <div class="alert alert-warning">
                                         No eligible programmes found. Please visit the DAP or Academic Office for further guidance.
                                     </div>
                                 @else
-                                <div class="col-lg-12">
-                                    <div class="form-floating">
-                                        <select class="form-select" id="new_programme_id" name="new_programme_id" aria-label="new_programme_id" required>
-                                            <option value="" selected>--Select--</option>
-                                            @foreach ($eligibleProgrammes as $eligibleProgramme)
-                                                <option value="{{ $eligibleProgramme->id }}"> {{ $eligibleProgramme->name }}</option>
-                                            @endforeach
-                                        </select>
-                                        <label for="new_programme_id">Programmes you are eligible to change to</label>
-                                    </div>
-                                </div> --}}
-                                
                                 <div class="col-lg-12">
                                     <div class="form-floating">
                                         <select class="form-select" aria-label="paymentGateway" name="paymentGateway" required>
@@ -153,9 +133,8 @@
                                         <label for="paymentGateway" class="form-label">Select Payment Gateway</label>
                                     </div>
                                 </div>
-                               
+                               @endif
                                 <button type="submit" id="submit-button" class="btn btn-fill btn-primary btn-lg btn-block mb-5">Apply Now</button>
-                                @endif
                             </div>
                         </form>
                         

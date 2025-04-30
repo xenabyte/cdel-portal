@@ -600,6 +600,8 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'student'
     Route::post('/manageSuspension', [App\Http\Controllers\Student\StudentDisciplinaryController::class, 'manageSuspension'])->name('student.manageSuspension');  
 
     Route::get('/programmeChangeRequests', [App\Http\Controllers\Student\AcademicController::class, 'programmeChangeRequests'])->name('student.programmeChangeRequests')->middleware(['auth:student']);
+    Route::get('/viewProgrammeChangeRequest/{slug}', [App\Http\Controllers\Student\AcademicController::class, 'viewProgrammeChangeRequest'])->name('student.viewprogrammeChangeRequest')->middleware(['auth:student']);
+
 
   });
 });

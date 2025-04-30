@@ -195,7 +195,7 @@ class LeaveController extends Controller
                 // Skip HOD approval, go to Dean, then HR, then Registrar, then VC
                 $leave->hod_status = 'approved';
                 $leave->hod_comment = 'Skipped approval as the applicant is a HOD.';
-                $nextApprover = strtolower($leave->staff->category) == 'academic'? $this->getNextApprover(Role::ROLE_DEAN):$this->getNextApprover(Role::ROLE_HR);
+                $nextApprover = strtolower($leave->staff->category) == 'academic'? $this->getFacultyDean($leave->staff->faculty_id) : $this->getNextApprover(Role::ROLE_HR);
     
                 $nextSteps = [
                     $this->getNextApprover(Role::ROLE_REGISTRAR),
