@@ -241,8 +241,10 @@ class StudentDisciplinaryController extends Controller
         $receiverName = $student->applicant->lastname . ' ' . $student->applicant->othernames;
         $message = "Dear $receiverName, your $type has been officially lifted. You are now reinstated to Good Standing. Please contact the administration for any further details.";
 
-        Mail::to($student->email)->send(new NotificationMail($senderName, $message, $receiverName));
-
+        if(env('SEND_MAIL')){
+            Mail::to($student->email)->send(new NotificationMail($senderName, $message, $receiverName));
+        }
+        
         Notification::create([
             'student_id' => $student->id,
             'description' => $message,
