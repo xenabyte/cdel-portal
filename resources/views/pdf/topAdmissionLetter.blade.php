@@ -153,9 +153,9 @@
             <p>{{ $pageGlobalData->sessionSetting->registrar_name }}<br><strong>Registrar</strong></p>
         </div>
         
-        <div class="watermark">
+        {{-- <div class="watermark">
             <img src="{{ env('SCHOOL_LOGO') }}" alt="Watermark Logo">
-        </div>
+        </div> --}}
     </div>
 </body>
 </html>

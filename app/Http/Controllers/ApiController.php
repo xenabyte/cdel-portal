@@ -23,6 +23,7 @@ use App\Models\CourseLecture;
 use App\Models\CourseManagement;
 use App\Models\CourseRegistration;
 
+use App\Models\ProgrammeRequirement;
 
 use App\Libraries\Google\Google;
 use App\Libraries\Pdf\Pdf;
@@ -211,4 +212,40 @@ class ApiController extends Controller
         }
 
     }
+
+    public function getRequiredPassMark(Request $request)
+    {
+        $validated = $request->validate([
+            'student_id' => 'required|exists:students,id',
+            'course_code' => 'required|string',
+        ]);
+
+        $student = Student::find($validated['student_id']);
+        $courseCode = $validated['course_code'];
+
+        $requirement = ProgrammeRequirement::where('programme_id', $student->programme_id)
+            ->where('level_id', $student->level_id)
+            ->first();
+
+        $requiredPassMark = 40;
+
+        if ($requirement && $requirement->additional_criteria) {
+            $additional = json_decode($requirement->additional_criteria, true);
+
+            if (
+                isset($additional['course_code_50_pass']['enabled']) &&
+                $additional['course_code_50_pass']['enabled'] &&
+                isset($additional['course_code_50_pass']['prefixes'])
+            ) {
+                foreach ($additional['course_code_50_pass']['prefixes'] as $prefix) {
+                    if (stripos($courseCode, $prefix) === 0) {
+                        return response()->json(['required_pass_mark' => 50]);
+                    }
+                }
+            }
+        }
+
+        return response()->json(['required_pass_mark' => $requiredPassMark]);
+    }
+
 }

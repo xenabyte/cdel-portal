@@ -64,8 +64,6 @@ Route::get('/populateStudendBandwidth', [App\Http\Controllers\Admin\CronControll
 Route::get('/getSemesterGPA', [App\Http\Controllers\CronController::class, 'getSemesterGPA']);
 Route::get('/updateStudentGrade', [App\Http\Controllers\CronController::class, 'updateStudentGrade']);
 
-
-
 Route::post('/addStaffRecord', [App\Http\Controllers\HomeController::class, 'addStaffRecord'])->name('addStaffRecord');
 Route::get('/staffRecord', [App\Http\Controllers\HomeController::class, 'staffRecord'])->name('staffRecord');
 

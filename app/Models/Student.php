@@ -339,7 +339,7 @@ class Student extends Authenticatable
         $minCgpa = $requirement ? $requirement->min_cgpa : (!empty($this->programme->min_cgpa) ? $this->programme->min_cgpa : 1.5);
         // 1️⃣ Check CGPA for promotion
         if ($this->cgpa < $minCgpa) {
-            $reasons[] = "Your CGPA ({$this->cgpa}) is below the minimum required ({$requirement->min_cgpa}).";
+            $reasons[] = "Your CGPA ({$this->cgpa}) is below the minimum required ({$minCgpa}).";
         }
 
         // 2️⃣ Check for carry-overs

@@ -12,16 +12,16 @@ $qrcode = 'https://quickchart.io/chart?chs=300x300&cht=qr&chl='.env('APP_URL').'
             position: relative;
         }
         .watermark {
-            position: absolute;
+            position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: -1;
             background: url('{{ env('SCHOOL_LOGO') }}') center center no-repeat;
             background-size: 50%;
-            opacity: 0.1; 
-            page-break-before: always;
+            opacity: 0.05;
+            z-index: 0;
+            pointer-events: none;
         }
         .header-logo {
             text-align: right;
@@ -68,6 +68,7 @@ $qrcode = 'https://quickchart.io/chart?chs=300x300&cht=qr&chl='.env('APP_URL').'
     </style>
 </head>
 <body>
+<div class="watermark"></div>
 <div class="container">
     <table style="width: 100%;">
         <tbody>
@@ -151,7 +152,6 @@ $qrcode = 'https://quickchart.io/chart?chs=300x300&cht=qr&chl='.env('APP_URL').'
         </tbody>
     </table>
 </div>
-<div class="watermark"></div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

@@ -32,3 +32,5 @@ Route::group(['prefix' => 'lecture'], function () {
 });
 
 Route::get('/changeCourseManagementPasscode', [App\Http\Controllers\CronController::class, 'changeCourseManagementPasscode'])->name('changeCourseManagementPasscode');
+Route::post('/getRequiredPassMark', [App\Http\Controllers\ApiController::class, 'getRequiredPassMark'])->name('getRequiredPassMark');
+

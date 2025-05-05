@@ -21,16 +21,16 @@
             z-index: 1;
         }
         .watermark {
-            position: absolute;
+            position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: -1;
             background: url('{{ env('SCHOOL_LOGO') }}') center center no-repeat;
             background-size: 50%;
-            opacity: 0.1; 
-            page-break-before: always;
+            opacity: 0.05;
+            z-index: 0;
+            pointer-events: none;
         }
         .header {
             text-align: center;
@@ -176,9 +176,9 @@
             <p>{{ $pageGlobalData->sessionSetting->registrar_name }}<br><strong>Registrar</strong></p>
         </div>
         
-        <div class="watermark">
+        {{-- <div class="watermark">
             <img src="{{ env('SCHOOL_LOGO') }}" alt="Watermark Logo">
-        </div>
+        </div> --}}
     </div>
 </body>
 </html>
