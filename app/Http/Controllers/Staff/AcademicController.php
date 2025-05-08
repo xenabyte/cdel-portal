@@ -22,6 +22,8 @@ use App\Models\CoursePerProgrammePerAcademicSession;
 use App\Models\ProgrammeCategory;
 use App\Models\Student;
 use App\Models\StudentSuspension;
+use App\Models\ProgrammeChangeRequest;
+use App\Models\Staff;
 
 use SweetAlert;
 use Mail;
@@ -297,6 +299,217 @@ class AcademicController extends Controller
         return view('staff.expelledStudents', [
             'expelledStudents' => $expelledStudents
         ]);
+    }
+
+    public function programmeChangeRequests(Request $request){
+        $staff = Auth::guard('staff')->user();
+        $staffId = $staff->id;
+
+        $programmeChangeRequests = ProgrammeChangeRequest::where('status', 'pending')
+            ->where(function ($query) use ($staffId) {
+                $query->where('old_programme_hod_id', $staffId)
+                    ->orWhere('old_programme_dean_id', $staffId)
+                    ->orWhere('new_programme_hod_id', $staffId)
+                    ->orWhere('new_programme_dean_id', $staffId)
+                    ->orWhere('dap_id', $staffId)
+                    ->orWhere('registrar_id', $staffId);
+            })
+            ->get();
+
+        return view('staff.programmeChangeRequests', [
+            'programmeChangeRequests' => $programmeChangeRequests,
+        ]);
+    }
+
+    public function viewProgrammeChangeRequest(Request $request, $slug){
+
+        $programmeChangeRequest = ProgrammeChangeRequest::where('slug', $slug)->first();
+
+        return view('staff.viewProgrammeChangeRequest', [
+            'programmeChangeRequest' => $programmeChangeRequest
+        ]);
+    }
+
+    public function manageProgrammeChangeRequest(Request $request)
+    {
+        $globalData = $request->input('global_data');
+        $academicSession = $globalData->sessionSetting['academic_session'];
+
+        $request->validate([
+            'programme_change_request_id' => 'required|exists:programme_change_requests,id',
+            'role' => 'required|in:old_hod,new_hod,old_dean,new_dean,dap,registrar',
+            'status' => 'required|in:approved,declined',
+        ]);
+
+        $changeRequest = ProgrammeChangeRequest::findOrFail($request->programme_change_request_id);
+        
+        $staff = Auth::guard('staff')->user();
+        $staffId = $staff->id;
+        $now = now();
+
+        // Set approval timestamp
+        switch ($request->role) {
+            case 'old_hod':
+                $changeRequest->hod_old_approved_at = $now;
+                break;
+            case 'old_dean':
+                $changeRequest->dean_old_approved_at = $now;
+                break;
+            case 'new_hod':
+                $changeRequest->hod_new_approved_at = $now;
+                break;
+            case 'new_dean':
+                $changeRequest->dean_new_approved_at = $now;
+                break;
+            case 'dap':
+                $changeRequest->dap_approved_at = $now;
+                break;
+            case 'registrar':
+                $changeRequest->registrar_approved_at = $now;
+                break;
+        }
+
+        // Handle rejection
+        if ($request->status == 'declined') {
+            $changeRequest->status = 'declined';
+            $changeRequest->rejection_reason = $request->rejection_reason;
+            $changeRequest->save();
+
+            $student = Student::find($changeRequest->student_id);
+            $senderName = env('SCHOOL_NAME');
+            $receiverName = $student->applicant->lastname . ' ' . $student->applicant->othernames;
+            $message = "Your programme change request has been declined. Reason: {$request->rejection_reason}";
+
+            if ($student) {
+                Notification::create([
+                    'student_id' => $student->id,
+                    'description' => $message,
+                    'status' => 0,
+                ]);
+
+                if (env('SEND_MAIL')) {
+                    $mail = new NotificationMail($senderName, $message, $receiverName);
+                    Mail::to($student->email)->send($mail);
+                }
+            }
+
+            alert()->info('Declined', 'Programme change request was declined')->persistent('Close');
+            return redirect()->back();
+        }
+
+        // If approved, move to next stage or complete
+        $nextStage = match ($request->role) {
+            'old_hod' => 'old_dean',
+            'old_dean' => 'new_hod',
+            'new_hod' => 'new_dean',
+            'new_dean' => 'dap',
+            'dap' => 'registrar',
+            'registrar' => 'completed',
+        };
+
+        if ($nextStage === 'completed') {
+            $changeRequest->status = 'approved';
+            $changeRequest->current_stage = 'completed';
+
+            $student = Student::find($changeRequest->student_id);
+
+            $receiverName = $student->applicant->lastname . ' ' . $student->applicant->othernames;
+            $senderName = env('SCHOOL_NAME');
+            $message = "Your programme change request has been fully approved.";
+
+            $student->programme_id = $changeRequest->new_programme_id;
+            $student->department_id = $changeRequest->newProgramme->department_id;
+            $student->faculty_id = $changeRequest->newProgramme->department->faculty_id;
+            $student->level_id = 2;
+
+            $student->save();
+
+            $student->refresh();
+
+            // Reassign school fee payment to match new programme
+            $studentId = $student->id;
+            $applicantId = $student->user_id;
+            $applicant = User::find($applicantId);
+            $applicationType = $applicant->application_type;
+
+            $type = Payment::PAYMENT_TYPE_SCHOOL;
+            if ($applicationType != 'UTME' && ($student->level_id == 2 || $student->level_id == 3)) {
+                $type = Payment::PAYMENT_TYPE_SCHOOL_DE;
+            }
+
+            $schoolPayment = Payment::with('structures')
+                ->where('type', $type)
+                ->where('programme_id', $student->programme_id)
+                ->where('level_id', $student->level_id)
+                ->where('academic_session', $academicSession)
+                ->where('programme_category_id', $student->programme_category_id)
+                ->first();
+
+            if (!$schoolPayment) {
+                alert()->success('Programme school fees not set, check with ICT admin', '')->persistent('Close');
+                return $this->getSingleStudent($student->matric_number, $request->url);
+            }
+
+            // Update previous successful transactions
+            Transaction::where('student_id', $studentId)
+                ->where('session', $academicSession)
+                ->where('status', 1)
+                ->update(['payment_id' => $schoolPayment->id]);
+
+            if ($student) {
+                Notification::create([
+                    'student_id' => $student->id,
+                    'description' => $message,
+                    'status' => 0,
+                ]);
+
+                if (env('SEND_MAIL')) {
+                    
+                    $mail = new NotificationMail($senderName, $message, $receiverName);
+                    Mail::to($student->email)->send($mail);
+
+                    $adminEmail = env('APP_EMAIL');
+                    if ($adminEmail) {
+                        $adminMessage = "Programme change for student {$student->matric_number} ({$student->lastname} {$student->othernames}) has been approved completely by {$senderName}.";
+                        $adminMail = new NotificationMail($senderName, $adminMessage, 'Support Team');
+                        Mail::to($adminEmail)->send($adminMail);
+                    }
+                }
+            }
+        } else {
+            $changeRequest->current_stage = $nextStage;
+
+            $nextUserId = match ($nextStage) {
+                'old_dean' => $changeRequest->old_programme_dean_id,
+                'new_hod' => $changeRequest->new_programme_hod_id,
+                'new_dean' => $changeRequest->new_programme_dean_id,
+                'dap' => $changeRequest->dap_id,
+                'registrar' => $changeRequest->registrar_id,
+            };
+
+            $staff = Staff::find($nextUserId);
+            if ($staff) {
+                $senderName = env('SCHOOL_NAME');
+                $receiverName = $staff->title . ' ' . $staff->lastname . ' ' . $staff->othernames;
+                $message = 'A programme change request awaits your review.';
+
+                Notification::create([
+                    'staff_id' => $staff->id,
+                    'description' => $message,
+                    'status' => 0,
+                ]);
+
+                if (env('SEND_MAIL')) {
+                    $mail = new NotificationMail($senderName, $message, $receiverName);
+                    Mail::to($staff->email)->send($mail);
+                }
+            }
+        }
+
+        $changeRequest->save();
+
+        alert()->success('Success', 'Your decision was recorded successfully')->persistent('Close');
+        return redirect()->back();
     }
 
 }

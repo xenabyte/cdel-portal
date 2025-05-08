@@ -23,6 +23,9 @@ use App\Models\AcademicLevel;
 use App\Models\ResultApprovalStatus;
 use App\Models\CoursePerProgrammePerAcademicSession;
 use App\Models\ProgrammeChangeRequest;
+use App\Models\Staff;
+use App\Models\Notification;
+use App\Models\Programme; 
 
 use App\Libraries\Pdf\Pdf;
 use App\Mail\NotificationMail;
@@ -849,7 +852,7 @@ class AcademicController extends Controller
         //     ]);
         // }
 
-        $programmeChangePayment = Payment::where("type", "Programme Change Fee")->where("academic_session", $academicSession)->first();
+        $programmeChangePayment = Payment::where("type", Payment::PAYMENT_TYPE_INTRA_TRANSFER_APPLICATION)->where("academic_session", $academicSession)->first();
         $programmeChangeRequests = ProgrammeChangeRequest::where('student_id', $studentId)->get();
 
         return view('student.programmeChangeRequests', [
@@ -863,12 +866,91 @@ class AcademicController extends Controller
 
     public function viewProgrammeChangeRequest(Request $request, $slug){
         $student = Auth::guard('student')->user();
-        $studentId = $student->id;
 
         $programmeChangeRequest = ProgrammeChangeRequest::where('slug', $slug)->first();
 
         return view('student.viewProgrammeChangeRequest', [
             'programmeChangeRequest' => $programmeChangeRequest
         ]);
+    }
+
+    public function programmeChange(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'programme_change_request_id' => 'required',
+            'new_programme_id' => 'required',
+            'reason' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+        $programmeChangeRequestId = $request->programme_change_request_id;
+
+        $programmeChangeRequest = ProgrammeChangeRequest::find($programmeChangeRequestId);
+        if (!$programmeChangeRequest) {
+            alert()->error('Error', 'Programme change request not found')->persistent('Close');
+            return redirect()->back();
+        }
+
+        $student = Auth::guard('student')->user();
+        $globalData = $request->input('global_data');
+
+        $academicSession = $globalData->sessionSetting['academic_session'];
+
+        $studentProgrammeId = $student->programme_id;
+        $studentHODId = $student->department->hod_id;
+        $studentDeanId = $student->faculty->dean_id;
+
+        $studentNewProgrammeId = $request->new_programme_id;
+
+        $studentNewProgramme = Programme::find($studentNewProgrammeId);
+        if (!$studentNewProgramme) {
+            alert()->error('Error', 'New programme not found')->persistent('Close');
+            return redirect()->back();
+        }
+
+        $studentNewDepartment = $studentNewProgramme->department;
+        $studentNewFaculty = $studentNewDepartment->faculty;
+
+        $studentNewHODId = $studentNewDepartment->hod_id;
+        $studentNewDeanId = $studentNewFaculty->dean_id;
+
+        // Update the programme change request
+        $programmeChangeRequest->update([
+            'student_id' => $student->id,
+            'old_programme_id' => $studentProgrammeId,
+            'new_programme_id' => $studentNewProgrammeId,
+            'reason' => $request->input('reason', null),
+            'status' => 'pending',
+            'current_stage' => 'Pending HOD Approval',
+            'academic_session' => $academicSession,
+
+            'old_programme_hod_id' => $studentHODId,
+            'old_programme_dean_id' => $studentDeanId,
+            'new_programme_hod_id' => $studentNewHODId,
+            'new_programme_dean_id' => $studentNewDeanId,
+        ]);
+
+        // Notify student's current HOD
+        $message = "Student {$student->full_name} has submitted a programme change request and requires your approval.";
+        Notification::create([
+            'staff_id' => $studentHODId,
+            'description' => $message,
+            'status' => 0
+        ]);
+
+        if(env('SEND_MAIL')){
+            $studentHOD = Staff::find($studentHODId);
+            $senderName = env('SCHOOL_NAME');
+            $receiverName = $studentHOD->lastname.' '. $studentHOD->othernames;
+
+            $mail = new NotificationMail($senderName, $message, $receiverName);
+            Mail::to($student->email)->send($mail);
+        }
+
+        alert()->success('Success', 'Programme change request submitted successfully')->persistent('Close');
+        return redirect()->back();
     }
 }

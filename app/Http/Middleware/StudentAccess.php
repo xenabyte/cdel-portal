@@ -58,7 +58,8 @@ class StudentAccess
         // 3️⃣ Check for withdrawal status
         if ($this->isWithdrawn($student, $request)) {
             return response()->view('student.withdrawn', [
-                'message' => 'You have been withdrawn from. You can only access Transactions and Change Programme.',
+                'message' => 'You have been withdrawn. You can only access Transactions and Change Programme.',
+                'reason' => 'Due to your current academic standing, you have been withdrawn from your programme. You may apply for an intra-university transfer to another programme or consult the Academic Office for further guidance and advice.',
             ]);
         }
 
@@ -113,11 +114,10 @@ class StudentAccess
     {
         if (strtolower($student->academic_status) === 'withdrawn') {
             $allowedRoutes = [
-                'transactions.index', 
+                'student.home', 
                 'student.programmeChangeRequests',
                 'student.makePayment',
-                'student.viewProgrammeChange',
-                'student.manageProgrammeChange'
+                'student.viewProgrammeChangeRequest',
             ];
 
             return !in_array($request->route()->getName(), $allowedRoutes);

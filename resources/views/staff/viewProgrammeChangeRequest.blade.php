@@ -1,8 +1,12 @@
-@extends('student.layout.dashboard')
+@extends('staff.layout.dashboard')
 @php
 use \App\Models\ResultApprovalStatus;
 
-$student = Auth::guard('student')->user();
+$staff = Auth::guard('staff')->user();
+$staffId = $staff->id;
+
+$student = $programmeChangeRequest->student;
+
 $qrcode = 'https://quickchart.io/chart?chs=300x300&cht=qr&chl='.env('APP_URL').'/studentDetails/'.$student->slug;
 $name = $student->applicant->lastname.' '.$student->applicant->othernames;
 $eligibleProgrammes = $student->getQualifiedTransferProgrammes();
@@ -11,6 +15,21 @@ $failedCourses = $student->registeredCourses()->where('grade', 'F')->where('re_r
 
 
 $stage = 0;
+
+if ($staffId == $programmeChangeRequest->old_programme_hod_id) {
+    $role = 'old_hod';
+} elseif ($staffId == $programmeChangeRequest->new_programme_hod_id) {
+    $role = 'new_hod';
+} elseif ($staffId == $programmeChangeRequest->old_programme_dean_id) {
+    $role = 'old_dean';
+} elseif ($staffId == $programmeChangeRequest->new_programme_dean_id) {
+    $role = 'new_dean';
+} elseif ($staffId == $programmeChangeRequest->dap_id) {
+    $role = 'dap';
+} elseif ($staffId == $programmeChangeRequest->registrar_id) {
+    $role = 'registrar';
+}
+
 @endphp
 @section('content')
 
@@ -55,6 +74,11 @@ $stage = 0;
                                         </div>
                                     </div>
                                 </div>
+                            </div>
+                        </div>
+                        <div class="col-md-auto">
+                            <div class="hstack gap-1 flex-wrap">
+                                <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#manageApplication"> Manage Application</button>
                             </div>
                         </div>
                     </div>
@@ -333,49 +357,66 @@ $stage = 0;
 </div>
 <!--end row-->
 
-<div id="assignNewProgrammeModal" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
-    <div class="modal-dialog modal-dialog-centered">
+<div id="manageApplication" class="modal fade" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" style="display: none;">
+    <!-- Fullscreen Modals -->
+    <div class="modal-dialog modal-md">
         <div class="modal-content border-0 overflow-hidden">
             <div class="modal-header p-3">
-                <h4 class="card-title mb-0">Assign New Programme</h4>
+                <h4 class="card-title mb-0">Manage Intra Transfer Application</h4>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-
-            <div class="modal-body border-top border-top-dashed">
-                <form action="{{ url('student/programmeChange') }}" method="post" enctype="multipart/form-data">
+            <hr>
+            <div class="modal-body">
+                <form action="{{ url('/staff/manageProgrammeChangeRequest') }}" method="post" enctype="multipart/form-data">
                     @csrf
-                    <input type="hidden" name="url" value="student.viewProgrammeChangeRequest">
                     <input type="hidden" name="programme_change_request_id" value="{{ $programmeChangeRequest->id }}">
-                    @if($eligibleProgrammes->isEmpty())
-                        <div class="alert alert-warning text-center">
-                            No eligible programmes found. Please visit the DAP or Academic Office for further guidance.
-                        </div>
-                    @else
-                        <div class="col-lg-12">
-                            <div class="form-floating">
-                                <select class="form-select" id="new_programme_id" name="new_programme_id" aria-label="new_programme_id" required>
-                                    <option value="" selected>--Select--</option>
-                                    @foreach ($eligibleProgrammes as $eligibleProgramme)
-                                        <option value="{{ $eligibleProgramme->id }}"> {{ $eligibleProgramme->name }}</option>
-                                    @endforeach
-                                </select>
-                                <label for="new_programme_id">Programmes you are eligible to change to</label>
-                            </div>
-                        </div>
 
-                        <div class="mb-3">
-                            <label for="reason" class="form-label">Reason for Changing Programme</label>
-                            <textarea class="form-control ckeditor" name="reason" id="reason"></textarea>
-                        </div>
-                    @endif
-                    <div class="text-end border-top border-top-dashed p-3">
-                        <br>
-                        <button type="submit" id="submit-button" class="btn btn-primary">Submit Application</button>
+                    
+                    <div class="mb-3">
+                        <label for="role" class="form-label">Approval Role</label>
+                        <select class="form-select" name="role" id="role" readonly disabled>
+                            <option value="">Select Option</option>
+                            <option value="old_hod" {{ $role == 'old_hod' ? 'selected' : '' }}>Old Programme HOD</option>
+                            <option value="new_hod" {{ $role == 'new_hod' ? 'selected' : '' }}>New Programme HOD</option>
+                            <option value="old_dean" {{ $role == 'old_dean' ? 'selected' : '' }}>Old Programme Dean</option>
+                            <option value="new_dean" {{ $role == 'new_dean' ? 'selected' : '' }}>New Programme Dean</option>
+                            <option value="dap" {{ $role == 'dap' ? 'selected' : '' }}>DAP</option>
+                            <option value="registrar" {{ $role == 'registrar' ? 'selected' : '' }}>Registrar</option>
+                        </select>
+
+                        {{-- Keep a hidden input so value is submitted --}}
+                        <input type="hidden" name="role" value="{{ $role }}">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="rejection_reason" class="form-label">Comment(if Declining)</label>
+                        <textarea class="form-control ckeditor" name="rejection_reason" id="rejection_reason"></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="role" class="form-label">Select Option</label>
+                        <select class="form-select" aria-label="role" name="status" required>
+                            <option selected value= "">Select Option </option>
+                            <option value="approved">Confirm</option>
+                            <option value="declined">Decline</option>
+                        </select>
+                    </div>
+
+                    <hr>
+                    <div class="text-end">
+                        <button type="submit" id="submit-button" class="btn btn-primary">Submit</button>
                     </div>
                 </form>
             </div>
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
+
+<script>
+    function setActionBy(role) {
+      document.getElementById('actionBy').value = role;
+      document.getElementById('reason').value = ''; // Reset textarea
+    }
+  </script>
 
 @endsection

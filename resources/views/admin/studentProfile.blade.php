@@ -77,7 +77,9 @@ $studentAdvisoryData = (object) $student->getAcademicAdvisory();
                                     <input type="hidden" name="student_id" value="{{ $student->id }}">
                                     <button type="submit" class="btn btn-success">Send Guardian Onboarding Mail</button>
                                 </form>
+                                @if($student->programme_category == 2)
                                 <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#assignStudyCenter">Assign Study Center</button>
+                                @endif
                                 <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#expelStudent">Expel Student</button>
                                 <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#suspendStudent">Suspend Student</button>
 

@@ -20,14 +20,14 @@
                             <p class="text-muted mt-3">
                                 {{ $message }}
                                 <p>
-                                <strong>Reason:</strong>{!! $reason !!}
+                                <strong>Reason:</strong> {!! $reason !!}
                                 </p>
                                 <br>
                                 
                                 <div class="col-lg-12 mt-2 border-top border-top-dashed">
                                     <div class="d-flex mt-3 justify-content-center">
-                                        <a href="{{ url('student/viewWithdrawal/'.$student->slug) }}" class="btn btn-primary btn-label nexttab right" data-nexttab="pills-bill-address-tab">
-                                            <i class="ri-arrow-right-line label-icon align-middle fs-16 ms-2"></i> Apply for re-admission
+                                        <a href="{{ url('student/programmeChangeRequests') }}" class="btn btn-primary btn-label nexttab right" data-nexttab="pills-bill-address-tab">
+                                            <i class="ri-arrow-right-line label-icon align-middle fs-16 ms-2"></i>Intra Transfer Application
                                         </a>
                                     </div>
                                 </div>

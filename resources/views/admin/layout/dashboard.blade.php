@@ -6,6 +6,8 @@
     $name = $admin->name;
 
     $programmeCategory = new \App\Models\ProgrammeCategory;
+
+    $pendingStudentProgrammeChangeCount = \App\Models\ProgrammeChangeRequest::where('status', 'pending')->count();
 ?>
 
 <head>
@@ -723,6 +725,10 @@
                                                 </li>
                                             </ul>
                                         </div>
+                                    </li>
+
+                                    <li class="nav-item">
+                                        <a class="nav-link menu-link" href="{{ url('admin/programmeChangeRequests') }}" data-key="t-profile">Intra Transfer Applications <span class="badge badge-pill bg-danger" data-key="t-hot">{{  $pendingStudentProgrammeChangeCount }} </span></a>
                                     </li>
 
                                     <li class="nav-item">

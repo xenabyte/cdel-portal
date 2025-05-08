@@ -370,7 +370,7 @@ class StudentController extends Controller
         
         }
 
-        if(strtolower($paymentType) == strtolower(Payment::PAYMENT_TYPE_PROGRAMME_CHANGE)) {
+        if(!empty($payment) && strtolower($payment->type) == strtolower(Payment::PAYMENT_TYPE_INTRA_TRANSFER_APPLICATION)) {
 
             $pendingRequest = ProgrammeChangeRequest::where('student_id', $studentId)
             ->where('status', '!=', 'completed')

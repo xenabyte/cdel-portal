@@ -24,7 +24,7 @@ class Payment extends Model
     const PAYMENT_TYPE_ACCOMONDATION = 'Accomondation Fee';
     const PAYMENT_TYPE_INTRA_TRANSFER_APPLICATION = 'Intra Transfer Application Fee';
     const PAYMENT_TYPE_READMISSION_FEE = 'Re-admission Fee';
-    const PAYMENT_TYPE_PROGRAMME_CHANGE = 'Programme Change Fee';
+    // const PAYMENT_TYPE_PROGRAMME_CHANGE = 'Programme Change Fee';
 
 
     protected $fillable = [
@@ -103,6 +103,7 @@ class Payment extends Model
                 return 'Accomondation';
             case 'General Application Fee':
             case 'Inter Transfer Application Fee':
+            case 'Intra Transfer Application Fee':
             case 'Acceptance Fee':
             case 'School Fee':
             case 'DE School Fee':

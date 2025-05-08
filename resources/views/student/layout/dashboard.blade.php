@@ -326,7 +326,7 @@
 
                             <li class="nav-item">
                                 <a class="nav-link menu-link" href="{{ url('student/programmeChangeRequests') }}">
-                                    <i class="mdi mdi-account-child-circle"></i> <span data-key="t-transaction">Change of programme</span>
+                                    <i class="mdi mdi-account-child-circle"></i> <span data-key="t-transaction">Intra Transfer Application</span>
                                 </a>
                             </li>
 

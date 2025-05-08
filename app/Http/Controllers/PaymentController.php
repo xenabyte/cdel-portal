@@ -125,7 +125,7 @@ class PaymentController extends Controller
                             }
                         }
 
-                        if($paymentType == Payment::PAYMENT_TYPE_PROGRAMME_CHANGE){
+                        if($paymentType == Payment::PAYMENT_TYPE_INTRA_TRANSFER_APPLICATION){
                             $transaction = Transaction::where('reference', $txRef)->first();
                             $changeProgramme = $this->initChangeProgramme($transaction);
                             if (is_string($changeProgramme)) {

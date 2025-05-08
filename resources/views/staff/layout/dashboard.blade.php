@@ -7,6 +7,8 @@
 
 
     $staff = Auth::guard('staff')->user();
+    $staffId = $staff->id;
+
     $staffDeanRole = false;
     $staffSubDeanRole = false;
     $staffHODRole = false;
@@ -92,6 +94,17 @@
     ->exists();
 
     $pendingStudentClearanceCount = \App\Models\FinalClearance::where('status', null)->count();
+
+    $pendingStudentProgrammeChangeCount = \App\Models\ProgrammeChangeRequest::where('status', 'pending')
+    ->where(function ($query) use ($staffId) {
+        $query->where('old_programme_hod_id', $staffId)
+              ->orWhere('old_programme_dean_id', $staffId)
+              ->orWhere('new_programme_hod_id', $staffId)
+              ->orWhere('new_programme_dean_id', $staffId)
+              ->orWhere('dap_id', $staffId)
+              ->orWhere('registrar_id', $staffId);
+    })
+    ->count();
 
     $isFacultyOfficer = Faculty::where('faculty_officer_id', $staff->id)->exists();
 
@@ -352,9 +365,9 @@
                             {{-- @if($staff->staffRoles->count() > 0) --}}
                             <li class="nav-item">
                                 <a class="nav-link menu-link" href="#student" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarForms">
-                                    <i class="mdi mdi-account-group"></i> <span data-key="t-leaveMGT">Student MGT</span> 
+                                    <i class="mdi mdi-account-group"></i> <span data-key="t-studentMGT">Student MGT</span> 
                                     @if($staffDeanRole || $staffHODRole || $staffRegistrarRole || $isUnitHead)
-                                    <span class="badge badge-pill bg-danger" data-key="t-hot">{{ $pendingStudentClearanceCount }}</span>
+                                    <span class="badge badge-pill bg-danger" data-key="t-hot">({{ $pendingStudentClearanceCount }}) ({{ $pendingStudentProgrammeChangeCount }})</span>
                                     @endif
                                 </a>
                                 <div class="collapse menu-dropdown" id="student">
@@ -409,6 +422,10 @@
                                             <a class="nav-link menu-link" href="{{ url('staff/alumni') }}" data-key="t-profile">Alumni (Graduated Students)</a>
                                         </li>
 
+                                        <li class="nav-item">
+                                            <a class="nav-link menu-link" href="{{ url('staff/programmeChangeRequests') }}" data-key="t-profile">Intra Transfer Applications <span class="badge badge-pill bg-danger" data-key="t-hot">{{  $pendingStudentProgrammeChangeCount }} </span></a>
+                                        </li>
+
                                         @if($staffDeanRole || $staffHODRole || $staffRegistrarRole || $isUnitHead)
                                         <li class="nav-item">
                                             <a class="nav-link menu-link" href="{{ url('staff/studentFinalClearance') }}" data-key="t-profile">Final Year Student Clearance <span class="badge badge-pill bg-danger" data-key="t-hot">{{  $pendingStudentClearanceCount }} </span></a>
@@ -441,10 +458,10 @@
                             @endif
 
                             <li class="nav-item">
-                                <a class="nav-link menu-link" href="#leaveMGT" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarForms">
-                                    <i class="mdi mdi-wrench-clock"></i> <span data-key="t-leaveMGT">Leave MGT</span>
+                                <a class="nav-link menu-link" href="#studentMGT" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarForms">
+                                    <i class="mdi mdi-wrench-clock"></i> <span data-key="t-studentMGT">Leave MGT</span>
                                 </a>
-                                <div class="collapse menu-dropdown" id="leaveMGT">
+                                <div class="collapse menu-dropdown" id="studentMGT">
                                     <ul class="nav nav-sm flex-column">
                                         <li class="nav-item">
                                             <a class="nav-link menu-link" href="{{ url('staff/leaveApplication') }}" data-key="t-profile">Leave Application</a>

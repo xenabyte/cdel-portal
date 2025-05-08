@@ -469,8 +469,6 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'admin'],
   Route::get('/viewWithdrawal/{slug}', [App\Http\Controllers\Admin\AcademicController::class, 'viewSuspension'])->name('admin.viewWithdrawal')->middleware(['auth:admin']);
   Route::post('/manageWithdrawal', [App\Http\Controllers\Admin\AcademicController::class, 'manageWithdrawal'])->name('admin.manageWithdrawal')->middleware(['auth:admin']);  
 
-  Route::get('/changeOfProgrammeApplications', [App\Http\Controllers\Staff\AcademicController::class, 'changeOfProgrammeApplications'])->name('admin.changeOfProgrammeApplications')->middleware(['auth:admin']);
-
   Route::get('/studyCenters', [App\Http\Controllers\Admin\StudyCenterController::class, 'studyCenters'])->name('admin.studyCenters')->middleware(['auth:admin']);
   Route::get('/studyCenter/{slug}', [App\Http\Controllers\Admin\StudyCenterController::class, 'studyCenter'])->name('admin.studyCenter')->middleware(['auth:admin']);
 
@@ -480,7 +478,10 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'admin'],
 
   Route::post('/assignStudyCenter', [App\Http\Controllers\Admin\StudyCenterController::class, 'assignStudyCenter'])->name('admin.assignStudyCenter')->middleware(['auth:admin']);  
 
-  
+  Route::get('/programmeChangeRequests', [App\Http\Controllers\Admin\AcademicController::class, 'programmeChangeRequests'])->name('admin.programmeChangeRequests')->middleware(['auth:admin']);
+  Route::get('/viewProgrammeChangeRequest/{slug}', [App\Http\Controllers\Admin\AcademicController::class, 'viewProgrammeChangeRequest'])->name('admin.viewProgrammeChangeRequest')->middleware(['auth:admin']);
+  Route::post('/manageProgrammeChangeRequest', [App\Http\Controllers\Admin\AcademicController::class, 'manageProgrammeChangeRequest'])->name('admin.manageProgrammeChangeRequest')->middleware(['auth:admin']);
+
   
 });
 
@@ -598,8 +599,8 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'student'
     Route::post('/manageSuspension', [App\Http\Controllers\Student\StudentDisciplinaryController::class, 'manageSuspension'])->name('student.manageSuspension');  
 
     Route::get('/programmeChangeRequests', [App\Http\Controllers\Student\AcademicController::class, 'programmeChangeRequests'])->name('student.programmeChangeRequests')->middleware(['auth:student']);
-    Route::get('/viewProgrammeChangeRequest/{slug}', [App\Http\Controllers\Student\AcademicController::class, 'viewProgrammeChangeRequest'])->name('student.viewprogrammeChangeRequest')->middleware(['auth:student']);
-
+    Route::get('/viewProgrammeChangeRequest/{slug}', [App\Http\Controllers\Student\AcademicController::class, 'viewProgrammeChangeRequest'])->name('student.viewProgrammeChangeRequest')->middleware(['auth:student']);
+    Route::post('/programmeChange', [App\Http\Controllers\Student\AcademicController::class, 'programmeChange'])->name('student.programmeChange')->middleware(['auth:student']);
 
   });
 });
@@ -857,6 +858,11 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'staff'],
   Route::get('/viewWithdrawal/{slug}', [App\Http\Controllers\Staff\AcademicController::class, 'viewSuspension'])->name('staff.viewWithdrawal')->middleware(['auth:staff']);
   Route::post('/manageWithdrawal', [App\Http\Controllers\Staff\AcademicController::class, 'manageWithdrawal'])->name('staff.manageWithdrawal')->middleware(['auth:staff']);
   Route::get('/changeOfProgrammeApplications', [App\Http\Controllers\Staff\AcademicController::class, 'changeOfProgrammeApplications'])->name('staff.changeOfProgrammeApplications')->middleware(['auth:staff']);
+
+  Route::get('/programmeChangeRequests', [App\Http\Controllers\Staff\AcademicController::class, 'programmeChangeRequests'])->name('staff.programmeChangeRequests')->middleware(['auth:staff']);
+  Route::get('/viewProgrammeChangeRequest/{slug}', [App\Http\Controllers\Staff\AcademicController::class, 'viewProgrammeChangeRequest'])->name('staff.viewProgrammeChangeRequest')->middleware(['auth:staff']);
+  Route::post('/manageProgrammeChangeRequest', [App\Http\Controllers\Staff\AcademicController::class, 'manageProgrammeChangeRequest'])->name('staff.manageProgrammeChangeRequest')->middleware(['auth:staff']);
+
 
 });
 
