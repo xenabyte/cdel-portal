@@ -115,7 +115,7 @@
                     <div><strong>MATRIC NUMBER:</strong> {{ $info->matric_number }}</div>
                     <div><strong>APPLICATION NO:</strong> {{ $info->applicant->application_number }}</div>
                     <div><strong>FULL NAME:</strong> {{ $info->applicant->lastname . ' ' . $info->applicant->othernames }}</div>
-                    <div><strong>LEVEL:</strong> {{ $info->resultLevel *100 }} Level</div>
+                    <div><strong>LEVEL:</strong> {{ $info->resultLevel }} Level</div>
                 </td>
                 <td style="width: 50%; vertical-align: top; text-align: left; border: none;">
                     <div><strong>FACULTY:</strong> {{ $info->faculty->name }}</div>
