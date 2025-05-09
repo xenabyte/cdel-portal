@@ -118,6 +118,7 @@ class StudentAccess
                 'student.programmeChangeRequests',
                 'student.makePayment',
                 'student.viewProgrammeChangeRequest',
+                'student.programmeChange',
             ];
 
             return !in_array($request->route()->getName(), $allowedRoutes);

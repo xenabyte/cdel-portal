@@ -32,6 +32,7 @@
                     <thead>
                         <tr>
                             <th scope="col">Id</th>
+                            <th scope="col">Academic Status</th>
                             <th scope="col">Name</th>
                             <th scope="col">Level</th>
                             <th scope="col">Passcode</th>
@@ -47,8 +48,21 @@
                     </thead>
                     <tbody>
                         @foreach($students as $student)
+                        @php
+                            $status = strtolower($student->academic_status);
+                            $statusClass = match($status) {
+                                'good standing' => 'table-success',
+                                'risk of probation' => 'table-info',
+                                'probation' => 'table-warning',
+                                'withdrawn' => 'table-danger',
+                                default => '',
+                            };
+                        @endphp
                         <tr>
                             <th scope="row">{{ $loop->iteration }}</th>
+                            <td class="{{ $statusClass }}">
+                                {{ $student->academic_status }}
+                            </td>
                             <td>{{ $student->applicant->lastname .' '. $student->applicant->othernames }}</td>
                             <td>{{ $student->academicLevel->level }} </td>
                             <td>{{ $student->passcode }} </td>

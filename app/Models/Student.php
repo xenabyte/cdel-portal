@@ -645,4 +645,41 @@ class Student extends Authenticatable
 
         return $advisory;
     }
+
+    public function checkProbation($semester, $cgpa = null, $currentGPA, $previousGPA)
+    {
+        $usedPassedCGPA = !is_null($cgpa);
+        $cgpa = $cgpa ?? $this->cgpa;
+
+        $status = "Good Standing";
+
+        // Fetch student's programme
+        $programme = Programme::find($this->programme_id);
+
+        // Use 1.50 if programme->minimum_cgpa is null
+        $probationCGPA = $programme ? (float) ($programme->minimum_cgpa ?? 1.50) : 1.50;
+
+        // Probation check
+        if ($cgpa < $probationCGPA) {
+            $status = 'Risk of Probation';
+        }
+
+        // Probation check
+        if ($cgpa < $probationCGPA && $semester == 2) {
+            $status = 'Probation';
+        }
+
+        // Withdrawal check for 200 level and above
+        if ($this->academic_status == 'Probation' && $semester == 2 && $this->level >= 200 && $cgpa < $probationCGPA) {
+            $status = 'Withdrawn';
+        }
+
+        // Save only if CGPA was explicitly passed
+        if ($usedPassedCGPA) {
+            $this->academic_status = $status;
+            $this->save();
+        }
+
+        return $status;
+    }
 }

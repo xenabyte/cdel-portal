@@ -48,9 +48,22 @@
                     </thead>
                     <tbody>
                         @foreach($students as $student)
+                        @php
+                            $status = strtolower($student->academic_status);
+                            $statusClass = match($status) {
+                                'good standing' => 'table-success',
+                                'risk of probation' => 'table-info',
+                                'probation' => 'table-warning',
+                                'withdrawn' => 'table-danger',
+                                default => '',
+                            };
+                        @endphp
                         <tr>
                             <th scope="row">{{ $loop->iteration }}</th>
                             <td><span class="text-danger">#{{ $student->id }}</span></td>
+                            <td class="{{ $statusClass }}">
+                                {{ $student->academic_status }}
+                            </td>
                             <td><span class="text-primary">{{ $student->cgpa }}</span></td>
                             {{-- <td>
                                 <img class="img-thumbnail rounded-circle avatar-md"  src="{{ !empty($student->image) ? asset($student->image) : asset('assets/images/users/user-dummy-img.jpg') }}">

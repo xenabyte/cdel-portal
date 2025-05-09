@@ -364,7 +364,7 @@ class ResultController extends Controller
             $currentGPA = Result::getPresentGPA($student, $academicSession, $semester);
 
             // Check probation/withdrawal status
-            $academicStatus = Result::checkProbation($student, $semester, $cgpa, $currentGPA, $previousGPA);
+            $academicStatus = $student->checkProbation($semester, $cgpa, $currentGPA, $previousGPA);
             $academicStatus = strtolower($academicStatus);
 
             // Define default message

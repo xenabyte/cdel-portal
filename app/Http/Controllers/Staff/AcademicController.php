@@ -421,6 +421,7 @@ class AcademicController extends Controller
             $student->department_id = $changeRequest->newProgramme->department_id;
             $student->faculty_id = $changeRequest->newProgramme->department->faculty_id;
             $student->level_id = 2;
+            $student->academic_status = '';
 
             $student->save();
 
