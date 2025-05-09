@@ -259,9 +259,9 @@
                             </div>
                         </li>
 
-                        <li class="menu-title border-top border-top-dashed mb-3"><i class="ri-more-fill"></i> <span data-key="t-spgs">SPGS Website</span></li>
+                        {{-- <li class="menu-title border-top border-top-dashed mb-3"><i class="ri-more-fill"></i> <span data-key="t-spgs">SPGS Website</span></li> --}}
 
-                        <li class="nav-item">
+                        {{-- <li class="nav-item">
                             <a class="nav-link menu-link" href="#spgs" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarForms">
                                 <i class="mdi mdi-broadcast"></i> <span data-key="t-spgs">SPGS Website</span>
                             </a>
@@ -282,7 +282,7 @@
                                 </ul>
         
                             </div>
-                        </li>
+                        </li> --}}
 
                         <li class="menu-title border-top border-top-dashed mb-3"><i class="ri-more-fill"></i> <span data-key="t-communications">Communications</span></li>
 
