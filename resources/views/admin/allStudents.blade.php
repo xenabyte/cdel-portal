@@ -32,8 +32,8 @@
                     <thead>
                         <tr>
                             <th scope="col">Id</th>
-                            <th scope="col">Academic Status</th>
                             <th scope="col">Support Code</th>
+                            <th scope="col">Academic Status</th>
                             <th scope="col">CGPA</th>
                             {{-- <th scope="col">Image</th> --}}
                             <th scope="col">Name</th>
