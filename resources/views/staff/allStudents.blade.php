@@ -63,7 +63,7 @@
                             <td class="{{ $statusClass }}">
                                 {{ $student->academic_status }}
                             </td>
-                            <td>{{ $student->applicant->lastname .' '. $student->applicant->othernames }}</td>
+                            <td>{{ ucwords($student->applicant->lastname .' '. $student->applicant->othernames) }}</td>
                             <td>{{ $student->academicLevel->level }} </td>
                             <td>{{ $student->passcode }} </td>
                             <td>{{ $student->matric_number }}</td>

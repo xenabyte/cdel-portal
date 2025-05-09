@@ -69,7 +69,7 @@
                             {{-- <td>
                                 <img class="img-thumbnail rounded-circle avatar-md"  src="{{ !empty($student->image) ? asset($student->image) : asset('assets/images/users/user-dummy-img.jpg') }}">
                             </td> --}}
-                            <td>{{ $student->applicant->lastname .' '. $student->applicant->othernames }}</td>
+                            <td>{{ ucwords($student->applicant->lastname .' '. $student->applicant->othernames) }}</td>
                             <td>{{ $student->academicLevel->level }} </td>
                             {{-- <td>{{ $student->applicant->religion }}</td> --}}
                             {{-- <td>{{ $student->passcode }} </td> --}}
