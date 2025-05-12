@@ -953,4 +953,40 @@ class AcademicController extends Controller
         alert()->success('Success', 'Programme change request submitted successfully')->persistent('Close');
         return redirect()->back();
     }
+
+
+    public function summerCourseReg(Request $request){
+        $student = Auth::guard('student')->user();
+        $studentId = $student->id;
+        $levelId = $student->level_id;
+        $globalData = $request->input('global_data');
+        $academicSession = $globalData->sessionSetting['academic_session'];
+
+        $paymentCheck = $this->checkSchoolFees($student, $academicSession, $levelId);
+
+        // if(!$paymentCheck->passTuitionPayment){
+        //     return view('student.schoolFee', [
+        //         'payment' => $paymentCheck->schoolPayment,
+        //         'passTuition' => $paymentCheck->passTuitionPayment,
+        //         'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
+        //         'passEightyTuition' => $paymentCheck->passEightyTuition,
+        //         'studentPendingTransactions' => $paymentCheck->studentPendingTransactions
+        //     ]);
+        // }
+
+        $failedCourseRegs = CourseRegistration::where('student_id', $studentId)
+            ->where('academic_session', $academicSession)
+            ->where('grade', 'F')
+            ->where('level_id', $levelId)
+            ->get();
+
+
+        return view('student.summerCourseReg', [
+            'failedCourseRegs' => $failedCourseRegs,
+            'payment' => $paymentCheck->schoolPayment,
+            'passTuition' => $paymentCheck->passTuitionPayment,
+            'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
+            'passEightyTuition' => $paymentCheck->passEightyTuition,
+        ]);
+    }
 }

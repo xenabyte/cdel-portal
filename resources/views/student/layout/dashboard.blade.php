@@ -416,6 +416,9 @@
                                         <li class="nav-item">
                                             <a href="{{ url('/student/editCourseReg') }}" class="nav-link">Add/Remove Course(s)</a>
                                         </li>
+                                        <li class="nav-item">
+                                            <a href="{{ url('/student/summerCourseReg') }}" class="nav-link">Summer Course Registration</a>
+                                        </li>
                                     </ul>
                                 </div>
                             </li> 

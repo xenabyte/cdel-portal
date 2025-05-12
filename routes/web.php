@@ -602,6 +602,9 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'student'
     Route::get('/viewProgrammeChangeRequest/{slug}', [App\Http\Controllers\Student\AcademicController::class, 'viewProgrammeChangeRequest'])->name('student.viewProgrammeChangeRequest')->middleware(['auth:student']);
     Route::post('/programmeChange', [App\Http\Controllers\Student\AcademicController::class, 'programmeChange'])->name('student.programmeChange')->middleware(['auth:student']);
 
+
+    Route::get('/summerCourseReg', [App\Http\Controllers\Student\AcademicController::class, 'summerCourseReg'])->name('student.summerCourseReg')->middleware(['auth:student']);
+
   });
 });
 

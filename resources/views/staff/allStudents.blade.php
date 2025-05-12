@@ -33,6 +33,7 @@
                         <tr>
                             <th scope="col">Id</th>
                             <th scope="col">Academic Status</th>
+                            <th scope="col">CGPA</th>
                             <th scope="col">Name</th>
                             <th scope="col">Level</th>
                             <th scope="col">Passcode</th>
@@ -63,6 +64,7 @@
                             <td class="{{ $statusClass }}">
                                 {{ $student->academic_status }}
                             </td>
+                            <td><span class="text-primary">{{ $student->cgpa }}</span></td>
                             <td>{{ ucwords($student->applicant->lastname .' '. $student->applicant->othernames) }}</td>
                             <td>{{ $student->academicLevel->level }} </td>
                             <td>{{ $student->passcode }} </td>
