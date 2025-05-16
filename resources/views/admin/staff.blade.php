@@ -282,7 +282,7 @@
                         </div>
 
                         <div class="mb-3">
-                            <label for="faculty" class="form-label">Select Staff Faculty</label>
+                            <label for="faculty" class="form-label">Staff Faculty</label>
                             <select class="form-select" aria-label="faculty" name="faculty_id">
                                 <option value= "" selected>Select Staff Faculty </option>
                                 @foreach($faculties as $faculty)
@@ -292,7 +292,7 @@
                         </div>
     
                         <div class="mb-3">
-                            <label for="department" class="form-label">Select Staff Department</label>
+                            <label for="department" class="form-label">Staff Department</label>
                             <select class="form-select" aria-label="department" name="department_id">
                                 <option value= "" selected>Select Staff Department </option>
                                 @foreach($departments as $department)

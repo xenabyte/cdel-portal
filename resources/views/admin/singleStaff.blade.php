@@ -563,6 +563,7 @@ $hodRole = array_filter($singleStaffRoles, function ($staffRole) {
                         <div class="mb-3">
                             <label for="department" class="form-label">Select Staff Department</label>
                             <select class="form-select" aria-label="department" name="department_id">
+                                <option value= "" selected>Select Staff Department </option>
                                 @foreach($allDepartments as $allDepartment)
                                 <option @if($singleStaff->department_id == $allDepartment->id) selected @endif value="{{ $allDepartment->id }}">{{ $allDepartment->name }}</option>
                                 @endforeach
