@@ -817,14 +817,14 @@ class PaymentController extends Controller
         ]);
     }
 
-    public function generateReport (Request $request){
-
+    public function generateReport(Request $request)
+    {
         $validator = Validator::make($request->all(), [
             'session' => 'required',
             'level_id' => 'required',
         ]);
 
-        if($validator->fails()) {
+        if ($validator->fails()) {
             alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
             return redirect()->back();
         }
@@ -834,95 +834,65 @@ class PaymentController extends Controller
         $programmeId = $request->programme_id;
         $academicSession = $request->session;
         $levelId = $request->level_id;
-        $paymentType = Payment::PAYMENT_TYPE_SCHOOL;
 
-        $payments = Payment::where('type', $paymentType)->where('level_id', $levelId)->where('academic_session', $academicSession);
-        $paymentIds = $payments->pluck('id')->toArray();
+        $paymentType = Payment::PAYMENT_TYPE_SCHOOL;
+        $paymentsQuery = Payment::where('type', $paymentType)
+            ->where('level_id', $levelId)
+            ->where('academic_session', $academicSession);
+
         $programmeIds = [];
 
-        $faculty = null;
-        $department = null;
-        $programme = null;
-
-        $students = Student::with('applicant', 'academicLevel', 'transactions')
-        ->where('is_active', true)
-        ->where('is_passed_out', false)
-            ->where('is_rusticated', false)
-        ->whereHas('transactions', function ($query) use ($paymentIds) {
-            $query->whereIn('payment_id', $paymentIds);
-        })
-        ->get();
-
-        if(!empty($facultyId)){
-            $faculty = Faculty::find($facultyId);
-
-            $programmeIds = $faculty->departments->flatMap->programmes->pluck('id')->toArray();
-            $paymentIds = $payments->whereIn('programme_id', $programmeIds)->pluck('id')->toArray();
-            $students = Student::with('applicant', 'academicLevel', 'transactions')
-            ->where('is_active', true)
-            ->where('is_passed_out', false)
-            ->where('is_rusticated', false)
-            ->whereHas('transactions', function ($query) use ($paymentIds) {
-                $query->whereIn('payment_id', $paymentIds);
-            })
-            ->get();
-        }
-
-        if(!empty($facultyId) && !empty($departmentId)){
-            $faculty = Faculty::find($facultyId);
-            $department = Department::find($departmentId);
-
-            $programmeIds = $department->programmes->pluck('id')->toArray();
-            $paymentIds = $payments->whereIn('programme_id', $programmeIds)->pluck('id')->toArray();
-            $students = Student::with('applicant', 'academicLevel', 'transactions')
-            ->where('is_active', true)
-            ->where('is_passed_out', false)
-            ->where('is_rusticated', false)
-            ->whereHas('transactions', function ($query) use ($paymentIds) {
-                $query->whereIn('payment_id', $paymentIds);
-            })
-            ->get();
-
-        }
-
-        if(!empty($facultyId) && !empty($departmentId) && !empty($programmeId)){
-            $faculty = Faculty::find($facultyId);
-            $department = Department::find($departmentId);
+        if (!empty($programmeId)) {
             $programme = Programme::find($programmeId);
+            $programmeIds = [$programmeId];
+        } elseif (!empty($departmentId)) {
+            $department = Department::find($departmentId);
+            $programmeIds = $department->programmes->pluck('id')->toArray();
+        } elseif (!empty($facultyId)) {
+            $faculty = Faculty::find($facultyId);
+            $programmeIds = $faculty->departments->flatMap->programmes->pluck('id')->toArray();
+        }
 
-            $programmeIds = Programme::where('id', $programmeId)->pluck('id')->toArray();
-            $paymentIds = $payments->whereIn('programme_id', $programmeIds)->pluck('id')->toArray();
-            $students = Student::with('applicant', 'academicLevel', 'transactions')
+        if (!empty($programmeIds)) {
+            $paymentsQuery->whereIn('programme_id', $programmeIds);
+        }
+
+        $paymentIds = $paymentsQuery->pluck('id')->toArray();
+
+        // Student query filtered by payment made
+        $students = Student::with('applicant', 'academicLevel', 'transactions')
             ->where('is_active', true)
             ->where('is_passed_out', false)
             ->where('is_rusticated', false)
+            ->where('academic_level_id', $levelId)
+            ->when(!empty($programmeIds), function ($query) use ($programmeIds) {
+                $query->whereIn('programme_id', $programmeIds);
+            })
             ->whereHas('transactions', function ($query) use ($paymentIds) {
                 $query->whereIn('payment_id', $paymentIds);
             })
             ->get();
-        }
 
+        // Attach fee status to each student
         foreach ($students as $student) {
             $student->schoolFeeDetails = $this->checkSchoolFees($student, $academicSession, $levelId);
         }
 
-        $transactions = Transaction::get();
         $faculties = Faculty::get();
         $academicLevels = Level::get();
         $academicSessions = Session::orderBy('id', 'DESC')->get();
-
         $academicLevel = Level::find($levelId);
 
-        return view('admin.transactionReport', [
+        return view('staff.transactionReport', [
             'faculties' => $faculties,
             'academicLevels' => $academicLevels,
             'academicSessions' => $academicSessions,
-            'students' =>    $students,
+            'students' => $students,
             'academicLevel' => $academicLevel,
             'academicSession' => $academicSession,
-            'faculty' => $faculty,
-            'department' => $department,
-            'programme' => $programme
+            'faculty' => $faculty ?? null,
+            'department' => $department ?? null,
+            'programme' => $programme ?? null
         ]);
     }
 
