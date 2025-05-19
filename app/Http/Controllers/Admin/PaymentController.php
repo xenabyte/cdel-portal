@@ -864,7 +864,7 @@ class PaymentController extends Controller
             ->where('is_active', true)
             ->where('is_passed_out', false)
             ->where('is_rusticated', false)
-            ->where('academic_level_id', $levelId)
+            ->where('level_id', $levelId)
             ->when(!empty($programmeIds), function ($query) use ($programmeIds) {
                 $query->whereIn('programme_id', $programmeIds);
             })
