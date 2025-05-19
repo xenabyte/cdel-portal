@@ -864,9 +864,9 @@ class PaymentController extends Controller
             ->when(!empty($programmeIds), function ($query) use ($programmeIds) {
                 $query->whereIn('programme_id', $programmeIds);
             })
-            ->whereHas('transactions', function ($query) use ($paymentIds) {
-                $query->whereIn('payment_id', $paymentIds);
-            })
+            // ->whereHas('transactions', function ($query) use ($paymentIds) {
+            //     $query->whereIn('payment_id', $paymentIds);
+            // })
             ->get();
 
         // Attach fee status to each student
