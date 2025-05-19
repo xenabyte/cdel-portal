@@ -71,6 +71,16 @@ class CourseRegistration extends Model
         return $this->belongsTo(ProgrammeCategory::class, 'programme_category_id');
     }
 
+    /**
+     * Get all of the SummerRegistration for the CourseRegistration
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function SummerRegistration()
+    {
+        return $this->hasMany(SummerCourseRegistration::class, 'course_registration_id', 'id');
+    }
+
 
     /**
      * Calculate the attendance percentage for this registration.

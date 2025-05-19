@@ -25,7 +25,8 @@ use App\Models\CoursePerProgrammePerAcademicSession;
 use App\Models\ProgrammeChangeRequest;
 use App\Models\Staff;
 use App\Models\Notification;
-use App\Models\Programme; 
+use App\Models\Programme;
+use App\Models\SummerCourseRegistration;
 
 use App\Libraries\Pdf\Pdf;
 use App\Mail\NotificationMail;
@@ -36,7 +37,7 @@ use Mail;
 use Alert;
 use Log;
 use Carbon\Carbon;
-use Paystack;
+
 
 
 class AcademicController extends Controller
@@ -980,9 +981,12 @@ class AcademicController extends Controller
             ->where('level_id', $levelId)
             ->get();
 
+        $existingSummerRegistration = SummerCourseRegistration::where('student_id', $studentId)->where('academic_session', $academicSession)->first();
+
 
         return view('student.summerCourseReg', [
             'failedCourseRegs' => $failedCourseRegs,
+            'existingSummerRegistration' => $existingSummerRegistration,
             'payment' => $paymentCheck->schoolPayment,
             'passTuition' => $paymentCheck->passTuitionPayment,
             'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,

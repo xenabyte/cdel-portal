@@ -2,7 +2,7 @@
 
 @section('content')
 
-@if(env('SUMMER_COURSE_REGISTRATION'))
+@if(!env('SUMMER_COURSE_REGISTRATION'))
 <div class="row justify-content-center">
     <div class="col-lg-8">
         <div class="card">

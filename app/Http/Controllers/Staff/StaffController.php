@@ -33,6 +33,7 @@ use App\Models\Attendance;
 use App\Models\Unit;
 use App\Models\CourseLecture;
 use App\Models\LectureAttendance;
+use App\Models\SummerCourseRegistration;
 
 use App\Mail\NotificationMail;
 
@@ -499,10 +500,14 @@ class StaffController extends Controller
         $lecturerDetails = CourseManagement::where('course_id', $id)->where('academic_session', $academicSession)->first(); 
         $registrations = CourseRegistration::where('course_id', $id)->where('programme_category_id', $programmeCategoryId)->where('academic_session', $academicSession)->get();
         $courseLectures = CourseLecture::with('lectureAttendance')->where('course_id', $id)->where('programme_category_id', $programmeCategoryId)->where('academic_session', $academicSession)->get();
+        $summerCourseRegistrations = SummerCourseRegistration::with('courseRegistration')->where('course_id', $id)->where('programme_category_id', $programmeCategoryId)->where('academic_session', $academicSession)->get();
+
+
         $course = Course::find($id);
 
         return view('staff.courseDetail', [
             'registrations' => $registrations,
+            'summerCourseRegistrations' => $summerCourseRegistrations,
             'lecturerDetails' => $lecturerDetails,
             'courseLectures' => $courseLectures,
             'course' => $course,
