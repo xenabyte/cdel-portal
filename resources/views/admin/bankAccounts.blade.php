@@ -104,6 +104,7 @@
                                                                         <select class="form-select" aria-label="role" name="account_purpose">
                                                                             <option {{ $bankAccount->account_purpose =='ICT'?'selected':'' }} value="ICT">ICT</option>
                                                                             <option {{ $bankAccount->account_purpose =='Tuition Fee'?'selected':'' }} value="Tuition Fee">Tuition Fee</option>
+                                                                            <option {{ $bankAccount->account_purpose =='PG Tuition Fee'?'selected':'' }} value="PG Tuition Fee">PG Tuition Fee</option>
                                                                             <option {{ $bankAccount->account_purpose =='Accomondation'?'selected':'' }} value="Accomondation">Accomondation</option>
                                                                             <option {{ $bankAccount->account_purpose =='Other Fee'?'selected':'' }} value="Other Fee">Other Fee</option>
                                                                         </select>
@@ -194,6 +195,7 @@
                             <option selected value= "">Select Option </option>
                             <option value="ICT">ICT</option>
                             <option value="Tuition Fee">Tuition Fee</option>
+                            <option value="PG Tuition Fee">PG Tuition Fee</option>
                             <option value="Accomondation">Accomondation</option>
                             <option value="Other Fee">Other Fee</option>
                         </select>

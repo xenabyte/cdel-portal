@@ -899,6 +899,9 @@
                                         </li>
                                         @endif
                                         <li class="nav-item">
+                                            <a href="{{('/staff/transactions')}}" class="nav-link"> Transactions </a>
+                                        </li>
+                                        <li class="nav-item">
                                             <a href="{{('/staff/transactionReport')}}" class="nav-link"> Transaction Report </a>
                                         </li>
                                     </ul>

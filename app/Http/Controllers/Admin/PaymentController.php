@@ -77,14 +77,12 @@ class PaymentController extends Controller
         $academicSession = $request->academic_session;
         $programmeCategoryId = $request->programme_category_id;
 
-        $programmeCategory = ProgrammeCategory::find($programmeCategoryId)->first();
+
+        $programmeCategory = ProgrammeCategory::find($programmeCategoryId);
         $programmeCategoryId = $programmeCategory->id;
 
 
-        $payments = Payment::with(['structures', 'programme'])
-            ->where('academic_session', $academicSession)
-            ->where('programme_category_id', $programmeCategoryId)
-            ->get();
+        $payments = Payment::with(['structures', 'programme'])->where('academic_session', $academicSession)->where('programme_category_id', $programmeCategoryId)->get();
 
         $programmes = Programme::get();
         $levels = Level::get();
@@ -579,9 +577,22 @@ class PaymentController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function transactions()
+    public function transactions(Request $request)
     {
-        $transactions = Transaction::get();
+        $query = Transaction::with(['student', 'student.applicant', 'applicant', 'paymentType'])
+        ->latest();
+
+        if ($request->filled('start_date') && $request->filled('end_date')) {
+            $query->whereBetween('updated_at', [
+                $request->start_date . ' 00:00:00',
+                $request->end_date . ' 23:59:59'
+            ]);
+        } else {
+            $query->limit(100);
+        }
+
+        $transactions = $query->get();
+
 
         return view('admin.transactions', [
             'transactions' => $transactions

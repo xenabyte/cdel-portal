@@ -297,6 +297,16 @@ $studentAdvisoryData = (object) $student->getAcademicAdvisory();
                                                         <td><span class="badge badge-soft-{{ $transaction->status == 1 ? 'success' : 'warning' }}">{{ $transaction->status == 1 ? 'Paid' : 'Pending' }}</span></td>
                                                         <td>{{ $transaction->status == 1 ? $transaction->updated_at : null }} </td>
                                                         <td>
+                                                            @if($transaction->status == 0 && strtolower($transaction->payment_method) == 'upperlink')
+                                                            <form action="{{ url('/admin/requeryUpperlinkPayment') }}" method="post" enctype="multipart/form-data">
+                                                                @csrf
+                                                                <input type="hidden" name="transaction_id" value="{{ $transaction->id }}">
+                                            
+                                                                <div>
+                                                                    <button type="submit" id='submit-button-main' class="btn btn-primary">Requery Transaction</button>
+                                                                </div>
+                                                            </form>
+                                                            @endif
                                                             @if($transaction->status == 1)
                                                             <form action="{{ url('/admin/generateInvoice') }}" method="post" enctype="multipart/form-data">
                                                                 @csrf

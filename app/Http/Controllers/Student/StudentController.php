@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Student;
 
+use App\Models\ProgrammeCategory;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -529,6 +530,18 @@ class StudentController extends Controller
             if (!empty($suspensionId)) {
                 $meta['suspension_id'] = $suspensionId;
             }
+
+            if (
+                in_array($student->programme_category_id, [
+                    ProgrammeCategory::getProgrammeCategory(ProgrammeCategory::PGD),
+                    ProgrammeCategory::getProgrammeCategory(ProgrammeCategory::MASTER),
+                    ProgrammeCategory::getProgrammeCategory(ProgrammeCategory::DOCTORATE)
+                ])
+            ) {
+                $paymentType = "PG Tuition fee";
+            }
+
+
 
             $data = array(
                 "amount" => round($this->getUpperlinkAmount($amount)/100),
