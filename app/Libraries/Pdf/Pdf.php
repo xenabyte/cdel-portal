@@ -3,6 +3,7 @@
 namespace App\Libraries\Pdf;
 
 use App\Models\ProgrammeCategory;
+use App\Models\SummerCourseRegistration;
 use PDF as PDFDocument;
 use App\Models\User as Applicant;
 use App\Models\Student;
@@ -167,6 +168,34 @@ Class Pdf {
         $data = ['info'=>$student, 'registeredCourses' => $courseReg, 'studentCourseReg' => $studentCourseReg, 'staffData' => $staffData];
 
         $pdf = PDFDocument::loadView('pdf.courseRegistration', $data)
+        ->setOptions($options)
+        ->save($fileDirectory);
+
+        return $fileDirectory;
+    }
+
+    public function generateSummerCourseRegistration($studentId, $academicSession){
+        $options = [
+            'isRemoteEnabled' => true,
+            'encryption' => '128',
+            'no_modify' => true,
+        ];
+
+        $student = Student::with('applicant', 'academicLevel', 'faculty', 'department', 'programme')->where('id', $studentId)->first();
+        $name = $student->applicant->lastname.' '.$student->applicant->othernames;
+        $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $name .' course registration '. $academicSession)));
+
+        $dir = public_path('uploads/files/summer/course_registration');
+        if (!file_exists($dir)) {
+            mkdir($dir, 0755, true);
+        }
+
+        $fileDirectory = 'uploads/files/summer/course_registration/'.$slug.time().'.pdf';
+        $summerCourseReg = SummerCourseRegistration::with('course', 'course_registration')->where('student_id', $studentId)->where('academic_session', $academicSession)->get();
+        
+        $data = ['info'=>$student, 'registeredCourses' => $summerCourseReg];
+
+        $pdf = PDFDocument::loadView('pdf.summerCourseRegistration', $data)
         ->setOptions($options)
         ->save($fileDirectory);
 

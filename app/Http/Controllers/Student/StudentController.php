@@ -262,6 +262,7 @@ class StudentController extends Controller
         $transaction = Transaction::find($request->transaction_id);
         $paymentType = 'Other Fee';
         $suspensionId = $request->suspension_id;
+        $summerCourses = null;
 
         if($paymentId > 0){
             if(!$payment = Payment::with('structures')->where('id', $paymentId)->first()){
@@ -382,13 +383,18 @@ class StudentController extends Controller
                 return redirect()->back();
             }
         }
-        
+
+        if(!empty($payment) && strtolower($payment->type) == strtolower(Payment::PAYMENT_TYPE_SUMMER_COURSE_REGISTRATION)) {
+            $summerCourses = $request->input('selected_courses', []);
+        }
 
         $paymentGateway = $request->paymentGateway;
 
+        // Determine which additional data to use
+        $additionalData = !empty($hostelMeta) ? $hostelMeta : (!empty($summerCourses) ? $summerCourses : null);
 
-        if(!$transaction){
-            //Create new transaction
+        if (!$transaction) {
+            // Create new transaction
             $transaction = Transaction::create([
                 'student_id' => $studentId,
                 'payment_id' => $paymentId,
@@ -396,8 +402,8 @@ class StudentController extends Controller
                 'payment_method' => $paymentGateway,
                 'reference' => $reference,
                 'session' => $student->academic_session,
-                "plan_id" => !empty($bandwidthPlan)?$bandwidthPlan->id:null,
-                'additional_data' => !empty($hostelMeta)?$hostelMeta:null
+                'plan_id' => !empty($bandwidthPlan) ? $bandwidthPlan->id : null,
+                'additional_data' => $additionalData
             ]);
         }
 
@@ -425,7 +431,8 @@ class StudentController extends Controller
                     "redirect_path" => $redirectLocation,
                     "payment_Type" => $paymentType,
                     "suspension_id" => $suspensionId,
-                    'plan_id' => !empty($bandwidthPlan)?$bandwidthPlan->id:null,
+                    "plan_id" => !empty($bandwidthPlan)?$bandwidthPlan->id:null,
+                    "additionalData" => $additionalData
                 ),
             );
 
@@ -466,6 +473,7 @@ class StudentController extends Controller
                     "payment_Type" => $paymentType,
                     "suspension_id" => $suspensionId,
                     "plan_id" => !empty($bandwidthPlan)?$bandwidthPlan->id:null,
+                    "additionalData" => $additionalData,
                 ),
                 "customizations" => array(
                     "title" => env('SCHOOL_NAME'),
@@ -506,6 +514,7 @@ class StudentController extends Controller
             $transactionData->plan_id = !empty($bandwidthPlan)?$bandwidthPlan->id:null;
             $transactionData->suspension_id = $suspensionId;
             $transactionData->hostel_meta =!empty($hostelMeta)?$hostelMeta:null;
+            $transactionData->additionalData = $additionalData;
 
             return $this->billStudent($transactionData);
         }

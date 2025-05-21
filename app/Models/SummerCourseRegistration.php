@@ -28,5 +28,15 @@ class SummerCourseRegistration extends Model
         return $this->belongsTo(CourseRegistration::class, 'id');
     }
 
+    /**
+     * Get the course associated with the SummerCourseRegistration
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function course()
+    {
+        return $this->hasOne(Course::class, 'course_id', 'id');
+    }
+
     
 }

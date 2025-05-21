@@ -280,7 +280,7 @@ class PaymentController extends Controller
         }
     }
 
-    public function upperlinkVerifyPayment($paymentReference = null){
+    public function upperlinkVerifyPayment($paymentReference = null, $redirectPath = null){
         Log::info("**********************Upperlink Verifying Payment**********************");
         $ref = null;
         if (isset($_GET['reference'])) {
@@ -293,7 +293,7 @@ class PaymentController extends Controller
 
         $redirectPath = '/';
 
-        if(empty($ref)){
+        if(empty($ref)){ 
             $redirectPath = 'student/transactions';
             alert()->info('oops!!!', 'Something happpened, contact administrator')->persistent('Close');
             return redirect($redirectPath);
@@ -301,6 +301,7 @@ class PaymentController extends Controller
 
         $upperLinkPayGate = new PayGate;
         $paymentDetails =$upperLinkPayGate->verifyTransaction($ref);
+        dd($paymentDetails);    
 
         if(isset($paymentDetails['transactionStatus']) && $paymentDetails['transactionStatus'] == '00'){
 
@@ -337,6 +338,14 @@ class PaymentController extends Controller
                     $data->invoice = $invoice;
                     if(env('SEND_MAIL')){
                         Mail::to($student->email)->send(new TransactionMail($data));
+                    }
+
+                    if($paymentType == Payment::PAYMENT_TYPE_SUMMER_COURSE_REGISTRATION){
+                        $transaction = Transaction::where('reference', $txRef)->first();
+                        $creditStudent = $this->creditStudentSummerCourseReg($transaction);
+                        if(!$creditStudent){
+                            Log::info("**********************Unable to credit student summer course reg**********************: ". $amount .' - '.$student .' - '.$transaction->additional_data);
+                        }
                     }
 
                     if($paymentType == Payment::PAYMENT_TYPE_WALLET_DEPOSIT){

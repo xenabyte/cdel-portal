@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\ProgrammeCategory;
+use App\Models\SummerCourseRegistration;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
@@ -1170,6 +1171,49 @@ class Controller extends BaseController
 
             return true; 
         }
+    }
+
+    public function creditStudentSummerCourseReg(Transaction $transaction)
+    {
+        if (empty($transaction->additional_data)) {
+            return true; 
+        }
+
+        $selectedCourses = json_decode($transaction->additional_data, true);
+
+        if (empty($selectedCourses)) {
+            alert()->info('Kindly select your courses', '')->persistent('Close');
+            return redirect()->back();
+        }
+
+        $studentId = $transaction->student_id;
+        $student = Student::find($studentId);
+        $levelId = $student->level_id;
+        
+        foreach ($selectedCourses as $failedCourseId) { 
+            $courseReg = CourseRegistration::with('course')->findOrFail($failedCourseId);
+            $course = $courseReg->course;
+
+            // Register the summer course
+            SummerCourseRegistration::create([
+                'student_id' => $studentId,
+                'course_id' => $course->id,
+                'programme_category_id' => $student->programme_category_id,
+                'course_registration_id' => $failedCourseId,
+                'academic_session' => $courseReg->academic_session,
+            ]);
+        }
+
+        // Generate the summer course registration PDF
+        $pdf = new Pdf();
+        $summerCourseReg = $pdf->generateSummerCourseRegistration($studentId, $courseReg->academic_session); // Assume this returns a file path or name
+
+        // Store file name/path in `additional_file` field
+        $transaction->additional_file = json_encode(['summerCourseReg' => $summerCourseReg]);
+        $transaction->save();
+
+        alert()->success('Changes Saved', 'Course registration saved successfully')->persistent('Close');
+        return redirect()->back();  
     }
     
     protected function findRoomWithVacancy($initialRoomId, $typeId){

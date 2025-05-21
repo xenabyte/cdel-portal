@@ -853,7 +853,7 @@ class AcademicController extends Controller
         //     ]);
         // }
 
-        $programmeChangePayment = Payment::where("type", Payment::PAYMENT_TYPE_INTRA_TRANSFER_APPLICATION)->where("academic_session", $academicSession)->first();
+        $programmeChangePayment = Payment::with('structure')->where("type", Payment::PAYMENT_TYPE_INTRA_TRANSFER_APPLICATION)->where("academic_session", $academicSession)->first();
         $programmeChangeRequests = ProgrammeChangeRequest::where('student_id', $studentId)->get();
 
         return view('student.programmeChangeRequests', [
@@ -975,16 +975,18 @@ class AcademicController extends Controller
         //     ]);
         // }
 
+        $summerCourseRegPayment = Payment::where('type', Payment::PAYMENT_TYPE_SUMMER_COURSE_REGISTRATION)->where('academic_session', $academicSession)->first();
+
         $failedCourseRegs = CourseRegistration::where('student_id', $studentId)
             ->where('academic_session', $academicSession)
             ->where('grade', 'F')
             ->where('level_id', $levelId)
             ->get();
 
-        $existingSummerRegistration = SummerCourseRegistration::where('student_id', $studentId)->where('academic_session', $academicSession)->first();
-
+        $existingSummerRegistration = SummerCourseRegistration::where('student_id', $studentId)->where('academic_session', $academicSession)->get();
 
         return view('student.summerCourseReg', [
+            'summerCourseRegPayment' => $summerCourseRegPayment,
             'failedCourseRegs' => $failedCourseRegs,
             'existingSummerRegistration' => $existingSummerRegistration,
             'payment' => $paymentCheck->schoolPayment,
@@ -993,4 +995,83 @@ class AcademicController extends Controller
             'passEightyTuition' => $paymentCheck->passEightyTuition,
         ]);
     }
+
+    public function registerSummerCourses(Request $request){
+        $selectedCourses = $request->input('selected_courses', []);
+        $failedSelectedCourses = $request->input('failed_selected_courses', []);
+        
+
+        if(empty($selectedCourses)){
+            alert()->info('Kindly select your courses', '')->persistent('Close');
+            return redirect()->back();
+        }
+
+        $student = Auth::guard('student')->user();
+        $studentId = $student->id;
+        $levelId = $student->level_id;
+        $globalData = $request->input('global_data');
+        $academicSession = $globalData->sessionSetting['academic_session'];
+        
+        try {
+            foreach ($failedSelectedCourses as $failedCourseId) { 
+                $courseReg = CourseRegistration::with('course')->findOrFail($failedCourseId);
+                $course = $courseReg->course;
+
+                // Check if the student is already registered for this course
+                $existingRegistration = CourseRegistration::where([
+                    'student_id' => $studentId,
+                    'course_id' => $failedCourseId,
+                    'academic_session' => $academicSession,
+                    'level_id' => $student->level_id
+                ])->first();
+
+                if (!$existingRegistration) {
+                    $checkCarryOver = CourseRegistration::where([
+                        'student_id' => $student->id,
+                        'course_id' => $course->id,
+                        'grade' => 'F',
+                    ])->first();
+
+                    if(!empty($checkCarryOver)){
+                        $checkCarryOver->re_reg = true;
+                        $checkCarryOver->save();
+                    }
+                    
+                    $courseReg = CourseRegistration::create([
+                        'student_id' => $studentId,
+                        'course_id' => $course->id,
+                        'programme_category_id' => $student->programme_category_id,
+                        'course_credit_unit' => $coursePerProgrammeAndLevel->credit_unit,
+                        'course_code' => $course->code,
+                        'semester' => $coursePerProgrammeAndLevel->semester,
+                        'academic_session' => $academicSession,
+                        'level_id' => $student->level_id,
+                        'programme_course_id' => $failedCourseId,
+                        'course_status' => $coursePerProgrammeAndLevel->status
+                    ]);
+                }
+            }
+
+            $pdf = new Pdf();
+            $courseReg = $pdf->generateCourseRegistration($studentId, $academicSession);
+
+            $studentRegistration = StudentCourseRegistration::create([
+                'student_id' => $studentId,
+                'academic_session' => $academicSession,
+                'file' => $courseReg,
+                'level_id' => $student->level_id,
+                'programme_category_id' => $student->programme_category_id
+            ]);
+
+        
+            alert()->success('Changes Saved', 'Course registration saved successfully')->persistent('Close');
+            return redirect()->back();
+
+        } catch (\Exception $e) {
+            Log::info($e);
+            alert()->error('Oops!', 'Something went wrong')->persistent('Close');
+            return redirect()->back();
+        }
+    }
+
 }

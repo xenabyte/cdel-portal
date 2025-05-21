@@ -24,6 +24,7 @@ class Payment extends Model
     const PAYMENT_TYPE_ACCOMONDATION = 'Accomondation Fee';
     const PAYMENT_TYPE_INTRA_TRANSFER_APPLICATION = 'Intra Transfer Application Fee';
     const PAYMENT_TYPE_READMISSION_FEE = 'Re-admission Fee';
+    const PAYMENT_TYPE_SUMMER_COURSE_REGISTRATION = 'Summer Course Reg';
     // const PAYMENT_TYPE_PROGRAMME_CHANGE = 'Programme Change Fee';
 
 
