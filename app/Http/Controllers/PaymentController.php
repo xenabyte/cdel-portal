@@ -301,7 +301,7 @@ class PaymentController extends Controller
 
         $upperLinkPayGate = new PayGate;
         $paymentDetails =$upperLinkPayGate->verifyTransaction($ref);
-        dd($paymentDetails);    
+        // dd($paymentDetails);
 
         if(isset($paymentDetails['transactionStatus']) && $paymentDetails['transactionStatus'] == '00'){
 
