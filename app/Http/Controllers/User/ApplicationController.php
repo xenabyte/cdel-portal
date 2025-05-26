@@ -1138,9 +1138,9 @@ class ApplicationController extends Controller
         };
 
         // Perform uploads
-        $uploadFile('olevel_certificate', 'olevel_1');
+        $uploadFile('olevel_certificate', 'olevel_certificate');
         $uploadFile('degree_certificate', 'degree_certificate');
-        $uploadFile('transcript', 'academic_transcript');
+        $uploadFile('academic_transcript', 'academic_transcript');
         $uploadFile('nysc_certificate', 'nysc_certificate');
 
         if ($user->programme_category_id == ProgrammeCategory::getProgrammeCategory(ProgrammeCategory::DOCTORATE)) {
@@ -1200,7 +1200,7 @@ class ApplicationController extends Controller
     {
         $docRequirements = [
             ProgrammeCategory::getProgrammeCategory(ProgrammeCategory::POSTGRADUATE) => [
-                'olevel_1', 'degree_certificate', 'nysc_certificate', 'academic_transcript'
+                'olevel_certificate', 'degree_certificate', 'nysc_certificate', 'academic_transcript'
             ],
             ProgrammeCategory::getProgrammeCategory(ProgrammeCategory::DOCTORATE) => [
                 'olevel_certificate', 'degree_certificate', 'nysc_certificate', 'academic_transcript',
