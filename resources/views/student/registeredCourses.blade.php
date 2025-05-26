@@ -65,6 +65,7 @@
     <!--end col-->
 </div>
 @else
+
 <div class="row">   
     <div class="col-lg-12">
         <div class="card">
@@ -77,90 +78,161 @@
 
             </div><!-- end card header -->
 
-            <div class="card-body table-responsive">
-                <table class="table table-borderless table-nowrap">
-                    
-                    <tbody class="first-semester">
-                        <tr>
-                            <td colspan="6" class="semester-heading">
-                                
-                                <div class="card-header align-items-center">
-                                    <h4 class="card-title mb-0 flex-grow-1">Harmattan Semester Courses</h4>
-                                </div><!-- end card header -->
+            <!-- Base Example -->
+            <div class="accordion" id="default-accordion-example">
+                <div class="accordion-item shadow">
+                    <h2 class="accordion-header" id="headingOne">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                            <h4 class="card-title mb-0 flex-grow-1"> Registered Courses {{ $pageGlobalData->sessionSetting->academic_session }} academic session</h4>
+                        </button>
+                    </h2>
+                    <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#default-accordion-example">
+                        <div class="accordion-body">
+                            <div class="card-body table-responsive">
+                                <table class="table table-borderless table-nowrap">
+                                    
+                                    <tbody class="first-semester">
+                                        <tr>
+                                            <td colspan="6" class="semester-heading">
+                                                
+                                                <div class="card-header align-items-center">
+                                                    <h4 class="card-title mb-0 flex-grow-1">Harmattan Semester Courses</h4>
+                                                </div><!-- end card header -->
 
-                            </td>
-                        </tr>
-                        <tr>
-                            <th scope="col">ID</th>
-                            <th scope="col">Attendance Percentage</th>
-                            <th scope="col">Course Code</th>
-                            <th scope="col">Course Title</th>
-                            <th scope="col">Course Unit</th>
-                        </tr>
-                        @php
-                            $firstSemester = 1;
-                            $secondSemester = 1;
-                            $firstCreditUnits = $courseRegs->where('semester', 1)->sum('course_credit_unit');
-                            $secondCreditUnits = $courseRegs->where('semester', 2)->sum('course_credit_unit');
-                        @endphp
-                        @foreach($courseRegs->where('semester', 1) as $course11)
-                            <tr>
-                                <td>{{ $firstSemester++ }}</td>
-                                <td>{{ $course11->attendancePercentage() }}% </td>
-                                <td>{{ $course11->course->code }}</td>
-                                <td>{{ ucwords(strtolower($course11->course->name)) }}</td>
-                                <td>{{ $course11->course_credit_unit }}</td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                    <tbody>
-                        <tr class="first-semester-total">
-                            <td>Total Harmattan Semester Credit Unit</td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td>{{ $firstCreditUnits }}</td>
-                        </tr>
-                    </tbody>
-                    
-                    <tbody class="second-semester">
-                        <tr>
-                            <td colspan="6" class="semester-heading">
-                                
-                                <div class="card-header align-items-center">
-                                    <h4 class="card-title mb-0 flex-grow-1">Rain Semester Courses</h4>
-                                </div><!-- end card header -->
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="col">ID</th>
+                                            <th scope="col">Attendance Percentage</th>
+                                            <th scope="col">Course Code</th>
+                                            <th scope="col">Course Title</th>
+                                            <th scope="col">Course Unit</th>
+                                        </tr>
+                                        @php
+                                            $firstSemester = 1;
+                                            $secondSemester = 1;
+                                            $firstCreditUnits = $courseRegs->where('semester', 1)->sum('course_credit_unit');
+                                            $secondCreditUnits = $courseRegs->where('semester', 2)->sum('course_credit_unit');
+                                        @endphp
+                                        @foreach($courseRegs->where('semester', 1) as $course11)
+                                            <tr>
+                                                <td>{{ $firstSemester++ }}</td>
+                                                <td>{{ $course11->attendancePercentage() }}% </td>
+                                                <td>{{ $course11->course->code }}</td>
+                                                <td>{{ ucwords(strtolower($course11->course->name)) }}</td>
+                                                <td>{{ $course11->course_credit_unit }}</td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                    <tbody>
+                                        <tr class="first-semester-total">
+                                            <td>Total Harmattan Semester Credit Unit</td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td>{{ $firstCreditUnits }}</td>
+                                        </tr>
+                                    </tbody>
+                                    
+                                    <tbody class="second-semester">
+                                        <tr>
+                                            <td colspan="6" class="semester-heading">
+                                                
+                                                <div class="card-header align-items-center">
+                                                    <h4 class="card-title mb-0 flex-grow-1">Rain Semester Courses</h4>
+                                                </div><!-- end card header -->
 
-                            </td>
-                        </tr>
-                        <tr>
-                            <th scope="col">ID</th>
-                            <th scope="col">Attendance Percentage</th>
-                            <th scope="col">Course Code</th>
-                            <th scope="col">Course Title</th>
-                            <th scope="col">Course Unit</th>
-                        </tr>
-                        @foreach($courseRegs->where('semester', 2) as $course12)
-                            <tr>
-                                <td>{{ $secondSemester++ }}</td>
-                                <td>{{ $course12->attendancePercentage() }}% </td>
-                                <td>{{ $course12->course->code }}</td>
-                                <td>{{ ucwords(strtolower($course12->course->name)) }}</td>
-                                <td>{{ $course12->course_credit_unit }}</td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                    <tbody>
-                        <tr class="second-semester-total">
-                            <td>Total Rain Semester Credit Unit</td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td>{{ $secondCreditUnits }}</td>
-                        
-                        </tr>
-                    </tbody>
-                </table>               
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="col">ID</th>
+                                            <th scope="col">Attendance Percentage</th>
+                                            <th scope="col">Course Code</th>
+                                            <th scope="col">Course Title</th>
+                                            <th scope="col">Course Unit</th>
+                                        </tr>
+                                        @foreach($courseRegs->where('semester', 2) as $course12)
+                                            <tr>
+                                                <td>{{ $secondSemester++ }}</td>
+                                                <td>{{ $course12->attendancePercentage() }}% </td>
+                                                <td>{{ $course12->course->code }}</td>
+                                                <td>{{ ucwords(strtolower($course12->course->name)) }}</td>
+                                                <td>{{ $course12->course_credit_unit }}</td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                    <tbody>
+                                        <tr class="second-semester-total">
+                                            <td>Total Rain Semester Credit Unit</td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td>{{ $secondCreditUnits }}</td>
+                                        
+                                        </tr>
+                                    </tbody>
+                                </table>               
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item shadow">
+                    <h2 class="accordion-header" id="headingTwo">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                            <h4 class="card-title mb-0 flex-grow-1">Summer Registered Courses {{ $pageGlobalData->sessionSetting->academic_session }} academic session</h4>
+                        </button>
+                    </h2>
+                    <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#default-accordion-example">
+                        <div class="accordion-body">
+                            <div class="card-body table-responsive">
+                                <table class="table table-borderless table-nowrap">
+                                    
+                                    <tbody class="first-semester">
+                                        <tr>
+                                            <td colspan="6" class="semester-heading">
+                                                
+                                                <div class="card-header align-items-center">
+                                                    <h4 class="card-title mb-0 flex-grow-1">Summer Semester Courses</h4>
+                                                </div><!-- end card header -->
+
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="col">ID</th>
+                                            <th scope="col">Course Code</th>
+                                            <th scope="col">Course Title</th>
+                                            <th scope="col">Course Unit</th>
+                                        </tr>
+                                        @php
+                                            $totalCreditUnits = 0;
+                                        @endphp
+                                        <tbody>
+                                            @foreach($summerRegisteredCourses as $summerRegisteredCourse)
+                                                @php
+                                                    $totalCreditUnits += $summerRegisteredCourse->course_registration->course_credit_unit;
+                                                @endphp
+                                                    <tr>
+                                                        <td>{{ $loop->iteration }}</td>
+                                                        <td>{{ $summerRegisteredCourse->course_registration->course->code }}</td>
+                                                        <td>{{ ucwords(strtolower($summerRegisteredCourse->course_registration->course->name)) }}</td>
+                                                        <td>{{ $summerRegisteredCourse->course_registration->course_credit_unit }}</td>
+                                                    </tr>
+                                            @endforeach
+                                        </tbody>
+                                        <tbody>
+                                            <tr class="first-semester-total">
+                                                <td>Total Summer Semester Credit Unit</td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td>{{ $totalCreditUnits }}</td>
+                                            </tr>
+                                        </tbody>
+                                </table>               
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div><!-- end card -->
     </div>

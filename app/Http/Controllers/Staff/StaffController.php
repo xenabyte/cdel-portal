@@ -502,7 +502,6 @@ class StaffController extends Controller
         $courseLectures = CourseLecture::with('lectureAttendance')->where('course_id', $id)->where('programme_category_id', $programmeCategoryId)->where('academic_session', $academicSession)->get();
         $summerCourseRegistrations = SummerCourseRegistration::with('courseRegistration')->where('course_id', $id)->where('programme_category_id', $programmeCategoryId)->where('academic_session', $academicSession)->get();
 
-
         $course = Course::find($id);
 
         return view('staff.courseDetail', [
@@ -716,9 +715,18 @@ class StaffController extends Controller
 
         $message = $request->message;
         $programmeCategoryId = $request->programme_category_id;
+        $isSummer = $request->has('summer') && $request->summer == 1;
 
         $course = Course::with('level', 'registrations', 'registrations.student', 'registrations.student.applicant', 'registrations.student.programme')->where('id', $request->course_id)->first();
         $registeredStudents = $course->registrations->where('programme_category_id', $programmeCategoryId)->where('academic_session', $academicSession)->pluck('student');
+
+        if($isSummer){
+            $summerCourseRegistrations = SummerCourseRegistration::with('courseRegistration')->where('course_id', $courseId)->where('programme_category_id', $programmeCategoryId)->where('academic_session', $academicSession)->get();
+
+            if($summerCourseRegistrations->count() > 0){
+                $registeredStudents = $summerCourseRegistrations->pluck('courseRegistration.student');
+            }
+        }
 
         foreach ($registeredStudents as $student){
             $description = $staffName ." sent you a message; ".$message;
@@ -810,10 +818,19 @@ class StaffController extends Controller
         $staffId = $staff->id;
         $courseId = $request->course_id;
         $programmeCategoryId = $request->programme_category_id;
+        $isSummer = $request->has('is_summer') && $request->is_summer == 1;
+
 
     
         $file = $request->file('result');
-        $processResult = Result::processResult($file, $courseId, $uploadType, $programmeCategoryId, $academicSession);
+        $processResult = Result::processResult(
+            $file,
+            $courseId,
+            $uploadType,
+            $programmeCategoryId,
+            $academicSession,
+            $isSummer
+        );
 
         if($processResult != 'success'){
             alert()->error('oops!', $processResult)->persistent('Close');
@@ -1060,6 +1077,8 @@ class StaffController extends Controller
         $academicSession = $globalData->sessionSetting['academic_session'];
 
         $uploadType = $request->type;
+        $isSummer = $request->has('summer') && $request->summer == 1;
+
 
         if(strtolower($uploadType) != 'test'){
             if(strtolower($resultProcessStatus) != 'start'){
@@ -1091,7 +1110,7 @@ class StaffController extends Controller
         }
 
         $courseManagementCourseCode = $courseManagement->passcode;
-        if(!empty($request->passcode) && $request->passcode != $courseManagementCourseCode){
+        if(!empty($request->passcode) && $request->passcode != $courseManagementCourseCode && !$isSummer){
             alert()->error('Oops!', 'Wrong Password, No changes was made')->persistent('Close');
             return redirect()->back();
         }
@@ -1119,7 +1138,7 @@ class StaffController extends Controller
             return redirect()->back();
         }
 
-        if(!empty($studentRegistration->result_approval_id)){
+        if(!empty($studentRegistration->result_approval_id) && !$isSummer){
             alert()->error('Result already approved', 'Visit the ICT with relevant approval for modification')->persistent('Close');
             return redirect()->back();
         }

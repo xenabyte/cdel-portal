@@ -206,6 +206,67 @@
             </div>
         </div>
     </div><!-- end col -->
+
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-body">
+                <div class="card-header align-items-center d-flex">
+                    <h4 class="card-title mb-0 flex-grow-1">Registered Student(s) </h4>
+                    <div class="flex-shrink-0">
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#messageStudents">Message Summer Students</button>
+                        <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#uploadResult">Bulk upload summer result</button>
+                        <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#updateStudentResult">Update Student Summer Result</button>
+                    </div>
+                </div><!-- end card header -->
+    
+                <div class="table-responsive mt-5">
+                    <div class="alert alert-info alert-dismissible fade show" role="alert">
+                        <strong>Attention Lecturers!</strong> Download the CSV file of students enrolled for this course by clicking <strong>CSV Button</strong>  below, update the scores, and upload the file to update student results.
+                    </div>
+                    <table id="buttons-datatables5" class="display table table-bordered" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th scope="col">Id</th>
+                                <th scope="col">Student Batch</th>
+                                <th scope="col">Course Code</th>
+                                <th scope="col">Lastname</th>
+                                <th scope="col">Othername</th>
+                                <th scope="col">Matric Number</th>
+                                <th scope="col">Programme</th>
+                                <th scope="col">Email</th>
+                                <th scope="col">Phone No</th>
+                                <th scope="col">Test Score</th>
+                                <th scope="col">Exam Score</th>
+                                <th scope="col">Total Score</th>
+                                <th scope="col">Grade</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($summerCourseRegistrations as $summerCourseRegistration)
+                                @if($summerCourseRegistration->course_registration->student)
+                                <tr>
+                                    <th scope="row">{{ $loop->iteration }}</th>
+                                    <td>{{ $summerCourseRegistration->course_registration->student->batch }}</td>
+                                    <td>{{ $course->code }}</td>
+                                    <td>{{ ucwords(strtolower($summerCourseRegistration->course_registration->student->applicant->lastname)) }}</td>
+                                    <td>{{ ucwords(strtolower($summerCourseRegistration->course_registration->student->applicant->othernames)) }}</td>
+                                    <td>{{ $summerCourseRegistration->course_registration->student->matric_number }}</td>
+                                    <td>{{ $summerCourseRegistration->course_registration->student->programme->name }}</td>
+                                    <td>{{ $summerCourseRegistration->course_registration->student->email }} </td>
+                                    <td>{{ $summerCourseRegistration->course_registration->student->applicant->phone_number }} </td>
+                                    <td>{{ $summerCourseRegistration->course_registration->ca_score }} </td>
+                                    <td>{{ $summerCourseRegistration->course_registration->exam_score }} </td>
+                                    <td>{{ $summerCourseRegistration->course_registration->total }}</td>
+                                    <td>{{ $summerCourseRegistration->course_registration->grade }} </td>
+                                </tr>
+                                @endif
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div><!-- end col -->
 </div> <!-- end row-->
 
 <div id="messageStudents" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
@@ -295,7 +356,6 @@
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
 
-
 <div id="uploadResult" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content border-0 overflow-hidden">
@@ -345,6 +405,147 @@
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
+
+<div id="messageSummerStudents" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 overflow-hidden">
+            <div class="modal-header p-3">
+                <h4 class="card-title mb-0">Send Message to Summer Students</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <hr>
+            <div class="modal-body">
+                <form action="{{ url('/staff/sendMessage') }}" method="post" enctype="multipart/form-data">
+                    @csrf
+                    <input type="hidden" name="course_id" value="{{ $course->id }}">
+                    <input type="hidden" name="programme_category_id" value="{{ $programmeCategory->id }}" />
+                    <input type="hidden" name="summer" value="1">
+
+                    <div class="form-floating">
+                        <textarea class="form-control ckeditor" name="message"></textarea>
+                        <label for="semester">Message</label>
+                    </div>
+
+                    <hr>
+                    <div class="text-end">
+                        <button type="submit" id="submit-button" class="btn btn-primary">Send Message</button>
+                    </div>
+                </form>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<div id="uploadSummerResult" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 overflow-hidden">
+            <div class="modal-header p-3">
+                <h4 class="card-title mb-0">Upload Result</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <hr>
+            <div class="modal-body">
+                <form action="{{ url('/staff/staffUploadResult') }}" method="post" enctype="multipart/form-data">
+                    @csrf
+                    <input type="hidden" name="course_id" value="{{ $course->id }}">
+                    <input type="hidden" name="programme_category_id" value="{{ $programmeCategory->id }}" />
+                    <input type="hidden" name="summer" value="1">
+
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div>
+                                <label for="formSizeLarge" class="form-label">Result (CSV)</label>
+                                <input name="result"  class="form-control form-control-lg" id="formSizeLarge" type="file" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-12">
+                        <div class="form-floating">
+                            <select class="form-select" id="type" name="type" aria-label="type" required>
+                                <option value="" selected>--Select--</option>
+                                <option value="test">Test</option>
+                                <option value="exam">Exam</option>
+                            </select>
+                            <label for="type">Result Type</label>
+                        </div>
+                    </div>
+
+                    @if(!empty($registrations->grade))
+                    <div class="form-floating mb-3 mt-3">
+                        <input type="password" name="passcode" id="passcode" class="form-control" required>
+                        <label for="passcode">Password <code>Get Code from your HOD</code></label>
+                    </div>
+                    @endif
+                    <hr>
+                    <div class="text-end">
+                        <button type="submit" id="submit-button" class="btn btn-primary">Upload Result</button>
+                    </div>
+                </form>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<div id="updateSummerStudentResult" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 overflow-hidden">
+            <div class="modal-header p-3">
+                <h4 class="card-title mb-0">Update Result</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <hr>
+            <div class="modal-body">
+                <form action="{{ url('/staff/updateStudentResult') }}" method="post" enctype="multipart/form-data">
+                    @csrf
+                    <input type="hidden" name="course_id" value="{{ $course->id }}">
+                    <input type="hidden" name="programme_category_id" value="{{ $programmeCategory->id }}" />
+                    <input type="hidden" name="summer" value="1">
+
+
+                    <div class="form-floating mb-3">
+                        <input type="text" name="matric_number" id="matric_number" class="form-control" required>
+                        <label for="matric_number">Matric Number</label>
+                    </div>
+
+                    <div class="form-floating mb-3">
+                        <input type="number" name="test" id="test" step="0.01" class="form-control">
+                        <label for="test">Test Score</label>
+                    </div>
+
+                    <div class="form-floating mb-3">
+                        <input type="number" name="exam" id="exam" step="0.01" class="form-control">
+                        <label for="exam">Exam Score</label>
+                    </div>
+
+                    <div class="col-lg-12">
+                        <div class="form-floating">
+                            <select class="form-select" id="type" name="type" aria-label="type" required>
+                                <option value="" selected>--Select--</option>
+                                <option value="test">Test</option>
+                                <option value="exam">Exam</option>
+                            </select>
+                            <label for="type">Result Type</label>
+                        </div>
+                    </div>
+
+                    @if(!empty($registrations->grade))
+                    <div class="form-floating mb-3 mt-3">
+                        <input type="password" name="passcode" id="passcode" class="form-control" required>
+                        <label for="passcode">Password <code>Get Code from your HOD</code></label>
+                    </div>
+                    @endif
+
+                    <hr>
+                    <div class="text-end">
+                        <button type="submit" id="submit-button" class="btn btn-primary">Save Changes</button>
+                    </div>
+                </form>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
 
 <div id="createLecture" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
     <div class="modal-dialog modal-dialog-centered">

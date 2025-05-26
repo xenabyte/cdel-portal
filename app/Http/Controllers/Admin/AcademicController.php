@@ -1499,7 +1499,6 @@ class AcademicController extends Controller
 
     }
 
-
     public function courseRegistrations(Request $request, $programmeCategory, $academicSession=null){
         if(!empty($academicSession)){
             $academicSession = str_replace('-', '/', $academicSession);

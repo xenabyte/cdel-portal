@@ -55,8 +55,6 @@
                     <div class="text-center">
                         <div class="row justify-content-center">
                             <div class="col-lg-9">
-                                <h4 class="mt-4 fw-semibold">Course Registration for {{ $pageGlobalData->sessionSetting->academic_session }} academic session </h4>
-                                <p class="text-muted mt-3"></p>
                                 <div class="mt-4">
                                     <h4 class="mt-4 fw-semibold">Course Registration for {{ $pageGlobalData->sessionSetting->academic_session }} Academic Session - Summer Semester</h4>
                                 </div>

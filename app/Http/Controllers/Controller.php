@@ -1176,7 +1176,11 @@ class Controller extends BaseController
     public function creditStudentSummerCourseReg(Transaction $transaction)
     {
         if (empty($transaction->additional_data)) {
-            return true; 
+            return false; 
+        }
+
+        if (!empty($transaction->is_used)) {
+            return false; 
         }
 
         $selectedCourses = json_decode($transaction->additional_data, true);

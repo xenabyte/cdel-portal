@@ -594,6 +594,7 @@ class ProgrammeController extends Controller
         $courseLectures = CourseLecture::with('lectureAttendance')->where('course_id', $id)->where('programme_category_id', $programmeCategoryId)->where('academic_session', $academicSession)->get();
         $summerCourseRegistrations = SummerCourseRegistration::with('courseRegistration')->where('course_id', $id)->where('programme_category_id', $programmeCategoryId)->where('academic_session', $academicSession)->get();
 
+        dd($summerCourseRegistrations);
         $course = Course::find($id);
 
         return view('admin.courseDetail', [
@@ -848,10 +849,20 @@ class ProgrammeController extends Controller
 
         $courseId = $request->course_id;
         $programmeCategoryId = $request->programme_category_id;
+        $isSummer = $request->has('summer') && $request->summer == 1;
+
 
         $message = $request->message;
         $course = Course::with('level', 'registrations', 'registrations.student', 'registrations.student.applicant', 'registrations.student.programme')->where('id', $courseId)->first();
         $registeredStudents = $course->registrations->where('programme_category_id', $programmeCategoryId)->where('academic_session', $academicSession)->pluck('student');
+
+        if($isSummer){
+            $summerCourseRegistrations = SummerCourseRegistration::with('courseRegistration')->where('course_id', $courseId)->where('programme_category_id', $programmeCategoryId)->where('academic_session', $academicSession)->get();
+
+            if($summerCourseRegistrations->count() > 0){
+                $registeredStudents = $summerCourseRegistrations->pluck('courseRegistration.student');
+            }
+        }
 
         foreach ($registeredStudents as $student){
             $description = $staffName ."(through ICT) sent you a message; ".$message;
@@ -879,7 +890,8 @@ class ProgrammeController extends Controller
         return redirect()->back();
     }
 
-    public function staffUploadResult(Request $request){
+    public function staffUploadResult(Request $request)
+    {
         $academicSession = $request->academic_session;
 
         $validator = Validator::make($request->all(), [
@@ -889,14 +901,15 @@ class ProgrammeController extends Controller
             'programme_category_id' => 'required'
         ]);
 
-        if($validator->fails()) {
-            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+        if ($validator->fails()) {
+            alert()->error('Error', $validator->messages()->first())->persistent('Close');
             return redirect()->back();
         }
+
         $file = $request->file('result');
         $fileExtension = $file->getClientOriginalExtension();
-        
-        if ($fileExtension != 'csv') {
+
+        if (strtolower($fileExtension) !== 'csv') {
             alert()->error('Invalid file format, only CSV is allowed', '')->persistent('Close');
             return redirect()->back();
         }
@@ -904,22 +917,23 @@ class ProgrammeController extends Controller
         $courseId = $request->course_id;
         $uploadType = $request->type;
         $programmeCategoryId = $request->programme_category_id;
+        $isSummer = $request->has('summer') && $request->is_summer == 1;
 
-    
-        $file = $request->file('result');
-        $processResult = Result::processResult($file, $courseId, $uploadType, $programmeCategoryId,  $academicSession);
+        $processResult = Result::processResult(
+            $file,
+            $courseId,
+            $uploadType,
+            $programmeCategoryId,
+            $academicSession,
+            $isSummer
+        );
 
-        if($processResult != 'success'){
-            alert()->error('oops!', $processResult)->persistent('Close');
+        if ($processResult !== 'success') {
+            alert()->error('Oops!', $processResult)->persistent('Close');
             return redirect()->back();
         }
 
-        if($processResult){
-            alert()->success('Student scores updated successfully!', '')->persistent('Close');
-            return redirect()->back();
-        }
-
-        alert()->error('No file uploaded. Result not processed', '')->persistent('Close');
+        alert()->success('Student scores updated successfully!', '')->persistent('Close');
         return redirect()->back();
     }
 
@@ -936,6 +950,7 @@ class ProgrammeController extends Controller
         $matricNumber = $request->matric_number;
         $uploadType = $request->type;
         $programmeCategoryId = $request->programme_category_id;
+        $isSummer = $request->has('summer') && $request->summer == 1;
 
 
         if(!$student = Student::where('matric_number', $matricNumber)->first()){
@@ -959,7 +974,7 @@ class ProgrammeController extends Controller
             return redirect()->back();
         }
 
-        if(!empty($studentRegistration->result_approval_id)){
+        if(!empty($studentRegistration->result_approval_id) && !$isSummer){
             alert()->error('Result already approved', 'Visit the ICT with relevant approval for modification')->persistent('Close');
             return redirect()->back();
         }

@@ -64,9 +64,12 @@ class AcademicController extends Controller
 
         $courseRegs = CourseRegistration::where('student_id', $studentId)->where('academic_session', $academicSession)->get();
 
+        $summerRegisteredCourses = SummerCourseRegistration::with('course_registration')->where('student_id', $studentId)->where('academic_session', $academicSession)->get();
+        // dd($summerRegisteredCourses);
 
         return view('student.registeredCourses', [
             'courseRegs' => $courseRegs,
+            'summerRegisteredCourses' => $summerRegisteredCourses,
             'payment' => $paymentCheck->schoolPayment,
             'passTuition' => $paymentCheck->passTuitionPayment,
             'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,

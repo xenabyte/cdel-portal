@@ -25,7 +25,7 @@ use Log;
 
 class Result
 {
-    public static function processResult(UploadedFile $file, $courseId, $type, $programmeCategoryId, $academicSession)
+    public static function processResult(UploadedFile $file, $courseId, $type, $programmeCategoryId, $academicSession, $isSummer = false)
     {
         $csv = Reader::createFromPath($file->getPathname());
         $csv->setHeaderOffset(0);
@@ -67,13 +67,19 @@ class Result
             }
             $courseCode = $course->code;
 
-            $studentRegistration = CourseRegistration::where([
+           // Filter course registration with summer flag if needed
+            $query = CourseRegistration::where([
                 'student_id' => $studentId,
                 'course_id' => $courseId,
-                'result_approval_id' => null,
                 'academic_session' => $academicSession,
                 'programme_category_id' => $programmeCategoryId
-            ])->first();
+            ]);
+
+            if (!$isSummer) {
+                $query->whereNull('result_approval_id');
+            } 
+
+            $studentRegistration = $query->first();
 
             if (!$studentRegistration) {
                 Log::info("{$student->applicant->lastname} {$student->applicant->othernames} not registered for {$course->code} @ {$academicSession}");
