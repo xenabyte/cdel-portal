@@ -1197,8 +1197,6 @@ class AcademicController extends Controller
             withTrashed()
             ->with(['applicant', 'programme', 'transactions', 'courseRegistrationDocument', 'registeredCourses', 'partner', 'academicLevel', 'department', 'faculty'])
             ->where('slug', $slug)
-            ->where('is_active', true)
-            ->where('is_rusticated', false)
             ->first();
 
         $referalCode = $student->referral_code;
