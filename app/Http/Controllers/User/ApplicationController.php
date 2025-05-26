@@ -1145,7 +1145,7 @@ class ApplicationController extends Controller
 
         if ($user->programme_category_id == ProgrammeCategory::getProgrammeCategory(ProgrammeCategory::DOCTORATE)) {
             $uploadFile('masters_certificate', 'masters_certificate');
-            $uploadFile('research_proposal', 'proposal');
+            $uploadFile('research_proposal', 'research_proposal');
         }
 
         session()->put('previous_section', 'spgsDocs');

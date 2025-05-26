@@ -63,7 +63,7 @@ class User extends Authenticatable
         'academic_transcript',
         'nysc_certificate',
         'masters_certificate',
-        'proposal'
+        'research_proposal'
     ];
 
     /**
