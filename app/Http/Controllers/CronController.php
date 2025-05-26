@@ -395,4 +395,12 @@ class CronController extends Controller
         ]);
     }
 
+    public function checkSummerCourseRegistration($transactionID){
+        $transaction = Transaction::find($transactionID);
+
+        if($transaction && $transaction->status == 1 && $transaction->is_used == 0){
+            return $creditStudent = $this->creditStudentSummerCourseReg($transaction);
+        }
+    }
+
 }

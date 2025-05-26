@@ -1210,6 +1210,7 @@ class Controller extends BaseController
 
         // Store file name/path in `additional_file` field
         $transaction->additional_file = json_encode(['summerCourseReg' => $summerCourseReg]);
+        $transaction->is_used = 1;
         $transaction->save();
 
         alert()->success('Changes Saved', 'Course registration saved successfully')->persistent('Close');

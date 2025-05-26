@@ -281,30 +281,60 @@
         const selectedCountSpan = document.getElementById('selectedCoursesCount');
         const calculatedAmountSpan = document.getElementById('calculatedAmount');
         const totalAmountInput = document.getElementById('totalAmountToPay');
+        const submitButton = document.getElementById('submit-button');
 
         const feePerCourse = {{ $summerCourseRegPayment->structures->sum('amount') }};
 
         function calculateTotal() {
-            const selectedCourses = Array.from(checkboxes).filter(cb => cb.checked).length;
+            let selectedCount = 0;
+            let totalCreditUnits = 0;
 
-            if (selectedCourses > 0 && paymentSelect.value !== '') {
-                const total = (selectedCourses * feePerCourse)/100;
+            checkboxes.forEach(cb => {
+                if (cb.checked) {
+                    selectedCount++;
+                    totalCreditUnits += parseInt(cb.dataset.credit || 0);
+                }
+            });
 
-                // Update values
-                selectedCountSpan.textContent = selectedCourses;
+            const paymentGatewaySelected = paymentSelect.value !== '';
+
+            if (selectedCount > 0 && paymentGatewaySelected) {
+                const total = (selectedCount * feePerCourse) / 100;
+                
+                selectedCountSpan.textContent = selectedCount;
                 calculatedAmountSpan.textContent = total.toLocaleString();
                 totalAmountInput.value = total;
 
                 alertBox.style.display = 'block';
+                submitButton.disabled = false;
             } else {
                 alertBox.style.display = 'none';
                 totalAmountInput.value = '';
+                submitButton.disabled = true;
             }
+
+            // Optional: Update per-semester credit unit totals
+            document.querySelector('.first-semester-total td:nth-child(4)').textContent = calculateSemesterCredit(1);
+            document.querySelector('.second-semester-total td:nth-child(4)').textContent = calculateSemesterCredit(2);
         }
 
-        // Listen for checkbox and select changes
+        function calculateSemesterCredit(semester) {
+            let sum = 0;
+            checkboxes.forEach(cb => {
+                const row = cb.closest('tr');
+                if (cb.checked && row.closest(`.${semester === 1 ? 'first' : 'second'}-semester`)) {
+                    sum += parseInt(cb.dataset.credit || 0);
+                }
+            });
+            return sum;
+        }
+
+        // Attach listeners
         checkboxes.forEach(cb => cb.addEventListener('change', calculateTotal));
         paymentSelect.addEventListener('change', calculateTotal);
+
+        // Disable button on load
+        submitButton.disabled = true;
     });
 </script>
 @endsection

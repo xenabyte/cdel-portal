@@ -121,6 +121,9 @@
                         <th>Status</th>
                     </tr>
                     </thead>
+                    @php
+                        $totalCreditUnits = 0;
+                    @endphp
                     <tbody>
                         @foreach($registeredCourses as $registeredCourse)
                             @php
@@ -128,8 +131,8 @@
                             @endphp
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
-                                    <td>{{ $registeredCourse->course->code }}</td>
-                                    <td>{{ ucwords(strtolower($registeredCourse->course->name)) }}</td>
+                                    <td>{{ $registeredCourse->course_registration->course->code }}</td>
+                                    <td>{{ ucwords(strtolower($registeredCourse->course_registration->course->name)) }}</td>
                                     <td>{{ $registeredCourse->course_registration->course_credit_unit }}</td>
                                     <td>{{ strtoupper(substr($registeredCourse->course_registration->course_status, 0, 1)) }}</td>
                                 </tr>

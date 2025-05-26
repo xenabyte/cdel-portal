@@ -63,6 +63,8 @@ Route::post('/getProgrammeCategory', [App\Http\Controllers\HomeController::class
 Route::get('/populateStudendBandwidth', [App\Http\Controllers\Admin\CronController::class, 'populateStudendBandwidth']);
 Route::get('/getSemesterGPA', [App\Http\Controllers\CronController::class, 'getSemesterGPA']);
 Route::get('/updateStudentGrade', [App\Http\Controllers\CronController::class, 'updateStudentGrade']);
+Route::get('/checkSummerCourseRegistration/{transactionId}', [App\Http\Controllers\CronController::class, 'checkSummerCourseRegistration']);
+
 
 Route::post('/addStaffRecord', [App\Http\Controllers\HomeController::class, 'addStaffRecord'])->name('addStaffRecord');
 Route::get('/staffRecord', [App\Http\Controllers\HomeController::class, 'staffRecord'])->name('staffRecord');
@@ -71,6 +73,7 @@ Route::get('/getDepartments/{id}', [App\Http\Controllers\HomeController::class, 
 
 Route::get('google/auth', [App\Http\Controllers\GoogleController::class, 'redirectToGoogle'])->name('google.auth');
 Route::get('google/callback', [App\Http\Controllers\GoogleController::class, 'handleGoogleCallback'])->name('google.callback');
+
 
 Route::group(['prefix' => 's'], function () {
   Route::get('/{code}', [App\Http\Controllers\UrlShortenerController::class, 'redirect']);

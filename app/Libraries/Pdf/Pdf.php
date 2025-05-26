@@ -191,7 +191,7 @@ Class Pdf {
         }
 
         $fileDirectory = 'uploads/files/summer/course_registration/'.$slug.time().'.pdf';
-        $summerCourseReg = SummerCourseRegistration::with('course', 'course_registration')->where('student_id', $studentId)->where('academic_session', $academicSession)->get();
+        $summerCourseReg = SummerCourseRegistration::with( 'course_registration')->where('student_id', $studentId)->where('academic_session', $academicSession)->get();
         
         $data = ['info'=>$student, 'registeredCourses' => $summerCourseReg];
 

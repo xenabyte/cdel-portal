@@ -264,8 +264,6 @@ class StudentController extends Controller
         $suspensionId = $request->suspension_id;
         $summerCourses = null;
 
-        // dd($request->all());
-
         if($paymentId > 0){
             if(!$payment = Payment::with('structures')->where('id', $paymentId)->first()){
                 alert()->error('Oops', 'Invalid Payment Initialization, contact ICT')->persistent('Close');
@@ -387,7 +385,13 @@ class StudentController extends Controller
         }
 
         if(!empty($payment) && strtolower($payment->type) == strtolower(Payment::PAYMENT_TYPE_SUMMER_COURSE_REGISTRATION)) {
-            $summerCourses = $request->input('selected_courses', []);
+            $summerCoursesIds = $request->input('failed_selected_courses', []);
+            $feePerCourse = $payment->structures->sum('amount');
+
+            $selectedCoursesCount = count($summerCoursesIds);
+            $amount = $selectedCoursesCount * $feePerCourse;
+
+             $summerCourses = json_encode($summerCoursesIds);
         }
 
         $paymentGateway = $request->paymentGateway;
@@ -551,8 +555,6 @@ class StudentController extends Controller
             ) {
                 $paymentType = "PG Tuition fee";
             }
-
-
 
             $data = array(
                 "amount" => round($this->getUpperlinkAmount($amount)/100),
