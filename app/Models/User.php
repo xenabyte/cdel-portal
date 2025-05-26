@@ -56,6 +56,7 @@ class User extends Authenticatable
         'referrer',
         'programme_category_id',
 
+        'olevel_certificate',
         'field_of_interest',
         'previous_institutions',
         'work_experience',

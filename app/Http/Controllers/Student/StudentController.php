@@ -264,6 +264,8 @@ class StudentController extends Controller
         $suspensionId = $request->suspension_id;
         $summerCourses = null;
 
+        // dd($request->all());
+
         if($paymentId > 0){
             if(!$payment = Payment::with('structures')->where('id', $paymentId)->first()){
                 alert()->error('Oops', 'Invalid Payment Initialization, contact ICT')->persistent('Close');
