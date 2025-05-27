@@ -594,7 +594,6 @@ class ProgrammeController extends Controller
         $courseLectures = CourseLecture::with('lectureAttendance')->where('course_id', $id)->where('programme_category_id', $programmeCategoryId)->where('academic_session', $academicSession)->get();
         $summerCourseRegistrations = SummerCourseRegistration::with('courseRegistration')->where('course_id', $id)->where('programme_category_id', $programmeCategoryId)->where('academic_session', $academicSession)->get();
 
-        dd($summerCourseRegistrations);
         $course = Course::find($id);
 
         return view('admin.courseDetail', [

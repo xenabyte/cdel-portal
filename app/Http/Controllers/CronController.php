@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Libraries\Paygate\Paygate;
 use App\Libraries\Result\Result;
+use App\Models\Payment;
 use App\Models\ProgrammeRequirement;
 use App\Models\StudentSemesterGPA;
 use Illuminate\Http\Request;
@@ -400,6 +402,28 @@ class CronController extends Controller
 
         if($transaction && $transaction->status == 1 && $transaction->is_used == 0){
             return $creditStudent = $this->creditStudentSummerCourseReg($transaction);
+        }
+    }
+
+    public function checkApplicationRegistration($transactionID){
+        $transaction = Transaction::find($transactionID);
+        if($transaction && $transaction->status == 1){
+
+            $upperLinkPayGate = new PayGate();
+            $paymentDetails =$upperLinkPayGate->verifyTransaction($transaction->reference);
+
+            $data = $paymentDetails['meta'];
+            $paymentData = json_decode($data, true);
+
+            $paymentId = $paymentData['payment_id'];
+            $payment = Payment::where('id', $paymentId)->first();
+            $paymentType = $payment->type;
+
+            if($paymentType == Payment::PAYMENT_TYPE_GENERAL_APPLICATION || $paymentType == Payment::PAYMENT_TYPE_INTER_TRANSFER_APPLICATION){
+                $applicantData = $paymentDetails;
+                return $this->createApplicant($applicantData);
+                
+            }
         }
     }
 
