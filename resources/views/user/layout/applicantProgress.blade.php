@@ -13,7 +13,9 @@
     $deResultStatus = !empty($applicant->de_result) ? 1 : 0;  
     $olevelStatus = count($applicant->olevels) > 4 ? 1 : 0;
 
-    $olevelResultStatus = !empty($applicant->olevel_1) ? 1 : 0; 
+    $utmeOlevelResultStatus = !empty($applicant->olevel_1) ? 1 : 0; 
+
+    $olevelResultStatus = !empty($applicant->olevel_certificate) ? 1 : 0; 
 
     // Additional status for PGD, Masters, and Doctorate applicants
     $degreeCertificateStatus = !empty($applicant->degree_certificate) ? 1 : 0;
@@ -203,8 +205,8 @@
                 </a>
 
                 <a data-bs-toggle="tab" href="#olevel">
-                    <div class="alert alert-{{ $olevelResultStatus?'success':'danger' }} shadow" role="alert">
-                        <strong>{{ $olevelResultStatus?'Good Job! OLevel Result uploaded successfully':'You are yet to upload your Olevel Result printout (optional for awaiting result)' }}</strong>
+                    <div class="alert alert-{{ $utmeOlevelResultStatus?'success':'danger' }} shadow" role="alert">
+                        <strong>{{ $utmeOlevelResultStatus?'Good Job! OLevel Result uploaded successfully':'You are yet to upload your Olevel Result printout (optional for awaiting result)' }}</strong>
                     </div>
                 </a>
             @endif
