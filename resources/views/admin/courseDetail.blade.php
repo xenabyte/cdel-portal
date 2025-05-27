@@ -141,7 +141,7 @@
                 </div><!-- end card header -->
     
                 <div class="table-responsive mt-5">
-                    <table id="buttons-datatables2" class="display table table-bordered" style="width:100%">
+                    <table id="buttons-datatables" class="display table table-bordered" style="width:100%">
                         <thead>
                             <tr>
                                 <th scope="col">Id</th>
