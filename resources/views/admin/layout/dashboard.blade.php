@@ -1285,6 +1285,24 @@
                     'copy', 'csv', 'excel', 'pdf', 'print'
                 ]
             });
+
+            $('#buttons-datatables8').DataTable({
+                dom: 'Bfrtip',
+                pageLength: 20,  
+                lengthMenu: [ [10, 20, 50, -1], [10, 20, 50, "All"] ],
+                buttons: [
+                    'copy', 'csv', 'excel', 'pdf', 'print'
+                ]
+            });
+
+            $('#buttons-datatables9').DataTable({
+                dom: 'Bfrtip',
+                pageLength: 20,  
+                lengthMenu: [ [10, 20, 50, -1], [10, 20, 50, "All"] ],
+                buttons: [
+                    'copy', 'csv', 'excel', 'pdf', 'print'
+                ]
+            });
         });
     </script>
     <script>

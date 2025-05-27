@@ -141,7 +141,7 @@
                 </div><!-- end card header -->
     
                 <div class="table-responsive mt-5">
-                    <table id="buttons-datatables" class="display table table-bordered" style="width:100%">
+                    <table id="buttons-datatables8" class="display table table-bordered" style="width:100%">
                         <thead>
                             <tr>
                                 <th scope="col">Id</th>
@@ -203,7 +203,7 @@
                     <div class="alert alert-info alert-dismissible fade show" role="alert">
                         <strong>Attention Lecturers!</strong> Download the CSV file of students enrolled for this course by clicking <strong>CSV Button</strong>  below, update the scores, and upload the file to update student results.
                     </div>
-                    <table id="buttons-datatables" class="display table table-bordered" style="width:100%">
+                    <table id="buttons-datatables9" class="display table table-bordered" style="width:100%">
                         <thead>
                             <tr>
                                 <th scope="col">Id</th>
