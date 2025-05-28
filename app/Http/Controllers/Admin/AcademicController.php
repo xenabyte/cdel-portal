@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Models\ProgrammeCategory;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -21,7 +22,6 @@ use App\Models\Department;
 use App\Models\CourseRegistrationSetting;
 use App\Models\ExaminationSetting;
 use App\Models\Programme;
-use App\Models\ProgrammeCategory as Category;
 use App\Models\Student;
 use App\Models\StudentDemotion;
 use App\Models\StudentCourseRegistration;
@@ -94,7 +94,7 @@ class AcademicController extends Controller
         if(!empty($request->academic_session) &&  $request->academic_session != $sessionSetting->academic_session){
             $sessionSetting->academic_session = $request->academic_session;
         }
-
+ 
         if(!empty($request->application_session) &&  $request->application_session != $sessionSetting->application_session){
             $sessionSetting->application_session = $request->application_session;
         }
@@ -590,7 +590,7 @@ class AcademicController extends Controller
         $globalData = $request->input('global_data');
         $academicSession = $globalData->sessionSetting['academic_session'];
 
-        $programmeCategory = Category::where('id', $request->category)->first();
+        $programmeCategory = ProgrammeCategory::where('id', $request->category)->first();
 
 
         $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $request->name.' '.$programmeCategory->category)));
@@ -714,7 +714,7 @@ class AcademicController extends Controller
     public function department($slug){
         $department = Department::with('programmes', 'programmes.students', 'programmes.academicAdvisers', 'programmes.academicAdvisers.staff', 'programmes.academicAdvisers.level')->where('slug', $slug)->first();
         $levels = AcademicLevel::all();
-        $categories = Category::all();
+        $categories = ProgrammeCategory::all();
 
         return view('admin.department', [
             'department' => $department,
@@ -1169,7 +1169,7 @@ class AcademicController extends Controller
 
     public function allStudents($programmeCategory){
 
-        $programmeCategory = Category::where('category', $programmeCategory)->first();
+        $programmeCategory = ProgrammeCategory::where('category', $programmeCategory)->first();
         $programmeCategoryId = $programmeCategory->id;
 
         $students = Student::
@@ -1218,7 +1218,7 @@ class AcademicController extends Controller
         $globalData = $request->input('global_data');
         $academicSession = $globalData->sessionSetting['academic_session'];
 
-        $programmeCategory = Category::where('category', $programmeCategory)->first();
+        $programmeCategory = ProgrammeCategory::where('category', $programmeCategory)->first();
         $programmeCategoryId = $programmeCategory->id;
 
         $programmes = Programme::with(['students' => function ($query) use ($programmeCategoryId) {
@@ -1511,7 +1511,7 @@ class AcademicController extends Controller
             $applicationSession = $globalData->sessionSetting['application_session'];
         }
 
-        $programmeCategory = Category::where('category', $programmeCategory)->first();
+        $programmeCategory = ProgrammeCategory::where('category', $programmeCategory)->first();
         $programmeCategoryId = $programmeCategory->id;
 
         $studentRegistrations = StudentCourseRegistration::with('student')
@@ -1844,7 +1844,7 @@ class AcademicController extends Controller
         $globalData = $request->input('global_data');
         $academicSession = $globalData->sessionSetting['academic_session'];
 
-        $programmeCategories = Category::all();
+        $programmeCategories = ProgrammeCategory::all();
 
         $department = Department::with('courses', 'courses.courseManagement', 'courses.courseManagement.staff', 'programmes', 'programmes.students', 'programmes.academicAdvisers', 'programmes.academicAdvisers.staff', 'programmes.academicAdvisers.level')->where('slug', $slug)->first();
 

@@ -178,6 +178,7 @@
                                             </table>
                                         </div>
                                     </div>
+
                                     <div class="tab-pane fade" id="olevel" role="tabpanel" aria-labelledby="nav-detail-tab">
                                         <div>
                                             @if(!empty($applicant->olevel_1))
@@ -225,6 +226,7 @@
                                             </table>
                                         </div>
                                     </div>
+
                                     @if($applicant->application_type == 'UTME')
                                     <div class="tab-pane fade" id="utme" role="tabpanel" aria-labelledby="nav-detail-tab">
                                         <div>
@@ -266,6 +268,7 @@
                                         </div>
                                     </div>
                                     @endif
+
                                     @if($applicant->application_type != 'UTME')
                                     <div class="tab-pane fade" id="de" role="tabpanel" aria-labelledby="nav-detail-tab">
                                         <div>
@@ -286,6 +289,7 @@
                                         </div>
                                     </div>
                                     @endif
+                                    
                                 </div>  
                             </div>
                             <!-- product-content -->

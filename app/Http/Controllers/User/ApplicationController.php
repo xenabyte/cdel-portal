@@ -1198,6 +1198,15 @@ class ApplicationController extends Controller
 
     private function calculateSpgsProgress($applicant)
     {
+        // Required form fields
+        $formFields = ['lastname', 'programme', 'field_of_interest', 'previous_institutions', 'work_experience'];
+
+        // Check if next of kin is required and add it conditionally
+        if (filled($applicant->nok)) {
+            $formFields[] = 'nok'; // We'll count it only if it exists
+        }
+
+        // Document requirements by programme category
         $docRequirements = [
             ProgrammeCategory::getProgrammeCategory(ProgrammeCategory::POSTGRADUATE) => [
                 'olevel_certificate', 'degree_certificate', 'nysc_certificate', 'academic_transcript'
@@ -1209,8 +1218,16 @@ class ApplicationController extends Controller
         ];
 
         $docs = $docRequirements[$applicant->programme_category_id] ?? [];
-        $uploadedCount = collect($docs)->filter(fn($field) => filled($applicant->$field))->count();
-        return round(($uploadedCount / count($docs)) * 100);
+
+        // Combine form fields and required documents
+        $allFields = array_merge($formFields, $docs);
+        $totalFields = count($allFields);
+
+        // Count how many of them are filled
+        $filledCount = collect($allFields)->filter(fn($field) => filled($applicant->$field))->count();
+
+        // Return percentage progress
+        return $totalFields > 0 ? round(($filledCount / $totalFields) * 100) : 0;
     }
 
     private function calculateUndergraduateProgress($applicant)
