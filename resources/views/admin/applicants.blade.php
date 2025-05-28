@@ -1,7 +1,7 @@
 @extends('admin.layout.dashboard')
 @php
 
-    $programmeCategory = new \App\Models\ProgrammeCategory;
+    $programmeCategoryModel = new \App\Models\ProgrammeCategory;
 
 @endphp
 @section('content')
@@ -121,7 +121,7 @@
                         </div>
                     </div>
     
-                    @if($programmeCategory->id == ProgrammeCategory::getProgrammeCategory('Undergraduate') || $programmeCategory->id == ProgrammeCategory::getProgrammeCategory('Topup'))
+                    @if($programmeCategory->id == $programmeCategoryModel::getProgrammeCategory('Undergraduate') || $programmeCategory->id == $programmeCategoryModel::getProgrammeCategory('Topup'))
                     <div class="col-md-3 border-end">
                         <div class="card-body">
                             @if(!empty($applicant->olevel_1))
@@ -235,7 +235,7 @@
                             @endif
                         </div>
                     </div>
-                    @elseif($programmeCategory->id != ProgrammeCategory::getProgrammeCategory('Topup'))
+                    @elseif($programmeCategory->id != $programmeCategoryModel::getProgrammeCategory('Topup'))
                     <div class="col-md-5 border-end">
                         <div class="card mb-3">
                             <div class="card-header bg-primary text-white">
