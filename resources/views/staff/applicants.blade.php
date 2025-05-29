@@ -1,5 +1,7 @@
 @extends('staff.layout.dashboard')
-
+@php
+        $programmeCategoryModel = new \App\Models\ProgrammeCategory;
+@endphp
 @section('content')
 <div class="row">
     <div class="col-12">
