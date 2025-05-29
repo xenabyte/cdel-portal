@@ -85,7 +85,7 @@
     <div class="modal-dialog modal-xl modal-dialog-centered">
         <div class="modal-content border-0 overflow-hidden">
             <div class="modal-header p-3">
-                <h4 class="card-title mb-0">View Applicant</h4>
+                <h4 class="card-title mb-0">View {{ $programmeCategory->category }} Programme Applicant </h4>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <hr>
@@ -99,9 +99,9 @@
                             </div>
     
                             <h5 id="candidate-name" class="mb-0">{{ $applicant->lastname .' '. $applicant->othernames }}</h5>
+                            <p id="candidate-position" class="text-muted">{{ $applicant->programmeCategory?$applicant->programmeCategory->category.' Programme':null }}</p>
                             <p id="candidate-position" class="text-muted">{{ $applicant->programme?$applicant->programme->name:null }}</p>
                             <p id="candidate-position" class="text-muted">Phone Number: {{ $applicant->phone_number }}</p>
-                            <p id="candidate-position" class="text-muted">Age: {{ \Carbon\Carbon::parse($applicant->dob)->age }} years</p>
                             <div class="vr"></div>
                             <div class="text-muted">Application ID : <span class="text-body fw-medium"> {{ $applicant->application_number }}</span></div>
                             @if($applicant->application_type == 'UTME')
@@ -115,6 +115,7 @@
                         </div>
                     </div>
     
+                    @if($programmeCategory->id == $programmeCategoryModel::getProgrammeCategory('Undergraduate') || $programmeCategory->id == $programmeCategoryModel::getProgrammeCategory('Topup'))
                     <div class="col-md-3 border-end">
                         <div class="card-body">
                             @if(!empty($applicant->olevel_1))
@@ -228,12 +229,45 @@
                             @endif
                         </div>
                     </div>
+                    @elseif($programmeCategory->id != $programmeCategoryModel::getProgrammeCategory('Topup'))
+                    <div class="col-md-5 border-end">
+                        <div class="card mb-3">
+                            <div class="card-header bg-primary text-white">
+                                Uploaded Documents
+                            </div>
+                            <div class="card-body">
+                                <ul class="list-group list-group-flush">
+                                    @php
+                                        $documents = [
+                                            'O-Level Certificate' => $applicant->olevel_certificate ?? null,
+                                            'Degree Certificate' => $applicant->degree_certificate ?? null,
+                                            'NYSC Certificate' => $applicant->nysc_certificate ?? null,
+                                            'Academic Transcript' => $applicant->academic_transcript ?? null,
+                                            'Masters Certificate' => $applicant->masters_certificate ?? null,
+                                            'Research Proposal' => $applicant->research_proposal ?? null,
+                                        ];
+                                    @endphp
 
+                                    @foreach ($documents as $label => $file)
+                                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                                            {{ $label }}
+                                            @if ($file)
+                                                <a href="{{ asset($file) }}" target="_blank" class="btn btn-sm btn-outline-success">View</a>
+                                            @else
+                                                <span class="badge bg-secondary">Not Uploaded</span>
+                                            @endif
+                                        </li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    @endif
                     <div class="col-md-3">
                         <div class="card-body">
                             <h5 class="fs-14 mb-3 border-bottom"> Manage Admission</h5>
                             @if($applicant->status == 'submitted')
-                            <form action="{{ url('staff/manageAdmission') }}" method="POST">
+                            <form action="{{ url('admin/manageAdmission') }}" method="POST">
                                 @csrf
                                 <input type="hidden" name="applicant_id" value="{{ $applicant->id }}">
                                 <div class="mb-3">
@@ -247,7 +281,12 @@
                                     <label for="level" class="form-label">Level</label>
                                     <select class="form-select" name="level_id" id="level" data-choices data-choices-search-false required>
                                         <option value="" selected>Choose...</option>
-                                        @foreach($levels as $academicLevel)<option value="{{ $academicLevel->id }}">{{ $academicLevel->level }}</option>@endforeach
+                                        @foreach($levels as $academicLevel)
+                                            @if(strtolower($programmeCategory->category) === 'topup' && (int) $academicLevel->level < 300)
+                                                @continue
+                                            @endif
+                                            <option value="{{ $academicLevel->id }}">{{ $academicLevel->level }} Level</option>
+                                        @endforeach
                                     </select>
                                 </div>
     
