@@ -19,6 +19,7 @@ class ProgrammeCategory extends Model
 
     protected $fillable = [
         'category',
+        'code'
     ];
 
     public  static function getProgrammeCategory($programmeCategory){

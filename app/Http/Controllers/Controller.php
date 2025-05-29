@@ -1022,10 +1022,12 @@ class Controller extends BaseController
             'programme_category_id' => $programmeCategoryId
         ]);
 
+        $programmeCategory = ProgrammeCategory::find($programmeCategoryId);
+
         if(!$checkApplicant = User::where('email', strtolower($email))->where('academic_session', $applicationSession)->first()){
             Log::info("********************** Creating Applicant **********************: ".' - '.$lastname.' - '.$otherNames);
             $applicant = User::create($newApplicant);
-            $applicationNumber = env('SCHOOL_CODE').'/'.substr($applicationSession, 0, 4).sprintf("%03d", ($applicant->id + env('APPLICATION_STARTING_NUMBER')));
+            $applicationNumber = env('SCHOOL_CODE').'/'.$programmeCategory->code.'/'.substr($applicationSession, 0, 4).sprintf("%03d", ($applicant->id + env('APPLICATION_STARTING_NUMBER')));
             $applicant->application_number = $applicationNumber;
             $applicant->save();
             Log::info("********************** Applicant Created **********************: ".' - '.$lastname.' - '.$otherNames .' - '.$applicationNumber);
