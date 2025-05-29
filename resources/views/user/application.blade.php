@@ -1202,7 +1202,7 @@
                                                 <li class="list-group-item d-flex justify-content-between align-items-center">
                                                     {{ $label }}
                                                     @if ($file)
-                                                        <a href="{{ asset('storage/' . $file) }}" target="_blank" class="btn btn-sm btn-outline-success">View</a>
+                                                        <a href="{{ asset($file) }}" target="_blank" class="btn btn-sm btn-outline-success">View</a>
                                                     @else
                                                         <span class="badge bg-secondary">Not Uploaded</span>
                                                     @endif
