@@ -1189,7 +1189,16 @@ class ApplicationController extends Controller
 
     private function calculateApplicationProgress($applicant)
     {
-        if ($applicant->programme_category_type === 'SPGS') {
+        $programmeCategoryId = $applicant->programme_category_id;
+        $spgsCategories = [
+            ProgrammeCategory::getProgrammeCategory(ProgrammeCategory::PGD),
+            ProgrammeCategory::getProgrammeCategory(ProgrammeCategory::MASTER),
+            ProgrammeCategory::getProgrammeCategory(ProgrammeCategory::DOCTORATE),
+        ];
+
+        $programmeCategoryType = in_array($programmeCategoryId, $spgsCategories) ? 'spgs' : 'undergraduate';
+
+        if ($applicant->programme_category_type === 'spgs') {
             return $this->calculateSpgsProgress($applicant);
         }
 
