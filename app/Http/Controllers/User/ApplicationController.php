@@ -1198,7 +1198,7 @@ class ApplicationController extends Controller
 
         $programmeCategoryType = in_array($programmeCategoryId, $spgsCategories) ? 'spgs' : 'undergraduate';
 
-        if ($applicant->programme_category_type === 'spgs') {
+        if ($programmeCategoryType === 'spgs') {
             return $this->calculateSpgsProgress($applicant);
         }
 
