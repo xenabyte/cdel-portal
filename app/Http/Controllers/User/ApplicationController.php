@@ -1208,9 +1208,14 @@ class ApplicationController extends Controller
 
         // Document requirements by programme category
         $docRequirements = [
-            ProgrammeCategory::getProgrammeCategory(ProgrammeCategory::POSTGRADUATE) => [
+            ProgrammeCategory::getProgrammeCategory(ProgrammeCategory::PGD) => [
                 'olevel_certificate', 'degree_certificate', 'nysc_certificate', 'academic_transcript'
             ],
+
+             ProgrammeCategory::getProgrammeCategory(ProgrammeCategory::MASTER) => [
+                'olevel_certificate', 'degree_certificate', 'nysc_certificate', 'academic_transcript'
+            ],
+
             ProgrammeCategory::getProgrammeCategory(ProgrammeCategory::DOCTORATE) => [
                 'olevel_certificate', 'degree_certificate', 'nysc_certificate', 'academic_transcript',
                 'masters_certificate', 'research_proposal'
