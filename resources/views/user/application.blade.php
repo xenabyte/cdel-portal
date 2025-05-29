@@ -1180,6 +1180,37 @@
                                         </form>
                                     </div> <!-- end card-body -->
                                 </div> <!-- end card -->
+
+                                <div class="card mt-3">
+                                    <div class="card-header bg-primary text-white">
+                                        Uploaded Documents
+                                    </div>
+                                    <div class="card-body">
+                                        <ul class="list-group list-group-flush">
+                                            @php
+                                                $documents = [
+                                                    'O-Level Certificate' => $applicant->olevel_certificate ?? null,
+                                                    'Degree Certificate' => $applicant->degree_certificate ?? null,
+                                                    'NYSC Certificate' => $applicant->nysc_certificate ?? null,
+                                                    'Academic Transcript' => $applicant->academic_transcript ?? null,
+                                                    'Masters Certificate' => $applicant->masters_certificate ?? null,
+                                                    'Research Proposal' => $applicant->research_proposal ?? null,
+                                                ];
+                                            @endphp
+
+                                            @foreach ($documents as $label => $file)
+                                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                    {{ $label }}
+                                                    @if ($file)
+                                                        <a href="{{ asset('storage/' . $file) }}" target="_blank" class="btn btn-sm btn-outline-success">View</a>
+                                                    @else
+                                                        <span class="badge bg-secondary">Not Uploaded</span>
+                                                    @endif
+                                                </li>
+                                            @endforeach
+                                        </ul>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
