@@ -1,5 +1,9 @@
 @extends('staff.layout.dashboard')
-
+@php
+    $staff = Auth::guard('staff')->user();
+    $isHod = \App\Models\Department::where('hod_id', $staff->id)->exists();
+    $role = $isHod ? 'HOD' : 'student care';
+@endphp
 @section('content')
 
 <!-- start page title -->
@@ -189,6 +193,7 @@
                     <h4 class="mb-3 mt-4">Are you sure you want to decline <br/> {{ $student->applicant->lastname .' ' . $student->applicant->othernames}} exit application?</h4>
                     <form action="{{ url('/staff/manageExitApplication') }}" method="POST">
                         @csrf
+                        <input type="hidden" name="role" value="{{ $role }}">
                         <input name="exit_id" type="hidden" value="{{$studentExit->id}}">
                         <input name="action" type="hidden" value="declined">
                         <hr>
@@ -216,6 +221,7 @@
                     <h4 class="mb-3 mt-4">Are you sure you want to approve <br/> {{ $student->applicant->lastname .' ' . $student->applicant->othernames}} exit application?</h4>
                     <form action="{{ url('/staff/manageExitApplication') }}" method="POST">
                         @csrf
+                        <input type="hidden" name="role" value="{{ $role }}">
                         <input name="exit_id" type="hidden" value="{{$studentExit->id}}">
                         <input name="action" type="hidden" value="approved">
                         <hr>

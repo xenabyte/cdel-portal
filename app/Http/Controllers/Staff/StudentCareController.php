@@ -56,27 +56,48 @@ class StudentCareController extends Controller
         return redirect(asset($studentExit->file));
     }
 
-    public function manageExitApplication(Request $request){
+    public function manageExitApplication(Request $request)
+    {
         $validator = Validator::make($request->all(), [
             'exit_id' => 'required',
             'action' => 'required',
+            'role' => 'required|in:HOD,student care',
         ]);
 
-        if($validator->fails()) {
+        if ($validator->fails()) {
             alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
             return redirect()->back();
         }
 
         if (!$studentExit = StudentExit::find($request->exit_id)) {
-            alert()->error('Oops!', 'Student exit applicattion record not found')->persistent('Close');
+            alert()->error('Oops!', 'Student exit application record not found')->persistent('Close');
             return redirect()->back();
         }
+
+        if ($request->role === 'student care' && !$studentExit->is_hod_approved) {
+            alert()->error('Not Allowed', 'HOD must approve this application first')->persistent('Close');
+            return redirect()->back();
+        }
+
         $globalData = $request->input('global_data');
         $academicSession = $globalData->sessionSetting['academic_session'];
+        $staff = Auth::guard('staff')->user();
 
-        $studentExit->status = $request->action;
+        if ($request->role === 'student care') {
+            $studentExit->managed_by = $staff->id;
+            $studentExit->status = $request->action;
+        }
 
-        if($studentExit->save()){
+        if ($request->role === 'HOD') {
+            $hodStatus = $request->action === 'approved';
+            $studentExit->is_hod_approved = $hodStatus;
+            $studentExit->is_hod_approved_date = Carbon::now();
+            if (!$hodStatus) {
+                $studentExit->status = $request->action;
+            }
+        }
+
+        if ($studentExit->save()) {
             $student = Student::find($studentExit->student_id);
 
             $pdf = new Pdf();
@@ -85,22 +106,21 @@ class StudentCareController extends Controller
             $studentExit->save();
 
             $senderName = env('SCHOOL_NAME');
-            $receiverName = $student->applicant->lastname .' ' . $student->applicant->othernames;
-            $message = 'Your exit application has been '.$request->action;
+            $receiverName = $student->applicant->lastname . ' ' . $student->applicant->othernames;
+            $message = 'Your exit application has been ' . $request->action . ' by ' . $request->role;
 
-            $mail = new NotificationMail($senderName, $message, $receiverName, $exitApplication);
-            if(env('SEND_MAIL')){
-                Mail::to($student->email)->send($mail);
+            if (env('SEND_MAIL')) {
+                Mail::to($student->email)->send(new NotificationMail($senderName, $message, $receiverName, $exitApplication));
             }
+
             Notification::create([
                 'student_id' => $student->id,
                 'description' => $message,
                 'attachment' => $exitApplication,
-                'status' => 0
+                'status' => 0,
             ]);
 
-
-            alert()->success('Success', 'Application '.$request->action)->persistent('Close');
+            alert()->success('Success', 'Application ' . $request->action)->persistent('Close');
             return redirect()->back();
         }
 
@@ -108,54 +128,81 @@ class StudentCareController extends Controller
         return redirect()->back();
     }
 
-    public function bulkManageExitApplications(Request $request){
+    public function bulkManageExitApplications(Request $request)
+    {
         $validator = Validator::make($request->all(), [
             'exit_ids' => 'required|array',
             'action' => 'required',
+            'role' => 'required|in:HOD,student care',
         ]);
-    
+
         if ($validator->fails()) {
             alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
             return redirect()->back();
         }
-    
+
         $globalData = $request->input('global_data');
         $academicSession = $globalData->sessionSetting['academic_session'];
         $exitIds = $request->exit_ids;
-    
+        $staff = Auth::guard('staff')->user();
+        $isHod = $request->role === 'HOD';
+        $processed = 0;
+        $skipped = 0;
+
         foreach ($exitIds as $exitId) {
             if (!$studentExit = StudentExit::find($exitId)) {
-                continue; // Skip if record not found
+                $skipped++;
+                continue;
             }
-    
-            $studentExit->status = $request->action;
+
+            // Skip if student care tries to manage without HOD approval
+            if (!$isHod && !$studentExit->is_hod_approved) {
+                $skipped++;
+                continue;
+            }
+
+            if ($isHod) {
+                $hodStatus = $request->action === 'approved';
+                $studentExit->is_hod_approved = $hodStatus;
+                $studentExit->is_hod_approved_date = Carbon::now();
+                if (!$hodStatus) {
+                    $studentExit->status = $request->action;
+                }
+            }
+
+            if ($request->role === 'student care') {
+                $studentExit->managed_by = $staff->id;
+                $studentExit->status = $request->action;
+            }
+
             if ($studentExit->save()) {
                 $student = Student::find($studentExit->student_id);
-                
                 $pdf = new Pdf();
                 $exitApplication = $pdf->generateExitApplication($academicSession, $student->id, $studentExit->id);
+
                 $studentExit->file = $exitApplication;
                 $studentExit->save();
-    
+
                 $senderName = env('SCHOOL_NAME');
                 $receiverName = $student->applicant->lastname . ' ' . $student->applicant->othernames;
-                $message = 'Your exit application has been ' . $request->action;
-    
-                $mail = new NotificationMail($senderName, $message, $receiverName, $exitApplication);
-                if(env('SEND_MAIL')){
-                    Mail::to($student->email)->send($mail);
+                $message = 'Your exit application has been ' . $request->action . ' by ' . $request->role;
+
+                if (env('SEND_MAIL')) {
+                    Mail::to($student->email)->send(new NotificationMail($senderName, $message, $receiverName, $exitApplication));
                 }
-                
+
                 Notification::create([
                     'student_id' => $student->id,
                     'description' => $message,
                     'attachment' => $exitApplication,
-                    'status' => 0
+                    'status' => 0,
                 ]);
+
+                $processed++;
             }
         }
-    
-        alert()->success('Success', 'Applications ' . $request->action)->persistent('Close');
+
+        alert()->success('Success', "$processed applications {$request->action}. $skipped skipped.")->persistent('Close');
         return redirect()->back();
     }
 

@@ -1,4 +1,9 @@
 @extends('staff.layout.dashboard')
+@php
+    $staff = Auth::guard('staff')->user();
+    $isHod = \App\Models\Department::where('hod_id', $staff->id)->exists();
+    $role = $isHod ? 'HOD' : 'student care';
+@endphp
 
 @section('content')
 <div class="row">
@@ -38,6 +43,8 @@
                 <h6 class="mb-3 fw-semibold text-uppercase">Pending Student Exit Application(s)</h6>
                 <form action="{{ url('/staff/bulkManageExitApplications') }}" method="POST">
                     @csrf
+                    
+                    <input type="hidden" name="role" value="{{ $role }}">
                     <div class="table-responsive">
                         <table id="fixed-header" class="table table-bordered table-responsive nowrap table-striped align-middle" style="width:100%">
                             <thead>
@@ -49,6 +56,7 @@
                                     <th scope="col">Destination</th>
                                     <th scope="col">Outing Date</th>
                                     <th scope="col">Returning Date</th>
+                                    <th scope="col">Application Date
                                     <th scope="col">File</th>
                                     <th scope="col">Status</th>
                                 </tr>
@@ -63,6 +71,7 @@
                                         <td>{{ $exitApplication->destination }}</td>
                                         <td>{{ empty($exitApplication->exit_date) ? null : date('F j, Y', strtotime($exitApplication->exit_date)) }}</td>
                                         <td>{{ empty($exitApplication->return_date) ? null : date('F j, Y \a\t g:i A', strtotime($exitApplication->return_date)) }}</td>
+                                        <td>{{ empty($exitApplication->created_at) ? null : date('F j, Y \a\t g:i A', strtotime($exitApplication->created_at)) }}</td>
                                         <td><a href="{{ asset($exitApplication->file) }}" class="btn btn-outline-primary" target="_blank">View Document</a></td>
                                         <td>{{ ucwords($exitApplication->status) }}</td>
                                     </tr>
@@ -96,6 +105,7 @@
                     <h4 class="mb-3 mt-4">Are you sure you want to decline <br/> {{ isset($exitApplication->student->applicant)?$exitApplication->student->applicant->lastname .' ' . $exitApplication->student->applicant->othernames:null}} exit application?</h4>
                     <form action="{{ url('/staff/manageExitApplication') }}" method="POST">
                         @csrf
+                        <input type="hidden" name="role" value="{{ $role }}">
                         <input name="exit_id" type="hidden" value="{{$exitApplication->id}}">
                         <input name="action" type="hidden" value="declined">
                         <hr>
@@ -123,6 +133,7 @@
                     <h4 class="mb-3 mt-4">Are you sure you want to approve <br/> {{ isset($exitApplication->student->applicant)? $exitApplication->student->applicant->lastname .' ' . $exitApplication->student->applicant->othernames: null }} exit application?</h4>
                     <form action="{{ url('/staff/manageExitApplication') }}" method="POST">
                         @csrf
+                        <input type="hidden" name="role" value="{{ $role }}">
                         <input name="exit_id" type="hidden" value="{{$exitApplication->id}}">
                         <input name="action" type="hidden" value="approved">
                         <hr>

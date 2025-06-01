@@ -999,12 +999,14 @@ class StudentController extends Controller
             return redirect()->back();
         }     
         
-        $checkPendingExit = StudentExit::where('student_id', $student->id)->where('status', null)->first();
+        $checkPendingExit = StudentExit::where('student_id', $student->id)->where('status', 'Pending')->first();
 
         if($checkPendingExit){
             alert()->error('Oops!', 'You have a pending exit application, you cant apply for another unless that is attended to, check with student care services')->persistent('Close');
             return redirect()->back();
         }
+
+        $hodId = $student->department->hod_id;
 
         $newExitApplication = ([
             'student_id' => $student->id,
@@ -1014,6 +1016,7 @@ class StudentController extends Controller
             'destination' => $request->destination,
             'exit_date' => !empty($request->exit_date) ? $request->exit_date : null,
             'return_date' => !empty($request->return_date) ? $request->return_date : null,
+            'hod_id' => $hodId,
         ]);
 
         if($newExit = StudentExit::create($newExitApplication)){

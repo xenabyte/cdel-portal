@@ -22,6 +22,10 @@ class StudentExit extends Model
         'destination',
         'status',
         'file',
+        'managed_by',
+        'hod_id',
+        'is_hod_approved',
+        'is_hod_approved_date',
         'is_dap_approved',
         'is_dap_approved_date',
         'is_registrar_approved',
@@ -38,5 +42,15 @@ class StudentExit extends Model
     public function student()
     {
         return $this->belongsTo(Student::class, 'student_id');
+    }
+
+    public function managedBy()
+    {
+        return $this->belongsTo(Staff::class, 'approved_by');
+    }
+
+    public function hod()
+    {
+        return $this->belongsTo(Staff::class, 'hod_id');
     }
 }
