@@ -98,8 +98,6 @@ class AcademicController extends Controller
     }
 
     public function departmentForCourse(Request $request, $slug){
-        $globalData = $request->input('global_data');
-        $academicSession = $globalData->sessionSetting['academic_session'];
         $programmeCategories = ProgrammeCategory::all();
 
         $department = Department::with('courses', 'courses.courseManagement', 'courses.courseManagement.staff', 'programmes', 'programmes.students', 'programmes.academicAdvisers', 'programmes.academicAdvisers.staff', 'programmes.academicAdvisers.level')->where('slug', $slug)->first();
@@ -170,8 +168,6 @@ class AcademicController extends Controller
     }
 
     public function requestCourseApproval(Request $request) {
-        $globalData = $request->input('global_data');
-        $academicSession = $globalData->sessionSetting['academic_session'];
 
         $levelAdviser = LevelAdviser::find($request->level_adviser_id);
         if(!$levelAdviser){
@@ -212,8 +208,6 @@ class AcademicController extends Controller
     }
 
     public function courseApproval(Request $request) {
-        $globalData = $request->input('global_data');
-        $academicSession = $globalData->sessionSetting['academic_session'];
 
         $comment = $request->comment;
         $status = $request->status == 'request changes'?'pending':$request->status;
@@ -226,6 +220,7 @@ class AcademicController extends Controller
 
         $programme = $levelAdviser->programme->name;
         $level = $levelAdviser->level->level .' Level ';
+        $academicSession = $levelAdviser->academic_session;
 
         $levelAdviser->comment = $comment;
         $levelAdviser->course_approval_status = $status;

@@ -48,10 +48,6 @@ class HomeController extends Controller
     
 
     public function studentDetails(Request $request, $slug){
-        $globalData = $request->input('global_data');
-        $admissionSession = $globalData->sessionSetting['admission_session'];
-        $academicSession = $globalData->sessionSetting['academic_session'];
-
         $student = Student::withTrashed()->with(['applicant', 'programme', 'partner', 'academicLevel', 'department', 'faculty'])
         ->where('slug', $slug)->first();
 
@@ -68,11 +64,28 @@ class HomeController extends Controller
     public function getExamDocket(Request $request, $slug){
 
         $globalData = $request->input('global_data');
-        $admissionSession = $globalData->sessionSetting['admission_session'];
-        $academicSession = $globalData->sessionSetting['academic_session'];
-        $semester  = $globalData->examSetting['semester'];
 
-        $student = Student::with('applicant', 'academicLevel', 'faculty', 'department', 'programme')->where('slug', $slug)->first();
+        $student = Student::with('applicant', 'academicLevel', 'faculty', 'department', 'programme')
+            ->where('slug', $slug)
+            ->first();
+
+        if (!$student) {
+            alert()->error('Oops!', 'Student not found')->persistent('Close');
+            return redirect()->back();
+        }
+
+        $programmeCategoryId = $student->programme_category_id ?? null;
+
+        if (!$programmeCategoryId || !isset($globalData->sessionSettings[$programmeCategoryId])) {
+            alert()->error('Oops!', 'Session setting for student\'s programme category not found.')->persistent('Close');
+            return redirect()->back();
+        }
+
+        $sessionSetting = $globalData->sessionSettings[$programmeCategoryId];
+
+        $academicSession = $sessionSetting->academic_session ?? null;
+        $semester = $globalData->examSetting->semester ?? null;
+
         $studentId = $student->id;
         $levelId = $student->level_id;
         $transactions = Transaction::where('student_id', $studentId)->orderBy('id', 'DESC')->get();
@@ -84,11 +97,11 @@ class HomeController extends Controller
         }
 
         $schoolPayment = Payment::with('structures')
-        ->where('type', Payment::PAYMENT_TYPE_SCHOOL)
-        ->where('programme_id', $student->programme_id)
-        ->where('level_id', $student->level_id)
-        ->where('academic_session', $student->academic_session)
-        ->first();
+            ->where('type', Payment::PAYMENT_TYPE_SCHOOL)
+            ->where('programme_id', $student->programme_id)
+            ->where('level_id', $student->level_id)
+            ->where('academic_session', $student->academic_session)
+            ->first();
 
         $passTuitionPayment = $checkStudentPayment->passTuitionPayment;
         $fullTuitionPayment = $checkStudentPayment->fullTuitionPayment;
@@ -316,9 +329,6 @@ class HomeController extends Controller
             return redirect()->back();
         }
 
-        $globalData = $request->input('global_data');
-        $academicSession = $globalData->sessionSetting['academic_session'];
-
         $studentExit->return_at = Carbon::now();
 
         if($studentExit->save()){
@@ -361,9 +371,6 @@ class HomeController extends Controller
             return redirect()->back();
         }
 
-        $globalData = $request->input('global_data');
-        $academicSession = $globalData->sessionSetting['academic_session'];
-
         $studentExit->exited_at = Carbon::now();
 
         if($studentExit->save()){
@@ -396,8 +403,18 @@ class HomeController extends Controller
 
     public function getPayments(Request $request){
 
+        $programmeCategoryId = $request->programme_category_id;
+
         $globalData = $request->input('global_data');
-        $applicationSession = $globalData->sessionSetting['application_session'];
+        
+        if (!$programmeCategoryId || !isset($globalData->sessionSettings[$programmeCategoryId])) {
+            alert()->error('Oops!', 'Session setting for student\'s programme category not found.')->persistent('Close');
+            return redirect()->back();
+        }
+
+        $sessionSetting = $globalData->sessionSettings[$programmeCategoryId];
+        $applicationSession = $sessionSetting->application_session ?? null;
+
 
         $commonConditions = [
             'programme_category_id' => $request->programme_category_id,

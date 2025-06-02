@@ -293,7 +293,6 @@ class StaffController extends Controller
         $applicants = Applicant::with('student')->where('referrer', $referalCode)->where('academic_session', $applicationSession)->get();
 
 
-
         return view('admin.singleStaff', [
             'singleStaff' => $staff,
             'roles' => $roles,
@@ -583,7 +582,6 @@ class StaffController extends Controller
 
     public function addAdviser(Request $request){
         $globalData = $request->input('global_data');
-        $academicSession = $globalData->sessionSetting['academic_session'];
 
         $validator = Validator::make($request->all(), [
             'staff_id' => 'required',
@@ -604,6 +602,17 @@ class StaffController extends Controller
             alert()->error('Oops', 'Invalid Programme ')->persistent('Close');
             return redirect()->back();
         }
+
+        $programmeCategoryId = $request->programme_category_id;
+
+        if (!$programmeCategoryId || !isset($globalData->sessionSettings[$programmeCategoryId])) {
+            alert()->error('Oops!', 'Session setting for student\'s programme category not found.')->persistent('Close');
+            return redirect()->back();
+        }
+
+        $sessionSetting = $globalData->sessionSettings[$programmeCategoryId];
+        $academicSession = $sessionSetting->academic_session ?? null;
+
 
         $levelAdviser = LevelAdviser::where('programme_id', $request->programme_id)
                         ->where('programme_category_id', $request->programme_category_id)

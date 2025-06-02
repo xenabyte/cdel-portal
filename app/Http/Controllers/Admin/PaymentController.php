@@ -51,11 +51,18 @@ class PaymentController extends Controller
 
     public function payments(Request $request, $programmeCategory) {
         $globalData = $request->input('global_data');
-        $academicSession = $globalData->sessionSetting['academic_session'];
 
         $programmeCategory = ProgrammeCategory::where('category', $programmeCategory)->first();
         $programmeCategoryId = $programmeCategory->id;
 
+        if (!$programmeCategoryId || !isset($globalData->sessionSettings[$programmeCategoryId])) {
+            alert()->error('Oops!', 'Session setting for student\'s programme category not found.')->persistent('Close');
+            return redirect()->back();
+        }
+
+        $sessionSetting = $globalData->sessionSettings[$programmeCategoryId];
+        $academicSession = $sessionSetting->academic_session ?? null;
+        
         $paymentTypes = PaymentType::get();
 
         $payments = Payment::with(['structures', 'programme'])->where('academic_session', $academicSession)->where('programme_category_id', $programmeCategoryId)->get();
@@ -77,10 +84,8 @@ class PaymentController extends Controller
         $academicSession = $request->academic_session;
         $programmeCategoryId = $request->programme_category_id;
 
-
         $programmeCategory = ProgrammeCategory::find($programmeCategoryId);
         $programmeCategoryId = $programmeCategory->id;
-
 
         $payments = Payment::with(['structures', 'programme'])->where('academic_session', $academicSession)->where('programme_category_id', $programmeCategoryId)->get();
 
@@ -1075,14 +1080,24 @@ class PaymentController extends Controller
         ]);
 
         $globalData = $request->input('global_data');
-        $session = $globalData->sessionSetting['academic_session'];
 
         $student = Student::with('applicant')->where('id', $request->student_id)->first();
         $studentIdCode = $student->matric_number;
         $studentId = $student->id;
         $paymentId = $request->payment_id;
-        
+        $programmeCategoryId = $request->programme_category_id;
 
+        $programmeCategory = ProgrammeCategory::where('category', $programmeCategoryId)->first();
+        $programmeCategoryId = $programmeCategory->id;
+
+        if (!$programmeCategoryId || !isset($globalData->sessionSettings[$programmeCategoryId])) {
+            alert()->error('Oops!', 'Session setting for student\'s programme category not found.')->persistent('Close');
+            return redirect()->back();
+        }
+        
+        $sessionSetting = $globalData->sessionSettings[$programmeCategoryId];
+        $academicSession = $sessionSetting->academic_session ?? null;
+        
         if($validator->fails()) {
             alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
             return $this->getSingleStudent($studentIdCode, 'admin.chargeStudent');
@@ -1098,7 +1113,7 @@ class PaymentController extends Controller
             'amount_payed' => $amount,
             'payment_method' => 'Bursary',
             'reference' => $reference,
-            'session' => $session,
+            'session' => $academicSession,
             'status' => 1
         ]);
 
