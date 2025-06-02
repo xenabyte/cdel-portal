@@ -22,12 +22,20 @@ class ProgrammeCategory extends Model
         'code'
     ];
 
-    public  static function getProgrammeCategory($programmeCategory){
-        if($category = self::where('category', $programmeCategory)->first()) {
+    /**
+     * Get all academic session settings for this programme category.
+     */
+    public function academicSessionSettings()
+    {
+        return $this->hasMany(AcademicSessionSetting::class, 'programme_category_id');
+    }
+
+    public static function getProgrammeCategory($programmeCategory)
+    {
+        if ($category = self::where('category', $programmeCategory)->first()) {
             return $category->id;
         }
         return null;
     }
-    
-    
+
 }

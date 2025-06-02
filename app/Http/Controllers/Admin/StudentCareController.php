@@ -70,13 +70,23 @@ class StudentCareController extends Controller
             alert()->error('Oops!', 'Student exit applicattion record not found')->persistent('Close');
             return redirect()->back();
         }
+
+        $student = Student::find($studentExit->student_id);
+        $programmeCategoryId = $student->programme_category_id;
+
         $globalData = $request->input('global_data');
-        $academicSession = $globalData->sessionSetting['academic_session'];
+
+        if (!$programmeCategoryId || !isset($globalData->sessionSettings[$programmeCategoryId])) {
+            alert()->error('Oops!', 'Session setting for student\'s programme category not found.')->persistent('Close');
+            return redirect()->back();
+        }
+
+        $sessionSetting = $globalData->sessionSettings[$programmeCategoryId];
+        $academicSession = $sessionSetting->academic_session ?? null;
 
         $studentExit->status = $request->action;
 
         if($studentExit->save()){
-            $student = Student::find($studentExit->student_id);
 
             $pdf = new Pdf();
             $exitApplication = $pdf->generateExitApplication($academicSession, $student->id, $studentExit->id);
@@ -119,7 +129,6 @@ class StudentCareController extends Controller
         }
     
         $globalData = $request->input('global_data');
-        $academicSession = $globalData->sessionSetting['academic_session'];
         $exitIds = $request->exit_ids;
     
         foreach ($exitIds as $exitId) {
@@ -130,6 +139,15 @@ class StudentCareController extends Controller
             $studentExit->status = $request->action;
             if ($studentExit->save()) {
                 $student = Student::find($studentExit->student_id);
+
+                $programmeCategoryId = $student->programme_category_id;
+
+                if (!$programmeCategoryId || !isset($globalData->sessionSettings[$programmeCategoryId])) {
+                    continue;
+                }
+
+                $sessionSetting = $globalData->sessionSettings[$programmeCategoryId];
+                $academicSession = $sessionSetting->academic_session ?? null;
                 
                 $pdf = new Pdf();
                 $exitApplication = $pdf->generateExitApplication($academicSession, $student->id, $studentExit->id);
@@ -203,9 +221,6 @@ class StudentCareController extends Controller
             return redirect()->back();
         }
 
-        $globalData = $request->input('global_data');
-        $academicSession = $globalData->sessionSetting['academic_session'];
-
         $studentExit->return_at = Carbon::now();
 
         if($studentExit->save()){
@@ -244,9 +259,6 @@ class StudentCareController extends Controller
             alert()->error('Oops!', 'Student exit applicattion record not found')->persistent('Close');
             return redirect()->back();
         }
-
-        $globalData = $request->input('global_data');
-        $academicSession = $globalData->sessionSetting['academic_session'];
 
         $studentExit->exited_at = Carbon::now();
 

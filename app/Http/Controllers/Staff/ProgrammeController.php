@@ -181,13 +181,17 @@ class ProgrammeController extends Controller
 
     public function adviserProgrammes(Request $request, $programmeCategory){
         $staff = Auth::guard('staff')->user();
-        $staffId = $staff->id;
-        $staffDepartmentId = $staff->department_id;
         $globalData = $request->input('global_data');
-        $academicSession = $globalData->sessionSetting['academic_session'];
 
         $programmeCategory = ProgrammeCategory::where('category', $programmeCategory)->first();
         $programmeCategoryId = $programmeCategory->id;
+
+        if (!$programmeCategoryId || !isset($globalData->sessionSettings[$programmeCategoryId])) {
+            alert()->error('Oops!', 'Session setting for programme category not found.')->persistent('Close');
+            return redirect()->back();
+        }
+        $sessionSetting = $globalData->sessionSettings[$programmeCategoryId];
+        $academicSession = $sessionSetting->academic_session ?? null;
 
         $staffHod = false;
         if($staff->id == $staff->acad_department->hod_id){
@@ -272,9 +276,6 @@ class ProgrammeController extends Controller
 
     public function studentCourseReg(Request $request){
         $staff = Auth::guard('staff')->user();
-        $staffId = $staff->id;
-        $globalData = $request->input('global_data');
-        $academicSession = $globalData->sessionSetting['academic_session'];
 
         $facultyIds= Faculty::where('faculty_officer_id', $staff->id)->pluck('id');
         $departmentIds= Department::whereIn('faculty_id', $facultyIds)->pluck('id');
@@ -286,6 +287,7 @@ class ProgrammeController extends Controller
         foreach ($adviserProgrammes as $adviserProgramme) {
             $levelId = $adviserProgramme->level_id;
             $programmeId = $adviserProgramme->programme_id;
+            $academicSession = $adviserProgramme->academic_session;
         
             $studentIds = Student::where('level_id', $levelId)
                 ->where('programme_id', $programmeId)
@@ -320,7 +322,15 @@ class ProgrammeController extends Controller
 
     public function addCourseForStudent(Request $request){
         $globalData = $request->input('global_data');
-        $academicSession = $globalData->sessionSetting['academic_session'];
+
+        $programmeCategoryId = $request->programme_category_id;
+        
+        if (!$programmeCategoryId || !isset($globalData->sessionSettings[$programmeCategoryId])) {
+            alert()->error('Oops!', 'Session setting for programme category not found.')->persistent('Close');
+            return redirect()->back();
+        }
+        $sessionSetting = $globalData->sessionSettings[$programmeCategoryId];
+        $academicSession = $sessionSetting->academic_session ?? null;
 
         $programmeCategories = ProgrammeCategory::get();
 

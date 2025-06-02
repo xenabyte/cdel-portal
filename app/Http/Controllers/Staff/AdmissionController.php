@@ -57,9 +57,15 @@ class AdmissionController extends Controller
 
     public function applicants(Request $request, $programmeCategory){
         $globalData = $request->input('global_data');
-        $academicSession = $globalData->sessionSetting['application_session'];
         $programmeCategory = ProgrammeCategory::where('category', $programmeCategory)->first();
         $programmeCategoryId = $programmeCategory->id;
+
+        if (!$programmeCategoryId || !isset($globalData->sessionSettings[$programmeCategoryId])) {
+            alert()->error('Oops!', 'Session setting for programme category not found.')->persistent('Close');
+            return redirect()->back();
+        }
+        $sessionSetting = $globalData->sessionSettings[$programmeCategoryId];
+        $academicSession = $sessionSetting->academic_session ?? null;
 
         $applicants = Applicant::where('programme_category_id', $programmeCategoryId)
         ->where(function($query) {
@@ -109,10 +115,16 @@ class AdmissionController extends Controller
 
     public function matriculants(Request $request, $programmeCategory){
         $globalData = $request->input('global_data');
-        $academicSession = $globalData->sessionSetting['application_session'];
 
         $programmeCategory = ProgrammeCategory::where('category', $programmeCategory)->first();
         $programmeCategoryId = $programmeCategory->id;
+
+        if (!$programmeCategoryId || !isset($globalData->sessionSettings[$programmeCategoryId])) {
+            alert()->error('Oops!', 'Session setting for programme category not found.')->persistent('Close');
+            return redirect()->back();
+        }
+        $sessionSetting = $globalData->sessionSettings[$programmeCategoryId];
+        $academicSession = $sessionSetting->academic_session ?? null;
 
         $matriculants = Applicant::with('student')
         ->where('academic_session', $academicSession)
@@ -149,9 +161,16 @@ class AdmissionController extends Controller
             return redirect()->back();
         }
 
+        $programmeCategoryId = $applicant->programme_category_id;
+
         $globalData = $request->input('global_data');
-        $applicationSession = $globalData->sessionSetting['application_session'];
-        $admissionSession = $globalData->sessionSetting['admission_session'];
+
+        if (!$programmeCategoryId || !isset($globalData->sessionSettings[$programmeCategoryId])) {
+            alert()->error('Oops!', 'Session setting for student\'s programme category not found.')->persistent('Close');
+            return redirect()->back();
+        }
+        $sessionSetting = $globalData->sessionSettings[$programmeCategoryId];
+        $admissionSession = $sessionSetting->admission_session ?? null;
 
         $applicantId = $applicant->id;
         $status = $request->status;
@@ -236,11 +255,17 @@ class AdmissionController extends Controller
 
     public function students(Request $request, $programmeCategory){
         $globalData = $request->input('global_data');
-        $applicationSession = $globalData->sessionSetting['application_session'];
-        $admissionSession = $globalData->sessionSetting['admission_session'];
     
         $programmeCategory = ProgrammeCategory::where('category', $programmeCategory)->first();
         $programmeCategoryId = $programmeCategory->id;
+
+        if (!$programmeCategoryId || !isset($globalData->sessionSettings[$programmeCategoryId])) {
+            alert()->error('Oops!', 'Session setting for programme category not found.')->persistent('Close');
+            return redirect()->back();
+        }
+        $sessionSetting = $globalData->sessionSettings[$programmeCategoryId];
+        $admissionSession = $sessionSetting->admission_session ?? null;
+        $applicationSession = $sessionSetting->application_session ?? null;
 
         $students = Student::with('applicant', 'programme')
             ->where('academic_session', $admissionSession)

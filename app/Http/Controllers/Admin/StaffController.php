@@ -287,11 +287,24 @@ class StaffController extends Controller
         $faculties = Faculty::all();
 
         $globalData = $request->input('global_data');
-        $applicationSession = $globalData->sessionSetting['application_session'];
-        $referalCode = $staff->referral_code;
-        
-        $applicants = Applicant::with('student')->where('referrer', $referalCode)->where('academic_session', $applicationSession)->get();
+        $referralCode = $staff->referral_code;
 
+        $applicants = collect();
+
+        foreach ($globalData->sessionSettings as $setting) {
+            $applicationSession = $setting->application_session ?? null;
+
+            if ($applicationSession) {
+                $matchedApplicants = Applicant::with('student')
+                    ->where('referrer', $referralCode)
+                    ->where('academic_session', $applicationSession)
+                    ->get();
+
+                $applicants = $applicants->merge($matchedApplicants);
+            }
+        }
+
+        $applicants = $applicants->unique('id')->values();
 
         return view('admin.singleStaff', [
             'singleStaff' => $staff,

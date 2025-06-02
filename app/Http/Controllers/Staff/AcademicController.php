@@ -327,9 +327,6 @@ class AcademicController extends Controller
 
     public function manageProgrammeChangeRequest(Request $request)
     {
-        $globalData = $request->input('global_data');
-        $academicSession = $globalData->sessionSetting['academic_session'];
-
         $request->validate([
             'programme_change_request_id' => 'required|exists:programme_change_requests,id',
             'role' => 'required|in:old_hod,new_hod,old_dean,new_dean,dap,registrar',
@@ -437,7 +434,7 @@ class AcademicController extends Controller
                 ->where('type', $type)
                 ->where('programme_id', $student->programme_id)
                 ->where('level_id', $student->level_id)
-                ->where('academic_session', $academicSession)
+                ->where('academic_session', $student->academic_session)
                 ->where('programme_category_id', $student->programme_category_id)
                 ->first();
 
@@ -448,7 +445,7 @@ class AcademicController extends Controller
 
             // Update previous successful transactions
             Transaction::where('student_id', $studentId)
-                ->where('session', $academicSession)
+                ->where('session', $student->academic_session)
                 ->where('status', 1)
                 ->update(['payment_id' => $schoolPayment->id]);
 
