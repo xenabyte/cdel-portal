@@ -828,19 +828,22 @@
                             @endif
 
 
-                            @if($staffStudentCareRole)
+                            @if($staffStudentCareRole || $staffRegistrarRole || $staffHODRole)
                             <li class="nav-item">
                                 <a class="nav-link menu-link" href="#studentCare" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="studentCare">
                                     <i class="mdi mdi-account-heart"></i> <span data-key="t-student">Student Care</span> <span class="badge badge-pill bg-danger" data-key="t-hot">{{ !empty($pageGlobalData->exitApplicationCount) ? $pageGlobalData->exitApplicationCount : 0 }}</span>
                                 </a>
                                 <div class="collapse menu-dropdown" id="studentCare">
                                     <ul class="nav nav-sm flex-column">
+                                         @if($staffStudentCareRole || $staffRegistrarRole || $staffHODRole)
                                         <li class="nav-item">
                                             <a href="{{ url('/staff/studentExits') }}" class="nav-link">Student Exit <span class="badge badge-pill bg-danger" data-key="t-hot">{{ !empty($pageGlobalData->exitApplicationCount) ? $pageGlobalData->exitApplicationCount : 0 }}</span></a>
                                         </li>
                                         <li class="nav-item">
                                             <a href="{{ url('/staff/verifyStudentExits') }}" class="nav-link">Verify Student Exit</a>
                                         </li>
+                                        @endif
+                                        @if($staffStudentCareRole || $staffRegistrarRole)
                                         <li class="nav-item">
                                             <a href="#studentHostelMgt" class="nav-link" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="studentHostelMgt" data-key="t-studentHostelMgt"> Student Hostel Mgt
                                             </a>
@@ -858,6 +861,7 @@
                                                 </ul>
                                             </div>
                                         </li>
+                                        @endif
                                     </ul>
                                 </div>
                             </li> <!-- end Dashboard Menu -->
