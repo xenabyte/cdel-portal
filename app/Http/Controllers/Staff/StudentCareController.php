@@ -31,7 +31,7 @@ use Carbon\Carbon;
 class StudentCareController extends Controller
 {
     public function studentExits(){
-        $exitApplications = StudentExit::where('status', 'pending')->orderBy('id', 'DESC')->limit(100)->get(); 
+        $exitApplications = StudentExit::where('status', 'pending')->orderBy('id', 'DESC')->limit(300)->get(); 
 
         return view('staff.studentExits', [
             'exitApplications' => $exitApplications

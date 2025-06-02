@@ -68,24 +68,37 @@ $qrcode = 'https://quickchart.io/chart?chs=300x300&cht=qr&chl='.env('APP_URL').'
         <hr>
     </div>
 
-    <!-- Student Details -->
-    <div class="row mt-3">
-        <div class="col-md-6">
-            <p><strong>Matric Number:</strong> {{ $info->matric_number }}</p>
-            <p><strong>Application No:</strong> {{ $info->applicant->application_number }}</p>
-            <p><strong>Full Name:</strong> {{ $info->applicant->lastname . ' ' . $info->applicant->othernames }}</p>
-            <p><strong>Level:</strong> {{ $info->academicLevel->level }} Level</p>
-        </div>
-        <div class="col-md-6">
-            <p><strong>Faculty:</strong> {{ $info->faculty->name }}</p>
-            <p><strong>Department:</strong> {{ $info->department->name }}</p>
-            <p><strong>Programme:</strong> {{ $info->programme->name }}</p>
-            <p><strong>Session:</strong> {{ $info->academic_session }}</p>
+    <div class="row" style="margin-top: 20%;">
+        <div class="text-center">
+            <h1>Exit Application</h1>
+            <small class="text-muted">Student Exit Permit Record</small>
+            <br>
         </div>
     </div>
 
+
+    <!-- Student Details -->
+     <table style="width: 100%;">
+        <tbody>
+            <tr>
+                <td style="width: 50%; vertical-align: top; text-align: left; border: none; padding-right: 10px;">
+                    <div><strong>MATRIC NUMBER:</strong> {{ $info->matric_number }}</div>
+                    <div><strong>APPLICATION NO:</strong> {{ $info->applicant->application_number }}</div>
+                    <div><strong>FULL NAME:</strong> {{ $info->applicant->lastname.' '. $info->applicant->othernames }}</div>
+                    <div><strong>LEVEL:</strong> {{ $info->academicLevel->level }} Level</div>
+                </td>
+                <td style="width: 50%; vertical-align: top; text-align: left; border: none; padding-left: 10px;">
+                    <div><strong>FACULTY:</strong>  {{ $info->faculty->name }} </div>
+                    <div><strong>DEPARTMENT:</strong> {{ $info->department->name }}</div>
+                    <div><strong>PROGRAMME:</strong> {{ $info->programme->name }}</div>
+                    <div><strong>SESSION:</strong> {{ $info->academic_session }}</div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
     <!-- Exit Details -->
-    <div class="section-title">Exit Information</div>
+    <div class="section-title text-center">Exit Information</div>
     <div class="row">
         <div class="col-md-9">
             <p><strong>Application Number:</strong> #{{ sprintf("%06d", $exitApplication->id) }}</p>
@@ -102,7 +115,6 @@ $qrcode = 'https://quickchart.io/chart?chs=300x300&cht=qr&chl='.env('APP_URL').'
             <hr>
             <p><strong>Student Email:</strong> {{ $info->email }}</p>
             <p><strong>Student Phone Number:</strong> {{ $info->applicant->phone_number }}</p>
-
             @if(!empty($info->applicant->guardian))
                 <hr>
                 <p><strong>Guardian Name:</strong> {{ $info->applicant->guardian->name }}</p>
@@ -120,36 +132,45 @@ $qrcode = 'https://quickchart.io/chart?chs=300x300&cht=qr&chl='.env('APP_URL').'
         </div>
     </div>
 
-    <!-- HOD Approval -->
-    <div class="approval-box">
-        <h5>HOD Approval</h5>
-        <p><strong>Name:</strong> 
-            @if($exitApplication->hod) 
-                {{ $exitApplication->hod->title }} {{ $exitApplication->hod->lastname }}, {{ $exitApplication->hod->firstname }} 
-            @else 
-                <em>Not Assigned</em> 
-            @endif
-        </p>
-        <p><strong>Approved?</strong> {{ $exitApplication->is_hod_approved ? 'Yes' : 'No' }}</p>
-        @if($exitApplication->is_hod_approved_date)
-            <p><strong>Approval Date:</strong> {{ date('F j, Y \a\t g:i A', strtotime($exitApplication->is_hod_approved_date)) }}</p>
-        @endif
-    </div>
+   <table style="width: 100%; margin-top: 30px;">
+        <tbody>
+            <tr>
+                <!-- HOD Approval -->
+                <td style="width: 50%; vertical-align: top; text-align: left; border: none; padding-right: 10px;">
+                    <h5 style="margin-bottom: 10px;">HOD Approval</h5>
+                    <div>
+                        <strong>Name:</strong>
+                        @if($exitApplication->hod)
+                            {{ $exitApplication->hod->title }} {{ $exitApplication->hod->lastname }}, {{ $exitApplication->hod->firstname }}
+                        @else
+                            <em>Not Assigned</em>
+                        @endif
+                    </div>
+                    <div><strong>Approved?</strong> {{ $exitApplication->is_hod_approved ? 'Yes' : 'No' }}</div>
+                    @if($exitApplication->is_hod_approved_date)
+                        <div><strong>Approval Date:</strong> {{ date('F j, Y \a\t g:i A', strtotime($exitApplication->is_hod_approved_date)) }}</div>
+                    @endif
+                </td>
 
-    <!-- Staff Final Approval -->
-    <div class="approval-box">
-        <h5>Final Approval by Staff</h5>
-        <p><strong>Name:</strong> 
-            @if($exitApplication->managedBy) 
-                {{ $exitApplication->managedBy->title }} {{ $exitApplication->managedBy->lastname }}, {{ $exitApplication->managedBy->firstname }} 
-            @else 
-                <em>Pending</em> 
-            @endif
-        </p>
-        <p><strong>Approval Time:</strong> 
-            {{ $exitApplication->updated_at ? date('F j, Y \a\t g:i A', strtotime($exitApplication->updated_at)) : 'Pending' }}
-        </p>
-    </div>
+                <!-- Final Approval -->
+                <td style="width: 50%; vertical-align: top; text-align: left; border: none; padding-left: 10px;">
+                    <h5 style="margin-bottom: 10px;">Final Approval by Staff</h5>
+                    <div>
+                        <strong>Name:</strong>
+                        @if($exitApplication->managedBy)
+                            {{ $exitApplication->managedBy->title }} {{ $exitApplication->managedBy->lastname }}, {{ $exitApplication->managedBy->firstname }}
+                        @else
+                            <em>Pending</em>
+                        @endif
+                    </div>
+                    <div>
+                        <strong>Approval Time:</strong>
+                        {{ $exitApplication->updated_at ? date('F j, Y \a\t g:i A', strtotime($exitApplication->updated_at)) : 'Pending' }}
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
 
     <!-- QR Code -->
     <div class="text-end mt-4">
