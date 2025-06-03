@@ -178,7 +178,7 @@
                                 <div>
                                     <strong>Name:</strong>
                                     @if($studentExit->hod)
-                                        {{ $studentExit->hod->title }} {{ $studentExit->hod->lastname }}, {{ $studentExit->hod->firstname }}
+                                        {{ $studentExit->hod->title }} {{ $studentExit->hod->lastname }}, {{ $studentExit->hod->othernames }}
                                     @else
                                         <em>Not Assigned</em>
                                     @endif
@@ -195,7 +195,7 @@
                                 <div>
                                     <strong>Name:</strong>
                                     @if($studentExit->managedBy)
-                                        {{ $studentExit->managedBy->title }} {{ $studentExit->managedBy->lastname }}, {{ $studentExit->managedBy->firstname }}
+                                        {{ $studentExit->managedBy->title }} {{ $studentExit->managedBy->lastname }}, {{ $studentExit->managedBy->othernames }}
                                     @else
                                         <em>Pending</em>
                                     @endif

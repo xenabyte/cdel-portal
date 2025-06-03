@@ -176,12 +176,12 @@
                     <tbody>
                         <tr>
                             <!-- HOD Approval -->
-                            <td style="width: 50%; vertical-align: top; text-align: left; border: none; padding-right: 10px;">
+                            <td class="border-top border-top-dashed" style="width: 50%; vertical-align: top; text-align: left; border: none; padding-right: 10px;">
                                 <h5 style="margin-bottom: 10px;">HOD Approval</h5>
                                 <div>
                                     <strong>Name:</strong>
                                     @if($studentExit->hod)
-                                        {{ $studentExit->hod->title }} {{ $studentExit->hod->lastname }}, {{ $studentExit->hod->firstname }}
+                                        {{ $studentExit->hod->title }} {{ $studentExit->hod->lastname }}, {{ $studentExit->hod->othernames }}
                                     @else
                                         <em>Not Assigned</em>
                                     @endif
@@ -198,7 +198,7 @@
                                 <div>
                                     <strong>Name:</strong>
                                     @if($studentExit->managedBy)
-                                        {{ $studentExit->managedBy->title }} {{ $studentExit->managedBy->lastname }}, {{ $studentExit->managedBy->firstname }}
+                                        {{ $studentExit->managedBy->title }} {{ $studentExit->managedBy->lastname }}, {{ $studentExit->managedBy->othernames }}
                                     @else
                                         <em>Pending</em>
                                     @endif
