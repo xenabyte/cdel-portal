@@ -170,7 +170,7 @@
                 </table>
 
                 <table class="pb-2 mb-3 pt-2 border-top border-top-dashed" style="width: 100%; margin-top: 30px;">
-                    <tbody>
+                    <tbody class="mt-2">
                         <tr>
                             <!-- HOD Approval -->
                             <td style="width: 50%; vertical-align: top; text-align: left; border: none; padding-right: 10px;">
