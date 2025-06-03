@@ -172,11 +172,11 @@
                         </tr>
                     </tbody>
                 </table>
-                <table style="width: 100%; margin-top: 30px;">
+                <table class="border-top border-top-dashed" style="width: 100%; margin-top: 30px;">
                     <tbody>
                         <tr>
                             <!-- HOD Approval -->
-                            <td class="border-top border-top-dashed" style="width: 50%; vertical-align: top; text-align: left; border: none; padding-right: 10px;">
+                            <td style="width: 50%; vertical-align: top; text-align: left; border: none; padding-right: 10px;">
                                 <h5 style="margin-bottom: 10px;">HOD Approval</h5>
                                 <div>
                                     <strong>Name:</strong>
@@ -186,7 +186,7 @@
                                         <em>Not Assigned</em>
                                     @endif
                                 </div>
-                                <div><strong>Approved?</strong> {{ $studentExit->is_hod_approved ? 'Yes' : 'No' }}</div>
+                                <div><strong>Approval Status:</strong> {{ $studentExit->is_hod_approved ? 'Approved' : 'Pending Approval' }}</div>
                                 @if($studentExit->is_hod_approved_date)
                                     <div><strong>Approval Date:</strong> {{ date('F j, Y \a\t g:i A', strtotime($studentExit->is_hod_approved_date)) }}</div>
                                 @endif
@@ -194,19 +194,23 @@
 
                             <!-- Final Approval -->
                             <td style="width: 50%; vertical-align: top; text-align: left; border: none; padding-left: 10px;">
-                                <h5 style="margin-bottom: 10px;">Final Approval by Staff</h5>
-                                <div>
-                                    <strong>Name:</strong>
-                                    @if($studentExit->managedBy)
-                                        {{ $studentExit->managedBy->title }} {{ $studentExit->managedBy->lastname }}, {{ $studentExit->managedBy->othernames }}
-                                    @else
-                                        <em>Pending</em>
-                                    @endif
-                                </div>
-                                <div>
-                                    <strong>Approval Time:</strong>
-                                    {{ $studentExit->updated_at ? date('F j, Y \a\t g:i A', strtotime($studentExit->updated_at)) : 'Pending' }}
-                                </div>
+                                @if($studentExit->managedBy)
+                                    <h5 style="margin-bottom: 10px;">Final Approval by Staff</h5>
+                                    <div>
+                                        <strong>Name:</strong>
+                                        @if($studentExit->managedBy)
+                                            {{ $studentExit->managedBy->title }} {{ $studentExit->managedBy->lastname }}, {{ $studentExit->managedBy->othernames }}
+                                        @else
+                                            <em>Pending</em>
+                                        @endif
+                                    </div>
+                                    <div>
+                                        <strong>Approval Time:</strong>
+                                        @if($studentExit->managedBy) {{ $studentExit->updated_at ? date('F j, Y \a\t g:i A', strtotime($studentExit->updated_at)) : 'Pending' }} @endif
+                                    </div>
+                                @else
+                                    <h5 style="margin-bottom: 10px;">Pending Student Care Approval</h5>
+                                @endif
                             </td>
                         </tr>
                     </tbody>
