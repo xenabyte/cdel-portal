@@ -44,7 +44,7 @@ class StudentExit extends Model
         return $this->belongsTo(Student::class, 'student_id');
     }
 
-    public function managedB py()
+    public function managedBy()
     {
         return $this->belongsTo(Staff::class, 'approved_by');
     }
