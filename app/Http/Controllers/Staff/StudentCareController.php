@@ -16,6 +16,7 @@ use App\Models\User as Applicant;
 use App\Models\Student;
 use App\Models\StudentExit;
 use App\Models\Programme;
+use App\Models\Department;
 use App\Models\AcademicLevel;
 use App\Models\Notification;
 
@@ -31,7 +32,16 @@ use Carbon\Carbon;
 class StudentCareController extends Controller
 {
     public function studentExits(){
-        $exitApplications = StudentExit::where('status', 'pending')->orderBy('id', 'DESC')->limit(100)->get(); 
+        $staff = Auth::guard()->user();
+        $staffId = $staff->id;
+
+        $isHod = Department::where('hod_id', $staff->id)->exists();
+
+        $exitApplications = StudentExit::where('status', 'pending')->orderBy('id', 'DESC')->limit(300)->get(); 
+        if($isHod){
+            $exitApplications = StudentExit::where('status', 'pending')->where('hod_id', $staffId)->orderBy('id', 'DESC')->limit(300)->get();
+        }
+
 
         return view('staff.studentExits', [
             'exitApplications' => $exitApplications
