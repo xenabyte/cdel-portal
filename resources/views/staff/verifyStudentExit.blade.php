@@ -138,7 +138,8 @@
             <div class="card-header border-0 align-items-center d-flex">
                 <h4 class="card-title mb-0 flex-grow-1">Application Information</h4>
                 <div class="text-end mb-5">
-                    @if(empty($studentExit->status))
+                    <a href="{{ asset($studentExit->file) }}" class="btn btn-outline-primary" target="_blank">View Document</a>
+                    @if(strtolower($studentExit->status) == 'pending')
                     <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#decline{{$studentExit->id}}" class="btn btn-danger"><i class="ri-close-circle-fill"></i> Decline</a>
                     <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#approve{{$studentExit->id}}" class="btn btn-success"><i class="ri-checkbox-circle-fill"></i> Approve</a>
                     @endif
