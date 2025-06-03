@@ -138,9 +138,10 @@
                     @if(strtolower($studentExit->status) == 'pending')
                     <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#decline{{$studentExit->id}}" class="btn btn-danger"><i class="ri-close-circle-fill"></i> Decline</a>
                     <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#approve{{$studentExit->id}}" class="btn btn-success"><i class="ri-checkbox-circle-fill"></i> Approve</a>
-                    @endif
+                    @else
                     <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#exit{{$studentExit->id}}" class="btn btn-info"><i class="mdi mdi-logout"></i> Left Campus</a>
                     <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#entry{{$studentExit->id}}" class="btn btn-primary"><i class="mdi mdi-login"></i> Enter Campus</a>
+                    @endif
                 </div>
             </div><!-- end card header -->
 
@@ -155,7 +156,6 @@
                                 <div><strong>Mode of Transportation:</strong> {{ $studentExit->transport_mode }}</div>
                                 @if(!empty($studentExit->exit_date))<div><strong>Outing Date:</strong> {{ $studentExit->exit_date }}</div>@endif
                                 @if(!empty($studentExit->return_date))<div><strong>Returning Date:</strong> {{ $studentExit->return_date }}</div>@endif
-                                
                                 
                             </td>
                             <td style="width: 30%; border: none;">
