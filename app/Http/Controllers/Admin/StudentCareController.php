@@ -52,7 +52,14 @@ class StudentCareController extends Controller
             return redirect()->back();
         }
 
-        return redirect(asset($studentExit->file));
+        // return redirect(asset($studentExit->file));
+
+        $student = Student::find($studentExit->student_id);
+
+        return view('admin.verifyStudentExit', [
+            'studentExit' => $studentExit,
+            'student' => $student
+        ]);
     }
 
     public function manageExitApplication(Request $request){

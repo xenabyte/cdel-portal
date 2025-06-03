@@ -61,10 +61,10 @@ $qrcode = 'https://quickchart.io/chart?chs=300x300&cht=qr&chl='.env('APP_URL').'
         </tr>
     </table>
 
-    <div class="row" style="margin-top: 20%;">
+    <div class="row" style="margin-top: 10%;">
         <div class="text-center">
             <h1>Exit Application</h1>
-            <small class="text-muted">Student Exit Permit Record</small>
+            <p class="text-muted">Student Exit Permit Record</p>
             <br>
         </div>
     </div>
