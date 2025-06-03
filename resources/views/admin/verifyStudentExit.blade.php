@@ -177,15 +177,15 @@
                                 <h5 style="margin-bottom: 10px;">HOD Approval</h5>
                                 <div>
                                     <strong>Name:</strong>
-                                    @if($exitApplication->hod)
-                                        {{ $exitApplication->hod->title }} {{ $exitApplication->hod->lastname }}, {{ $exitApplication->hod->firstname }}
+                                    @if($studentExit->hod)
+                                        {{ $studentExit->hod->title }} {{ $studentExit->hod->lastname }}, {{ $studentExit->hod->firstname }}
                                     @else
                                         <em>Not Assigned</em>
                                     @endif
                                 </div>
-                                <div><strong>Approved?</strong> {{ $exitApplication->is_hod_approved ? 'Yes' : 'No' }}</div>
-                                @if($exitApplication->is_hod_approved_date)
-                                    <div><strong>Approval Date:</strong> {{ date('F j, Y \a\t g:i A', strtotime($exitApplication->is_hod_approved_date)) }}</div>
+                                <div><strong>Approved?</strong> {{ $studentExit->is_hod_approved ? 'Yes' : 'No' }}</div>
+                                @if($studentExit->is_hod_approved_date)
+                                    <div><strong>Approval Date:</strong> {{ date('F j, Y \a\t g:i A', strtotime($studentExit->is_hod_approved_date)) }}</div>
                                 @endif
                             </td>
 
@@ -194,15 +194,15 @@
                                 <h5 style="margin-bottom: 10px;">Final Approval by Staff</h5>
                                 <div>
                                     <strong>Name:</strong>
-                                    @if($exitApplication->managedBy)
-                                        {{ $exitApplication->managedBy->title }} {{ $exitApplication->managedBy->lastname }}, {{ $exitApplication->managedBy->firstname }}
+                                    @if($studentExit->managedBy)
+                                        {{ $studentExit->managedBy->title }} {{ $studentExit->managedBy->lastname }}, {{ $studentExit->managedBy->firstname }}
                                     @else
                                         <em>Pending</em>
                                     @endif
                                 </div>
                                 <div>
                                     <strong>Approval Time:</strong>
-                                    {{ $exitApplication->updated_at ? date('F j, Y \a\t g:i A', strtotime($exitApplication->updated_at)) : 'Pending' }}
+                                    {{ $studentExit->updated_at ? date('F j, Y \a\t g:i A', strtotime($studentExit->updated_at)) : 'Pending' }}
                                 </div>
                             </td>
                         </tr>
@@ -228,7 +228,7 @@
                     <lord-icon src="https://cdn.lordicon.com/gsqxdxog.json" trigger="loop" colors="primary:#f7b84b,secondary:#f06548" style="width:100px;height:100px"></lord-icon>
                     </lord-icon>
                     <h4 class="mb-3 mt-4">Are you sure you want to decline <br/> {{ $student->applicant->lastname .' ' . $student->applicant->othernames}} exit application?</h4>
-                    <form action="{{ url('/admin/manageExitApplication') }}" method="POST">
+                    <form action="{{ url('/admin/managestudentExit') }}" method="POST">
                         @csrf
                         <input name="exit_id" type="hidden" value="{{$studentExit->id}}">
                         <input name="action" type="hidden" value="declined">
@@ -255,7 +255,7 @@
                     <lord-icon src="https://cdn.lordicon.com/gsqxdxog.json" trigger="hover" style="width:150px;height:150px">
                     </lord-icon>
                     <h4 class="mb-3 mt-4">Are you sure you want to approve <br/> {{ $student->applicant->lastname .' ' . $student->applicant->othernames}} exit application?</h4>
-                    <form action="{{ url('/admin/manageExitApplication') }}" method="POST">
+                    <form action="{{ url('/admin/managestudentExit') }}" method="POST">
                         @csrf
                         <input name="exit_id" type="hidden" value="{{$studentExit->id}}">
                         <input name="action" type="hidden" value="approved">
