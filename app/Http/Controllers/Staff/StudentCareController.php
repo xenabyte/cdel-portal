@@ -37,9 +37,9 @@ class StudentCareController extends Controller
 
         $isHod = Department::where('hod_id', $staff->id)->exists();
 
-        $exitApplications = StudentExit::where('status', 'pending')->orderBy('id', 'DESC')->limit(100)->get(); 
+        $exitApplications = StudentExit::where('status', 'pending')->orderBy('id', 'DESC')->get(); 
         if($isHod){
-            $exitApplications = StudentExit::where('status', 'pending')->where('hod_id', $staffId)->orderBy('id', 'DESC')->limit(100)->get();
+            $exitApplications = StudentExit::where('status', 'pending')->where('hod_id', $staffId)->orderBy('id', 'DESC')->get();
         }
 
 
