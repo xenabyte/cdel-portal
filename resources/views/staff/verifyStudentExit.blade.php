@@ -172,6 +172,45 @@
                         </tr>
                     </tbody>
                 </table>
+                <table style="width: 100%; margin-top: 30px;">
+                    <tbody>
+                        <tr>
+                            <!-- HOD Approval -->
+                            <td style="width: 50%; vertical-align: top; text-align: left; border: none; padding-right: 10px;">
+                                <h5 style="margin-bottom: 10px;">HOD Approval</h5>
+                                <div>
+                                    <strong>Name:</strong>
+                                    @if($exitApplication->hod)
+                                        {{ $exitApplication->hod->title }} {{ $exitApplication->hod->lastname }}, {{ $exitApplication->hod->firstname }}
+                                    @else
+                                        <em>Not Assigned</em>
+                                    @endif
+                                </div>
+                                <div><strong>Approved?</strong> {{ $exitApplication->is_hod_approved ? 'Yes' : 'No' }}</div>
+                                @if($exitApplication->is_hod_approved_date)
+                                    <div><strong>Approval Date:</strong> {{ date('F j, Y \a\t g:i A', strtotime($exitApplication->is_hod_approved_date)) }}</div>
+                                @endif
+                            </td>
+
+                            <!-- Final Approval -->
+                            <td style="width: 50%; vertical-align: top; text-align: left; border: none; padding-left: 10px;">
+                                <h5 style="margin-bottom: 10px;">Final Approval by Staff</h5>
+                                <div>
+                                    <strong>Name:</strong>
+                                    @if($exitApplication->managedBy)
+                                        {{ $exitApplication->managedBy->title }} {{ $exitApplication->managedBy->lastname }}, {{ $exitApplication->managedBy->firstname }}
+                                    @else
+                                        <em>Pending</em>
+                                    @endif
+                                </div>
+                                <div>
+                                    <strong>Approval Time:</strong>
+                                    {{ $exitApplication->updated_at ? date('F j, Y \a\t g:i A', strtotime($exitApplication->updated_at)) : 'Pending' }}
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
             </div><!-- end card body -->
         </div><!-- end card -->
         
