@@ -169,7 +169,7 @@
                     </tbody>
                 </table>
 
-                <table class="border-top border-top-dashed" style="width: 100%; margin-top: 30px;">
+                <table class="pb-2 border-top border-top-dashed" style="width: 100%; margin-top: 30px;">
                     <tbody>
                         <tr>
                             <!-- HOD Approval -->
