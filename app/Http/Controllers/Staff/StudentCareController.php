@@ -96,7 +96,7 @@ class StudentCareController extends Controller
 
         $studentExit->status = $request->action;
 
-        if ($request->role === 'student care' && !$studentExit->is_hod_approved) {
+        if ($request->role === 'student care' && !$studentExit->is_hod_approved && $request->action === 'approved') {
             alert()->error('Not Allowed', 'HOD must approve this application first')->persistent('Close');
 
             return view('staff.verifyStudentExit', [
