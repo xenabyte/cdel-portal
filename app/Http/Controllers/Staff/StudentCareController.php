@@ -79,24 +79,31 @@ class StudentCareController extends Controller
             'role' => 'required|in:HOD,student care',
         ]);
 
-        if ($validator->fails()) {
+        $student = Student::find($request->student_id);
+        $studentExit = StudentExit::find($request->exit_id);
+
+        if($validator->fails()) {
             alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
-            return redirect()->back();
+            return view('staff.verifyStudentExit', [
+                'studentExit' => $studentExit,
+                'student' => $student
+            ]);
         }
 
-        if (!$studentExit = StudentExit::find($request->exit_id)) {
-            alert()->error('Oops!', 'Student exit application record not found')->persistent('Close');
-            return redirect()->back();
-        }
+        $staff = Auth::guard()->user();
+        $globalData = $request->input('global_data');
+        $academicSession = $globalData->sessionSetting['academic_session'];
+
+        $studentExit->status = $request->action;
 
         if ($request->role === 'student care' && !$studentExit->is_hod_approved) {
             alert()->error('Not Allowed', 'HOD must approve this application first')->persistent('Close');
-            return redirect()->back();
-        }
 
-        $globalData = $request->input('global_data');
-        $academicSession = $globalData->sessionSetting['academic_session'];
-        $staff = Auth::guard('staff')->user();
+            return view('staff.verifyStudentExit', [
+                'studentExit' => $studentExit,
+                'student' => $student
+            ]);
+        }
 
         if ($request->role === 'student care') {
             $studentExit->managed_by = $staff->id;
@@ -112,7 +119,6 @@ class StudentCareController extends Controller
             }
         }
 
-        $student = Student::find($studentExit->student_id);
 
         if ($studentExit->save()) {
             $pdf = new Pdf();

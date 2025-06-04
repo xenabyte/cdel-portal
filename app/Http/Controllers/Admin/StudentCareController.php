@@ -68,22 +68,21 @@ class StudentCareController extends Controller
             'action' => 'required',
         ]);
 
+        $student = Student::find($request->student_id);
+        $studentExit = StudentExit::find($request->exit_id);
+
         if($validator->fails()) {
             alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
-            return redirect()->back();
+            return view('admin.verifyStudentExit', [
+                'studentExit' => $studentExit,
+                'student' => $student
+            ]);
         }
 
-        if (!$studentExit = StudentExit::find($request->exit_id)) {
-            alert()->error('Oops!', 'Student exit applicattion record not found')->persistent('Close');
-            return redirect()->back();
-        }
         $globalData = $request->input('global_data');
         $academicSession = $globalData->sessionSetting['academic_session'];
 
         $studentExit->status = $request->action;
-
-        $student = Student::find($studentExit->student_id);
-
 
         if($studentExit->save()){
             
@@ -215,7 +214,7 @@ class StudentCareController extends Controller
             alert()->error('Oops!', 'Student exit applicattion record not found')->persistent('Close');
             return redirect()->back();
         }
-        
+
         $studentExit->return_at = Carbon::now();
 
         $student = Student::find($studentExit->student_id);

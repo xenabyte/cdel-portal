@@ -100,6 +100,7 @@
                         @csrf
                         <input name="exit_id" type="hidden" value="{{$exitApplication->id}}">
                         <input name="action" type="hidden" value="declined">
+                        <input name="student_id" type="hidden" value="{{$exitApplication->student->id}}">
                         <hr>
                         <button type="submit" id="submit-button" class="btn btn-danger w-100">Yes, Decline</button>
                     </form>
@@ -127,6 +128,7 @@
                         @csrf
                         <input name="exit_id" type="hidden" value="{{$exitApplication->id}}">
                         <input name="action" type="hidden" value="approved">
+                        <input name="student_id" type="hidden" value="{{$exitApplication->student->id}}">
                         <hr>
                         <button type="submit" id="submit-button" class="btn btn-danger w-100">Yes, Approve</button>
                     </form>
