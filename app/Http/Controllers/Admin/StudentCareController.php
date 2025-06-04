@@ -82,9 +82,11 @@ class StudentCareController extends Controller
 
         $studentExit->status = $request->action;
 
-        if($studentExit->save()){
-            $student = Student::find($studentExit->student_id);
+        $student = Student::find($studentExit->student_id);
 
+
+        if($studentExit->save()){
+            
             $pdf = new Pdf();
             $exitApplication = $pdf->generateExitApplication($academicSession, $student->id, $studentExit->id);
             $studentExit->file = $exitApplication;
@@ -105,13 +107,18 @@ class StudentCareController extends Controller
                 'status' => 0
             ]);
 
-
             alert()->success('Success', 'Application '.$request->action)->persistent('Close');
-            return redirect()->back();
+            return view('admin.verifyStudentExit', [
+                'studentExit' => $studentExit,
+                'student' => $student
+            ]);
         }
 
         alert()->error('Oops!', 'An Error Occurred')->persistent('Close');
-        return redirect()->back();
+        return view('admin.verifyStudentExit', [
+            'studentExit' => $studentExit,
+            'student' => $student
+        ]);
     }
 
     public function bulkManageExitApplications(Request $request){
@@ -208,15 +215,12 @@ class StudentCareController extends Controller
             alert()->error('Oops!', 'Student exit applicattion record not found')->persistent('Close');
             return redirect()->back();
         }
-
-        $globalData = $request->input('global_data');
-        $academicSession = $globalData->sessionSetting['academic_session'];
-
+        
         $studentExit->return_at = Carbon::now();
 
-        if($studentExit->save()){
-            $student = Student::find($studentExit->student_id);
+        $student = Student::find($studentExit->student_id);
 
+        if($studentExit->save()){
             $senderName = env('SCHOOL_NAME');
             $receiverName = $student->applicant->lastname .' ' . $student->applicant->othernames;
             $message = 'You are welcome back to school.';
@@ -232,8 +236,17 @@ class StudentCareController extends Controller
             ]);
 
             alert()->success('Success', '')->persistent('Close');
-            return redirect()->back();
+            return view('admin.verifyStudentExit', [
+                'studentExit' => $studentExit,
+                'student' => $student
+            ]);
         }
+
+        alert()->error('Oops!', 'An Error Occurred')->persistent('Close');
+        return view('admin.verifyStudentExit', [
+            'studentExit' => $studentExit,
+            'student' => $student
+        ]);
     }
 
     public function leftSchool(Request $request){
@@ -251,13 +264,11 @@ class StudentCareController extends Controller
             return redirect()->back();
         }
 
-        $globalData = $request->input('global_data');
-        $academicSession = $globalData->sessionSetting['academic_session'];
-
         $studentExit->exited_at = Carbon::now();
 
+        $student = Student::find($studentExit->student_id);
+
         if($studentExit->save()){
-            $student = Student::find($studentExit->student_id);
 
             $senderName = env('SCHOOL_NAME');
             $receiverName = $student->applicant->lastname .' ' . $student->applicant->othernames;
@@ -274,7 +285,16 @@ class StudentCareController extends Controller
             ]);
 
             alert()->success('Success', '')->persistent('Close');
-            return redirect()->back();
+            return view('admin.verifyStudentExit', [
+                'studentExit' => $studentExit,
+                'student' => $student
+            ]);
         }
+
+        alert()->error('Oops!', 'An Error Occurred')->persistent('Close');
+        return view('admin.verifyStudentExit', [
+            'studentExit' => $studentExit,
+            'student' => $student
+        ]);
     }
 }
