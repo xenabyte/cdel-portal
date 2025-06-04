@@ -66,6 +66,7 @@ Route::get('/updateStudentGrade', [App\Http\Controllers\CronController::class, '
 Route::get('/checkSummerCourseRegistration/{transactionId}', [App\Http\Controllers\CronController::class, 'checkSummerCourseRegistration']);
 Route::get('/checkApplicationRegistration/{transactionId}', [App\Http\Controllers\CronController::class, 'checkApplicationRegistration']);
 
+Route::get('/exit/{id}', [App\Http\Controllers\HomeController::class, 'exit']);
 
 Route::post('/addStaffRecord', [App\Http\Controllers\HomeController::class, 'addStaffRecord'])->name('addStaffRecord');
 Route::get('/staffRecord', [App\Http\Controllers\HomeController::class, 'staffRecord'])->name('staffRecord');

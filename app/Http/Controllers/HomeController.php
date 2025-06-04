@@ -388,6 +388,19 @@ class HomeController extends Controller
         }
     }
 
+    public function exit($id){
+
+        if (!$studentExit = StudentExit::find($id)) {
+            alert()->error('Oops!', 'Student exit applicattion record not found')->persistent('Close');
+            return view('welcome');
+        }
+        
+        return view('exit', [
+            'studentExit' => $studentExit,
+            'student' => $studentExit->student
+        ]);
+    }
+
     public function getDepartments($id){
         $departments = Department::where('faculty_id', $id)->get();
 
