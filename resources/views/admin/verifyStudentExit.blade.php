@@ -134,12 +134,14 @@
             <div class="card-header border-0 align-items-center d-flex">
                 <h4 class="card-title mb-0 flex-grow-1">Application Information</h4>
                 <div class="text-end mb-5">
-                    @if(empty($studentExit->status))
+                    <a href="{{ asset($studentExit->file) }}" class="btn btn-outline-primary" target="_blank">View Document</a>
+                    @if(strtolower($studentExit->status) == 'pending')
                     <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#decline{{$studentExit->id}}" class="btn btn-danger"><i class="ri-close-circle-fill"></i> Decline</a>
                     <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#approve{{$studentExit->id}}" class="btn btn-success"><i class="ri-checkbox-circle-fill"></i> Approve</a>
-                    @endif
+                    @else
                     <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#exit{{$studentExit->id}}" class="btn btn-info"><i class="mdi mdi-logout"></i> Left Campus</a>
                     <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#entry{{$studentExit->id}}" class="btn btn-primary"><i class="mdi mdi-login"></i> Enter Campus</a>
+                    @endif
                 </div>
             </div><!-- end card header -->
 
@@ -155,13 +157,56 @@
                                 @if(!empty($studentExit->exit_date))<div><strong>Outing Date:</strong> {{ $studentExit->exit_date }}</div>@endif
                                 @if(!empty($studentExit->return_date))<div><strong>Returning Date:</strong> {{ $studentExit->return_date }}</div>@endif
                                 
-                                
                             </td>
                             <td style="width: 30%; border: none;">
                                 @if($studentExit->status == 'approved')
                                 <img src="{{asset('approved.png')}}" width="40%" style="float: right; border: 1px solid black;">
                                 @elseif ($studentExit->status == 'declined')
                                 <img src="{{asset('denied.png')}}" width="40%" style="float: right; border: 1px solid black;">
+                                @endif
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <table class="pb-2 mb-3 pt-2 border-top border-top-dashed" style="width: 100%; margin-top: 30px;">
+                    <tbody class="mt-2">
+                        <tr>
+                            <!-- HOD Approval -->
+                            <td style="width: 50%; vertical-align: top; text-align: left; border: none; padding-right: 10px;">
+                                <h5 style="margin-bottom: 10px;">HOD Approval</h5>
+                                <div>
+                                    <strong>Name:</strong>
+                                    @if($studentExit->hod)
+                                        {{ $studentExit->hod->title }} {{ $studentExit->hod->lastname }}, {{ $studentExit->hod->othernames }}
+                                    @else
+                                        <em>Not Assigned</em>
+                                    @endif
+                                </div>
+                                <div><strong>Approval Status:</strong> {{ $studentExit->is_hod_approved ? 'Approved' : 'Pending Approval' }}</div>
+                                @if($studentExit->is_hod_approved_date)
+                                    <div><strong>Approval Date:</strong> {{ date('F j, Y \a\t g:i A', strtotime($studentExit->is_hod_approved_date)) }}</div>
+                                @endif
+                            </td>
+
+                            <!-- Final Approval -->
+                            <td style="width: 50%; vertical-align: top; text-align: left; border: none; padding-left: 10px;">
+                                @if($studentExit->managedBy)
+                                    <h5 style="margin-bottom: 10px;">Final Approval by Staff</h5>
+                                    <div>
+                                        <strong>Name:</strong>
+                                        @if($studentExit->managedBy)
+                                            {{ $studentExit->managedBy->title }} {{ $studentExit->managedBy->lastname }}, {{ $studentExit->managedBy->othernames }}
+                                        @else
+                                            <em>Pending</em>
+                                        @endif
+                                    </div>
+                                    <div>
+                                        <strong>Approval Time:</strong>
+                                        @if($studentExit->managedBy) {{ $studentExit->updated_at ? date('F j, Y \a\t g:i A', strtotime($studentExit->updated_at)) : 'Pending' }} @endif
+                                    </div>
+                                @else
+                                    <h5 style="margin-bottom: 10px;">Pending Student Care Approval</h5>
                                 @endif
                             </td>
                         </tr>
@@ -187,7 +232,7 @@
                     <lord-icon src="https://cdn.lordicon.com/gsqxdxog.json" trigger="loop" colors="primary:#f7b84b,secondary:#f06548" style="width:100px;height:100px"></lord-icon>
                     </lord-icon>
                     <h4 class="mb-3 mt-4">Are you sure you want to decline <br/> {{ $student->applicant->lastname .' ' . $student->applicant->othernames}} exit application?</h4>
-                    <form action="{{ url('/admin/manageExitApplication') }}" method="POST">
+                    <form action="{{ url('/admin/managestudentExit') }}" method="POST">
                         @csrf
                         <input name="exit_id" type="hidden" value="{{$studentExit->id}}">
                         <input name="action" type="hidden" value="declined">
@@ -214,7 +259,7 @@
                     <lord-icon src="https://cdn.lordicon.com/gsqxdxog.json" trigger="hover" style="width:150px;height:150px">
                     </lord-icon>
                     <h4 class="mb-3 mt-4">Are you sure you want to approve <br/> {{ $student->applicant->lastname .' ' . $student->applicant->othernames}} exit application?</h4>
-                    <form action="{{ url('/admin/manageExitApplication') }}" method="POST">
+                    <form action="{{ url('/admin/managestudentExit') }}" method="POST">
                         @csrf
                         <input name="exit_id" type="hidden" value="{{$studentExit->id}}">
                         <input name="action" type="hidden" value="approved">

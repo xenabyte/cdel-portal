@@ -129,14 +129,19 @@
     </div>
     <!--end col-->
 
-    <div class="col-xxl-8">
-       
+    <div class="col-xxl-8">  
         <div class="card">
             <div class="card-header border-0 align-items-center d-flex">
                 <h4 class="card-title mb-0 flex-grow-1">Application Information</h4>
                 <div class="text-end mb-5">
+                    <a href="{{ asset($studentExit->file) }}" class="btn btn-outline-primary" target="_blank">View Document</a>
+                    @if(strtolower($studentExit->status) == 'pending')
+                    <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#decline{{$studentExit->id}}" class="btn btn-danger"><i class="ri-close-circle-fill"></i> Decline</a>
+                    <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#approve{{$studentExit->id}}" class="btn btn-success"><i class="ri-checkbox-circle-fill"></i> Approve</a>
+                    @else
                     <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#exit{{$studentExit->id}}" class="btn btn-info"><i class="mdi mdi-logout"></i> Left Campus</a>
                     <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#entry{{$studentExit->id}}" class="btn btn-primary"><i class="mdi mdi-login"></i> Enter Campus</a>
+                    @endif
                 </div>
             </div><!-- end card header -->
 
@@ -164,9 +169,51 @@
                         </tr>
                     </tbody>
                 </table>
+                <table class="pb-2 mb-3 pt-2 border-top border-top-dashed" style="width: 100%; margin-top: 30px;">
+                    <tbody class="mt-2">
+                        <tr>
+                            <!-- HOD Approval -->
+                            <td style="width: 50%; vertical-align: top; text-align: left; border: none; padding-right: 10px;">
+                                <h5 style="margin-bottom: 10px;">HOD Approval</h5>
+                                <div>
+                                    <strong>Name:</strong>
+                                    @if($studentExit->hod)
+                                        {{ $studentExit->hod->title }} {{ $studentExit->hod->lastname }}, {{ $studentExit->hod->othernames }}
+                                    @else
+                                        <em>Not Assigned</em>
+                                    @endif
+                                </div>
+                                <div><strong>Approval Status:</strong> {{ $studentExit->is_hod_approved ? 'Approved' : 'Pending Approval' }}</div>
+                                @if($studentExit->is_hod_approved_date)
+                                    <div><strong>Approval Date:</strong> {{ date('F j, Y \a\t g:i A', strtotime($studentExit->is_hod_approved_date)) }}</div>
+                                @endif
+                            </td>
+
+                            <!-- Final Approval -->
+                            <td style="width: 50%; vertical-align: top; text-align: left; border: none; padding-left: 10px;">
+                                @if($studentExit->managedBy)
+                                    <h5 style="margin-bottom: 10px;">Final Approval by Staff</h5>
+                                    <div>
+                                        <strong>Name:</strong>
+                                        @if($studentExit->managedBy)
+                                            {{ $studentExit->managedBy->title }} {{ $studentExit->managedBy->lastname }}, {{ $studentExit->managedBy->othernames }}
+                                        @else
+                                            <em>Pending</em>
+                                        @endif
+                                    </div>
+                                    <div>
+                                        <strong>Approval Time:</strong>
+                                        @if($studentExit->managedBy) {{ $studentExit->updated_at ? date('F j, Y \a\t g:i A', strtotime($studentExit->updated_at)) : 'Pending' }} @endif
+                                    </div>
+                                @else
+                                    <h5 style="margin-bottom: 10px;">Pending Student Care Approval</h5>
+                                @endif
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
             </div><!-- end card body -->
         </div><!-- end card -->
-        
     </div>
     <!--end col-->
     

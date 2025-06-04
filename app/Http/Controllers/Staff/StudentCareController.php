@@ -37,9 +37,9 @@ class StudentCareController extends Controller
 
         $isHod = Department::where('hod_id', $staff->id)->exists();
 
-        $exitApplications = StudentExit::where('status', 'pending')->orderBy('id', 'DESC')->limit(300)->get(); 
+        $exitApplications = StudentExit::where('status', 'pending')->orderBy('id', 'DESC')->get(); 
         if($isHod){
-            $exitApplications = StudentExit::where('status', 'pending')->where('hod_id', $staffId)->orderBy('id', 'DESC')->limit(300)->get();
+            $exitApplications = StudentExit::where('status', 'pending')->where('hod_id', $staffId)->orderBy('id', 'DESC')->get();
         }
 
 
@@ -63,7 +63,12 @@ class StudentCareController extends Controller
             return redirect()->back();
         }
 
-        return redirect(asset($studentExit->file));
+        $student = Student::find($studentExit->student_id);
+
+        return view('staff.verifyStudentExit', [
+            'studentExit' => $studentExit,
+            'student' => $student
+        ]);
     }
 
     public function manageExitApplication(Request $request)

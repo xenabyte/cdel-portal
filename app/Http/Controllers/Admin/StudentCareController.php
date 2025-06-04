@@ -31,7 +31,7 @@ use Carbon\Carbon;
 class StudentCareController extends Controller
 {
     public function studentExits(){
-        $exitApplications = StudentExit::where('status', 'pending')->orderBy('id', 'DESC')->limit(300)->get(); 
+        $exitApplications = StudentExit::where('status', 'pending')->orderBy('id', 'DESC')->get(); 
         return view('admin.studentExits', [
             'exitApplications' => $exitApplications
         ]);
@@ -52,7 +52,14 @@ class StudentCareController extends Controller
             return redirect()->back();
         }
 
-        return redirect(asset($studentExit->file));
+        // return redirect(asset($studentExit->file));
+
+        $student = Student::find($studentExit->student_id);
+
+        return view('admin.verifyStudentExit', [
+            'studentExit' => $studentExit,
+            'student' => $student
+        ]);
     }
 
     public function manageExitApplication(Request $request){
@@ -180,7 +187,6 @@ class StudentCareController extends Controller
     public function verifyStudentExits(Request $request){
 
         return view('admin.verifyStudentExit');
-
     }
 
     public function verifyStudentExit(Request $request){

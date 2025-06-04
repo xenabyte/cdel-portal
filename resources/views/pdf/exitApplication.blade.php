@@ -61,17 +61,10 @@ $qrcode = 'https://quickchart.io/chart?chs=300x300&cht=qr&chl='.env('APP_URL').'
         </tr>
     </table>
 
-    <!-- Title -->
-    <div class="text-center mt-4">
-        <h1 class="mb-0">Exit Application</h1>
-        <small class="text-muted">Student Exit Permit Record</small>
-        <hr>
-    </div>
-
-    <div class="row" style="margin-top: 20%;">
+    <div class="row" style="margin-top: 10%;">
         <div class="text-center">
             <h1>Exit Application</h1>
-            <small class="text-muted">Student Exit Permit Record</small>
+            <p class="text-muted">Student Exit Permit Record</p>
             <br>
         </div>
     </div>
@@ -101,27 +94,35 @@ $qrcode = 'https://quickchart.io/chart?chs=300x300&cht=qr&chl='.env('APP_URL').'
     <div class="section-title text-center">Exit Information</div>
     <div class="row">
         <div class="col-md-9">
-            <p><strong>Application Number:</strong> #{{ sprintf("%06d", $exitApplication->id) }}</p>
-            <p><strong>Destination:</strong> {{ $exitApplication->destination }}</p>
-            <p><strong>Purpose:</strong> {{ $exitApplication->purpose }}</p>
-            <p><strong>Mode of Transportation:</strong> {{ $exitApplication->transport_mode }}</p>
-            @if($exitApplication->exit_date)
-                <p><strong>Outing Date:</strong> {{ date('F j, Y', strtotime($exitApplication->exit_date)) }}</p>
-            @endif
-            @if($exitApplication->return_date)
-                <p><strong>Returning Date:</strong> {{ date('F j, Y \a\t g:i A', strtotime($exitApplication->return_date)) }}</p>
-            @endif
-
-            <hr>
-            <p><strong>Student Email:</strong> {{ $info->email }}</p>
-            <p><strong>Student Phone Number:</strong> {{ $info->applicant->phone_number }}</p>
-            @if(!empty($info->applicant->guardian))
-                <hr>
-                <p><strong>Guardian Name:</strong> {{ $info->applicant->guardian->name }}</p>
-                <p><strong>Guardian Phone:</strong> {{ $info->applicant->guardian->phone_number }}</p>
-                <p><strong>Guardian Email:</strong> {{ $info->applicant->guardian->email }}</p>
-                <p><strong>Guardian Address:</strong> {!! $info->applicant->guardian->address !!}</p>
-            @endif
+            <table style="width: 100%; margin-top: 10px;">
+                <tbody>
+                    <tr>
+                        <td style="width: 50%; vertical-align: top; text-align: left; border: none; padding-right: 10px;">
+                            <strong>Application Number:</strong> #{{ sprintf("%06d", $exitApplication->id) }}<br>
+                            <strong>Destination:</strong> {{ $exitApplication->destination }}<br>
+                            <strong>Purpose:</strong> {{ $exitApplication->purpose }}<br>
+                            <strong>Mode of Transportation:</strong> {{ $exitApplication->transport_mode }}<br>
+                            @if($exitApplication->exit_date)
+                                <strong>Outing Date:</strong> {{ date('F j, Y', strtotime($exitApplication->exit_date)) }}<br>
+                            @endif
+                            @if($exitApplication->return_date)
+                                <strong>Returning Date:</strong> {{ date('F j, Y \a\t g:i A', strtotime($exitApplication->return_date)) }}<br>
+                            @endif
+                        </td>
+                        <td style="width: 50%; vertical-align: top; text-align: left; border: none; padding-left: 10px;">
+                            <strong>Student Email:</strong> {{ $info->email }}<br>
+                            <strong>Student Phone Number:</strong> {{ $info->applicant->phone_number }}<br>
+                            @if(!empty($info->applicant->guardian))
+                                <br>
+                                <strong>Guardian Name:</strong> {{ $info->applicant->guardian->name }}<br>
+                                <strong>Guardian Phone:</strong> {{ $info->applicant->guardian->phone_number }}<br>
+                                <strong>Guardian Email:</strong> {{ $info->applicant->guardian->email }}<br>
+                                <strong>Guardian Address:</strong> {!! $info->applicant->guardian->address !!}<br>
+                            @endif
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
         <div class="col-md-3 text-end">
             @if($exitApplication->status == 'approved')
@@ -141,12 +142,12 @@ $qrcode = 'https://quickchart.io/chart?chs=300x300&cht=qr&chl='.env('APP_URL').'
                     <div>
                         <strong>Name:</strong>
                         @if($exitApplication->hod)
-                            {{ $exitApplication->hod->title }} {{ $exitApplication->hod->lastname }}, {{ $exitApplication->hod->firstname }}
+                            {{ $exitApplication->hod->title }} {{ $exitApplication->hod->lastname }}, {{ $exitApplication->hod->othernames }}
                         @else
                             <em>Not Assigned</em>
                         @endif
                     </div>
-                    <div><strong>Approved?</strong> {{ $exitApplication->is_hod_approved ? 'Yes' : 'No' }}</div>
+                    <div><strong>Approval Status:</strong> {{ $exitApplication->is_hod_approved ? 'Approved' : 'Pending Approval' }}</div>
                     @if($exitApplication->is_hod_approved_date)
                         <div><strong>Approval Date:</strong> {{ date('F j, Y \a\t g:i A', strtotime($exitApplication->is_hod_approved_date)) }}</div>
                     @endif
@@ -154,19 +155,23 @@ $qrcode = 'https://quickchart.io/chart?chs=300x300&cht=qr&chl='.env('APP_URL').'
 
                 <!-- Final Approval -->
                 <td style="width: 50%; vertical-align: top; text-align: left; border: none; padding-left: 10px;">
-                    <h5 style="margin-bottom: 10px;">Final Approval by Staff</h5>
-                    <div>
-                        <strong>Name:</strong>
-                        @if($exitApplication->managedBy)
-                            {{ $exitApplication->managedBy->title }} {{ $exitApplication->managedBy->lastname }}, {{ $exitApplication->managedBy->firstname }}
-                        @else
-                            <em>Pending</em>
-                        @endif
-                    </div>
-                    <div>
-                        <strong>Approval Time:</strong>
-                        {{ $exitApplication->updated_at ? date('F j, Y \a\t g:i A', strtotime($exitApplication->updated_at)) : 'Pending' }}
-                    </div>
+                    @if($exitApplication->managedBy)
+                        <h5 style="margin-bottom: 10px;">Final Approval by Staff</h5>
+                        <div>
+                            <strong>Name:</strong>
+                            @if($exitApplication->managedBy)
+                                {{ $exitApplication->managedBy->title }} {{ $exitApplication->managedBy->lastname }}, {{ $exitApplication->managedBy->othernames }}
+                            @else
+                                <em>Pending</em>
+                            @endif
+                        </div>
+                        <div>
+                            <strong>Approval Time:</strong>
+                            @if($exitApplication->managedBy) {{ $exitApplication->updated_at ? date('F j, Y \a\t g:i A', strtotime($exitApplication->updated_at)) : 'Pending' }} @endif
+                        </div>
+                    @else
+                        <h5 style="margin-bottom: 10px;">Pending Student Care Approval</h5>
+                    @endif
                 </td>
             </tr>
         </tbody>

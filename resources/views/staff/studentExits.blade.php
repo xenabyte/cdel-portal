@@ -57,7 +57,7 @@
                                     <th scope="col">Outing Date</th>
                                     <th scope="col">Returning Date</th>
                                     <th scope="col">Application Date
-                                    <th scope="col">File</th>
+                                    {{-- <th scope="col">File</th> --}}
                                     <th scope="col">Status</th>
                                 </tr>
                             </thead>
@@ -72,7 +72,7 @@
                                         <td>{{ empty($exitApplication->exit_date) ? null : date('F j, Y', strtotime($exitApplication->exit_date)) }}</td>
                                         <td>{{ empty($exitApplication->return_date) ? null : date('F j, Y \a\t g:i A', strtotime($exitApplication->return_date)) }}</td>
                                         <td>{{ empty($exitApplication->created_at) ? null : date('F j, Y \a\t g:i A', strtotime($exitApplication->created_at)) }}</td>
-                                        <td><a href="{{ asset($exitApplication->file) }}" class="btn btn-outline-primary" target="_blank">View Document</a></td>
+                                        {{-- <td><a href="{{ asset($exitApplication->file) }}" class="btn btn-outline-primary" target="_blank">View Document</a></td> --}}
                                         <td>{{ ucwords($exitApplication->status) }}</td>
                                     </tr>
                                 @endforeach
