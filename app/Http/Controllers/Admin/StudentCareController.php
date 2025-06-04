@@ -68,8 +68,8 @@ class StudentCareController extends Controller
             'action' => 'required',
         ]);
 
-        $student = Student::find($request->student_id);
-        $studentExit = StudentExit::find($request->exit_id);
+       $studentExit = StudentExit::find($request->exit_id);
+        $student = Student::find($studentExit->student_id);
 
         if($validator->fails()) {
             alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
