@@ -703,13 +703,10 @@ class ProgrammeController extends Controller
     }
 
     public function levelStudents(Request $request, $programmeCategory, $id){
-        $staff = Auth::guard('staff')->user();
-        $staffId = $staff->id;
-        $globalData = $request->input('global_data');
-        $academicSession = $globalData->sessionSetting['academic_session'];
 
         $programmeCategory = ProgrammeCategory::where('category', $programmeCategory)->first();
         $programmeCategoryId = $programmeCategory->id;
+        $academicSession = $programmeCategory->academicSessionSetting->academic_session;
 
         $adviserProgramme = LevelAdviser::with('programme', 'level')
             ->where('id', $id)

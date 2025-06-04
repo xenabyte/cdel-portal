@@ -47,9 +47,7 @@ class AcademicController extends Controller
         $student = Auth::guard('student')->user();
         $studentId = $student->id;
         $levelId = $student->level_id;
-        $globalData = $request->input('global_data');
-        $admissionSession = $globalData->sessionSetting['admission_session'];
-        $academicSession = $globalData->sessionSetting['academic_session'];
+        $academicSession = $student->programmeCategory->academicSessionSetting->academic_session;
 
         $paymentCheck = $this->checkSchoolFees($student, $academicSession, $levelId);
         // if(!$paymentCheck->passTuitionPayment){
@@ -81,9 +79,8 @@ class AcademicController extends Controller
         $student = Auth::guard('student')->user();
         $studentId = $student->id;
         $levelId = $student->level_id;
-        $globalData = $request->input('global_data');
-        $admissionSession = $globalData->sessionSetting['admission_session'];
-        $academicSession = $globalData->sessionSetting['academic_session'];
+        $academicSession = $student->programmeCategory->academicSessionSetting->academic_session;
+
         $isUTME = $student->applicant->application_type == 'UTME'? true :false;
         $minLevel = $isUTME ? 1 : 2;
 
@@ -227,9 +224,8 @@ class AcademicController extends Controller
         $student = Auth::guard('student')->user();
         $studentId = $student->id;
         $levelId = $student->level_id;
-        $globalData = $request->input('global_data');
-        $admissionSession = $globalData->sessionSetting['admission_session'];
-        $academicSession = $globalData->sessionSetting['academic_session'];
+        $academicSession = $student->programmeCategory->academicSessionSetting->academic_session;
+
 
         $checkCourseRegistration = CourseRegistration::where([
             'student_id' => $studentId,
@@ -414,8 +410,8 @@ class AcademicController extends Controller
         $studentId = $student->id;
         $levelId = $student->level_id;
         $globalData = $request->input('global_data');
-        $admissionSession = $globalData->sessionSetting['admission_session'];
-        $academicSession = $globalData->sessionSetting['academic_session'];
+        $academicSession = $student->programmeCategory->academicSessionSetting->academic_session;
+
 
         $paymentCheck = $this->checkSchoolFees($student, $academicSession, $levelId);
         // if(!$paymentCheck->passTuitionPayment){
@@ -495,8 +491,8 @@ class AcademicController extends Controller
         $studentId = $student->id;
         $levelId = $student->level_id;
         $globalData = $request->input('global_data');
-        $admissionSession = $globalData->sessionSetting['admission_session'];
-        $academicSession = $globalData->sessionSetting['academic_session'];
+
+        $academicSession = $student->programmeCategory->academicSessionSetting->academic_session;
 
         $studentRegistrations = StudentCourseRegistration::where([
             'student_id' => $studentId,
@@ -527,8 +523,7 @@ class AcademicController extends Controller
         $studentId = $student->id;
         $levelId = $student->level_id;
         $globalData = $request->input('global_data');
-        $admissionSession = $globalData->sessionSetting['admission_session'];
-        $academicSession = $globalData->sessionSetting['academic_session'];
+        $academicSession = $student->programmeCategory->academicSessionSetting->academic_session;
         $addOrRemoveTxPay = Payment::with('structures')->where('type', Payment::PAYMENT_MODIFY_COURSE_REG)->where('academic_session', $academicSession)->first();
         $addOrRemoveTxId = $addOrRemoveTxPay->id;
         $addOrRemoveTxs = Transaction::where('student_id', $studentId)->where('payment_id', $addOrRemoveTxId)->where('status', 1)->orderBy('id', 'DESC')->get();
@@ -557,8 +552,7 @@ class AcademicController extends Controller
         $student = Auth::guard('student')->user();
         $studentId = $student->id;
         $globalData = $request->input('global_data');
-        $admissionSession = $globalData->sessionSetting['admission_session'];
-        $academicSession = $globalData->sessionSetting['academic_session'];
+        $academicSession = $student->programmeCategory->academicSessionSetting->academic_session;
         $semester  = $globalData->examSetting['semester'];
         $levelId = $student->level_id;
 
@@ -612,7 +606,7 @@ class AcademicController extends Controller
         $student = Auth::guard('student')->user();
         $studentId = $student->id;
         $globalData = $request->input('global_data');
-        $academicSession = $globalData->sessionSetting['academic_session'];
+        $academicSession = $student->programmeCategory->academicSessionSetting->academic_session;
         $semester  = $globalData->examSetting['semester'];
 
         if(!empty($request->exam_card_id)){
@@ -679,8 +673,7 @@ class AcademicController extends Controller
         $student = Auth::guard('student')->user();
         $studentId = $student->id;
         $globalData = $request->input('global_data');
-        $admissionSession = $globalData->sessionSetting['admission_session'];
-        $academicSession = $globalData->sessionSetting['academic_session'];
+        $academicSession = $student->programmeCategory->academicSessionSetting->academic_session;
         $semester  = $globalData->examSetting['semester'];
 
         //create record for file
@@ -698,8 +691,7 @@ class AcademicController extends Controller
         $studentId = $student->id;
         $levelId = $student->level_id;
         $globalData = $request->input('global_data');
-        $admissionSession = $globalData->sessionSetting['admission_session'];
-        $academicSession = $globalData->sessionSetting['academic_session'];
+        $academicSession = $student->programmeCategory->academicSessionSetting->academic_session;
 
         $studentExamCards = StudentExamCard::where([
             'student_id' => $studentId
@@ -729,8 +721,7 @@ class AcademicController extends Controller
         $studentId = $student->id;
         $levelId = $student->level_id;
         $globalData = $request->input('global_data');
-        $admissionSession = $globalData->sessionSetting['admission_session'];
-        $academicSession = $globalData->sessionSetting['academic_session'];
+        $academicSession = $student->programmeCategory->academicSessionSetting->academic_session;
 
         $sessions = Session::orderBy('id', 'DESC')->get();
         $academicLevels = AcademicLevel::get();
@@ -824,9 +815,7 @@ class AcademicController extends Controller
         $student = Auth::guard('student')->user();
         $studentId = $student->id;
         $levelId = $student->level_id;
-        $globalData = $request->input('global_data');
-        $admissionSession = $globalData->sessionSetting['admission_session'];
-        $academicSession = $globalData->sessionSetting['academic_session'];
+        $academicSession = $student->programmeCategory->academicSessionSetting->academic_session;
 
         $paymentCheck = $this->checkSchoolFees($student, $academicSession, $levelId);
 
@@ -842,8 +831,7 @@ class AcademicController extends Controller
         $student = Auth::guard('student')->user();
         $studentId = $student->id;
         $levelId = $student->level_id;
-        $globalData = $request->input('global_data');
-        $academicSession = $globalData->sessionSetting['academic_session'];
+        $academicSession = $student->programmeCategory->academicSessionSetting->academic_session;
 
         $paymentCheck = $this->checkSchoolFees($student, $academicSession, $levelId);
         // if(!$paymentCheck->passTuitionPayment){
@@ -899,9 +887,7 @@ class AcademicController extends Controller
         }
 
         $student = Auth::guard('student')->user();
-        $globalData = $request->input('global_data');
-
-        $academicSession = $globalData->sessionSetting['academic_session'];
+        $academicSession = $student->programmeCategory->academicSessionSetting->academic_session;
 
         $studentProgrammeId = $student->programme_id;
         $studentHODId = $student->department->hod_id;
@@ -963,8 +949,7 @@ class AcademicController extends Controller
         $student = Auth::guard('student')->user();
         $studentId = $student->id;
         $levelId = $student->level_id;
-        $globalData = $request->input('global_data');
-        $academicSession = $globalData->sessionSetting['academic_session'];
+        $academicSession = $student->programmeCategory->academicSessionSetting->academic_session;
 
         $paymentCheck = $this->checkSchoolFees($student, $academicSession, $levelId);
 
@@ -999,82 +984,81 @@ class AcademicController extends Controller
         ]);
     }
 
-    public function registerSummerCourses(Request $request){
-        $selectedCourses = $request->input('selected_courses', []);
-        $failedSelectedCourses = $request->input('failed_selected_courses', []);
+    //obsolete code
+    // public function registerSummerCourses(Request $request){
+    //     $selectedCourses = $request->input('selected_courses', []);
+    //     $failedSelectedCourses = $request->input('failed_selected_courses', []);
         
 
-        if(empty($selectedCourses)){
-            alert()->info('Kindly select your courses', '')->persistent('Close');
-            return redirect()->back();
-        }
+    //     if(empty($selectedCourses)){
+    //         alert()->info('Kindly select your courses', '')->persistent('Close');
+    //         return redirect()->back();
+    //     }
 
-        $student = Auth::guard('student')->user();
-        $studentId = $student->id;
-        $levelId = $student->level_id;
-        $globalData = $request->input('global_data');
-        $academicSession = $globalData->sessionSetting['academic_session'];
+    //     $student = Auth::guard('student')->user();
+    //     $studentId = $student->id;
+    //     $academicSession = $student->programmeCategory->academicSessionSetting->academic_session;
         
-        try {
-            foreach ($failedSelectedCourses as $failedCourseId) { 
-                $courseReg = CourseRegistration::with('course')->findOrFail($failedCourseId);
-                $course = $courseReg->course;
+    //     try {
+    //         foreach ($failedSelectedCourses as $failedCourseId) { 
+    //             $courseReg = CourseRegistration::with('course')->findOrFail($failedCourseId);
+    //             $course = $courseReg->course;
 
-                // Check if the student is already registered for this course
-                $existingRegistration = CourseRegistration::where([
-                    'student_id' => $studentId,
-                    'course_id' => $failedCourseId,
-                    'academic_session' => $academicSession,
-                    'level_id' => $student->level_id
-                ])->first();
+    //             // Check if the student is already registered for this course
+    //             $existingRegistration = CourseRegistration::where([
+    //                 'student_id' => $studentId,
+    //                 'course_id' => $failedCourseId,
+    //                 'academic_session' => $academicSession,
+    //                 'level_id' => $student->level_id
+    //             ])->first();
 
-                if (!$existingRegistration) {
-                    $checkCarryOver = CourseRegistration::where([
-                        'student_id' => $student->id,
-                        'course_id' => $course->id,
-                        'grade' => 'F',
-                    ])->first();
+    //             if (!$existingRegistration) {
+    //                 $checkCarryOver = CourseRegistration::where([
+    //                     'student_id' => $student->id,
+    //                     'course_id' => $course->id,
+    //                     'grade' => 'F',
+    //                 ])->first();
 
-                    if(!empty($checkCarryOver)){
-                        $checkCarryOver->re_reg = true;
-                        $checkCarryOver->save();
-                    }
+    //                 if(!empty($checkCarryOver)){
+    //                     $checkCarryOver->re_reg = true;
+    //                     $checkCarryOver->save();
+    //                 }
                     
-                    $courseReg = CourseRegistration::create([
-                        'student_id' => $studentId,
-                        'course_id' => $course->id,
-                        'programme_category_id' => $student->programme_category_id,
-                        'course_credit_unit' => $coursePerProgrammeAndLevel->credit_unit,
-                        'course_code' => $course->code,
-                        'semester' => $coursePerProgrammeAndLevel->semester,
-                        'academic_session' => $academicSession,
-                        'level_id' => $student->level_id,
-                        'programme_course_id' => $failedCourseId,
-                        'course_status' => $coursePerProgrammeAndLevel->status
-                    ]);
-                }
-            }
+    //                 $courseReg = CourseRegistration::create([
+    //                     'student_id' => $studentId,
+    //                     'course_id' => $course->id,
+    //                     'programme_category_id' => $student->programme_category_id,
+    //                     'course_credit_unit' => $existingRegistration->course_credit_unit,
+    //                     'course_code' => $course->code,
+    //                     'semester' => $existingRegistration->semester,
+    //                     'academic_session' => $academicSession,
+    //                     'level_id' => $student->level_id,
+    //                     'programme_course_id' => $failedCourseId,
+    //                     'course_status' => $existingRegistration->course_status
+    //                 ]);
+    //             }
+    //         }
 
-            $pdf = new Pdf();
-            $courseReg = $pdf->generateCourseRegistration($studentId, $academicSession);
+    //         $pdf = new Pdf();
+    //         $courseReg = $pdf->generateCourseRegistration($studentId, $academicSession);
 
-            $studentRegistration = StudentCourseRegistration::create([
-                'student_id' => $studentId,
-                'academic_session' => $academicSession,
-                'file' => $courseReg,
-                'level_id' => $student->level_id,
-                'programme_category_id' => $student->programme_category_id
-            ]);
+    //         $studentRegistration = StudentCourseRegistration::create([
+    //             'student_id' => $studentId,
+    //             'academic_session' => $academicSession,
+    //             'file' => $courseReg,
+    //             'level_id' => $student->level_id,
+    //             'programme_category_id' => $student->programme_category_id
+    //         ]);
 
         
-            alert()->success('Changes Saved', 'Course registration saved successfully')->persistent('Close');
-            return redirect()->back();
+    //         alert()->success('Changes Saved', 'Course registration saved successfully')->persistent('Close');
+    //         return redirect()->back();
 
-        } catch (\Exception $e) {
-            Log::info($e);
-            alert()->error('Oops!', 'Something went wrong')->persistent('Close');
-            return redirect()->back();
-        }
-    }
+    //     } catch (\Exception $e) {
+    //         Log::info($e);
+    //         alert()->error('Oops!', 'Something went wrong')->persistent('Close');
+    //         return redirect()->back();
+    //     }
+    // }
 
 }

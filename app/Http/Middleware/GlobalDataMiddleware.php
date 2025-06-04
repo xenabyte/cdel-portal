@@ -22,13 +22,13 @@ class GlobalDataMiddleware
      */
     public function handle(Request $request, Closure $next)
     {
-        $academicSessionSettings = AcademicSessionSetting::all()->keyBy('programme_category_id');
+        $academicSessionSetting = AcademicSessionSetting::all()->keyBy('programme_category_id');
 
         $appSetting = SessionSetting::first();
         $examinationSetting = ExaminationSetting::first();
 
         $data = new \stdClass();
-        $data->sessionSettings = $academicSessionSettings;
+        $data->sessionSettings = $academicSessionSetting;
         $data->examSetting = $examinationSetting;
         $data->appSetting = $appSetting;
 

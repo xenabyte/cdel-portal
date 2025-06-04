@@ -25,7 +25,7 @@ class ProgrammeCategory extends Model
     /**
      * Get all academic session settings for this programme category.
      */
-    public function academicSessionSettings()
+    public function academicSessionSetting()
     {
         return $this->hasMany(AcademicSessionSetting::class, 'programme_category_id');
     }
