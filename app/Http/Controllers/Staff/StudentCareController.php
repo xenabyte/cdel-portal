@@ -136,7 +136,7 @@ class StudentCareController extends Controller
             ]);
 
             alert()->success('Success', 'Application '.$request->action)->persistent('Close');
-            return view('admin.verifyStudentExit', [
+            return view('staff.verifyStudentExit', [
                 'studentExit' => $studentExit,
                 'student' => $student
             ]);
