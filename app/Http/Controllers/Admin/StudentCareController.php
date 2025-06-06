@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Models\ProgrammeCategory;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -128,7 +129,6 @@ class StudentCareController extends Controller
             return redirect()->back();
         }
     
-        $globalData = $request->input('global_data');
         $exitIds = $request->exit_ids;
     
         foreach ($exitIds as $exitId) {
@@ -141,13 +141,15 @@ class StudentCareController extends Controller
                 $student = Student::find($studentExit->student_id);
 
                 $programmeCategoryId = $student->programme_category_id;
+                $programmeCategory = ProgrammeCategory::find($programmeCategoryId);
+                $academicSession = $programmeCategory->academicSessionSetting->academic_session ?? null;
 
-                if (!$programmeCategoryId || !isset($globalData->sessionSettings[$programmeCategoryId])) {
+
+                if (!$programmeCategoryId || !isset($academicSession)) {
                     continue;
                 }
 
-                $sessionSetting = $globalData->sessionSettings[$programmeCategoryId];
-                $academicSession = $sessionSetting->academic_session ?? null;
+                
                 
                 $pdf = new Pdf();
                 $exitApplication = $pdf->generateExitApplication($academicSession, $student->id, $studentExit->id);

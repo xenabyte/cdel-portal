@@ -146,7 +146,7 @@ $staffCourses = $staff->staffCourses;
     <div class="col-xl-7">
         <div class="card">
             <div class="card-header align-items-center">
-                <h4 class="card-title mb-0 flex-grow-1">Course Allocated  for {{ $pageGlobalData->sessionSetting->academic_session }} academic session</h4>
+                <h4 class="card-title mb-0 flex-grow-1">Course Allocated</h4>
             </div><!-- end card header -->
 
             <div class="card-body table-responsive">

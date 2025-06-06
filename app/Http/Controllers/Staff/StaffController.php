@@ -309,7 +309,7 @@ class StaffController extends Controller
         $staff = Auth::guard('staff')->user();
         $staffId = $staff->id;
 
-        $programmeCategory = Category::where('category', $programmeCategory)->first();
+        $programmeCategory = Category::with('academicSessionSetting')->where('category', $programmeCategory)->first();
         $programmeCategoryId = $programmeCategory->id;
 
         $programmes = Programme::with('department', 'department.faculty')->where('category_id', $programmeCategoryId)->where('department_id', $staff->department_id)->get();
@@ -374,16 +374,14 @@ class StaffController extends Controller
         }
 
         $programmeCategoryId = $request->programme_category_id;
+        $programmeCategory = Category::find($programmeCategoryId);
 
-        $globalData = $request->input('global_data');
 
-        if (!$programmeCategoryId || !isset($globalData->sessionSettings[$programmeCategoryId])) {
+        $academicSession = $programmeCategory->academicSessionSetting->academic_session ?? null;
+        if (!$academicSession) {
             alert()->error('Oops!', 'Session setting for programme category not found.')->persistent('Close');
             return redirect()->back();
         }
-
-        $sessionSetting = $globalData->sessionSettings[$programmeCategoryId];
-        $academicSession = $sessionSetting->academic_session ?? null;
 
         $courses = CoursePerProgrammePerAcademicSession::with('course')
             ->where('programme_id', $request->programme_id)
@@ -504,7 +502,7 @@ class StaffController extends Controller
             $academicSession = str_replace('-', '/', $academicSession);
         }
 
-        $programmeCategory = Category::where('category', $programmeCategory)->first();
+        $programmeCategory = Category::with('academicSessionSetting')->where('category', $programmeCategory)->first();
         $programmeCategoryId = $programmeCategory->id;
 
         if(empty($academicSession)){
@@ -531,7 +529,6 @@ class StaffController extends Controller
 
     public function reffs(Request $request){
         $staff = Auth::guard('staff')->user();
-        $staffId = $staff->id;
         $globalData = $request->input('global_data');
         $referalCode = $staff->referral_code;
 
@@ -795,25 +792,7 @@ class StaffController extends Controller
 
     public function staffUploadResult(Request $request){
         $staff = Auth::guard('staff')->user();
-        $staffId = $staff->id;
-
-        $globalData = $request->input('global_data');
-        $resultProcessStatus = $globalData->examSetting['result_processing_status'];
-        $testProcessStatus = $globalData->examSetting['test_processing_status'];
-
         $uploadType = $request->type;
-
-        if(strtolower($uploadType) != 'test'){
-            if(strtolower($resultProcessStatus) != 'start'){
-                alert()->error('Result Processing has not started yet', 'Contact ICT')->persistent('Close');
-                return redirect()->back();
-            }
-        }else{
-            if(strtolower($testProcessStatus) != 'start'){
-                alert()->error('Test Processing has not started yet', 'Contact ICT')->persistent('Close');
-                return redirect()->back();
-            }
-        }
 
         $validator = Validator::make($request->all(), [
             'result' => 'required|file',
@@ -829,12 +808,26 @@ class StaffController extends Controller
         $programmeCategoryId = $request->programme_category_id;
         $programmeCategory = ProgrammeCategory::find($programmeCategoryId);
         $academicSession = $programmeCategory->academicSessionSetting->academic_session;
+        $resultProcessStatus = $programmeCategory->examSetting->result_processing_status;
+        $testProcessStatus = $programmeCategory->examSetting->test_processing_status;
 
-        $courseManagement = CourseManagement::where([
-            'course_id' => $request->course_id,
-            'staff_id' => $staffId,
-            'academic_session' => $academicSession
-        ])->first();
+        if(strtolower($uploadType) != 'test'){
+            if(strtolower($resultProcessStatus) != 'start'){
+                alert()->error('Result Processing has not started yet', 'Contact ICT')->persistent('Close');
+                return redirect()->back();
+            }
+        }else{
+            if(strtolower($testProcessStatus) != 'start'){
+                alert()->error('Test Processing has not started yet', 'Contact ICT')->persistent('Close');
+                return redirect()->back();
+            }
+        }
+
+        // $courseManagement = CourseManagement::where([
+        //     'course_id' => $request->course_id,
+        //     'staff_id' => $staffId,
+        //     'academic_session' => $academicSession
+        // ])->first();
 
         // if(!$courseManagement){
         //     alert()->error('Oops!', 'Course not assigned to staff')->persistent('Close');
@@ -1041,8 +1034,6 @@ class StaffController extends Controller
     }
 
     public function updateLecture(Request $request){
-        $globalData = $request->input('global_data');
-
         $validator = Validator::make($request->all(), [
             'lecture_id' => 'required',
         ]);
@@ -1114,13 +1105,26 @@ class StaffController extends Controller
         $staff = Auth::guard('staff')->user();
         $staffId = $staff->id;
 
-        $globalData = $request->input('global_data');
-        $resultProcessStatus = $globalData->examSetting['result_processing_status'];
-        $testProcessStatus = $globalData->examSetting['test_processing_status'];
-
         $uploadType = $request->type;
         $isSummer = $request->has('summer') && $request->summer == 1;
 
+        $validator = Validator::make($request->all(), [
+            'course_id' => 'required',
+            'matric_number' => 'required',
+            'programme_category_id' => 'required',
+        ]);
+
+        if($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+
+        $programmeCategoryId = $request->programme_category_id;
+        $programmeCategory = ProgrammeCategory::find($programmeCategoryId);
+        $academicSession = $programmeCategory->academicSessionSetting->academic_session;
+
+        $resultProcessStatus = $programmeCategory->examSetting->result_processing_status;
+        $testProcessStatus = $programmeCategory->examSetting->test_processing_status;
 
         if(strtolower($uploadType) != 'test'){
             if(strtolower($resultProcessStatus) != 'start'){
@@ -1133,16 +1137,6 @@ class StaffController extends Controller
                 return redirect()->back();
             }
         }
-
-        $validator = Validator::make($request->all(), [
-            'course_id' => 'required',
-            'matric_number' => 'required',
-            'programme_category_id' => 'required',
-        ]);
-
-        $programmeCategoryId = $request->programme_category_id;
-        $programmeCategory = ProgrammeCategory::find($programmeCategoryId);
-        $academicSession = $programmeCategory->academicSessionSetting->academic_session;
 
         $courseManagement = CourseManagement::where([
             'course_id' => $request->course_id,

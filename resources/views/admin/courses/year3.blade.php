@@ -29,7 +29,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($programme->courses->where('level_id', 3)->where('academic_session', $pageGlobalData->sessionSetting->academic_session)->where('semester', 1) as $course31)
+                        @foreach($programme->courses->where('level_id', 3)->where('academic_session', $programme->programmeCategory->academicSessionSetting->academic_session)->where('semester', 1) as $course31)
                         <tr>
                             <td scope="row"> {{ $loop->iteration }}</td>
                             <td>{{$course31->course->code}}</td>
@@ -55,7 +55,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($programme->courses->where('level_id', 3)->where('academic_session', $pageGlobalData->sessionSetting->academic_session)->where('semester', 2) as $course32)
+                            @foreach($programme->courses->where('level_id', 3)->where('academic_session', $programme->programmeCategory->academicSessionSettingacademic_session)->where('semester', 2) as $course32)
                             <tr>
                                 <td scope="row"> {{ $loop->iteration }}</td>
                                 <td>{{$course32->course->code}}</td>

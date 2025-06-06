@@ -63,8 +63,6 @@ class HomeController extends Controller
      */
     public function getExamDocket(Request $request, $slug){
 
-        $globalData = $request->input('global_data');
-
         $student = Student::with('applicant', 'academicLevel', 'faculty', 'department', 'programme')
             ->where('slug', $slug)
             ->first();
@@ -75,16 +73,13 @@ class HomeController extends Controller
         }
 
         $programmeCategoryId = $student->programme_category_id ?? null;
+        $programmeCategory = ProgrammeCategory::with('academicSessionSetting')->where('id', $programmeCategoryId)->first();
 
-        if (!$programmeCategoryId || !isset($globalData->sessionSettings[$programmeCategoryId])) {
-            alert()->error('Oops!', 'Session setting for student\'s programme category not found.')->persistent('Close');
+        $academicSession = $programmeCategory->academicSessionSetting->academic_session ?? null;
+        if (!$academicSession) {
+            alert()->error('Oops!', 'Session setting for programme category not found.')->persistent('Close');
             return redirect()->back();
         }
-
-        $sessionSetting = $globalData->sessionSettings[$programmeCategoryId];
-
-        $academicSession = $sessionSetting->academic_session ?? null;
-        $semester = $globalData->examSetting->semester ?? null;
 
         $studentId = $student->id;
         $levelId = $student->level_id;
@@ -417,17 +412,13 @@ class HomeController extends Controller
     public function getPayments(Request $request){
 
         $programmeCategoryId = $request->programme_category_id;
+        $programmeCategory = ProgrammeCategory::find($programmeCategoryId);
 
-        $globalData = $request->input('global_data');
-        
-        if (!$programmeCategoryId || !isset($globalData->sessionSettings[$programmeCategoryId])) {
-            alert()->error('Oops!', 'Session setting for student\'s programme category not found.')->persistent('Close');
+        $academicSession = $programmeCategory->academicSessionSetting->academic_session ?? null;
+        if (!$academicSession) {
+            alert()->error('Oops!', 'Session setting for programme category not found.')->persistent('Close');
             return redirect()->back();
         }
-
-        $sessionSetting = $globalData->sessionSettings[$programmeCategoryId];
-        $applicationSession = $sessionSetting->application_session ?? null;
-
 
         $commonConditions = [
             'programme_category_id' => $request->programme_category_id,

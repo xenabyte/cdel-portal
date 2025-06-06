@@ -86,7 +86,6 @@ class GuardianController extends Controller
         $student = Student::with('applicant')->where('id', $studentId)->first();
         $transaction = Transaction::find($request->transaction_id);
 
-        $globalData = $request->input('global_data');
         $paymentId = $request->payment_id;
         $amount = $request->amount*100;
         $redirectLocation = 'guardian/home';
@@ -318,8 +317,6 @@ class GuardianController extends Controller
         }
 
         $studentId = $request->student_id;
-        $student = Student::find($studentId);
-        $globalData = $request->input('global_data');
 
         $semester = $request->semester;
         $academicSession = $request->session;

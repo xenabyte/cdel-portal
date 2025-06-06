@@ -1,5 +1,7 @@
 @extends('admin.layout.dashboard')
-
+@php
+    // $applicationSession = $programmeCategory->academicSessionSetting->application_session;
+@endphp
 @section('content')
 <div class="row">
     <div class="col-12">
@@ -352,7 +354,7 @@
     <div class="col-lg-4">
         <div class="card card-height-100">
             <div class="card-header align-items-center d-flex">
-                <h4 class="card-title mb-0 flex-grow-1">Level Advisers - ({{ $pageGlobalData->sessionSetting->academic_session }})</h4>
+                <h4 class="card-title mb-0 flex-grow-1">Level Advisers - (applicationSession)</h4>
             </div><!-- end card header -->
 
             <div class="card-body">
@@ -366,8 +368,8 @@
                         </thead>
                         <tbody>
                             @foreach($department->programmes as $programmes)
-                            @foreach($programmes->academicAdvisers->where('academic_session', $pageGlobalData->sessionSetting->academic_session) as $academicAdviser)
-                            <tr>
+                                {{-- @foreach($programmes->academicAdvisers->where('academic_session', $pageGlobalData->sessionSetting->academic_session) as $academicAdviser)
+                                <tr>
                                     <td class="d-flex">
                                         <img src="{{ $academicAdviser->staff->image }}" alt="" class="avatar-xs rounded-3 shadow me-2">
                                         <div>
@@ -378,7 +380,7 @@
                                         </div>
                                     </td>
                                 </tr><!-- end tr -->
-                                @endforeach
+                                @endforeach --}}
                             @endforeach
                         </tbody><!-- end tbody -->
                     </table><!-- end table -->
@@ -417,7 +419,7 @@
     <div class="col-lg-6">
         <div class="card card-height-100">
             <div class="card-header align-items-center d-flex">
-                <h4 class="card-title mb-0 flex-grow-1">Fresh Student ({{ $pageGlobalData->sessionSetting->academic_session }}) - {{$department->students->where('level_id', 1)->count()}} Student(s)</h4>
+                <h4 class="card-title mb-0 flex-grow-1">Fresh Student (applicationSession) - {{$department->students->where('level_id', 1)->count()}} Student(s)</h4>
             </div><!-- end card header -->
 
             <div class="card-body">

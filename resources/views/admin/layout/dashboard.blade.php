@@ -320,14 +320,36 @@
                                         <a href="{{url('/admin/setting')}}" class="nav-link" data-key="t-calendar">App Settings </a>
                                     </li>
                                     <li class="nav-item">
-                                        <a href="{{url('/admin/sessionSetup')}}" class="nav-link" data-key="t-calendar">Academic Session Setup </a>
+                                        <a href="#sessionSetup" class="nav-link" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sessionSetup" data-key="t-sessionSetup"> Academic Session Setup
+                                        </a>
+                                        <div class="collapse menu-dropdown" id="sessionSetup">
+                                            <ul class="nav nav-sm flex-column">
+                                                <li class="nav-item">
+                                                    <a href="{{ url('/admin/sessionSetup/'.$programmeCategory::UNDERGRADUATE) }}" class="nav-link">{{ $programmeCategory::UNDERGRADUATE }}</a>
+                                                </li>
+                        
+                                                <li class="nav-item">
+                                                    <a href="{{ url('/admin/sessionSetup/'.$programmeCategory::TOPUP) }}" class="nav-link">{{ $programmeCategory::TOPUP }}</a>
+                                                </li>
+            
+                                                <li class="nav-item">
+                                                    <a href="{{ url('/admin/sessionSetup/'.$programmeCategory::PGD) }}" class="nav-link">{{ $programmeCategory::PGD }}</a>
+                                                </li>
+
+                                                <li class="nav-item">
+                                                    <a href="{{ url('/admin/sessionSetup/'.$programmeCategory::MASTER) }}" class="nav-link">{{ $programmeCategory::MASTER }}</a>
+                                                </li>
+                                                
+                                                <li class="nav-item">
+                                                    <a href="{{ url('/admin/sessionSetup/'.$programmeCategory::DOCTORATE) }}" class="nav-link">{{ $programmeCategory::DOCTORATE }}</a>
+                                                </li>
+                                                
+                                            </ul>
+                                        </div>
                                     </li>
                                     {{-- <li class="nav-item">
                                         <a href="{{ url('/admin/courseRegMgt') }}" class="nav-link">Course Reg. Mgt</a>
                                     </li> --}}
-                                    <li class="nav-item">
-                                        <a href="{{ url('/admin/examDocketMgt') }}" class="nav-link">Exam Docket Mgt</a>
-                                    </li>
                                     <li class="nav-item">
                                         <a href="{{url('/admin/programmeCategory')}}" class="nav-link" data-key="t-chat">Programme Category </a>
                                     </li>

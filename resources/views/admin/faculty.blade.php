@@ -258,7 +258,7 @@
     <div class="col-lg-6">
         <div class="card card-height-100">
             <div class="card-header align-items-center d-flex">
-                <h4 class="card-title mb-0 flex-grow-1">Fresh Student ({{ $pageGlobalData->sessionSetting->academic_session }})</h4>
+                <h4 class="card-title mb-0 flex-grow-1">Fresh Student (applicationSession)</h4>
             </div><!-- end card header -->
 
             <div class="card-body">

@@ -9,13 +9,6 @@ use App\Models\ProgrammeRequirement;
 use App\Models\StudentSemesterGPA;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Hash;
-use App\Http\Requests;
-use Illuminate\Support\Facades\Validator;
-use League\Csv\Reader;
 
 use App\Models\CourseManagement;
 use App\Models\Transaction;
@@ -33,11 +26,9 @@ use App\Libraries\Google\Google;
 use App\Http\Controllers\PaymentController;
 
 
-use SweetAlert;
 use Mail;
-use Alert;
 use Log;
-use Carbon\Carbon;
+
 
 class CronController extends Controller
 {

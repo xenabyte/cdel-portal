@@ -16,6 +16,7 @@ class ExaminationSetting extends Model
         'semester',
         'result_processing_status',
         'test_processing_status',
-        'status'
+        'status',
+        'programme_category_id',
     ];
 }

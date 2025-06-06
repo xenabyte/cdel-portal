@@ -383,7 +383,6 @@ class HostelController extends Controller
         
         $totalBedSpaces = RoomBedSpace::get()->count();
 
-
         return view('admin.allocations', [
             'allocations' => $allocations,
             'totalBedSpaces' => $totalBedSpaces

@@ -1,6 +1,7 @@
 @extends('student.layout.dashboard')
 <?php 
     $student = Auth::guard('student')->user();
+    $academicSession = $student->programmeCategory->academicSessionSetting->academic_session;
 ?>
 @section('content')
 <!-- start page title -->
@@ -37,7 +38,7 @@
                                 <form action="{{ url('/student/generateResult') }}" method="POST">
                                     @csrf
                                     <input type="hidden" name="examSetting_id" value="{{ !empty($pageGlobalData->examSetting)?$pageGlobalData->examSetting->id:null }}">
-                                    <input type="hidden" name="academic_session" value="{{ $pageGlobalData->sessionSetting->academic_session }}">
+                                    <input type="hidden" name="academic_session" value="{{ $academicSession }}">
                                     <div class="row g-3">
                                         
                                         <div class="col-lg-12">

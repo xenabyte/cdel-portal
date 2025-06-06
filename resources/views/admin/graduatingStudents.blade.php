@@ -23,7 +23,7 @@
     <div class="col-lg-12">
         <div class="card">
             <div class="card-header align-items-center d-flex">
-                <h4 class="card-title mb-0 flex-grow-1">{{ $programmeCategory->category }} Programme Graduating Students for {{ $pageGlobalData->sessionSetting->academic_session }} Academic Session</h4>
+                <h4 class="card-title mb-0 flex-grow-1">{{ $programmeCategory->category }} Programme Graduating Students for {{ $programmeCategory->academicSessionSetting->academic_session }} Academic Session</h4>
                 <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#confirmModal">Submit Selected Students</button>
             </div><!-- end card header -->
 

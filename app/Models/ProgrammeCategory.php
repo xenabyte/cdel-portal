@@ -27,7 +27,17 @@ class ProgrammeCategory extends Model
      */
     public function academicSessionSetting()
     {
-        return $this->hasMany(AcademicSessionSetting::class, 'programme_category_id');
+        return $this->hasOne(AcademicSessionSetting::class, 'programme_category_id', 'id');
+    }
+
+    /**
+     * Get the examSetting associated with the ProgrammeCategory
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function examSetting()
+    {
+        return $this->hasOne(ExaminationSetting::class, 'programme_category_id', 'id');
     }
 
     public static function getProgrammeCategory($programmeCategory)

@@ -4,11 +4,6 @@ namespace App\Http\Controllers\Staff;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Hash;
-use App\Http\Requests;
 use Illuminate\Support\Facades\Validator;
 use League\Csv\Reader;
 
@@ -31,11 +26,7 @@ use App\Models\PaymentType;
 use App\Libraries\Pdf\Pdf;
 use App\Mail\TransactionMail;
 
-use SweetAlert;
 use Mail;
-use Alert;
-use Log;
-use Carbon\Carbon;
 
 class PaymentController extends Controller
 {
@@ -49,17 +40,15 @@ class PaymentController extends Controller
     }
 
     public function payments(Request $request, $programmeCategory) {
-        $globalData = $request->input('global_data');
 
-        $programmeCategory = ProgrammeCategory::where('category', $programmeCategory)->first();
+        $programmeCategory = ProgrammeCategory::with('academicSessionSetting')->where('category', $programmeCategory)->first();
         $programmeCategoryId = $programmeCategory->id;
 
-        if (!$programmeCategoryId || !isset($globalData->sessionSettings[$programmeCategoryId])) {
+        $academicSession = $programmeCategory->academicSessionSetting->academic_session ?? null;
+        if (!$academicSession) {
             alert()->error('Oops!', 'Session setting for programme category not found.')->persistent('Close');
             return redirect()->back();
         }
-        $sessionSetting = $globalData->sessionSettings[$programmeCategoryId];
-        $academicSession = $sessionSetting->academic_session ?? null;
 
         $paymentTypes = PaymentType::get();
 
@@ -1076,23 +1065,18 @@ class PaymentController extends Controller
             'amount' => 'required',
         ]);
 
-        $globalData = $request->input('global_data');
-
         $student = Student::with('applicant')->where('id', $request->student_id)->first();
         $programmeCategoryId = $student->programme_category_id;
-
+        $programmeCategory = ProgrammeCategory::with('academicSessionSetting')->where('id', $programmeCategoryId)->first();
+        $academicSession = $programmeCategory->academicSessionSetting->academic_session ?? null;
+        if (!$academicSession) {
+            alert()->error('Oops!', 'Session setting for programme category not found.')->persistent('Close');
+            return redirect()->back();
+        }
 
         $studentIdCode = $student->matric_number;
         $studentId = $student->id;
         $paymentId = $request->payment_id;
-
-        if (!$programmeCategoryId || !isset($globalData->sessionSettings[$programmeCategoryId])) {
-            alert()->error('Oops!', 'Session setting for student\'s programme category not found.')->persistent('Close');
-            return redirect()->back();
-        }
-        $sessionSetting = $globalData->sessionSettings[$programmeCategoryId];
-        $academicSession = $sessionSetting->academic_session ?? null;
-        
 
         if($validator->fails()) {
             alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');

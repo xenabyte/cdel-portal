@@ -1,13 +1,14 @@
 @extends('admin.layout.dashboard')
 @php
+    $qrcode = 'https://quickchart.io/chart?chs=300x300&cht=qr&chl='.env('APP_URL').'/studentDetails/'.$student->slug;
+    $name = $student->applicant->lastname.' '.$student->applicant->othernames;
+    $transactions = $student->transactions()->orderBy('created_at', 'desc')->get();
+    $studentRegistrations = $student->courseRegistrationDocument()->orderBy('created_at', 'desc')->take(10)->get();
+    $failedCourses = $student->registeredCourses()->where('grade', 'F')->where('re_reg', null)->get();
+    $studentAdvisoryData = (object) $student->getAcademicAdvisory();
 
-$qrcode = 'https://quickchart.io/chart?chs=300x300&cht=qr&chl='.env('APP_URL').'/studentDetails/'.$student->slug;
-$name = $student->applicant->lastname.' '.$student->applicant->othernames;
-$transactions = $student->transactions()->orderBy('created_at', 'desc')->get();
-$studentRegistrations = $student->courseRegistrationDocument()->orderBy('created_at', 'desc')->take(10)->get();
-$failedCourses = $student->registeredCourses()->where('grade', 'F')->where('re_reg', null)->get();
-$studentAdvisoryData = (object) $student->getAcademicAdvisory();
-
+    $academicSession = $student->programmeCategory->academicSessionSetting->application_session;
+    $admissionSession = $student->programmeCategory->academicSessionSetting->admission_session;
 @endphp
 @section('content')
 <!-- start page title -->
@@ -342,7 +343,7 @@ $studentAdvisoryData = (object) $student->getAcademicAdvisory();
                                                 <form action="{{ url('/admin/generateResult') }}" method="POST">
                                                     @csrf
                                                     <input type="hidden" name="examSetting_id" value="{{ !empty($pageGlobalData->examSetting)?$pageGlobalData->examSetting->id:null }}">
-                                                    <input type="hidden" name="academic_session" value="{{ $pageGlobalData->sessionSetting->academic_session }}">
+                                                    <input type="hidden" name="academic_session" value="{{ $academicSession }}">
                                                     <input type="hidden" name="student_id" value="{{ $student->id }}">
 
                                                     <div class="row g-3">
@@ -1172,7 +1173,7 @@ $studentAdvisoryData = (object) $student->getAcademicAdvisory();
                         <div class="card">
                             <div class="card-body">
                                 <div class="text-muted">
-                                    <h4 class="card-title mb-0 flex-grow-1">Referred Student(s) for {{ $pageGlobalData->sessionSetting->application_session }} application session </h4>
+                                    <h4 class="card-title mb-0 flex-grow-1">Referred Student(s) for {{ $applicationSession }} application session </h4>
                                     <div class="border-top border-top-dashed pt-3">
                                         <div class="table-responsive">
                                             <!-- Bordered Tables -->

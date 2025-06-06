@@ -60,9 +60,7 @@ class ApplicationController extends Controller
     {
         $user = Auth::guard('user')->user();
         $userId = $user->id;
-
-        $globalData = $request->input('global_data');
-        $applicationSession = $globalData->sessionSetting['application_session'];
+        $applicationSession = $user->programmeCategory->application_session;
 
         $applicant = Applicant::with('programme', 'olevels', 'guardian')->find($userId);
         $applicantProgrammeCategoryId = $applicant->programme_category_id;
@@ -110,9 +108,6 @@ class ApplicationController extends Controller
     //applicant
     public function showRegistrationForm(Request $request)
     {
-        $globalData = $request->input('global_data');
-        $applicationSession = $globalData->sessionSetting['application_session'];
-
         $advanceStudy = new AdvanceStudy();
         $advanceStudyProgrammes = $advanceStudy->getProgrammes();
 
@@ -333,10 +328,11 @@ class ApplicationController extends Controller
     public function register(Request $request)
     {
         $userId = $request->user_id;
-        $globalData = $request->input('global_data');
-        $applicationSession = $globalData->sessionSetting['application_session'];
         $applicationType = !empty($request->applicationTypeDropdown) ? $request->applicationTypeDropdown : $request->input('applicationType');
         $applicantProgrammeCategoryId = $request->programme_category_id;
+
+        $applicantProgrammeCategory = ProgrammeCategory::find($applicantProgrammeCategoryId);
+        $applicationSession = $applicantProgrammeCategory->academicSessionSetting->application_session;
 
         $programmeCategories = ProgrammeCategory::get();
 

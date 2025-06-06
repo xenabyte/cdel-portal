@@ -747,7 +747,27 @@
 
                                         @if($isFacultyOfficer)
                                         <li class="nav-item">
-                                            <a href="{{ url('/staff/studentCourseReg') }}" class="nav-link">Student Course Reg</a>
+                                            <a href="#studentCourseReg" class="nav-link" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="studentCourseReg" data-key="t-studentCourseReg"> Student Courses Reg
+                                            </a>
+                                            <div class="collapse menu-dropdown" id="studentCourseReg">
+                                                <ul class="nav nav-sm flex-column">
+                                                    <li class="nav-item">
+                                                        <a href="{{ url('/staff/studentCourseReg/'.$programmeCategory::UNDERGRADUATE) }}" class="nav-link" data-key="t-basic">{{ $programmeCategory::UNDERGRADUATE }}  </a>
+                                                    </li>
+                                                    <li class="nav-item">
+                                                        <a href="{{ url('/staff/studentCourseReg/'.$programmeCategory::TOPUP) }}" class="nav-link" data-key="t-basic"> {{ $programmeCategory::TOPUP }} </a>
+                                                    </li>
+                                                    <li class="nav-item">
+                                                        <a href="{{ url('/staff/studentCourseReg/'.$programmeCategory::PGD) }}" class="nav-link" data-key="t-basic"> {{ $programmeCategory::PGD }} </a>
+                                                    </li>
+                                                    <li class="nav-item">
+                                                        <a href="{{ url('/staff/studentCourseReg/'.$programmeCategory::MASTER) }}" class="nav-link" data-key="t-basic"> {{ $programmeCategory::MASTER }} </a>
+                                                    </li>
+                                                    <li class="nav-item">
+                                                        <a href="{{ url('/staff/studentCourseReg/'.$programmeCategory::DOCTORATE) }}" class="nav-link" data-key="t-basic"> {{ $programmeCategory::DOCTORATE }} </a>
+                                                    </li>
+                                                </ul>
+                                            </div>
                                         </li>
                                         @endif
 

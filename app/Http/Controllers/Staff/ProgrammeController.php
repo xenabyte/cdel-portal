@@ -181,17 +181,14 @@ class ProgrammeController extends Controller
 
     public function adviserProgrammes(Request $request, $programmeCategory){
         $staff = Auth::guard('staff')->user();
-        $globalData = $request->input('global_data');
-
-        $programmeCategory = ProgrammeCategory::where('category', $programmeCategory)->first();
+        $programmeCategory = ProgrammeCategory::with('academicSessionSetting')->where('category', $programmeCategory)->first();
         $programmeCategoryId = $programmeCategory->id;
 
-        if (!$programmeCategoryId || !isset($globalData->sessionSettings[$programmeCategoryId])) {
+        $academicSession = $programmeCategory->academicSessionSetting->academic_session ?? null;
+        if (!$academicSession) {
             alert()->error('Oops!', 'Session setting for programme category not found.')->persistent('Close');
             return redirect()->back();
         }
-        $sessionSetting = $globalData->sessionSettings[$programmeCategoryId];
-        $academicSession = $sessionSetting->academic_session ?? null;
 
         $staffHod = false;
         if($staff->id == $staff->acad_department->hod_id){
@@ -274,12 +271,19 @@ class ProgrammeController extends Controller
         ]);
     }
 
-    public function studentCourseReg(Request $request){
+    public function studentCourseReg(Request $request, $programmeCategory){
         $staff = Auth::guard('staff')->user();
 
         $facultyIds= Faculty::where('faculty_officer_id', $staff->id)->pluck('id');
         $departmentIds= Department::whereIn('faculty_id', $facultyIds)->pluck('id');
         $programmeIds= Programme::whereIn('department_id', $departmentIds)->pluck('id');
+
+        $programmeCategory = ProgrammeCategory::with('academicSessionSetting')->where('category', $programmeCategory)->first();
+        $academicSession = $programmeCategory->academicSessionSetting->academic_session ?? null;
+        if (!$academicSession) {
+            alert()->error('Oops!', 'Session setting for programme category not found.')->persistent('Close');
+            return redirect()->back();
+        }
 
         $adviserProgrammesQuery = LevelAdviser::with('programme', 'level')->whereIn('programme_id', $programmeIds)->where('academic_session', $academicSession);
         $adviserProgrammes = $adviserProgrammesQuery->get();
@@ -324,13 +328,12 @@ class ProgrammeController extends Controller
         $globalData = $request->input('global_data');
 
         $programmeCategoryId = $request->programme_category_id;
-        
-        if (!$programmeCategoryId || !isset($globalData->sessionSettings[$programmeCategoryId])) {
+        $programmeCategory = ProgrammeCategory::find($programmeCategoryId);
+        $academicSession = $programmeCategory->academicSessionSetting->academic_session ?? null;
+        if (!$academicSession) {
             alert()->error('Oops!', 'Session setting for programme category not found.')->persistent('Close');
             return redirect()->back();
         }
-        $sessionSetting = $globalData->sessionSettings[$programmeCategoryId];
-        $academicSession = $sessionSetting->academic_session ?? null;
 
         $programmeCategories = ProgrammeCategory::get();
 
@@ -605,7 +608,7 @@ class ProgrammeController extends Controller
         }
 
         $academicSession = $adviserProgramme->academic_session;
-        $programmeCategory = ProgrammeCategory::where('category', $programmeCategory)->first();
+        $programmeCategory = ProgrammeCategory::with('academicSessionSetting')->where('category', $programmeCategory)->first();
         $programmeCategoryId = $programmeCategory->id;
 
         $levelId = $adviserProgramme->level_id;
@@ -704,7 +707,7 @@ class ProgrammeController extends Controller
 
     public function levelStudents(Request $request, $programmeCategory, $id){
 
-        $programmeCategory = ProgrammeCategory::where('category', $programmeCategory)->first();
+        $programmeCategory = ProgrammeCategory::with('academicSessionSetting')->where('category', $programmeCategory)->first();
         $programmeCategoryId = $programmeCategory->id;
         $academicSession = $programmeCategory->academicSessionSetting->academic_session;
 

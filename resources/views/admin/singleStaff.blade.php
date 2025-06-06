@@ -105,7 +105,7 @@ $hodRole = array_filter($singleStaffRoles, function ($staffRole) {
                         <div class="card">
                             <div class="card-body">
                                 <div class="text-muted">
-                                    <h4 class="card-title mb-0 flex-grow-1">Referred Student(s) for {{ $pageGlobalData->sessionSetting->application_session }} application session </h4>
+                                    <h4 class="card-title mb-0 flex-grow-1">Referred Student(s) </h4>
                                     <div class="border-top border-top-dashed pt-3">
                                         <div class="table-responsive">
                                             <!-- Bordered Tables -->

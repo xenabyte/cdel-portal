@@ -409,7 +409,6 @@ class AcademicController extends Controller
         $student = Auth::guard('student')->user();
         $studentId = $student->id;
         $levelId = $student->level_id;
-        $globalData = $request->input('global_data');
         $academicSession = $student->programmeCategory->academicSessionSetting->academic_session;
 
 
@@ -490,7 +489,6 @@ class AcademicController extends Controller
         $student = Auth::guard('student')->user();
         $studentId = $student->id;
         $levelId = $student->level_id;
-        $globalData = $request->input('global_data');
 
         $academicSession = $student->programmeCategory->academicSessionSetting->academic_session;
 
@@ -522,7 +520,6 @@ class AcademicController extends Controller
         $student = Auth::guard('student')->user();
         $studentId = $student->id;
         $levelId = $student->level_id;
-        $globalData = $request->input('global_data');
         $academicSession = $student->programmeCategory->academicSessionSetting->academic_session;
         $addOrRemoveTxPay = Payment::with('structures')->where('type', Payment::PAYMENT_MODIFY_COURSE_REG)->where('academic_session', $academicSession)->first();
         $addOrRemoveTxId = $addOrRemoveTxPay->id;
@@ -551,9 +548,8 @@ class AcademicController extends Controller
     public function examDocket(Request $request){
         $student = Auth::guard('student')->user();
         $studentId = $student->id;
-        $globalData = $request->input('global_data');
         $academicSession = $student->programmeCategory->academicSessionSetting->academic_session;
-        $semester  = $globalData->examSetting['semester'];
+        $semester  = $student->programmeCategory->examSetting->semester;
         $levelId = $student->level_id;
 
         $checkStudentPayment = $this->checkSchoolFees($student, $academicSession, $levelId);
@@ -605,9 +601,8 @@ class AcademicController extends Controller
     public function genExamDocket(Request $request){
         $student = Auth::guard('student')->user();
         $studentId = $student->id;
-        $globalData = $request->input('global_data');
         $academicSession = $student->programmeCategory->academicSessionSetting->academic_session;
-        $semester  = $globalData->examSetting['semester'];
+        $semester  = $student->programmeCategory->examSetting->semester;
 
         if(!empty($request->exam_card_id)){
             $examCard = StudentExamCard::find($request->exam_card_id);
@@ -672,9 +667,8 @@ class AcademicController extends Controller
     public function printExamCard(Request $request){
         $student = Auth::guard('student')->user();
         $studentId = $student->id;
-        $globalData = $request->input('global_data');
         $academicSession = $student->programmeCategory->academicSessionSetting->academic_session;
-        $semester  = $globalData->examSetting['semester'];
+        $semester = $student->programmeCategory->examSetting->semester;
 
         //create record for file
         $studentExamCard = StudentExamCard::where([
@@ -690,7 +684,6 @@ class AcademicController extends Controller
         $student = Auth::guard('student')->user();
         $studentId = $student->id;
         $levelId = $student->level_id;
-        $globalData = $request->input('global_data');
         $academicSession = $student->programmeCategory->academicSessionSetting->academic_session;
 
         $studentExamCards = StudentExamCard::where([
@@ -718,9 +711,7 @@ class AcademicController extends Controller
 
     public function examResult(Request $request){
         $student = Auth::guard('student')->user();
-        $studentId = $student->id;
         $levelId = $student->level_id;
-        $globalData = $request->input('global_data');
         $academicSession = $student->programmeCategory->academicSessionSetting->academic_session;
 
         $sessions = Session::orderBy('id', 'DESC')->get();
@@ -760,13 +751,11 @@ class AcademicController extends Controller
 
         $student = Auth::guard('student')->user();
         $studentId = $student->id;
-        $globalData = $request->input('global_data');
 
         $semester = $request->semester;
         $academicSession = $request->session;
         $levelId = $request->level_id;
         $academicLevel = AcademicLevel::find($levelId);
-        $level = $academicLevel->level;
 
         $courseRegs = CourseRegistration::with('course')
         ->where('student_id', $studentId)

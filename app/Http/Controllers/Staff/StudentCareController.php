@@ -81,6 +81,7 @@ class StudentCareController extends Controller
 
         $studentExit = StudentExit::find($request->exit_id);
         $student = Student::find($studentExit->student_id);
+        $academicSession = $studentExit->academic_session;
 
         if($validator->fails()) {
             alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
@@ -91,9 +92,6 @@ class StudentCareController extends Controller
         }
 
         $staff = Auth::guard()->user();
-        $globalData = $request->input('global_data');
-        $academicSession = $globalData->sessionSetting['academic_session'];
-
         $studentExit->status = $request->action;
 
         if ($request->role === 'student care' && !$studentExit->is_hod_approved && $request->action === 'approved') {
@@ -168,8 +166,6 @@ class StudentCareController extends Controller
             return redirect()->back();
         }
 
-        $globalData = $request->input('global_data');
-        $academicSession = $globalData->sessionSetting['academic_session'];
         $exitIds = $request->exit_ids;
         $staff = Auth::guard('staff')->user();
         $isHod = $request->role === 'HOD';
@@ -201,6 +197,8 @@ class StudentCareController extends Controller
                 $studentExit->managed_by = $staff->id;
                 $studentExit->status = $request->action;
             }
+
+            $academicSession = $studentExit->academic_session;
 
             if ($studentExit->save()) {
                 $student = Student::find($studentExit->student_id);

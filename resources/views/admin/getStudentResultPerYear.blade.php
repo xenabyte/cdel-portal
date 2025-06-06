@@ -155,7 +155,7 @@
                                 $class = $classGrade->degree_class ?? 'N/A';
                                 $standing = ($classGrade->id ?? 0) > 4 ? 'NGS' : 'GS'; 
                             @endphp
-                            @if($currentGPA > 0)
+                            {{-- @if($currentGPA > 0) --}}
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{ strtoupper($student->applicant->lastname ?? 'N/A').', '. ucwords(strtolower($student->applicant->othernames ?? 'N/A')) }}</td>
@@ -169,7 +169,7 @@
                                 <td class="bg bg-soft-primary">{{ $currentGPA }}</td>
                                 <td class="bg bg-soft-dark">{{ $student->cgpa ?? '0.00' }}</td>
                             </tr>
-                            @endif
+                            {{-- @endif --}}
                         @endforeach
                     </tbody>
                 </table>

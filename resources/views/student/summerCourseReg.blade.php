@@ -1,7 +1,9 @@
 @extends('student.layout.dashboard')
 @php
     $student = Auth::guard('student')->user();
-    $maxUnit = !empty($student->credit_load)?$student->credit_load:24;
+    $maxUnit = !empty($student->credit_load)?$student->credit_load:15;
+
+    $academicSession = $student->academic_session;
 @endphp
 
 @section('content')
@@ -14,7 +16,7 @@
                 <div class="text-center">
                     <div class="row justify-content-center">
                         <div class="col-lg-9">
-                            <h4 class="mt-4 fw-semibold">Course Registration for {{ $pageGlobalData->sessionSetting->academic_session }} Academic Session - Summer Semester</h4>
+                            <h4 class="mt-4 fw-semibold">Course Registration for {{ $academicSession }} Academic Session - Summer Semester</h4>
                             <p class="text-muted mt-3"></p>
                             <div class="mt-4">
                                 <strong>Summer Course Registration has not started yet.</strong> Please check back later for updates.
@@ -56,7 +58,7 @@
                         <div class="row justify-content-center">
                             <div class="col-lg-9">
                                 <div class="mt-4">
-                                    <h4 class="mt-4 fw-semibold">Course Registration for {{ $pageGlobalData->sessionSetting->academic_session }} Academic Session - Summer Semester</h4>
+                                    <h4 class="mt-4 fw-semibold">Course Registration for {{ $academicSession }} Academic Session - Summer Semester</h4>
                                 </div>
                                 <div class="mt-4">
                                     <form action="{{ url('/student/printSummerCourseReg') }}" method="post" enctype="multipart/form-data">
@@ -86,7 +88,7 @@
         <div class="col-lg-12">
             <div class="card">
                 <div class="card-header align-items-center">
-                    <h4 class="card-title mb-0 flex-grow-1">Summer Course Registration for {{ $pageGlobalData->sessionSetting->academic_session }} academic session</h4>
+                    <h4 class="card-title mb-0 flex-grow-1">Summer Course Registration for {{ $academicSession }} academic session</h4>
                     <br/>
                     <p class=""><strong>Programme:</strong> {{ $student->programme->name }}
                     <br/><strong>Academic Session:</strong> {{ $student->academic_session }}

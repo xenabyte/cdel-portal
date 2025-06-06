@@ -98,7 +98,6 @@ class ResultController extends Controller
     }
 
     public function getStudentResultSummary(Request $request){
-        $globalData = $request->input('global_data');
         $academicSessions = Session::orderBy('id', 'desc')->get();
         $faculties = Faculty::get(); 
         $programmeCategories = ProgrammeCategory::get();
@@ -176,7 +175,6 @@ class ResultController extends Controller
 
     public function generateStudentResultSummary(Request $request){
         $academicLevels = AcademicLevel::get();
-        $globalData = $request->input('global_data');
         $batch = $request->batch;
 
         $academicSessions = Session::orderBy('id', 'desc')->get();
@@ -441,8 +439,6 @@ class ResultController extends Controller
         }
 
         $studentId = $request->student_id;
-        $student = Student::find($studentId);
-        $globalData = $request->input('global_data');
 
         $semester = $request->semester;
         $academicSession = $request->session;

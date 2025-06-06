@@ -86,7 +86,7 @@ class StudentController extends Controller
 
     public function graduatingStudents($programmeCategory) {
 
-        $programmeCategory = ProgrammeCategory::where('category', $programmeCategory)->first();
+        $programmeCategory = ProgrammeCategory::with('academicSessionSetting')->where('category', $programmeCategory)->first();
         $programmeCategoryId = $programmeCategory->id;
 
         $studentsQuery = Student::with(['programme', 'programme.department', 'programme.department.faculty', 'registeredCourses', 'academicLevel'])

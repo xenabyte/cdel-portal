@@ -5,10 +5,6 @@ namespace App\Http\Controllers\Admin;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Hash;
-use App\Http\Requests;
 use Illuminate\Support\Facades\Validator;
 
 use App\Models\Staff;
@@ -18,8 +14,6 @@ use App\Models\Programme;
 use App\Models\AcademicLevel;
 use App\Models\Course;
 use App\Models\Notification;
-use App\Models\GradeScale;
-use App\Models\CourseRegistration;
 use App\Models\Role;
 use App\Models\StaffRole;
 use App\Models\Faculty;
@@ -28,15 +22,6 @@ use App\Models\LevelAdviser;
 use App\Models\CourseManagement;
 use App\Models\ProgrammeCategory as Category;
 
-use App\Mail\NotificationMail;
-
-use App\Libraries\Result\Result;
-
-use SweetAlert;
-use Mail;
-use Alert;
-use Log;
-use Carbon\Carbon;
 
 class StaffController extends Controller
 {
@@ -594,7 +579,6 @@ class StaffController extends Controller
     }
 
     public function addAdviser(Request $request){
-        $globalData = $request->input('global_data');
 
         $validator = Validator::make($request->all(), [
             'staff_id' => 'required',
@@ -617,14 +601,13 @@ class StaffController extends Controller
         }
 
         $programmeCategoryId = $request->programme_category_id;
+        $programmeCategory = ProgrammeCategory::find($programmeCategoryId);
+        $academicSession = $programmeCategory->academicSessionSetting->academic_session ?? null;
 
-        if (!$programmeCategoryId || !isset($globalData->sessionSettings[$programmeCategoryId])) {
-            alert()->error('Oops!', 'Session setting for student\'s programme category not found.')->persistent('Close');
+        if (!$academicSession) {
+            alert()->error('Oops!', 'Session setting for programme category not found.')->persistent('Close');
             return redirect()->back();
         }
-
-        $sessionSetting = $globalData->sessionSettings[$programmeCategoryId];
-        $academicSession = $sessionSetting->academic_session ?? null;
 
 
         $levelAdviser = LevelAdviser::where('programme_id', $request->programme_id)

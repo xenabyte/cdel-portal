@@ -9,6 +9,8 @@ $studentRegistrations = $student->courseRegistrationDocument()->orderBy('created
 $failedCourses = $student->registeredCourses()->where('grade', 'F')->where('re_reg', null)->where('result_approval_id', ResultApprovalStatus::getApprovalStatusId(ResultApprovalStatus::SENATE_APPROVED))->get();
 $studentAdvisoryData = (object) $student->getAcademicAdvisory();
 
+$academicSession = $student->programmeCategory->academicSessionSetting->academic_session;
+
 
     $staff = Auth::guard('staff')->user();
     $staffDeanRole = false;
@@ -240,7 +242,7 @@ $studentAdvisoryData = (object) $student->getAcademicAdvisory();
                                                 <form action="{{ url('/staff/generateResult') }}" method="POST">
                                                     @csrf
                                                     <input type="hidden" name="examSetting_id" value="{{ !empty($pageGlobalData->examSetting)?$pageGlobalData->examSetting->id:null }}">
-                                                    <input type="hidden" name="academic_session" value="{{ $pageGlobalData->sessionSetting->academic_session }}">
+                                                    <input type="hidden" name="academic_session" value="{{ $academicSession }}">
                                                     <input type="hidden" name="student_id" value="{{ $student->id }}">
 
                                                     <div class="row g-3">

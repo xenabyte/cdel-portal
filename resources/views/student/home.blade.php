@@ -14,6 +14,9 @@ $suspension = StudentSuspension::where('student_id', $student->id)->whereNull('e
 $studentAdvisoryData = (object) $student->getAcademicAdvisory();
 
 
+$academicSession = $student->programme->programmeCategory->academicSessionSetting->academic_session;
+$admissionSession = $student->programme->programmeCategory->academicSessionSetting->admission_session;
+
 @endphp
 @section('content')
 <!-- start page title -->
@@ -299,7 +302,7 @@ $studentAdvisoryData = (object) $student->getAcademicAdvisory();
                             </div>
                             <div class="flex-grow-1 ms-3">
                                 <p class="text-uppercase fw-semibold fs-12 text-muted mb-1">
-                                    {{ $pageGlobalData->sessionSetting->academic_session }} Academic Session School Fee Bill</p>
+                                    {{ $academicSession }} Academic Session School Fee Bill</p>
                                 <h4 class=" mb-0">₦<span class="counter-value" data-target="{{ $payment->structures->sum('amount')/100 }}">0</span></h4>
                             </div>
                         </div>
@@ -317,7 +320,7 @@ $studentAdvisoryData = (object) $student->getAcademicAdvisory();
                             </div>
                             <div class="flex-grow-1 ms-3">
                                 <p class="text-uppercase fw-semibold fs-12 text-muted mb-1">
-                                    {{ $pageGlobalData->sessionSetting->academic_session }} Academic Session School Fee Payment </p>
+                                    {{ $academicSession }} Academic Session School Fee Payment </p>
                                 <h4 class=" mb-0">₦<span class="counter-value" data-target="{{ $schoolPaymentTransaction->sum('amount_payed')/100 }}">0</span></h4>
                             </div>
                         </div>
@@ -335,7 +338,7 @@ $studentAdvisoryData = (object) $student->getAcademicAdvisory();
                             </div>
                             <div class="flex-grow-1 ms-3">
                                 <p class="text-uppercase fw-semibold fs-12 text-muted mb-1"> 
-                                    {{ $pageGlobalData->sessionSetting->academic_session }} Academic Session School Fee Outstanding</p>
+                                    {{ $academicSession }} Academic Session School Fee Outstanding</p>
                                 <h4 class=" mb-0">₦<span class="counter-value" data-target="{{  ($payment->structures->sum('amount') - $schoolPaymentTransaction->sum('amount_payed'))/100 }}">0</span></h4>
                             </div>
                         </div>
@@ -409,7 +412,7 @@ $studentAdvisoryData = (object) $student->getAcademicAdvisory();
 
            <div class="card-body border-top border-top-dashed">
                 <div class="vstack gap-2">
-                    <marquee behavior="alternate">{!! strip_tags($pageGlobalData->sessionSetting->campus_wide_message) !!}</marquee>
+                    <marquee behavior="alternate">{!! strip_tags($pageGlobalData->appSetting->campus_wide_message) !!}</marquee>
                 </div>
             </div>
         </div>

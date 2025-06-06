@@ -259,10 +259,6 @@ class HostelController extends Controller
             return redirect()->back();
         }
     
-        $globalData = $request->input('global_data');
-        $academicSession = $globalData->sessionSetting['academic_session'];
-    
-        $hostel = Hostel::findOrFail($request->hostel_id);
         $roomType = RoomType::findOrFail($request->type_id);
     
         $roomExists = Room::where('number', $request->number)
@@ -351,8 +347,6 @@ class HostelController extends Controller
             return redirect()->back();
         }
 
-        $globalData = $request->input('global_data');
-        $academicSession = $globalData->sessionSetting['academic_session'];
 
         $roomId = $request->room_id;
         $room = Room::findOrFail($roomId);
