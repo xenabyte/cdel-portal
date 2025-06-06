@@ -195,7 +195,7 @@
                                                         <label for="dob" class="form-label">Date of Birth</label>
                                                         <input type="date" class="form-control" id="dob" name="dob" 
                                                                value="{{ isset($applicant->dob) ? substr($applicant->dob, 0, 10) : '' }}" 
-                                                               required max="{{ date('Y-m-d', strtotime('-16 years')) }}" />
+                                                               required max="{{ date('Y-m-d', strtotime('-15 years')) }}" />
                                                     </div>
                                                 </div>
     
