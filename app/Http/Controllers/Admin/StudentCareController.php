@@ -141,7 +141,7 @@ class StudentCareController extends Controller
                 $student = Student::find($studentExit->student_id);
 
                 $programmeCategoryId = $student->programme_category_id;
-                $programmeCategory = ProgrammeCategory::find($programmeCategoryId);
+                $programmeCategory = ProgrammeCategory::with('academicSessionSetting', 'examSetting')->where('id', $programmeCategoryId)->first();
                 $academicSession = $programmeCategory->academicSessionSetting->academic_session ?? null;
 
 

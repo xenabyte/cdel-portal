@@ -12,7 +12,6 @@
             <form method="POST" action="{{ url('/applicant/login') }}">
                 @csrf
 
-                <input type="hidden" name="academic_session" value="{{ !empty($pageGlobalData->sessionSetting) ? $pageGlobalData->sessionSetting->application_session : null }}" />
                 <div class="mb-3" class="form-group{{ $errors->has('email') ? ' has-error' : '' }}">
                     <label for="email" class="form-label">Email</label>
                     <input type="text" class="form-control" name="email" id="email" placeholder="Enter email" value="{{ old('email') }}" autofocus>
@@ -41,6 +40,16 @@
                             <strong>{{ $errors->first('password') }}</strong>
                         </div>
                     @endif
+                </div>
+
+                <div class="mb-3">
+                    <div class="form-floating">
+                        <select class="form-select" id="programme_category" name="programme_category_id" aria-label="Programme Category">
+                            <option value="" selected>--Select--</option>
+                            @foreach($programmeCategories as $programmeCategory)<option value="{{ $programmeCategory->id }}">{{ $programmeCategory->category }} Programme</option>@endforeach
+                        </select>
+                        <label for="session">Programme Category</label>
+                    </div>
                 </div>
 
                 <div class="form-check">

@@ -41,7 +41,7 @@ class PaymentController extends Controller
 
     public function payments(Request $request, $programmeCategory) {
 
-        $programmeCategory = ProgrammeCategory::with('academicSessionSetting')->where('category', $programmeCategory)->first();
+        $programmeCategory = ProgrammeCategory::with('academicSessionSetting', 'examSetting')->where('category', $programmeCategory)->first();
         $programmeCategoryId = $programmeCategory->id;
 
         $academicSession = $programmeCategory->academicSessionSetting->academic_session ?? null;
@@ -71,7 +71,7 @@ class PaymentController extends Controller
         $academicSession = $request->academic_session;
         $programmeCategoryId = $request->programme_category_id;
 
-        $programmeCategory = ProgrammeCategory::find($programmeCategoryId);
+        $programmeCategory = ProgrammeCategory::with('academicSessionSetting', 'examSetting')->where('id', $programmeCategoryId)->first();
         $programmeCategoryId = $programmeCategory->id;
 
         $payments = Payment::with(['structures', 'programme'])->where('academic_session', $academicSession)->get();
@@ -111,7 +111,7 @@ class PaymentController extends Controller
             return redirect()->back();
         }
 
-        $programmeCategory = ProgrammeCategory::find($request->programme_category_id)->first();
+        $programmeCategory = ProgrammeCategory::with('academicSessionSetting', 'examSetting')->where('id', $request->programme_category_id)->first();
         $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $request->title.' '.$programmeCategory->category)));
 
         $addPayment = ([            
@@ -1067,7 +1067,7 @@ class PaymentController extends Controller
 
         $student = Student::with('applicant')->where('id', $request->student_id)->first();
         $programmeCategoryId = $student->programme_category_id;
-        $programmeCategory = ProgrammeCategory::with('academicSessionSetting')->where('id', $programmeCategoryId)->first();
+        $programmeCategory = ProgrammeCategory::with('academicSessionSetting', 'examSetting')->where('id', $programmeCategoryId)->first();
         $academicSession = $programmeCategory->academicSessionSetting->academic_session ?? null;
         if (!$academicSession) {
             alert()->error('Oops!', 'Session setting for programme category not found.')->persistent('Close');

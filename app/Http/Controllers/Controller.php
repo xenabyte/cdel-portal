@@ -1014,7 +1014,7 @@ class Controller extends BaseController
             'programme_category_id' => $programmeCategoryId
         ]);
 
-        $programmeCategory = ProgrammeCategory::find($programmeCategoryId);
+        $programmeCategory = ProgrammeCategory::with('academicSessionSetting', 'examSetting')->where('id', $programmeCategoryId)->first();
 
         if(!$checkApplicant = User::where('email', strtolower($email))->where('academic_session', $applicationSession)->first()){
             Log::info("********************** Creating Applicant **********************: ".' - '.$lastname.' - '.$otherNames);

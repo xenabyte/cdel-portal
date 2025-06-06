@@ -212,7 +212,7 @@ class ProgrammeController extends Controller
     }
 
     public function studentCourses(Request $request, $programmeCategory){
-        $programmeCategory = ProgrammeCategory::with('academicSessionSetting')->where('category', $programmeCategory)->first();
+        $programmeCategory = ProgrammeCategory::with('academicSessionSetting', 'examSetting')->where('category', $programmeCategory)->first();
         $programmeCategoryId = $programmeCategory->id;
 
         $programmes = Programme::where('category_id', $programmeCategoryId)->get();
@@ -283,7 +283,7 @@ class ProgrammeController extends Controller
     public function addCourseForStudent(Request $request){
         $programmeCategoryId = $request->programme_category_id;
 
-        $programmeCategory = ProgrammeCategory::with('academicSessionSetting')->where('category', $programmeCategoryId)->first();
+        $programmeCategory = ProgrammeCategory::with('academicSessionSetting', 'examSetting')->where('category', $programmeCategoryId)->first();
         $academicSession = $programmeCategory->academicSessionSetting->academic_session ?? null;
 
         if (!$academicSession) {
@@ -432,7 +432,7 @@ class ProgrammeController extends Controller
 
         $programmeCategoryId = $request->programme_category_id; 
 
-        $programmeCategory = ProgrammeCategory::with('academicSessionSetting')->where('id', $programmeCategoryId)->first();
+        $programmeCategory = ProgrammeCategory::with('academicSessionSetting', 'examSetting')->where('id', $programmeCategoryId)->first();
         $academicSession = $programmeCategory->academicSessionSetting->academic_session ?? null;
 
         if (!$academicSession) {
@@ -519,7 +519,7 @@ class ProgrammeController extends Controller
         $programmeCategories = ProgrammeCategory::get();
         $programmeCategoryId = $request->programme_category_id;
 
-        $programmeCategory = ProgrammeCategory::with('academicSessionSetting')->where('id', $programmeCategoryId)->first();
+        $programmeCategory = ProgrammeCategory::with('academicSessionSetting', 'examSetting')->where('id', $programmeCategoryId)->first();
         $academicSession = $programmeCategory->academicSessionSetting->academic_session ?? null;
 
         if (!$academicSession) {
@@ -603,7 +603,7 @@ class ProgrammeController extends Controller
             $academicSession = str_replace('-', '/', $academicSession);
         }
 
-        $programmeCategory = ProgrammeCategory::with('academicSessionSetting')->where('category', $programmeCategory)->first();
+        $programmeCategory = ProgrammeCategory::with('academicSessionSetting', 'examSetting')->where('category', $programmeCategory)->first();
         $programmeCategoryId = $programmeCategory->id;
 
         if (!$academicSession) {
@@ -637,7 +637,7 @@ class ProgrammeController extends Controller
 
     public function createLecture(Request $request){
         $programmeCategoryId = $request->programme_category_id;
-        $programmeCategory = ProgrammeCategory::with('academicSessionSetting')->where('id', $programmeCategoryId)->first();
+        $programmeCategory = ProgrammeCategory::with('academicSessionSetting', 'examSetting')->where('id', $programmeCategoryId)->first();
         $academicSession = $programmeCategory->academicSessionSetting->academic_session ?? null;
         
         if (!$academicSession) {
@@ -863,7 +863,7 @@ class ProgrammeController extends Controller
         
 
         $programmeCategoryId = $request->programme_category_id;
-        $programmeCategory = ProgrammeCategory::with('academicSessionSetting')->where('id', $programmeCategoryId)->first();
+        $programmeCategory = ProgrammeCategory::with('academicSessionSetting', 'examSetting')->where('id', $programmeCategoryId)->first();
         $academicSession = $programmeCategory->academicSessionSetting->academic_session ?? null;
         
         if (!$academicSession) {
@@ -1378,7 +1378,7 @@ class ProgrammeController extends Controller
 
     public function adviserProgrammes(Request $request, $programmeCategory){
     
-        $programmeCategory = ProgrammeCategory::with('academicSessionSetting')->where('category', $programmeCategory)->first();
+        $programmeCategory = ProgrammeCategory::with('academicSessionSetting', 'examSetting')->where('category', $programmeCategory)->first();
         $programmeCategoryId = $programmeCategory->id;
         $academicSession = $programmeCategory->academicSessionSetting->academic_session ?? null;
         
@@ -1437,7 +1437,7 @@ class ProgrammeController extends Controller
             return redirect()->back();
         }
 
-        $programmeCategory = ProgrammeCategory::with('academicSessionSetting')->where('category', $programmeCategory)->first();
+        $programmeCategory = ProgrammeCategory::with('academicSessionSetting', 'examSetting')->where('category', $programmeCategory)->first();
         $programmeCategoryId = $programmeCategory->id;
         $academicSession = $programmeCategory->academicSessionSetting->academic_session ?? null;
         if (!$academicSession) {
@@ -1477,7 +1477,7 @@ class ProgrammeController extends Controller
             return redirect()->back();
         }
 
-        $programmeCategory = ProgrammeCategory::with('academicSessionSetting')->where('category', $programmeCategory)->first();
+        $programmeCategory = ProgrammeCategory::with('academicSessionSetting', 'examSetting')->where('category', $programmeCategory)->first();
         $programmeCategoryId = $programmeCategory->id;
         $academicSession = $programmeCategory->academicSessionSetting->academic_session ?? null;
 

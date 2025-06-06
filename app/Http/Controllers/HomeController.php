@@ -73,7 +73,7 @@ class HomeController extends Controller
         }
 
         $programmeCategoryId = $student->programme_category_id ?? null;
-        $programmeCategory = ProgrammeCategory::with('academicSessionSetting')->where('id', $programmeCategoryId)->first();
+        $programmeCategory = ProgrammeCategory::with('academicSessionSetting', 'examSetting')->where('id', $programmeCategoryId)->first();
 
         $academicSession = $programmeCategory->academicSessionSetting->academic_session ?? null;
         if (!$academicSession) {
@@ -412,10 +412,10 @@ class HomeController extends Controller
     public function getPayments(Request $request){
 
         $programmeCategoryId = $request->programme_category_id;
-        $programmeCategory = ProgrammeCategory::find($programmeCategoryId);
+        $programmeCategory = ProgrammeCategory::with('academicSessionSetting', 'examSetting')->where('id', $programmeCategoryId)->first();
 
-        $academicSession = $programmeCategory->academicSessionSetting->academic_session ?? null;
-        if (!$academicSession) {
+        $applicationSession = $programmeCategory->academicSessionSetting->application_session ?? null;
+        if (!$applicationSession) {
             alert()->error('Oops!', 'Session setting for programme category not found.')->persistent('Close');
             return redirect()->back();
         }
@@ -444,7 +444,7 @@ class HomeController extends Controller
     }
 
     public function getProgrammeCategory(Request $request){
-        $programmeCategory = ProgrammeCategory::find($request->programme_category_id);
+        $programmeCategory = ProgrammeCategory::with('academicSessionSetting', 'examSetting')->where('id', $request->programme_category_id)->first();
         
         return $programmeCategory;
     }

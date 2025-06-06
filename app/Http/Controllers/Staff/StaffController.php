@@ -309,7 +309,7 @@ class StaffController extends Controller
         $staff = Auth::guard('staff')->user();
         $staffId = $staff->id;
 
-        $programmeCategory = Category::with('academicSessionSetting')->where('category', $programmeCategory)->first();
+        $programmeCategory = Category::with('academicSessionSetting', 'examSetting')->where('category', $programmeCategory)->first();
         $programmeCategoryId = $programmeCategory->id;
 
         $programmes = Programme::with('department', 'department.faculty')->where('category_id', $programmeCategoryId)->where('department_id', $staff->department_id)->get();
@@ -502,7 +502,7 @@ class StaffController extends Controller
             $academicSession = str_replace('-', '/', $academicSession);
         }
 
-        $programmeCategory = Category::with('academicSessionSetting')->where('category', $programmeCategory)->first();
+        $programmeCategory = Category::with('academicSessionSetting', 'examSetting')->where('category', $programmeCategory)->first();
         $programmeCategoryId = $programmeCategory->id;
 
         if(empty($academicSession)){
@@ -743,7 +743,7 @@ class StaffController extends Controller
         }
 
         $programmeCategoryId = $request->programme_category_id;
-        $programmeCategory = ProgrammeCategory::find($programmeCategoryId);
+        $programmeCategory = ProgrammeCategory::with('academicSessionSetting', 'examSetting')->where('id', $programmeCategoryId)->first();
         $academicSession = $programmeCategory->academicSessionSetting->academic_session;
 
         $staff = Auth::guard('staff')->user();
@@ -806,7 +806,7 @@ class StaffController extends Controller
         }
 
         $programmeCategoryId = $request->programme_category_id;
-        $programmeCategory = ProgrammeCategory::find($programmeCategoryId);
+        $programmeCategory = ProgrammeCategory::with('academicSessionSetting', 'examSetting')->where('id', $programmeCategoryId)->first();
         $academicSession = $programmeCategory->academicSessionSetting->academic_session;
         $resultProcessStatus = $programmeCategory->examSetting->result_processing_status;
         $testProcessStatus = $programmeCategory->examSetting->test_processing_status;
@@ -900,7 +900,7 @@ class StaffController extends Controller
         }
 
         $programmeCategoryId = $request->programme_category_id;
-        $programmeCategory = ProgrammeCategory::find($programmeCategoryId);
+        $programmeCategory = ProgrammeCategory::with('academicSessionSetting', 'examSetting')->where('id', $programmeCategoryId)->first();
         $academicSession = $programmeCategory->academicSessionSetting->academic_session;
 
         $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $course->code.$request->topic)));
@@ -1120,7 +1120,7 @@ class StaffController extends Controller
         }
 
         $programmeCategoryId = $request->programme_category_id;
-        $programmeCategory = ProgrammeCategory::find($programmeCategoryId);
+        $programmeCategory = ProgrammeCategory::with('academicSessionSetting', 'examSetting')->where('id', $programmeCategoryId)->first();
         $academicSession = $programmeCategory->academicSessionSetting->academic_session;
 
         $resultProcessStatus = $programmeCategory->examSetting->result_processing_status;
@@ -1557,7 +1557,7 @@ class StaffController extends Controller
         }
 
         $programmeCategoryId = $request->programme_category_id;
-        $programmeCategory = ProgrammeCategory::find($programmeCategoryId);
+        $programmeCategory = ProgrammeCategory::with('academicSessionSetting', 'examSetting')->where('id', $programmeCategoryId)->first();
         $academicSession = $programmeCategory->academicSessionSetting->academic_session;
 
         if(!$staff = Staff::find($request->staff_id)){

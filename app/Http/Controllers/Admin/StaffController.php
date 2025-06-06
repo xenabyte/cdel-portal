@@ -601,7 +601,7 @@ class StaffController extends Controller
         }
 
         $programmeCategoryId = $request->programme_category_id;
-        $programmeCategory = ProgrammeCategory::find($programmeCategoryId);
+        $programmeCategory = ProgrammeCategory::with('academicSessionSetting', 'examSetting')->where('id', $programmeCategoryId)->first();
         $academicSession = $programmeCategory->academicSessionSetting->academic_session ?? null;
 
         if (!$academicSession) {

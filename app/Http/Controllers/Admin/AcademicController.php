@@ -67,7 +67,7 @@ class AcademicController extends Controller
 
     public function sessionSetup($programmeCategory){
 
-        $programmeCategory = ProgrammeCategory::with('academicSessionSetting')->where('category', $programmeCategory)->first();
+        $programmeCategory = ProgrammeCategory::with('academicSessionSetting', 'examSetting')->where('category', $programmeCategory)->first();
         $programmeCategoryId = $programmeCategory->id;
 
         $sessions = Session::orderBy('id', 'DESC')->get();
@@ -100,9 +100,9 @@ class AcademicController extends Controller
 
     public function setSession(Request $request){
         $validator = Validator::make($request->all(), [
-            'admission_session' => 'required',
-            'academic_session' => 'required',
-            'application_session' => 'required',
+            'admission_session' => 'nullable',
+            'academic_session' => 'nullable',
+            'application_session' => 'nullable',
             'programme_category_id' => 'required' 
         ]);
 
@@ -149,10 +149,15 @@ class AcademicController extends Controller
 
     public function setRegistrarSetting(Request $request){
         $validator = Validator::make($request->all(), [
-            'registrar_name' => 'required',
-            'registrar_signature' => 'required',
+            'registrar_name' => 'nullable',
+            'registrar_signature' => 'nullable',
         ]);
 
+
+        if ($validator->fails()) {
+            alert()->error('Validation Error', $validator->errors()->first())->persistent('Close');
+            return redirect()->back();
+        }
 
         $sessionSetting = new SessionSetting;
         if(!empty($request->sessionSetting_id) && !$sessionSetting = SessionSetting::find($request->sessionSetting_id)){
@@ -187,10 +192,15 @@ class AcademicController extends Controller
 
     public function setFeeStatus(Request $request){
         $validator = Validator::make($request->all(), [
-            'school_fee_status' => 'required',
-            'accomondation_booking_status' => 'required',
+            'school_fee_status' => 'nullable',
+            'accomondation_booking_status' => 'nullable',
+            'resumption_date' => 'nullable'
         ]);
 
+        if ($validator->fails()) {
+            alert()->error('Validation Error', $validator->errors()->first())->persistent('Close');
+            return redirect()->back();
+        }
 
         $sessionSetting = new AcademicSessionSetting;
         if(!empty($request->sessionSetting_id) && !$sessionSetting = AcademicSessionSetting::find($request->sessionSetting_id)){
@@ -223,6 +233,11 @@ class AcademicController extends Controller
         $validator = Validator::make($request->all(), [
             'campus_wide_message' => 'required',
         ]);
+
+        if ($validator->fails()) {
+            alert()->error('Validation Error', $validator->errors()->first())->persistent('Close');
+            return redirect()->back();
+        }
 
         $sessionSetting = new SessionSetting;
         if(!empty($request->sessionSetting_id) && !$sessionSetting = SessionSetting::find($request->sessionSetting_id)){
@@ -630,7 +645,7 @@ class AcademicController extends Controller
             return redirect()->back();
         }
 
-        $programmeCategory = ProgrammeCategory::with('academicSessionSetting')->where('id', $request->category)->first();
+        $programmeCategory = ProgrammeCategory::with('academicSessionSetting', 'examSetting')->where('id', $request->category)->first();
         $programmeCategoryId = $programmeCategory->id;
         $academicSession = $programmeCategory->academicSessionSetting->academic_session ?? null;
         if (!$academicSession) {
@@ -1230,7 +1245,7 @@ class AcademicController extends Controller
 
     public function allStudents($programmeCategory){
 
-        $programmeCategory = ProgrammeCategory::with('academicSessionSetting')->where('category', $programmeCategory)->first();
+        $programmeCategory = ProgrammeCategory::with('academicSessionSetting', 'examSetting')->where('category', $programmeCategory)->first();
         $programmeCategoryId = $programmeCategory->id;
 
         $students = Student::
@@ -1259,7 +1274,7 @@ class AcademicController extends Controller
             ->first();
         
         $programmeCategoryId = $student->programme_category_id;
-        $programmeCategory = ProgrammeCategory::with('academicSessionSetting')->where('id', $programmeCategoryId)->first();
+        $programmeCategory = ProgrammeCategory::with('academicSessionSetting', 'examSetting')->where('id', $programmeCategoryId)->first();
         $applicationSession = $programmeCategory->academicSessionSetting->application_session ?? null;
 
         if (!$applicationSession) {
@@ -1284,7 +1299,7 @@ class AcademicController extends Controller
 
     public function massPromotion(Request $request, $programmeCategory){
        
-        $programmeCategory = ProgrammeCategory::with('academicSessionSetting')->where('category', $programmeCategory)->first();
+        $programmeCategory = ProgrammeCategory::with('academicSessionSetting', 'examSetting')->where('category', $programmeCategory)->first();
         $programmeCategoryId = $programmeCategory->id;        
         $academicSession = $programmeCategory->academicSessionSetting->academic_session ?? null;
         if (!$academicSession) {
@@ -1317,7 +1332,7 @@ class AcademicController extends Controller
     public function promoteStudent(Request $request){
         $programmeId = $request->programme_id;
         $programmeCategoryId = $request->programme_category_id;
-        $programmeCategory = ProgrammeCategory::with('academicSessionSetting')->where('id', $programmeCategoryId)->first();
+        $programmeCategory = ProgrammeCategory::with('academicSessionSetting', 'examSetting')->where('id', $programmeCategoryId)->first();
         $academicSession = $programmeCategory->academicSessionSetting->academic_session ?? null;
         
         $academicSession = $programmeCategory->academicSessionSetting->academic_session ?? null;
@@ -1578,7 +1593,7 @@ class AcademicController extends Controller
             $academicSession = str_replace('-', '/', $academicSession);
         }
 
-        $programmeCategory = ProgrammeCategory::with('academicSessionSetting')->where('category', $programmeCategory)->first();
+        $programmeCategory = ProgrammeCategory::with('academicSessionSetting', 'examSetting')->where('category', $programmeCategory)->first();
         $programmeCategoryId = $programmeCategory->id;
         
         $academicSession = $programmeCategory->academicSessionSetting->academic_session ?? null;
@@ -1988,7 +2003,7 @@ class AcademicController extends Controller
         $studentId = $request->student_id;
         $student = Student::find($studentId);
         $programmeCategoryId = $student->programme_category_id;
-        $programmeCategory = ProgrammeCategory::find($programmeCategoryId);
+        $programmeCategory = ProgrammeCategory::with('academicSessionSetting', 'examSetting')->where('id', $programmeCategoryId)->first();
         $academicSession = $programmeCategory->academicSessionSetting->academic_session ?? null;
         $semester = $programmeCategory->examSetting->semester;
         

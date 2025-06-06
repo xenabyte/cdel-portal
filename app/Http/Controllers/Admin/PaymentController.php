@@ -50,7 +50,7 @@ class PaymentController extends Controller
     }
 
     public function payments(Request $request, $programmeCategory) {
-        $programmeCategory = ProgrammeCategory::with('academicSessionSetting')->where('category', $programmeCategory)->first();
+        $programmeCategory = ProgrammeCategory::with('academicSessionSetting', 'examSetting')->where('category', $programmeCategory)->first();
         $programmeCategoryId = $programmeCategory->id;
 
         $academicSession = $programmeCategory->academicSessionSetting->academic_session ?? null;
@@ -80,7 +80,7 @@ class PaymentController extends Controller
         $academicSession = $request->academic_session;
         $programmeCategoryId = $request->programme_category_id;
 
-        $programmeCategory = ProgrammeCategory::find($programmeCategoryId);
+        $programmeCategory = ProgrammeCategory::with('academicSessionSetting', 'examSetting')->where('id', $programmeCategoryId)->first();
         $programmeCategoryId = $programmeCategory->id;
 
         $payments = Payment::with(['structures', 'programme'])->where('academic_session', $academicSession)->where('programme_category_id', $programmeCategoryId)->get();
@@ -518,7 +518,7 @@ class PaymentController extends Controller
 
                     $academicSession = $request->academic_session;
                     $programmeCategoryId = $request->programme_category_id;
-                    $programmeCategory = ProgrammeCategory::find($programmeCategoryId);
+                    $programmeCategory = ProgrammeCategory::with('academicSessionSetting', 'examSetting')->where('id', $programmeCategoryId)->first();
 
                     $title = $row['payment_name'];
                     $amount = !empty($row['payment_amount']) ? $row['payment_amount'] :null;
@@ -1082,7 +1082,7 @@ class PaymentController extends Controller
         $paymentId = $request->payment_id;
         $programmeCategoryId = $request->programme_category_id;
 
-        $programmeCategory = ProgrammeCategory::with('academicSessionSetting')->where('category', $programmeCategoryId)->first();
+        $programmeCategory = ProgrammeCategory::with('academicSessionSetting', 'examSetting')->where('category', $programmeCategoryId)->first();
         $programmeCategoryId = $programmeCategory->id;
 
         $academicSession = $programmeCategory->academicSessionSetting->academic_session ?? null;

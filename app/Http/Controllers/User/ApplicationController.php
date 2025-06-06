@@ -331,7 +331,7 @@ class ApplicationController extends Controller
         $applicationType = !empty($request->applicationTypeDropdown) ? $request->applicationTypeDropdown : $request->input('applicationType');
         $applicantProgrammeCategoryId = $request->programme_category_id;
 
-        $applicantProgrammeCategory = ProgrammeCategory::find($applicantProgrammeCategoryId);
+        $applicantProgrammeCategory = ProgrammeCategory::with('academicSessionSetting', 'examSetting')->where('id', $applicantProgrammeCategoryId)->first();
         $applicationSession = $applicantProgrammeCategory->academicSessionSetting->application_session;
 
         $programmeCategories = ProgrammeCategory::get();

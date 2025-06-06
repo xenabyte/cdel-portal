@@ -55,7 +55,7 @@ class AdmissionController extends Controller
 
     public function applicants(Request $request, $programmeCategory){
 
-        $programmeCategory = ProgrammeCategory::with('academicSessionSetting')->where('category', $programmeCategory)->first();
+        $programmeCategory = ProgrammeCategory::with('academicSessionSetting', 'examSetting')->where('category', $programmeCategory)->first();
         $programmeCategoryId = $programmeCategory->id;
 
         $academicSession = $programmeCategory->academicSessionSetting->academic_session ?? null;
@@ -86,7 +86,7 @@ class AdmissionController extends Controller
 
     public function matriculants(Request $request, $programmeCategory){
 
-        $programmeCategory = ProgrammeCategory::with('academicSessionSetting')->where('category', $programmeCategory)->first();
+        $programmeCategory = ProgrammeCategory::with('academicSessionSetting', 'examSetting')->where('category', $programmeCategory)->first();
         $programmeCategoryId = $programmeCategory->id;
 
         $academicSession = $programmeCategory->academicSessionSetting->academic_session ?? null;
@@ -167,7 +167,7 @@ class AdmissionController extends Controller
         }
 
         $programmeCategoryId = $applicant->programme_category_id;
-        $programmeCategory = ProgrammeCategory::with('academicSessionSetting')->where('id', $programmeCategoryId)->first();
+        $programmeCategory = ProgrammeCategory::with('academicSessionSetting', 'examSetting')->where('id', $programmeCategoryId)->first();
         $admissionSession = $programmeCategory->academicSessionSetting->admission_session ?? null;
         if (!$admissionSession) {
             alert()->error('Oops!', 'Session setting for programme category not found.')->persistent('Close');
@@ -262,7 +262,7 @@ class AdmissionController extends Controller
     public function students(Request $request, $programmeCategory) {
         $programmes = Programme::get();
 
-        $programmeCategory = ProgrammeCategory::with('academicSessionSetting')->where('category', $programmeCategory)->first();
+        $programmeCategory = ProgrammeCategory::with('academicSessionSetting', 'examSetting')->where('category', $programmeCategory)->first();
         $programmeCategoryId = $programmeCategory->id;
         
         $academicSession = $programmeCategory->academicSessionSetting->academic_session ?? null;
@@ -389,7 +389,7 @@ class AdmissionController extends Controller
     public function createNewApplicant(Request $request){
 
         $programmeCategoryId = $request->programme_category_id;
-        $programmeCategory = ProgrammeCategory::find($programmeCategoryId);
+        $programmeCategory = ProgrammeCategory::with('academicSessionSetting', 'examSetting')->where('id', $programmeCategoryId)->first();
         $applicationSession = $programmeCategory->academicSessionSetting->application_session ?? null;
         
         if (!$applicationSession) {
