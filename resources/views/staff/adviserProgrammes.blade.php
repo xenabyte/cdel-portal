@@ -53,7 +53,6 @@
                             <th scope="col">Level</th>
                             <th scope="col">DAP Comment</th>
                             <th scope="col">DAP Approval Status</th>
-                            <th scope="col">Course(s)</th>
                             <th scope="col"></th>
                         </tr>
                     </thead>
@@ -82,7 +81,6 @@
                                     @endif
                                 @endif
                             </td>
-                            <td><a href="#" data-bs-toggle="modal" data-bs-target="#viewCourses{{ $adviserProgramme->id }}" class="btn btn-primary">Courses</a></td>
                             <td>
                                 @if(!$staffAcademicPlannerRole)
                                     @if($adviserProgramme->course_approval_status == 'approved')
