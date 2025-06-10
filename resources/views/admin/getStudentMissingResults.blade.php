@@ -19,6 +19,123 @@
 </div>
 <!-- end page title -->
 
+
+@if(empty($students))
+<div class="row justify-content-center">
+    <div class="col-lg-6">
+        <div class="card">
+            <div class="card-body">
+                <div class="text-center">
+                    <div class="row justify-content-center">
+                        <div class="col-lg-9">
+                            <h4 class="mt-4 fw-semibold">Fetch Examination result</h4>
+                            <p class="text-muted mt-3"></p>
+                            <div class="mt-4">
+                                <form action="{{ url('/admin/generateStudentMissingResults') }}" method="POST">
+                                    @csrf
+                                    <div class="row g-3">
+
+                                        <div class="col-lg-12">
+                                            <div class="form-floating">
+                                                <select class="form-select" id="programme_category" name="programme_category_id" aria-label="Programme Category">
+                                                    <option value="" selected>--Select--</option>
+                                                    @foreach($programmeCategories as $programmeCategory)<option value="{{ $programmeCategory->id }}">{{ $programmeCategory->category }} Programme</option>@endforeach
+                                                </select>
+                                                <label for="session">Programme Category</label>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-12">
+                                            <div class="form-floating">
+                                                <select class="form-select" id="faculty" name="faculty_id" aria-label="faculty" onchange="handleFacultyChange(event)">
+                                                    <option value="" selected>--Select--</option>
+                                                    @foreach($faculties as $faculty)
+                                                        <option value="{{ $faculty->id }}">{{ $faculty->name }}</option>
+                                                    @endforeach
+                                                </select>
+                                                <label for="faculty">Faculty</label>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-12">
+                                            <div class="form-floating">
+                                                <select class="form-select" id="department" name="department_id" aria-label="department" onchange="handleDepartmentChange(event)">
+                                                    <option value="" selected>--Select--</option>
+                                                </select>
+                                                <label for="department">Department</label>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-12">
+                                            <div class="form-floating">
+                                                <select class="form-select" id="programme" name="programme_id" aria-label="programme">
+                                                    <option value="" selected>--Select--</option>
+                                                </select>
+                                                <label for="department">Programme</label>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="col-lg-12">
+                                            <div class="form-floating">
+                                                <select class="form-select" id="level" name="level_id" aria-label="level">
+                                                    <option value="" selected>--Select--</option>
+                                                    @foreach($academicLevels as $academicLevel)
+                                                        <option value="{{ $academicLevel->id }}">{{ $academicLevel->level }} Level</option>
+                                                    @endforeach
+                                                </select>
+                                                <label for="level">Academic Level</label>
+                                            </div>
+                                        </div>
+        
+                                        <div class="col-lg-12">
+                                            <div class="form-floating">
+                                                <select class="form-select" id="semester" name="semester" aria-label="semester">
+                                                    <option value="" selected>--Select--</option>
+                                                    <option value="1">Harmattan Semester</option>
+                                                    <option value="2">Rain Semester</option>
+                                                </select>
+                                                <label for="semester">Semester</label>
+                                            </div>
+                                        </div>
+        
+                                        <div class="col-lg-12">
+                                            <div class="form-floating">
+                                                <select class="form-select" id="session" name="session" aria-label="Academic Session">
+                                                    <option value="" selected>--Select--</option>
+                                                    @foreach($academicSessions as $session)<option value="{{ $session->year }}">{{ $session->year }}</option>@endforeach
+                                                </select>
+                                                <label for="session">Academic Session</label>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-12">
+                                            <div class="form-floating">
+                                                <select class="form-select" id="batch" name="batch" aria-label="Batch">
+                                                    <option value="" selected>--Select--</option>
+                                                    <option value="A">Batch A</option>
+                                                    <option value="B">Batch B</option>
+                                                    <option value="C">Batch C</option>
+                                                </select>
+                                                <label for="batch">Batch</label>
+                                            </div>
+                                        </div>
+
+                                        <button type="submit" id="submit-button" class="btn btn-fill btn-primary btn-lg btn-block mb-5">Get Missing Results</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--end card-->
+    </div>
+    <!--end col-->
+</div>
+@endif
+
+@if(!empty($students))
 <div class="row">
     <div class="col-lg-12">
         <div class="card">
@@ -67,5 +184,6 @@
     </div>
     <!-- end col -->
 </div>
-<!-- end row -
+<!-- end row -->
+@endif
 @endsection

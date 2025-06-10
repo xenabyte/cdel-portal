@@ -24,7 +24,7 @@
     <div class="col-lg-12">
         <div class="card">
             <div class="card-header align-items-center">
-                <h4 class="card-title mb-0 flex-grow-1">Students allocated for {{ $pageGlobalData->sessionSetting->academic_session }} academic session</h4>
+                <h4 class="card-title mb-0 flex-grow-1">Students allocated for {{ $programmeCategory->academicSessionSetting->academic_session }} academic session</h4>
             </div><!-- end card header -->
 
             <div class="card-body table-responsive">

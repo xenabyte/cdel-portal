@@ -52,6 +52,7 @@
         .cke_notifications_area{
             display: none;
         }
+
     </style>
 </head>
 
@@ -59,7 +60,24 @@
     @include('sweetalert::alert')
     <!-- Begin page -->
     <div id="layout-wrapper">
-
+        <div id="loading-overlay" style="
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: rgba(255,255,255,0.8);
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            font-size: 2em;
+            color: #333;
+        ">
+            <i class="fa fa-spinner fa-spin"></i>
+            <div style="margin-top: 10px;">Loading, please wait...</div>
+        </div>
         <header id="page-topbar">
             <div class="layout-width">
                 <div class="navbar-header">
@@ -320,14 +338,36 @@
                                         <a href="{{url('/admin/setting')}}" class="nav-link" data-key="t-calendar">App Settings </a>
                                     </li>
                                     <li class="nav-item">
-                                        <a href="{{url('/admin/sessionSetup')}}" class="nav-link" data-key="t-calendar">Academic Session Setup </a>
+                                        <a href="#sessionSetup" class="nav-link" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sessionSetup" data-key="t-sessionSetup"> Academic Session Setup
+                                        </a>
+                                        <div class="collapse menu-dropdown" id="sessionSetup">
+                                            <ul class="nav nav-sm flex-column">
+                                                <li class="nav-item">
+                                                    <a href="{{ url('/admin/sessionSetup/'.$programmeCategory::UNDERGRADUATE) }}" class="nav-link">{{ $programmeCategory::UNDERGRADUATE }}</a>
+                                                </li>
+                        
+                                                <li class="nav-item">
+                                                    <a href="{{ url('/admin/sessionSetup/'.$programmeCategory::TOPUP) }}" class="nav-link">{{ $programmeCategory::TOPUP }}</a>
+                                                </li>
+            
+                                                <li class="nav-item">
+                                                    <a href="{{ url('/admin/sessionSetup/'.$programmeCategory::PGD) }}" class="nav-link">{{ $programmeCategory::PGD }}</a>
+                                                </li>
+
+                                                <li class="nav-item">
+                                                    <a href="{{ url('/admin/sessionSetup/'.$programmeCategory::MASTER) }}" class="nav-link">{{ $programmeCategory::MASTER }}</a>
+                                                </li>
+                                                
+                                                <li class="nav-item">
+                                                    <a href="{{ url('/admin/sessionSetup/'.$programmeCategory::DOCTORATE) }}" class="nav-link">{{ $programmeCategory::DOCTORATE }}</a>
+                                                </li>
+                                                
+                                            </ul>
+                                        </div>
                                     </li>
                                     {{-- <li class="nav-item">
                                         <a href="{{ url('/admin/courseRegMgt') }}" class="nav-link">Course Reg. Mgt</a>
                                     </li> --}}
-                                    <li class="nav-item">
-                                        <a href="{{ url('/admin/examDocketMgt') }}" class="nav-link">Exam Docket Mgt</a>
-                                    </li>
                                     <li class="nav-item">
                                         <a href="{{url('/admin/programmeCategory')}}" class="nav-link" data-key="t-chat">Programme Category </a>
                                     </li>
@@ -642,6 +682,10 @@
                                     <li class="nav-item">
                                         <a href="{{ url('/admin/getStudentResultSummary') }}" class="nav-link">Students Results Summary</a>
                                     </li>
+
+                                    <li class="nav-item">
+                                        <a href="{{ url('/admin/getStudentMissingResults') }}" class="nav-link">Student Missing Result</a>
+                                    </li>
                                 </ul>
                             </div>
                         </li> <!-- end Dashboard Menu -->
@@ -736,9 +780,6 @@
                                     </li>
                                     <li class="nav-item">
                                         <a href="{{ url('/admin/studentResult') }}" class="nav-link">Student Result</a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a href="{{ url('/admin/getStudentMissingResults/1') }}" class="nav-link">Student Missing Result</a>
                                     </li>
                                     <li class="nav-item">
                                         <a href="{{ url('/admin/demoteStudent') }}" class="nav-link">Demote Student</a>
@@ -1098,6 +1139,11 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.32/vfs_fonts.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+     <script>
+        window.addEventListener('load', function() {
+            document.getElementById('loading-overlay').style.display = 'none';
+        });
+    </script>
     <script>
         document.getElementById('copyButton').addEventListener('click', function() {
             // Select the link text
@@ -1305,7 +1351,7 @@
             });
         });
     </script>
-    <script>
+    {{-- <script>
         $(document).ready(function() {
         $("#submit-button").click(function() {
             // Disable the button
@@ -1319,6 +1365,23 @@
             // Replace the text with a spinner
             $(this).html("<i class='fa fa-spinner fa-spin'></i>");
         });
+        });
+    </script> --}}
+    <script>
+        $(document).ready(function() {
+            $("#submit-button").click(function() {
+                // Disable the button
+                $(this).prop("disabled", true);
+
+                // Show the full-screen overlay
+                $("#loading-overlay").fadeIn();
+
+                // Optionally update button text (not necessary with overlay)
+                // $(this).html("<i class='fa fa-spinner fa-spin'></i>");
+
+                // Submit the form
+                $(this.form).submit();
+            });
         });
     </script>
 

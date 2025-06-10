@@ -126,9 +126,9 @@ $qrcode = 'https://quickchart.io/chart?chs=300x300&cht=qr&chl='.env('APP_URL').'
         </div>
         <div class="col-md-3 text-end">
             @if($exitApplication->status == 'approved')
-                <img src="{{ asset('approved.png') }}" width="40%" style="border: 1px solid black;">
+                <img src="{{ asset('approved.png') }}" width="20%" style="border: 1px solid black;">
             @elseif($exitApplication->status == 'declined')
-                <img src="{{ asset('denied.png') }}" width="40%" style="border: 1px solid black;">
+                <img src="{{ asset('denied.png') }}" width="20%" style="border: 1px solid black;">
             @endif
         </div>
     </div>

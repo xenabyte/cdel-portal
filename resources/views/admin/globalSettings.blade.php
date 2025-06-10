@@ -21,7 +21,7 @@
         <!-- end page title -->
 
         <div class="row">
-            <div class="col-lg-6">
+            <div class="col-lg-4">
                 <div class="card">
                     <div class="card-header align-items-center d-flex">
                         <h4 class="card-title mb-0 flex-grow-1">Site Information</h4>
@@ -49,6 +49,67 @@
                 </div><!-- end card -->
             </div>
             <!-- end col -->
+
+             <div class="col-lg-8">
+                <div class="card">
+                    <div class="card-header align-items-center d-flex">
+                        <h4 class="card-title mb-0 flex-grow-1">Registrar Settings</h4>
+                    </div><!-- end card header -->
+
+                    <div class="card-body">
+                        <div class="row mb-2">
+                            <div class="col-md-12">
+                                <form action="{{ url('/admin/setRegistrarSetting') }}" method="POST" enctype="multipart/form-data">
+                                    @csrf
+                                    <input type="hidden" name="sessionSetting_id" value="{{ $pageGlobalData->appSetting->id ?? '' }}">
+                                    <div class="row g-3">
+                                        <div class="col-lg-6">
+                                            <h4 class="card-title mb-2">Registrar Name</h4>
+                                            <p><strong>Current:</strong> {{ $pageGlobalData->appSetting->registrar_name ?? 'Not Set' }}</p>
+                                        </div>
+
+                                        <div class="col-lg-6">
+                                            <h4 class="card-title mb-2">Registrar Signature</h4>
+                                            @if(!empty($pageGlobalData->appSetting) && !empty($pageGlobalData->appSetting->registrar_signature))
+                                                <img class="img-thumbnail" alt="Registrar Signature" width="200" src="{{ asset($pageGlobalData->appSetting->registrar_signature) }}">
+                                            @else
+                                                <p class="text-muted">No signature set</p>
+                                            @endif
+                                        </div>
+                                    </div>
+                                    <div class="row g-3 mt-5 border-top border-top-dashed">
+
+                                        {{-- Registrar Name --}}
+                                        <div class="col-lg-6">
+                                            <h4 class="card-title mb-2">Registrar Name</h4>
+                                            <div class="form-floating">
+                                                <input type="text" class="form-control" id="registrar_name" name="registrar_name" placeholder="Enter registrar name">
+                                                <label for="registrar_name">Registrar Name</label>
+                                            </div>
+                                        </div>
+
+                                        {{-- Registrar Signature --}}
+                                        <div class="col-lg-6">
+                                            <h4 class="card-title mb-2">Registrar Signature</h4>
+                                            <div class="form-floating mb-2">
+                                                <input type="file" class="form-control" id="registrar_signature" name="registrar_signature">
+                                                <label for="registrar_signature">Upload Signature</label>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-12 mt-3">
+                                            <div class="text-end">
+                                                <button type="submit" id="submit-button" class="btn btn-primary">Update Settings</button>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div><!-- end card -->
+            </div>
         </div>
         <!-- end row -->
         

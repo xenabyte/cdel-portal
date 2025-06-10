@@ -54,7 +54,7 @@ class ProgrammeController extends Controller
 
     public function programmeCategory(){
 
-        $programmeCategories = ProgrammeCategory::get();
+        $programmeCategories = ProgrammeCategory::with('academicSessionSetting')->get();
         
         return view('admin.programmeCategory', [
             'programmeCategories' => $programmeCategories
@@ -212,7 +212,7 @@ class ProgrammeController extends Controller
     }
 
     public function studentCourses(Request $request, $programmeCategory){
-        $programmeCategory = ProgrammeCategory::where('category', $programmeCategory)->first();
+        $programmeCategory = ProgrammeCategory::with('academicSessionSetting', 'examSetting')->where('category', $programmeCategory)->first();
         $programmeCategoryId = $programmeCategory->id;
 
         $programmes = Programme::where('category_id', $programmeCategoryId)->get();
@@ -281,8 +281,15 @@ class ProgrammeController extends Controller
     }
 
     public function addCourseForStudent(Request $request){
-        $globalData = $request->input('global_data');
-        $academicSession = $globalData->sessionSetting['academic_session'];
+        $programmeCategoryId = $request->programme_category_id;
+
+        $programmeCategory = ProgrammeCategory::with('academicSessionSetting', 'examSetting')->where('category', $programmeCategoryId)->first();
+        $academicSession = $programmeCategory->academicSessionSetting->academic_session ?? null;
+
+        if (!$academicSession) {
+            alert()->error('Oops!', 'Session setting for programme category not found.')->persistent('Close');
+            return redirect()->back();
+        }
 
         $courses = CoursePerProgrammePerAcademicSession::with('course')
             ->where('programme_id', $request->programme_id)
@@ -422,8 +429,16 @@ class ProgrammeController extends Controller
     }
 
     public function deleteCourseForStudent(Request $request){
-        $globalData = $request->input('global_data');
-        $academicSession = $globalData->sessionSetting['academic_session'];
+
+        $programmeCategoryId = $request->programme_category_id; 
+
+        $programmeCategory = ProgrammeCategory::with('academicSessionSetting', 'examSetting')->where('id', $programmeCategoryId)->first();
+        $academicSession = $programmeCategory->academicSessionSetting->academic_session ?? null;
+
+        if (!$academicSession) {
+            alert()->error('Oops!', 'Session setting for programme category not found.')->persistent('Close');
+            return redirect()->back();
+        }
 
         $programmeCategories = ProgrammeCategory::get();
 
@@ -500,10 +515,17 @@ class ProgrammeController extends Controller
 
     }
 
-    public function updateCourseForStudent(Request $request){
-        $globalData = $request->input('global_data');
-        $academicSession = $globalData->sessionSetting['academic_session'];
+    public function updateCourseForStudent(Request $request){        
         $programmeCategories = ProgrammeCategory::get();
+        $programmeCategoryId = $request->programme_category_id;
+
+        $programmeCategory = ProgrammeCategory::with('academicSessionSetting', 'examSetting')->where('id', $programmeCategoryId)->first();
+        $academicSession = $programmeCategory->academicSessionSetting->academic_session ?? null;
+
+        if (!$academicSession) {
+            alert()->error('Oops!', 'Session setting for programme category not found.')->persistent('Close');
+            return redirect()->back();
+        }
 
 
         $courses = CoursePerProgrammePerAcademicSession::with('course')->where('programme_id', $request->programme_id)->where('level_id', $request->level_id)->where('academic_session', $academicSession)->where('semester', $request->semester)->get();
@@ -581,13 +603,18 @@ class ProgrammeController extends Controller
             $academicSession = str_replace('-', '/', $academicSession);
         }
 
-        if(empty($academicSession)){
-            $globalData = $request->input('global_data');
-            $academicSession = $globalData->sessionSetting['academic_session'];
+        $programmeCategory = ProgrammeCategory::with('academicSessionSetting', 'examSetting')->where('category', $programmeCategory)->first();
+        $programmeCategoryId = $programmeCategory->id;
+
+        if (!$academicSession) {
+            alert()->error('Oops!', 'Session setting for programme category not found.')->persistent('Close');
+            return redirect()->back();
         }
 
-        $programmeCategory = ProgrammeCategory::where('category', $programmeCategory)->first();
-        $programmeCategoryId = $programmeCategory->id;
+        if(empty($academicSession)){
+            $academicSession = $programmeCategory->academicSessionSetting->academic_session ?? null;
+
+        }
 
         $lecturerDetails = CourseManagement::where('course_id', $id)->where('academic_session', $academicSession)->first(); 
         $registrations = CourseRegistration::where('course_id', $id)->where('programme_category_id', $programmeCategoryId)->where('academic_session', $academicSession)->get();
@@ -609,14 +636,20 @@ class ProgrammeController extends Controller
     }
 
     public function createLecture(Request $request){
-        $globalData = $request->input('global_data');
-        $academicSession = $globalData->sessionSetting['academic_session'];
+        $programmeCategoryId = $request->programme_category_id;
+        $programmeCategory = ProgrammeCategory::with('academicSessionSetting', 'examSetting')->where('id', $programmeCategoryId)->first();
+        $academicSession = $programmeCategory->academicSessionSetting->academic_session ?? null;
+        
+        if (!$academicSession) {
+            alert()->error('Oops!', 'Session setting for programme category not found.')->persistent('Close');
+            return redirect()->back();
+        }
 
         $validator = Validator::make($request->all(), [
             'topic' => 'required',
             'duration' => 'required',
             'date' => 'required',
-            'programme_category_id' => 'required',
+            'programme_category_id' => 'required'
         ]);
 
         if($validator->fails()) {
@@ -723,7 +756,6 @@ class ProgrammeController extends Controller
 
 
     public function staffUploadAttendance(Request $request){
-        $globalData = $request->input('global_data');
 
         $validator = Validator::make($request->all(), [
             'attendance' => 'required|file',
@@ -828,10 +860,16 @@ class ProgrammeController extends Controller
 
 
     public function sendMessage(Request $request){
-        $globalData = $request->input('global_data');
-        $admissionSession = $globalData->sessionSetting['admission_session'];
-        $academicSession = $globalData->sessionSetting['academic_session'];
-        $applicationSession = $globalData->sessionSetting['application_session'];
+        
+
+        $programmeCategoryId = $request->programme_category_id;
+        $programmeCategory = ProgrammeCategory::with('academicSessionSetting', 'examSetting')->where('id', $programmeCategoryId)->first();
+        $academicSession = $programmeCategory->academicSessionSetting->academic_session ?? null;
+        
+        if (!$academicSession) {
+            alert()->error('Oops!', 'Session setting for programme category not found.')->persistent('Close');
+            return redirect()->back();
+        }
 
         $validator = Validator::make($request->all(), [
             'message' => 'required',
@@ -1339,11 +1377,15 @@ class ProgrammeController extends Controller
     }
 
     public function adviserProgrammes(Request $request, $programmeCategory){
-        $globalData = $request->input('global_data');
-        $academicSession = $globalData->sessionSetting['academic_session'];
-
-        $programmeCategory = ProgrammeCategory::where('category', $programmeCategory)->first();
+    
+        $programmeCategory = ProgrammeCategory::with('academicSessionSetting', 'examSetting')->where('category', $programmeCategory)->first();
         $programmeCategoryId = $programmeCategory->id;
+        $academicSession = $programmeCategory->academicSessionSetting->academic_session ?? null;
+        
+        if (!$academicSession) {
+            alert()->error('Oops!', 'Session setting for programme category not found.')->persistent('Close');
+            return redirect()->back();
+        }
 
         $adviserProgrammesQuery = LevelAdviser::with('programme', 'level')->where('programme_category_id', $programmeCategoryId)->where('academic_session', $academicSession);
         $adviserProgrammes = $adviserProgrammesQuery->get();
@@ -1389,16 +1431,19 @@ class ProgrammeController extends Controller
     }
 
     Public function levelCourseReg(Request $request, $programmeCategory, $id){
-        $globalData = $request->input('global_data');
-        $academicSession = $globalData->sessionSetting['academic_session'];
 
         if(!$adviserProgramme = LevelAdviser::with('programme', 'level')->where('id', $id)->first()){
             alert()->error('Oops!', 'Record not found')->persistent('Close');
             return redirect()->back();
         }
 
-        $programmeCategory = ProgrammeCategory::where('category', $programmeCategory)->first();
+        $programmeCategory = ProgrammeCategory::with('academicSessionSetting', 'examSetting')->where('category', $programmeCategory)->first();
         $programmeCategoryId = $programmeCategory->id;
+        $academicSession = $programmeCategory->academicSessionSetting->academic_session ?? null;
+        if (!$academicSession) {
+            alert()->error('Oops!', 'Session setting for programme category not found.')->persistent('Close');
+            return redirect()->back();
+        }
 
         $levelId = $adviserProgramme->level_id;
         $programmeId = $adviserProgramme->programme_id;
@@ -1422,8 +1467,6 @@ class ProgrammeController extends Controller
     }
 
     public function levelStudents(Request $request, $programmeCategory, $id){
-        $globalData = $request->input('global_data');
-        $academicSession = $globalData->sessionSetting['academic_session'];
 
         $adviserProgramme = LevelAdviser::with('programme', 'level')
             ->where('id', $id)
@@ -1434,8 +1477,14 @@ class ProgrammeController extends Controller
             return redirect()->back();
         }
 
-        $programmeCategory = ProgrammeCategory::where('category', $programmeCategory)->first();
+        $programmeCategory = ProgrammeCategory::with('academicSessionSetting', 'examSetting')->where('category', $programmeCategory)->first();
         $programmeCategoryId = $programmeCategory->id;
+        $academicSession = $programmeCategory->academicSessionSetting->academic_session ?? null;
+
+        if (!$academicSession) {
+            alert()->error('Oops!', 'Session setting for programme category not found.')->persistent('Close');
+            return redirect()->back();
+        }
 
         $levelId = $adviserProgramme->level_id;
         $programmeId = $adviserProgramme->programme_id;
@@ -1475,8 +1524,6 @@ class ProgrammeController extends Controller
     }
 
     public function courseApproval(Request $request) {
-        $globalData = $request->input('global_data');
-        $academicSession = $globalData->sessionSetting['academic_session'];
 
         $comment = $request->comment;
         $status = $request->status == 'request changes'?'pending':$request->status;
@@ -1489,6 +1536,7 @@ class ProgrammeController extends Controller
 
         $programme = $levelAdviser->programme->name;
         $level = $levelAdviser->level->level .' Level ';
+        $academicSession = $levelAdviser->academic_session;
 
         $levelAdviser->comment = $comment;
         $levelAdviser->course_approval_status = $status;

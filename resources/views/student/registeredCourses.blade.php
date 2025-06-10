@@ -4,6 +4,8 @@
     $programme = $student->programme;
     $maxUnit = !empty($student->credit_load)?$student->credit_load:24;
     $levelAdviser = $programme->academicAdvisers->where('level_id', $student->level_id)->where('academic_session', $student->academic_session)->first();
+
+    $academicSession = $student->programmeCategory->academicSessionSetting->academic_session;
 ?>
 @section('content')
 <style>
@@ -21,7 +23,7 @@
 <div class="row">
     <div class="col-12">
         <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-            <h4 class="mb-sm-0">Registered Courses for {{ $pageGlobalData->sessionSetting->academic_session }} academic session</h4>
+            <h4 class="mb-sm-0">Registered Courses for {{ $academicSession }} academic session</h4>
 
             <div class="page-title-right">
                 <ol class="breadcrumb m-0">
@@ -41,7 +43,7 @@
                 <div class="text-center">
                     <div class="row justify-content-center">
                         <div class="col-lg-9">
-                            <h4 class="mt-4 fw-semibold">Registered Courses for {{ $pageGlobalData->sessionSetting->academic_session }} academic session </h4>
+                            <h4 class="mt-4 fw-semibold">Registered Courses for {{ $academicSession }} academic session </h4>
                             <p class="text-muted mt-3"></p>
                             <div class="mt-4">
                               Your <strong>Registered Courses</strong> is not complete! Click the button below to proceed to your Registered Courses.
@@ -70,7 +72,7 @@
     <div class="col-lg-12">
         <div class="card">
             <div class="card-header align-items-center">
-                <h4 class="card-title mb-0 flex-grow-1">Registered Courses {{ $pageGlobalData->sessionSetting->academic_session }} academic session</h4>
+                <h4 class="card-title mb-0 flex-grow-1">Registered Courses {{ $academicSession }} academic session</h4>
                 <br/>
                 <p class=""><strong>Programme:</strong> {{ $student->programme->name }}
                 <br/><strong>Academic Session:</strong> {{ $student->academic_session }}
@@ -83,7 +85,7 @@
                 <div class="accordion-item shadow">
                     <h2 class="accordion-header" id="headingOne">
                         <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                            <h4 class="card-title mb-0 flex-grow-1"> Registered Courses {{ $pageGlobalData->sessionSetting->academic_session }} academic session</h4>
+                            <h4 class="card-title mb-0 flex-grow-1"> Registered Courses {{ $academicSession }} academic session</h4>
                         </button>
                     </h2>
                     <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#default-accordion-example">
@@ -179,7 +181,7 @@
                 <div class="accordion-item shadow">
                     <h2 class="accordion-header" id="headingTwo">
                         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                            <h4 class="card-title mb-0 flex-grow-1">Summer Registered Courses {{ $pageGlobalData->sessionSetting->academic_session }} academic session</h4>
+                            <h4 class="card-title mb-0 flex-grow-1">Summer Registered Courses {{ $academicSession }} academic session</h4>
                         </button>
                     </h2>
                     <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#default-accordion-example">

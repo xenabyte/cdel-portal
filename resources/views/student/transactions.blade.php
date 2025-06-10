@@ -1,6 +1,7 @@
 @extends('student.layout.dashboard')
 @php
     $student = Auth::guard('student')->user();
+    $academicSession = $student->programmeCategory->academicSessionSetting->academic_session;
 @endphp
 @section('content')
 
@@ -262,7 +263,7 @@
                     <input type="hidden" id="programmeId" name="programme_id" value="{{ $student->programme_id }}">
                     <input type="hidden" name="paymentGateway" value="Manual/BankTransfer">
                     <input type="hidden" id="userType" name="userType" value="student">
-                    <input type="hidden" id="academicSession" name="academic_session" value="{{ empty($session)?$pageGlobalData->sessionSetting->academic_session : $session }}">
+                    <input type="hidden" id="academicSession" name="academic_session" value="{{ empty($session)?$academicSession : $session }}">
                     <input type="hidden" id="level" name="level" value="{{ $student->level_id }}">
 
 

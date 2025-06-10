@@ -117,9 +117,9 @@
             <p class="date"><strong>Date:</strong> {{ date('F j, Y', strtotime($created_at)) }}</p>
             <p>Dear <strong>{{ $student_name }}</strong>,</p>
             
-            <p class="congratulations"><strong>CONGRATULATIONS ON YOUR ADMISSION TO THE {{ $academic_session }} {{ $programmeCategory }} DEGREE PROGRAMME AT THOMAS ADEWUMI UNIVERSITY</strong></p>
+            <p class="congratulations"><strong>CONGRATULATIONS ON YOUR ADMISSION TO THE {{ $academic_session }} {{ $programmeCategory->category }} DEGREE PROGRAMME AT THOMAS ADEWUMI UNIVERSITY</strong></p>
 
-            <p>Congratulations! On behalf of {{ env('SCHOOL_NAME') }}, we are pleased to offer you a Provisional Admission into the {{ $programmeCategory }} Degree Programme for the {{ $programme_name }} under the {{ $faculty_name }} for the {{ $academic_session }} academic session.</p>
+            <p>Congratulations! On behalf of {{ env('SCHOOL_NAME') }}, we are pleased to offer you a Provisional Admission into the {{ $programmeCategory->category }} Degree Programme for the {{ $programme_name }} under the {{ $faculty_name }} for the {{ $programmeCategory->academicSessionSetting->academic_session }} academic session.</p>
 
             <p>This admission is for a full-time study period of two (2) years, consisting of six (6) semesters. We recognize your potential and are excited to welcome you into our academic community.</p>
                         
@@ -134,7 +134,7 @@
                 </ol>
                 <ol> Preparation for Resumption
                     <ul>
-                        <li>The official resumption date for the {{ $academic_session }} Academic Session is Monday, 10th March 2025</strong></li>
+                        <li>The official resumption date for the {{ $academic_session }} Academic Session is {{ date('l, jS F, Y', strtotime($programmeCategory->academicSessionSetting->resumption_date)) }}</strong></li>
                         <li>Ensure you have all necessary documents and academic materials ready</strong></li>
                     </ul>
                 </ol>
@@ -149,8 +149,8 @@
         </div>
         
         <div class="footer">
-            <img src="{{ asset($pageGlobalData->sessionSetting->registrar_signature) }}" alt="Registrar Signature">
-            <p>{{ $pageGlobalData->sessionSetting->registrar_name }}<br><strong>Registrar</strong></p>
+            <img src="{{ asset($pageGlobalData->appSetting->registrar_signature) }}" alt="Registrar Signature">
+            <p>{{ $pageGlobalData->appSetting->registrar_name }}<br><strong>Registrar</strong></p>
         </div>
         
         {{-- <div class="watermark">

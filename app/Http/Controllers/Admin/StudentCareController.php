@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Models\ProgrammeCategory;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -79,9 +80,6 @@ class StudentCareController extends Controller
             ]);
         }
 
-        $globalData = $request->input('global_data');
-        $academicSession = $globalData->sessionSetting['academic_session'];
-
         $studentExit->status = $request->action;
 
         if($studentExit->save()){
@@ -131,8 +129,6 @@ class StudentCareController extends Controller
             return redirect()->back();
         }
     
-        $globalData = $request->input('global_data');
-        $academicSession = $globalData->sessionSetting['academic_session'];
         $exitIds = $request->exit_ids;
     
         foreach ($exitIds as $exitId) {
@@ -143,6 +139,17 @@ class StudentCareController extends Controller
             $studentExit->status = $request->action;
             if ($studentExit->save()) {
                 $student = Student::find($studentExit->student_id);
+
+                $programmeCategoryId = $student->programme_category_id;
+                $programmeCategory = ProgrammeCategory::with('academicSessionSetting', 'examSetting')->where('id', $programmeCategoryId)->first();
+                $academicSession = $programmeCategory->academicSessionSetting->academic_session ?? null;
+
+
+                if (!$programmeCategoryId || !isset($academicSession)) {
+                    continue;
+                }
+
+                
                 
                 $pdf = new Pdf();
                 $exitApplication = $pdf->generateExitApplication($academicSession, $student->id, $studentExit->id);

@@ -1,10 +1,14 @@
 @extends('admin.layout.dashboard')
+@php
+    $academicSession = $programmeCategory->academicSessionSetting->academic_session;
+    $applicationSession = $programmeCategory->academicSessionSetting->application_session;
+@endphp
 @section('content')
 <!-- start page title -->
 <div class="row">
     <div class="col-12">
         <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-            <h4 class="mb-sm-0"> {{ $programmeCategory->category }} Programme Bills Setup for {{ $pageGlobalData->sessionSetting->academic_session }} Academic Session</h4>
+            <h4 class="mb-sm-0"> {{ $programmeCategory->category }} Programme Bills Setup for {{ $academicSession }} Academic Session</h4>
 
             <div class="page-title-right">
                 <ol class="breadcrumb m-0">
@@ -362,7 +366,7 @@
             <div class="modal-body">
                 <form action="{{ url('/admin/uploadBulkPayment') }}" method="post" enctype="multipart/form-data">
                     @csrf
-                    <input type="hidden" name="academic_session" value="{{ $pageGlobalData->sessionSetting->application_session}}">
+                    <input type="hidden" name="academic_session" value="{{ $applicationSession }}">
                     <input type="hidden" name="programme_category_id" value="{{ $programmeCategory->id }}">
 
                     <div class="mb-3">

@@ -15,7 +15,7 @@
                     <hr>
                     <p class="mb-0">
                         For Admission into <span id="generalProgrammeCategory"></span> Programme 
-                        <strong> ({{ !empty($pageGlobalData->sessionSetting) ? $pageGlobalData->sessionSetting->application_session : null }} Academic Session) </strong>
+                        strong> (<span class="dynamicApplicationSession"></span> Academic Session) </strong>
                         You are most welcome to study at {{ env('SCHOOL_NAME') }}. We offer candidates an excellent and stable academic calendar, comfortable hall of residence, sound morals, entrepreneurial training, skill acquisition, serene, and secure environment for learning. 
                         <strong>This application form will cost ₦<span id="generalFeeAmount"></span></strong>
                     </p>
@@ -35,7 +35,7 @@
                     <hr>
                     <p class="mb-0">
                         For Admission into <span id="interTransferProgrammeCategory"></span> Programme 
-                        <strong> ({{ !empty($pageGlobalData->sessionSetting) ? $pageGlobalData->sessionSetting->application_session : null }} Academic Session) </strong>
+                        strong> (<span class="dynamicApplicationSession"></span> Academic Session) </strong>
                         You are most welcome to study at {{ env('SCHOOL_NAME') }}. We offer candidates an excellent and stable academic calendar, comfortable hall of residence, sound morals, entrepreneurial training, skill acquisition, serene, and secure environment for learning. 
                         <strong>This application form will cost ₦<span id="interTransferFeeAmount"></span></strong>
                     </p>
@@ -130,7 +130,7 @@
         <div class="p-lg-5">
 
             <div>
-                <h5>Kindly fill the form below<h5>
+                <h5 class="text-primary m-3">Kindly fill the form below<h5>
 
 
                 <form class="needs-validation" method="POST" novalidate action="{{ url('applicant/register') }}">
@@ -330,6 +330,22 @@
             .then(response => {
                 const data = response.data;
 
+                if (data.academic_session_setting && data.academic_session_setting.application_session) {
+                    document.querySelectorAll('.dynamicApplicationSession').forEach(el => {
+                        el.textContent = data.academic_session_setting.application_session;
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Session Setting Error',
+                        text: `Application session setting error for ${data.category} programme.`,
+                    });
+                    applicationTypeContainer.style.display = 'none';
+                    applicationForm.style.display = "none";
+                    hiddenApplicationTypeInput.value = '';
+                    return;
+                }
+
                 if (data.status === 0) {
                     Swal.fire({
                         icon: 'error',
@@ -356,7 +372,7 @@
             })
             .catch(error => {
                 console.error('Error fetching programme category:', error);
-            });
+        });
     }
 
     function handleApplicationTypeChange(event) {

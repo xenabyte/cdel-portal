@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\User\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\ProgrammeCategory;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Support\Facades\Auth;
 use AlAminFirdows\LaravelMultiAuth\Traits\LogsoutGuard;
@@ -60,7 +61,8 @@ class LoginController extends Controller
      */
     public function showLoginForm()
     {
-        return view('user.auth.login');
+        $programmeCategories = ProgrammeCategory::get();
+        return view('user.auth.login', ['programmeCategories' => $programmeCategories]);
     }
 
     /**
@@ -78,13 +80,16 @@ class LoginController extends Controller
         $validator = Validator::make($request->all(), [
             'email' => 'required|email',
             'password' => 'required',
-            'academic_session' => 'required|string',
+            'programme_category_id' => 'required',
         ]);
 
         if($validator->fails()) {
             alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
             return redirect()->back();
         }
+
+        $programmeCategory = ProgrammeCategory::find($request->programme_category_id);
+        $request->request->add(['academic_session' => $programmeCategory->academicSessionSetting->academic_session]);
         
         $user = User::authenticateUser(
             $request->email,

@@ -15,7 +15,8 @@ class CourseManagement extends Model
         'staff_id',
         'academic_session',
         'status',
-        'passcode'
+        'passcode',
+        'programme_category_id'
     ];
 
 
@@ -37,6 +38,28 @@ class CourseManagement extends Model
     public function staff()
     {
         return $this->belongsTo(Staff::class, 'staff_id');
+    }
+
+    /**
+     * Get the programmeCategory that owns the CourseManagement
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function programmeCategory()
+    {
+        return $this->belongsTo(ProgrammeCategory::class, 'programme_category_id', 'id');
+    }
+
+    public function courseData()
+    {
+        if (!$this->course) {
+            return null;
+        }
+
+        return $this->course->coursePerProgrammePerAcademicSession
+            ->where('academic_session', $this->academic_session)
+            ->where('programme_category_id', $this->programme_category_id)
+            ->first();
     }
 
 }

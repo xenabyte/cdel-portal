@@ -2,13 +2,10 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Models\ProgrammeCategory;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Hash;
-use App\Http\Requests;
 use Illuminate\Support\Facades\Validator;
 
 use App\Models\Staff;
@@ -18,8 +15,6 @@ use App\Models\Programme;
 use App\Models\AcademicLevel;
 use App\Models\Course;
 use App\Models\Notification;
-use App\Models\GradeScale;
-use App\Models\CourseRegistration;
 use App\Models\Role;
 use App\Models\StaffRole;
 use App\Models\Faculty;
@@ -28,15 +23,6 @@ use App\Models\LevelAdviser;
 use App\Models\CourseManagement;
 use App\Models\ProgrammeCategory as Category;
 
-use App\Mail\NotificationMail;
-
-use App\Libraries\Result\Result;
-
-use SweetAlert;
-use Mail;
-use Alert;
-use Log;
-use Carbon\Carbon;
 
 class StaffController extends Controller
 {
@@ -287,12 +273,24 @@ class StaffController extends Controller
         $faculties = Faculty::all();
 
         $globalData = $request->input('global_data');
-        $applicationSession = $globalData->sessionSetting['application_session'];
-        $referalCode = $staff->referral_code;
-        
-        $applicants = Applicant::with('student')->where('referrer', $referalCode)->where('academic_session', $applicationSession)->get();
+        $referralCode = $staff->referral_code;
 
+        $applicants = collect();
 
+        foreach ($globalData->sessionSettings as $setting) {
+            $applicationSession = $setting->application_session ?? null;
+
+            if ($applicationSession) {
+                $matchedApplicants = Applicant::with('student')
+                    ->where('referrer', $referralCode)
+                    ->where('academic_session', $applicationSession)
+                    ->get();
+
+                $applicants = $applicants->merge($matchedApplicants);
+            }
+        }
+
+        $applicants = $applicants->unique('id')->values();
 
         return view('admin.singleStaff', [
             'singleStaff' => $staff,
@@ -582,8 +580,6 @@ class StaffController extends Controller
     }
 
     public function addAdviser(Request $request){
-        $globalData = $request->input('global_data');
-        $academicSession = $globalData->sessionSetting['academic_session'];
 
         $validator = Validator::make($request->all(), [
             'staff_id' => 'required',
@@ -604,6 +600,16 @@ class StaffController extends Controller
             alert()->error('Oops', 'Invalid Programme ')->persistent('Close');
             return redirect()->back();
         }
+
+        $programmeCategoryId = $request->programme_category_id;
+        $programmeCategory = ProgrammeCategory::with('academicSessionSetting', 'examSetting')->where('id', $programmeCategoryId)->first();
+        $academicSession = $programmeCategory->academicSessionSetting->academic_session ?? null;
+
+        if (!$academicSession) {
+            alert()->error('Oops!', 'Session setting for programme category not found.')->persistent('Close');
+            return redirect()->back();
+        }
+
 
         $levelAdviser = LevelAdviser::where('programme_id', $request->programme_id)
                         ->where('programme_category_id', $request->programme_category_id)
@@ -918,10 +924,6 @@ class StaffController extends Controller
     }
 
     public function courseAllocation(Request $request){
-        $staff = Auth::guard('staff')->user();
-        $staffId = $staff->id;
-        $staffDepartmentId = $staff->department_id;
-
         $programmes = Programme::get();
         $levels = AcademicLevel::get();
 
@@ -962,6 +964,7 @@ class StaffController extends Controller
         $validator = Validator::make($request->all(), [
             'staff_id' => 'required',
             'course_id' => 'required',
+            'programme_category_id' => 'required'
         ]);
 
         if($validator->fails()) {
@@ -969,12 +972,18 @@ class StaffController extends Controller
             return redirect()->back();
         }
 
-        $globalData = $request->input('global_data');
-        $academicSession = $globalData->sessionSetting['academic_session'];
+        $programmeCategory = ProgrammeCategory::with('academicSessionSetting')->where('id', $request->programme_category_id)->first();
+        if (empty($programmeCategory->academicSessionSetting)) {
+            alert()->error('Oops!', 'Session setting for programme category not found.')->persistent('Close');
+            return redirect()->back();
+        }
+        $academicSession = $programmeCategory->academicSessionSetting->academic_session;
+
 
         $exist = CourseManagement::where([
             'course_id' => $request->course_id,
             'staff_id' => $request->staff_id,
+            'programme_category_id' => $request->programme_category_id,
             'academic_session' => $academicSession
         ])->first();
 
@@ -986,6 +995,7 @@ class StaffController extends Controller
         $courseAssign = CourseManagement::create([
             'course_id' => $request->course_id,
             'staff_id' => $request->staff_id,
+            'programme_category_id' => $request->programme_category_id,
             'academic_session' => $academicSession
         ]);
         
@@ -999,8 +1009,10 @@ class StaffController extends Controller
     }
 
     public function unsetStaff(Request $request){
-        $validator = Validator::make($request->all(), [
+       $validator = Validator::make($request->all(), [
+            'staff_id' => 'required',
             'course_id' => 'required',
+            'programme_category_id' => 'required'
         ]);
 
         if($validator->fails()) {
@@ -1008,16 +1020,23 @@ class StaffController extends Controller
             return redirect()->back();
         }
 
-        $globalData = $request->input('global_data');
-        $academicSession = $globalData->sessionSetting['academic_session'];
+        $programmeCategory = ProgrammeCategory::with('academicSessionSetting')->where('id', $request->programme_category_id)->first();
+        if (empty($programmeCategory->academicSessionSetting)) {
+            alert()->error('Oops!', 'Session setting for programme category not found.')->persistent('Close');
+            return redirect()->back();
+        }
+        $academicSession = $programmeCategory->academicSessionSetting->academic_session;
+
 
         $unset = CourseManagement::where([
             'course_id' => $request->course_id,
+            'staff_id' => $request->staff_id,
+            'programme_category_id' => $request->programme_category_id,
             'academic_session' => $academicSession
         ])->delete();
         
         if($unset) {
-            alert()->success('Success', 'Staff assigned successfully')->persistent('Close');
+            alert()->success('Success', 'Staff unassigned successfully')->persistent('Close');
             return redirect()->back();
         }
 

@@ -4,6 +4,8 @@
     $programme = $student->programme;
     $maxUnit = !empty($student->credit_load)?$student->credit_load:24;
     $levelAdviser = $programme->academicAdvisers->where('level_id', $student->level_id)->where('academic_session', $student->academic_session)->first();
+    
+    $academicSession = $student->programmeCategory->academicSessionSetting->academic_session;
 
     $allowedMatrics = [
         '22/05PTP026', 
@@ -112,7 +114,7 @@
 <div class="row">
     <div class="col-12">
         <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-            <h4 class="mb-sm-0">Course Registration for {{ $pageGlobalData->sessionSetting->academic_session }} academic session</h4>
+            <h4 class="mb-sm-0">Course Registration for {{ $academicSession }} academic session</h4>
 
             <div class="page-title-right">
                 <ol class="breadcrumb m-0">
@@ -132,7 +134,7 @@
                 <div class="text-center">
                     <div class="row justify-content-center">
                         <div class="col-lg-9">
-                            <h4 class="mt-4 fw-semibold">Course Registration for {{ $pageGlobalData->sessionSetting->academic_session }} academic session </h4>
+                            <h4 class="mt-4 fw-semibold">Course Registration for {{ $academicSession }} academic session </h4>
                             <p class="text-muted mt-3"></p>
                             <div class="mt-4">
                               Your <strong>Course Registration</strong> is complete! Click the button below to print your course review.
@@ -277,7 +279,7 @@
                 <div class="col-lg-12">
                     <div class="card">
                         <div class="card-header align-items-center">
-                            <h4 class="card-title mb-0 flex-grow-1">Course Registration {{ $pageGlobalData->sessionSetting->academic_session }} academic session</h4>
+                            <h4 class="card-title mb-0 flex-grow-1">Course Registration {{ $academicSession }} academic session</h4>
                             <br/>
                             <p class=""><strong>Programme:</strong> {{ $student->programme->name }}
                             <br/><strong>Academic Session:</strong> {{ $student->academic_session }}

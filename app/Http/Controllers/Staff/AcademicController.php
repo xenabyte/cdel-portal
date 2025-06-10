@@ -98,12 +98,10 @@ class AcademicController extends Controller
     }
 
     public function departmentForCourse(Request $request, $slug){
-        $globalData = $request->input('global_data');
-        $academicSession = $globalData->sessionSetting['academic_session'];
-        $programmeCategories = ProgrammeCategory::all();
+        $programmeCategories = ProgrammeCategory::with('academicSessionSetting')->get();
 
         $department = Department::with('courses', 'courses.courseManagement', 'courses.courseManagement.staff', 'programmes', 'programmes.students', 'programmes.academicAdvisers', 'programmes.academicAdvisers.staff', 'programmes.academicAdvisers.level')->where('slug', $slug)->first();
-        
+
         return view('staff.departmentForCourse', [
             'department' => $department,
             'programmeCategories' => $programmeCategories
@@ -170,8 +168,6 @@ class AcademicController extends Controller
     }
 
     public function requestCourseApproval(Request $request) {
-        $globalData = $request->input('global_data');
-        $academicSession = $globalData->sessionSetting['academic_session'];
 
         $levelAdviser = LevelAdviser::find($request->level_adviser_id);
         if(!$levelAdviser){
@@ -212,8 +208,6 @@ class AcademicController extends Controller
     }
 
     public function courseApproval(Request $request) {
-        $globalData = $request->input('global_data');
-        $academicSession = $globalData->sessionSetting['academic_session'];
 
         $comment = $request->comment;
         $status = $request->status == 'request changes'?'pending':$request->status;
@@ -226,6 +220,7 @@ class AcademicController extends Controller
 
         $programme = $levelAdviser->programme->name;
         $level = $levelAdviser->level->level .' Level ';
+        $academicSession = $levelAdviser->academic_session;
 
         $levelAdviser->comment = $comment;
         $levelAdviser->course_approval_status = $status;
@@ -332,9 +327,6 @@ class AcademicController extends Controller
 
     public function manageProgrammeChangeRequest(Request $request)
     {
-        $globalData = $request->input('global_data');
-        $academicSession = $globalData->sessionSetting['academic_session'];
-
         $request->validate([
             'programme_change_request_id' => 'required|exists:programme_change_requests,id',
             'role' => 'required|in:old_hod,new_hod,old_dean,new_dean,dap,registrar',
@@ -442,7 +434,7 @@ class AcademicController extends Controller
                 ->where('type', $type)
                 ->where('programme_id', $student->programme_id)
                 ->where('level_id', $student->level_id)
-                ->where('academic_session', $academicSession)
+                ->where('academic_session', $student->academic_session)
                 ->where('programme_category_id', $student->programme_category_id)
                 ->first();
 
@@ -453,7 +445,7 @@ class AcademicController extends Controller
 
             // Update previous successful transactions
             Transaction::where('student_id', $studentId)
-                ->where('session', $academicSession)
+                ->where('session', $student->academic_session)
                 ->where('status', 1)
                 ->update(['payment_id' => $schoolPayment->id]);
 

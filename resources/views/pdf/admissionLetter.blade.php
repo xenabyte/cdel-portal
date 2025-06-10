@@ -109,15 +109,15 @@
             <p class="date"><strong>Date:</strong> {{ date('F j, Y', strtotime($created_at)) }}</p>
             <p>Dear <strong>{{ $student_name }}</strong>,</p>
             
-            <p class="congratulations"><strong>Congratulations and Welcome to the {{ $academic_session }}  {{ $programmeCategory }} Degree Programme at TAU</strong></p>
+            <p class="congratulations"><strong>Congratulations and Welcome to the {{ $programmeCategory->academicSessionSetting->academic_session }}  {{ $programmeCategory->category }} Degree Programme at TAU</strong></p>
             
-            <p>On behalf of Thomas Adewumi University, I am excited to offer you a Provisional Admission to the <strong>{{ $programmeCategory }} Degree Programme for {{ $programme_name }}</strong> in the {{ $faculty_name }} for the {{ $academic_session }} academic session. This admission is granted for a full-time study period of <strong>{{ $duration + 1 - $levelId }} Years</strong> and acknowledges your potential as an outstanding candidate. Please note that your JAMB admission letter will soon be available for your acceptance on the Central Admissions Processing System (CAPS).</p>
+            <p>On behalf of Thomas Adewumi University, I am excited to offer you a Provisional Admission to the <strong>{{ $programmeCategory->category }} Degree Programme for {{ $programme_name }}</strong> in the {{ $faculty_name }} for the {{ $programmeCategory->academicSessionSetting->academic_session }} academic session. This admission is granted for a full-time study period of <strong>{{ $duration + 1 - $levelId }} Years</strong> and acknowledges your potential as an outstanding candidate. Please note that your JAMB admission letter will soon be available for your acceptance on the Central Admissions Processing System (CAPS).</p>
             
             <p>Kindly visit the university’s portal <a href="{{ env('STUDENT_URL') }}">{{ env('STUDENT_URL') }}</a> to:</p>
             <ul>
                 <li>Pay the non-refundable acceptance fee of <strong>N{{ number_format($acceptance_amount/100, 2) }}</strong></li>
                 <li>Pay your school fees <strong>(N{{ number_format($school_amount/100, 2) }})</strong> in full or at least a first installment of 40% before resumption</li>
-                <li>Prepare for resumption. Please note that the resumption date for {{ $pageGlobalData->sessionSetting->admission_session }} Academic Session is <strong>{{  strtolower($programmeCategory)=='undergraduate'? date('l, jS F, Y', strtotime($pageGlobalData->sessionSetting->resumption_date)) : date('l, jS F, Y', strtotime(env('TOPUP_RESUMPTION_DATE'))) }}</strong></li>
+                <li>Prepare for resumption. Please note that the resumption date for {{ $programmeCategory->academicSessionSetting->academic_session }} Academic Session is <strong>{{ date('l, jS F, Y', strtotime($programmeCategory->academicSessionSetting->resumption_date)) }}</strong></li>
                 <li>Book and pay for your accomondation. The following accomondation facilities are available:</li>
             </ul>
             
@@ -172,8 +172,8 @@
         </div>
         
         <div class="footer">
-            <img src="{{ asset($pageGlobalData->sessionSetting->registrar_signature) }}" alt="Registrar Signature">
-            <p>{{ $pageGlobalData->sessionSetting->registrar_name }}<br><strong>Registrar</strong></p>
+            <img src="{{ asset($pageGlobalData->appSetting->registrar_signature) }}" alt="Registrar Signature">
+            <p>{{ $pageGlobalData->appSetting->registrar_name }}<br><strong>Registrar</strong></p>
         </div>
         
         {{-- <div class="watermark">

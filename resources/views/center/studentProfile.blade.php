@@ -10,6 +10,9 @@ $currentHostelAllocation = $student->currentHostelAllocation;
 $failedCourses = $student->registeredCourses()->where('grade', 'F')->where('re_reg', null)->where('result_approval_id', ResultApprovalStatus::getApprovalStatusId(ResultApprovalStatus::SENATE_APPROVED))->get();
 $studentAdvisoryData = (object) $student->getAcademicAdvisory();
 
+$academicSession = $student->programme->programmeCategory->academicSessionSetting->academic_session;
+$applicationSession = $student->programme->programmeCategory->academicSessionSetting->application_session;
+
 @endphp
 @section('content')
 <!-- start page title -->
@@ -262,7 +265,7 @@ $studentAdvisoryData = (object) $student->getAcademicAdvisory();
                                                 <form action="{{ url('/center/generateResult') }}" method="POST">
                                                     @csrf
                                                     <input type="hidden" name="examSetting_id" value="{{ !empty($pageGlobalData->examSetting)?$pageGlobalData->examSetting->id:null }}">
-                                                    <input type="hidden" name="academic_session" value="{{ $pageGlobalData->sessionSetting->academic_session }}">
+                                                    <input type="hidden" name="academic_session" value="{{ $academicSession }}">
                                                     <input type="hidden" name="student_id" value="{{ $student->id }}">
 
                                                     <div class="row g-3">
@@ -414,12 +417,12 @@ $studentAdvisoryData = (object) $student->getAcademicAdvisory();
                         <div class="card">
                             <div class="card-body">
                                 <div class="text-muted">
-                                    <h4 class="card-title mb-0 flex-grow-1">Registered Courses(s) for {{ $pageGlobalData->sessionSetting->academic_session }} academic session</h4>
+                                    <h4 class="card-title mb-0 flex-grow-1">Registered Courses(s) for {{ $academicSession }} academic session</h4>
                                     <div class="border-top border-top-dashed pt-3">
                                         <div class="table-responsive">
                                             <!-- Bordered Tables -->
                                             @php
-                                            $courseRegs = $student->registeredCourses->where('academic_session', $pageGlobalData->sessionSetting->academic_session);
+                                            $courseRegs = $student->registeredCourses->where('academic_session', $academicSession);
                                             @endphp
                                             <div class="row">   
                                                 <div class="col-lg-12">

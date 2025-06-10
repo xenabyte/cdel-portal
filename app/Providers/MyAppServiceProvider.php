@@ -13,6 +13,8 @@ use App\Models\Student;
 use App\Models\StudentCourseRegistration;
 use App\Models\Partner;
 
+use App\Models\AcademicSessionSetting;
+
 use Illuminate\Support\Facades\Auth;
 
 use Log;
@@ -42,9 +44,13 @@ class MyAppServiceProvider extends ServiceProvider
     }
 
     public function pageGlobalData(){
-        $sessionSetting = SessionSetting::first();
-        $setting = Setting::first();
+
+        $academicSessionSetting = AcademicSessionSetting::all()->keyBy('programme_category_id');
+
+        $appSetting = SessionSetting::first();
         $examinationSetting = ExaminationSetting::first();
+        $setting = Setting::first();
+
         $exitApplicationCount = StudentExit::where('status', 'pending')->orderBy('id', 'DESC')->count(); 
         $pendingPartnerCount = Partner::where('status', 0)->count();
 
@@ -102,11 +108,11 @@ class MyAppServiceProvider extends ServiceProvider
             }
 
         }
-        
 
         $data = new \stdClass();
-        $data->sessionSetting = $sessionSetting;
+        $data->sessionSetting = $academicSessionSetting;
         $data->setting = $setting;
+        $data->appSetting = $appSetting;
         $data->examSetting = $examinationSetting;
         $data->exitApplicationCount = $exitApplicationCount;
         $data->totalPendingRegistrations = $totalPendingRegistrations;

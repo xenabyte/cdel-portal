@@ -42,6 +42,8 @@ use App\Models\User;
 use App\Models\Student;
 use App\Models\Payment;
 use App\Models\SessionSetting;
+use App\Models\AcademicSessionSetting;
+
 use App\Models\Staff;
 use App\Models\Partner;
 use App\Models\AcademicLevel;
@@ -96,11 +98,6 @@ class Controller extends BaseController
     }
     
     public function processPaystackPayment($paymentDetails){
-        $sessionSetting = SessionSetting::first();
-        $academicSession = $sessionSetting['academic_session'];
-        $applicationSession = $sessionSetting['application_session'];
-        $admissionSession = $sessionSetting['admission_session'];
-
 
         log::info("Processing paystack payment:" . json_encode($paymentDetails));
         //get active editions
@@ -160,12 +157,7 @@ class Controller extends BaseController
     }
 
     public function processRavePayment($paymentDetails){
-        $sessionSetting = SessionSetting::first();
-        $academicSession = $sessionSetting['academic_session'];
-        $applicationSession = $sessionSetting['application_session'];
-        $admissionSession = $sessionSetting['admission_session'];
-
-
+        
         log::info("Processing flutterwave payment:" . json_encode($paymentDetails));
         //get active editions
         $email = $paymentDetails['data']['meta']['email'];
@@ -228,11 +220,6 @@ class Controller extends BaseController
     }
 
     public function processUpperlinkPayment($paymentDetails){
-        $sessionSetting = SessionSetting::first();
-        $academicSession = $sessionSetting['academic_session'];
-        $applicationSession = $sessionSetting['application_session'];
-        $admissionSession = $sessionSetting['admission_session'];
-
         log::info("Processing upperlink payment:" . json_encode($paymentDetails));
 
         $data = $paymentDetails['meta'];
@@ -607,7 +594,7 @@ class Controller extends BaseController
         $applicationType = $applicant->application_type;
         $programmeCategoryId = $student->programme_category_id;
 
-        $sessionSetting = SessionSetting::first();
+        $academicSessionSetting = AcademicSessionSetting::where('programme_category_id', $programmeCategoryId)->first();
 
         $type = Payment::PAYMENT_TYPE_SCHOOL;
 
@@ -656,7 +643,7 @@ class Controller extends BaseController
             $fullTuitionPayment = true;
         }
 
-        if(strtolower($sessionSetting->school_fee_status) == 'stop'){
+        if(strtolower($academicSessionSetting->school_fee_status) == 'stop'){
             $passTuitionPayment = true;
         }
 
@@ -680,14 +667,18 @@ class Controller extends BaseController
 
     public function checkAccomondationStatus($student){
         $studentId = $student->id;
-        $sessionSetting = SessionSetting::first();
-        $academicSession = $sessionSetting->academic_session;
+        $programmeCategoryId = $student->programme_category_id;
+
+
+        $academicSessionSetting = AcademicSessionSetting::where('programme_category_id', $programmeCategoryId)->first();
+        $academicSession = $academicSessionSetting->academic_session;
 
 
         $type = Payment::PAYMENT_TYPE_ACCOMONDATION;
 
         $accommondationPayment = Payment::with('structures')
             ->where('type', $type)
+            ->where('programme_category_id', $student->programme_category_id)
             ->where('academic_session', $academicSession)
             ->first();
 
@@ -714,8 +705,9 @@ class Controller extends BaseController
         $isStudentActive = $student->is_active;
         if(empty($student->matric_number)){
             $programmeCategoryId = $student->programme_category_id;
-            $sessionSetting = SessionSetting::first();
-            $admissionSession = $sessionSetting->admission_session;
+
+            $academicSessionSetting = AcademicSessionSetting::where('programme_category_id', $programmeCategoryId)->first();
+            $admissionSession = $academicSessionSetting->admission_session;
             // $programmeCategorySuffix = ;
 
             $programme = Programme::with('students', 'department', 'department.faculty')->where('id', $student->programme_id)->first();
@@ -1022,7 +1014,7 @@ class Controller extends BaseController
             'programme_category_id' => $programmeCategoryId
         ]);
 
-        $programmeCategory = ProgrammeCategory::find($programmeCategoryId);
+        $programmeCategory = ProgrammeCategory::with('academicSessionSetting', 'examSetting')->where('id', $programmeCategoryId)->first();
 
         if(!$checkApplicant = User::where('email', strtolower($email))->where('academic_session', $applicationSession)->first()){
             Log::info("********************** Creating Applicant **********************: ".' - '.$lastname.' - '.$otherNames);

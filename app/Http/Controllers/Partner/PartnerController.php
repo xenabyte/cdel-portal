@@ -16,6 +16,7 @@ use App\Models\User as Applicant;
 use App\Models\Programme;
 use App\Models\AcademicLevel;
 use App\Models\Student;
+use App\Models\ProgrammeCategory;
 
 
 use SweetAlert;
@@ -35,7 +36,30 @@ class PartnerController extends Controller
             return view('partner.approval',);
         }
 
-        return view('partner.home');
+        $programmeCategories = ProgrammeCategory::get();
+
+        $allApplicants = collect();
+
+        foreach ($programmeCategories as $category) {
+            if ($category->academicSessionSetting) {
+                $applicationSession = $category->academicSessionSetting->application_session ?? null;
+                if ($applicationSession) {
+                    $applicants = Applicant::where('academic_session', $applicationSession)
+                         ->where('partner_id', $partner->id)
+                        ->get();
+
+                    $allApplicants = $allApplicants->merge($applicants);
+                }
+
+            }
+        }
+
+        // Remove duplicates if necessary
+        $applicants = $allApplicants->unique('id')->values();
+
+        return view('partner.home', [
+            'applicants' => $applicants
+        ]);
     }
 
     public function transactions(Request $request){
@@ -43,19 +67,38 @@ class PartnerController extends Controller
         return view('partner.transactions');
     }
 
-    public function applicants(Request $request){
+    public function applicants(Request $request)
+    {
         $globalData = $request->input('global_data');
-        $academicSession = $globalData->sessionSetting['application_session'];
         $partner = Auth::guard('partner')->user();
 
-        $applicants = Applicant::where('academic_session', $academicSession)->where('partner_id', $partner->id)->get();
-
-        if(!$partner->status){
-            return view('partner.approval',);
+        if (!$partner->status) {
+            return view('partner.approval');
         }
 
+        $programmeCategories = ProgrammeCategory::get();
+
+        $allApplicants = collect();
+
+        foreach ($programmeCategories as $category) {
+            if ($category->academicSessionSetting) {
+                $applicationSession = $category->academicSessionSetting->application_session ?? null;
+                if ($applicationSession) {
+                    $applicants = Applicant::where('academic_session', $applicationSession)
+                         ->where('partner_id', $partner->id)
+                        ->get();
+
+                    $allApplicants = $allApplicants->merge($applicants);
+                }
+
+            }
+        }
+
+         // Remove duplicates if necessary
+        $applicants = $allApplicants->unique('id')->values();
+
         return view('partner.applicants', [
-            'applicants' => $applicants,
+            'applicants' => $allApplicants,
         ]);
     }
 
@@ -99,24 +142,34 @@ class PartnerController extends Controller
         return view('partner.profile');
     }
 
-    public function students(Request $request){
+    public function students(Request $request)
+    {
         $partner = Auth::guard('partner')->user();
         $partnerId = $partner->id;
         $globalData = $request->input('global_data');
-        $applicationSession = $globalData->sessionSetting['application_session'];
-        $admissionSession = $globalData->sessionSetting['admission_session'];
 
+        $allStudents = collect();
 
-        $students = Student::with('applicant', 'programme')
-        ->where('academic_session', $admissionSession)
-        ->whereHas('applicant', function ($query) use ($admissionSession, $partnerId) {
-            $query->where('academic_session', $admissionSession)
-                ->where('partner_id', $partnerId);
-        })
-        ->get();
+        foreach ($globalData->sessionSettings as $programmeCategoryId => $setting) {
+            $admissionSession = $setting->admission_session ?? null;
+
+            if ($admissionSession) {
+                $students = Student::with('applicant', 'programme')
+                    ->where('academic_session', $admissionSession)
+                    ->whereHas('applicant', function ($query) use ($admissionSession, $partnerId) {
+                        $query->where('academic_session', $admissionSession)
+                            ->where('partner_id', $partnerId);
+                    })
+                    ->get();
+
+                $allStudents = $allStudents->merge($students);
+            }
+        }
+
+        $allStudents = $allStudents->unique('id')->values(); // Ensure no duplicates
 
         return view('partner.students', [
-            'students' => $students
+            'students' => $allStudents,
         ]);
     }
 

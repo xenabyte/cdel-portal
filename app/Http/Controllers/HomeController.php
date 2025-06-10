@@ -48,10 +48,6 @@ class HomeController extends Controller
     
 
     public function studentDetails(Request $request, $slug){
-        $globalData = $request->input('global_data');
-        $admissionSession = $globalData->sessionSetting['admission_session'];
-        $academicSession = $globalData->sessionSetting['academic_session'];
-
         $student = Student::withTrashed()->with(['applicant', 'programme', 'partner', 'academicLevel', 'department', 'faculty'])
         ->where('slug', $slug)->first();
 
@@ -67,12 +63,24 @@ class HomeController extends Controller
      */
     public function getExamDocket(Request $request, $slug){
 
-        $globalData = $request->input('global_data');
-        $admissionSession = $globalData->sessionSetting['admission_session'];
-        $academicSession = $globalData->sessionSetting['academic_session'];
-        $semester  = $globalData->examSetting['semester'];
+        $student = Student::with('applicant', 'academicLevel', 'faculty', 'department', 'programme')
+            ->where('slug', $slug)
+            ->first();
 
-        $student = Student::with('applicant', 'academicLevel', 'faculty', 'department', 'programme')->where('slug', $slug)->first();
+        if (!$student) {
+            alert()->error('Oops!', 'Student not found')->persistent('Close');
+            return redirect()->back();
+        }
+
+        $programmeCategoryId = $student->programme_category_id ?? null;
+        $programmeCategory = ProgrammeCategory::with('academicSessionSetting', 'examSetting')->where('id', $programmeCategoryId)->first();
+        if (empty($programmeCategory->academicSessionSetting)) {
+            alert()->error('Oops!', 'Session setting for programme category not found.')->persistent('Close');
+            return redirect()->back();
+        }
+        $academicSession = $programmeCategory->academicSessionSetting->academic_session ?? null;
+
+
         $studentId = $student->id;
         $levelId = $student->level_id;
         $transactions = Transaction::where('student_id', $studentId)->orderBy('id', 'DESC')->get();
@@ -84,11 +92,11 @@ class HomeController extends Controller
         }
 
         $schoolPayment = Payment::with('structures')
-        ->where('type', Payment::PAYMENT_TYPE_SCHOOL)
-        ->where('programme_id', $student->programme_id)
-        ->where('level_id', $student->level_id)
-        ->where('academic_session', $student->academic_session)
-        ->first();
+            ->where('type', Payment::PAYMENT_TYPE_SCHOOL)
+            ->where('programme_id', $student->programme_id)
+            ->where('level_id', $student->level_id)
+            ->where('academic_session', $student->academic_session)
+            ->first();
 
         $passTuitionPayment = $checkStudentPayment->passTuitionPayment;
         $fullTuitionPayment = $checkStudentPayment->fullTuitionPayment;
@@ -316,9 +324,6 @@ class HomeController extends Controller
             return redirect()->back();
         }
 
-        $globalData = $request->input('global_data');
-        $academicSession = $globalData->sessionSetting['academic_session'];
-
         $studentExit->return_at = Carbon::now();
 
         if($studentExit->save()){
@@ -360,9 +365,6 @@ class HomeController extends Controller
             alert()->error('Oops!', 'Student exit applicattion record not found')->persistent('Close');
             return redirect()->back();
         }
-
-        $globalData = $request->input('global_data');
-        $academicSession = $globalData->sessionSetting['academic_session'];
 
         $studentExit->exited_at = Carbon::now();
 
@@ -409,8 +411,14 @@ class HomeController extends Controller
 
     public function getPayments(Request $request){
 
-        $globalData = $request->input('global_data');
-        $applicationSession = $globalData->sessionSetting['application_session'];
+        $programmeCategoryId = $request->programme_category_id;
+        $programmeCategory = ProgrammeCategory::with('academicSessionSetting', 'examSetting')->where('id', $programmeCategoryId)->first();
+
+        $applicationSession = $programmeCategory->academicSessionSetting->application_session ?? null;
+        if (!$applicationSession) {
+            alert()->error('Oops!', 'Session setting for programme category not found.')->persistent('Close');
+            return redirect()->back();
+        }        
 
         $commonConditions = [
             'programme_category_id' => $request->programme_category_id,
@@ -436,7 +444,7 @@ class HomeController extends Controller
     }
 
     public function getProgrammeCategory(Request $request){
-        $programmeCategory = ProgrammeCategory::find($request->programme_category_id);
+        $programmeCategory = ProgrammeCategory::with('academicSessionSetting', 'examSetting')->where('id', $request->programme_category_id)->first();
         
         return $programmeCategory;
     }

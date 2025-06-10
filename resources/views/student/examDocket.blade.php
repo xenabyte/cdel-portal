@@ -1,6 +1,7 @@
 @extends('student.layout.dashboard')
 <?php 
     $student = Auth::guard('student')->user();
+    $academicSession = $student->programmeCategory->academicSessionSetting->academic_session;
 ?>
 @section('content')
 <style>
@@ -18,7 +19,7 @@
 <div class="row">
     <div class="col-12">
         <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-            <h4 class="mb-sm-0">Exam Card for {{ $pageGlobalData->sessionSetting->academic_session }} academic session</h4>
+            <h4 class="mb-sm-0">Exam Card for {{ $academicSession }} academic session</h4>
 
             <div class="page-title-right">
                 <ol class="breadcrumb m-0">
@@ -38,7 +39,7 @@
                 <div class="text-center">
                     <div class="row justify-content-center">
                         <div class="col-lg-9">
-                            <h4 class="mt-4 fw-semibold">Exam card for {{ $pageGlobalData->sessionSetting->academic_session }} academic session</h4>
+                            <h4 class="mt-4 fw-semibold">Exam card for {{ $academicSession }} academic session</h4>
                             <p class="text-muted mt-3"></p>
                             <div class="mt-4">
                               You have generated <strong>Examination Card</strong>! Click the button below to print your examination card.
@@ -130,7 +131,7 @@
                 <div class="col-lg-12">
                     <div class="card">
                         <div class="card-header align-items-center">
-                            <h4 class="card-title mb-0 flex-grow-1">Course Registration {{ $pageGlobalData->sessionSetting->academic_session }} academic session</h4>
+                            <h4 class="card-title mb-0 flex-grow-1">Course Registration {{ $academicSession }} academic session</h4>
                             <br/>
                             <p class=""><strong>Programme:</strong> {{ $student->programme->name }}
                                 <br/><strong>Academic Session:</strong> {{ $student->academic_session }}

@@ -6,17 +6,17 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class ExaminationSetting extends Model
+class AcademicSessionSetting extends Model
 {
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'exam_docket_status',
         'academic_session',
-        'semester',
-        'result_processing_status',
-        'test_processing_status',
-        'status',
+        'admission_session',
+        'application_session',
+        'resumption_date',
+        'school_fee_status',
+        'accomondation_booking_status',
         'programme_category_id',
     ];
-}
+} 

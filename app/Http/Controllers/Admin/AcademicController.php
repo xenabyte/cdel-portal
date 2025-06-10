@@ -17,6 +17,7 @@ use App\Models\ApprovalLevel;
 use App\Models\ResultApprovalStatus;
 use App\Models\Session;
 use App\Models\SessionSetting;
+use App\Models\AcademicSessionSetting;
 use App\Models\Faculty;
 use App\Models\Department;
 use App\Models\CourseRegistrationSetting;
@@ -64,42 +65,80 @@ class AcademicController extends Controller
         ]);
     }
 
-    public function sessionSetup(){
+    public function sessionSetup($programmeCategory){
+
+        $programmeCategory = ProgrammeCategory::with('academicSessionSetting', 'examSetting')->where('category', $programmeCategory)->first();
+        $programmeCategoryId = $programmeCategory->id;
 
         $sessions = Session::orderBy('id', 'DESC')->get();
-        
+
+        $sessionSetting = AcademicSessionSetting::where('programme_category_id', $programmeCategoryId)->first();
+        $examDocketMgt = ExaminationSetting::where('programme_category_id', $programmeCategoryId)->first();
+
         return view('admin.sessionSetup', [
-            'sessions' => $sessions
+            'sessions' => $sessions,
+            'programmeCategory' => $programmeCategory,
+            'sessionSetting' => $sessionSetting,
+            'examDocketMgt' => $examDocketMgt
         ]);
     }
 
+    /**
+     * Updates the session settings with the provided request data.
+     *
+     * Validates the request to ensure that 'admission_session', 'academic_session', 
+     * and 'application_session' are provided. If a valid 'sessionSetting_id' is 
+     * given, the existing session setting is updated; otherwise, a new session 
+     * setting is created. The method then checks if the session attributes have 
+     * changed and updates them accordingly. If the session settings are saved 
+     * successfully, a success alert is displayed; otherwise, an error alert is 
+     * shown.
+     *
+     * @param \Illuminate\Http\Request $request The HTTP request containing session data.
+     * @return \Illuminate\Http\RedirectResponse Redirects back with an alert message.
+     */
+
     public function setSession(Request $request){
         $validator = Validator::make($request->all(), [
-            'admission_session' => 'required',
-            'academic_session' => 'required',
-            'application_session' => 'required',
+            'admission_session' => 'nullable',
+            'academic_session' => 'nullable',
+            'application_session' => 'nullable',
+            'programme_category_id' => 'required' 
         ]);
 
-
-        $sessionSetting = new SessionSetting;
-        if(!empty($request->sessionSetting_id) && !$sessionSetting = SessionSetting::find($request->sessionSetting_id)){
-            alert()->error('Oops', 'Invalid Session Setting Information')->persistent('Close');
+        if ($validator->fails()) {
+            alert()->error('Validation Error', $validator->errors()->first())->persistent('Close');
             return redirect()->back();
         }
 
-        if(!empty($request->admission_session) &&  $request->admission_session != $sessionSetting->admission_session){
+        $sessionSetting = new AcademicSessionSetting;
+
+        if (!empty($request->sessionSetting_id)) {
+            $sessionSetting = AcademicSessionSetting::where('id', $request->sessionSetting_id)
+                ->where('programme_category_id', $request->programme_category_id)
+                ->first();
+
+            if (!$sessionSetting) {
+                alert()->error('Oops', 'Invalid Session Setting Information')->persistent('Close');
+                return redirect()->back();
+            }
+        }
+
+        $sessionSetting->programme_category_id = $request->programme_category_id;
+
+        if (!empty($request->admission_session) && $request->admission_session != $sessionSetting->admission_session) {
             $sessionSetting->admission_session = $request->admission_session;
         }
 
-        if(!empty($request->academic_session) &&  $request->academic_session != $sessionSetting->academic_session){
+        if (!empty($request->academic_session) && $request->academic_session != $sessionSetting->academic_session) {
             $sessionSetting->academic_session = $request->academic_session;
         }
- 
-        if(!empty($request->application_session) &&  $request->application_session != $sessionSetting->application_session){
+
+        if (!empty($request->application_session) && $request->application_session != $sessionSetting->application_session) {
             $sessionSetting->application_session = $request->application_session;
         }
 
-        if($sessionSetting->save()){
+        if ($sessionSetting->save()) {
             alert()->success('Changes Saved', 'Session changes saved successfully')->persistent('Close');
             return redirect()->back();
         }
@@ -110,11 +149,15 @@ class AcademicController extends Controller
 
     public function setRegistrarSetting(Request $request){
         $validator = Validator::make($request->all(), [
-            'registrar_name' => 'required',
-            'registrar_signature' => 'required',
-            'resumption_date' => 'required',
+            'registrar_name' => 'nullable',
+            'registrar_signature' => 'nullable',
         ]);
 
+
+        if ($validator->fails()) {
+            alert()->error('Validation Error', $validator->errors()->first())->persistent('Close');
+            return redirect()->back();
+        }
 
         $sessionSetting = new SessionSetting;
         if(!empty($request->sessionSetting_id) && !$sessionSetting = SessionSetting::find($request->sessionSetting_id)){
@@ -126,8 +169,8 @@ class AcademicController extends Controller
             $sessionSetting->registrar_name = $request->registrar_name;
         }
 
-        if(!empty($request->resumption_date) &&  $request->resumption_date != $sessionSetting->resumption_date){
-            $sessionSetting->resumption_date = $request->resumption_date;
+        if(!empty($request->campus_wide_message) &&  $request->campus_wide_message != $sessionSetting->campus_wide_message){
+            $sessionSetting->campus_wide_message = $request->campus_wide_message;
         }
 
         if(!empty($request->registrar_signature)){
@@ -149,13 +192,18 @@ class AcademicController extends Controller
 
     public function setFeeStatus(Request $request){
         $validator = Validator::make($request->all(), [
-            'school_fee_status' => 'required',
-            'accomondation_booking_status' => 'required',
+            'school_fee_status' => 'nullable',
+            'accomondation_booking_status' => 'nullable',
+            'resumption_date' => 'nullable'
         ]);
 
+        if ($validator->fails()) {
+            alert()->error('Validation Error', $validator->errors()->first())->persistent('Close');
+            return redirect()->back();
+        }
 
-        $sessionSetting = new SessionSetting;
-        if(!empty($request->sessionSetting_id) && !$sessionSetting = SessionSetting::find($request->sessionSetting_id)){
+        $sessionSetting = new AcademicSessionSetting;
+        if(!empty($request->sessionSetting_id) && !$sessionSetting = AcademicSessionSetting::find($request->sessionSetting_id)){
             alert()->error('Oops', 'Invalid Session Setting Information')->persistent('Close');
             return redirect()->back();
         }
@@ -166,6 +214,10 @@ class AcademicController extends Controller
 
         if(!empty($request->accomondation_booking_status) &&  $request->accomondation_booking_status != $sessionSetting->accomondation_booking_status){
             $sessionSetting->accomondation_booking_status = $request->accomondation_booking_status;
+        }
+
+        if(!empty($request->resumption_date) &&  $request->resumption_date != $sessionSetting->resumption_date){
+            $sessionSetting->resumption_date = $request->resumption_date;
         }
 
         if($sessionSetting->save()){
@@ -181,6 +233,11 @@ class AcademicController extends Controller
         $validator = Validator::make($request->all(), [
             'campus_wide_message' => 'required',
         ]);
+
+        if ($validator->fails()) {
+            alert()->error('Validation Error', $validator->errors()->first())->persistent('Close');
+            return redirect()->back();
+        }
 
         $sessionSetting = new SessionSetting;
         if(!empty($request->sessionSetting_id) && !$sessionSetting = SessionSetting::find($request->sessionSetting_id)){
@@ -587,10 +644,14 @@ class AcademicController extends Controller
             alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
             return redirect()->back();
         }
-        $globalData = $request->input('global_data');
-        $academicSession = $globalData->sessionSetting['academic_session'];
 
-        $programmeCategory = ProgrammeCategory::where('id', $request->category)->first();
+        $programmeCategory = ProgrammeCategory::with('academicSessionSetting', 'examSetting')->where('id', $request->category)->first();
+        $programmeCategoryId = $programmeCategory->id;
+        if (empty($programmeCategory->academicSessionSetting)) {
+            alert()->error('Oops!', 'Session setting for programme category not found.')->persistent('Close');
+            return redirect()->back();
+        }
+        $academicSession = $programmeCategory->academicSessionSetting->academic_session ?? null;
 
 
         $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $request->name.' '.$programmeCategory->category)));
@@ -781,59 +842,60 @@ class AcademicController extends Controller
         
     }
 
-    public function courseRegMgt(Request $request){
+    // obsolete function
+    // public function courseRegMgt(Request $request){
 
-        $globalData = $request->input('global_data');
-        $academicSession = $globalData->sessionSetting['academic_session'];
+    //     $globalData = $request->input('global_data');
+    //     $academicSession = $globalData->sessionSetting['academic_session'];
 
-        $programmes = Programme::with(['students' => function ($query) {
-            $query->where('is_active', true)
-                  ->where('is_passed_out', false)
-                  ->where('is_rusticated', false);
-        }, 'programmeCategory'])
-        ->where(function ($query) use ($academicSession) {
-            $query->where('academic_session', $academicSession)
-                  ->orWhereNull('academic_session');
+    //     $programmes = Programme::with(['students' => function ($query) {
+    //         $query->where('is_active', true)
+    //               ->where('is_passed_out', false)
+    //               ->where('is_rusticated', false);
+    //     }, 'programmeCategory'])
+    //     ->where(function ($query) use ($academicSession) {
+    //         $query->where('academic_session', $academicSession)
+    //               ->orWhereNull('academic_session');
                   
-        })
-        ->get();
+    //     })
+    //     ->get();
 
-        $courseRegMgt = CourseRegistrationSetting::first();
+    //     $courseRegMgt = CourseRegistrationSetting::first();
 
-        return view('admin.courseRegMgt', [
-            'courseRegMgt' => $courseRegMgt,
-            'programmes' => $programmes
-        ]);
-    }
+    //     return view('admin.courseRegMgt', [
+    //         'courseRegMgt' => $courseRegMgt,
+    //         'programmes' => $programmes
+    //     ]);
+    // }
 
     // rather obsolete
-    public function manageCourseReg(Request $request){
-        $validator = Validator::make($request->all(), [
-            'programme_id' => 'required',
-            'course_registration' => 'required',
-        ]);
+    // public function manageCourseReg(Request $request){
+    //     $validator = Validator::make($request->all(), [
+    //         'programme_id' => 'required',
+    //         'course_registration' => 'required',
+    //     ]);
 
-        $programmeId = $request->programme_id;
-        $courseRegistration = $request->course_registration;
+    //     $programmeId = $request->programme_id;
+    //     $courseRegistration = $request->course_registration;
 
-        $programme = Programme::where('id', $programmeId)
-        ->first();
+    //     $programme = Programme::where('id', $programmeId)
+    //     ->first();
 
-        if(empty($programme)){
-            alert()->error('Oops', 'Invalid Programme')->persistent('Close');
-            return redirect()->back();
-        }
+    //     if(empty($programme)){
+    //         alert()->error('Oops', 'Invalid Programme')->persistent('Close');
+    //         return redirect()->back();
+    //     }
 
-        $programme->course_registration = $courseRegistration;
+    //     $programme->course_registration = $courseRegistration;
 
-        if($programme->save()){
-            alert()->success('Changes Saved', 'Course registration changes saved successfully')->persistent('Close');
-            return redirect()->back();
-        }
+    //     if($programme->save()){
+    //         alert()->success('Changes Saved', 'Course registration changes saved successfully')->persistent('Close');
+    //         return redirect()->back();
+    //     }
 
-        alert()->error('Oops!', 'Something went wrong')->persistent('Close');
-        return redirect()->back();
-    }
+    //     alert()->error('Oops!', 'Something went wrong')->persistent('Close');
+    //     return redirect()->back();
+    // }
 
     public function setStudentCourseRegStatus(Request $request){
         $validator = Validator::make($request->all(), [
@@ -1016,44 +1078,60 @@ class AcademicController extends Controller
         ]);
     }
 
-    public function setExamSetting(Request $request){
+    public function setExamSetting(Request $request)
+    {
         $validator = Validator::make($request->all(), [
             'exam_docket_status' => 'required',
             'academic_session' => 'required',
             'result_processing_status' => 'required',
             'test_processing_status' => 'required',
             'semester' => 'required',
+            'programme_category_id' => 'required',
         ]);
 
-
-        $examSettting = new ExaminationSetting;
-        if(!empty($request->examSetting_id) && !$examSettting = ExaminationSetting::find($request->examSetting_id)){
-            alert()->error('Oops', 'Invalid Exam Setting Information')->persistent('Close');
+        if ($validator->fails()) {
+            alert()->error('Validation Error', $validator->errors()->first())->persistent('Close');
             return redirect()->back();
         }
 
-        if(!empty($request->exam_docket_status) &&  $request->exam_docket_status != $examSettting->exam_docket_status){
-            $examSettting->exam_docket_status = $request->exam_docket_status;
+        $examSetting = new ExaminationSetting;
+
+        // Check for existing record using both ID and programme_category_id
+        if (!empty($request->examSetting_id)) {
+            $examSetting = ExaminationSetting::where('id', $request->examSetting_id)
+                ->where('programme_category_id', $request->programme_category_id)
+                ->first();
+
+            if (!$examSetting) {
+                alert()->error('Oops', 'Invalid Exam Setting Information')->persistent('Close');
+                return redirect()->back();
+            }
         }
 
-        if(!empty($request->academic_session) &&  $request->academic_session != $examSettting->academic_session){
-            $examSettting->academic_session = $request->academic_session;
+        $examSetting->programme_category_id = $request->programme_category_id;
+
+        if ($request->exam_docket_status != $examSetting->exam_docket_status) {
+            $examSetting->exam_docket_status = $request->exam_docket_status;
         }
 
-        if(!empty($request->semester) &&  $request->semester != $examSettting->semester){
-            $examSettting->semester = $request->semester;
+        if ($request->academic_session != $examSetting->academic_session) {
+            $examSetting->academic_session = $request->academic_session;
         }
 
-        if(!empty($request->result_processing_status) &&  $request->result_processing_status != $examSettting->result_processing_status){
-            $examSettting->result_processing_status = $request->result_processing_status;
+        if ($request->semester != $examSetting->semester) {
+            $examSetting->semester = $request->semester;
         }
 
-        if(!empty($request->test_processing_status) && $request->test_processing_status != $examSettting->test_processing_status){
-            $examSettting->test_processing_status = $request->test_processing_status;
+        if ($request->result_processing_status != $examSetting->result_processing_status) {
+            $examSetting->result_processing_status = $request->result_processing_status;
         }
 
-        if($examSettting->save()){
-            alert()->success('Changes Saved', 'Exam setttings saved successfully')->persistent('Close');
+        if ($request->test_processing_status != $examSetting->test_processing_status) {
+            $examSetting->test_processing_status = $request->test_processing_status;
+        }
+
+        if ($examSetting->save()) {
+            alert()->success('Changes Saved', 'Exam settings saved successfully')->persistent('Close');
             return redirect()->back();
         }
 
@@ -1169,7 +1247,7 @@ class AcademicController extends Controller
 
     public function allStudents($programmeCategory){
 
-        $programmeCategory = ProgrammeCategory::where('category', $programmeCategory)->first();
+        $programmeCategory = ProgrammeCategory::with('academicSessionSetting', 'examSetting')->where('category', $programmeCategory)->first();
         $programmeCategoryId = $programmeCategory->id;
 
         $students = Student::
@@ -1181,7 +1259,8 @@ class AcademicController extends Controller
             ->get();
         
         return view('admin.allStudents', [
-            'students' => $students
+            'students' => $students,
+            'programmeCategory' => $programmeCategory
         ]);
     }
 
@@ -1190,14 +1269,20 @@ class AcademicController extends Controller
         $sessions = Session::orderBy('id', 'desc')->get();
         $studyCenters = Center::all();
 
-        $globalData = $request->input('global_data');
-        $applicationSession = $globalData->sessionSetting['application_session'];
-
-        $student = Student::
+         $student = Student::
             withTrashed()
             ->with(['applicant', 'programme', 'transactions', 'courseRegistrationDocument', 'registeredCourses', 'partner', 'academicLevel', 'department', 'faculty'])
             ->where('slug', $slug)
             ->first();
+        
+        $programmeCategoryId = $student->programme_category_id;
+        $programmeCategory = ProgrammeCategory::with('academicSessionSetting', 'examSetting')->where('id', $programmeCategoryId)->first();
+        $applicationSession = $programmeCategory->academicSessionSetting->application_session ?? null;
+
+        if (!$applicationSession) {
+            alert()->error('Oops!', 'Session setting for programme category not found.')->persistent('Close');
+            return redirect()->back();
+        }
 
         $referalCode = $student->referral_code;
         $applicants = [];
@@ -1215,11 +1300,14 @@ class AcademicController extends Controller
     }
 
     public function massPromotion(Request $request, $programmeCategory){
-        $globalData = $request->input('global_data');
-        $academicSession = $globalData->sessionSetting['academic_session'];
-
-        $programmeCategory = ProgrammeCategory::where('category', $programmeCategory)->first();
-        $programmeCategoryId = $programmeCategory->id;
+       
+        $programmeCategory = ProgrammeCategory::with('academicSessionSetting', 'examSetting')->where('category', $programmeCategory)->first();
+        $programmeCategoryId = $programmeCategory->id;      
+        $academicSession = $programmeCategory->academicSessionSetting->academic_session ?? null;
+        if (!$academicSession) {
+            alert()->error('Oops!', 'Session setting for programme category not found.')->persistent('Close');
+            return redirect()->back();
+        }
 
         $programmes = Programme::with(['students' => function ($query) use ($programmeCategoryId) {
             $query->where('is_active', true)
@@ -1246,9 +1334,12 @@ class AcademicController extends Controller
     public function promoteStudent(Request $request){
         $programmeId = $request->programme_id;
         $programmeCategoryId = $request->programme_category_id;
-
-        $globalData = $request->input('global_data');
-        $academicSession = $globalData->sessionSetting['academic_session'];
+        $programmeCategory = ProgrammeCategory::with('academicSessionSetting', 'examSetting')->where('id', $programmeCategoryId)->first();
+        $academicSession = $programmeCategory->academicSessionSetting->academic_session ?? null;        
+        if (!$academicSession) {
+            alert()->error('Oops!', 'Session setting for programme category not found.')->persistent('Close');
+            return redirect()->back();
+        }
         
 
         $programme = Programme::with(['students' => function ($query) use ($programmeCategoryId){
@@ -1265,8 +1356,6 @@ class AcademicController extends Controller
         ->where('id', $programmeId)
         ->first();
 
-        $globalData = $request->input('global_data');
-        $academicSession = $globalData->sessionSetting['academic_session'];
 
         $programme->academic_session = $academicSession;
 
@@ -1504,15 +1593,14 @@ class AcademicController extends Controller
             $academicSession = str_replace('-', '/', $academicSession);
         }
 
-        if(empty($academicSession)){
-            $globalData = $request->input('global_data');
-            $admissionSession = $globalData->sessionSetting['admission_session'];
-            $academicSession = $globalData->sessionSetting['academic_session'];
-            $applicationSession = $globalData->sessionSetting['application_session'];
-        }
-
-        $programmeCategory = ProgrammeCategory::where('category', $programmeCategory)->first();
+        $programmeCategory = ProgrammeCategory::with('academicSessionSetting', 'examSetting')->where('category', $programmeCategory)->first();
         $programmeCategoryId = $programmeCategory->id;
+        
+        $academicSession = $programmeCategory->academicSessionSetting->academic_session ?? null;
+        if (!$academicSession) {
+            alert()->error('Oops!', 'Session setting for programme category not found.')->persistent('Close');
+            return redirect()->back();
+        }
 
         $studentRegistrations = StudentCourseRegistration::with('student')
             ->where('academic_session', $academicSession)
@@ -1522,9 +1610,9 @@ class AcademicController extends Controller
 
         $studentIds = $studentRegistrations->pluck('student_id');
         $pendingStudents = Student::with('applicant')
-        ->where('programme_category_id', $programmeCategoryId)
-        ->whereNotNull('matric_number')
-        ->whereNotIn('id', $studentIds)->get();
+            ->where('programme_category_id', $programmeCategoryId)
+            ->whereNotNull('matric_number')
+            ->whereNotIn('id', $studentIds)->get();
 
         $programmes = Programme::get();
         $academicLevels = AcademicLevel::get();
@@ -1841,10 +1929,8 @@ class AcademicController extends Controller
     }
 
     public function departmentForCourse(Request $request, $slug){
-        $globalData = $request->input('global_data');
-        $academicSession = $globalData->sessionSetting['academic_session'];
 
-        $programmeCategories = ProgrammeCategory::all();
+        $programmeCategories = ProgrammeCategory::with('academicSessionSetting')->get();
 
         $department = Department::with('courses', 'courses.courseManagement', 'courses.courseManagement.staff', 'programmes', 'programmes.students', 'programmes.academicAdvisers', 'programmes.academicAdvisers.staff', 'programmes.academicAdvisers.level')->where('slug', $slug)->first();
 
@@ -1915,11 +2001,16 @@ class AcademicController extends Controller
 
     public function genExamDocket(Request $request){
         $studentId = $request->student_id;
-        $globalData = $request->input('global_data');
-        $academicSession = $globalData->sessionSetting['academic_session'];
-        $semester  = $globalData->examSetting['semester'];
-
         $student = Student::find($studentId);
+        $programmeCategoryId = $student->programme_category_id;
+        $programmeCategory = ProgrammeCategory::with('academicSessionSetting', 'examSetting')->where('id', $programmeCategoryId)->first();
+        $academicSession = $programmeCategory->academicSessionSetting->academic_session ?? null;
+        $semester = $programmeCategory->examSetting->semester;
+        
+        if (!$academicSession || !$semester) {
+            alert()->error('Oops!', 'Session setting for programme category not found.')->persistent('Close');
+            return redirect()->back();
+        }
 
         $courseRegs = CourseRegistration::with('course')
             ->where('student_id', $studentId)
@@ -2076,9 +2167,6 @@ class AcademicController extends Controller
 
     public function manageProgrammeChangeRequest(Request $request)
     {
-        $globalData = $request->input('global_data');
-        $academicSession = $globalData->sessionSetting['academic_session'];
-
         $request->validate([
             'programme_change_request_id' => 'required|exists:programme_change_requests,id',
             'role' => 'required|in:old_hod,new_hod,old_dean,new_dean,dap,registrar',
@@ -2178,6 +2266,12 @@ class AcademicController extends Controller
             $type = Payment::PAYMENT_TYPE_SCHOOL;
             if ($applicationType != 'UTME' && ($student->level_id == 2 || $student->level_id == 3)) {
                 $type = Payment::PAYMENT_TYPE_SCHOOL_DE;
+            }
+
+            $academicSession = $student->programmeCategory->academicSessionSetting->academic_session ?? null;
+            if (!$academicSession) {
+                alert()->error('Oops!', 'Session setting for programme category not found.')->persistent('Close');
+                return redirect()->back();
             }
 
             $schoolPayment = Payment::with('structures')

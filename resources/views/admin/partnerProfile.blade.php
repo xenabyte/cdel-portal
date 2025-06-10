@@ -1,7 +1,5 @@
 @extends('admin.layout.dashboard')
-@php
-$applicants = $partner->applicants->where('academic_session', $pageGlobalData->sessionSetting->application_session);
-@endphp
+
 @section('content')
 <!-- start page title -->
 <div class="row">

@@ -9,13 +9,6 @@ use App\Models\ProgrammeRequirement;
 use App\Models\StudentSemesterGPA;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Hash;
-use App\Http\Requests;
-use Illuminate\Support\Facades\Validator;
-use League\Csv\Reader;
 
 use App\Models\CourseManagement;
 use App\Models\Transaction;
@@ -33,37 +26,54 @@ use App\Libraries\Google\Google;
 use App\Http\Controllers\PaymentController;
 
 
-use SweetAlert;
 use Mail;
-use Alert;
 use Log;
-use Carbon\Carbon;
+
 
 class CronController extends Controller
 {
     //
 
-    public function changeCourseManagementPasscode(Request $request){
-
+    public function changeCourseManagementPasscode(Request $request)
+    {
         $globalData = $request->input('global_data');
-        $academicSession = $globalData->sessionSetting['academic_session'];
-        $resultProcessStatus = $globalData->examSetting['result_processing_status'];
 
-        $courseManagements = CourseManagement::where([
-            'academic_session' => $academicSession
-        ])->get();
+        $sessionSettings = $globalData->sessionSettings ?? collect();
+        $resultProcessStatus = $globalData->examSetting->result_processing_status ?? null;
 
-        if(!$courseManagements){
-            return $this->dataResponse('courses have not been assigned to lectures', null, 'error');
-        }
-        
-        foreach($courseManagements as $courseManagement){
-            $courseManagement->passcode = $this->generateRandomString();
-            $courseManagement->save();
+        if ($sessionSettings->isEmpty()) {
+            return $this->dataResponse('No academic session settings found.', null, 'error');
         }
 
-        return $this->dataResponse('Passcode Updated', null);
+        $updatedCount = 0;
 
+        foreach ($sessionSettings as $programmeCategoryId => $sessionSetting) {
+            $academicSession = $sessionSetting->academic_session ?? null;
+
+            if (!$academicSession) {
+                continue;
+            }
+
+            $courseManagements = CourseManagement::where('academic_session', $academicSession)
+                ->where('programme_category_id', $programmeCategoryId)
+                ->get();
+
+            if ($courseManagements->isEmpty()) {
+                continue;
+            }
+
+            foreach ($courseManagements as $courseManagement) {
+                $courseManagement->passcode = $this->generateRandomString();
+                $courseManagement->save();
+                $updatedCount++;
+            }
+        }
+
+        if ($updatedCount === 0) {
+            return $this->dataResponse('No passcodes updated. No course assignments found.', null, 'error');
+        }
+
+        return $this->dataResponse("Passcodes updated for {$updatedCount} courses.", null);
     }
 
 

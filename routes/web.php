@@ -26,8 +26,6 @@ Route::get('/', function () {
 
 Auth::routes(['register' => false, 'login' => false]);
 
-
-
 Route::get('/testEmail', [App\Http\Controllers\HomeController::class, 'csrfErrorPage'])->name('csrf_error_page');
 
 
@@ -75,6 +73,7 @@ Route::get('/getDepartments/{id}', [App\Http\Controllers\HomeController::class, 
 
 Route::get('google/auth', [App\Http\Controllers\GoogleController::class, 'redirectToGoogle'])->name('google.auth');
 Route::get('google/callback', [App\Http\Controllers\GoogleController::class, 'handleGoogleCallback'])->name('google.callback');
+Route::get('student/hallOfFame', [App\Http\Controllers\HomeController::class, 'hallOfFame']);
 
 
 Route::group(['prefix' => 's'], function () {
@@ -167,7 +166,7 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'admin'],
   Route::post('/updateProgramme', [App\Http\Controllers\Admin\AcademicController::class, 'updateProgramme'])->name('updateProgramme')->middleware(['auth:admin']);
   Route::post('/deleteProgramme', [App\Http\Controllers\Admin\AcademicController::class, 'deleteProgramme'])->name('deleteProgramme')->middleware(['auth:admin']);
 
-  Route::get('/sessionSetup', [App\Http\Controllers\Admin\AcademicController::class, 'sessionSetup'])->name('sessionSetup')->middleware(['auth:admin']);
+  Route::get('/sessionSetup/{programmeCategory}', [App\Http\Controllers\Admin\AcademicController::class, 'sessionSetup'])->name('sessionSetup')->middleware(['auth:admin']);
   Route::post('/setSession', [App\Http\Controllers\Admin\AcademicController::class, 'setSession'])->name('setSession')->middleware(['auth:admin']);
   Route::post('/setRegistrarSetting', [App\Http\Controllers\Admin\AcademicController::class, 'setRegistrarSetting'])->name('setRegistrarSetting')->middleware(['auth:admin']);
   Route::post('/setFeeStatus', [App\Http\Controllers\Admin\AcademicController::class, 'setFeeStatus'])->name('setFeeStatus')->middleware(['auth:admin']);
@@ -298,8 +297,8 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'admin'],
   Route::get('/getStudentResultPerYear', [App\Http\Controllers\Admin\ResultController::class, 'getStudentResultPerYear'])->name('getStudentResultPerYear')->middleware(['auth:admin']);
   Route::post('/studentResultPerYear', [App\Http\Controllers\Admin\ResultController::class, 'studentResultPerYear'])->name('studentResultPerYear')->middleware(['auth:admin']);
 
-  Route::get('/getStudentMissingResults/{semester}', [App\Http\Controllers\Admin\ResultController::class, 'getStudentMissingResults'])->name('getStudentMissingResults')->middleware(['auth:admin']);
-  Route::get('/getStudentMissingResults/{semester}/{academicSession}', [App\Http\Controllers\Admin\ResultController::class, 'getStudentMissingResults'])->name('getStudentMissingResults')->middleware(['auth:admin']);
+  Route::get('/getStudentMissingResults', [App\Http\Controllers\Admin\ResultController::class, 'getStudentMissingResults'])->name('getStudentMissingResults')->middleware(['auth:admin']);
+  Route::post('/generateStudentMissingResults', [App\Http\Controllers\Admin\ResultController::class, 'generateStudentMissingResults'])->name('generateStudentMissingResults')->middleware(['auth:admin']);
   Route::post('/generateStudentResults', [App\Http\Controllers\Admin\ResultController::class, 'generateStudentResults'])->name('generateStudentResults')->middleware(['auth:admin']);
   Route::get('/getStudentResultSummary', [App\Http\Controllers\Admin\ResultController::class, 'getStudentResultSummary'])->name('getStudentResultSummary')->middleware(['auth:admin']);
   Route::post('/generateStudentResultSummary', [App\Http\Controllers\Admin\ResultController::class, 'generateStudentResultSummary'])->name('generateStudentResultSummary')->middleware(['auth:admin']);
@@ -554,7 +553,6 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'student'
     Route::get('/exits', [App\Http\Controllers\Student\StudentController::class, 'exits'])->name('exits');
     Route::post('exitApplication', [App\Http\Controllers\Student\StudentController::class, 'exitApplication'])->name('exitApplication');
 
-    Route::get('/hallOfFame', [App\Http\Controllers\HomeController::class, 'hallOfFame']);
     Route::get('/purchaseBandwidth', [App\Http\Controllers\Student\StudentController::class, 'purchaseBandwidth'])->name('purchaseBandwidth');
     Route::post('createBandwidthPayment', [App\Http\Controllers\Student\StudentController::class, 'createBandwidthPayment'])->name('createBandwidthPayment');
 
@@ -699,7 +697,7 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'staff'],
   Route::post('/getStudents', [App\Http\Controllers\Staff\StaffController::class, 'getStudents'])->name('getStudents')->middleware(['auth:staff']);
 
   Route::get('/adviserProgrammes/{programmeCategory}', [App\Http\Controllers\Staff\ProgrammeController::class, 'adviserProgrammes'])->name('adviserProgrammes')->middleware(['auth:staff']);
-  Route::get('/studentCourseReg', [App\Http\Controllers\Staff\ProgrammeController::class, 'studentCourseReg'])->name('studentCourseReg')->middleware(['auth:staff']);
+  Route::get('/studentCourseReg/{programmeCategory}', [App\Http\Controllers\Staff\ProgrammeController::class, 'studentCourseReg'])->name('studentCourseReg')->middleware(['auth:staff']);
   Route::get('/levelCourseReg/{programmeCategory}/{id}', [App\Http\Controllers\Staff\ProgrammeController::class, 'levelCourseReg'])->name('levelCourseReg')->middleware(['auth:staff']);
   Route::get('/levelStudents/{programmeCategory}/{id}', [App\Http\Controllers\Staff\ProgrammeController::class, 'levelStudents'])->name('levelStudents')->middleware(['auth:staff']);
 

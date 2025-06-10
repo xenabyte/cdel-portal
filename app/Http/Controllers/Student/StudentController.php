@@ -58,11 +58,7 @@ class StudentController extends Controller
         $student = Auth::guard('student')->user();
         $studentId = $student->id;
         $levelId = $student->level_id;
-        $globalData = $request->input('global_data');
-        $admissionSession = $globalData->sessionSetting['admission_session'];
-        $academicSession = $globalData->sessionSetting['academic_session'];
-        $applicationType = $student->applicant->application_type;
-
+        $academicSession = $student->programmeCategory->academicSessionSetting->academic_session;
 
         $acceptancePayment = Payment::with('structures')->where('type', Payment::PAYMENT_TYPE_ACCEPTANCE)->where('academic_session', $academicSession)->first();
         $acceptancePaymentId = $acceptancePayment->id;
@@ -131,11 +127,8 @@ class StudentController extends Controller
 
     public function profile(Request $request){
         $student = Auth::guard('student')->user();
-        $studentId = $student->id;
         $levelId = $student->level_id;
-        $globalData = $request->input('global_data');
-        $admissionSession = $globalData->sessionSetting['admission_session'];
-        $academicSession = $globalData->sessionSetting['academic_session'];
+        $academicSession = $student->programmeCategory->academicSessionSetting->academic_session;
 
         $paymentCheck = $this->checkSchoolFees($student, $academicSession, $levelId);
 
@@ -254,8 +247,7 @@ class StudentController extends Controller
     public function makePayment(Request $request){
         $student = Auth::guard('student')->user();
         $studentId = $student->id;
-        $globalData = $request->input('global_data');
-        $admissionSession = $globalData->sessionSetting['admission_session'];
+        $academicSession = $student->programmeCategory->academicSessionSetting->academic_session;
         $paymentId = $request->payment_id;
         $redirectLocation = 'student/home';
         $amount = $request->amount * 100;
@@ -626,9 +618,8 @@ class StudentController extends Controller
         $student = Auth::guard('student')->user();
         $studentId = $student->id;
         $levelId = $student->level_id;
-        $globalData = $request->input('global_data');
-        $admissionSession = $globalData->sessionSetting['admission_session'];
-        $academicSession = $globalData->sessionSetting['academic_session'];
+
+        $academicSession = $student->programmeCategory->academicSessionSetting->academic_session;
 
         $transactions = Transaction::where('student_id', $studentId)->where('payment_id', '!=', 0)->orderBy('status', 'ASC')->get();
 
@@ -649,9 +640,8 @@ class StudentController extends Controller
         $student = Auth::guard('student')->user();
         $studentId = $student->id;
         $levelId = $student->level_id;
-        $globalData = $request->input('global_data');
-        $admissionSession = $globalData->sessionSetting['admission_session'];
-        $academicSession = $globalData->sessionSetting['academic_session'];
+
+        $academicSession = $student->programmeCategory->academicSessionSetting->academic_session;
 
         $transactions = Transaction::where('student_id', $studentId)
         ->where(function($query) {
@@ -678,10 +668,7 @@ class StudentController extends Controller
         $student = Auth::guard('student')->user();
         $studentId = $student->id;
         $levelId = $student->level_id;
-        $globalData = $request->input('global_data');
-        $admissionSession = $globalData->sessionSetting['admission_session'];
-        $academicSession = $globalData->sessionSetting['academic_session'];
-
+        $academicSession = $student->programmeCategory->academicSessionSetting->academic_session;
 
         $mentorId  = $student->mentor_id;
         $paymentCheck = $this->checkSchoolFees($student, $academicSession, $levelId);
@@ -699,13 +686,8 @@ class StudentController extends Controller
 
     public function exits(Request $request){
         $student = Auth::guard('student')->user();
-        $studentId = $student->id;
         $levelId = $student->level_id;
-        $globalData = $request->input('global_data');
-        $admissionSession = $globalData->sessionSetting['admission_session'];
-        $academicSession = $globalData->sessionSetting['academic_session'];
-
-        $mentorId  = $student->mentor_id;
+        $academicSession = $student->programmeCategory->academicSessionSetting->academic_session;
 
         $paymentCheck = $this->checkSchoolFees($student, $academicSession, $levelId);
 
@@ -974,9 +956,8 @@ class StudentController extends Controller
     public function exitApplication(Request $request){
 
         $student = Auth::guard('student')->user();
-        $studentId = $student->id;
-        $globalData = $request->input('global_data');
-        $academicSession = $globalData->sessionSetting['academic_session'];
+
+        $academicSession = $student->programmeCategory->academicSessionSetting->academic_session;
 
         // $studentRegistrationCount = StudentCourseRegistration::where('student_id', $studentId)
         // ->where('academic_session', $academicSession)
@@ -1040,9 +1021,9 @@ class StudentController extends Controller
         $student = Auth::guard('student')->user();
         $studentId = $student->id;
         $levelId = $student->level_id;
-        $globalData = $request->input('global_data');
-        $admissionSession = $globalData->sessionSetting['admission_session'];
-        $academicSession = $globalData->sessionSetting['academic_session'];
+
+        $academicSession = $student->programmeCategory->academicSessionSetting->academic_session;
+
         $plans = Plan::all();
 
         $transactions = Transaction::where('student_id', $studentId)->where('payment_id', '!=', 0)->orderBy('status', 'ASC')->get();
@@ -1064,8 +1045,8 @@ class StudentController extends Controller
     public function createBandwidthPayment (Request $request){
         $student = Auth::guard('student')->user();
         $studentId = $student->id;
-        $globalData = $request->input('global_data');
-        $academicSession = $globalData->sessionSetting['academic_session'];
+        $academicSession = $student->programmeCategory->academicSessionSetting->academic_session;
+
         $redirectLocation = 'student/purchaseBandwidth';
 
         $validator = Validator::make($request->all(), [
@@ -1196,9 +1177,8 @@ class StudentController extends Controller
         $student = Auth::guard('student')->user();
         $studentId = $student->id;
         $levelId = $student->level_id;
-        $globalData = $request->input('global_data');
-        $admissionSession = $globalData->sessionSetting['admission_session'];
-        $academicSession = $globalData->sessionSetting['academic_session'];
+
+        $academicSession = $student->programmeCategory->academicSessionSetting->academic_session;
         $plans = Plan::all();
 
         $transactions = Transaction::where('student_id', $studentId)->where('payment_id', '!=', 0)->orderBy('status', 'ASC')->get();
@@ -1261,15 +1241,13 @@ class StudentController extends Controller
 
     public function reffs(Request $request){
         $student = Auth::guard('student')->user();
-        $studentId = $student->id;
-        $student = Auth::guard('student')->user();
-        $studentId = $student->id;
         $levelId = $student->level_id;
-        $globalData = $request->input('global_data');
-        $admissionSession = $globalData->sessionSetting['admission_session'];
-        $academicSession = $globalData->sessionSetting['academic_session'];
-        $applicationSession = $globalData->sessionSetting['application_session'];
+
+        $academicSession = $student->programmeCategory->academicSessionSetting->academic_session;
+        $applicationSession = $student->programmeCategory->academicSessionSetting->application_session;
+
         $referalCode = $student->referral_code;
+
         $applicants = [];
         if(!empty($referalCode)){
             $applicants = Applicant::with('student')->where('referrer', $referalCode)->where('academic_session', $applicationSession)->get();
@@ -1291,11 +1269,9 @@ class StudentController extends Controller
 
     public function applicantWithSession(Request $request){
         $student = Auth::guard('student')->user();
-        $studentId = $student->id;
         $levelId = $student->level_id;
-        $globalData = $request->input('global_data');
-        $admissionSession = $globalData->sessionSetting['admission_session'];
-        $academicSession = $globalData->sessionSetting['academic_session'];
+
+        $academicSession = $student->programmeCategory->academicSessionSetting->academic_session;
 
         $applicants = Applicant::with('programme', 'olevels', 'guardian', 'student')->where('academic_session', $request->session)->get();
         
@@ -1344,13 +1320,10 @@ class StudentController extends Controller
     public function student(Request $request, $slug){
 
         $student = Auth::guard('student')->user();
-        $studentId = $student->id;
         $levelId = $student->level_id;
-        $globalData = $request->input('global_data');
-        $academicSession = $globalData->sessionSetting['academic_session'];
+        $academicSession = $student->programmeCategory->academicSessionSetting->academic_session;
 
         $paymentCheck = $this->checkSchoolFees($student, $academicSession, $levelId);
-        $bandwidthPayment = Payment::where("type", "Bandwidth Fee")->where("academic_session", $academicSession)->first();
 
         $student = Student::with('applicant', 'applicant.utmes', 'programme')->where('slug', $slug)->first();
 
@@ -1368,14 +1341,11 @@ class StudentController extends Controller
     public function applicant(Request $request, $slug){
 
         $student = Auth::guard('student')->user();
-        $studentId = $student->id;
         $levelId = $student->level_id;
-        $globalData = $request->input('global_data');
-        $admissionSession = $globalData->sessionSetting['admission_session'];
-        $academicSession = $globalData->sessionSetting['academic_session'];
+
+        $academicSession = $student->programmeCategory->academicSessionSetting->academic_session;
 
         $paymentCheck = $this->checkSchoolFees($student, $academicSession, $levelId);
-        $bandwidthPayment = Payment::where("type", "Bandwidth Fee")->where("academic_session", $academicSession)->first();
 
         $applicant = Applicant::with('programme', 'olevels', 'guardian')->where('slug', $slug)->first();
         
@@ -1393,9 +1363,8 @@ class StudentController extends Controller
         $student = Auth::guard('student')->user();
         $studentId = $student->id;
         $levelId = $student->level_id;
-        $globalData = $request->input('global_data');
-        $admissionSession = $globalData->sessionSetting['admission_session'];
-        $academicSession = $globalData->sessionSetting['academic_session'];
+
+        $academicSession = $student->programmeCategory->academicSessionSetting->academic_session;
 
         $paymentCheck = $this->checkSchoolFees($student, $academicSession, $levelId);
 
@@ -1468,8 +1437,7 @@ class StudentController extends Controller
     public function antiDrugDeclaration(Request $request){
         $student = Auth::guard('student')->user();
         $levelId = $student->level_id;
-        $globalData = $request->input('global_data');
-        $academicSession = $globalData->sessionSetting['academic_session'];
+        $academicSession = $student->programmeCategory->academicSessionSetting->academic_session;
 
         $paymentCheck = $this->checkSchoolFees($student, $academicSession, $levelId);
 
