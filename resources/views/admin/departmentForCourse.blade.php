@@ -145,24 +145,72 @@
                             <th scope="col">Course Name</th>
                             <th scope="col">Course Code</th>
                             <th scope="col">Course Lecturer</th>
-                            <th scope="col">Course Password</th>
                             <th scope="col"></th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach($department->courses as $course)
                         <tr>
-                            @php
-                                $courseManagement =  $course->courseManagement->where('academic_session', $pageGlobalData->sessionSetting->academic_session);
-                                $assignedCourse = $courseManagement->where('academic_session', $pageGlobalData->sessionSetting->academic_session)->first();
-                                $staff = !empty($assignedCourse) && !empty($assignedCourse->staff) ? ucwords(strtolower($assignedCourse->staff->title.' '.$assignedCourse->staff->lastname.' '.$assignedCourse->staff->othernames)) :null;
-                                $password = !empty($assignedCourse) ? $assignedCourse->passcode :null;
-                            @endphp
                             <th scope="row">{{ $loop->iteration }}</th>
                             <td>{{ ucwords(strtolower($course->name)) }}</td>
                             <td>{{ $course->code }}</td>
-                            <td>{{ $staff }}</td>
-                            <td>{{ $password }}</td>
+                            <td>
+                                @foreach($programmeCategories as $programmeCategory)
+                                    @if(!empty($programmeCategory->academicSessionSetting))
+                                        @php
+                                            $academicSession = $programmeCategory->academicSessionSetting->academic_session;
+                                            $courseManagement = $course->courseManagement->where('programme_category_id', $programmeCategory->id);
+                                            $assignedCourse = $courseManagement->where('academic_session', $academicSession)->first();
+                                            $staff = !empty($assignedCourse) && !empty($assignedCourse->staff)
+                                                ? ucwords(strtolower($assignedCourse->staff->title.' '.$assignedCourse->staff->lastname.' '.$assignedCourse->staff->othernames))
+                                                : null;
+                                            $staffId = !empty($assignedCourse->staff) ? $assignedCourse->staff->id : null;
+                                            $password = !empty($assignedCourse) ? $assignedCourse->passcode : null;
+                                        @endphp
+
+                                        @if($staff || $password)
+                                            <div class="mb-3 p-2 rounded border shadow-sm bg-light">
+                                                <div class="d-flex justify-content-between align-items-center">
+                                                    <div>
+                                                        <strong class="text-primary">{{ $programmeCategory->category }}</strong><br>
+                                                        <span class="text-muted">{{ $staff ?? 'N/A' }}</span> 
+                                                        <span class="badge bg-secondary ms-2">{{ $password ?? 'No Passcode' }}</span>
+                                                    </div>
+                                                    <button class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#unsetStaff{{$course->id}}{{$programmeCategory->id}}">
+                                                        <i class="mdi mdi-link"></i> Unset Staff
+                                                    </button>
+                                                </div>
+                                            </div>
+
+                                            <!-- Modal -->
+                                            <div class="modal fade" id="unsetStaff{{$course->id}}{{$programmeCategory->id}}" tabindex="-1" aria-labelledby="modalLabel{{$course->id}}{{$programmeCategory->id}}" aria-hidden="true">
+                                                <div class="modal-dialog modal-dialog-centered">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header border-0">
+                                                            <h5 class="modal-title" id="modalLabel{{$course->id}}{{$programmeCategory->id}}">Confirm Unset</h5>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                        </div>
+                                                        <div class="modal-body text-center">
+                                                            <lord-icon src="https://cdn.lordicon.com/gsqxdxog.json" trigger="loop" style="width:100px;height:100px"></lord-icon>
+                                                            <p class="mt-3">Are you sure you want to unset <br><strong>{{ $staff }}</strong> from <strong>{{ $course->code }}</strong> in <strong>{{ $programmeCategory->category }}</strong>?</p>
+                                                            <form action="{{ url('/admin/unsetStaff') }}" method="POST">
+                                                                @csrf
+                                                                <input type="hidden" name="course_id" value="{{ $course->id }}">
+                                                                <input type="hidden" name="staff_id" value="{{ $staffId }}">
+                                                                <input type="hidden" name="programme_category_id" value="{{ $programmeCategory->id }}">
+                                                                <button type="submit" class="btn btn-danger w-100 mt-3">Yes, Unset Staff</button>
+                                                            </form>
+                                                        </div>
+                                                        <div class="modal-footer justify-content-center border-0">
+                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        @endif
+                                    @endif
+                                @endforeach
+                            </td>
                             <td>
                                 <div>
                                     {{-- <a href="{{ url('/admin/courseDetail/'.$course->id) }}" class="btn btn-lg btn-primary">Course Details</a> --}}
@@ -195,12 +243,7 @@
                                         });
                                     </script>
                                     <a href="avascript:void(0);"  data-bs-toggle="modal" data-bs-target="#edit{{$course->id}}"  class="btn btn-sm btn-primary m-1"><i class= "mdi mdi-edit"></i> Edit Course</a>
-                                    @if(empty($staff))
                                     <a href="avascript:void(0);"  data-bs-toggle="modal" data-bs-target="#assignCourse{{$course->id}}" class="btn btn-sm btn-info m-1"><i class= "mdi mdi-link"></i> Assign Staff To Course</a>
-                                    @endif
-                                    @if(!empty($staff))
-                                    <a href="avascript:void(0);"  data-bs-toggle="modal" data-bs-target="#unsetStaff{{$course->id}}" class="btn btn-sm btn-danger m-1"><i class= "mdi mdi-link"></i> Unset Staff From Course</a>
-                                    @endif
 
                                     <div id="edit{{$course->id}}" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
                                         <div class="modal-dialog modal-dialog-centered">
@@ -259,36 +302,19 @@
                                                             </select>
                                                         </div>
 
+                                                        <div class="mb-3">
+                                                            <select class="form-select" name="programme_category_id" required style="flex-grow: 1;">
+                                                                <option value="" selected>Select Programme Category</option>
+                                                                @foreach($programmeCategories as $category)
+                                                                    <option value="{{ $category->id }}">{{ $category->category }} Programme</option>
+                                                                @endforeach
+                                                            </select>
+                                                        </div>
+
                                                         <div class="text-end border-top border-top-dashed p-3">
                                                             <button type="submit" id="submit-button" class="btn btn-primary">Assign </button>
                                                         </div>
                                                     </form>
-                                                </div>
-                                            </div><!-- /.modal-content -->
-                                        </div><!-- /.modal-dialog -->
-                                    </div><!-- /.modal -->
-
-                                    <div id="unsetStaff{{$course->id}}" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
-                                        <div class="modal-dialog modal-dialog-centered">
-                                            <div class="modal-content">
-                                                <div class="modal-body text-center p-5">
-                                                    <div class="text-end">
-                                                        <button type="button" class="btn-close text-end" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                    </div>
-                                                    <div class="mt-2">
-                                                        <lord-icon src="https://cdn.lordicon.com/gsqxdxog.json" trigger="hover" style="width:150px;height:150px">
-                                                        </lord-icon>
-                                                        <h4 class="mb-3 mt-4">Are you sure you want to delete <br/> {{ $course->code }}?</h4>
-                                                        <form action="{{ url('/admin/unsetStaff') }}" method="POST">
-                                                            @csrf
-                                                            <input name="course_id" type="hidden" value="{{$course->id}}">
-                                                            <hr>
-                                                            <button type="submit" id="submit-button" class="btn btn-danger w-100">Yes, Unset Assign</button>
-                                                        </form>
-                                                    </div>
-                                                </div>
-                                                <div class="modal-footer bg-light p-3 justify-content-center">
-
                                                 </div>
                                             </div><!-- /.modal-content -->
                                         </div><!-- /.modal-dialog -->

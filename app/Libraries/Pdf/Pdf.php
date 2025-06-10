@@ -32,7 +32,7 @@ Class Pdf {
         $setting = Setting::first();
         $applicationType = $student->applicant->application_type;
         $programmeCategoryId = $student->programme_category_id;
-        $programmeCategory = $student->programmeCategory->category;
+        $programmeCategory = $student->programmeCategory;
 
         $acceptancePayment = Payment::with('structures')->where('programme_category_id', $programmeCategoryId)->where('type', Payment::PAYMENT_TYPE_ACCEPTANCE)->where('academic_session', $student->academic_session)->first();
         $type = Payment::PAYMENT_TYPE_SCHOOL;

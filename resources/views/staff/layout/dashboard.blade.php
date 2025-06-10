@@ -177,7 +177,24 @@
     @include('sweetalert::alert')
     <!-- Begin page -->
     <div id="layout-wrapper">
-
+        <div id="loading-overlay" style="
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: rgba(255,255,255,0.8);
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            font-size: 2em;
+            color: #333;
+        ">
+            <i class="fa fa-spinner fa-spin"></i>
+            <div style="margin-top: 10px;">Loading, please wait...</div>
+        </div>
         <header id="page-topbar">
             <div class="layout-width">
                 <div class="navbar-header">
@@ -1067,7 +1084,11 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-
+    <script>
+        window.addEventListener('load', function() {
+            document.getElementById('loading-overlay').style.display = 'none';
+        });
+    </script>
     <script>
         // Get the current time
         var currentTime = new Date();
@@ -1301,7 +1322,7 @@
             });
         });
     </script>
-    <script>
+    {{-- <script>
         $(document).ready(function() {
           $("#submit-button").click(function() {
             // Disable the button
@@ -1316,8 +1337,24 @@
             $(this).html("<i class='fa fa-spinner fa-spin'></i>");
           });
         });
-    </script>
+    </script> --}}
+    <script>
+        $(document).ready(function() {
+            $("#submit-button").click(function() {
+                // Disable the button
+                $(this).prop("disabled", true);
 
+                // Show the full-screen overlay
+                $("#loading-overlay").fadeIn();
+
+                // Optionally update button text (not necessary with overlay)
+                // $(this).html("<i class='fa fa-spinner fa-spin'></i>");
+
+                // Submit the form
+                $(this.form).submit();
+            });
+        });
+    </script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const validateButton = document.querySelector('.validate-button');

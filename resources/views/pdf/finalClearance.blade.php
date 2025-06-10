@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admission Letter</title>
+    <title>Final Clearance</title>
     <style>
         body {
             font-family: "Calibri", sans-serif;
@@ -207,8 +207,8 @@
 
 
         <div class="footer">
-            <img src="{{ asset($pageGlobalData->sessionSetting->registrar_signature) }}" alt="Registrar Signature">
-            <p>{{ $pageGlobalData->sessionSetting->registrar_name }}<br><strong>Registrar</strong></p>
+            <img src="{{ asset($pageGlobalData->appSetting->registrar_signature) }}" alt="Registrar Signature">
+            <p>{{ $pageGlobalData->appSetting->registrar_name }}<br><strong>Registrar</strong></p>
         </div>
         
     </div>

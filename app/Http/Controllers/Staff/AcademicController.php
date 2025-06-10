@@ -98,10 +98,10 @@ class AcademicController extends Controller
     }
 
     public function departmentForCourse(Request $request, $slug){
-        $programmeCategories = ProgrammeCategory::all();
+        $programmeCategories = ProgrammeCategory::with('academicSessionSetting')->get();
 
         $department = Department::with('courses', 'courses.courseManagement', 'courses.courseManagement.staff', 'programmes', 'programmes.students', 'programmes.academicAdvisers', 'programmes.academicAdvisers.staff', 'programmes.academicAdvisers.level')->where('slug', $slug)->first();
-        
+
         return view('staff.departmentForCourse', [
             'department' => $department,
             'programmeCategories' => $programmeCategories

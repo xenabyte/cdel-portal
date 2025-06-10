@@ -239,7 +239,7 @@
 @endif
 
 <div class="row">
-    <div class="col-lg-5">
+    <div class="col-lg-7">
         <div class="card card-height-100">
             <div class="card-header align-items-center d-flex">
                 <h4 class="card-title mb-0 flex-grow-1">Staff Members</h4>
@@ -273,7 +273,7 @@
         </div><!-- end card -->
     </div><!-- end col -->
 
-    <div class="col-lg-4">
+    {{-- <div class="col-lg-4">
         <div class="card card-height-100">
             <div class="card-header align-items-center d-flex">
                 <h4 class="card-title mb-0 flex-grow-1">Level Advisers</h4>
@@ -309,9 +309,9 @@
                 </div>
             </div><!-- end cardbody -->
         </div><!-- end card -->
-    </div><!-- end col -->
+    </div><!-- end col --> --}}
 
-    <div class="col-lg-3">
+    <div class="col-lg-5">
         <div class="card card-height-100">
             <div class="card-header border-0">
                 <h4 class="card-title mb-0">Exam Officer's Profile</h4>
@@ -338,46 +338,7 @@
         </div><!-- end card -->
     </div>
 
-    <div class="col-lg-6">
-        <div class="card card-height-100">
-            <div class="card-header align-items-center d-flex">
-                <h4 class="card-title mb-0 flex-grow-1">Fresh Student ({{ $pageGlobalData->sessionSetting->academic_session }}) - {{$department->students->where('level_id', 1)->count()}} Student(s)</h4>
-            </div><!-- end card header -->
-
-            <div class="card-body">
-                <div class="table-responsive p-3">
-                    <table id="buttons-datatables3" class="table table-borderless table-nowrap align-middle mb-0">
-                        <thead class="table-light text-muted">
-                            <tr>
-                                <th scope="col">Student</th>
-                                <th scope="col">Programme</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach($department->students->where('level_id', 1) as $student)
-                            <tr>
-                                <td class="d-flex">
-                                    <img src="{{ asset($student->image) }}" alt="" class="avatar-xs rounded-3 shadow me-2">
-                                    <div>
-                                        <h5 class="fs-13 mb-0">{{ $student->applicant->lastname.' '.$student->applicant->othernames }}</h5>
-                                        <p class="fs-12 mb-0 text-muted"><strong>Dept:</strong> {{ $student->programme->department->name }}</p>
-                                    </div>
-                                </td>
-
-                                <td style="width:5%;">
-                                    <p class="fs-12 mb-0 text-muted">{{ $student->programme->name }}</p>
-                                </td>
-                            </tr><!-- end tr -->
-                            @endforeach
-                        </tbody><!-- end tbody -->
-                    </table><!-- end table -->
-                </div>
-
-            </div><!-- end cardbody -->
-        </div><!-- end card -->
-    </div><!-- end col -->
-
-    <div class="col-lg-6">
+    <div class="col-lg-12">
         <div class="card card-height-100">
             <div class="card-header align-items-center d-flex">
                 <h4 class="card-title mb-0 flex-grow-1">Department Capacity</h4>

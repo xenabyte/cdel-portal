@@ -68,34 +68,116 @@ class ResultController extends Controller
         ]);
     }
 
-    public function getStudentMissingResults(Request $request, $semester, $academicSession=null){
-
-        if(!empty($academicSession)){
-            $academicSession = str_replace('-', '/', $academicSession);
-        }else{
-            $globalData = $request->input('global_data');
-            $academicSession = $globalData->sessionSetting['academic_session'];
-        }
-        
-
-        $courseRegistrations = CourseRegistration::with('student')->where('academic_session', $academicSession)->where('semester', $semester)->where('course_credit_unit', '>', 0)->where('grade', null)->get();
-        $studentIds = $courseRegistrations->pluck('student_id')->unique()->values()->all();
-
-        $students = Student::with(['applicant', 'programme', 'registeredCourses.course'])
-        ->whereIn('id', $studentIds)
-        ->get();
-
-        $studentsWithMissingGrades = $students->map(function ($student) use ($courseRegistrations) {
-            $student->courses_with_missing_grades = $courseRegistrations->where('student_id', $student->id)->map(function ($registration) {
-                return $registration->course;
-            });
-            return $student;
-        });
+    public function getStudentMissingResults(Request $request){
+        $academicLevels = AcademicLevel::get();
+        $academicSessions = Session::orderBy('id', 'desc')->get();
+        $faculties = Faculty::get();
+        $programmeCategories = ProgrammeCategory::get();
 
         return view('admin.getStudentMissingResults',[
-            'students' => $students,
+            'academicLevels' => $academicLevels,
+            'academicSessions' => $academicSessions,
+            'faculties' => $faculties,
+            'programmeCategories' => $programmeCategories,
         ]);
     }
+
+
+    public function generateStudentMissingResults(Request $request){
+        /* ---------- 1. Validate incoming filters (keeps things tidy) ---------- */
+        $request->validate([
+            'semester'   => 'required|string',
+            'session'    => 'required|string',
+            // the other filters are optional so “sometimes|integer” lets them be blank
+            'programme_category_id' => 'sometimes|integer|exists:programme_categories,id',
+            'faculty_id'            => 'sometimes|integer|exists:faculties,id',
+            'department_id'         => 'sometimes|integer|exists:departments,id',
+            'programme_id'          => 'sometimes|integer|exists:programmes,id',
+        ]);
+
+        $academicLevels     = AcademicLevel::all();
+        $academicSessions   = Session::orderByDesc('id')->get();
+        $faculties          = Faculty::all();
+        $programmeCategories= ProgrammeCategory::all();
+
+        $semester        = $request->semester;
+        $academicSession = $request->session;
+
+        /* ---------- 3. Pull course‑registrations with missing grades ---------- */
+        $courseRegistrations = CourseRegistration::with(['student', 'course'])
+            ->where('academic_session', $academicSession)
+            ->where('semester',        $semester)
+            ->whereNull('grade')
+            ->where('course_credit_unit', '>', 0)
+
+            /* filter that *lives on course_registrations* */
+            ->when($request->filled('programme_category_id'), function ($q) use ($request) {
+                $q->where('programme_category_id', $request->programme_category_id);
+            })
+
+            /* filters that live on the related students table */
+            ->when(
+                $request->filled('faculty_id')
+                || $request->filled('department_id')
+                || $request->filled('programme_id')
+                || $request->filled('level_id')
+                || $request->filled('batch'),
+                function ($q) use ($request) {
+                    $q->whereHas('student', function ($qs) use ($request) {
+                        if ($request->filled('faculty_id')) {
+                            $qs->where('faculty_id', $request->faculty_id);
+                        }
+                        if ($request->filled('department_id')) {
+                            $qs->where('department_id', $request->department_id);
+                        }
+                        if ($request->filled('programme_id')) {
+                            $qs->where('programme_id', $request->programme_id);
+                        }
+
+                        if ($request->filled('level_id')) {
+                            $qs->where('level_id', $request->level_id);
+                        }
+
+                        if ($request->filled('batch')) {
+                            $qs->where('batch', $request->batch);
+                        }
+                    });
+                }
+            )
+            ->get();
+
+        /* ---------- 4. Derive the affected students ---------- */
+        $studentIds = $courseRegistrations->pluck('student_id')->unique();
+
+        $students = Student::with(['applicant', 'programme', 'academicLevel'])
+            ->whereIn('id', $studentIds)
+            ->get()
+            ->map(function ($student) use ($courseRegistrations) {
+                // attach the particular courses the student is missing
+                $student->courses_with_missing_grades = $courseRegistrations
+                    ->where('student_id', $student->id)
+                    ->pluck('course');   // only the Course models
+                return $student;
+            });
+
+        /* ---------- 5. Return the blade view ---------- */
+        return view('admin.getStudentMissingResults', [
+            'students'            => $students,
+            'academicLevels'      => $academicLevels,
+            'academicSessions'    => $academicSessions,
+            'faculties'           => $faculties,
+            'programmeCategories' => $programmeCategories,
+
+            // keep user‑selected filters so the form can stay “sticky”
+            'semester'               => $semester,
+            'academicSession'        => $academicSession,
+            'selectedFaculty'        => $request->faculty_id,
+            'selectedDepartment'     => $request->department_id,
+            'selectedProgramme'      => $request->programme_id,
+            'selectedProgrammeCat'   => $request->programme_category_id,
+        ]);
+    }
+    
 
     public function getStudentResultSummary(Request $request){
         $academicSessions = Session::orderBy('id', 'desc')->get();
@@ -144,8 +226,8 @@ class ResultController extends Controller
         });
     
         $students = $studentsQuery->get();
-        if(empty($students)){
-            alert()->success('No students found', '')->persistent('Close');
+        if ($students->isEmpty()) {
+            alert()->success('No students found for the selected criteria.  ', '')->persistent('Close');
             return view('admin.getStudentResults',[
                 'academicLevels' => $academicLevels,
                 'academicSessions' => $academicSessions,

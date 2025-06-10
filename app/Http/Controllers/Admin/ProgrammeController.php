@@ -54,7 +54,7 @@ class ProgrammeController extends Controller
 
     public function programmeCategory(){
 
-        $programmeCategories = ProgrammeCategory::get();
+        $programmeCategories = ProgrammeCategory::with('academicSessionSetting')->get();
         
         return view('admin.programmeCategory', [
             'programmeCategories' => $programmeCategories

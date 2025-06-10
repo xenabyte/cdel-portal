@@ -74,12 +74,12 @@ class HomeController extends Controller
 
         $programmeCategoryId = $student->programme_category_id ?? null;
         $programmeCategory = ProgrammeCategory::with('academicSessionSetting', 'examSetting')->where('id', $programmeCategoryId)->first();
-
-        $academicSession = $programmeCategory->academicSessionSetting->academic_session ?? null;
-        if (!$academicSession) {
+        if (empty($programmeCategory->academicSessionSetting)) {
             alert()->error('Oops!', 'Session setting for programme category not found.')->persistent('Close');
             return redirect()->back();
         }
+        $academicSession = $programmeCategory->academicSessionSetting->academic_session ?? null;
+
 
         $studentId = $student->id;
         $levelId = $student->level_id;
@@ -418,7 +418,7 @@ class HomeController extends Controller
         if (!$applicationSession) {
             alert()->error('Oops!', 'Session setting for programme category not found.')->persistent('Close');
             return redirect()->back();
-        }
+        }        
 
         $commonConditions = [
             'programme_category_id' => $request->programme_category_id,

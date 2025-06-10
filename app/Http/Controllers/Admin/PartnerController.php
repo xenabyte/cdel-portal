@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Validator;
 
 use App\Models\Partner;
 use App\Models\Notification;
+use App\Models\ProgrammeCategory;
 
 use SweetAlert;
 use Mail;
@@ -28,8 +29,31 @@ class PartnerController extends Controller
 
     public function partner($slug){
         $partner = Partner::where('slug', $slug)->first();
+        $programmeCategories = ProgrammeCategory::get();
+
+        $allApplicants = collect();
+
+        foreach ($programmeCategories as $category) {
+            if ($category->academicSessionSetting) {
+                $applicationSession = $category->academicSessionSetting->application_session ?? null;
+                if ($applicationSession) {
+                    $applicants = Applicant::where('academic_session', $applicationSession)
+                         ->where('partner_id', $partner->id)
+                        ->get();
+
+                    $allApplicants = $allApplicants->merge($applicants);
+                }
+
+            }
+        }
+
+        // Remove duplicates if necessary
+        $applicants = $allApplicants->unique('id')->values();
+
+
         return view('admin.partnerProfile',[
-            'partner' => $partner
+            'partner' => $partner,
+            'applicants' => $applicants
         ]);
     }
 

@@ -628,7 +628,8 @@ class ProgrammeController extends Controller
         ->get();
 
         return view('staff.levelCourseReg', [
-            'studentRegistrations' => $studentRegistrations
+            'studentRegistrations' => $studentRegistrations,
+            'programmeCategory' => $programmeCategory
         ]);
     }
 
@@ -753,7 +754,8 @@ class ProgrammeController extends Controller
         }
 
         return view('staff.levelStudents', [
-            'students' => $students
+            'students' => $students,
+            'programmeCategory' => $programmeCategory
         ]);
     }
 

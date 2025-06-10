@@ -2,7 +2,6 @@
 @php
 $partner = Auth::guard('partner')->user();
 $name = $partner->name;
-$applicants = $partner->applicants->where('academic_session', $pageGlobalData->sessionSetting->application_session);
 @endphp
 @section('content')
 
