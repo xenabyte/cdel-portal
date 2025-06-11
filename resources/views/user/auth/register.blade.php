@@ -72,7 +72,7 @@
                                 <input type="hidden" name="lastname" value="{{ $applicant->lastname }}">
                                 <input type="hidden" name="othernames" value="{{ $applicant->othernames }}">
                                 <input type="hidden" name="phone_number" value="{{ $applicant->phone_number }}">
-                                <input type="hidden" name="programme_category_id" id="programmeCategoryId">
+                                <input type="hidden" name="programme_category_id" id="programmeCategoryId" value="{{ $applicant->programme_category_id }}">
 
                                 <div class="mb-3">
                                     <label for="paymentGateway" class="form-label">Select Payment Gateway<span class="text-danger">*</span></label>
