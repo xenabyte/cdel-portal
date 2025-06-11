@@ -2,26 +2,27 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Models\ProgrammeCategory;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\AcademicLevel;
+use App\Models\Admin;
+use App\Models\Course;
+use App\Models\CourseManagement;
+use App\Models\Department;
+
+use App\Models\Faculty;
+use App\Models\LevelAdviser;
+use App\Models\Notification;
+use App\Models\Programme;
+use App\Models\ProgrammeCategory as Category;
+use App\Models\ProgrammeCategory;
+use App\Models\Role;
+use App\Models\Staff;
+use App\Models\StaffRole;
+use App\Models\Student;
+use App\Models\User as Applicant;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
-
-use App\Models\Staff;
-use App\Models\User as Applicant;
-use App\Models\Student;
-use App\Models\Programme;
-use App\Models\AcademicLevel;
-use App\Models\Course;
-use App\Models\Notification;
-use App\Models\Role;
-use App\Models\StaffRole;
-use App\Models\Faculty;
-use App\Models\Department;
-use App\Models\LevelAdviser;
-use App\Models\CourseManagement;
-use App\Models\ProgrammeCategory as Category;
 
 
 class StaffController extends Controller
@@ -290,6 +291,11 @@ class StaffController extends Controller
             }
         }
 
+        $programmeCategories = ProgrammeCategory::all();
+        $userId = Auth::id();
+        $assigner = Admin::findOrFail($userId);
+
+
         $applicants = $applicants->unique('id')->values();
 
         return view('admin.singleStaff', [
@@ -298,7 +304,9 @@ class StaffController extends Controller
             'departments' => $departments,
             'allDepartments' => $allDepartments,
             'faculties' => $faculties,
-            'applicants' => $applicants
+            'applicants' => $applicants,
+            'assigner' => $assigner,
+            'programmeCategories' => $programmeCategories
         ]);
     }
 

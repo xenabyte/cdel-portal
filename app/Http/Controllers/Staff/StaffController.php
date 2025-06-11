@@ -2,52 +2,52 @@
 
 namespace App\Http\Controllers\Staff;
 
-use Illuminate\Http\Request;
+use Alert;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Hash;
 use App\Http\Requests;
-use Illuminate\Support\Facades\Validator;
-
-use App\Models\Staff;
-use App\Models\User as Applicant;
-use App\Models\Student;
-use App\Models\Programme;
+use App\Libraries\Attendance\Attendance as StudentAttendance;
+use App\Libraries\Google\Google;
+use App\Libraries\Result\Result;
+use App\Mail\NotificationMail;
 use App\Models\AcademicLevel;
-use App\Models\Session;
+
+use App\Models\Attendance;
 use App\Models\Course;
-use App\Models\Notification;
-use App\Models\GradeScale;
-use App\Models\CourseRegistration;
-use App\Models\Role;
-use App\Models\StaffRole;
-use App\Models\Faculty;
-use App\Models\Department;
-use App\Models\LevelAdviser;
+use App\Models\CourseLecture;
 use App\Models\CourseManagement;
 use App\Models\CoursePerProgrammePerAcademicSession;
-use App\Models\ProgrammeCategory as Category;
-use App\Models\Attendance;
-use App\Models\Unit;
-use App\Models\CourseLecture;
+use App\Models\CourseRegistration;
+use App\Models\Department;
+use App\Models\Faculty;
+use App\Models\GradeScale;
 use App\Models\LectureAttendance;
-use App\Models\SummerCourseRegistration;
+use App\Models\LevelAdviser;
+use App\Models\Notification;
+use App\Models\Programme;
+use App\Models\ProgrammeCategory as Category;
 use App\Models\ProgrammeCategory;
-
-
-use App\Mail\NotificationMail;
-
-use App\Libraries\Result\Result;
-use App\Libraries\Google\Google;
-use App\Libraries\Attendance\Attendance as StudentAttendance;
-
-use SweetAlert;
-use Mail;
-use Alert;
-use Log;
+use App\Models\Role;
+use App\Models\Session;
+use App\Models\Staff;
+use App\Models\StaffRole;
+use App\Models\Student;
+use App\Models\SummerCourseRegistration;
+use App\Models\Unit;
+use App\Models\User as Applicant;
 use Carbon\Carbon;
+
+
+use Illuminate\Http\Request;
+
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Hash;
+
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
+use Log;
+use Mail;
+use SweetAlert;
 
 class StaffController extends Controller
 {
@@ -1385,11 +1385,13 @@ class StaffController extends Controller
         $staff  = Staff::withTrashed()->with('faculty', 'acad_department', 'staffRoles', 'staffRoles.role')->where('slug', $slug)->first();
         $roles  = Role::get();
         $departments = Department::where('faculty_id', $staff->faculty_id)->get();
+        $programmeCategories = ProgrammeCategory::all();
 
         return view('staff.singleStaff', [
             'singleStaff' => $staff,
             'roles' => $roles,
-            'departments' => $departments
+            'departments' => $departments,
+            'programmeCategories' => $programmeCategories
         ]);
     }
 
