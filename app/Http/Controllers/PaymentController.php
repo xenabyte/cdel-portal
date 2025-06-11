@@ -18,6 +18,7 @@ use App\Models\Payment;
 use App\Models\Student;
 use App\Models\Plan;
 use App\Models\SessionSetting;
+use App\Models\ProgrammeCategory;
 
 use App\Mail\ApplicationPayment;
 use App\Mail\StudentActivated;
@@ -67,6 +68,9 @@ class PaymentController extends Controller
             $studentId = $paymentDetails['data']['metadata']['student_id'];
             $redirectPath = $paymentDetails['data']['metadata']['redirect_path'];
             $txRef = $paymentDetails['data']['metadata']['reference'];
+
+            $programmeCategories = ProgrammeCategory::with('academicSessionSetting')->get();
+
 
             $paymentType = Payment::PAYMENT_TYPE_WALLET_DEPOSIT;
             if($paymentId > 0){
@@ -188,6 +192,9 @@ class PaymentController extends Controller
             $paymentDetails = Flutterwave::verifyTransaction($transactionID);
             // dd($paymentDetails);
 
+            $programmeCategories = ProgrammeCategory::with('academicSessionSetting')->get();
+
+
             $paymentId = $paymentDetails['data']['meta']['payment_id'];
             $studentId = !empty($paymentDetails['data']['meta']['student_id'])?$paymentDetails['data']['meta']['student_id']:null;
             $redirectPath = $paymentDetails['data']['meta']['redirect_path'];
@@ -242,7 +249,8 @@ class PaymentController extends Controller
                         $this->createApplicant($applicantData);
                         return view($redirectPath, [
                             'programmes' => $this->programmes,
-                            'payment' => $payment
+                            'payment' => $payment,
+                            'programmeCategories' => $programmeCategories
                         ]);
                     }elseif($paymentType == Payment::PAYMENT_TYPE_SCHOOL || $paymentType == Payment::PAYMENT_TYPE_SCHOOL_DE){
                         $this->generateMatricAndEmail($student);
@@ -255,7 +263,8 @@ class PaymentController extends Controller
                     if($paymentType == Payment::PAYMENT_TYPE_GENERAL_APPLICATION || $paymentType == Payment::PAYMENT_TYPE_INTER_TRANSFER_APPLICATION){
                         return view($redirectPath, [
                             'programmes' => $this->programmes,
-                            'payment' => $payment
+                            'payment' => $payment,
+                            'programmeCategories' => $programmeCategories
                         ]);
                     }else{
                         return redirect($redirectPath);
@@ -290,6 +299,8 @@ class PaymentController extends Controller
         if(!empty($paymentReference)){
             $ref = $paymentReference;
         }
+
+        $programmeCategories = ProgrammeCategory::with('academicSessionSetting')->get();
 
         $redirectPath = '/';
 
@@ -377,7 +388,8 @@ class PaymentController extends Controller
                     $this->createApplicant($applicantData);
                     return view($redirectPath, [
                         'programmes' => $this->programmes,
-                        'payment' => $payment
+                        'payment' => $payment,
+                        'programmeCategories' => $programmeCategories
                     ]);
                 }elseif($paymentType == Payment::PAYMENT_TYPE_SCHOOL || $paymentType == Payment::PAYMENT_TYPE_SCHOOL_DE){
                     $this->generateMatricAndEmail($student);
@@ -390,7 +402,8 @@ class PaymentController extends Controller
                 if($paymentType == Payment::PAYMENT_TYPE_GENERAL_APPLICATION || $paymentType == Payment::PAYMENT_TYPE_INTER_TRANSFER_APPLICATION){
                     return view($redirectPath, [
                         'programmes' => $this->programmes,
-                        'payment' => $payment
+                        'payment' => $payment,
+                        'programmeCategories' => $programmeCategories
                     ]);
                 }else{
                     return redirect($redirectPath);
