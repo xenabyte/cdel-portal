@@ -15,7 +15,7 @@
                     <hr>
                     <p class="mb-0">
                         For Admission into <span id="generalProgrammeCategory"></span> Programme 
-                        strong> (<span class="dynamicApplicationSession"></span> Academic Session) </strong>
+                        <strong> (<span class="dynamicApplicationSession"></span> Academic Session) </strong>
                         You are most welcome to study at {{ env('SCHOOL_NAME') }}. We offer candidates an excellent and stable academic calendar, comfortable hall of residence, sound morals, entrepreneurial training, skill acquisition, serene, and secure environment for learning. 
                         <strong>This application form will cost ₦<span id="generalFeeAmount"></span></strong>
                     </p>
