@@ -48,4 +48,10 @@ class ProgrammeCategory extends Model
         return null;
     }
 
+    public function staffAssignments()
+    {
+        return $this->hasMany(StaffProgramAssignment::class, 'program_category_id');
+    }
+
+
 }

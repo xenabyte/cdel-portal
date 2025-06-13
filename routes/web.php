@@ -1,12 +1,14 @@
 <?php
+
+use App\Http\Controllers\Admin\StaffProgramAssignmentController;
 header('Access-Control-Allow-Methods: GET, POST, PATCH, PUT, DELETE, OPTIONS');
 header('Access-Control-Allow-Headers: Origin, Content-Type, X-Auth-Token, Authorization, Accept,charset,boundary,Content-Length');
 header('Access-Control-Allow-Origin: *');
 
 
-use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\GlobalDataMiddleware;
 use App\Http\Middleware\StudentAccess;
+use Illuminate\Support\Facades\Route;
 
 
 /*
@@ -1039,5 +1041,8 @@ Route::group(['prefix' => 'center'], function () {
   Route::get('/studentProfile/{slug}', [App\Http\Controllers\Center\StudyCenterController::class, 'studentProfile'])->name('studentProfile')->middleware(['auth:center']);
 
   Route::post('/updatePassword', [App\Http\Controllers\Center\StudyCenterController::class, 'updatePassword'])->name('updatePassword')->middleware(['auth:center']);
+
+  Route::post('/assign-program', [StaffProgramAssignmentController::class, 'assign'])->name('assign.program')->middleware(['auth:admin']);
+  Route::post('/unassign-program', [StaffProgramAssignmentController::class, 'unassign'])->name('unassign.program');
 
 });
