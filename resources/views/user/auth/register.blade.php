@@ -15,7 +15,7 @@
                     <hr>
                     <p class="mb-0">
                         For Admission into <span id="generalProgrammeCategory"></span> Programme 
-                        strong> (<span class="dynamicApplicationSession"></span> Academic Session) </strong>
+                        <strong> (<span class="dynamicApplicationSession"></span> Academic Session) </strong>
                         You are most welcome to study at {{ env('SCHOOL_NAME') }}. We offer candidates an excellent and stable academic calendar, comfortable hall of residence, sound morals, entrepreneurial training, skill acquisition, serene, and secure environment for learning. 
                         <strong>This application form will cost ₦<span id="generalFeeAmount"></span></strong>
                     </p>
@@ -72,7 +72,7 @@
                                 <input type="hidden" name="lastname" value="{{ $applicant->lastname }}">
                                 <input type="hidden" name="othernames" value="{{ $applicant->othernames }}">
                                 <input type="hidden" name="phone_number" value="{{ $applicant->phone_number }}">
-                                <input type="hidden" name="programme_category_id" id="programmeCategoryId">
+                                <input type="hidden" name="programme_category_id" id="programmeCategoryId" value="{{ $applicant->programme_category_id }}">
 
                                 <div class="mb-3">
                                     <label for="paymentGateway" class="form-label">Select Payment Gateway<span class="text-danger">*</span></label>

@@ -253,7 +253,7 @@ class AcademicController extends Controller
             $message = 'Courses for '. $level.$programme .' students have been approved by DAP. Kindly proceed to open course registration for students.';
             
             $senderName = env('SCHOOL_NAME');
-            $receiverName = 'Portal Admininstrator';
+            $receiverName = 'Portal Administrator';
             $adminEmail = env('APP_EMAIL');
             
             $mail = new NotificationMail($senderName, $message, $receiverName);

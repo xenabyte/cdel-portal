@@ -58,8 +58,8 @@ class AdmissionController extends Controller
         $programmeCategory = ProgrammeCategory::with('academicSessionSetting', 'examSetting')->where('category', $programmeCategory)->first();
         $programmeCategoryId = $programmeCategory->id;
 
-        $academicSession = $programmeCategory->academicSessionSetting->academic_session ?? null;
-        if (!$academicSession) {
+        $applicationSession = $programmeCategory->academicSessionSetting->application_session ?? null;
+        if (!$applicationSession) {
             alert()->error('Oops!', 'Session setting for programme category not found.')->persistent('Close');
             return redirect()->back();
         }
@@ -69,7 +69,7 @@ class AdmissionController extends Controller
             $query->where('status', 'submitted')
                   ->orWhereNull('status');
         })
-        ->where('academic_session', $academicSession)
+        ->where('academic_session', $applicationSession)
         ->orderBy('status', 'DESC')
         ->get();
         

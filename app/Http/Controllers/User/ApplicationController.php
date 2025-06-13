@@ -60,7 +60,7 @@ class ApplicationController extends Controller
     {
         $user = Auth::guard('user')->user();
         $userId = $user->id;
-        $applicationSession = $user->programmeCategory->application_session;
+        $applicationSession = $user->programmeCategory->academicSessionSetting->application_session;
 
         $applicant = Applicant::with('programme', 'olevels', 'guardian')->find($userId);
         $applicantProgrammeCategoryId = $applicant->programme_category_id;

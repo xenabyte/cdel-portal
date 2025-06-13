@@ -86,13 +86,25 @@ Class Pdf {
         ];
 
         if($programmeCategoryId == ProgrammeCategory::getProgrammeCategory(ProgrammeCategory::UNDERGRADUATE)){
-            $pdf = PDFDocument::loadView('pdf.admissionLetter', $studentData)
+            $pdf = PDFDocument::loadView('pdf.admission_letters.admissionLetter', $studentData)
             ->setOptions($options)
             ->save($fileDirectory);
         }
 
         if($programmeCategoryId == ProgrammeCategory::getProgrammeCategory(ProgrammeCategory::TOPUP)){
-            $pdf = PDFDocument::loadView('pdf.topAdmissionLetter', $studentData)
+            $pdf = PDFDocument::loadView('pdf.admission_letters.topAdmissionLetter', $studentData)
+            ->setOptions($options)
+            ->save($fileDirectory);
+        }
+
+        $isPGD = $student->programme_category_id == ProgrammeCategory::getProgrammeCategory(ProgrammeCategory::PGD);
+        $isMaster = $student->programme_category_id == ProgrammeCategory::getProgrammeCategory(ProgrammeCategory::MASTER);
+        $isDoctorate = $student->programme_category_id == ProgrammeCategory::getProgrammeCategory(ProgrammeCategory::DOCTORATE);
+
+        $isSPGS = $isPGD || $isMaster || $isDoctorate;
+
+        if($isSPGS){
+             $pdf = PDFDocument::loadView('pdf.admission_letters.spgsAdmissionLetter', $studentData)
             ->setOptions($options)
             ->save($fileDirectory);
         }
