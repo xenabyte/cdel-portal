@@ -3,11 +3,11 @@
 namespace App\Models;
 
 use App\Notifications\StaffResetPassword;
-use Illuminate\Notifications\Notifiable;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Database\Eloquent\SoftDeletes;
-
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+
+use Illuminate\Notifications\Notifiable;
 
 class Staff extends Authenticatable
 {
@@ -58,6 +58,9 @@ class Staff extends Authenticatable
     protected $hidden = [
         'password', 'remember_token',
     ];
+
+    protected $dates = ['deleted_at'];
+
 
     /**
      * Send the password reset notification.
@@ -160,5 +163,15 @@ class Staff extends Authenticatable
     public function attendance()
     {
         return $this->hasMany(Attendance::class, 'staff_id')->where('status', 2)->where('month', Carbon::now()->format('M'))->orderBy('date');
+    }
+
+    public function programmeAssignments()
+    {
+        return $this->hasMany(StaffProgramAssignment::class, 'staff_id');
+    }
+
+    public function assignedProgrammes()
+    {
+        return $this->hasMany(StaffProgramAssignment::class, 'assigned_by_id');
     }
 }

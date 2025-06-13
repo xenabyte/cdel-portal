@@ -24,6 +24,21 @@
     $staffAcademicPlannerRole = false;
 
     $committeeIds = $staff->committeeMembers->pluck('committee_id');
+    $staffProgrammeCategoryRoleIds = $staff->programmeAssignments->pluck('programme_category_id');
+
+    $isSPGS = false;
+    $isStaffProgrammeRole = $staffProgrammeCategoryRoleIds->isNotEmpty();
+    if($isStaffProgrammeRole){
+        // Get the IDs of the SPGS programme categories
+        $pgdId = $programmeCategory::getProgrammeCategory($programmeCategory::PGD);
+        $masterId = $programmeCategory::getProgrammeCategory($programmeCategory::MASTER);
+        $doctorateId = $programmeCategory::getProgrammeCategory($programmeCategory::DOCTORATE);
+
+        // Check if any of these IDs exist in the staff's assigned programme categories
+        $isSPGS = $staffProgrammeCategoryRoleIds->contains(function ($id) use ($pgdId, $masterId, $doctorateId) {
+            return in_array($id, [$pgdId, $masterId, $doctorateId]);
+        });
+    }
 
     $notifications = $staff->notifications()->orderBy('created_at', 'desc')->get();    
     
@@ -533,7 +548,7 @@
                             @endif
 
 
-                            @if($staffAdmissionOfficerRole || $staffPublicRelationRole || $staffRegistrarRole || $staffVCRole || $staffBursaryRole)
+                            @if($staffAdmissionOfficerRole || $staffPublicRelationRole || $staffRegistrarRole || $staffVCRole  || $isStaffProgrammeRole)
                             <li class="nav-item">
                                 <a class="nav-link menu-link" href="#admission" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="admission">
                                     <i class="mdi mdi-account"></i> <span data-key="t-admission">Admissions</span>
@@ -541,6 +556,7 @@
                                 <div class="collapse menu-dropdown" id="admission">
                                     <ul class="nav nav-sm flex-column">
                                         
+                                        @if($staffAdmissionOfficerRole || $staffPublicRelationRole || $staffRegistrarRole || $staffBursaryRole ||$staffVCRole || in_array($programmeCategory::getProgrammeCategory($programmeCategory::UNDERGRADUATE), $staffProgrammeCategoryRoleIds->toArray()))
                                         <li class="nav-item">
                                             <a href="#undergraduateAdmission" class="nav-link" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="undergraduateAdmission" data-key="t-undergraduateAdmission"> {{ $programmeCategory::UNDERGRADUATE }}
                                             </a>
@@ -560,7 +576,9 @@
                                                 </ul>
                                             </div>
                                         </li>
+                                        @endif
 
+                                        @if($staffAdmissionOfficerRole || $staffPublicRelationRole || $staffRegistrarRole || $staffBursaryRole || $staffVCRole || in_array($programmeCategory::getProgrammeCategory($programmeCategory::TOPUP), $staffProgrammeCategoryRoleIds->toArray()))
                                         <li class="nav-item">
                                             <a href="#topupAdmission" class="nav-link" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="topupAdmission" data-key="t-topupAdmission"> {{ $programmeCategory::TOPUP }}
                                             </a>
@@ -580,7 +598,9 @@
                                                 </ul>
                                             </div>
                                         </li>
+                                        @endif
 
+                                        @if($staffAdmissionOfficerRole || $staffPublicRelationRole || $staffRegistrarRole ||  $staffBursaryRole || $staffVCRole  || $isSPGS)
                                         <li class="nav-item">
                                             <a href="#pgdAdmission" class="nav-link" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="pgdAdmission" data-key="t-pgdAdmission"> {{ $programmeCategory::PGD }}
                                             </a>
@@ -600,7 +620,9 @@
                                                 </ul>
                                             </div>
                                         </li>
+                                        @endif
     
+                                        @if($staffAdmissionOfficerRole || $staffPublicRelationRole || $staffRegistrarRole || $staffBursaryRole || $staffVCRole || $isSPGS)
                                         <li class="nav-item">
                                             <a href="#mastersAdmission" class="nav-link" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="mastersAdmission" data-key="t-mastersAdmission"> {{ $programmeCategory::MASTER }}
                                             </a>
@@ -620,7 +642,9 @@
                                                 </ul>
                                             </div>
                                         </li>
+                                        @endif
     
+                                        @if($staffAdmissionOfficerRole || $staffPublicRelationRole || $staffRegistrarRole || $staffBursaryRole || $staffVCRole || $isSPGS)
                                         <li class="nav-item">
                                             <a href="#phdAdmission" class="nav-link" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="phdAdmission" data-key="t-phdAdmission"> {{ $programmeCategory::DOCTORATE }}
                                             </a>
@@ -640,6 +664,7 @@
                                                 </ul>
                                             </div>
                                         </li>
+                                        @endif
                                     </ul>
                                 </div>
                             </li> <!-- end Dashboard Menu -->
