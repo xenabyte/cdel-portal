@@ -89,7 +89,7 @@ class LoginController extends Controller
         }
 
         $programmeCategory = ProgrammeCategory::find($request->programme_category_id);
-        $request->request->add(['academic_session' => $programmeCategory->academicSessionSetting->academic_session]);
+        $request->request->add(['academic_session' => $programmeCategory->academicSessionSetting->application_session]);
         
         $user = User::authenticateUser(
             $request->email,

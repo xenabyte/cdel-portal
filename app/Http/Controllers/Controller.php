@@ -309,6 +309,17 @@ class Controller extends BaseController
         }           
     }
 
+    public function generatePaymentReference($paymentType){
+        $prefix = $this->getInitials($paymentType);
+        return $prefix . '-' . $this->generateRandomString(25);
+    }
+
+    private function getInitials($phrase){
+        return strtoupper(collect(explode(' ', $phrase))->map(function ($word) {
+            return substr($word, 0, 1);
+        })->implode(''));
+    }
+
     public function getPaystackAmount($amount){
         $paystackAmount =  (((1.5/100) * $amount)+10500);
         
@@ -895,12 +906,12 @@ class Controller extends BaseController
             }  
         }
 
-        if($paymentType == Payment::PAYMENT_TYPE_WALLET_DEPOSIT){
-            $creditStudent = $this->creditStudentWallet($studentId, $amount);
-            if(!$creditStudent){
-                Log::info("**********************Unable to credit student wallet**********************: ". $amount .' - '.$student);
-            }
-        }  
+        // if($paymentType == Payment::PAYMENT_TYPE_WALLET_DEPOSIT){
+        //     $creditStudent = $this->creditStudentWallet($studentId, $amount);
+        //     if(!$creditStudent){
+        //         Log::info("**********************Unable to credit student wallet**********************: ". $amount .' - '.$student);
+        //     }
+        // }  
         
         if($paymentType == Payment::PAYMENT_TYPE_BANDWIDTH){
             $transaction = Transaction::where('reference',  $transactionData->reference)->first();
@@ -922,6 +933,14 @@ class Controller extends BaseController
 
         if($paymentType == Payment::PAYMENT_TYPE_SCHOOL || $paymentType == Payment::PAYMENT_TYPE_SCHOOL_DE){
             $this->generateMatricAndEmail($student);
+        }
+
+        if($paymentType == Payment::PAYMENT_TYPE_SUMMER_COURSE_REGISTRATION){
+            $transaction = Transaction::where('reference',  $transactionData->reference)->first();
+            $creditStudent = $this->creditStudentSummerCourseReg($transaction);
+            if(!$creditStudent){
+                Log::info("**********************Unable to credit student summer course reg**********************: ". $amount .' - '.$student .' - '.$transaction->additional_data);
+            }
         }
 
         alert()->success('Good Job', 'Payment successful')->persistent('Close');

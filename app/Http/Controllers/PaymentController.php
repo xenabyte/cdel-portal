@@ -337,7 +337,6 @@ class PaymentController extends Controller
             
             if($this->processUpperLinkPayment($paymentDetails)){
 
-                alert()->success('Good Job', 'Payment successful')->persistent('Close');
                 if($student && !empty($studentId)){
                     $pdf = new Pdf();
                     $invoice = $pdf->generateTransactionInvoice($session, $studentId, $paymentId, 'single');
@@ -354,58 +353,92 @@ class PaymentController extends Controller
                     if($paymentType == Payment::PAYMENT_TYPE_SUMMER_COURSE_REGISTRATION){
                         $transaction = Transaction::where('reference', $txRef)->first();
                         $creditStudent = $this->creditStudentSummerCourseReg($transaction);
+
+                        alert()->success('Good Job', 'Payment successful')->persistent('Close');                        
+                        if (is_string($creditStudent)) {
+                            alert()->error('Oops', $creditStudent)->persistent('Close');
+                        }
+
                         if(!$creditStudent){
                             Log::info("**********************Unable to credit student summer course reg**********************: ". $amount .' - '.$student .' - '.$transaction->additional_data);
                         }
+
+                        return redirect($redirectPath);
                     }
 
                     if($paymentType == Payment::PAYMENT_TYPE_WALLET_DEPOSIT){
                         $creditStudent = $this->creditStudentWallet($studentId, $amount);
+                        
+                        alert()->success('Good Job', 'Payment successful')->persistent('Close');                        
+                        if (is_string($creditStudent)) {
+                            alert()->error('Oops', $creditStudent)->persistent('Close');
+                        }
+
                         if(!$creditStudent){
                             Log::info("**********************Unable to credit student wallet**********************: ". $amount .' - '.$student);
                         }
+
+                        return redirect($redirectPath);
                     }  
                     
                     if($paymentType == Payment::PAYMENT_TYPE_BANDWIDTH){
                         $transaction = Transaction::where('reference', $txRef)->first();
                         $creditStudent = $this->creditBandwidth($transaction, $amount);
 
+                        alert()->success('Good Job', 'Payment successful')->persistent('Close');                        
+                        if (is_string($creditStudent)) {
+                            alert()->error('Oops', $creditStudent)->persistent('Close');
+                        }
+
                         if(!$creditStudent){
                             Log::info("**********************Unable to credit student bandwidth**********************: ". $amount .' - '.$student);
                         }
+                        return redirect($redirectPath);
                     }
 
                     if($paymentType == Payment::PAYMENT_TYPE_ACCOMONDATION){
                         $transaction = Transaction::where('reference', $txRef)->first();
                         $creditStudent = $this->creditAccommodation($transaction);
+
+                        alert()->success('Good Job', 'Payment successful')->persistent('Close');                        
                         if (is_string($creditStudent)) {
                             alert()->error('Oops', $creditStudent)->persistent('Close');
                         }
+                        return redirect($redirectPath);
                     }
                 }
+
                 if($paymentType == Payment::PAYMENT_TYPE_GENERAL_APPLICATION || $paymentType == Payment::PAYMENT_TYPE_INTER_TRANSFER_APPLICATION){
                     $applicantData = $paymentData;
                     $this->createApplicant($applicantData);
+                    alert()->success('Good Job', 'Payment successful')->persistent('Close');
+
                     return view($redirectPath, [
                         'programmes' => $this->programmes,
                         'payment' => $payment,
                         'programmeCategories' => $programmeCategories
                     ]);
-                }elseif($paymentType == Payment::PAYMENT_TYPE_SCHOOL || $paymentType == Payment::PAYMENT_TYPE_SCHOOL_DE){
+                }
+
+                if($paymentType == Payment::PAYMENT_TYPE_SCHOOL || $paymentType == Payment::PAYMENT_TYPE_SCHOOL_DE){
                     $this->generateMatricAndEmail($student);
-                    return redirect($redirectPath);
-                }else{
+                    
+                    alert()->success('Good Job', 'Payment successful')->persistent('Close');
                     return redirect($redirectPath);
                 }
+                
+                return redirect($redirectPath);
             }else{
-                alert()->info('oops!!!', 'Something happpened, contact administrator')->persistent('Close');
                 if($paymentType == Payment::PAYMENT_TYPE_GENERAL_APPLICATION || $paymentType == Payment::PAYMENT_TYPE_INTER_TRANSFER_APPLICATION){
+                    
+                    alert()->info('oops!!!', 'Something happpened, contact administrator')->persistent('Close');
                     return view($redirectPath, [
                         'programmes' => $this->programmes,
                         'payment' => $payment,
                         'programmeCategories' => $programmeCategories
                     ]);
                 }else{
+                    alert()->info('oops!!!', 'Something happpened, contact administrator')->persistent('Close');
                     return redirect($redirectPath);
                 }
             }

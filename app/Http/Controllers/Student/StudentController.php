@@ -255,6 +255,7 @@ class StudentController extends Controller
         $paymentType = 'Other Fee';
         $suspensionId = $request->suspension_id;
         $summerCourses = null;
+        $reference = $this->generatePaymentReference("General Fee");
 
         if($paymentId > 0){
             if(!$payment = Payment::with('structures')->where('id', $paymentId)->first()){
@@ -268,16 +269,16 @@ class StudentController extends Controller
                 $amount = $request->amountGeneral*100;
             }
 
+            $reference = $this->generatePaymentReference($payment->type);
+
             $paymentClass = new Payment();
             $paymentType = $paymentClass->classifyPaymentType($payment->type);
         }
 
-        $reference = $this->generateAccessCode();
 
         $bandwidthPlan = !empty($request->plan_id)?Plan::find($request->plan_id):null;
         if(!empty($bandwidthPlan)){
             $amount = $bandwidthPlan->amount;
-            $reference = $this->generateRandomString(25);
             $redirectLocation = 'student/purchaseBandwidth';
         }
 
@@ -494,7 +495,7 @@ class StudentController extends Controller
             Log::info("Wallet Amount ****************: ". round($amount));
 
             $studentBalance = $student->amount_balance;
-            if($studentBalance < ($amount +20000)){
+            if($studentBalance < ($amount + 20000)){
                 $message = 'Insufficient funds, please top up your wallet or use another payment method.';
                 alert()->info('Opps!', $message)->persistent('Close');
                 return redirect()->back();

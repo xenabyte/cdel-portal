@@ -59,7 +59,14 @@
                             <th scope="row">{{ $loop->iteration }}</th>
                             <td>{{ $transaction->reference }}</td>
                             <td>₦{{ number_format($transaction->amount_payed/100, 2) }} </td>
-                            <td>{{ !empty($transaction->paymentType) ? ($transaction->paymentType->type == 'General Fee' ? $transaction->paymentType->title : $transaction->paymentType->type) : 'Wallet Deposit' }} </td>  
+                            <td>
+                                {{ !empty($transaction->paymentType) 
+                                    ? (in_array($transaction->paymentType->type, ['General Fee', 'Other Fee']) 
+                                        ? $transaction->paymentType->title 
+                                        : $transaction->paymentType->type) 
+                                    : 'Wallet Deposit' 
+                                }}
+                            </td>  
                             <td>{{ $transaction->session }}</td>
                             <td>{{ $transaction->payment_method }}</td>
                             <td><span class="badge badge-soft-{{ $transaction->payment_method == 'Wallet' ? 'danger' : 'success' }}">{{ $transaction->payment_method == 'Wallet' ? 'Debit' : 'Credit' }}</span></td>
