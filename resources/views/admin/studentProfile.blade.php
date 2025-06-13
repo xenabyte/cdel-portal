@@ -7,8 +7,9 @@
     $failedCourses = $student->registeredCourses()->where('grade', 'F')->where('re_reg', null)->get();
     $studentAdvisoryData = (object) $student->getAcademicAdvisory();
 
-    $academicSession = $student->programmeCategory->academicSessionSetting->application_session;
+    $applicationSession = $student->programmeCategory->academicSessionSetting->application_session;
     $admissionSession = $student->programmeCategory->academicSessionSetting->admission_session;
+    $academicSession = $student->programmeCategory->academicSessionSetting->academic_session;
 @endphp
 @section('content')
 <!-- start page title -->

@@ -107,7 +107,6 @@
                             @if(env('MONNIFY_STATUS'))<option value="Monnify">Monnify</option>@endif
                             @if(env('PAYSTACK_STATUS'))<option value="Paystack">Paystack</option>@endif
                             @if(env('BANK_TRANSFER_STATUS'))<option value="BankTransfer">Transfer</option>@endif
-                            @if(env('WALLET_STATUS'))<option value="Wallet">Wallet</option>@endif
                         </select>
                     </div>
 
