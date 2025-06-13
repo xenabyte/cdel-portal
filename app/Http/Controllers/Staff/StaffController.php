@@ -113,13 +113,13 @@ class StaffController extends Controller
          // Remove duplicates if necessary
         $applicants = $allApplicants->unique('id')->values();
 
-        $google = new Google();
-        $google->addMemberToGroup($staff->email, env('GOOGLE_STAFF_GROUP'));
-        if(strtolower($staff->category) == 'academic'){
-            $google->addMemberToGroup($staff->email, env('GOOGLE_ACADEMIC_STAFF_GROUP'));
-        }else{
-            $google->addMemberToGroup($staff->email, env('GOOGLE_NON_ACADEMIC_STAFF_GROUP'));
-        }
+        // $google = new Google();
+        // $google->addMemberToGroup($staff->email, env('GOOGLE_STAFF_GROUP'));
+        // if(strtolower($staff->category) == 'academic'){
+        //     $google->addMemberToGroup($staff->email, env('GOOGLE_ACADEMIC_STAFF_GROUP'));
+        // }else{
+        //     $google->addMemberToGroup($staff->email, env('GOOGLE_NON_ACADEMIC_STAFF_GROUP'));
+        // }
 
         return view('staff.home', [
             'applicants' => $applicants,
