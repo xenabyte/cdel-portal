@@ -585,10 +585,50 @@
             <div class="card-header align-items-center d-flex">
                 <h4 class="card-title mb-0 flex-grow-1">Result(s) for {{ $academiclevel->level }} Level,  {{ $programme->name }} for {{ $academicSession }} Academic Session</h4>
                 
-                {{-- <div class="flex-shrink-0">
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#approveResult">Approve Result(s)</button>
-                </div> --}}
+               <div class="flex-shrink-0">
+                    @if(!empty($programme))
+                    <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#generateResult">Download Result Broadsheet(xlsx)</button>
+                    <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#generateResultPDF">Download Result Broadsheet(pdf)</button>
+                    @endif
+                </div>
             </div><!-- end card header -->
+
+            <div id="generateResult" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-body text-center p-5">
+                            <div class="text-end">
+                                <button type="button" class="btn-close text-end" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="mt-2">
+                                <lord-icon src="https://cdn.lordicon.com/xxdqfhbi.json" trigger="hover" style="width:150px;height:150px">
+                                </lord-icon>
+                                <h4 class="mb-3 mt-4">Are you sure you want to generate result broadsheet for <br>{{ $academiclevel->level }} level {{ !empty($programme)?$programme->name:null }}?</h4>
+                                <form action="{{ url('/admin/generateResultBroadSheet') }}" method="POST">
+                                    @csrf
+                                    @foreach ($students as $studentforIds)
+                                    <input type="hidden" name="student_ids[]" value="{{ $studentforIds->id }}">
+                                    @endforeach
+                                    @if(!empty($programme))
+                                    <input type="hidden" name="level_id" value="{{ $academiclevel->id }}">
+                                    <input type="hidden" name="programme_id" value="{{ $programme->id }}">
+                                    <input type="hidden" name="department_id" value="{{ $department_id }}">
+                                    <input type="hidden" name="faculty_id" value="{{ $faculty_id }}">
+                                    <input type="hidden" name="session" value="{{ $academicSession }}">
+                                    <input type="hidden" name="semester" value="{{ $semester }}">
+                                    @endif
+                                    <input type="hidden" name="url" value="admin.getStudentResults">
+                                    <hr>
+                                    <button type="submit" id="submit-button" class="btn btn-success w-100">Yes, Proceed</button>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="modal-footer bg-light p-3 justify-content-center">
+
+                        </div>
+                    </div><!-- /.modal-content -->
+                </div><!-- /.modal-dialog -->
+            </div><!-- /.modal -->
 
             <div id="approveResult" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
                 <div class="modal-dialog modal-dialog-centered">

@@ -185,14 +185,7 @@
         .cke_notifications_area{
             display: none;
         }
-    </style>
-</head>
-
-<body>
-    @include('sweetalert::alert')
-    <!-- Begin page -->
-    <div id="layout-wrapper">
-        <div id="loading-overlay" style="
+        .loading-overlay {
             display: none;
             position: fixed;
             top: 0; left: 0;
@@ -200,13 +193,24 @@
             height: 100vh;
             background-color: rgba(255,255,255,0.8);
             z-index: 9999;
-            display: flex;
             justify-content: center;
             align-items: center;
             flex-direction: column;
             font-size: 2em;
             color: #333;
-        ">
+        }
+
+        .loading-overlay.active {
+            display: flex;
+        }
+    </style>
+</head>
+
+<body>
+    @include('sweetalert::alert')
+    <!-- Begin page -->
+    <div id="layout-wrapper">
+        <div id="loading-overlay" class="loading-overlay">
             <i class="fa fa-spinner fa-spin"></i>
             <div style="margin-top: 10px;">Loading, please wait...</div>
         </div>

@@ -25,10 +25,34 @@
     <link href="{{asset('assets/css/custom.min.css')}}" rel="stylesheet" type="text/css" />
     <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 
+    <style>
+        .cke_notifications_area{
+            display: none;
+        }
+        .loading-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: rgba(255,255,255,0.8);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            font-size: 2em;
+            color: #333;
+        }
+
+        .loading-overlay.active {
+            display: flex;
+        }
+    </style>
 
 </head>
 
 <body>
+
     @include('sweetalert::alert')
     
     <div class="auth-page-wrapper pt-5">
@@ -101,18 +125,18 @@
 
     <script>
         $(document).ready(function() {
-          $("#submit-button").click(function() {
-            // Disable the button
-            $(this.form).submit();
-    
-            $(this).prop("disabled", true);
-        
-            // Remove the text
-            $(this).text("");
-        
-            // Replace the text with a spinner
-            $(this).html("<i class='fa fa-spinner fa-spin'></i>");
-          });
+            $("#submit-button").click(function(e) {
+                e.preventDefault(); // prevent double submit if needed
+
+                // Disable the button
+                $(this).prop("disabled", true);
+
+                // Show the full-screen overlay
+                $("#loading-overlay").addClass("active");
+
+                // Submit the form
+                $(this.form).submit();
+            });
         });
     </script>
 </body>

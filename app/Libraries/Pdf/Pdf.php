@@ -511,5 +511,61 @@ Class Pdf {
 
         return $fileDirectory;
     }
+
+/**
+ * Generates and downloads a PDF result broadsheet for students.
+ *
+ * @param Collection $students The collection of students to include in the broadsheet.
+ * @param string $semester The current semester for which the broadsheet is being generated.
+ * @param AcademicLevel $academicLevel The academic level of the students.
+ * @param string $academicSession The academic session for which the broadsheet is being generated.
+ * @param array $classifiedCourses The classified courses for the students.
+ * @param Programme $programme The programme to which the students belong.
+ * @return \Symfony\Component\HttpFoundation\BinaryFileResponse The response to initiate the PDF download.
+ */
+
+    public function studentResultBroadSheet($students, $semester, $academicLevel, $academicSession, $classifiedCourses, $programme, $faculty, $department){
+        $options = [
+            'isRemoteEnabled' => true,
+            'encryption' => '128',
+            'no_modify' => true,
+            'isHtml5ParserEnabled' => true,
+            'isPhpEnabled' => true,
+            'pdf' => true,
+        ];
+
+        $dir = public_path('uploads/files/result_broad_sheets');
+        if (!file_exists($dir)) {
+            mkdir($dir, 0755, true);
+        }
+
+        $semesterName = match((int)$semester) {
+            1 => 'Harmattan',
+            2 => 'Rain',
+            3 => 'Summer',
+            default => 'Unknown'
+        };
+
+        $fileName = $programme->name . ' ' . $academicLevel->level . ' ' . $semesterName . ' ' . $academicSession . ' resultBroadSheet.pdf';
+        $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $fileName))) . '.pdf';
+
+        $pdf = PDFDocument::loadView('pdf.resultBroadSheet', [
+            'students' => $students,
+            'semester' => $semester,
+            'semesterName' => $semesterName,
+            'academicLevel' => $academicLevel,
+            'academicSession' => $academicSession,
+            'classifiedCourses' => $classifiedCourses,
+            'programme' => $programme,
+            'faculty' => $faculty,
+            'department' => $department,
+            'pdf' => true
+        ]);
+
+        $pdf->setPaper('a4', 'landscape');
+        $pdf->setOptions($options);
+
+        return $pdf->download($slug);
+    }
     
 }

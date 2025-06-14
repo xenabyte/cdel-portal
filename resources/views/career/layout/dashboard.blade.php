@@ -49,6 +49,24 @@
         .cke_notifications_area{
             display: none;
         }
+        .loading-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: rgba(255,255,255,0.8);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            font-size: 2em;
+            color: #333;
+        }
+
+        .loading-overlay.active {
+            display: flex;
+        }
     </style>
 
     <script type="text/javascript">
@@ -417,7 +435,7 @@
         });
     }
 </script>
-<script>
+{{-- <script>
     $(document).ready(function() {
       $("#submit-button").click(function() {
         // Disable the button
@@ -432,21 +450,21 @@
         $(this).html("<i class='fa fa-spinner fa-spin'></i>");
       });
     });
-</script>
+</script> --}}
 <script>
     $(document).ready(function() {
-      $("#submit-button-main").click(function() {
-        // Disable the button
-        $(this.form).submit();
+        $("#submit-button").click(function(e) {
+            e.preventDefault(); // prevent double submit if needed
 
-        $(this).prop("disabled", true);
-    
-        // Remove the text
-        $(this).text("");
-    
-        // Replace the text with a spinner
-        $(this).html("<i class='fa fa-spinner fa-spin'></i>");
-      });
+            // Disable the button
+            $(this).prop("disabled", true);
+
+            // Show the full-screen overlay
+            $("#loading-overlay").addClass("active");
+
+            // Submit the form
+            $(this.form).submit();
+        });
     });
 </script>
 </body>

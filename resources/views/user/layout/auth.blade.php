@@ -46,6 +46,30 @@
         s0.parentNode.insertBefore(s1,s0);
         })();
     </script>
+
+    <style>
+        .cke_notifications_area{
+            display: none;
+        }
+        .loading-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: rgba(255,255,255,0.8);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            font-size: 2em;
+            color: #333;
+        }
+
+        .loading-overlay.active {
+            display: flex;
+        }
+    </style>
     <!--End of Tawk.to Script-->
     {{-- <a href="{{ url('/admin/logout') }}"onclick="event.preventDefault();document.getElementById('logout-form').submit();">Logout</a>
     <form id="logout-form" action="{{ url('/admin/logout') }}" method="POST" style="display: none;">@csrf</form> --}}
@@ -153,18 +177,18 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
     <script>
         $(document).ready(function() {
-          $("#submit-button").click(function() {
-            // Disable the button
-            $(this.form).submit();
-    
-            $(this).prop("disabled", true);
-        
-            // Remove the text
-            $(this).text("");
-        
-            // Replace the text with a spinner
-            $(this).html("<i class='fa fa-spinner fa-spin'></i>");
-          });
+            $("#submit-button").click(function(e) {
+                e.preventDefault(); // prevent double submit if needed
+
+                // Disable the button
+                $(this).prop("disabled", true);
+
+                // Show the full-screen overlay
+                $("#loading-overlay").addClass("active");
+
+                // Submit the form
+                $(this.form).submit();
+            });
         });
     </script>
 </body>

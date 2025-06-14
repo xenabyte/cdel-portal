@@ -966,21 +966,48 @@ class Controller extends BaseController
     }
     
 
-    public function classifyCourses($students, $semester, $academicLevel, $academicSession) {
+    // public function classifyCourses($students, $semester, $academicLevel, $academicSession) {
+    //     $classifiedCourses = [];
+    
+    //     foreach ($students as $student) {
+    //         foreach ($student->registeredCourses->where('semester', $semester)->where('level_id', $academicLevel->id)->where('academic_session', $academicSession) as $registeredCourse) {
+    //             $courseName = $registeredCourse->course_code;
+    
+    //             if (!isset($classifiedCourses[$courseName])) {
+    //                 $classifiedCourses[$courseName] = [];
+    //             }
+    
+    //             $classifiedCourses[$courseName][] = $student;
+    //         }
+    //     }
+    
+    //     return $classifiedCourses;
+    // }
+
+    public function classifyCourses($students, $semester, $academicLevel, $academicSession){
         $classifiedCourses = [];
-    
+
         foreach ($students as $student) {
-            foreach ($student->registeredCourses->where('semester', $semester)->where('level_id', $academicLevel->id)->where('academic_session', $academicSession) as $registeredCourse) {
-                $courseName = $registeredCourse->course_code;
-    
-                if (!isset($classifiedCourses[$courseName])) {
-                    $classifiedCourses[$courseName] = [];
+            $courses = $student->registeredCourses
+                ->where('semester', $semester)
+                ->where('level_id', $academicLevel->id)
+                ->where('academic_session', $academicSession);
+
+            foreach ($courses as $registeredCourse) {
+                $courseCode = $registeredCourse->course_code;
+
+                // If not yet set, initialize with metadata and an empty student list
+                if (!isset($classifiedCourses[$courseCode])) {
+                    $classifiedCourses[$courseCode] = [
+                        'course' => $registeredCourse, // one sample instance
+                        'students' => [],
+                    ];
                 }
-    
-                $classifiedCourses[$courseName][] = $student;
+
+                $classifiedCourses[$courseCode]['students'][] = $student;
             }
         }
-    
+
         return $classifiedCourses;
     }
 

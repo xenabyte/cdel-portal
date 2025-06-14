@@ -392,7 +392,10 @@ class ResultController extends Controller
         $semester = $request->semester;
         $academicSession = $request->session;
         $academicLevel = AcademicLevel::find($request->level_id);
-        $programme = Programme::find($request->programme_id);
+        $programme = Programme::with('department', 'department.faculty')->where('id', $request->programme_id)->first();
+        $department = $programme->department;
+        $faculty = $department->faculty;
+        $fileType = $request->fileType;
     
         $students = Student::with(['applicant', 'programme', 'registeredCourses', 'registeredCourses.course', 'academicLevel', 'department', 'faculty'])
             ->where([
@@ -413,10 +416,22 @@ class ResultController extends Controller
         
         // Generate a unique filename for the download
         $fileName = $programme->name . ' ' . $academicLevel->level . ' ' . $semester . ' ' . $academicSession . ' resultBroadSheet';
-        $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $fileName))) . '.xlsx'; // Add the extension
+
+        if ($fileType == 'pdf') {
+            $fileName .= '.pdf';
+        } else {
+            $fileName .= '.xlsx';
+        }
+
+        $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $fileName))) . '.' . $fileType; // Add the extension
         
+        if ($fileType == 'pdf') {
+            $pdf = new Pdf();
+            return $pdf->studentResultBroadSheet($students, $semester, $academicLevel, $academicSession, $classifiedCourses, $programme, $faculty, $department);
+        }
+
         // Create the export instance
-        $export = new StudentResultBroadSheet($students, $semester, $academicLevel, $academicSession, $classifiedCourses);
+        $export = new StudentResultBroadSheet($students, $semester, $academicLevel, $academicSession, $classifiedCourses, $programme);
               
     
         return \Excel::download($export, $slug);

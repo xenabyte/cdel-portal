@@ -714,6 +714,8 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'staff'],
 
   Route::get('/getStudentResultSummary', [App\Http\Controllers\Staff\ResultController::class, 'getStudentResultSummary'])->name('getStudentResultSummary')->middleware(['auth:staff']);
   Route::post('/generateStudentResultSummary', [App\Http\Controllers\Staff\ResultController::class, 'generateStudentResultSummary'])->name('generateStudentResultSummary')->middleware(['auth:staff']);
+  Route::post('/generateResultBroadSheet', [App\Http\Controllers\Staff\ResultController::class, 'generateResultBroadSheet'])->name('generateResultBroadSheet')->middleware(['auth:staff']);
+
 
   Route::post('/generateResult', [App\Http\Controllers\Staff\ResultController::class, 'generateResult'])->name('generateResult')->middleware(['auth:staff']);
   Route::post('/uploadStudentImage', [App\Http\Controllers\Staff\StaffController::class, 'uploadStudentImage'])->name('uploadStudentImage')->middleware(['auth:staff']);

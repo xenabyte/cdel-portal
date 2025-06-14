@@ -12,14 +12,16 @@ class StudentResultBroadSheet implements FromView
     public $academicLevel;
     public $academicSession;
     public $classifiedCourses;
+    public $programme;
 
-    public function __construct($students, $semester, $academicLevel, $academicSession, $classifiedCourses)
+    public function __construct($students, $semester, $academicLevel, $academicSession, $classifiedCourses, $programme)
     {
         $this->students = $students;
         $this->semester = $semester;
         $this->academicLevel = $academicLevel;
         $this->academicSession = $academicSession;
         $this->classifiedCourses = $classifiedCourses;
+        $this->programme = $programme;
     }
 
     public function view(): View
@@ -30,6 +32,7 @@ class StudentResultBroadSheet implements FromView
             'academicLevel' => $this->academicLevel,
             'academicSession' => $this->academicSession,
             'classifiedCourses' => $this->classifiedCourses,
+            'programme' => $this->programme
         ]);
     }
 }

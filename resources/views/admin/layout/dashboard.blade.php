@@ -52,15 +52,7 @@
         .cke_notifications_area{
             display: none;
         }
-
-    </style>
-</head>
-
-<body>
-    @include('sweetalert::alert')
-    <!-- Begin page -->
-    <div id="layout-wrapper">
-        <div id="loading-overlay" style="
+        .loading-overlay {
             display: none;
             position: fixed;
             top: 0; left: 0;
@@ -68,16 +60,26 @@
             height: 100vh;
             background-color: rgba(255,255,255,0.8);
             z-index: 9999;
-            display: flex;
             justify-content: center;
             align-items: center;
             flex-direction: column;
             font-size: 2em;
             color: #333;
-        ">
-            <i class="fa fa-spinner fa-spin"></i>
-            <div style="margin-top: 10px;">Loading, please wait...</div>
-        </div>
+        }
+
+        .loading-overlay.active {
+            display: flex;
+        }
+    </style>
+</head>
+
+<body>
+    @include('sweetalert::alert')
+    <!-- Begin page -->
+    <div id="loading-overlay" class="loading-overlay">
+        <i class="fa fa-spinner fa-spin"></i>
+        <div style="margin-top: 10px;">Loading, please wait...</div>
+    </div>
         <header id="page-topbar">
             <div class="layout-width">
                 <div class="navbar-header">
@@ -1369,15 +1371,14 @@
     </script> --}}
     <script>
         $(document).ready(function() {
-            $("#submit-button").click(function() {
+            $("#submit-button").click(function(e) {
+                e.preventDefault(); // prevent double submit if needed
+
                 // Disable the button
                 $(this).prop("disabled", true);
 
                 // Show the full-screen overlay
-                $("#loading-overlay").fadeIn();
-
-                // Optionally update button text (not necessary with overlay)
-                // $(this).html("<i class='fa fa-spinner fa-spin'></i>");
+                $("#loading-overlay").addClass("active");
 
                 // Submit the form
                 $(this.form).submit();
