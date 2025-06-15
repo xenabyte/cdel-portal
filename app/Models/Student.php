@@ -6,13 +6,15 @@ use App\Notifications\StudentResetPassword;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Tymon\JWTAuth\Contracts\JWTSubject;
 
 use App\Models\StudentExpulsion;
 use App\Models\StudentSuspension;
 use App\Models\ResultApprovalStatus;
 use Carbon\Carbon;
 
-class Student extends Authenticatable
+
+class Student extends Authenticatable implements JWTSubject
 {
     use Notifiable, SoftDeletes;
 
@@ -74,6 +76,14 @@ class Student extends Authenticatable
     protected $hidden = [
         'password', 'remember_token',
     ];
+
+    public function getJWTIdentifier(){
+        return $this->getKey();
+    }
+
+    public function getJWTCustomClaims(){
+        return [];
+    }
 
     /**
      * Send the password reset notification.

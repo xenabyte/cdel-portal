@@ -130,14 +130,14 @@
         table.broadsheet th:nth-child(2),
         table.broadsheet td:nth-child(2) {
             width: 150px !important; /* Student Name - Wide */
-            padding: 8px;
+            padding: 5px;
             text-align: left;
         }
 
         table.broadsheet th:nth-child(3),
         table.broadsheet td:nth-child(3) {
             width: 60px !important; /* Matric Number - Wide */
-            padding: 8px;
+            padding: 5px;
             text-align: center;
         }
 

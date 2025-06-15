@@ -2,6 +2,8 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Student\StudentAPIController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -34,3 +36,15 @@ Route::group(['prefix' => 'lecture'], function () {
 Route::get('/changeCourseManagementPasscode', [App\Http\Controllers\CronController::class, 'changeCourseManagementPasscode'])->name('changeCourseManagementPasscode');
 Route::post('/getRequiredPassMark', [App\Http\Controllers\ApiController::class, 'getRequiredPassMark'])->name('getRequiredPassMark');
 
+
+Route::group(['prefix' => 'student'], function () {
+    Route::post('/login', [StudentAPIController::class, 'login'])->name('student.login');
+
+    Route::middleware('auth:student_api')->group(function () {
+        Route::get('/me', [StudentAPIController::class, 'me'])->name('student.me');
+        Route::post('/logout', [StudentAPIController::class, 'logout'])->name('student.logout');
+
+        // Optional: JWT-protected versions of your existing endpoints
+        Route::post('/getStudent', [App\Http\Controllers\ApiController::class, 'getStudent'])->name('jwt.getStudent');
+    });
+});
