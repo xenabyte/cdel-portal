@@ -62,7 +62,7 @@
                 if (!playerId) return;
                 try {
                 const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-                const response = await fetch('/save-player-id', {
+                const response = await fetch('student/save-player-id', {
                     method: 'POST',
                     headers: {
                     'Content-Type': 'application/json',
