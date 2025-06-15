@@ -3,7 +3,7 @@
         <thead>
             <tr>
                 <th colspan="{{ 17 + (count($classifiedCourses) * 6) }}" class="text-center fw-bold h5 py-3">
-                    Result(s) for {{ $academiclevel->level }} Level, {{ !empty($programme) ? $programme->name : null }} for {{ $academicSession }} Academic Session
+                    Result(s) for {{ $academicLevel->level }} Level, {{ !empty($programme) ? $programme->name : null }} for {{ $academicSession }} Academic Session
                 </th>
             </tr>
             <tr>

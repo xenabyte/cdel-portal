@@ -260,10 +260,24 @@ class ResultController extends Controller
         $semester = $request->semester;
         $academicSession = $request->session;
         $academicLevel = AcademicLevel::find($request->level_id);
-        $programme = Programme::find($request->programme_id);
+        $programme = Programme::with('department', 'department.faculty')->where('id', $request->programme_id)->first();
+        $department = $programme->department;
+        $faculty = $department->faculty;
         $fileType = $request->fileType;
-    
-        $students = Student::with(['applicant', 'programme', 'registeredCourses', 'registeredCourses.course', 'academicLevel', 'department', 'faculty'])
+
+        // Validate supported file types
+        $validTypes = ['pdf', 'xlsx', 'csv'];
+        if (!in_array($fileType, $validTypes)) {
+            alert()->error('Invalid File Type', 'Supported types are: PDF, XLSX, CSV')->persistent('Close');
+            return redirect()->back();
+        }
+
+        // Fetch students
+        $students = Student::with([
+                'applicant', 'programme', 'registeredCourses',
+                'registeredCourses.course', 'academicLevel',
+                'department', 'faculty'
+            ])
             ->where([
                 'is_active' => true,
                 'is_passed_out' => false,
@@ -277,18 +291,35 @@ class ResultController extends Controller
                     ->where('academic_session', $request->session);
             })
             ->get();
-    
+
+        // Classify courses
         $classifiedCourses = $this->classifyCourses($students, $semester, $academicLevel, $academicSession);
-        
-        // Generate a unique filename for the download
-        $fileName = $programme->name . ' ' . $academicLevel->level . ' ' . $semester . ' ' . $academicSession . ' resultBroadSheet';
-        $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $fileName))) . '.xlsx'; // Add the extension
-        
-        // Create the export instance
-        $export = new StudentResultBroadSheet($students, $semester, $academicLevel, $academicSession, $classifiedCourses, $programme);
-              
-    
-        return \Excel::download($export, $slug);
+
+        // Create slugged filename (no double extensions)
+        $rawFileName = $programme->name . ' ' . $academicLevel->level . ' ' . $semester . ' ' . $academicSession . ' resultBroadSheet';
+        $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $rawFileName))) . '.' . $fileType;
+
+        // Handle PDF export
+        if ($fileType === 'pdf') {
+            $pdf = new Pdf();
+            return $pdf->studentResultBroadSheet(
+                $students, $semester, $academicLevel,
+                $academicSession, $classifiedCourses,
+                $programme, $faculty, $department
+            );
+        }
+
+        // Handle Excel/CSV export
+        $export = new StudentResultBroadSheet(
+            $students, $semester, $academicLevel,
+            $academicSession, $classifiedCourses,
+            $programme
+        );
+
+        // Use correct writer type for CSV if needed
+        $writerType = $fileType === 'csv' ? \Maatwebsite\Excel\Excel::CSV : \Maatwebsite\Excel\Excel::XLSX;
+
+        return \Excel::download($export, $slug, $writerType);
     }
 
     public function approveResult(Request $request){

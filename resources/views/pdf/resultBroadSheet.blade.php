@@ -7,33 +7,6 @@
             margin-bottom: 80px;
         } */
 
-        table.broadsheet th:nth-child(1),
-        table.broadsheet td:nth-child(1) {
-            width: 30px; /* SN */
-        }
-
-        table.broadsheet th:nth-child(2),
-        table.broadsheet td:nth-child(2) {
-            width: 180px; /* Student Name */
-        }
-
-        table.broadsheet th:nth-child(3),
-        table.broadsheet td:nth-child(3) {
-            width: 120px; /* Matric Number */
-        }
-
-        table.broadsheet th:nth-child(4),
-        table.broadsheet td:nth-child(4) {
-            width: 100px; /* Degree Class */
-        }
-
-        /* Optional: wrap long course columns if needed */
-        table.broadsheet th,
-        table.broadsheet td {
-            word-wrap: break-word;
-            overflow-wrap: break-word;
-        }
-
         .footer {
             position: fixed;
             bottom: 0px;
@@ -41,24 +14,29 @@
             right: 0;
             text-align: center;
             font-size: 11px;
+            margin-top: 10px;
         }
         body {
             font-size: 11px;
             margin: 0;
             padding: 0;
-            padding-top: 80px;
+            /* padding-top: 80px; */
             color: #333;
         }
         table {
             width: 100%;
             border-collapse: collapse;
-            table-layout: fixed;
+            /* table-layout: fixed; */
+            margin-bottom: 10px;
+            /* page-break-inside: avoid; */
+            /* page-break-after: auto; */
         }
         th, td {
             border: 1px solid #000;
-            padding: 4px;
+            /* padding: 4px; */
             text-align: center;
             word-wrap: break-word;
+            white-space: normal;
         }
         th {
             background-color: #f2f2f2;
@@ -68,7 +46,7 @@
         }
         .signature td {
             border: none;
-            padding-top: 40px;
+            padding-top: 50px;
             text-align: center;
         }
         .watermark {
@@ -143,6 +121,54 @@
             margin-right: 6px;
             vertical-align: middle;
         }
+
+        table.broadsheet th:nth-child(1),
+        table.broadsheet td:nth-child(1) {
+            width: 20px !important; /* SN - Small */
+        }
+
+        table.broadsheet th:nth-child(2),
+        table.broadsheet td:nth-child(2) {
+            width: 150px !important; /* Student Name - Wide */
+            padding: 8px;
+            text-align: left;
+        }
+
+        table.broadsheet th:nth-child(3),
+        table.broadsheet td:nth-child(3) {
+            width: 60px !important; /* Matric Number - Wide */
+            padding: 8px;
+            text-align: center;
+        }
+
+        table.broadsheet th:nth-child(4),
+        table.broadsheet td:nth-child(4) {
+            width: 80px !important; /* Degree Class */
+        }
+
+        table.broadsheet th,
+        table.broadsheet td {
+            padding: 3px;
+            font-size: 8px;
+            word-wrap: break-word;
+        }
+
+        table.broadsheet th:nth-child(n+5),
+        table.broadsheet td:nth-child(n+5) {
+            font-size: 8px;
+            padding: 3px;
+        }
+
+        table.broadsheet{
+            margin-bottom: 10px; 
+        }
+
+        /* Optional: wrap long course columns if needed */
+        /* table.broadsheet th,
+        table.broadsheet td {
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        } */
     </style>
 </head>
 <body>
@@ -416,43 +442,127 @@
 {{-- PAGE 3 onward: Broadsheet Results --}}
 
 <table class="header-table page-break">
-    <tr>
-        <td colspan="100" style="font-size:14px; font-weight:bold; padding: 15px 0;">
-            Examination Result Broadsheet for {{ $academicLevel->level }} Level, {{ $programme->name }} — {{ $semesterName }} Semester, {{ $academicSession }} Academic Session
-        </td>
-    </tr>
-    {{-- <tr>
-        <td colspan="100" style="text-align:left; font-weight:bold; padding: 5px;">
-            Faculty: {{ $faculty->name }} | Department: {{ $department->name }} | Programme: {{ $programme->name }} | Session: {{ $academicSession }}
-        </td>
-    </tr> --}}
 </table>
+@php
+    $sn = 1;
+    $sns = 1;
+@endphp
+@foreach($students->chunk(10) as $page => $studentChunk)
+    @if($page > 0)
+        <div class="page-break"></div>
+    @endif
 
-<table class="broadsheet">
+    <table class="broadsheet">
+        <thead>
+            <tr>
+                <th colspan="{{ 7 + count($classifiedCourses) }}" style="font-size:14px; font-weight:bold; padding: 5px;">
+                   Examination Result Broadsheet for {{ $academicLevel->level }} Level, {{ $programme->name }} — {{ $semesterName }} Semester, {{ $academicSession }} Academic Session
+                </th>
+            </tr>
+            <tr>
+                <th>SN</th>
+                <th>Student Name</th>
+                <th>Matric Number</th>
+                <th>Degree Class</th>
+                <th>CCU</th>
+                <th>CGP</th>
+                <th>CGPA</th>
+                @foreach($classifiedCourses as $code => $group)
+                    @php
+                        $course = $group['course'];
+                        $creditUnit = $course->course_credit_unit ?? '';
+                        $courseStatus = strtoupper(substr($course->course_status ?? '', 0, 1));
+                    @endphp
+                    <th>{{ $code }} ({{ $creditUnit }} {{ $courseStatus }})</th>
+                @endforeach
+            </tr>
+        </thead>
+        <tbody>
+            @foreach($studentChunk as $index => $student)
+                @php
+                    $degreeClass = new \App\Models\DegreeClass;
+
+                    $viewSemesterRegisteredCourses = $student->registeredCourses->where('semester', $semester)
+                        ->where('level_id', $academicLevel->id)
+                        ->where('academic_session', $academicSession);
+
+                    $semesterRegisteredCourses = $viewSemesterRegisteredCourses->where('grade', '!=', null);
+                    $currentCU = $semesterRegisteredCourses->sum('course_credit_unit');
+                    $currentCP = $semesterRegisteredCourses->sum('points');
+                    $currentGPA = $currentCU ? number_format($currentCP / $currentCU, 2) : '0.00';
+
+                    $failedCourses = $semesterRegisteredCourses->where('grade', 'F');
+
+                    $allCourses = $student->registeredCourses->where('grade', '!=', null);
+                    $cummCU = $allCourses->sum('course_credit_unit');
+                    $cummCP = $allCourses->sum('points');
+                    $cummCGPA = $cummCU ? number_format($cummCP / $cummCU, 2) : '0.00';
+
+                    $prevCourses = $student->registeredCourses->where('semester', '!=', $semester)->where('level_id', '!=', $academicLevel->id);
+                    $prevCU = $prevCourses->sum('course_credit_unit');
+                    $prevCP = $prevCourses->sum('points');
+                    $prevCGPA = $prevCU ? number_format($prevCP / $prevCU, 2) : '0.00';
+
+                    $classGrade = $degreeClass->computeClass($cummCGPA);
+                    $class = $classGrade->degree_class ?? 'N/A';
+                @endphp
+                <tr>
+                    <td>{{ $sn++ }}</td>
+                    <td>{{ strtoupper(optional($student->applicant)->lastname . ', ' . optional($student->applicant)->othernames) }}</td>
+                    <td>{{ $student->matric_number }}</td>
+                    <td>{{ $class }}</td>
+                    <td>{{ $cummCU }}</td>
+                    <td>{{ $cummCP }}</td>
+                    <td>{{ $cummCGPA }}</td>
+                    @foreach($classifiedCourses as $code => $group)
+                        @php $course = $student->registeredCourses->where('course_code', $code)->first(); @endphp
+                        <td>
+                            @if(isset($course->total, $course->grade))
+                                @if(strtoupper($course->grade) === 'F')
+                                    <span style="color: red;">{{ $course->total . strtoupper($course->grade) }}</span>
+                                @else
+                                    {{ $course->total . strtoupper($course->grade) }}
+                                @endif
+                            @else
+                                -
+                            @endif
+                        </td>
+                    @endforeach
+                </tr>
+            @endforeach
+        </tbody>
+    </table>
+
+    <table class="broadsheet">
     <thead>
+        <tr>
+            <th colspan="17" style="text-align:left; font-weight:bold; padding: 5px;">
+                Result Summary
+            </th>
+        </tr>
         <tr>
             <th>SN</th>
             <th>Student Name</th>
             <th>Matric Number</th>
             <th>Degree Class</th>
-            <th>CCU</th>
-            <th>CGP</th>
-            <th>CGPA</th>
-            @foreach($classifiedCourses as $code => $group)
-                @php
-                    $course = $group['course'];
-                    $creditUnit = $course->course_credit_unit ?? '';
-                    $courseStatus = strtoupper(substr($course->course_status ?? '', 0, 1));
-                @endphp
-                <th>{{ $code }} ({{ $creditUnit }} {{ $courseStatus }})</th>
-            @endforeach
+            <th>Standing</th>
+            <th>No of Failed Course</th>
+            <th>Total Failed Unit</th>
+            <th>Failed Courses</th>
+            <th>Prev CU</th>
+            <th>Prev CP</th>
+            <th>Prev CGPA</th>
+            <th>Curr CU</th>
+            <th>Curr CP</th>
+            <th>Curr GPA</th>
+            <th>Cumm CU</th>
+            <th>Cumm CP</th>
+            <th>Cumm CGPA</th>
         </tr>
     </thead>
     <tbody>
-        @php $sns = 1; @endphp
-        @foreach($students as $index => $student)
+       @foreach($studentChunk as $index => $student)
             @php
-                $sns++;
                 $degreeClass = new \App\Models\DegreeClass;
 
                 $viewSemesterRegisteredCourses = $student->registeredCourses->where('semester', $semester)
@@ -482,34 +592,35 @@
             @endphp
 
             <tr>
-                <td>{{ $index + 1 }}</td>
+                <td>{{ $sns++ }}</td>
                 <td>{{ strtoupper(optional($student->applicant)->lastname . ', ' . optional($student->applicant)->othernames) }}</td>
                 <td>{{ $student->matric_number }}</td>
                 <td>{{ $class }}</td>
+                <td>{{ $standing }}</td>
+                <td style="color:red">{{ $failedCourses->count() }}</td>
+                <td style="color:red">{{ $failedCourses->sum('course_credit_unit') }}</td>
+                <td style="color:red">
+                    @foreach($failedCourses as $f)
+                        {{ $f->course_code }}@if(!$loop->last), @endif
+                    @endforeach
+                </td>
+                <td>{{ $prevCU }}</td>
+                <td>{{ $prevCP }}</td>
+                <td>{{ $prevCGPA }}</td>
+                <td>{{ $currentCU }}</td>
+                <td>{{ $currentCP }}</td>
+                <td>{{ $currentGPA }}</td>
                 <td>{{ $cummCU }}</td>
                 <td>{{ $cummCP }}</td>
                 <td>{{ $cummCGPA }}</td>
-                @foreach($classifiedCourses as $code => $group)
-                    @php $course = $student->registeredCourses->where('course_code', $code)->first(); @endphp
-                    <td>
-                        @if(isset($course->total, $course->grade))
-                            @if(strtoupper($course->grade) === 'F')
-                                <span style="color: red;">{{ $course->total . strtoupper($course->grade) }}</span>
-                            @else
-                                {{ $course->total . strtoupper($course->grade) }}
-                            @endif
-                        @else
-                            --
-                        @endif
-                    </td>
-                @endforeach
             </tr>
         @endforeach
     </tbody>
 </table>
+@endforeach
 
 
-<table class="header-table page-break">
+{{-- <table class="header-table page-break">
     <tr>
         <td colspan="100" style="text-align:left; font-weight:bold; padding: 5px;">
             Result Summary
@@ -596,7 +707,7 @@
             </tr>
         @endforeach
     </tbody>
-</table>
+</table> --}}
 
 <div class="footer">
     <table style="width:100%; border: none;">

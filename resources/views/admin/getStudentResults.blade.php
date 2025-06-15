@@ -561,6 +561,7 @@
                                     <input type="hidden" name="faculty_id" value="{{ $faculty_id }}">
                                     <input type="hidden" name="session" value="{{ $academicSession }}">
                                     <input type="hidden" name="semester" value="{{ $semester }}">
+                                    <input type="hidden" name="fileType" value="xlsx">
                                     @endif
                                     <input type="hidden" name="url" value="admin.getStudentResults">
                                     <hr>

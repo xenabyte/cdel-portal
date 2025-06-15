@@ -604,6 +604,44 @@
                                 <lord-icon src="https://cdn.lordicon.com/xxdqfhbi.json" trigger="hover" style="width:150px;height:150px">
                                 </lord-icon>
                                 <h4 class="mb-3 mt-4">Are you sure you want to generate result broadsheet for <br>{{ $academiclevel->level }} level {{ !empty($programme)?$programme->name:null }}?</h4>
+                                <form action="{{ url('/staff/generateResultBroadSheet') }}" method="POST">
+                                    @csrf
+                                    @foreach ($students as $studentforIds)
+                                    <input type="hidden" name="student_ids[]" value="{{ $studentforIds->id }}">
+                                    @endforeach
+                                    @if(!empty($programme))
+                                    <input type="hidden" name="level_id" value="{{ $academiclevel->id }}">
+                                    <input type="hidden" name="programme_id" value="{{ $programme->id }}">
+                                    <input type="hidden" name="department_id" value="{{ $department_id }}">
+                                    <input type="hidden" name="faculty_id" value="{{ $faculty_id }}">
+                                    <input type="hidden" name="session" value="{{ $academicSession }}">
+                                    <input type="hidden" name="semester" value="{{ $semester }}">
+                                    <input type="hidden" name="fileType" value="xlsx">
+                                    @endif
+                                    <input type="hidden" name="url" value="admin.getStudentResults">
+                                    <hr>
+                                    <button type="submit" id="submit-button" class="btn btn-success w-100">Yes, Proceed</button>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="modal-footer bg-light p-3 justify-content-center">
+
+                        </div>
+                    </div><!-- /.modal-content -->
+                </div><!-- /.modal-dialog -->
+            </div><!-- /.modal -->
+
+            <div id="generateResultPDF" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-body text-center p-5">
+                            <div class="text-end">
+                                <button type="button" class="btn-close text-end" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="mt-2">
+                                <lord-icon src="https://cdn.lordicon.com/xxdqfhbi.json" trigger="hover" style="width:150px;height:150px">
+                                </lord-icon>
+                                <h4 class="mb-3 mt-4">Are you sure you want to generate result broadsheet for <br>{{ $academiclevel->level }} level {{ !empty($programme)?$programme->name:null }}?</h4>
                                 <form action="{{ url('/admin/generateResultBroadSheet') }}" method="POST">
                                     @csrf
                                     @foreach ($students as $studentforIds)
@@ -616,8 +654,9 @@
                                     <input type="hidden" name="faculty_id" value="{{ $faculty_id }}">
                                     <input type="hidden" name="session" value="{{ $academicSession }}">
                                     <input type="hidden" name="semester" value="{{ $semester }}">
+                                    <input type="hidden" name="fileType" value="pdf">
                                     @endif
-                                    <input type="hidden" name="url" value="admin.getStudentResults">
+                                    <input type="hidden" name="url" value="staff.getStudentResults">
                                     <hr>
                                     <button type="submit" id="submit-button" class="btn btn-success w-100">Yes, Proceed</button>
                                 </form>
