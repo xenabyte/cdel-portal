@@ -60,40 +60,43 @@
     <!--End of Tawk.to Script-->
     <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
     <script>
-        window.OneSignalDeferred = window.OneSignalDeferred || [];
-        window.OneSignal = window.OneSignal || [];
-        OneSignal.push(function() {
-            OneSignal.init({
-                appId: "78a3101e-4969-46bc-8582-c9f8574a25f3",
-            });
-
-            OneSignal.getSubscriptionId().then(async function(playerId) {
-                if (playerId) {
-                    try {
-                        const response = await fetch('/save-player-id', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'X-CSRF-TOKEN': '{{ csrf_token() }}' // Ensure you include CSRF token if using Laravel CSRF protection
-                            },
-                            body: JSON.stringify({ player_id: playerId })
-                        });
-
-                        if (response.ok) {
-                            console.log('Player ID saved successfully');
-                        } else {
-                            console.error('Failed to save player ID');
-                        }
-                    } catch (error) {
-                        console.error('Error:', error);
-                    }
-                } else {
-                    console.error('Subscription ID not available');
-                }
-            }).catch(function(error) {
-                console.error('Error fetching player ID:', error);
-            });
+    window.OneSignalDeferred = window.OneSignalDeferred || [];
+    OneSignalDeferred.push(async function(OneSignal) {
+        await OneSignal.init({
+        appId: "78a3101e-4969-46bc-8582-c9f8574a25f3",
+        safari_web_id: "web.onesignal.auto.590358f8-27c0-47d5-a3eb-31f3bec88b46",
+        notifyButton: {
+            enable: true,
+        },
         });
+
+        OneSignal.on('subscriptionChange', async function(isSubscribed) {
+        if (isSubscribed) {
+            try {
+            const playerId = await OneSignal.getUserId();
+            if (playerId) {
+                const response = await fetch('/save-player-id', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'  // Laravel CSRF token
+                },
+                body: JSON.stringify({ player_id: playerId })
+                });
+                if (response.ok) {
+                console.log('Player ID saved successfully');
+                } else {
+                console.error('Failed to save player ID');
+                }
+            } else {
+                console.error('Player ID not found');
+            }
+            } catch (error) {
+            console.error('Error sending player ID:', error);
+            }
+        }
+        });
+    });
     </script>
 
     <script>
