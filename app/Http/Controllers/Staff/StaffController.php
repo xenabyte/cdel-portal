@@ -711,7 +711,7 @@ class StaffController extends Controller
             return redirect()->back();
         }
 
-        $programmeCategory = ProgrammeCategory::with('academicSessionSetting')->where('category', $request->programmeCategory)->first();
+        $programmeCategory = ProgrammeCategory::with('academicSessionSetting')->where('id', $request->programme_category_id)->first();
         $academicSession = $programmeCategory->academicSessionSetting->academic_session;
 
         $exist = CourseManagement::where([
