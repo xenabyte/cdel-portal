@@ -67,10 +67,8 @@
             async function savePlayerId() {
                 try {
                     console.log('Attempting to fetch OneSignal user...');
-                    const user = await OneSignal.User.get();  // ✅ v16 syntax
-                    console.log('OneSignal user object:', user);
 
-                    const playerId = user.id;
+                    const playerId = OneSignal.User.oneSignalId;
                     console.log('Extracted Player ID:', playerId);
 
                     if (!playerId) {
@@ -84,6 +82,8 @@
                         player_id: playerId,
                         student_id: studentId
                     });
+
+                    // OneSignal.User.PushSubscription.id
 
                     const response = await fetch('student/save-player-id', {
                         method: 'POST',
