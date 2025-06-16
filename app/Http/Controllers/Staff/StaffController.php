@@ -703,7 +703,7 @@ class StaffController extends Controller
         $validator = Validator::make($request->all(), [
             'staff_id' => 'required',
             'course_id' => 'required',
-            'programmeCategory' => 'required'
+            'programme_category_id' => 'required'
         ]);
 
         if($validator->fails()) {
