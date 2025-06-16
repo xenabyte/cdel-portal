@@ -85,7 +85,7 @@
 
                     // OneSignal.User.PushSubscription.id
 
-                    const response = await fetch('student/save-player-id', {
+                    const response = await fetch('student/savePlayerId', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
