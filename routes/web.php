@@ -593,8 +593,6 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'student'
 
     Route::get('/registeredCourses', [App\Http\Controllers\Student\AcademicController::class, 'registeredCourses'])->name('registeredCourses'); 
 
-    Route::post('/save-player-id', [App\Http\Controllers\Student\StudentController::class, 'savePlayerId'])->name('savePlayerId');
-
     Route::get('/vacancies', [App\Http\Controllers\Student\CareerController::class, 'vacancies'])->name('vacancies');
     Route::get('/applications', [App\Http\Controllers\Student\CareerController::class, 'applications'])->name('applications');
     Route::post('/apply', [App\Http\Controllers\Student\CareerController::class, 'apply'])->name('apply');

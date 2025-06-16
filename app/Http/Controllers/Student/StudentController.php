@@ -1417,23 +1417,6 @@ class StudentController extends Controller
         ]);
     }
 
-    public function savePlayerId(Request $request){
-        $request->validate([
-            'player_id' => 'required|string',
-        ]);
-
-        $student = Auth::guard('student')->user();
-
-        if ($student) {
-            $student->one_signal_token = $request->player_id;
-            $student->save();
-
-            return response()->json(['message' => 'Player ID saved successfully'], 200);
-        }
-
-        return response()->json(['message' => 'Not authenticated'], 401);
-    }
-
 
     public function antiDrugDeclaration(Request $request){
         $student = Auth::guard('student')->user();

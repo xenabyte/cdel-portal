@@ -41,14 +41,16 @@ Route::group(['prefix' => 'student'], function () {
     Route::post('/login', [StudentAPIController::class, 'login'])->name('student.login');
     Route::post('/refresh', [StudentAPIController::class, 'refresh'])->name('student.refresh');
 
+    Route::post('/getStudent', [App\Http\Controllers\ApiController::class, 'getStudent'])->name('getStudent');
+    Route::post('/savePlayerId', [App\Http\Controllers\ApiController::class, 'savePlayerId'])->name('savePlayerId');
+
+    
 
     Route::middleware('auth:student_api')->group(function () {
         Route::get('/me', [StudentAPIController::class, 'me'])->name('student.me');
         Route::post('/logout', [StudentAPIController::class, 'logout'])->name('student.logout');
 
-        Route::post('/getStudent', [App\Http\Controllers\ApiController::class, 'getStudent'])->name('jwt.getStudent');
         Route::post('/getAuthStudent', [StudentAPIController::class, 'getStudent'])->name('jwt.getStudent');
-
         Route::post('/markAttendance', [StudentAPIController::class, 'markAttendance'])->name('student.markAttendance');
     });
 });

@@ -51,54 +51,60 @@
     <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
     <script>
         window.OneSignalDeferred = window.OneSignalDeferred || [];
-        OneSignalDeferred.push(async function(OneSignal) {
-            await OneSignal.init({
-            appId: "78a3101e-4969-46bc-8582-c9f8574a25f3",
-            safari_web_id: "web.onesignal.auto.590358f8-27c0-47d5-a3eb-31f3bec88b46",
-            notifyButton: { enable: true },
-            });
-
-            async function savePlayerId() {
-            try {
-                const user = await OneSignal.User.get();
-                const playerId = user.id;
-
-                if (!playerId) {
-                console.warn("No player ID found");
-                return;
-                }
-
-                const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-
-                const response = await fetch('student/save-player-id', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': csrfToken
-                },
-                body: JSON.stringify({ player_id: playerId })
+            OneSignalDeferred.push(async function(OneSignal) {
+                await OneSignal.init({
+                    appId: "78a3101e-4969-46bc-8582-c9f8574a25f3",
+                    safari_web_id: "web.onesignal.auto.590358f8-27c0-47d5-a3eb-31f3bec88b46",
+                    notifyButton: { enable: true },
                 });
 
-                if (response.ok) {
-                console.log('Player ID saved successfully');
-                } else {
-                console.error('Failed to save player ID');
+                // Pass student ID from backend
+                const studentId = "{{ $student->id }}";
+
+                async function savePlayerId() {
+                    try {
+                        const user = await OneSignal.User.get();
+                        const playerId = user.id;
+
+                        if (!playerId) {
+                            console.warn("No player ID found");
+                            return;
+                        }
+
+                        const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+                        const response = await fetch('api/student/savePlayerId', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': csrfToken
+                            },
+                            body: JSON.stringify({
+                                player_id: playerId,
+                                student_id: studentId
+                            })
+                        });
+
+                        if (response.ok) {
+                            console.log('Player ID saved successfully');
+                        } else {
+                            console.error('Failed to save player ID');
+                        }
+                    } catch (err) {
+                        console.error("Error saving player ID:", err);
+                    }
                 }
-            } catch (err) {
-                console.error("Error saving player ID:", err);
-            }
-            }
 
-            // Save once on page load
-            await savePlayerId();
-
-            // Save again if subscription changes
-            OneSignal.User.PushSubscription.addEventListener('change', async (event) => {
-            if (event.current && event.current.optedIn) {
+                // Save once on page load
                 await savePlayerId();
-            }
+
+                // Save again if subscription changes
+                OneSignal.User.PushSubscription.addEventListener('change', async (event) => {
+                    if (event.current && event.current.optedIn) {
+                        await savePlayerId();
+                    }
+                });
             });
-        });
         </script>
 
      <!--Start of Tawk.to Script-->

@@ -271,7 +271,7 @@
                         <div class="card-body">
                             <h5 class="fs-14 mb-3 border-bottom"> Manage Admission</h5>
                             @if($applicant->status == 'submitted')
-                            <form action="{{ url('admin/manageAdmission') }}" method="POST">
+                            <form action="{{ url('staff/manageAdmission') }}" method="POST">
                                 @csrf
                                 <input type="hidden" name="applicant_id" value="{{ $applicant->id }}">
                                 <div class="mb-3">

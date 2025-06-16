@@ -248,4 +248,17 @@ class ApiController extends Controller
         return response()->json(['required_pass_mark' => $requiredPassMark]);
     }
 
+    public function savePlayerId(Request $request){
+        $student = Student::find($request->student_id);
+
+        if ($student) {
+            $student->one_signal_token = $request->player_id;
+            $student->save();
+
+           return $this->dataResponse(' record found!', $student);
+        }
+
+       return $this->dataResponse(' Invalid Student Record', null, 'error');
+    }
+
 }
