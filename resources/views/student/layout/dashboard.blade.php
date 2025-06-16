@@ -68,7 +68,7 @@
                 try {
                     console.log('Attempting to fetch OneSignal user...');
 
-                    const playerId = OneSignal.User.oneSignalId;
+                    const playerId = OneSignal.User.onesignalId;
                     console.log('Extracted Player ID:', playerId);
 
                     if (!playerId) {
