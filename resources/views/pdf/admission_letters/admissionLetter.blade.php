@@ -20,7 +20,7 @@
             position: relative;
             z-index: 1;
         }
-        .watermark {
+        /* .watermark {
             position: fixed;
             top: 0;
             left: 0;
@@ -31,6 +31,15 @@
             opacity: 0.05;
             z-index: 0;
             pointer-events: none;
+        } */
+
+        .watermark {
+            position: fixed;
+            top: 35%;
+            left: 25%;
+            width: 50%;
+            opacity: 0.04;
+            z-index: -1;
         }
         .header {
             text-align: center;
@@ -97,7 +106,7 @@
     </style>
 </head>
 <body>
-    <div class="watermark"></div>
+    <img src="{{ env('SCHOOL_LOGO') }}" class="watermark">
     <div class="container">
         <div class="header">
             <img src="{{ env('SCHOOL_LOGO') }}" alt="School Logo">
