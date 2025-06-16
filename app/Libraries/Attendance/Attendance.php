@@ -114,12 +114,11 @@ class Attendance
         return 'success';
     }
     
-    public static function processLectureAttendance(UploadedFile $file, $lectureId, $globalSettings){
+    public static function processLectureAttendance(UploadedFile $file, $lectureId, $academicSession){
         $csv = Reader::createFromPath($file->getPathname());
         $csv->setHeaderOffset(0);
 
         $records = $csv->getRecords();
-        $academicSession = $globalSettings->sessionSetting['academic_session'];
         $courseLecture = CourseLecture::find($lectureId);
         $courseId = $courseLecture->course_id;
 

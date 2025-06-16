@@ -79,7 +79,7 @@ class HomeController extends Controller
             return redirect()->back();
         }
         $academicSession = $programmeCategory->academicSessionSetting->academic_session ?? null;
-
+        $semester = $programmeCategory->examSetting->semester ?? null;
 
         $studentId = $student->id;
         $levelId = $student->level_id;

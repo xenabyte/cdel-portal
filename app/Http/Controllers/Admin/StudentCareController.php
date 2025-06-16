@@ -69,8 +69,12 @@ class StudentCareController extends Controller
             'action' => 'required',
         ]);
 
-       $studentExit = StudentExit::find($request->exit_id);
+        $studentExit = StudentExit::find($request->exit_id);
         $student = Student::find($studentExit->student_id);
+        $programmeCateogoryId = $student->programme_category_id;
+    
+        $programmeCategory = ProgrammeCategory::with('academicSessionSetting', 'examSetting')->where('id', $programmeCateogoryId)->first();
+        $academicSession = $programmeCategory->academicSessionSetting->academic_session ?? null;
 
         if($validator->fails()) {
             alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');

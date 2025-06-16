@@ -1112,7 +1112,7 @@ class PaymentController extends Controller
 
         if($this->creditStudentWallet($studentId, $amount)){
             $pdf = new Pdf();
-            $invoice = $pdf->generateTransactionInvoice($session, $studentId, $paymentId, 'single');
+            $invoice = $pdf->generateTransactionInvoice($academicSession, $studentId, $paymentId, 'single');
                     
             $data = new \stdClass();
             $data->lastname = $student->applicant->lastname;

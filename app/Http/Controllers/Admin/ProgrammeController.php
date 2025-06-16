@@ -777,9 +777,12 @@ class ProgrammeController extends Controller
         }
 
         $lectureId = $request->lecture_id;
+        $courseLecture = CourseLecture::find($lectureId);
+        $academicSession = $courseLecture;
+
     
         $file = $request->file('attendance');
-        $processAttendance = Attendance::processLectureAttendance($file, $lectureId, $globalData);
+        $processAttendance = Attendance::processLectureAttendance($file, $lectureId, $academicSession);
 
         if($processAttendance != 'success'){
             alert()->error('oops!', $processAttendance)->persistent('Close');
@@ -1106,8 +1109,9 @@ class ProgrammeController extends Controller
     
         $file = $request->file('result');
         $programmeCategoryId = $request->programme_category_id;
+        
 
-        $processResult = Result::processVocationResult($file, $programmeCategoryId, $globalData);
+        $processResult = Result::processVocationResult($file, $programmeCategoryId);
 
         if($processResult != 'success'){
             alert()->error('oops!', $processResult)->persistent('Close');

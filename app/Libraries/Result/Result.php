@@ -168,12 +168,13 @@ class Result
         return $CGPA;
     }
 
-    public static function processVocationResult(UploadedFile $file, $programmeCategoryId, $globalSettings){
+    public static function processVocationResult(UploadedFile $file, $programmeCategoryId){
         $csv = Reader::createFromPath($file->getPathname());
         $csv->setHeaderOffset(0);
 
         $records = $csv->getRecords();
-        $academicSession = $globalSettings->sessionSetting['academic_session'];
+        $programmeCategory = ProgrammeCategory::with('academicSessionSetting')->where('id', $programmeCategoryId)->first();
+        $academicSession = $programmeCategory->academicSessionSetting->academic_session;
         // $academicSession = "2023/2024";
 
         foreach ($records as $row) {

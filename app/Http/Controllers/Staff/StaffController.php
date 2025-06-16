@@ -998,10 +998,12 @@ class StaffController extends Controller
         }
 
         $lectureId = $request->lecture_id;
+        $courseLecture = CourseLecture::find($lectureId);
+        $academicSession = $courseLecture;
 
     
         $file = $request->file('attendance');
-        $processAttendance = StudentAttendance::processLectureAttendance($file, $lectureId, $globalData);
+        $processAttendance = StudentAttendance::processLectureAttendance($file, $lectureId, $academicSession);
 
         if($processAttendance != 'success'){
             alert()->error('oops!', $processAttendance)->persistent('Close');
@@ -1318,7 +1320,7 @@ class StaffController extends Controller
 
     
         $file = $request->file('result');
-        $processResult = Result::processVocationResult($file, $programmeCategoryId,  $globalData);
+        $processResult = Result::processVocationResult($file, $programmeCategoryId);
 
         if($processResult != 'success'){
             alert()->error('oops!', $processResult)->persistent('Close');
