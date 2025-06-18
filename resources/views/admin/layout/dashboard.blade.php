@@ -499,12 +499,24 @@
                             </div>
                         </li> <!-- end Dashboard Menu -->
 
-                        
+                        <li class="menu-title"><i class="ri-more-fill"></i> <span data-key="t-election">E-Voting</span></li>
+                        <li class="nav-item">
+                            <a class="nav-link menu-link" href="#election" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="election">
+                                <i class="mdi mdi-vote"></i> <span data-key="t-election">E-Voting</span>
+                            </a>
+                            <div class="collapse menu-dropdown" id="election">
+                                <ul class="nav nav-sm flex-column">
+                                    <li class="nav-item">
+                                        <a href="{{ url('/admin/elections') }}" class="nav-link">E-Voting</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li> <!-- end Bursary Menu -->
 
                         <li class="menu-title"><i class="ri-more-fill"></i> <span data-key="t-celebrate">Applaud Board</span></li>
                         <li class="nav-item">
                             <a class="nav-link menu-link" href="#celebrate" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="celebrate">
-                                <i class="mdi mdi-robot-happy"></i> <span data-key="t-admission">Applaud Board</span>
+                                <i class="mdi mdi-robot-happy"></i> <span data-key="t-celebrate">Applaud Board</span>
                             </a>
                             <div class="collapse menu-dropdown" id="celebrate">
                                 <ul class="nav nav-sm flex-column">

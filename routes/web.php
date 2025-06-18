@@ -490,7 +490,16 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'admin'],
   Route::get('/viewProgrammeChangeRequest/{slug}', [App\Http\Controllers\Admin\AcademicController::class, 'viewProgrammeChangeRequest'])->name('admin.viewProgrammeChangeRequest')->middleware(['auth:admin']);
   Route::post('/manageProgrammeChangeRequest', [App\Http\Controllers\Admin\AcademicController::class, 'manageProgrammeChangeRequest'])->name('admin.manageProgrammeChangeRequest')->middleware(['auth:admin']);
 
-  
+  Route::get('/elections', [App\Http\Controllers\Admin\ElectionController::class, 'elections'])->name('admin.elections')->middleware(['auth:admin']);
+  Route::post('updateElection', [App\Http\Controllers\Admin\ElectionController::class, 'updateElection'])->name('admin.updateElection')->middleware(['auth:admin']);
+  Route::post('/createElection', [App\Http\Controllers\Admin\ElectionController::class, 'createElection'])->name('admin.createElection')->middleware(['auth:admin']);
+  Route::post('/deleteElection', [App\Http\Controllers\Admin\ElectionController::class, 'deleteElection'])->name('admin.deleteElection')->middleware(['auth:admin']);
+  Route::get('/election/{slug}', [App\Http\Controllers\Admin\ElectionController::class, 'election'])->name('admin.election')->middleware(['auth:admin']);
+  Route::post('/addPosition', [App\Http\Controllers\Admin\ElectionController::class, 'addPosition'])->name('admin.addPosition')->middleware(['auth:admin']);
+  Route::post('/deletePosition', [App\Http\Controllers\Admin\ElectionController::class, 'deletePosition'])->name('admin.deletePosition')->middleware(['auth:admin']);
+  Route::post('/addCandidate', [App\Http\Controllers\Admin\ElectionController::class, 'addCandidate'])->name('admin.addCandidate')->middleware(['auth:admin']);
+  Route::post('/deleteCandidate', [App\Http\Controllers\Admin\ElectionController::class, 'deleteCandidate'])->name('admin.deleteCandidate')->middleware(['auth:admin']);
+
 });
 
 Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'student'], function () {
@@ -609,6 +618,10 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'student'
 
 
     Route::get('/summerCourseReg', [App\Http\Controllers\Student\AcademicController::class, 'summerCourseReg'])->name('student.summerCourseReg')->middleware(['auth:student']);
+
+    Route::get('/elections', [App\Http\Controllers\Student\ElectionController::class, 'elections'])->name('student.elections')->middleware(['auth:student']);
+    Route::get('/election/{slug}', [App\Http\Controllers\Student\ElectionController::class, 'election'])->name('student.election')->middleware(['auth:student']);
+    Route::post('/castVote', [App\Http\Controllers\Student\ElectionController::class, 'castVote'])->name('student.castVote')->middleware(['auth:student']);
 
   });
 });

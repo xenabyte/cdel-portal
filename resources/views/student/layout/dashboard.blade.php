@@ -354,8 +354,21 @@
                             </a>
                         </li>
 
+                        <li class="nav-item border-top border-top-dashed">
+                            <a class="nav-link menu-link" href="#election" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="election">
+                                <i class="mdi mdi-vote"></i> <span data-key="t-election">E-Voting</span>
+                            </a>
+                            <div class="collapse menu-dropdown" id="election">
+                                <ul class="nav nav-sm flex-column">
+                                    <li class="nav-item">
+                                        <a href="{{ url('/student/elections') }}" class="nav-link">E-Voting</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li> <!-- end Bursary Menu -->
+
                         @if($student->programme_category_id == ProgrammeCategory::getProgrammeCategory(ProgrammeCategory::UNDERGRADUATE))
-                        <li class="nav-item">
+                        <li class="nav-item border-top border-top-dashed">
                             <a class="nav-link menu-link" href="{{ url('/student/hostelBooking') }}">
                                 <i class="mdi mdi-warehouse"></i> <span>Hostel Booking</span>
                             </a>
@@ -364,7 +377,7 @@
                         
                         {{-- @if(!empty($student->image) && !empty($student->linkedIn) && !empty($student->bandwidth_username))
                             @if($passTuition) --}}
-                            <li class="nav-item">
+                            <li class="nav-item border-top border-top-dashed">
                                 <a class="nav-link menu-link" href="{{ url('student/reffs') }}">
                                     <i class="mdi mdi-account-network-outline"></i> <span data-key="t-transaction">Referred Student(s)</span>
                                 </a>
@@ -658,6 +671,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.32/vfs_fonts.js"></script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <script>
         $(document).ready(function() {
