@@ -388,7 +388,7 @@
                             <select class="form-select select2 selectWithSearch" name="programme_category_id" required style="flex-grow: 1;">
                                 <option value="" selected>Select Programme Category</option>
                                 @foreach($programmeCategories as $category)
-                                    <option value="{{ $category->category }}">{{ $category->category }} Programme</option>
+                                    <option value="{{ $category->id }}">{{ $category->category }} Programme</option>
                                 @endforeach
                             </select>
                         </div>
