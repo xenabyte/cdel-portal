@@ -2,7 +2,7 @@
 <?php 
     $student = Auth::guard('student')->user();
     $academicSession = $student->programmeCategory->academicSessionSetting->academic_session;
-    $addmissionSession = $student->programmeCategory->academicSessionSetting->admission_session;
+    $admissionSession = $student->programmeCategory->academicSessionSetting->admission_session;
 ?>
 @section('content')
 
