@@ -310,7 +310,7 @@ class CronController extends Controller
     {
         set_time_limit(600);
 
-        $registrations = CourseRegistration::whereNotNull('total')
+        $registrations = CourseRegistration::where('academic_session', '2024/2025')->whereNotNull('total')
             ->get();
 
         $updatedRecords = [];
@@ -320,7 +320,7 @@ class CronController extends Controller
             $totalScore = $studentRegistration->total;
 
             if ($totalScore > 0) {
-                $student = Student::find($studentRegistration->student_id);
+                $student = Student::where('id', $studentRegistration->student_id)->where('programme_id', 14)->first();
                 $courseCode = $studentRegistration->course_code;
 
                 $grading = GradeScale::computeGrade($totalScore);
@@ -363,39 +363,39 @@ class CronController extends Controller
                             }
                         }
                     }
-                }
 
-                // Re-grade if student didn't meet pass mark
-                if ($totalScore < $requiredPassMark) {
-                    $grade = 'F';
-                    $points = 0;
-                }
+                    // Re-grade if student didn't meet pass mark
+                    if ($totalScore < $requiredPassMark) {
+                        $grade = 'F';
+                        $points = 0;
+                    }
 
-                $calculatedPoints = $studentRegistration->course_credit_unit * $points;
+                    $calculatedPoints = $studentRegistration->course_credit_unit * $points;
 
-                // Only update if something changed
-                if (
-                    $studentRegistration->grade !== $grade ||
-                    $studentRegistration->points !== $calculatedPoints
-                ) {
-                    $studentRegistration->grade = $grade;
-                    $studentRegistration->points = $calculatedPoints;
-                    $studentRegistration->save();
+                    // Only update if something changed
+                    if (
+                        $studentRegistration->grade !== $grade ||
+                        $studentRegistration->points !== $calculatedPoints
+                    ) {
+                        $studentRegistration->grade = $grade;
+                        $studentRegistration->points = $calculatedPoints;
+                        $studentRegistration->save();
 
-                    $updatedRecords[] = [
-                        'student_id' => $studentRegistration->student_id,
-                        'course_code' => $courseCode,
-                        'total' => $totalScore,
-                        'grade' => $grade,
-                        'points' => $calculatedPoints,
-                        'required_pass_mark' => $requiredPassMark,
-                    ];
+                        $updatedRecords[] = [
+                            'student_id' => $studentRegistration->student_id,
+                            'course_code' => $courseCode,
+                            'total' => $totalScore,
+                            'grade' => $grade,
+                            'points' => $calculatedPoints,
+                            'required_pass_mark' => $requiredPassMark,
+                        ];
+                    }
                 }
             }
         }
 
         if (!empty($fiftyPassAffected)) {
-            Log::info('Records affected by course_code_50_pass rule:', $fiftyPassAffected);
+            Log::info('Records affected by course_code_50_pass rule:', $updatedRecords);
         }
 
         return response()->json([

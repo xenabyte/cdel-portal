@@ -255,7 +255,7 @@
         <div class="card">
             <div class="card-body">
                 <div class="card-header align-items-center d-flex">
-                    <h4 class="card-title mb-0 flex-grow-1">Registered Student(s) </h4>
+                    <h4 class="card-title mb-0 flex-grow-1">Summer Registered Student(s) </h4>
                     <div class="flex-shrink-0">
                         <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#messageStudents">Message Summer Students</button>
                         <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#uploadResult">Bulk upload summer result</button>
