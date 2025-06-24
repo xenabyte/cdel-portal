@@ -42,20 +42,20 @@ class StaffProgramAssignmentController extends Controller
         return redirect()->back();
     }
 
-public function unassign(Request $request)
-{
-    $request->validate([
-        'staff_program_assignment_id' => 'required|exists:staff_program_assignments,id',
-    ]);
+    public function unassign(Request $request)
+    {
+        $request->validate([
+            'staff_program_assignment_id' => 'required|exists:staff_program_assignments,id',
+        ]);
 
-    $assignment = StaffProgramAssignment::findOrFail($request->staff_program_assignment_id);
+        $assignment = StaffProgramAssignment::findOrFail($request->staff_program_assignment_id);
 
-    if ($assignment->delete()) {         alert()->success('Success', 'Staff has been unassigned from the program.')->persistent('Close');
-    } else {
-        alert()->error('Oops!', 'Failed to unassign staff.')->persistent('Close');
+        if ($assignment->delete()) {         alert()->success('Success', 'Staff has been unassigned from the program.')->persistent('Close');
+        } else {
+            alert()->error('Oops!', 'Failed to unassign staff.')->persistent('Close');
+        }
+
+        return redirect()->back();
     }
-
-    return redirect()->back();
-}
 
 }
