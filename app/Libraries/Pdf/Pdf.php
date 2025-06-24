@@ -33,10 +33,23 @@ Class Pdf {
         $applicationType = $student->applicant->application_type;
         $programmeCategoryId = $student->programme_category_id;
         $programmeCategory = $student->programmeCategory;
+        $academicSession = $student->academic_session;
 
-        $acceptancePayment = Payment::with('structures')->where('programme_category_id', $programmeCategoryId)->where('type', Payment::PAYMENT_TYPE_ACCEPTANCE)->where('academic_session', $student->academic_session)->first();
+        $acceptancePayment = Payment::where('type', Payment::PAYMENT_TYPE_ACCEPTANCE)
+        ->where('academic_session', $academicSession)
+        ->where('programme_id', $student->programme_id)
+        ->where('programme_category_id', $student->programme_category_id)
+            ->first();
+
+        if(!$acceptancePayment){
+            $acceptancePayment = Payment::where('type', Payment::PAYMENT_TYPE_ACCEPTANCE)
+            ->where('academic_session', $academicSession)
+            ->where('programme_category_id', $student->programme_category_id)
+            ->first();
+        }
+
+
         $type = Payment::PAYMENT_TYPE_SCHOOL;
-
         if($applicationType != 'UTME' && ($student->level_id == 2) && ($student->programmeCategoryId == ProgrammeCategory::getProgrammeCategory(ProgrammeCategory::UNDERGRADUATE))){
             $type = Payment::PAYMENT_TYPE_SCHOOL_DE;
         }
