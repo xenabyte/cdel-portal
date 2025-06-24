@@ -337,8 +337,8 @@
                         <div class="form-floating">
                             <select class="form-select" id="academic_session" name="academic_session" aria-label="academic_session">
                                 <option value="" selected>--Select--</option>
-                                @foreach($sessions as $academicSession)
-                                    <option value="{{ $academicSession->year }}">{{ $academicSession->year }}</option>
+                                @foreach($sessions as $acadSession)
+                                    <option value="{{ $acadSession->year }}">{{ $acadSession->year }}</option>
                                 @endforeach
                             </select>
                             <label for="level">Academic Session</label>

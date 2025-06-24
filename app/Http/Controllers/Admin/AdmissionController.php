@@ -281,11 +281,21 @@ class AdmissionController extends Controller
             })
             ->get();
     
-        $acceptancePaymentTypeId = Payment::where('type', Payment::PAYMENT_TYPE_ACCEPTANCE)
-            ->where('academic_session', $applicationSession)
-            ->value('id');
-    
         foreach ($students as $student) {
+
+            $acceptancePaymentTypeId = Payment::where('type', Payment::PAYMENT_TYPE_ACCEPTANCE)
+            ->where('academic_session', $applicationSession)
+            ->where('programme_id', $student->programme_id)
+            ->where('programme_category_id', $student->programme_category_id)
+            ->value('id');
+
+            if(!$acceptancePaymentTypeId){
+                $acceptancePaymentTypeId = Payment::where('type', Payment::PAYMENT_TYPE_ACCEPTANCE)
+                ->where('academic_session', $applicationSession)
+                ->where('programme_category_id', $student->programme_category_id)
+                ->value('id');
+            }
+
             $acceptanceFee = Transaction::where('student_id', $student->id)
                 ->where('payment_id', $acceptancePaymentTypeId)
                 ->where('session', $admissionSession)
