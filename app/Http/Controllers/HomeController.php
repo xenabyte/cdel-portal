@@ -512,6 +512,13 @@ class HomeController extends Controller
                 if (!isset($row['username']) || empty(trim($row['username']))) continue;
 
                 $username = trim($row['username']);
+
+                $validateUsername = $bandwidth->validateUser($request->bandwidth_username);
+                if($validateUsername['status'] != 'success'){
+                    alert()->error('Oops!', 'Invalid Username, Kindly enter the correct username')->persistent('Close');
+                    return redirect()->back();
+                }
+
                 $creditStudent = $bandwidth->addToDataBalance($username, $bandwidthAmount);
 
                 if ($creditStudent && $creditStudent['status'] === 'success') {
@@ -522,6 +529,13 @@ class HomeController extends Controller
             }
         } else {
             $username = trim($request->username);
+            
+            $validateUsername = $bandwidth->validateUser($request->bandwidth_username);
+            if($validateUsername['status'] != 'success'){
+                alert()->error('Oops!', 'Invalid Username, Kindly enter the correct username')->persistent('Close');
+                return redirect()->back();
+            }
+
             $creditStudent = $bandwidth->addToDataBalance($username, $bandwidthAmount);
 
             if ($creditStudent && $creditStudent['status'] === 'success') {
