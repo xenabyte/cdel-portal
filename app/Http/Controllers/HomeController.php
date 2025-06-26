@@ -513,7 +513,7 @@ class HomeController extends Controller
 
                 $username = trim($row['username']);
 
-                $validateUsername = $bandwidth->validateUser($request->bandwidth_username);
+                $validateUsername = $bandwidth->validateUser($username);
                 if($validateUsername['status'] != 'success'){
                     alert()->error('Oops!', 'Invalid Username, Kindly enter the correct username')->persistent('Close');
                     return redirect()->back();
@@ -530,7 +530,7 @@ class HomeController extends Controller
         } else {
             $username = trim($request->username);
 
-            $validateUsername = $bandwidth->validateUser($request->bandwidth_username);
+            $validateUsername = $bandwidth->validateUser($username);
             if($validateUsername['status'] != 'success'){
                 alert()->error('Oops!', 'Invalid Username, Kindly enter the correct username')->persistent('Close');
                 return redirect()->back();
