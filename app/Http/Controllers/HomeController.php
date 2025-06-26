@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Requests;
 use Illuminate\Support\Facades\Validator;
+use League\Csv\Reader;
 
 use App\Models\Course;
 use App\Models\CourseRegistrationSetting;
@@ -26,6 +27,7 @@ use App\Models\Staff;
 use App\Models\StudentExit;
 use App\Models\Unit;
 use App\Models\ProgrammeCategory;
+use App\Models\Plan;
 
 use App\Mail\NotificationMail;
 
@@ -464,4 +466,75 @@ class HomeController extends Controller
 
         return view('errors.csrf');
     }
+
+
+    public function addBandwidth(){
+
+        $plans = Plan::all();
+
+        return view('addBandwidth', [
+            'plans' => $plans,
+        ]);
+    }
+
+    public function bandwidthTopUp(Request $request){
+        $validator = Validator::make($request->all(), [
+            'file' => 'required_without:username|nullable|file|mimes:csv',
+            'username' => 'required_without:file|nullable|string|max:255',
+            'plan_id' => 'required|exists:plans,id',
+            'password' => 'required|string|min:6',
+        ], [
+            'file.required_without' => 'You must provide either a file or a username.',
+            'username.required_without' => 'You must provide either a username or a file.',
+        ]);
+
+        if ($validator->fails()) {
+            alert()->error('Validation Error', $validator->errors()->first())->persistent('Close');
+            return redirect()->back()->withInput();
+        }
+
+        if ($request->password !== env('SECURITY_PASSWORD')) {
+            alert()->error('Error', 'Password Mismatch')->persistent('Close');
+            return redirect()->back()->withInput();
+        }
+
+        $bandwidthPlan = Plan::find($request->plan_id);
+        $bandwidthAmount = $bandwidthPlan->bandwidth;
+        $bandwidth = new Bandwidth();
+
+        if ($request->hasFile('file')) {
+            $file = $request->file('file');
+            $csv = Reader::createFromPath($file->getPathname(), 'r');
+            $csv->setHeaderOffset(0);
+            $records = $csv->getRecords();
+
+            foreach ($records as $row) {
+                if (!isset($row['username']) || empty(trim($row['username']))) continue;
+
+                $username = trim($row['username']);
+                $creditStudent = $bandwidth->addToDataBalance($username, $bandwidthAmount);
+
+                if ($creditStudent && $creditStudent['status'] === 'success') {
+                    Log::info("Credited bandwidth: {$bandwidthAmount} to {$username}");
+                } else {
+                    Log::warning("Failed to credit bandwidth to {$username}");
+                }
+            }
+        } else {
+            $username = trim($request->username);
+            $creditStudent = $bandwidth->addToDataBalance($username, $bandwidthAmount);
+
+            if ($creditStudent && $creditStudent['status'] === 'success') {
+                Log::info("Credited bandwidth: {$bandwidthAmount} to {$username}");
+            } else {
+                Log::warning("Failed to credit bandwidth to {$username}");
+                alert()->error('Error', 'Unable to credit bandwidth to the specified user.')->persistent('Close');
+                return redirect()->back()->withInput();
+            }
+        }
+
+        alert()->success('Success', 'Bandwidth top-up successful.')->persistent('Close');
+        return redirect()->back();
+    }
+
 }
