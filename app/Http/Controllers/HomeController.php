@@ -493,7 +493,7 @@ class HomeController extends Controller
             return redirect()->back()->withInput();
         }
 
-        if ($request->password !== env('SECURITY_PASSWORD')) {
+        if ($request->password !== env('BANDWIDTH_PASSWORD')) {
             alert()->error('Error', 'Password Mismatch')->persistent('Close');
             return redirect()->back()->withInput();
         }
@@ -529,7 +529,7 @@ class HomeController extends Controller
             }
         } else {
             $username = trim($request->username);
-            
+
             $validateUsername = $bandwidth->validateUser($request->bandwidth_username);
             if($validateUsername['status'] != 'success'){
                 alert()->error('Oops!', 'Invalid Username, Kindly enter the correct username')->persistent('Close');
