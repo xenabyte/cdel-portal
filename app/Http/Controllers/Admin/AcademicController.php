@@ -563,6 +563,7 @@ class AcademicController extends Controller
             'faculty_id' => $request->faculty_id,
             'name' => $request->name,
             'slug' => $slug,
+            'code' => $request->code
         ]);
 
         if(Department::create($newAddDepartment)){
@@ -593,6 +594,10 @@ class AcademicController extends Controller
         $department->name = $request->name;
         if(!empty($request->faculty_id) && $request->faculty_id != $department->faculty_id){
             $department->faculty_id = $request->faculty_id;
+        }
+
+        if(!empty($request->code) &&  $request->code != $department->code){
+            $department->code = strtoupper($request->code);
         }
 
         if($department->save()){
@@ -794,7 +799,7 @@ class AcademicController extends Controller
             return redirect()->back();
         }
 
-        if(!$department = Department::find($request->programme_id)){
+        if(!$department = Department::find($request->department_id)){
             alert()->error('Oops', 'Invalid Department ')->persistent('Close');
             return redirect()->back();
         }

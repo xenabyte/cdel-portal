@@ -126,7 +126,7 @@
             <ul>
                 <li>Pay the non-refundable acceptance fee of <strong>N{{ number_format($acceptance_amount/100, 2) }}</strong></li>
                 <li>Pay your school fees <strong>(N{{ number_format($school_amount/100, 2) }})</strong> in full or at least a first installment of 40% before resumption</li>
-                <li>Prepare for resumption. Please note that the resumption date for {{ $programmeCategory->academicSessionSetting->academic_session }} Academic Session is <strong>{{ date('l, jS F, Y', strtotime($programmeCategory->academicSessionSetting->resumption_date)) }}</strong></li>
+                <li>Prepare for resumption. Please note that the resumption date for {{ $programmeCategory->academicSessionSetting->academic_session }} Academic Session is <strong>{{ date('l, jS F, Y', strtotime($programmeCategory->academicSessionSetting->resumption_date)) }}. Note that any Fees paid is non-refundable.</strong></li>
                 <li>Book and pay for your accomondation. The following accomondation facilities are available:</li>
             </ul>
             
@@ -140,39 +140,39 @@
                 </thead>
                 <tbody>
                     <tr>
-                        <td>12 bed spaces</td>
-                        <td>N60,000 (Silver)</td>
-                        <td>N100,000 (Boy's Hostel Only)</td>
+                        <td>10 bed spaces</td>
+                        <td>N65,000 (Girls only)</td>
+                        <td>N80,000 (Boys only)</td>
+                    </tr>
+                    <tr>
+                        <td>8 bed spaces</td>
+                        <td>N90,000 (Boys and Girls)</td>
+                        <td>N100,000 (Boys only)</td>
                     </tr>
                     <tr>
                         <td>6 bed spaces</td>
-                        <td>N100,000 (Silver)</td>
-                        <td>N150,000 (Silver)</td>
+                        <td>N150,000 (Boys and Girls)</td>
+                        <td>N150,000 (Boys and Girls)</td>
                     </tr>
                     <tr>
                         <td>4 bed spaces</td>
-                        <td>N150,000 (Silver) <br> N200,000 (Gold)</td>
-                        <td>N200,000 (Silver) <br> N375,000 (Gold) </td>
+                        <td>N200,000 (Girls only) TnB</td>
+                        <td>N240,000 (Boys and Girls) TnB</td>
                     </tr>
                     <tr>
                         <td>3 bed spaces</td>
-                        <td>N300,000 (Gold)</td>
-                        <td>N250,000 (Silver) <br> N500,000 (Gold)</td>
-                    </tr>
-                    <tr>
-                        <td>4 bed spaces</td>
-                        <td>N150,000 (Silver)</td>
-                        <td>N375,000</td>
+                        <td>N250,000 (Girls only) TnB</td>
+                        <td>N270,000 (Boys and Girls) TnB</td>
                     </tr>
                     <tr>
                         <td>2 bed spaces</td>
-                        <td>N150,000 (Silver) (Boy's Hostel Only)</td>
-                        <td>N350,000 (Silver) <br> N750,000 (Gold)</td>
+                        <td>N150,000 (Boys only)</td>
+                        <td>Not available</td>
                     </tr>
                     <tr>
-                        <td>1 bed spaces</td>
+                        <td>1 bed space</td>
+                        <td>N250,000 (Boys only)</td>
                         <td>Not available</td>
-                        <td>N800,000 (Silver) <br> N1,500,000 (Gold)</td>
                     </tr>
                 </tbody>
             </table>

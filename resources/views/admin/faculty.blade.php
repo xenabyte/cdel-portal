@@ -115,7 +115,7 @@
                                 </div>
                             </div>
                         </div><!-- end -->
-                        <div id="editDepartment{{$faculty->id}}" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
+                        <div id="editDepartment{{$department->id}}" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
                             <div class="modal-dialog modal-dialog-centered">
                                 <div class="modal-content border-0 overflow-hidden">
                                     <div class="modal-header p-3">
@@ -130,6 +130,11 @@
                                             <div class="mb-3">
                                                 <label for="name" class="form-label">Department Name</label>
                                                 <input type="text" class="form-control" name="name" id="name" value="{{ $department->name }}">
+                                            </div>
+
+                                            <div class="mb-3">
+                                                <label for="code" class="form-label">Department Code</label>
+                                                <input type="text" class="form-control" name="code" id="code" value="{{ $department->code }}">
                                             </div>
 
                                             <hr>
@@ -304,6 +309,12 @@
                         <label for="name" class="form-label">Department Name</label>
                         <input type="text" class="form-control" name="name" id="name" placeholder="Enter Department Name">
                     </div>
+
+                    <div class="mb-3">
+                        <label for="code" class="form-label">Department Code</label>
+                        <input type="text" class="form-control" name="code" id="code">
+                    </div>
+
                     <hr>
                     <div class="text-end">
                         <button type="submit" id="submit-button" class="btn btn-primary">Add Department</button>
