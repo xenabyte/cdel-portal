@@ -479,7 +479,7 @@ class HomeController extends Controller
 
     public function bandwidthTopUp(Request $request){
         $validator = Validator::make($request->all(), [
-            'file' => 'required_without:username|nullable|file|mimes:csv',
+            'file' => 'required_without:username|nullable|file',
             'username' => 'required_without:file|nullable|string|max:255',
             'plan_id' => 'required|exists:plans,id',
             'password' => 'required|string|min:6',
