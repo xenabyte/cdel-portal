@@ -508,15 +508,17 @@ class HomeController extends Controller
             $csv->setHeaderOffset(0);
             $records = $csv->getRecords();
 
+            $invalidUsernames = [];
+
             foreach ($records as $row) {
                 if (!isset($row['username']) || empty(trim($row['username']))) continue;
 
                 $username = trim($row['username']);
-
                 $validateUsername = $bandwidth->validateUser($username);
-                if($validateUsername['status'] != 'success'){
-                    alert()->error('Oops!', 'Invalid Username, Kindly enter the correct username')->persistent('Close');
-                    return redirect()->back();
+
+                if ($validateUsername['status'] !== 'success') {
+                    $invalidUsernames[] = $username;
+                    continue;
                 }
 
                 $creditStudent = $bandwidth->addToDataBalance($username, $bandwidthAmount);
@@ -527,11 +529,20 @@ class HomeController extends Controller
                     Log::warning("Failed to credit bandwidth to {$username}");
                 }
             }
+
+            if (count($invalidUsernames) > 0) {
+                $message = "Some usernames could not be processed: " . implode(', ', $invalidUsernames);
+                alert()->warning('Partial Success', $message)->persistent('Close');
+            } else {
+                alert()->success('Success', 'All usernames processed successfully.')->persistent('Close');
+            }
+
+            return redirect()->back();
         } else {
             $username = trim($request->username);
-
             $validateUsername = $bandwidth->validateUser($username);
-            if($validateUsername['status'] != 'success'){
+
+            if ($validateUsername['status'] !== 'success') {
                 alert()->error('Oops!', 'Invalid Username, Kindly enter the correct username')->persistent('Close');
                 return redirect()->back();
             }
@@ -540,15 +551,13 @@ class HomeController extends Controller
 
             if ($creditStudent && $creditStudent['status'] === 'success') {
                 Log::info("Credited bandwidth: {$bandwidthAmount} to {$username}");
+                alert()->success('Success', 'Bandwidth top-up successful.')->persistent('Close');
             } else {
                 Log::warning("Failed to credit bandwidth to {$username}");
                 alert()->error('Error', 'Unable to credit bandwidth to the specified user.')->persistent('Close');
-                return redirect()->back()->withInput();
             }
+
+            return redirect()->back();
         }
-
-        alert()->success('Success', 'Bandwidth top-up successful.')->persistent('Close');
-        return redirect()->back();
     }
-
 }
