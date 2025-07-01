@@ -83,7 +83,7 @@ class CronController extends Controller
                                     ->where('payment_method', '!=', 'Manual/BankTransfer')
                                     ->where('payment_method', '!=', null)
                                     ->orderBy('id', 'desc')
-                                    ->take(10)
+                                    ->take(50)
                                     ->get();
 
         if (!$transactions) {

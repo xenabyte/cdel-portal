@@ -220,9 +220,7 @@ class StudentAPIController extends Controller
         $courseLecture = CourseLecture::find($lectureId);
         $courseId = $courseLecture->course_id;
 
-        // Assume globalSettings is resolved somewhere else or hardcoded here for demo
-        $globalSettings = app('globalSettings'); // or inject it
-        $academicSession = $globalSettings->sessionSetting['academic_session'];
+        $academicSession = $courseLecture->academic_session;
 
         // Check course registration
         $studentCourseRegistration = CourseRegistration::where([

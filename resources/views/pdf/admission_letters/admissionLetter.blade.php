@@ -127,7 +127,7 @@
                 <li>Pay the non-refundable acceptance fee of <strong>N{{ number_format($acceptance_amount/100, 2) }}</strong></li>
                 <li>Pay your school fees <strong>(N{{ number_format($school_amount/100, 2) }})</strong> in full or at least a first installment of 40% before resumption</li>
                 <li>Prepare for resumption. Please note that the resumption date for {{ $programmeCategory->academicSessionSetting->academic_session }} Academic Session is <strong>{{ date('l, jS F, Y', strtotime($programmeCategory->academicSessionSetting->resumption_date)) }}. Note that any Fees paid is non-refundable.</strong></li>
-                <li>Book and pay for your accomondation. The following accomondation facilities are available:</li>
+                <li>Book and pay for your accommodation. Please note that the West Campus houses the Faculties of Management and Social Sciences, Law, and Arts and Humanities. The East Campus accommodates the Faculties of Basic and Health Sciences, Nursing Science, Engineering, and Computing and Applied Sciences.</li>
             </ul>
             
             <table>
