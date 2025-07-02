@@ -123,34 +123,52 @@ class CronController extends Controller
 
     public function exportDatabase(){
         $backupDir = public_path('backups');
-        if (!file_exists($backupDir)) {
+        if (!file_exists($backupDir)){
             mkdir($backupDir, 0755, true);
         }
 
-        $fileName = 'database_backup_' . date('Y-m-d_H-i-s') . '.sql';
-        $exportPath = $backupDir . '/' . $fileName;
+        $timestamp = date('Y-m-d_H-i-s');
+        $fileName = "database_backup_{$timestamp}.sql";
+        $zipName = "database_backup_{$timestamp}.zip";
+
+        $sqlPath = $backupDir . '/' . $fileName;
+        $zipPath = $backupDir . '/' . $zipName;
 
         $databaseName = env('DB_DATABASE');
         $username = env('DB_USERNAME');
         $password = env('DB_PASSWORD');
 
-        exec("mysqldump --user={$username} --password={$password} {$databaseName} > {$exportPath}");
+        // Export SQL
+        exec("mysqldump --user={$username} --password={$password} {$databaseName} > {$sqlPath}");
 
-        if (!file_exists($exportPath)) {
-            return response()->json(['error' => 'Failed to create the backup file.'], 500);
+        if (!file_exists($sqlPath)){
+            return response()->json(['error' => 'Failed to create the SQL backup file.'], 500);
         }
 
-        if(env('SEND_MAIL')){
-            Mail::send([], [], function ($message) use ($exportPath, $fileName) {
+        // Compress to ZIP
+        $zip = new \ZipArchive();
+        if ($zip->open($zipPath, \ZipArchive::CREATE) === true){
+            $zip->addFile($sqlPath, $fileName);
+            $zip->close();
+        } else {
+            unlink($sqlPath); // Clean up
+            return response()->json(['error' => 'Failed to compress the backup file.'], 500);
+        }
+
+        // Send via mail
+        if (env('SEND_MAIL')){
+            Mail::send([], [], function ($message) use ($zipPath, $zipName){
                 $message->to(env('BACKUP_EMAIL'))
-                    ->subject('Database Backup ' . date('Y-m-d H:i:s'))
-                    ->attach($exportPath, ['as' => $fileName]);
+                    ->subject('Database Backup - ' . date('Y-m-d H:i:s'))
+                    ->attach($zipPath, ['as' => $zipName]);
             });
         }
 
-        unlink($exportPath);
+        // Clean up
+        unlink($sqlPath);
+        unlink($zipPath);
 
-        return response()->json(['message' => 'Database exported and email sent successfully.']);
+        return response()->json(['message' => 'Database exported, compressed, and emailed successfully.']);
     }
 
     public function updateReferrers(){
