@@ -77,48 +77,51 @@ class CronController extends Controller
     }
 
 
-    public function deletePendingTransactions()
-    {
+    public function deletePendingTransactions(){
         $transactions = Transaction::whereNull('status')
-                                    ->where('payment_method', '!=', 'Manual/BankTransfer')
-                                    ->whereNotNull('payment_method')
-                                    ->where('cron_status', '<', 3)
-                                    ->orderBy('id', 'desc')
-                                    ->take(50)
-                                    ->get();
+            ->where('payment_method', '!=', 'Manual/BankTransfer')
+            ->whereNotNull('payment_method')
+            ->where(function($query){
+                $query->whereNull('cron_status')
+                    ->orWhere('cron_status', '<', 3);
+            })
+            ->orderBy('id', 'desc')
+            ->take(50)
+            ->get();
 
-        if ($transactions->isEmpty()) {
+        if ($transactions->isEmpty()){
             return $this->dataResponse('No pending transactions found that can be processed.', null);
         }
 
         $paymentController = new PaymentController;
-        $updatedCount = 0;
         $paidCount = 0;
+        $updatedCount = 0;
 
-        foreach ($transactions as $transaction) {
+        foreach ($transactions as $transaction){
             $paymentReference = $transaction->reference;
 
-            // This method is assumed to update the transaction status internally
-            $paymentController->upperlinkVerifyPayment($paymentReference);
+            // Use the updated upperlinkVerifyPayment with JSON return
+            $response = $paymentController->upperlinkVerifyPayment($paymentReference, null, true);
 
-            // Refresh the transaction instance from the DB to get the updated status
-            $transaction->refresh();
+            // Refresh transaction from DB
+            $transaction = Transaction::find($transaction->id);
 
-            if (!empty($transaction->status)) {
+            if (!empty($transaction->status)){
                 // Payment confirmed
                 $transaction->cron_status = 3;
                 $transaction->save();
                 $paidCount++;
             } else {
-                // Not confirmed, increment cron_status (max 3)
-                $transaction->increment('cron_status');
+                // Payment still not confirmed; increment cron_status safely
+                $transaction->cron_status = is_null($transaction->cron_status) ? 1 : $transaction->cron_status + 1;
+                $transaction->save();
                 $updatedCount++;
             }
         }
 
         return $this->dataResponse("Processed pending transactions: {$paidCount} marked as paid, {$updatedCount} attempts updated.", null);
     }
-
+    
     public function exportDatabase(){
         $backupDir = public_path('backups');
         if (!file_exists($backupDir)) {
