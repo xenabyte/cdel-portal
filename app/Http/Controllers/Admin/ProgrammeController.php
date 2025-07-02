@@ -328,18 +328,18 @@ class ProgrammeController extends Controller
             return view('admin.studentCourses',$defaultData);
         }
 
-        $levelAdviser = LevelAdviser::where('programme_id', $request->programme_id)->where('level_id', $request->level_id)->where('academic_session', $academicSession)->first();
-        if(!$levelAdviser){
-            alert()->error('Oops', 'Invalid Level Adviser or not set ')->persistent('Close');
-            return view('admin.studentCourses',$defaultData);
-        }
+        // $levelAdviser = LevelAdviser::where('programme_id', $request->programme_id)->where('level_id', $request->level_id)->where('academic_session', $academicSession)->first();
+        // if(!$levelAdviser){
+        //     alert()->error('Oops', 'Invalid Level Adviser or not set ')->persistent('Close');
+        //     return view('admin.studentCourses',$defaultData);
+        // }
 
-        $courseRegistration = $levelAdviser->course_registration;
+        // $courseRegistration = $levelAdviser->course_registration;
 
-        if(!empty($courseRegistration) && $courseRegistration != 'stop'){
-            alert()->error('Oops', 'Course Registration already started')->persistent('Close');
-            return view('admin.studentCourses', $defaultData);
-        }
+        // if(!empty($courseRegistration) && $courseRegistration != 'stop'){
+        //     alert()->error('Oops', 'Course Registration already started')->persistent('Close');
+        //     return view('admin.studentCourses', $defaultData);
+        // }
         
         if(!$course = Course::find($request->course_id)){
             alert()->error('Oops', 'Invalid course ')->persistent('Close');
