@@ -449,7 +449,7 @@ class AcademicController extends Controller
     public function addFaculty(Request $request){
         $validator = Validator::make($request->all(), [
             'name' => 'required',
-            'description' => 'required',
+            'description' => 'nullable',
         ]);
 
         if($validator->fails()) {
