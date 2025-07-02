@@ -128,7 +128,7 @@
                                 <input type="hidden" name="courses" value="{{$courses}}">
                                 <input type="hidden" name="allCourses" value="{{$allCourses}}">
                                 <input type="hidden" name="academic_session" value="{{$academic_session}}">
-                                <input type="hidden" name="programme_category_id" value="{{$programme_category_id}}">
+                                <input type="hidden" name="programme_category_id" value="{{$programmeCategory->id}}">
                                 <div class="row g-3">
             
                                     <div class="col-lg-12">
