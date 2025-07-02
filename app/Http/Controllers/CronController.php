@@ -77,32 +77,46 @@ class CronController extends Controller
     }
 
 
-    public function deletePendingTransactions(){
-
-        $transactions = Transaction::where('status', null)
+    public function deletePendingTransactions()
+    {
+        $transactions = Transaction::whereNull('status')
                                     ->where('payment_method', '!=', 'Manual/BankTransfer')
-                                    ->where('payment_method', '!=', null)
+                                    ->whereNotNull('payment_method')
+                                    ->where('cron_status', '<', 3)
                                     ->orderBy('id', 'desc')
                                     ->take(50)
                                     ->get();
 
-        if (!$transactions) {
-            return $this->dataResponse('No pending transactions found that can be deleted.', null);
+        if ($transactions->isEmpty()) {
+            return $this->dataResponse('No pending transactions found that can be processed.', null);
         }
 
-        // $deletedCount = $transactions->each->forceDelete();
+        $paymentController = new PaymentController;
+        $updatedCount = 0;
+        $paidCount = 0;
 
         foreach ($transactions as $transaction) {
-            
             $paymentReference = $transaction->reference;
-            
 
-            $paymentController = new PaymentController;
-
+            // This method is assumed to update the transaction status internally
             $paymentController->upperlinkVerifyPayment($paymentReference);
+
+            // Refresh the transaction instance from the DB to get the updated status
+            $transaction->refresh();
+
+            if (!empty($transaction->status)) {
+                // Payment confirmed
+                $transaction->cron_status = 3;
+                $transaction->save();
+                $paidCount++;
+            } else {
+                // Not confirmed, increment cron_status (max 3)
+                $transaction->increment('cron_status');
+                $updatedCount++;
+            }
         }
 
-        return $this->dataResponse('Pending transactions deleted successfully.', null);
+        return $this->dataResponse("Processed pending transactions: {$paidCount} marked as paid, {$updatedCount} attempts updated.", null);
     }
 
     public function exportDatabase(){

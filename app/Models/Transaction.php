@@ -27,6 +27,7 @@ class Transaction extends Model
         'plan_id',
         'is_used',
         'additional_data',
+        'cron_status',
     ];
 
     /**
