@@ -283,7 +283,7 @@ class ProgrammeController extends Controller
     public function addCourseForStudent(Request $request){
         $programmeCategoryId = $request->programme_category_id;
 
-        $programmeCategory = ProgrammeCategory::with('academicSessionSetting', 'examSetting')->where('category', $programmeCategoryId)->first();
+        $programmeCategory = ProgrammeCategory::with('academicSessionSetting', 'examSetting')->where('id', $programmeCategoryId)->first();
         $academicSession = $programmeCategory->academicSessionSetting->academic_session ?? null;
 
         if (!$academicSession) {
