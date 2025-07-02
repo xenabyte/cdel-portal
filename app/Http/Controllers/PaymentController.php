@@ -480,6 +480,14 @@ class PaymentController extends Controller
             }
         }
 
+        Log::channel('payment')->warning("[UPPERLINK] Payment verification failed or returned non-success status", [
+            'reference' => $ref,
+            'response' => $paymentDetails,
+            'timestamp' => now(),
+            'context' => $returnAsJson ? 'cron/API' : 'web/browser',
+            'cron_status' => optional(Transaction::where('reference', $ref)->first())->cron_status
+        ]);
+
         if ($returnAsJson) {
             return [
                 'status' => 'error',
