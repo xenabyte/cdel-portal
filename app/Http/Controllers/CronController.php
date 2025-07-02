@@ -77,10 +77,9 @@ class CronController extends Controller
     }
 
 
-    public function deletePendingTransactions(){
+    public function requeryUpperLinkPendingTransactions(){
         $transactions = Transaction::whereNull('status')
-            ->where('payment_method', '!=', 'Manual/BankTransfer')
-            ->whereNotNull('payment_method')
+            ->where('payment_method',  'Upperlink')
             ->where(function($query){
                 $query->whereNull('cron_status')
                     ->orWhere('cron_status', '<', 3);
@@ -121,7 +120,7 @@ class CronController extends Controller
 
         return $this->dataResponse("Processed pending transactions: {$paidCount} marked as paid, {$updatedCount} attempts updated.", null);
     }
-    
+
     public function exportDatabase(){
         $backupDir = public_path('backups');
         if (!file_exists($backupDir)) {

@@ -51,7 +51,7 @@ Route::get('/studentDetails/{slug}', [App\Http\Controllers\HomeController::class
 Route::get('/calculateStudentCGPA', [App\Http\Controllers\Admin\CronController::class, 'calculateStudentCGPA']);
 Route::get('/generateStudentReferrerCode', [App\Http\Controllers\Admin\StudentController::class, 'generateStudentReferrerCode']);
 Route::get('/sendParentOnboardingMail', [App\Http\Controllers\Admin\CronController::class, 'sendParentOnboardingMail']);
-Route::get('/deletePendingTransactions', [App\Http\Controllers\CronController::class, 'deletePendingTransactions']);
+Route::get('/requeryUpperLinkPendingTransactions', [App\Http\Controllers\CronController::class, 'requeryUpperLinkPendingTransactions']);
 Route::get('/exportDatabase', [App\Http\Controllers\CronController::class, 'exportDatabase']);
 Route::get('/updateReferrers', [App\Http\Controllers\CronController::class, 'updateReferrers']);
 Route::get('/massBandwidthCreation', [App\Http\Controllers\CronController::class, 'massBandwidthCreation']);
