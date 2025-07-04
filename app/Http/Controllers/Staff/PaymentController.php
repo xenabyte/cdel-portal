@@ -214,7 +214,7 @@ class PaymentController extends Controller
     public function payment($slug) {
     
         $payment = Payment::with(['structures'])->where('slug', $slug)->first();
-        $programmeCategoryId = $payment->category_id;
+        $programmeCategoryId = $payment->programme_category_id;
 
         $programmes = Programme::get();
         $levels = Level::get();
