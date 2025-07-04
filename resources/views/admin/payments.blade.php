@@ -185,7 +185,7 @@
                     <!-- Accordions with Plus Icon -->
                     <div class="accordion custom-accordionwithicon-plus" id="accordionWithplusicon">
                         @foreach($levels as $level)
-                            @if($level->id < 6 && $payments->where('level.id', $level->id)->isNotEmpty())
+                            @if($payments->where('level.id', $level->id)->isNotEmpty())
                                 <div class="accordion-item shadow">
                                     <h2 class="accordion-header" id="accordionwithplusExample{{$level->id}}">
                                         <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#accor_plusExamplecollapse{{$level->id}}" aria-expanded="true" aria-controls="accor_plusExamplecollapse{{$level->id}}">
