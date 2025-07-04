@@ -1149,7 +1149,7 @@
                             
                                                 {{-- Transcript --}}
                                                 <div class="col-md-12 mt-3">
-                                                    <label for="transcript">Upload Transcript <span class="text-danger">*</span></label>
+                                                    <label for="transcript">Upload Transcript</label>
                                                     <input type="file" name="academic_transcript" class="form-control" id="transcript">
                                                 </div>
                             
