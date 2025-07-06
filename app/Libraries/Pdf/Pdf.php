@@ -244,8 +244,11 @@ Class Pdf {
         ->whereNull('total')
         ->where('semester', $semester)
         ->where('status', 'approved')
-        ->get();
-        // ->reject(fn($courseReg) => !is_null($student->cgpa) && round($courseReg->attendancePercentage()) <= 75);
+        ->get()
+        ->reject(fn($courseReg) => !is_null($student->cgpa) && round($courseReg->attendancePercentage()) <= 75);
+        // ->filter(function ($reg) {
+        //         return $reg->attendancePercentage() >= 75;
+        //     });
 
         $dir = public_path('uploads/files/exam_card');
         if (!file_exists($dir)) {

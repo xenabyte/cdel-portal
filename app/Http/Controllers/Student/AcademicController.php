@@ -563,15 +563,17 @@ class AcademicController extends Controller
         $passEightyTuition = $checkStudentPayment->passEightyTuition;
         $schoolPaymentTransaction = $checkStudentPayment->schoolPaymentTransaction;
 
-        // if(!$passTuitionPayment){
-        //     return view('student.schoolFee', [
-        //         'payment' => $checkStudentPayment->schoolPayment,
-        //         'passTuition' => $passTuitionPayment,
-        //         'fullTuitionPayment' => $fullTuitionPayment,
-        //         'passEightyTuition' => $passEightyTuition,
-        //         'studentPendingTransactions' => $checkStudentPayment->studentPendingTransactions
-        //     ]);
-        // }
+        $tuitionPassStatus = ($semester == 1) ? $passTuitionPayment : $fullTuitionPayment;
+
+        if(!$tuitionPassStatus){
+            return view('student.schoolFee', [
+                'payment' => $checkStudentPayment->schoolPayment,
+                'passTuition' => $passTuitionPayment,
+                'fullTuitionPayment' => $fullTuitionPayment,
+                'passEightyTuition' => $passEightyTuition,
+                'studentPendingTransactions' => $checkStudentPayment->studentPendingTransactions
+            ]);
+        }
 
 
         $studentExamCards = StudentExamCard::where([
@@ -617,10 +619,14 @@ class AcademicController extends Controller
             ->where('total', null)
             ->where('semester', $semester)
             ->where('status', 'approved')
-            ->get();
+            ->get()
+            ->filter(function ($reg) {
+                return $reg->attendancePercentage() >= 75;
+            });
 
-        if(empty($courseRegs)){
-            alert()->error('Oops!', 'No approved course registration for this semester and session.')->persistent('Close');
+
+        if ($courseRegs->isEmpty()) {
+            alert()->error('Oops!', 'No approved course registration with at least 75% attendance for this semester and session.')->persistent('Close');
             return redirect()->back();
         }
 
