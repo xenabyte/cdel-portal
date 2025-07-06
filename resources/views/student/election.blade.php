@@ -229,7 +229,7 @@ $studentId = $student->id;
                                 <td>{{ $loop->iteration }}</td>
                                 <td>
                                     <div class="d-flex align-items-center gap-2">
-                                        <img src="{{ $photo }}"
+                                        <img src="{{ asset($photo) }}"
                                             alt="Candidate Photo"
                                             class="rounded-circle"
                                             width="80"
