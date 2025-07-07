@@ -549,6 +549,7 @@ class AcademicController extends Controller
         $student = Auth::guard('student')->user();
         $studentId = $student->id;
         $academicSession = $student->programmeCategory->academicSessionSetting->academic_session;
+        $programmeCategory = $student->programmeCategory;
         $semester  = $student->programmeCategory->examSetting->semester;
         $levelId = $student->level_id;
 
@@ -592,6 +593,7 @@ class AcademicController extends Controller
 
         return view('student.examDocket', [
             'courseRegs' => $courseRegs,
+            'programmeCategory' => $programmeCategory,
             'payment' => $schoolPaymentTransaction,
             'passTuition' => $passTuitionPayment,
             'fullTuitionPayment' => $fullTuitionPayment,

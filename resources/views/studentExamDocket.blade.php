@@ -59,7 +59,7 @@
                     
                 </ul>
                 <div class="flex-shrink-0">
-                    @if(($pageGlobalData->examSetting->semester == 1 && $passTuition) || ($pageGlobalData->examSetting->semester == 2 && $passEightyTuition))
+                    @if(($programmeCategory->examSetting->semester == 1 && $passTuition) || ($programmeCategory->examSetting->semester == 2 && $passEightyTuition))
                         <span class="btn btn-success"><i class="ri-check-double-fill align-bottom"></i> Approved To Take Exam</span>
                     @else
                         <span class="btn btn-danger"><i class="ri-close-circle-fill align-bottom"></i> Not allowed to to take Exam</span>
@@ -125,7 +125,7 @@
 
                                         <div class="col-md-12">
                                             <div class="text-center">
-                                                <h1>{{ $pageGlobalData->examSetting->semester == 1?'First' : 'Second' }} Semester Examination Card</h1>
+                                                <h1>{{ $programmeCategory->examSetting->semester == 1?'First' : 'Second' }} Semester Examination Card</h1>
                                                 <br>
                                             </div>
                                         </div>

@@ -1087,10 +1087,10 @@ class AcademicController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'exam_docket_status' => 'required',
-            'academic_session' => 'required',
-            'result_processing_status' => 'required',
-            'test_processing_status' => 'required',
-            'semester' => 'required',
+            'academic_session' => 'nullable',
+            'result_processing_status' => 'nullable',
+            'test_processing_status' => 'nullable',
+            'semester' => 'nullable',
             'programme_category_id' => 'required',
         ]);
 
