@@ -1,7 +1,28 @@
 @extends('staff.layout.dashboard')
 @php
-        $programmeCategoryModel = new \App\Models\ProgrammeCategory;
-        $applicationSession = $programmeCategory->academicSessionSetting->application_session;
+    $programmeCategoryModel = new \App\Models\ProgrammeCategory;
+    $applicationSession = $programmeCategory->academicSessionSetting->application_session;
+
+    $programmeCategory = new \App\Models\ProgrammeCategory;
+
+
+    $staff = Auth::guard('staff')->user();
+    $staffId = $staff->id;
+
+    $staffRegistrarRole = false;
+    $staffAdmissionOfficerRole = false;
+    
+
+    foreach ($staff->staffRoles as $staffRole) {
+        if (strtolower($staffRole->role->role) == 'registrar') {
+            $staffRegistrarRole = true;
+        }
+        if(strtolower($staffRole->role->role) == 'admission'){
+            $staffAdmissionOfficerRole = true;
+        }
+    }
+
+    $canGiveAdmission = $staffRegistrarRole || $staffAdmissionOfficerRole;
 
 @endphp
 @section('content')
@@ -270,7 +291,7 @@
                     <div class="col-md-3">
                         <div class="card-body">
                             <h5 class="fs-14 mb-3 border-bottom"> Manage Admission</h5>
-                            @if($applicant->status == 'submitted')
+                            @if($applicant->status == 'submitted' && $canGiveAdmission)
                             <form action="{{ url('staff/manageAdmission') }}" method="POST">
                                 @csrf
                                 <input type="hidden" name="applicant_id" value="{{ $applicant->id }}">
