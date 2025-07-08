@@ -676,6 +676,20 @@ class Controller extends BaseController
         return $data;
     }
 
+    public function checkOtherFees($student){
+        $studentId = $student->id;
+        $academicSession = $student->academic_session;
+        
+        $studentPendingTransactions = Transaction::with('paymentType')
+            ->where('student_id', $studentId)
+            ->where('session', $academicSession)
+            ->where('payment_method', 'Manual/BankTransfer')
+            ->whereNull('status')
+            ->get();
+
+        return $studentPendingTransactions->isNotEmpty();
+    }
+
     public function checkAccomondationStatus($student){
         $studentId = $student->id;
         $programmeCategoryId = $student->programme_category_id;
@@ -1318,6 +1332,13 @@ class Controller extends BaseController
         return $data;
     }
 
+
+    /**
+     * Check if a student is new based on their level ID and application type.
+     * 
+     * @param Student $student The student object to check
+     * @return boolean True if the student is new, false otherwise
+     */
     public static function checkNewStudentStatus($student){
         $levelId = $student->level_id;
         $applicationType = $student->application_type;

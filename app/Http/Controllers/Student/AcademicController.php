@@ -559,10 +559,26 @@ class AcademicController extends Controller
             return redirect()->back();
         }
 
+        $transactions = Transaction::where('student_id', $studentId)->where('payment_id', '!=', 0)->orderBy('status', 'ASC')->get();
+
+
         $passTuitionPayment = $checkStudentPayment->passTuitionPayment;
         $fullTuitionPayment = $checkStudentPayment->fullTuitionPayment;
         $passEightyTuition = $checkStudentPayment->passEightyTuition;
         $schoolPaymentTransaction = $checkStudentPayment->schoolPaymentTransaction;
+
+        $checkStudentPendingPayment = $this->checkOtherFees($student);
+        if($checkStudentPendingPayment){
+            alert()->error('Oops!', 'You have some pending payments, kindly clear them to proceed')->persistent('Close');
+            return view('student.transactions', [
+                'payment' => $checkStudentPayment->schoolPayment,
+                'passTuition' => $passTuitionPayment,
+                'fullTuitionPayment' => $fullTuitionPayment,
+                'passEightyTuition' => $passEightyTuition,
+                'schoolPaymentTransaction' => $checkStudentPayment->schoolPaymentTransaction,
+                'transactions' => $transactions
+            ]);
+        }
 
         $tuitionPassStatus = ($semester == 1) ? $passTuitionPayment : $fullTuitionPayment;
 
