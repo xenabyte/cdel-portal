@@ -1349,6 +1349,17 @@
                     'copy', 'csv', 'excel', 'pdf', 'print'
                 ],
             });
+
+            $('.exportable-table').each(function() {
+                $(this).DataTable({
+                    dom: 'Bfrtip',
+                    pageLength: 30,
+                    lengthMenu: [ [10, 20, 30, 50, -1], [10, 20, 30, 50, "All"] ],
+                    buttons: [
+                        'copy', 'csv', 'excel', 'pdf', 'print'
+                    ]
+                });
+            });
         });
     </script>
     {{-- <script>
