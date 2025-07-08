@@ -144,7 +144,7 @@ class Attendance
             }
 
             //check if student record dosent exist for the same lecture id
-            if($exist = LectureAttendance::where('id', $lectureId)->where('student_id', $student->id)->first()){
+            if($exist = LectureAttendance::where('course_lecture_id', $lectureId)->where('student_id', $student->id)->first()){
                 continue;
             }
 
