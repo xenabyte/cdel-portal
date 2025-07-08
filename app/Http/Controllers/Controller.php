@@ -620,6 +620,7 @@ class Controller extends BaseController
     {
         $studentId = $student->id;
         $applicantId = $student->user_id;
+        log::info("student name: " . $student->applicant->lastname.' '.$student->applicant->othernames);
         $applicant = User::find($applicantId);
         $applicationType = $applicant->application_type;
         $programmeCategoryId = $student->programme_category_id;
@@ -1425,19 +1426,16 @@ class Controller extends BaseController
             $academicSession = str_replace('-', '/', $academicSession);
         }
 
-        $registrations = CourseRegistration::with('student.applicant')
+         $registrations = CourseRegistration::with('course')
             ->where('course_id', $courseId)
-            ->where('programme_category_id', $programmeCategoryId)
             ->where('academic_session', $academicSession)
-            ->get();
-
-        $courseLectures = CourseLecture::where('course_id', $courseId)
             ->where('programme_category_id', $programmeCategoryId)
-            ->where('academic_session', $academicSession)
-            ->get();
+            ->get()
+            ->filter(function ($reg) {
+                return $reg->attendancePercentage() >= 75;
+            });
 
-        $totalLectures = $courseLectures->count();
-        $courseLectureIds = $courseLectures->pluck('id');
+        $course = Course::find($courseId);
 
         $authorizedStudents = [];
 
@@ -1447,27 +1445,12 @@ class Controller extends BaseController
             if (!$student) {
                 continue;
             }
+            
+            $paymentStatus = $this->checkSchoolFees($student, $student->academic_session, $student->level_id);
 
-            $attendanceCount = LectureAttendance::whereIn('course_lecture_id', $courseLectureIds)
-                ->where('student_id', $student->id)
-                ->where('status', 1)
-                ->count();
-
-            $attendancePercentage = $totalLectures > 0 ? ($attendanceCount / $totalLectures) * 100 : 0;
-
-            // Use a helper or trait for this part
-            $paymentStatus = $this->checkSchoolFees($student, $academicSession, $registration->level_id);
-            $course = Course::find($courseId);
-
-            if (
-                $attendancePercentage >= 75 &&
-                $paymentStatus->passTuitionPayment &&
-                $paymentStatus->passEightyTuition &&
-                $paymentStatus->fullTuitionPayment
-            ) {
+            if ($paymentStatus->fullTuitionPayment) {
                 $authorizedStudents[] = [
                     'student' => $student,
-                    'attendancePercentage' => round($attendancePercentage, 2)
                 ];
             }
         }
@@ -1475,9 +1458,8 @@ class Controller extends BaseController
         return [
             'students' => $authorizedStudents,
             'course' => $course,
-            'courseLectures' => $courseLectures,
             'academicSession' => $academicSession,
-            'programmeCategory' => $programmeCategory->category
+            'programmeCategory' => $programmeCategory
         ];
     }
 }

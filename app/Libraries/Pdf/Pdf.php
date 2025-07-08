@@ -597,100 +597,58 @@ class Pdf
         return $pdf->download($slug);
     }
 
-    public static function getexportAuthorizedStudent($courseId, $programmeCategory, $academicSession, $type)
+    public static function exportAuthorizedStudent($students, $course, $programmeCategory, $academicSession)
     {
-        $authorizedData = (new BaseController())->getAuthorizedStudents($courseId, $programmeCategory, $academicSession);
-        $students = $authorizedData['students'];
-        $course = Course::find($courseId);
-
-        // CSV or Excel (unchanged)
-        if ($type === 'csv' || $type === 'excel') {
-            $headers = [
-                'S/No',
-                'Course Code',
-                'Full Name',
-                'Matric Number',
-                'Sex',
-                'Level',
-                'Faculty',
-                'Department',
-                'Programme',
-                'Attendance (%)'
-            ];
-
-            $exportArray = [];
-            $exportArray[] = $headers;
-            $counter = 1;
-            foreach ($students as $entry) {
-                $exportArray[] = [
-                    'S/No' => $counter,
-                    'Course Code' => $course->code,
-                    'Full Name' => $entry['student']->applicant->lastname . ' ' . $entry['student']->applicant->othernames,
-                    'Matric Number' => $entry['student']->matric_number ?? 'N/A',
-                    'Sex' => $entry['student']->applicant->gender,
-                    'Level' => $entry['student']->academicLevel->level,
-                    'Faculty' => $entry['student']->faculty->name,
-                    'Department' => $entry['student']->department->name,
-                    'Programme' => $entry['student']->programme->award,
-                    'Attendance (%)' => $entry['attendancePercentage'],
-                ];
-                $counter++;
-            }
-
-            $filename = $course->code.'_eligible_students_' . now()->format('dmY_His') . '.' . ($type === 'csv' ? 'csv' : 'xlsx');
-            return Excel::download(new \App\Exports\AuthorizedStudentsExport($exportArray), $filename);
+        if (!$course) {
+            abort(404, 'Course not found');
         }
 
-        // PDF Format (updated)
-        if ($type === 'pdf') {
-            $options = [
-                'isRemoteEnabled' => true,
-                'encryption' => '128',
-                'no_modify' => true,
-                'isHtml5ParserEnabled' => true,
-                'isPhpEnabled' => true,
-                'pdf' => true,
-            ];
-
-            $dir = public_path('uploads/files/authorized_students');
-            if (!file_exists($dir)) {
-                mkdir($dir, 0755, true);
-            }
-
-            $fileName = $course->name . ' ' . $programmeCategory . ' ' . $academicSession . ' eligible_students.pdf';
-            $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $fileName))) . '.pdf';
-
-            if (!$course) {
-                abort(404, 'Course not found');
-            }
-
-            if (empty($students)) {
-                abort(400, 'No students found to export');
-            }
-
-            if (!$academicSession) {
-                abort(404, 'Academic Session not found');
-            }
-            if (!$programmeCategory) {
-                abort(404, 'Programme Category not found');
-            }
-            // dd($students, $course, $academicSession, $programmeCategory);
-
-            $pdf = PDFDocument::loadView('pdf.authorized-students', [
-                'students' => $students,
-                'course' => $course,
-                'academicSession' => $academicSession,
-                'programmeCategory' => $programmeCategory,
-                'pdf' => true
-            ]);
-
-            $pdf->setPaper('a4', 'landscape');
-            $pdf->setOptions($options);
-
-            return $pdf->download($slug);
+        if (empty($students)) {
+            abort(400, 'No students found to export');
         }
 
-        abort(404);
+        if (!$academicSession) {
+            abort(404, 'Academic Session not found');
+        }
+
+        if (!$programmeCategory) {
+            abort(404, 'Programme Category not found');
+        }
+
+        $options = [
+            'isRemoteEnabled' => true,
+            'encryption' => '128',
+            'no_modify' => true,
+            'isHtml5ParserEnabled' => true,
+            'isPhpEnabled' => true,
+            'pdf' => true,
+        ];
+
+        // Ensure directory exists
+        $dir = public_path('uploads/files/authorized_students');
+        if (!file_exists($dir)) {
+            mkdir($dir, 0755, true);
+        }
+
+        // Slugify the file name
+        $fileName = sprintf('%s - %s - %s - eligible_students.pdf', $course->name, $programmeCategory->category, $academicSession);
+        $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $fileName))).'.pdf';
+
+        $pdf = PDFDocument::loadView('pdf.authorizedStudents', [
+            'students' => $students,
+            'course' => $course,
+            'academicSession' => $academicSession,
+            'programmeCategory' => $programmeCategory,
+            'pdf' => true,
+        ]);
+
+        $pdf->setPaper('a4', 'portrait');
+        $pdf->setOptions($options);
+
+        // $pdf->save($dir . '/' . $slug);
+        // return response()->download($dir . '/' . $slug);
+
+         return $pdf->download($slug);
     }
 
 

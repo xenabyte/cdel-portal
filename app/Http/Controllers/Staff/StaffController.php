@@ -7,7 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests;
 use App\Libraries\Attendance\Attendance as StudentAttendance;
 use App\Libraries\Google\Google;
-use App\Libraries\Pdf\Pdf as ExportPdf;
+use App\Libraries\Pdf\Pdf;
 use App\Libraries\Result\Result;
 use App\Mail\NotificationMail;
 use App\Models\AcademicLevel;
@@ -34,7 +34,6 @@ use App\Models\Student;
 use App\Models\SummerCourseRegistration;
 use App\Models\Unit;
 use App\Models\User as Applicant;
-use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -2037,37 +2036,33 @@ class StaffController extends Controller
 
     public function authorizedStudents($courseId, $programmeCategory, $academicSession = null)
     {
-
         $authorizedData = $this->getAuthorizedStudents($courseId, $programmeCategory, $academicSession);
         $students = $authorizedData['students'];
         $course = $authorizedData['course'];
-        $courseLectures = $authorizedData['courseLectures'];
         $academicSession = $authorizedData['academicSession'];
         $programmeCategory = $authorizedData['programmeCategory'];
 
-        return view('staff.authorized-student-list', [
+        return view('staff.authorizedStudentList', [
             'students' => $students,
             'courseId' => $courseId,
             'course' => $course,
-            'courseLectures' => $courseLectures,
             'academicSession' => $academicSession,
             'programmeCategory' => $programmeCategory
         ]);
     }
 
 
-    public function exportAuthorizedStudents($courseId, $programmeCategory, $academicSession, $type)
+    public function exportAuthorizedStudents($courseId, $programmeCategory, $academicSession)
     {
-        $request = new Request(); // empty request placeholder
         $authorizedData = $this->getAuthorizedStudents($courseId, $programmeCategory, $academicSession);
         $students = $authorizedData['students'];
         $course = $authorizedData['course'];
-        $courseLectures = $authorizedData['courseLectures'];
         $academicSession = $authorizedData['academicSession'];
         $programmeCategory = $authorizedData['programmeCategory'];
-
+        // dd($programmeCategory);
         // dd($students, $course, $courseLectures, $academicSession, $programmeCategory);
-        $pdf = new ExportPdf();
-        $pdf->getexportAuthorizedStudent($courseId, $programmeCategory, $academicSession, $type);
+
+        $pdf = new Pdf();
+        $pdf->exportAuthorizedStudent($students, $course, $programmeCategory, $academicSession);
     }
 }

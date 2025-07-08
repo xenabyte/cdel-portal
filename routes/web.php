@@ -711,8 +711,8 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'staff'],
     Route::post('/addAdviser', [App\Http\Controllers\Staff\StaffController::class, 'addAdviser'])->name('addAdviser')->middleware(['auth:staff']);
     Route::post('/addExamOfficer', [App\Http\Controllers\Staff\StaffController::class, 'addExamOfficer'])->name('addExamOfficer')->middleware(['auth:staff']);
     Route::post('/getStudents', [App\Http\Controllers\Staff\StaffController::class, 'getStudents'])->name('getStudents')->middleware(['auth:staff']);
-    Route::get('/authorized-students/{courseId}/{programmeCategory}/{academicSession?}', [App\Http\Controllers\Staff\StaffController::class, 'authorizedStudents'])->name('staff.authorized-students');
-    Route::get('/export-authorized-students/{courseId}/{programmeCategory}/{academicSession}/{type}', [App\Http\Controllers\Staff\StaffController::class, 'exportAuthorizedStudents'])->name('staff.export-authorized-students');
+    Route::get('/authorized-students/{courseId}/{programmeCategory}/{academicSession?}', [App\Http\Controllers\Staff\StaffController::class, 'authorizedStudents'])->name('staff.authorizedStudents');
+    Route::get('/export-authorized-students/{courseId}/{programmeCategory}/{academicSession}', [App\Http\Controllers\Staff\StaffController::class, 'exportAuthorizedStudents'])->name('staff.export-authorized-students');
 
 
 
