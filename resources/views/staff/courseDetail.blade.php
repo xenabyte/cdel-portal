@@ -616,12 +616,12 @@
                     </div>
                     <div class="col-md-12">
                         <div class="table-responsive">
-                            <table id="buttons-datatables3" class="table table-bordered table-striped">
+                            <table id="table{{$courseLecture->id}}" class="table table-bordered table-striped exportable-table">
                                 <thead>
                                     <tr>
                                         <th scope="col">Id</th>
                                         <th scope="col">Name</th>
-                                        <th scope="col">Matric No</th>
+                                        <th scope="col">Matric Number</th>
                                         <th scope="col">Programme</th>
                                         <th scope="col">Email</th>
                                         <th scope="col"></th>

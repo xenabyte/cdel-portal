@@ -1,7 +1,26 @@
 @extends('staff.layout.dashboard')
 @php
     $admissionSession = $programmeCategory->academicSessionSetting->admission_session;
+
+    use App\Models\Unit;
+    use App\Models\Faculty;
+    $programmeCategory = new \App\Models\ProgrammeCategory;
+
+
+    $staff = Auth::guard('staff')->user();
+    $staffId = $staff->id;
+
+    $staffRegistrarRole = false;
+    
+    
+    foreach ($staff->staffRoles as $staffRole) {
+        if (strtolower($staffRole->role->role) == 'registrar') {
+            $staffRegistrarRole = true;
+        }
+    }
+
 @endphp
+
 
 @section('content')
 <!-- start page title -->
@@ -85,7 +104,7 @@
                                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
                                         @if(!empty($student->clearance_status))<li><a class="dropdown-item link-primary" data-bs-toggle="modal" data-bs-target="#view{{$student->applicant->id}}" href="#"><i class="ri-eye-fill"></i> View Clearance</a></li>@endif
                                         <li><a class="dropdown-item link-muted" href="{{ url('staff/student/'.$student->slug) }}"><i class="ri-folder-open-fill"></i> Applicant Profile</a></li>
-                                        <li><a class="dropdown-item link-danger" href="#" data-bs-toggle="modal" data-bs-target="#delete{{$student->id}}"><i class="ri-delete-bin-5-line"></i> Reverse Admission</a></li>
+                                        @if($staffRegistrarRole)<li><a class="dropdown-item link-danger" href="#" data-bs-toggle="modal" data-bs-target="#delete{{$student->id}}"><i class="ri-delete-bin-5-line"></i> Reverse Admission</a></li>@endif
                                         <li><a class="dropdown-item link-success" href="{{ asset($student->admission_letter) }}"><i class="ri-download-cloud-2-fill"></i> Download Admission Letter</a></li>
                                         {{-- <li>
                                             <form action="{{ url('staff/generateAdmissionLetter') }}" method="POST">

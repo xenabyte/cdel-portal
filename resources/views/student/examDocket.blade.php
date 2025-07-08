@@ -68,7 +68,7 @@
     <!--end col-->
 </div>
 @else
-    @if($pageGlobalData->examSetting->exam_docket_status != 'Start')
+    @if($programmeCategory->examSetting->exam_docket_status != 'Start')
         <div class="row justify-content-center">
             <div class="col-lg-6">
                 <div class="card">
@@ -97,8 +97,8 @@
             <!--end col-->
         </div>
     @else
-    {{--  $pageGlobalData->examSetting->semester == 2 &&  --}}
-        {{-- @if(!$passEightyTuition)
+     
+        @if($programmeCategory->examSetting->semester == 2 && !$fullTuitionPayment)
             <div class="row justify-content-center">
                 <div class="col-lg-6">
                     <div class="card">
@@ -109,7 +109,7 @@
                                         <h4 class="mt-4 fw-semibold">Examination Card</h4>
                                         <p class="text-muted mt-3"></p>
                                         <div class="mt-4">
-                                            Kindly note that access to the examination card (docket) page requires payment 70% of school fees. 
+                                            Kindly note that access to the examination card (docket) page requires payment 100% of school fees. 
                                         </div>
                                     </div>
                                 </div>
@@ -126,7 +126,7 @@
                 </div>
                 <!--end col-->
             </div>
-        @else --}}
+        @else
             <div class="row">
                 <div class="col-lg-12">
                     <div class="card">
@@ -136,7 +136,7 @@
                             <p class=""><strong>Programme:</strong> {{ $student->programme->name }}
                                 <br/><strong>Academic Session:</strong> {{ $student->academic_session }}
                                 <br/><strong>Level:</strong> {{ $student->academicLevel->level }} Level
-                                <br/><strong>Semester:</strong> {{ $pageGlobalData->examSetting->semester == 1?'First' : 'Second' }} Semester
+                                <br/><strong>Semester:</strong> {{ $programmeCategory->examSetting->semester == 1?'First' : 'Second' }} Semester
                             </p>
 
 
@@ -185,7 +185,7 @@
                 </div>
                 <!-- end col -->
             </div>
-        {{-- @endif --}}
+        @endif
     @endif
 @endif
 

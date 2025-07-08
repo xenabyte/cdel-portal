@@ -82,7 +82,7 @@ class ElectionController extends Controller
             'end_time'       => 'required|date|after:start_time',
             'description'    => 'nullable|string',
             'eligible_group' => 'nullable|string|max:255',
-            'show_result'    => 'nullable|boolean',
+            'show_result'    => 'nullable',
             'image'          => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 

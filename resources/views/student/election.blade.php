@@ -221,11 +221,15 @@ $studentId = $student->id;
                         </thead>
                         <tbody>
                             @foreach($positionCandidates as $candidate)
+                            @php
+                                $photo = $candidate->photo 
+                                    ?: ($candidate->student->image ?? asset('assets/images/users/avatar-1.jpg'));
+                            @endphp
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
                                 <td>
                                     <div class="d-flex align-items-center gap-2">
-                                        <img src="{{ $candidate->photo ?? asset('assets/images/users/avatar-1.jpg') }}"
+                                        <img src="{{ asset($photo) }}"
                                             alt="Candidate Photo"
                                             class="rounded-circle"
                                             width="80"

@@ -549,6 +549,7 @@ class AcademicController extends Controller
         $student = Auth::guard('student')->user();
         $studentId = $student->id;
         $academicSession = $student->programmeCategory->academicSessionSetting->academic_session;
+        $programmeCategory = $student->programmeCategory;
         $semester  = $student->programmeCategory->examSetting->semester;
         $levelId = $student->level_id;
 
@@ -563,15 +564,17 @@ class AcademicController extends Controller
         $passEightyTuition = $checkStudentPayment->passEightyTuition;
         $schoolPaymentTransaction = $checkStudentPayment->schoolPaymentTransaction;
 
-        // if(!$passTuitionPayment){
-        //     return view('student.schoolFee', [
-        //         'payment' => $checkStudentPayment->schoolPayment,
-        //         'passTuition' => $passTuitionPayment,
-        //         'fullTuitionPayment' => $fullTuitionPayment,
-        //         'passEightyTuition' => $passEightyTuition,
-        //         'studentPendingTransactions' => $checkStudentPayment->studentPendingTransactions
-        //     ]);
-        // }
+        $tuitionPassStatus = ($semester == 1) ? $passTuitionPayment : $fullTuitionPayment;
+
+        if(!$tuitionPassStatus){
+            return view('student.schoolFee', [
+                'payment' => $checkStudentPayment->schoolPayment,
+                'passTuition' => $passTuitionPayment,
+                'fullTuitionPayment' => $fullTuitionPayment,
+                'passEightyTuition' => $passEightyTuition,
+                'studentPendingTransactions' => $checkStudentPayment->studentPendingTransactions
+            ]);
+        }
 
 
         $studentExamCards = StudentExamCard::where([
@@ -590,6 +593,7 @@ class AcademicController extends Controller
 
         return view('student.examDocket', [
             'courseRegs' => $courseRegs,
+            'programmeCategory' => $programmeCategory,
             'payment' => $schoolPaymentTransaction,
             'passTuition' => $passTuitionPayment,
             'fullTuitionPayment' => $fullTuitionPayment,
@@ -617,10 +621,14 @@ class AcademicController extends Controller
             ->where('total', null)
             ->where('semester', $semester)
             ->where('status', 'approved')
-            ->get();
+            ->get()
+            ->filter(function ($reg) {
+                return $reg->attendancePercentage() >= 75;
+            });
 
-        if(empty($courseRegs)){
-            alert()->error('Oops!', 'No approved course registration for this semester and session.')->persistent('Close');
+
+        if ($courseRegs->isEmpty()) {
+            alert()->error('Oops!', 'No approved course registration with at least 75% attendance for this semester and session.')->persistent('Close');
             return redirect()->back();
         }
 

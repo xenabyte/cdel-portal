@@ -116,6 +116,7 @@ class HomeController extends Controller
         
         return view('studentExamDocket', [
             'student' => $student,
+            'programmeCategory' => $programmeCategory,
             'transactions' => $transactions,
             'payment' => $schoolPayment,
             'passTuition' => $passTuitionPayment,
