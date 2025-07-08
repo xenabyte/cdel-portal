@@ -778,7 +778,7 @@ class ProgrammeController extends Controller
 
         $lectureId = $request->lecture_id;
         $courseLecture = CourseLecture::find($lectureId);
-        $academicSession = $courseLecture;
+        $academicSession = $courseLecture->academic_session;
 
     
         $file = $request->file('attendance');
