@@ -2,26 +2,29 @@
 
 namespace App\Libraries\Pdf;
 
-use App\Models\ProgrammeCategory;
-use App\Models\SummerCourseRegistration;
-use PDF as PDFDocument;
-use App\Models\User as Applicant;
-use App\Models\Student;
-use App\Models\GlobalSetting as Setting;
+use App\Http\Controllers\Controller as BaseController;
+use App\Http\Controllers\Staff\StaffController;
+use App\Models\Course;
 use App\Models\CourseRegistration;
-use App\Models\ResultApprovalStatus;
+use App\Models\GlobalSetting as Setting;
 use App\Models\Payment;
+use App\Models\ProgrammeCategory;
+use App\Models\ResultApprovalStatus;
 use App\Models\Staff;
+use App\Models\Student;
 use App\Models\StudentCourseRegistration;
-use App\Models\Transaction;
 use App\Models\StudentExit;
-
+use App\Models\SummerCourseRegistration;
+use App\Models\Transaction;
+use App\Models\User as Applicant;
 use Carbon\Carbon;
 use Log;
+use PDF as PDFDocument;
 
-Class Pdf {
-
-    public function generateAdmissionLetter($slug){
+class Pdf
+{
+    public function generateAdmissionLetter($slug)
+    {
         $options = [
             'isRemoteEnabled' => true,
             'encryption' => '128',
@@ -41,7 +44,7 @@ Class Pdf {
         ->where('programme_category_id', $student->programme_category_id)
             ->first();
 
-        if(!$acceptancePayment){
+        if (!$acceptancePayment) {
             $acceptancePayment = Payment::where('type', Payment::PAYMENT_TYPE_ACCEPTANCE)
             ->where('academic_session', $academicSession)
             ->where('programme_category_id', $student->programme_category_id)
@@ -50,7 +53,7 @@ Class Pdf {
 
 
         $type = Payment::PAYMENT_TYPE_SCHOOL;
-        if($applicationType != 'UTME' && ($student->level_id == 2) && ($student->programmeCategoryId == ProgrammeCategory::getProgrammeCategory(ProgrammeCategory::UNDERGRADUATE))){
+        if ($applicationType != 'UTME' && ($student->level_id == 2) && ($student->programmeCategoryId == ProgrammeCategory::getProgrammeCategory(ProgrammeCategory::UNDERGRADUATE))) {
             $type = Payment::PAYMENT_TYPE_SCHOOL_DE;
         }
 
@@ -62,7 +65,7 @@ Class Pdf {
             ->where('academic_session', $student->academic_session)
             ->first();
 
-        if(!$schoolPayment){
+        if (!$schoolPayment) {
             log::error($student->programme->name .' school fee is not available');
             return false;
         }
@@ -78,8 +81,8 @@ Class Pdf {
         $fileDirectory = 'uploads/files/admission/'.$slug.time().'.pdf';
         if (file_exists($fileDirectory)) {
             unlink($fileDirectory);
-        } 
-        
+        }
+
         $studentData = [
             'applicant_number' => $student->applicant->application_number,
             'programmeCategory' => $programmeCategory,
@@ -98,13 +101,13 @@ Class Pdf {
             'logo' => asset($setting->logo)
         ];
 
-        if($programmeCategoryId == ProgrammeCategory::getProgrammeCategory(ProgrammeCategory::UNDERGRADUATE)){
+        if ($programmeCategoryId == ProgrammeCategory::getProgrammeCategory(ProgrammeCategory::UNDERGRADUATE)) {
             $pdf = PDFDocument::loadView('pdf.admission_letters.admissionLetter', $studentData)
             ->setOptions($options)
             ->save($fileDirectory);
         }
 
-        if($programmeCategoryId == ProgrammeCategory::getProgrammeCategory(ProgrammeCategory::TOPUP)){
+        if ($programmeCategoryId == ProgrammeCategory::getProgrammeCategory(ProgrammeCategory::TOPUP)) {
             $pdf = PDFDocument::loadView('pdf.admission_letters.topAdmissionLetter', $studentData)
             ->setOptions($options)
             ->save($fileDirectory);
@@ -116,8 +119,8 @@ Class Pdf {
 
         $isSPGS = $isPGD || $isMaster || $isDoctorate;
 
-        if($isSPGS){
-             $pdf = PDFDocument::loadView('pdf.admission_letters.spgsAdmissionLetter', $studentData)
+        if ($isSPGS) {
+            $pdf = PDFDocument::loadView('pdf.admission_letters.spgsAdmissionLetter', $studentData)
             ->setOptions($options)
             ->save($fileDirectory);
         }
@@ -125,7 +128,8 @@ Class Pdf {
         return $fileDirectory;
     }
 
-    public function generateCourseRegistration($studentId, $academicSession, $otherData = null){
+    public function generateCourseRegistration($studentId, $academicSession, $otherData = null)
+    {
         $options = [
             'isRemoteEnabled' => true,
             'encryption' => '128',
@@ -133,7 +137,7 @@ Class Pdf {
         ];
 
         $staff = null;
-        if(!empty($otherData->staffId)){
+        if (!empty($otherData->staffId)) {
             $staff = Staff::find($otherData->staffId);
         }
 
@@ -148,18 +152,18 @@ Class Pdf {
 
         $fileDirectory = 'uploads/files/course_registration/'.$slug.time().'.pdf';
         $courseReg = CourseRegistration::with('course')->where('student_id', $studentId)->where('academic_session', $academicSession)->get();
-        
+
         $studentCourseReg = null;
-        if(!empty($otherData->courseRegId)){
+        if (!empty($otherData->courseRegId)) {
             $studentCourseReg = StudentCourseRegistration::find($otherData->courseRegId);
         }
-        
+
         $staffData = null;
-        if(!empty($staff)){
+        if (!empty($staff)) {
             $staffData = new \stdClass();
             $staffData->staff = $staff;
 
-            if($otherData->type == 'Level Adviser'){
+            if ($otherData->type == 'Level Adviser') {
                 $studentCourseReg->level_adviser_status = true;
                 $studentCourseReg->level_adviser_id = $staff->id;
                 $studentCourseReg->level_adviser_approved_date = Carbon::now();
@@ -168,7 +172,7 @@ Class Pdf {
                 ->where('academic_session', $academicSession)
                 ->update(['status' => 'approved']);
 
-            }else{
+            } else {
                 $studentCourseReg->hod_status = true;
                 $studentCourseReg->hod_id = $staff->id;
                 $studentCourseReg->hod_approved_date = Carbon::now();
@@ -182,15 +186,15 @@ Class Pdf {
             $studentCourseRegNew = StudentCourseRegistration::with('hod', 'levelAdviser')->where('id', $otherData->courseRegId)->first();
 
             $staffData->studentCourseReg = $studentCourseRegNew;
-        }else{
-            if(!empty($otherData)){
+        } else {
+            if (!empty($otherData)) {
                 CourseRegistration::where('student_id', $studentId)
                 ->where('academic_session', $academicSession)
                 ->update(['status' => 'approved']);
             }
         }
 
-        $data = ['info'=>$student, 'registeredCourses' => $courseReg, 'studentCourseReg' => $studentCourseReg, 'staffData' => $staffData];
+        $data = ['info' => $student, 'registeredCourses' => $courseReg, 'studentCourseReg' => $studentCourseReg, 'staffData' => $staffData];
 
         $pdf = PDFDocument::loadView('pdf.courseRegistration', $data)
         ->setOptions($options)
@@ -199,7 +203,8 @@ Class Pdf {
         return $fileDirectory;
     }
 
-    public function generateSummerCourseRegistration($studentId, $academicSession){
+    public function generateSummerCourseRegistration($studentId, $academicSession)
+    {
         $options = [
             'isRemoteEnabled' => true,
             'encryption' => '128',
@@ -216,9 +221,9 @@ Class Pdf {
         }
 
         $fileDirectory = 'uploads/files/summer/course_registration/'.$slug.time().'.pdf';
-        $summerCourseReg = SummerCourseRegistration::with( 'course_registration')->where('student_id', $studentId)->where('academic_session', $academicSession)->get();
-        
-        $data = ['info'=>$student, 'registeredCourses' => $summerCourseReg];
+        $summerCourseReg = SummerCourseRegistration::with('course_registration')->where('student_id', $studentId)->where('academic_session', $academicSession)->get();
+
+        $data = ['info' => $student, 'registeredCourses' => $summerCourseReg];
 
         $pdf = PDFDocument::loadView('pdf.summerCourseRegistration', $data)
         ->setOptions($options)
@@ -227,7 +232,8 @@ Class Pdf {
         return $fileDirectory;
     }
 
-    public function generateExamDocket($studentId, $academicSession, $semester){
+    public function generateExamDocket($studentId, $academicSession, $semester)
+    {
         $options = [
             'isRemoteEnabled' => true,
             'encryption' => '128',
@@ -255,8 +261,8 @@ Class Pdf {
         $fileDirectory = 'uploads/files/exam_card/'.$slug.'.pdf';
         if (file_exists($fileDirectory)) {
             unlink($fileDirectory);
-        } 
-        $data = ['info'=>$student, 'registeredCourses' => $courseRegs];
+        }
+        $data = ['info' => $student, 'registeredCourses' => $courseRegs];
 
         $pdf = PDFDocument::loadView('pdf.examCard', $data)
         ->setOptions($options)
@@ -265,7 +271,8 @@ Class Pdf {
         return $fileDirectory;
     }
 
-    public function generateExamResult($studentId, $academicSession, $semester, $level){
+    public function generateExamResult($studentId, $academicSession, $semester, $level)
+    {
         $options = [
             'isRemoteEnabled' => true,
             'encryption' => '128',
@@ -279,7 +286,7 @@ Class Pdf {
         $courseRegs = CourseRegistration::with('course')
             ->where('student_id', $studentId)
             ->where('academic_session', $academicSession)
-            ->where('result_approval_id',  ResultApprovalStatus::getApprovalStatusId(ResultApprovalStatus::SENATE_APPROVED))
+            ->where('result_approval_id', ResultApprovalStatus::getApprovalStatusId(ResultApprovalStatus::SENATE_APPROVED))
             ->whereHas('course', function ($query) use ($semester) {
                 $query->where('semester', $semester);
             })
@@ -290,14 +297,14 @@ Class Pdf {
             if ($course->level_id < $level) {
                 return true;
             }
-            
+
             if ($course->level_id == $level) {
                 return ($semester == 2) || ($course->semester == 1);
             }
-            
+
             return false;
         })->where('grade', '!=', null);
-        
+
         $allRegisteredCreditUnits =  $allRegisteredCourses->sum('course_credit_unit');
         $allRegisteredGradePoints = $allRegisteredCourses->sum('points');
         $levelCGPA = $allRegisteredGradePoints > 0 ? number_format($allRegisteredGradePoints / $allRegisteredCreditUnits, 2) : 0;
@@ -307,7 +314,7 @@ Class Pdf {
         $cgpaData->levelTotalUnit = $allRegisteredCreditUnits;
         $cgpaData->levelTotalPoint = $allRegisteredGradePoints;
 
-        
+
         $student->resultSession = $academicSession;
         $student->resultSemester = $semester;
         $student->resultLevel = $level;
@@ -320,8 +327,8 @@ Class Pdf {
         $fileDirectory = 'uploads/files/result_card/'.$slug.time().'.pdf';
         if (file_exists($fileDirectory)) {
             unlink($fileDirectory);
-        } 
-        $data = ['info'=>$student, 'registeredCourses' => $courseRegs, 'cgpaData' => $cgpaData];
+        }
+        $data = ['info' => $student, 'registeredCourses' => $courseRegs, 'cgpaData' => $cgpaData];
 
         $pdf = PDFDocument::loadView('pdf.resultCard', $data)
         ->setOptions($options)
@@ -330,7 +337,8 @@ Class Pdf {
         return $fileDirectory;
     }
 
-    public function generateTransactionInvoice($session, $studentId, $paymentId, $type='all'){
+    public function generateTransactionInvoice($session, $studentId, $paymentId, $type = 'all')
+    {
         $options = [
             'isRemoteEnabled' => true,
             'encryption' => '128',
@@ -340,7 +348,7 @@ Class Pdf {
         $amountBilled = 0;
         $paymentType = Payment::PAYMENT_TYPE_WALLET_DEPOSIT;
 
-        if($paymentId > 0){
+        if ($paymentId > 0) {
             $payment = Payment::with('structures')->where('id', $paymentId)->first();
             $amountBilled = $payment->structures->sum('amount');
 
@@ -358,11 +366,11 @@ Class Pdf {
             'status' => 1
         ])->latest()->get();
 
-        if(!$paymentId > 0){
+        if (!$paymentId > 0) {
             $amountBilled = $transactions->sum('amount_payed');
         }
 
-        if($type == 'all'){
+        if ($type == 'all') {
             $transactions = Transaction::where([
                 'session' => $session,
                 'student_id' => $studentId,
@@ -383,8 +391,8 @@ Class Pdf {
         $fileDirectory = 'uploads/files/invoice/'.$slug.time().'.pdf';
         if (file_exists($fileDirectory)) {
             unlink($fileDirectory);
-        } 
-        $data = ['info'=>$student, 'transactions' => $transactions];
+        }
+        $data = ['info' => $student, 'transactions' => $transactions];
 
         $pdf = PDFDocument::loadView('pdf.invoice', $data)
         ->setOptions($options)
@@ -393,7 +401,8 @@ Class Pdf {
         return $fileDirectory;
     }
 
-    public function generateExitApplication($session, $studentId, $newExitId){
+    public function generateExitApplication($session, $studentId, $newExitId)
+    {
         $options = [
             'isRemoteEnabled' => true,
             'encryption' => '128',
@@ -415,9 +424,9 @@ Class Pdf {
         $fileDirectory = 'uploads/files/exit_applications/'.$slug.'.pdf';
         if (file_exists($fileDirectory)) {
             unlink($fileDirectory);
-        }   
-             
-        $data = ['info'=>$student, 'exitApplication' => $exitApplication];
+        }
+
+        $data = ['info' => $student, 'exitApplication' => $exitApplication];
 
         $pdf = PDFDocument::loadView('pdf.exitApplication', $data)
         ->setOptions($options)
@@ -426,7 +435,8 @@ Class Pdf {
         return $fileDirectory;
     }
 
-    public function generateDownloadClearance($studentId){
+    public function generateDownloadClearance($studentId)
+    {
         $options = [
             'isRemoteEnabled' => true,
             'encryption' => '128',
@@ -448,9 +458,9 @@ Class Pdf {
         $fileDirectory = 'uploads/files/final_clearance/'.$slug.'.pdf';
         if (file_exists($fileDirectory)) {
             unlink($fileDirectory);
-        }   
-             
-        $data = ['info'=>$student, 'finalClearance' => $clearance];
+        }
+
+        $data = ['info' => $student, 'finalClearance' => $clearance];
 
         $pdf = PDFDocument::loadView('pdf.finalClearance', $data)
         ->setOptions($options)
@@ -459,7 +469,8 @@ Class Pdf {
         return $fileDirectory;
     }
 
-    public function generateAntiDrugDeclaration($studentId){
+    public function generateAntiDrugDeclaration($studentId)
+    {
         $options = [
             'isRemoteEnabled' => true,
             'encryption' => '128',
@@ -488,7 +499,8 @@ Class Pdf {
     }
 
 
-    public function generateTranscript($studentId, $otherData = null){
+    public function generateTranscript($studentId, $otherData = null)
+    {
         $options = [
             'isRemoteEnabled' => true,
             'encryption' => '128',
@@ -496,7 +508,7 @@ Class Pdf {
         ];
 
         $staff = null;
-        if(!empty($otherData->staffId)){
+        if (!empty($otherData->staffId)) {
             $staff = Staff::find($otherData->staffId);
         }
 
@@ -511,12 +523,12 @@ Class Pdf {
 
         $fileDirectory = 'uploads/files/transcript/'.$slug.time().'.pdf';
         $courseReg = CourseRegistration::with('course')->where('student_id', $studentId)->get();
-                
-        
-        $staffData = null;
-        
 
-        $data = ['info'=>$student, 'registeredCourses' => $courseReg, 'staffData' => $staffData];
+
+        $staffData = null;
+
+
+        $data = ['info' => $student, 'registeredCourses' => $courseReg, 'staffData' => $staffData];
 
         $pdf = PDFDocument::loadView('pdf.transcript', $data)
         ->setOptions($options)
@@ -525,19 +537,20 @@ Class Pdf {
         return $fileDirectory;
     }
 
-/**
- * Generates and downloads a PDF result broadsheet for students.
- *
- * @param Collection $students The collection of students to include in the broadsheet.
- * @param string $semester The current semester for which the broadsheet is being generated.
- * @param AcademicLevel $academicLevel The academic level of the students.
- * @param string $academicSession The academic session for which the broadsheet is being generated.
- * @param array $classifiedCourses The classified courses for the students.
- * @param Programme $programme The programme to which the students belong.
- * @return \Symfony\Component\HttpFoundation\BinaryFileResponse The response to initiate the PDF download.
- */
+    /**
+     * Generates and downloads a PDF result broadsheet for students.
+     *
+     * @param Collection $students The collection of students to include in the broadsheet.
+     * @param string $semester The current semester for which the broadsheet is being generated.
+     * @param AcademicLevel $academicLevel The academic level of the students.
+     * @param string $academicSession The academic session for which the broadsheet is being generated.
+     * @param array $classifiedCourses The classified courses for the students.
+     * @param Programme $programme The programme to which the students belong.
+     * @return \Symfony\Component\HttpFoundation\BinaryFileResponse The response to initiate the PDF download.
+     */
 
-    public function studentResultBroadSheet($students, $semester, $academicLevel, $academicSession, $classifiedCourses, $programme, $faculty, $department){
+    public function studentResultBroadSheet($students, $semester, $academicLevel, $academicSession, $classifiedCourses, $programme, $faculty, $department)
+    {
         $options = [
             'isRemoteEnabled' => true,
             'encryption' => '128',
@@ -580,5 +593,102 @@ Class Pdf {
 
         return $pdf->download($slug);
     }
-    
+
+    public static function getexportAuthorizedStudent($courseId, $programmeCategory, $academicSession, $type)
+    {
+        $authorizedData = (new BaseController())->getAuthorizedStudents($courseId, $programmeCategory, $academicSession);
+        $students = $authorizedData['students'];
+        $course = Course::find($courseId);
+
+        // CSV or Excel (unchanged)
+        if ($type === 'csv' || $type === 'excel') {
+            $headers = [
+                'S/No',
+                'Course Code',
+                'Full Name',
+                'Matric Number',
+                'Sex',
+                'Level',
+                'Faculty',
+                'Department',
+                'Programme',
+                'Attendance (%)'
+            ];
+
+            $exportArray = [];
+            $exportArray[] = $headers;
+            $counter = 1;
+            foreach ($students as $entry) {
+                $exportArray[] = [
+                    'S/No' => $counter,
+                    'Course Code' => $course->code,
+                    'Full Name' => $entry['student']->applicant->lastname . ' ' . $entry['student']->applicant->othernames,
+                    'Matric Number' => $entry['student']->matric_number ?? 'N/A',
+                    'Sex' => $entry['student']->applicant->gender,
+                    'Level' => $entry['student']->academicLevel->level,
+                    'Faculty' => $entry['student']->faculty->name,
+                    'Department' => $entry['student']->department->name,
+                    'Programme' => $entry['student']->programme->award,
+                    'Attendance (%)' => $entry['attendancePercentage'],
+                ];
+                $counter++;
+            }
+
+            $filename = $course->code.'_eligible_students_' . now()->format('dmY_His') . '.' . ($type === 'csv' ? 'csv' : 'xlsx');
+            return Excel::download(new \App\Exports\AuthorizedStudentsExport($exportArray), $filename);
+        }
+
+        // PDF Format (updated)
+        if ($type === 'pdf') {
+            $options = [
+                'isRemoteEnabled' => true,
+                'encryption' => '128',
+                'no_modify' => true,
+                'isHtml5ParserEnabled' => true,
+                'isPhpEnabled' => true,
+                'pdf' => true,
+            ];
+
+            $dir = public_path('uploads/files/authorized_students');
+            if (!file_exists($dir)) {
+                mkdir($dir, 0755, true);
+            }
+
+            $fileName = $course->name . ' ' . $programmeCategory . ' ' . $academicSession . ' eligible_students.pdf';
+            $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $fileName))) . '.pdf';
+
+            if (!$course) {
+                abort(404, 'Course not found');
+            }
+
+            if (empty($students)) {
+                abort(400, 'No students found to export');
+            }
+
+            if (!$academicSession) {
+                abort(404, 'Academic Session not found');
+            }
+            if (!$programmeCategory) {
+                abort(404, 'Programme Category not found');
+            }
+            // dd($students, $course, $academicSession, $programmeCategory);
+
+            $pdf = PDFDocument::loadView('pdf.authorized-students', [
+                'students' => $students,
+                'course' => $course,
+                'academicSession' => $academicSession,
+                'programmeCategory' => $programmeCategory,
+                'pdf' => true
+            ]);
+
+            $pdf->setPaper('a4', 'landscape');
+            $pdf->setOptions($options);
+
+            return $pdf->download($slug);
+        }
+
+        abort(404);
+    }
+
+
 }

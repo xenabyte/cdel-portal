@@ -7,10 +7,10 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests;
 use App\Libraries\Attendance\Attendance as StudentAttendance;
 use App\Libraries\Google\Google;
+use App\Libraries\Pdf\Pdf as ExportPdf;
 use App\Libraries\Result\Result;
 use App\Mail\NotificationMail;
 use App\Models\AcademicLevel;
-
 use App\Models\Attendance;
 use App\Models\Course;
 use App\Models\CourseLecture;
@@ -34,18 +34,16 @@ use App\Models\Student;
 use App\Models\SummerCourseRegistration;
 use App\Models\Unit;
 use App\Models\User as Applicant;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
-
-
 use Illuminate\Http\Request;
-
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
-
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Log;
+use Maatwebsite\Excel\Facades\Excel;
 use Mail;
 use SweetAlert;
 
@@ -53,7 +51,8 @@ class StaffController extends Controller
 {
     //
 
-    public function index(Request $request){
+    public function index(Request $request)
+    {
         $staff = Auth::guard('staff')->user();
         $referalCode = $staff->referral_code;
         $globalData = $request->input('global_data');
@@ -70,11 +69,11 @@ class StaffController extends Controller
 
         $monthAttendance = Attendance::where('staff_id', $staff->id)->whereBetween('date', [$startDateOfPresentMonth, $endDateOfPresentMonth])->get();
 
-        if(empty($staff->change_password)){
+        if (empty($staff->change_password)) {
             return view('staff.changePassword');
         }
 
-        if((strtolower($staff->category) != 'academic') && empty($staff->unit_id)){
+        if ((strtolower($staff->category) != 'academic') && empty($staff->unit_id)) {
             return view('staff.updateUnit', [
                 'units' => $units
             ]);
@@ -93,9 +92,9 @@ class StaffController extends Controller
                             ->where('programme_category_id', $programmeCategoryId)
                             ->where('academic_session', $academicSession)
                             ->get();
-                
 
-                 $staffCourses = $staffCourses->merge($courses);
+
+                $staffCourses = $staffCourses->merge($courses);
 
 
                 $applicationSession = $category->academicSessionSetting->application_session ?? null;
@@ -110,7 +109,7 @@ class StaffController extends Controller
             }
         }
 
-         // Remove duplicates if necessary
+        // Remove duplicates if necessary
         $applicants = $allApplicants->unique('id')->values();
 
         // $google = new Google();
@@ -130,7 +129,8 @@ class StaffController extends Controller
         ]);
     }
 
-    public function profile(Request $request){
+    public function profile(Request $request)
+    {
 
         return view('staff.profile');
     }
@@ -147,43 +147,43 @@ class StaffController extends Controller
             'lga' => 'required',
         ]);
 
-        if($validator->fails()) {
+        if ($validator->fails()) {
             alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
             return redirect()->back();
         }
 
         $staff = Auth::guard('staff')->user();
         $staffId = $staff->id;
-        
-        if(!empty($request->dob) && $request->dob != $staff->dob){
+
+        if (!empty($request->dob) && $request->dob != $staff->dob) {
             $staff->dob = $request->dob;
         }
 
-        if(!empty($request->religion) && $request->religion != $staff->religion){
+        if (!empty($request->religion) && $request->religion != $staff->religion) {
             $staff->religion = $request->religion;
         }
 
-        if(!empty($request->gender) && $request->gender != $staff->gender){
+        if (!empty($request->gender) && $request->gender != $staff->gender) {
             $staff->gender = $request->gender;
         }
 
-        if(!empty($request->marital_status) && $request->marital_status != $staff->marital_status){
+        if (!empty($request->marital_status) && $request->marital_status != $staff->marital_status) {
             $staff->marital_status = $request->marital_status;
         }
 
-        if(!empty($request->nationality) && $request->nationality != $staff->nationality){
+        if (!empty($request->nationality) && $request->nationality != $staff->nationality) {
             $staff->nationality = $request->nationality;
         }
 
-        if(!empty($request->state) && $request->state != $staff->state_of_origin){
+        if (!empty($request->state) && $request->state != $staff->state_of_origin) {
             $staff->state = $request->state;
         }
 
-        if(!empty($request->lga) && $request->lga != $staff->lga){
+        if (!empty($request->lga) && $request->lga != $staff->lga) {
             $staff->lga = $request->lga;
         }
 
-        if($staff->save()){
+        if ($staff->save()) {
             alert()->success('Changes Saved', 'Bio data saved successfully')->persistent('Close');
             return redirect()->back();
         }
@@ -192,47 +192,48 @@ class StaffController extends Controller
         return redirect()->back();
     }
 
-    public function updatePassword (Request $request) {
+    public function updatePassword(Request $request)
+    {
 
         $validator = Validator::make($request->all(), [
             'password' => 'required',
             'confirm_password' => 'required'
         ]);
 
-        if($validator->fails()) {
+        if ($validator->fails()) {
             alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
             return redirect()->back();
         }
 
         $staff = Auth::guard('staff')->user();
 
-        if($request->has('case')){
-            if($request->password == $request->confirm_password){
+        if ($request->has('case')) {
+            if ($request->password == $request->confirm_password) {
                 $staff->password = bcrypt($request->password);
-            }else{
+            } else {
                 alert()->error('Oops!', 'Password mismatch')->persistent('Close');
                 return redirect()->back();
             }
             $staff->change_password = true;
-        }else{
-            if(!empty($request->old_password)){
+        } else {
+            if (!empty($request->old_password)) {
                 alert()->error('Oops!', 'Old password is required')->persistent('Close');
                 return redirect()->back();
             }
-            if(\Hash::check($request->old_password, Auth::guard('staff')->user()->password)){
-                if($request->password == $request->confirm_password){
+            if (\Hash::check($request->old_password, Auth::guard('staff')->user()->password)) {
+                if ($request->password == $request->confirm_password) {
                     $staff->password = bcrypt($request->password);
-                }else{
+                } else {
                     alert()->error('Oops!', 'Password mismatch')->persistent('Close');
                     return redirect()->back();
                 }
-            }else{
+            } else {
                 alert()->error('Oops', 'Wrong old password, Try again with the right one')->persistent('Close');
                 return redirect()->back();
             }
         }
 
-        if($staff->update()) {
+        if ($staff->update()) {
             alert()->success('Success', 'Save Changes')->persistent('Close');
             return redirect()->back();
         }
@@ -241,37 +242,38 @@ class StaffController extends Controller
         return redirect()->back();
     }
 
-    public function uploadSignature (Request $request) {
+    public function uploadSignature(Request $request)
+    {
 
         $validator = Validator::make($request->all(), [
             'image' => 'required',
         ]);
 
 
-        if($validator->fails()) {
+        if ($validator->fails()) {
             alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
             return redirect()->back();
         }
 
         $staff = Auth::guard('staff')->user();
 
-        if(\Hash::check($request->old_password, Auth::guard('staff')->user()->password)){
-            $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-',$staff->title.$staff->lastname.$staff->othernames.time())));
+        if (\Hash::check($request->old_password, Auth::guard('staff')->user()->password)) {
+            $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $staff->title.$staff->lastname.$staff->othernames.time())));
 
             $signature = $staff->signature;
             if (file_exists($signature)) {
                 unlink($signature);
-            } 
+            }
 
             $imageUrl = 'uploads/staff/'.$slug.'.'.$request->file('image')->getClientOriginalExtension();
             $image = $request->file('image')->move('uploads/staff', $imageUrl);
             $staff->signature = $imageUrl;
-        }else{
+        } else {
             alert()->error('Oops', 'Wrong old password, Try again with the right one')->persistent('Close');
             return redirect()->back();
         }
 
-        if($staff->update()) {
+        if ($staff->update()) {
             alert()->success('Success', 'Save Changes')->persistent('Close');
             return redirect()->back();
         }
@@ -280,24 +282,25 @@ class StaffController extends Controller
         return redirect()->back();
     }
 
-    public function updateStaffUnit(Request $request){
+    public function updateStaffUnit(Request $request)
+    {
         $validator = Validator::make($request->all(), [
             'unit_id' => 'required',
         ]);
 
 
-        if($validator->fails()) {
+        if ($validator->fails()) {
             alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
             return redirect()->back();
         }
 
         $staff = Auth::guard('staff')->user();
 
-        if(!empty($request->unit_id) && $request->unit_id != $staff->unit_id){
+        if (!empty($request->unit_id) && $request->unit_id != $staff->unit_id) {
             $staff->unit_id = $request->unit_id;
         }
 
-        if($staff->update()) {
+        if ($staff->update()) {
             alert()->success('Success', 'Save Changes')->persistent('Close');
             return redirect()->back();
         }
@@ -306,12 +309,14 @@ class StaffController extends Controller
         return redirect()->back();
     }
 
-    public function mentee(Request $request){
+    public function mentee(Request $request)
+    {
 
         return view('staff.mentee');
     }
 
-    public function courses(Request $request){        
+    public function courses(Request $request)
+    {
         $programmeCategories = ProgrammeCategory::with('academicSessionSetting')->get();
         $staff = Auth::guard('staff')->user();
 
@@ -327,9 +332,9 @@ class StaffController extends Controller
                             ->where('programme_category_id', $programmeCategoryId)
                             ->where('academic_session', $academicSession)
                             ->get();
-                
 
-                 $staffCourses = $staffCourses->merge($courses);
+
+                $staffCourses = $staffCourses->merge($courses);
             }
         }
 
@@ -342,7 +347,8 @@ class StaffController extends Controller
         ]);
     }
 
-    public function studentCourses(Request $request, $programmeCategory){
+    public function studentCourses(Request $request, $programmeCategory)
+    {
         $staff = Auth::guard('staff')->user();
         $staffId = $staff->id;
 
@@ -352,12 +358,12 @@ class StaffController extends Controller
         $programmes = Programme::with('department', 'department.faculty')->where('category_id', $programmeCategoryId)->where('department_id', $staff->department_id)->get();
 
 
-        if(empty($staff->acad_department)){
+        if (empty($staff->acad_department)) {
             $programmes = Programme::with('department', 'department.faculty')->get();
         }
 
         $staffDean = false;
-        if(!empty($staff->faculty) && $staff->id == $staff->faculty->dean_id){
+        if (!empty($staff->faculty) && $staff->id == $staff->faculty->dean_id) {
             $staffDean = true;
         }
 
@@ -365,30 +371,30 @@ class StaffController extends Controller
             $faculty = Faculty::with('departments.programmes')
                 ->where('id', $staff->faculty_id)
                 ->first();
-        
-            $programmes = $faculty->departments->flatMap(function($department) {
+
+            $programmes = $faculty->departments->flatMap(function ($department) {
                 return $department->programmes;
             });
         }
 
         $staffHod = false;
-        if(!empty($staff->acad_department) && $staff->id == $staff->acad_department->hod_id){
+        if (!empty($staff->acad_department) && $staff->id == $staff->acad_department->hod_id) {
             $staffHod = true;
         }
 
-        if($staffHod){
+        if ($staffHod) {
             $departmentId = $staff->department_id;
-            $programmesIDs= Programme::where('department_id', $departmentId)->pluck('id')->toArray();
+            $programmesIDs = Programme::where('department_id', $departmentId)->pluck('id')->toArray();
 
             $programmes = Programme::with('department', 'department.faculty')->whereIn('id', $programmesIDs)->get();
         }
-        
+
 
         $academicLevels = AcademicLevel::get();
         $programmeCategories = Category::get();
 
 
-        return view('staff.studentCourses',[
+        return view('staff.studentCourses', [
             'programmes' => $programmes,
             'academicLevels' => $academicLevels,
             'programmeCategories' => $programmeCategories,
@@ -396,7 +402,8 @@ class StaffController extends Controller
         ]);
     }
 
-    public function getStudentCourses(Request $request){
+    public function getStudentCourses(Request $request)
+    {
 
         $validator = Validator::make($request->all(), [
             'programme_id' => 'required',
@@ -405,7 +412,7 @@ class StaffController extends Controller
             'programme_category_id' => 'required',
         ]);
 
-        if($validator->fails()) {
+        if ($validator->fails()) {
             alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
             return redirect()->back();
         }
@@ -436,7 +443,7 @@ class StaffController extends Controller
         $academicLevels = AcademicLevel::get();
         $programmeCategories = Category::get();
 
-        return view('staff.studentCourses',[
+        return view('staff.studentCourses', [
             'programmes' => $programmes,
             'academicLevels' => $academicLevels,
             'courses' => $courses,
@@ -484,7 +491,7 @@ class StaffController extends Controller
     //         alert()->error('Oops', 'Course Registration already started')->persistent('Close');
     //         return view('staff.studentCourses', $defaultData);
     //     }
-        
+
     //     if(!$course = Course::find($request->course_id)){
     //         alert()->error('Oops', 'Invalid course ')->persistent('Close');
     //         return view('staff.studentCourses',$defaultData);
@@ -503,7 +510,7 @@ class StaffController extends Controller
     //         alert()->error('Oops!', 'Course already added')->persistent('Close');
     //         return view('staff.studentCourses', $defaultData);
     //     }
-        
+
     //     $newCourses = [
     //         'course_id' => $course->id,
     //         'level_id' => $request->level_id,
@@ -513,7 +520,7 @@ class StaffController extends Controller
     //         'academic_session' => $academicSession,
     //         'status' => $request->status,
     //     ];
-        
+
     //     if(CoursePerProgrammePerAcademicSession::create($newCourses)){
     //         alert()->success('Course added successfully', '')->persistent('Close');
     //         $courses = CoursePerProgrammePerAcademicSession::with('course', 'course.courseManagement', 'course.courseManagement.staff')->where('programme_id', $request->programme_id)->where('level_id', $request->level_id)->where('academic_session', $academicSession)->where('semester', $request->semester)->get();
@@ -531,27 +538,36 @@ class StaffController extends Controller
     //     return view('staff.studentCourses', $defaultData);
     // }
 
-    public function courseDetail(Request $request, $id, $programmeCategory, $academicSession = null){
+    public function courseDetail(Request $request, $id, $programmeCategory, $academicSession = null)
+    {
         $staff = Auth::guard('staff')->user();
         $staffId = $staff->id;
 
-        if(!empty($academicSession)){
+        if (!empty($academicSession)) {
             $academicSession = str_replace('-', '/', $academicSession);
         }
 
         $programmeCategory = Category::with('academicSessionSetting', 'examSetting')->where('category', $programmeCategory)->first();
         $programmeCategoryId = $programmeCategory->id;
 
-        if(empty($academicSession)){
+        if (empty($academicSession)) {
             $academicSession = $programmeCategory->academicSessionSetting->academic_session;
         }
 
-        $lecturerDetails = CourseManagement::where('course_id', $id)->where('academic_session', $academicSession)->first(); 
-        $registrations = CourseRegistration::where('course_id', $id)->where('programme_category_id', $programmeCategoryId)->where('academic_session', $academicSession)->get();
+        $lecturerDetails = CourseManagement::where('course_id', $id)->where('academic_session', $academicSession)->first();
+
+        $registrations = CourseRegistration::where('course_id', $id)
+        ->where('programme_category_id', $programmeCategoryId)
+        ->where('academic_session', $academicSession)
+        ->with('student') // eager load student
+        ->get();
+
         $courseLectures = CourseLecture::with('lectureAttendance')->where('course_id', $id)->where('programme_category_id', $programmeCategoryId)->where('academic_session', $academicSession)->get();
+
         $summerCourseRegistrations = SummerCourseRegistration::with('courseRegistration')->where('course_id', $id)->where('programme_category_id', $programmeCategoryId)->where('academic_session', $academicSession)->get();
 
         $course = Course::find($id);
+
 
         return view('staff.courseDetail', [
             'registrations' => $registrations,
@@ -560,11 +576,12 @@ class StaffController extends Controller
             'courseLectures' => $courseLectures,
             'course' => $course,
             'academicSession' => $academicSession,
-            'programmeCategory' => $programmeCategory
+            'programmeCategory' => $programmeCategory,
         ]);
     }
 
-    public function reffs(Request $request){
+    public function reffs(Request $request)
+    {
         $staff = Auth::guard('staff')->user();
         $globalData = $request->input('global_data');
         $referalCode = $staff->referral_code;
@@ -590,7 +607,8 @@ class StaffController extends Controller
         ]);
     }
 
-    public function getAllReffs(Request $request){
+    public function getAllReffs(Request $request)
+    {
         $staff = Auth::guard('staff')->user();
         $referalCode = $staff->referral_code;
 
@@ -618,23 +636,26 @@ class StaffController extends Controller
         ]);
     }
 
-    public function applicant(Request $request, $slug){
+    public function applicant(Request $request, $slug)
+    {
         $applicant = Applicant::with('programme', 'olevels', 'guardian')->where('slug', $slug)->first();
-        
+
         return view('staff.applicant', [
             'applicant' => $applicant,
         ]);
     }
 
-    public function applicantWithSession(Request $request){
+    public function applicantWithSession(Request $request)
+    {
         $applicants = Applicant::with('programme', 'olevels', 'guardian', 'student')->where('academic_session', $request->session)->get();
-        
+
         return view('staff.reffs', [
             'applicants' => $applicants
         ]);
     }
 
-    public function student(Request $request, $slug){
+    public function student(Request $request, $slug)
+    {
         $student = Student::with('applicant', 'applicant.utmes', 'programme', 'transactions')->where('slug', $slug)->first();
 
         return view('staff.student', [
@@ -642,7 +663,8 @@ class StaffController extends Controller
         ]);
     }
 
-    public function studentProfile(Request $request, $slug){
+    public function studentProfile(Request $request, $slug)
+    {
         $student = Student::withTrashed()->with('applicant', 'applicant.utmes', 'programme', 'transactions')->where('slug', $slug)->first();
         $academicLevels = AcademicLevel::orderBy('id', 'desc')->get();
         $sessions = Session::orderBy('id', 'desc')->get();
@@ -654,7 +676,8 @@ class StaffController extends Controller
         ]);
     }
 
-    public function courseAllocation(Request $request){
+    public function courseAllocation(Request $request)
+    {
         $staff = Auth::guard('staff')->user();
         $staffId = $staff->id;
         $staffDepartmentId = $staff->department_id;
@@ -668,7 +691,8 @@ class StaffController extends Controller
         ]);
     }
 
-    public function getCourses(Request $request){
+    public function getCourses(Request $request)
+    {
         $staff = Auth::guard('staff')->user();
         $staffId = $staff->id;
         $staffDepartmentId = $staff->department_id;
@@ -686,7 +710,7 @@ class StaffController extends Controller
         $programme = Programme::find($programmeId);
         $level = AcademicLevel::find($levelId);
 
-        
+
         $programmes = Programme::where('department_id', $staffDepartmentId)->get();
         $levels = AcademicLevel::get();
 
@@ -699,14 +723,15 @@ class StaffController extends Controller
         ]);
     }
 
-    public function assignCourse(Request $request){
+    public function assignCourse(Request $request)
+    {
         $validator = Validator::make($request->all(), [
             'staff_id' => 'required',
             'course_id' => 'required',
             'programme_category_id' => 'required'
         ]);
 
-        if($validator->fails()) {
+        if ($validator->fails()) {
             alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
             return redirect()->back();
         }
@@ -721,7 +746,7 @@ class StaffController extends Controller
             'academic_session' => $academicSession
         ])->first();
 
-        if($exist){
+        if ($exist) {
             alert()->error('Oops!', 'Course already assigned to staff')->persistent('Close');
             return redirect()->back();
         }
@@ -732,8 +757,8 @@ class StaffController extends Controller
             'programme_category_id' => $request->programme_category_id,
             'academic_session' => $academicSession
         ]);
-        
-        if($courseAssign) {
+
+        if ($courseAssign) {
             alert()->success('Success', 'Staff assigned successfully')->persistent('Close');
             return redirect()->back();
         }
@@ -742,14 +767,15 @@ class StaffController extends Controller
         return redirect()->back();
     }
 
-    public function unsetStaff(Request $request){
+    public function unsetStaff(Request $request)
+    {
         $validator = Validator::make($request->all(), [
             'course_id' => $request->course_id,
             'staff_id' => $request->staff_id,
             'programme_category_id' => $request->programme_category_id,
         ]);
 
-        if($validator->fails()) {
+        if ($validator->fails()) {
             alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
             return redirect()->back();
         }
@@ -768,8 +794,8 @@ class StaffController extends Controller
             'programme_category_id' => $request->programme_category_id,
             'academic_session' => $academicSession
         ])->delete();
-        
-        if($unset) {
+
+        if ($unset) {
             alert()->success('Success', 'Staff unassigned successfully')->persistent('Close');
             return redirect()->back();
         }
@@ -778,14 +804,15 @@ class StaffController extends Controller
         return redirect()->back();
     }
 
-    public function sendMessage(Request $request){
-        
+    public function sendMessage(Request $request)
+    {
+
         $validator = Validator::make($request->all(), [
             'message' => 'required',
             'programme_category_id' => 'required',
         ]);
 
-        if($validator->fails()) {
+        if ($validator->fails()) {
             alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
             return redirect()->back();
         }
@@ -805,15 +832,15 @@ class StaffController extends Controller
         $course = Course::with('level', 'registrations', 'registrations.student', 'registrations.student.applicant', 'registrations.student.programme')->where('id', $request->course_id)->first();
         $registeredStudents = $course->registrations->where('programme_category_id', $programmeCategoryId)->where('academic_session', $academicSession)->pluck('student');
 
-        if($isSummer){
+        if ($isSummer) {
             $summerCourseRegistrations = SummerCourseRegistration::with('courseRegistration')->where('course_id', $course->id)->where('programme_category_id', $programmeCategoryId)->where('academic_session', $academicSession)->get();
 
-            if($summerCourseRegistrations->count() > 0){
+            if ($summerCourseRegistrations->count() > 0) {
                 $registeredStudents = $summerCourseRegistrations->pluck('courseRegistration.student');
             }
         }
 
-        foreach ($registeredStudents as $student){
+        foreach ($registeredStudents as $student) {
             $description = $staffName ." sent you a message; ".$message;
             $receiverName = $student->applicant->lastname . ' ' . $student->applicant->othernames;
             Notification::create([
@@ -828,7 +855,7 @@ class StaffController extends Controller
                 'description' => $staffDescription,
                 'status' => 0
             ]);
-            if(env('SEND_MAIL')){
+            if (env('SEND_MAIL')) {
                 //send a notification mail
                 Mail::to($request->email)->send(new NotificationMail($staffName, $message, $receiverName));
             }
@@ -838,7 +865,8 @@ class StaffController extends Controller
         return redirect()->back();
     }
 
-    public function staffUploadResult(Request $request){
+    public function staffUploadResult(Request $request)
+    {
         $staff = Auth::guard('staff')->user();
         $uploadType = $request->type;
 
@@ -848,7 +876,7 @@ class StaffController extends Controller
             'programme_category_id' => 'required'
         ]);
 
-        if($validator->fails()) {
+        if ($validator->fails()) {
             alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
             return redirect()->back();
         }
@@ -859,13 +887,13 @@ class StaffController extends Controller
         $resultProcessStatus = $programmeCategory->examSetting->result_processing_status;
         $testProcessStatus = $programmeCategory->examSetting->test_processing_status;
 
-        if(strtolower($uploadType) != 'test'){
-            if(strtolower($resultProcessStatus) != 'start'){
+        if (strtolower($uploadType) != 'test') {
+            if (strtolower($resultProcessStatus) != 'start') {
                 alert()->error('Result Processing has not started yet', 'Contact ICT')->persistent('Close');
                 return redirect()->back();
             }
-        }else{
-            if(strtolower($testProcessStatus) != 'start'){
+        } else {
+            if (strtolower($testProcessStatus) != 'start') {
                 alert()->error('Test Processing has not started yet', 'Contact ICT')->persistent('Close');
                 return redirect()->back();
             }
@@ -890,7 +918,7 @@ class StaffController extends Controller
 
         $file = $request->file('result');
         $fileExtension = $file->getClientOriginalExtension();
-        
+
         if ($fileExtension != 'csv') {
             alert()->error('Invalid file format, only CSV is allowed', '')->persistent('Close');
             return redirect()->back();
@@ -903,7 +931,7 @@ class StaffController extends Controller
         $isSummer = $request->has('is_summer') && $request->is_summer == 1;
 
 
-    
+
         $file = $request->file('result');
         $processResult = Result::processResult(
             $file,
@@ -914,12 +942,12 @@ class StaffController extends Controller
             $isSummer
         );
 
-        if($processResult != 'success'){
+        if ($processResult != 'success') {
             alert()->error('oops!', $processResult)->persistent('Close');
             return redirect()->back();
         }
 
-        if($processResult){
+        if ($processResult) {
             alert()->success('Student scores updated successfully!', '')->persistent('Close');
             return redirect()->back();
         }
@@ -928,7 +956,8 @@ class StaffController extends Controller
         return redirect()->back();
     }
 
-    public function createLecture(Request $request){
+    public function createLecture(Request $request)
+    {
 
         $validator = Validator::make($request->all(), [
             'topic' => 'required',
@@ -937,12 +966,12 @@ class StaffController extends Controller
             'programme_category_id' => 'required',
         ]);
 
-        if($validator->fails()) {
+        if ($validator->fails()) {
             alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
             return redirect()->back();
         }
 
-        if(!$course = Course::find($request->course_id)){
+        if (!$course = Course::find($request->course_id)) {
             alert()->error('Oops', 'Course not found')->persistent('Close');
             return redirect()->back();
         }
@@ -966,17 +995,18 @@ class StaffController extends Controller
             'code' => $code
         ]);
 
-        if(CourseLecture::create($createLectureData)){
+        if (CourseLecture::create($createLectureData)) {
             alert()->success('Lecture created successfully!', '')->persistent('Close');
             return redirect()->back();
         }
 
         alert()->error('Error while creating lecture', '')->persistent('Close');
         return redirect()->back();
-       
+
     }
 
-    public function staffUploadAttendance(Request $request){
+    public function staffUploadAttendance(Request $request)
+    {
         $globalData = $request->input('global_data');
 
         $validator = Validator::make($request->all(), [
@@ -985,13 +1015,13 @@ class StaffController extends Controller
             'lecture_id' => 'required'
         ]);
 
-        if($validator->fails()) {
+        if ($validator->fails()) {
             alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
             return redirect()->back();
         }
         $file = $request->file('attendance');
         $fileExtension = $file->getClientOriginalExtension();
-        
+
         if ($fileExtension != 'csv') {
             alert()->error('Invalid file format, only CSV is allowed', '')->persistent('Close');
             return redirect()->back();
@@ -1001,16 +1031,16 @@ class StaffController extends Controller
         $courseLecture = CourseLecture::find($lectureId);
         $academicSession = $courseLecture;
 
-    
+
         $file = $request->file('attendance');
         $processAttendance = StudentAttendance::processLectureAttendance($file, $lectureId, $academicSession);
 
-        if($processAttendance != 'success'){
+        if ($processAttendance != 'success') {
             alert()->error('oops!', $processAttendance)->persistent('Close');
             return redirect()->back();
         }
 
-        if($processAttendance ){
+        if ($processAttendance) {
             alert()->success('Student lecture attendance uploaded successfully!', '')->persistent('Close');
             return redirect()->back();
         }
@@ -1019,40 +1049,42 @@ class StaffController extends Controller
         return redirect()->back();
     }
 
-    public function deleteStudentAttendance(Request $request){
+    public function deleteStudentAttendance(Request $request)
+    {
         $validator = Validator::make($request->all(), [
             'attendance_id' => 'required',
         ]);
 
-        if($validator->fails()) {
+        if ($validator->fails()) {
             alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
             return redirect()->back();
         }
-        if(!$lectureAttendance = LectureAttendance::find($request->attendance_id)){
+        if (!$lectureAttendance = LectureAttendance::find($request->attendance_id)) {
             alert()->error('Oops', 'Invalid Student Lecture Attendance')->persistent('Close');
             return redirect()->back();
         }
-        
-        if($lectureAttendance->delete()){
+
+        if ($lectureAttendance->delete()) {
             alert()->success('Delete Successfully', '')->persistent('Close');
             return redirect()->back();
         }
 
         alert()->error('Oops!', 'Something went wrong')->persistent('Close');
         return redirect()->back();
-        
+
     }
 
-    public function markStudentAttendance(Request $request){
+    public function markStudentAttendance(Request $request)
+    {
         $validator = Validator::make($request->all(), [
             'lecture_id' => 'required',
         ]);
 
-        if($validator->fails()) {
+        if ($validator->fails()) {
             alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
             return redirect()->back();
         }
-        if(!$courseLecture = CourseLecture::find($request->lecture_id)){
+        if (!$courseLecture = CourseLecture::find($request->lecture_id)) {
             alert()->error('Oops', 'Invalid Lecture')->persistent('Close');
             return redirect()->back();
         }
@@ -1062,11 +1094,11 @@ class StaffController extends Controller
 
         foreach ($studentIds as $studentId) {
             $student = Student::with('applicant')->where('id', $studentId)->first();
-            if(!$student){
+            if (!$student) {
                 continue;
             }
 
-            if($exist = LectureAttendance::where('course_lecture_id', $lectureId)->where('student_id', $student->id)->first()){
+            if ($exist = LectureAttendance::where('course_lecture_id', $lectureId)->where('student_id', $student->id)->first()) {
                 continue;
             }
 
@@ -1083,22 +1115,23 @@ class StaffController extends Controller
         return redirect()->back();
     }
 
-    public function updateLecture(Request $request){
+    public function updateLecture(Request $request)
+    {
         $validator = Validator::make($request->all(), [
             'lecture_id' => 'required',
         ]);
 
-        if($validator->fails()) {
+        if ($validator->fails()) {
             alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
             return redirect()->back();
         }
 
-        if(!$lecture = CourseLecture::find($request->lecture_id)){
+        if (!$lecture = CourseLecture::find($request->lecture_id)) {
             alert()->error('Oops', 'Course lecture not found')->persistent('Close');
             return redirect()->back();
         }
 
-        if(!$course = Course::find($lecture->course_id)){
+        if (!$course = Course::find($lecture->course_id)) {
             alert()->error('Oops', 'Course not found')->persistent('Close');
             return redirect()->back();
         }
@@ -1112,17 +1145,18 @@ class StaffController extends Controller
             'slug' => $slug,
         ]);
 
-        if($lecture->update($updateLectureData)){
+        if ($lecture->update($updateLectureData)) {
             alert()->success('Lecture updated successfully!', '')->persistent('Close');
             return redirect()->back();
         }
 
         alert()->error('Error while updating lecture', '')->persistent('Close');
         return redirect()->back();
-       
+
     }
 
-    public function deleteLecture(Request $request){
+    public function deleteLecture(Request $request)
+    {
         $validator = Validator::make($request->all(), [
             'lecture_id' => 'required|exists:course_lectures,id',
         ]);
@@ -1151,7 +1185,8 @@ class StaffController extends Controller
     }
 
 
-    public function updateStudentResult(Request $request){
+    public function updateStudentResult(Request $request)
+    {
         $staff = Auth::guard('staff')->user();
         $staffId = $staff->id;
 
@@ -1164,7 +1199,7 @@ class StaffController extends Controller
             'programme_category_id' => 'required',
         ]);
 
-        if($validator->fails()) {
+        if ($validator->fails()) {
             alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
             return redirect()->back();
         }
@@ -1176,13 +1211,13 @@ class StaffController extends Controller
         $resultProcessStatus = $programmeCategory->examSetting->result_processing_status;
         $testProcessStatus = $programmeCategory->examSetting->test_processing_status;
 
-        if(strtolower($uploadType) != 'test'){
-            if(strtolower($resultProcessStatus) != 'start'){
+        if (strtolower($uploadType) != 'test') {
+            if (strtolower($resultProcessStatus) != 'start') {
                 alert()->error('Result Processing has not started yet', 'Contact ICT')->persistent('Close');
                 return redirect()->back();
             }
-        }else{
-            if(strtolower($testProcessStatus) != 'start'){
+        } else {
+            if (strtolower($testProcessStatus) != 'start') {
                 alert()->error('Test Processing has not started yet', 'Contact ICT')->persistent('Close');
                 return redirect()->back();
             }
@@ -1194,20 +1229,20 @@ class StaffController extends Controller
             'academic_session' => $academicSession
         ])->first();
 
-        if(!$courseManagement){
+        if (!$courseManagement) {
             alert()->error('Oops!', 'Course not assigned to staff')->persistent('Close');
             return redirect()->back();
         }
 
         $courseManagementCourseCode = $courseManagement->passcode;
-        if(!empty($request->passcode) && $request->passcode != $courseManagementCourseCode && !$isSummer){
+        if (!empty($request->passcode) && $request->passcode != $courseManagementCourseCode && !$isSummer) {
             alert()->error('Oops!', 'Wrong Password, No changes was made')->persistent('Close');
             return redirect()->back();
         }
 
         $matricNumber = $request->matric_number;
 
-        if(!$student = Student::where('matric_number', $matricNumber)->first()){
+        if (!$student = Student::where('matric_number', $matricNumber)->first()) {
             alert()->error('Invalid Matric Number', '')->persistent('Close');
             return redirect()->back();
         }
@@ -1223,12 +1258,12 @@ class StaffController extends Controller
             'programme_category_id' => $request->programme_category_id
         ])->first();
 
-        if(!$studentRegistration){
+        if (!$studentRegistration) {
             alert()->error('Student didnt enroll for this course', '')->persistent('Close');
             return redirect()->back();
         }
 
-        if(!empty($studentRegistration->result_approval_id) && !$isSummer){
+        if (!empty($studentRegistration->result_approval_id) && !$isSummer) {
             alert()->error('Result already approved', 'Visit the ICT with relevant approval for modification')->persistent('Close');
             return redirect()->back();
         }
@@ -1241,7 +1276,7 @@ class StaffController extends Controller
             $studentRegistration->ca_score = $testScore;
         }
 
-        if($uploadType == 'exam') {
+        if ($uploadType == 'exam') {
             $testScore = $studentRegistration->ca_score;
             $studentRegistration->exam_score = $examScore;
         }
@@ -1252,28 +1287,28 @@ class StaffController extends Controller
         }
 
 
-        if($examScore > 0 && strtolower($uploadType) != 'test'){
+        if ($examScore > 0 && strtolower($uploadType) != 'test') {
             $totalScore = $testScore + $examScore;
 
-            if($totalScore > 100){
+            if ($totalScore > 100) {
                 alert()->success('Oops', 'Total score is greater than 100.')->persistent('Close');
                 return redirect()->back();
             }
-    
+
             $grading = GradeScale::computeGrade($totalScore);
             $grade = $grading->grade;
             $points = $grading->point;
 
             $studentFaculty = Faculty::find($student->faculty_id);
-            if($studentFaculty->id == 3 || $studentFaculty->id == 7){
-                if($student->department_id == $course->department_id){
-                    if($totalScore < 50){
+            if ($studentFaculty->id == 3 || $studentFaculty->id == 7) {
+                if ($student->department_id == $course->department_id) {
+                    if ($totalScore < 50) {
                         $grade = 'F';
                         $points = 0;
                     }
                 }
             }
-    
+
             // $courseCode = $studentRegistration->course_code;
             // if (strpos($courseCode, 'NSC') !== false && $student->programme_id == 15) {
             //     if($totalScore < 50){
@@ -1288,7 +1323,7 @@ class StaffController extends Controller
             $studentRegistration->points = $studentRegistration->course_credit_unit * $points;
         }
 
-        if($studentRegistration->save()){
+        if ($studentRegistration->save()) {
             alert()->success('Student scores updated successfully!', '')->persistent('Close');
             return redirect()->back();
         }
@@ -1297,14 +1332,15 @@ class StaffController extends Controller
         return redirect()->back();
     }
 
-    public function uploadVocationResult(Request $request){
-    
+    public function uploadVocationResult(Request $request)
+    {
+
         $validator = Validator::make($request->all(), [
             'result' => 'required|file',
             'programme_category_id' => 'required',
         ]);
 
-        if($validator->fails()) {
+        if ($validator->fails()) {
             alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
             return redirect()->back();
         }
@@ -1312,22 +1348,22 @@ class StaffController extends Controller
         $programmeCategoryId = $request->programme_category_id;
         $file = $request->file('result');
         $fileExtension = $file->getClientOriginalExtension();
-        
+
         if ($fileExtension != 'csv') {
             alert()->error('Invalid file format, only CSV is allowed', '')->persistent('Close');
             return redirect()->back();
         }
 
-    
+
         $file = $request->file('result');
         $processResult = Result::processVocationResult($file, $programmeCategoryId);
 
-        if($processResult != 'success'){
+        if ($processResult != 'success') {
             alert()->error('oops!', $processResult)->persistent('Close');
             return redirect()->back();
         }
 
-        if($processResult){
+        if ($processResult) {
             alert()->success('Student scores updated successfully!', '')->persistent('Close');
             return redirect()->back();
         }
@@ -1336,12 +1372,14 @@ class StaffController extends Controller
         return redirect()->back();
     }
 
-    public function roleAllocation(Request $request){
+    public function roleAllocation(Request $request)
+    {
 
         return view('staff.roleAllocation');
     }
 
-    public function staff(Request $request){
+    public function staff(Request $request)
+    {
 
         $staff = Auth::guard('staff')->user();
         $facultyId = $staff->faculty_id;
@@ -1349,7 +1387,7 @@ class StaffController extends Controller
 
         $staff  = Staff::withTrashed()->with('faculty', 'acad_department')->get();
 
-        if(!empty($facultyId)){
+        if (!empty($facultyId)) {
             $staff  = Staff::withTrashed()->with('faculty', 'acad_department')->where('faculty_id', $facultyId)->get();
         }
 
@@ -1358,31 +1396,33 @@ class StaffController extends Controller
         ]);
     }
 
-    public function deleteRole(Request $request){
+    public function deleteRole(Request $request)
+    {
         $validator = Validator::make($request->all(), [
             'role_id' => 'required',
         ]);
 
-        if($validator->fails()) {
+        if ($validator->fails()) {
             alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
             return redirect()->back();
         }
-        if(!$role = Role::find($request->role_id)){
+        if (!$role = Role::find($request->role_id)) {
             alert()->error('Oops', 'Invalid Role ')->persistent('Close');
             return redirect()->back();
         }
-        
-        if($role->delete()){
+
+        if ($role->delete()) {
             alert()->success('Delete Successfully', '')->persistent('Close');
             return redirect()->back();
         }
 
         alert()->error('Oops!', 'Something went wrong')->persistent('Close');
         return redirect()->back();
-        
+
     }
 
-    public function singleStaff(Request $request, $slug){
+    public function singleStaff(Request $request, $slug)
+    {
 
         $staff  = Staff::withTrashed()->with('faculty', 'acad_department', 'staffRoles', 'staffRoles.role')->where('slug', $slug)->first();
         $roles  = Role::get();
@@ -1397,18 +1437,19 @@ class StaffController extends Controller
         ]);
     }
 
-    public function assignRole(Request $request){
+    public function assignRole(Request $request)
+    {
         $validator = Validator::make($request->all(), [
             'role_id' => 'required',
             'staff_id' => 'required',
         ]);
 
-        if($validator->fails()) {
+        if ($validator->fails()) {
             alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
             return redirect()->back();
         }
 
-        if(!$role = Role::find($request->role_id)){
+        if (!$role = Role::find($request->role_id)) {
             alert()->error('Oops', 'Invalid Role ')->persistent('Close');
             return redirect()->back();
         }
@@ -1419,183 +1460,190 @@ class StaffController extends Controller
         ];
 
         $staffDescription = "Congratulations, you have been assigned as  ".$role->role;
-            Notification::create([
-                'staff_id' =>  $request->staff_id,
-                'description' => $staffDescription,
-                'status' => 0
-            ]);
-        
-        if(StaffRole::create($newRole)){
+        Notification::create([
+            'staff_id' =>  $request->staff_id,
+            'description' => $staffDescription,
+            'status' => 0
+        ]);
+
+        if (StaffRole::create($newRole)) {
             alert()->success('Role assigned successfully', '')->persistent('Close');
             return redirect()->back();
         }
 
         alert()->error('Oops!', 'Something went wrong')->persistent('Close');
         return redirect()->back();
-        
+
     }
 
-    public function unAssignRole(Request $request){
+    public function unAssignRole(Request $request)
+    {
         $validator = Validator::make($request->all(), [
             'staff_role_id' => 'required',
         ]);
 
-        if($validator->fails()) {
+        if ($validator->fails()) {
             alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
             return redirect()->back();
         }
 
-        if(!$staffRole = StaffRole::find($request->staff_role_id)){
+        if (!$staffRole = StaffRole::find($request->staff_role_id)) {
             alert()->error('Oops', 'Invalid Staff Role ')->persistent('Close');
             return redirect()->back();
         }
-        
-        if($staffRole->forceDelete()){
+
+        if ($staffRole->forceDelete()) {
             alert()->success('Role  unassigned successfully', '')->persistent('Close');
             return redirect()->back();
         }
 
         alert()->error('Oops!', 'Something went wrong')->persistent('Close');
         return redirect()->back();
-        
+
     }
 
-    public function disableStaff(Request $request){
+    public function disableStaff(Request $request)
+    {
         $validator = Validator::make($request->all(), [
             'staff_id' => 'required',
         ]);
 
-        if($validator->fails()) {
+        if ($validator->fails()) {
             alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
             return redirect()->back();
         }
-        if(!$staff = Staff::find($request->staff_id)){
+        if (!$staff = Staff::find($request->staff_id)) {
             alert()->error('Oops', 'Invalid Staff ')->persistent('Close');
             return redirect()->back();
         }
-        
-        if($staff->delete()){
+
+        if ($staff->delete()) {
             alert()->success('Disable Successfully', '')->persistent('Close');
             return redirect()->back();
         }
 
         alert()->error('Oops!', 'Something went wrong')->persistent('Close');
-        return redirect()->back(); 
+        return redirect()->back();
     }
 
-    public function enableStaff(Request $request){
+    public function enableStaff(Request $request)
+    {
         $validator = Validator::make($request->all(), [
             'staff_id' => 'required',
         ]);
 
-        if($validator->fails()) {
+        if ($validator->fails()) {
             alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
             return redirect()->back();
         }
-        if(!$staff = Staff::withTrashed()->find($request->staff_id)){
+        if (!$staff = Staff::withTrashed()->find($request->staff_id)) {
             alert()->error('Oops', 'Invalid Staff ')->persistent('Close');
             return redirect()->back();
         }
-        
-        if($staff->restore()){
+
+        if ($staff->restore()) {
             alert()->success('Enable Successfully', '')->persistent('Close');
             return redirect()->back();
         }
 
         alert()->error('Oops!', 'Something went wrong')->persistent('Close');
-        return redirect()->back(); 
+        return redirect()->back();
     }
 
-    public function assignDeanToFaculty(Request $request){
+    public function assignDeanToFaculty(Request $request)
+    {
         $validator = Validator::make($request->all(), [
             'staff_id' => 'required',
             'faculty_id' => 'required',
         ]);
 
-        if($validator->fails()) {
+        if ($validator->fails()) {
             alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
             return redirect()->back();
         }
-        if(!$staff = Staff::find($request->staff_id)){
+        if (!$staff = Staff::find($request->staff_id)) {
             alert()->error('Oops', 'Invalid Staff ')->persistent('Close');
             return redirect()->back();
         }
 
-        if(!$faculty = Faculty::find($request->faculty_id)){
+        if (!$faculty = Faculty::find($request->faculty_id)) {
             alert()->error('Oops', 'Invalid Faculty ')->persistent('Close');
             return redirect()->back();
         }
         $faculty->dean_id = $staff->id;
-        if($faculty->save()){
+        if ($faculty->save()) {
             alert()->success('Dean assigned to Faculty', '')->persistent('Close');
             return redirect()->back();
         }
 
         alert()->error('Oops!', 'Something went wrong')->persistent('Close');
-        return redirect()->back(); 
+        return redirect()->back();
     }
 
-    public function assignSubDeanToFaculty(Request $request){
+    public function assignSubDeanToFaculty(Request $request)
+    {
         $validator = Validator::make($request->all(), [
             'staff_id' => 'required',
             'faculty_id' => 'required',
         ]);
 
-        if($validator->fails()) {
+        if ($validator->fails()) {
             alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
             return redirect()->back();
         }
-        if(!$staff = Staff::find($request->staff_id)){
+        if (!$staff = Staff::find($request->staff_id)) {
             alert()->error('Oops', 'Invalid Staff ')->persistent('Close');
             return redirect()->back();
         }
 
-        if(!$faculty = Faculty::find($request->faculty_id)){
+        if (!$faculty = Faculty::find($request->faculty_id)) {
             alert()->error('Oops', 'Invalid Faculty ')->persistent('Close');
             return redirect()->back();
         }
         $faculty->sub_dean_id = $staff->id;
-        if($faculty->save()){
+        if ($faculty->save()) {
             alert()->success('Sub Dean assigned to Faculty', '')->persistent('Close');
             return redirect()->back();
         }
 
         alert()->error('Oops!', 'Something went wrong')->persistent('Close');
-        return redirect()->back(); 
+        return redirect()->back();
     }
-    
 
-    public function assignHodToDepartment(Request $request){
+
+    public function assignHodToDepartment(Request $request)
+    {
         $validator = Validator::make($request->all(), [
             'staff_id' => 'required',
             'department_id' => 'required',
         ]);
 
-        if($validator->fails()) {
+        if ($validator->fails()) {
             alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
             return redirect()->back();
         }
-        if(!$staff = Staff::find($request->staff_id)){
+        if (!$staff = Staff::find($request->staff_id)) {
             alert()->error('Oops', 'Invalid Staff ')->persistent('Close');
             return redirect()->back();
         }
 
-        if(!$department = Department::find($request->department_id)){
+        if (!$department = Department::find($request->department_id)) {
             alert()->error('Oops', 'Invalid Department ')->persistent('Close');
             return redirect()->back();
         }
         $department->hod_id = $staff->id;
-        if($department->save()){
+        if ($department->save()) {
             alert()->success('HOD assigned to Department', '')->persistent('Close');
             return redirect()->back();
         }
 
         alert()->error('Oops!', 'Something went wrong')->persistent('Close');
-        return redirect()->back(); 
+        return redirect()->back();
     }
 
 
-    public function addAdviser(Request $request){
+    public function addAdviser(Request $request)
+    {
 
         $validator = Validator::make($request->all(), [
             'staff_id' => 'required',
@@ -1603,7 +1651,7 @@ class StaffController extends Controller
             'programme_category_id' => 'required',
         ]);
 
-        if($validator->fails()) {
+        if ($validator->fails()) {
             alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
             return redirect()->back();
         }
@@ -1612,12 +1660,12 @@ class StaffController extends Controller
         $programmeCategory = ProgrammeCategory::with('academicSessionSetting', 'examSetting')->where('id', $programmeCategoryId)->first();
         $academicSession = $programmeCategory->academicSessionSetting->academic_session;
 
-        if(!$staff = Staff::find($request->staff_id)){
+        if (!$staff = Staff::find($request->staff_id)) {
             alert()->error('Oops', 'Invalid Staff ')->persistent('Close');
             return redirect()->back();
         }
 
-        if(!$programme = Programme::find($request->programme_id)){
+        if (!$programme = Programme::find($request->programme_id)) {
             alert()->error('Oops', 'Invalid Programme ')->persistent('Close');
             return redirect()->back();
         }
@@ -1642,13 +1690,13 @@ class StaffController extends Controller
                 'academic_session' => $academicSession
             ]);
 
-            if(!$staffRole = StaffRole::where('staff_id', $staff->id)->where('role_id', 1)->first()) {
+            if (!$staffRole = StaffRole::where('staff_id', $staff->id)->where('role_id', 1)->first()) {
                 StaffRole::create([
                     'role_id' => 1, //level adviser role id
                     'staff_id' => $request->staff_id,
                 ]);
             }
-    
+
             $staffDescription = "Congratulations, you have been assigned as Level Adviser ";
             Notification::create([
                 'staff_id' =>  $request->staff_id,
@@ -1661,34 +1709,35 @@ class StaffController extends Controller
         return redirect()->back();
     }
 
-    public function addExamOfficer(Request $request){
+    public function addExamOfficer(Request $request)
+    {
         $validator = Validator::make($request->all(), [
             'staff_id' => 'required',
             'department_id' => 'required',
         ]);
 
-        if($validator->fails()) {
+        if ($validator->fails()) {
             alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
             return redirect()->back();
         }
-        if(!$staff = Staff::find($request->staff_id)){
+        if (!$staff = Staff::find($request->staff_id)) {
             alert()->error('Oops', 'Invalid Staff ')->persistent('Close');
             return redirect()->back();
         }
 
-        if(!$department = Department::find($request->department_id)){
+        if (!$department = Department::find($request->department_id)) {
             alert()->error('Oops', 'Invalid Department ')->persistent('Close');
             return redirect()->back();
         }
         $department->exam_officer_id = $staff->id;
-        if($department->save()){
-            if(!$staffRole = StaffRole::where('staff_id', $staff->id)->where('role_id', 1)->first()) {
+        if ($department->save()) {
+            if (!$staffRole = StaffRole::where('staff_id', $staff->id)->where('role_id', 1)->first()) {
                 StaffRole::create([
-                    'role_id' => 11, 
+                    'role_id' => 11,
                     'staff_id' => $request->staff_id,
                 ]);
             }
-    
+
             $staffDescription = "Congratulations, you have been assigned as Level Adviser ";
             Notification::create([
                 'staff_id' =>  $request->staff_id,
@@ -1701,10 +1750,11 @@ class StaffController extends Controller
         }
 
         alert()->error('Oops!', 'Something went wrong')->persistent('Close');
-        return redirect()->back(); 
+        return redirect()->back();
     }
 
-    public function getStudents(Request $request){
+    public function getStudents(Request $request)
+    {
         $validator = Validator::make($request->all(), [
             'programme_id' => 'required',
             'programme_category_id' => 'required',
@@ -1712,18 +1762,17 @@ class StaffController extends Controller
             'department_id' => 'required',
         ]);
 
-        if($validator->fails()) {
+        if ($validator->fails()) {
             alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
             return redirect()->back();
         }
 
-        if(!$department = Department::find($request->department_id)){
+        if (!$department = Department::find($request->department_id)) {
             alert()->error('Oops', 'Invalid Department ')->persistent('Close');
             return redirect()->back();
         }
 
-        $students = Student::
-            with(['applicant', 'programme', 'transactions', 'courseRegistrationDocument', 'registeredCourses', 'partner', 'academicLevel', 'department', 'faculty'])
+        $students = Student::with(['applicant', 'programme', 'transactions', 'courseRegistrationDocument', 'registeredCourses', 'partner', 'academicLevel', 'department', 'faculty'])
             ->where([
                 'is_active' => true,
                 'is_passed_out' => false,
@@ -1747,29 +1796,30 @@ class StaffController extends Controller
         ]);
     }
 
-    public function uploadStudentImage(Request $request){
+    public function uploadStudentImage(Request $request)
+    {
         $validator = Validator::make($request->all(), [
             'student_id' => 'required',
             'image' => 'required',
         ]);
 
-        if($validator->fails()) {
+        if ($validator->fails()) {
             alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
             return redirect()->back();
         }
-        
-        if(!$student = Student::find($request->student_id)){
+
+        if (!$student = Student::find($request->student_id)) {
             alert()->error('Oops', 'Invalid Student ')->persistent('Close');
             return redirect()->back();
         }
 
-        $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-',$student->matric_number.$student->lastname.$student->othernames)));
+        $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $student->matric_number.$student->lastname.$student->othernames)));
 
         $imageUrl = 'uploads/student/'.$slug.'.'.$request->file('image')->getClientOriginalExtension();
         $image = $request->file('image')->move('uploads/student', $imageUrl);
         $student->image = $imageUrl;
 
-        if($student->save()){
+        if ($student->save()) {
             alert()->success('Image Uploaded successfully', '')->persistent('Close');
             return redirect()->back();
         }
@@ -1778,7 +1828,8 @@ class StaffController extends Controller
         return redirect()->back();
     }
 
-    public function changeStudentPassword (Request $request) {
+    public function changeStudentPassword(Request $request)
+    {
 
         $validator = Validator::make($request->all(), [
             'student_id' => 'required',
@@ -1787,29 +1838,29 @@ class StaffController extends Controller
         ]);
 
 
-        if($validator->fails()) {
+        if ($validator->fails()) {
             alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
             return redirect()->back();
         }
 
-        if($validator->fails()) {
+        if ($validator->fails()) {
             alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
             return redirect()->back();
         }
 
-        if(!$student = Student::find($request->student_id)){
+        if (!$student = Student::find($request->student_id)) {
             alert()->error('Oops', 'Invalid Student ')->persistent('Close');
             return redirect()->back();
         }
 
-        if($request->password == $request->confirm_password){
+        if ($request->password == $request->confirm_password) {
             $student->password = bcrypt($request->password);
-        }else{
+        } else {
             alert()->error('Oops!', 'Password mismatch')->persistent('Close');
             return redirect()->back();
         }
 
-        if($student->save()) {
+        if ($student->save()) {
             alert()->success('Success', 'Save Changes')->persistent('Close');
             return redirect()->back();
         }
@@ -1818,26 +1869,27 @@ class StaffController extends Controller
         return redirect()->back();
     }
 
-    public function changeStudentBatch (Request $request) {
+    public function changeStudentBatch(Request $request)
+    {
 
         $validator = Validator::make($request->all(), [
             'student_id' => 'required',
             'batch' => 'required',
         ]);
 
-        if($validator->fails()) {
+        if ($validator->fails()) {
             alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
             return redirect()->back();
         }
 
-        if(!$student = Student::find($request->student_id)){
+        if (!$student = Student::find($request->student_id)) {
             alert()->error('Oops', 'Invalid Student ')->persistent('Close');
             return redirect()->back();
         }
 
         $student->batch = $request->batch;
 
-        if($student->save()) {
+        if ($student->save()) {
             alert()->success('Success', 'Save Changes')->persistent('Close');
             return redirect()->back();
         }
@@ -1846,7 +1898,8 @@ class StaffController extends Controller
         return redirect()->back();
     }
 
-    public function changeStudentCreditLoad (Request $request) {
+    public function changeStudentCreditLoad(Request $request)
+    {
 
         $validator = Validator::make($request->all(), [
             'student_id' => 'required',
@@ -1854,19 +1907,19 @@ class StaffController extends Controller
         ]);
 
 
-        if($validator->fails()) {
+        if ($validator->fails()) {
             alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
             return redirect()->back();
         }
 
-        if(!$student = Student::find($request->student_id)){
+        if (!$student = Student::find($request->student_id)) {
             alert()->error('Oops', 'Invalid Student ')->persistent('Close');
             return redirect()->back();
         }
 
         $student->credit_load = $request->credit_load;
 
-        if($student->save()) {
+        if ($student->save()) {
             alert()->success('Success', 'Save Changes')->persistent('Close');
             return redirect()->back();
         }
@@ -1875,29 +1928,146 @@ class StaffController extends Controller
         return redirect()->back();
     }
 
-    public function chargeStudent(){
+    public function chargeStudent()
+    {
         return view('staff.chargeStudent');
     }
 
-    public function getStudent(Request $request){
+    public function getStudent(Request $request)
+    {
         $validator = Validator::make($request->all(), [
             'reg_number' => 'required',
             'type' => 'required',
         ]);
 
-        if($validator->fails()) {
+        if ($validator->fails()) {
             alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
             return redirect()->back();
         }
 
         $studentIdCode = $request->reg_number;
-        if($request->type == 'Student'){
+        if ($request->type == 'Student') {
             return $this->getSingleStudent($studentIdCode, 'staff.chargeStudent');
         }
 
-        if($request->type == 'Applicant'){
+        if ($request->type == 'Applicant') {
             return $this->getSingleApplicant($studentIdCode, 'staff.chargeStudent');
         }
     }
 
+    // private function authorizedStudentList(){
+
+    //     try{
+
+    //         $students = $this->checkSchoolFees($student, $academicSession, $levelId)
+
+
+
+    //     return ""
+    //     }catch(\Exception $e){
+    //         throw new Error('Could not fetch authorized students list, '.$e->message)
+    //     }
+    // }
+
+    // public function authorizedStudents($courseId, $programmeCategory, $academicSession = null)
+    // {
+    //     $programmeCategory = Category::with('academicSessionSetting')->where('category', $programmeCategory)->first();
+    //     $programmeCategoryId = $programmeCategory->id;
+
+    //     if (empty($academicSession)) {
+    //         $academicSession = $programmeCategory->academicSessionSetting->academic_session;
+    //     } else {
+    //         $academicSession = str_replace('-', '/', $academicSession);
+    //     }
+
+    //     $registrations = CourseRegistration::with('student.applicant')
+    //         ->where('course_id', $courseId)
+    //         ->where('programme_category_id', $programmeCategoryId)
+    //         ->where('academic_session', $academicSession)
+    //         ->get();
+
+    //     $courseLectures = CourseLecture::where('course_id', $courseId)
+    //         ->where('programme_category_id', $programmeCategoryId)
+    //         ->where('academic_session', $academicSession)
+    //         ->get();
+
+    //     $totalLectures = $courseLectures->count();
+    //     $courseLectureIds = $courseLectures->pluck('id');
+
+    //     $authorizedStudents = [];
+
+    //     foreach ($registrations as $registration) {
+    //         $student = $registration->student;
+
+    //         if (!$student) {
+    //             continue;
+    //         }
+
+    //         $attendanceCount = LectureAttendance::whereIn('course_lecture_id', $courseLectureIds)
+    //             ->where('student_id', $student->id)
+    //             ->where('status', 1)
+    //             ->count();
+
+    //         $attendancePercentage = $totalLectures > 0 ? ($attendanceCount / $totalLectures) * 100 : 0;
+
+    //         $paymentStatus = $this->checkSchoolFees($student, $academicSession, $registration->level_id);
+    //         $course = Course::find($courseId);
+    //         if (
+    //             $attendancePercentage >= 75 &&
+    //             $paymentStatus->passTuitionPayment &&
+    //             $paymentStatus->passEightyTuition &&
+    //             $paymentStatus->fullTuitionPayment
+    //         ) {
+    //             $authorizedStudents[] = [
+    //                 'student' => $student,
+    //                 'attendancePercentage' => round($attendancePercentage, 2)
+    //             ];
+    //         }
+    //     }
+
+    //     return view('staff.authorized-student-list', [
+    //         'students' => $authorizedStudents,
+    //         'courseId' => $courseId,
+    //         'course' => $course,
+    //         'courseLectures' => $courseLectures,
+    //         'academicSession' => $academicSession,
+    //         'programmeCategory' => $programmeCategory->category
+    //     ]);
+    // }
+
+    public function authorizedStudents($courseId, $programmeCategory, $academicSession = null)
+    {
+
+        $authorizedData = $this->getAuthorizedStudents($courseId, $programmeCategory, $academicSession);
+        $students = $authorizedData['students'];
+        $course = $authorizedData['course'];
+        $courseLectures = $authorizedData['courseLectures'];
+        $academicSession = $authorizedData['academicSession'];
+        $programmeCategory = $authorizedData['programmeCategory'];
+
+        return view('staff.authorized-student-list', [
+            'students' => $students,
+            'courseId' => $courseId,
+            'course' => $course,
+            'courseLectures' => $courseLectures,
+            'academicSession' => $academicSession,
+            'programmeCategory' => $programmeCategory
+        ]);
+    }
+
+
+    public function exportAuthorizedStudents($courseId, $programmeCategory, $academicSession, $type)
+    {
+        $request = new Request(); // empty request placeholder
+        $authorizedData = $this->getAuthorizedStudents($courseId, $programmeCategory, $academicSession);
+        $students = $authorizedData['students'];
+        $course = $authorizedData['course'];
+        $courseLectures = $authorizedData['courseLectures'];
+        $academicSession = $authorizedData['academicSession'];
+        $programmeCategory = $authorizedData['programmeCategory'];
+
+        // dd($students, $course, $courseLectures, $academicSession, $programmeCategory);
+        $pdf = new ExportPdf();
+        $pdf->getexportAuthorizedStudent($courseId, $programmeCategory, $academicSession, $type);
+    }
 }
