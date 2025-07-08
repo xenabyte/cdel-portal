@@ -448,6 +448,11 @@
         });
     });
 </script>
+<script>
+    $(document).ready(function() {
+        $('.selectWithSearch').select2();
+    });
+</script>
 </body>
 
 </html>
