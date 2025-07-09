@@ -679,7 +679,7 @@ class Controller extends BaseController
     public function checkOtherFees($student){
         $studentId = $student->id;
         $academicSession = $student->academic_session;
-        
+
         $studentPendingTransactions = Transaction::with('paymentType')
             ->where('student_id', $studentId)
             ->where('session', $academicSession)
@@ -1267,7 +1267,7 @@ class Controller extends BaseController
         $summerCourseReg = $pdf->generateSummerCourseRegistration($studentId, $courseReg->academic_session); // Assume this returns a file path or name
 
         // Store file name/path in `additional_file` field
-        $transaction->additional_file = json_encode(['summerCourseReg' => $summerCourseReg]);
+        $transaction->additional_data = json_encode(['summerCourseReg' => $summerCourseReg]);
         $transaction->is_used = 1;
         $transaction->save();
 
