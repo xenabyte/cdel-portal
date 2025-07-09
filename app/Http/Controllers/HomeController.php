@@ -472,9 +472,11 @@ class HomeController extends Controller
     public function addBandwidth(){
 
         $plans = Plan::all();
+        $students = Student::get();
 
         return view('addBandwidth', [
             'plans' => $plans,
+            'students' => $students
         ]);
     }
 

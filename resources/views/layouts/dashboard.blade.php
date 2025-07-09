@@ -13,6 +13,8 @@
     <!-- App favicon -->
     <link rel="shortcut icon" href="{{asset('favicon.png')}}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet">
+
 
     <!--datatable css-->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css" />
@@ -272,7 +274,7 @@
         </div>
     </div>
 
-    <!-- JAVASCRIPT -->
+     <!-- JAVASCRIPT -->
     <script src="{{asset('assets/libs/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
     <script src="{{asset('assets/libs/simplebar/simplebar.min.js')}}"></script>
     <script src="{{asset('assets/libs/node-waves/waves.min.js')}}"></script>
@@ -302,12 +304,10 @@
     <script src="{{asset('assets/js/pages/datatables.init.js')}}"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.32/vfs_fonts.js"></script>
-    <script src="{{asset('assets/libs/glightbox/js/glightbox.min.js')}}"></script>
-    <script src="{{asset('assets/libs/isotope-layout/isotope.pkgd.min.js')}}"></script>
-    <script src="{{asset('assets/js/pages/gallery.init.js')}}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
@@ -446,6 +446,14 @@
                 table.search(filterValue + ' Level').draw();
             }
         });
+    });
+</script>
+ <script>
+    $(document).ready(function() {
+        $('.selectWithSearch').select2();
+    });
+    $(document).ready(function() {
+        $('#selectWithSearch').select2();
     });
 </script>
 </body>

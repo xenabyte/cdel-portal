@@ -79,15 +79,21 @@
     <div class="col-lg-6">
         <div class="card">
             <div class="card-body">
-                <h5 class="fs-15 fw-semibold">Course code: {{ $course->code  }}</h5>
-                <p class="text-muted">{{ ucwords(strtolower($course->name)) }}</p>
-                <p class="text-muted">Credit Unit: {{ !empty($registrationDetails) ? $registrationDetails->course_credit_unit : null }}</p>
-                <p class="text-muted">Lecturer: {{ $staffName }}</p>
-                <hr>
-                <div class="d-flex flex-wrap justify-content-evenly">
-                    <p class="text-muted mb-0"><i class="mdi mdi-account-circle text-success fs-18 align-middle me-2 rounded-circle shadow"></i>{{ $totalStudent }} Student(s)</p>
-                    <p class="text-muted mb-0"><i class="mdi mdi-book-clock text-info fs-18 align-middle me-2 rounded-circle shadow"></i>{{ !empty($registrationDetails) ? ($registrationDetails->semester == 1 ? 'First' : 'Second') : null }} Semester</p>
-                    <p class="text-muted mb-0"><i class="mdi mdi-clipboard-clock text-primary fs-18 align-middle me-2 rounded-circle shadow"></i>{{ $academicSession }} Academic Session</p>
+               <div class="row">
+                    <div class="col-lg-8">
+                        <h5 class="fs-15 fw-semibold">Course code: {{ $course->code  }}</h5>
+                        <p class="text-muted">{{ ucwords(strtolower($course->name))  }}</p>
+                        <p class="text-muted">Credit Unit: {{ !empty($registrationDetails) ? $registrationDetails->course_credit_unit : null }}</p>
+                        <p class="text-muted">Lecturer: {{ $staffName }}</p>
+                    </div>
+                    <div class="col-lg-4">
+                        <button type="button" class="btn btn-primary waves-effect waves-light" data-bs-toggle="modal" data-bs-target="#showAuthorizedStudentList">
+                            <a href="{{ route('admin.authorizedStudents', ['courseId' => $course->id, 'programmeCategory' => $programmeCategory->category, 'academicSession' => str_replace('/', '-', $academicSession)]) }}"
+                                class="btn btn-primary waves-effect waves-light">
+                                <i class="mdi mdi-account-group-outline"></i> Exam Attendance
+                            </a>
+                        </button>
+                    </div>
                 </div>
             </div>
             <div class="progress animated-progress bg-soft-primary rounded-bottom rounded-0" style="height: 6px;">

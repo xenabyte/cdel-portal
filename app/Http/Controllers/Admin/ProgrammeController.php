@@ -41,6 +41,7 @@ use App\Models\SummerCourseRegistration;
 use App\Mail\NotificationMail;
 use App\Libraries\Result\Result;
 use App\Libraries\Attendance\Attendance;
+use App\Libraries\Pdf\Pdf;
 
 use SweetAlert;
 use Mail;
@@ -862,6 +863,35 @@ class ProgrammeController extends Controller
         return redirect()->back();
     }
 
+    public function authorizedStudents($courseId, $programmeCategory, $academicSession = null){
+
+        $authorizedData = $this->getAuthorizedStudents($courseId, $programmeCategory, $academicSession);
+        $students = $authorizedData['students'];
+        $course = $authorizedData['course'];
+        $academicSession = $authorizedData['academicSession'];
+        $programmeCategory = $authorizedData['programmeCategory'];
+
+        return view('admin.authorizedStudentList', [
+            'students' => $students,
+            'courseId' => $courseId,
+            'course' => $course,
+            'academicSession' => $academicSession,
+            'programmeCategory' => $programmeCategory
+        ]);
+    }
+
+
+    public function exportAuthorizedStudents($courseId, $programmeCategory, $academicSession){
+
+        $authorizedData = $this->getAuthorizedStudents($courseId, $programmeCategory, $academicSession);
+        $students = $authorizedData['students'];
+        $course = $authorizedData['course'];
+        $academicSession = $authorizedData['academicSession'];
+        $programmeCategory = $authorizedData['programmeCategory'];
+
+        $pdf = new Pdf();
+        $pdf->exportAuthorizedStudent($students, $course, $programmeCategory, $academicSession);
+    }
 
     public function sendMessage(Request $request){
         

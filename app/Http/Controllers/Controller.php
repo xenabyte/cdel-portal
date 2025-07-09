@@ -696,8 +696,21 @@ class Controller extends BaseController
         return $data;
     }
 
-    public function checkAccomondationStatus($student)
-    {
+    public function checkOtherFees($student){
+        $studentId = $student->id;
+        $academicSession = $student->academic_session;
+
+        $studentPendingTransactions = Transaction::with('paymentType')
+            ->where('student_id', $studentId)
+            ->where('session', $academicSession)
+            ->where('payment_method', 'Manual/BankTransfer')
+            ->whereNull('status')
+            ->get();
+
+        return $studentPendingTransactions->isNotEmpty();
+    }
+
+    public function checkAccomondationStatus($student){
         $studentId = $student->id;
         $programmeCategoryId = $student->programme_category_id;
 
@@ -1289,7 +1302,7 @@ class Controller extends BaseController
         $summerCourseReg = $pdf->generateSummerCourseRegistration($studentId, $courseReg->academic_session); // Assume this returns a file path or name
 
         // Store file name/path in `additional_file` field
-        $transaction->additional_file = json_encode(['summerCourseReg' => $summerCourseReg]);
+        $transaction->additional_data = json_encode(['summerCourseReg' => $summerCourseReg]);
         $transaction->is_used = 1;
         $transaction->save();
 
@@ -1356,8 +1369,14 @@ class Controller extends BaseController
         return $data;
     }
 
-    public static function checkNewStudentStatus($student)
-    {
+
+    /**
+     * Check if a student is new based on their level ID and application type.
+     * 
+     * @param Student $student The student object to check
+     * @return boolean True if the student is new, false otherwise
+     */
+    public static function checkNewStudentStatus($student){
         $levelId = $student->level_id;
         $applicationType = $student->application_type;
 

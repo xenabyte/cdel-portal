@@ -25,11 +25,12 @@
         
                             <div class="row mt-3 g-3">
         
-                                <div class="col-lg-12">
-                                    <div class="form-floating">
-                                        <input type="text" class="form-control" id="username" name="username" placeholder="Enter Bandwidth">
-                                        <label for="username">Bandwidth Username</label>
-                                    </div>
+                                <div class="form-floating mb-3">
+                                    <select class="form-select select2 selectWithSearch" id="selectWithSearch" name="username" aria-label="username">
+                                        <option value="" selected>-- Bandwidth Username --</option>
+                                        @foreach($students as $student)<option value="{{$student->bandwidth_username}}">{{$student->bandwidth_username}}</option>@endforeach
+                                    </select>
+                                    {{-- <label for="username">Bandwidth Username <span class="text-danger">*</span></label> --}}
                                 </div>
 
                                 <div class="form-floating mb-3">
@@ -42,7 +43,7 @@
                                             </option>
                                         @endforeach
                                     </select>
-                                    <label for="plan_id">Payment Amount <span class="text-danger">*</span></label>
+                                    {{-- <label for="username">Bandwidth Username <span class="text-danger">*</span></label> --}}
                                 </div>
         
                                 <span class="text-muted"> Authentication</span><br>

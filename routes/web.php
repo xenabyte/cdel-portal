@@ -316,6 +316,11 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'admin'],
     Route::get('/courseDetail/{id}/{programmeCategory}/{academicSession}', [App\Http\Controllers\Admin\ProgrammeController::class, 'courseDetail'])->name('courseDetail')->middleware(['auth:admin']);
     Route::get('/courseDetail/{id}/{programmeCategory}', [App\Http\Controllers\Admin\ProgrammeController::class, 'courseDetail'])->name('courseDetail')->middleware(['auth:admin']);
 
+    Route::get('/authorized-students/{courseId}/{programmeCategory}/{academicSession?}', [App\Http\Controllers\Admin\ProgrammeController::class, 'authorizedStudents'])->name('admin.authorizedStudents');
+    Route::get('/export-authorized-students/{courseId}/{programmeCategory}/{academicSession}', [App\Http\Controllers\Admin\ProgrammeController::class, 'exportAuthorizedStudents'])->name('admin.export-authorized-students');
+
+
+
     Route::post('/sendMessage', [App\Http\Controllers\Admin\ProgrammeController::class, 'sendMessage'])->name('sendMessage')->middleware(['auth:admin']);
 
 
