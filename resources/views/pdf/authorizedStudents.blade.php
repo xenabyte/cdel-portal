@@ -66,6 +66,7 @@
             border: 1px solid;
             padding: 2px;
             text-align: center;
+            vertical-align: middle;
         }
         th {
             background-color: #f2f2f2;
