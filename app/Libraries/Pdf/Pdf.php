@@ -631,7 +631,7 @@ class Pdf
         }
 
         // Slugify the file name
-        $fileName = sprintf('%s - %s - %s - eligible_students.pdf', $course->name, $programmeCategory->category, $academicSession);
+        $fileName = sprintf('%s - %s - %s - eligible_students', $course->name, $programmeCategory->category, $academicSession);
         $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $fileName))).'.pdf';
 
         $filePath = $dir.'/'.$slug;
@@ -647,12 +647,7 @@ class Pdf
         $pdf->setOptions($options);
 
         $pdf->save($filePath);
-        // return response()->download($dir . '/' . $slug);
-// download
-        return $pdf->stream($slug);
-
-        // return $filePath;
-        
+        return $pdf->stream($slug);        
     }
 
 

@@ -881,16 +881,17 @@ class ProgrammeController extends Controller
     }
 
 
-    public function exportAuthorizedStudents($courseId, $programmeCategory, $academicSession){
-
+     public function exportAuthorizedStudents($courseId, $programmeCategory, $academicSession)
+    {
         $authorizedData = $this->getAuthorizedStudents($courseId, $programmeCategory, $academicSession);
         $students = $authorizedData['students'];
         $course = $authorizedData['course'];
         $academicSession = $authorizedData['academicSession'];
         $programmeCategory = $authorizedData['programmeCategory'];
 
-        $pdf = new Pdf();
-        $pdf->exportAuthorizedStudent($students, $course, $programmeCategory, $academicSession);
+        
+        $file = Pdf::exportAuthorizedStudent($students, $course, $programmeCategory, $academicSession);
+        return $file;
     }
 
     public function sendMessage(Request $request){

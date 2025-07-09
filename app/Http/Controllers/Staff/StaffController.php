@@ -45,6 +45,7 @@ use Log;
 use Maatwebsite\Excel\Facades\Excel;
 use Mail;
 use SweetAlert;
+
 class StaffController extends Controller
 {
     //
@@ -2057,20 +2058,10 @@ class StaffController extends Controller
         $course = $authorizedData['course'];
         $academicSession = $authorizedData['academicSession'];
         $programmeCategory = $authorizedData['programmeCategory'];
-        // dd($programmeCategory);
-        // dd($students, $course, $courseLectures, $academicSession, $programmeCategory);
 
         
-        $done = \App\Libraries\Pdf\Pdf::exportAuthorizedStudent($students, $course, $programmeCategory, $academicSession);
+        $file = Pdf::exportAuthorizedStudent($students, $course, $programmeCategory, $academicSession);
 
-        // if (file_exists($filePath)) {
-        //     \Illuminate\Support\Facades\Session::flash('pdf_download_path', asset('uploads/files/authorized_students/' . basename($filePath)));
-        //     alert()->success('Message', 'Examination Attendance generated successfully')->persistent('Close');
-        // } else {
-        //     alert()->error('Oops', 'Could not generate examination attendance')->persistent('Close');
-        // }
-    
-        return $done;
-        
+        return $file;
     }
 }
