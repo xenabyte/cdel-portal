@@ -1468,7 +1468,7 @@ class Controller extends BaseController
             $paymentStatus = $this->checkSchoolFees($student, $student->academic_session, $student->level_id);
             $otherPaymentStatus = $this->checkOtherFees($student);
 
-            if ($paymentStatus->fullTuitionPayment && $otherPaymentStatus) {
+            if ($paymentStatus->fullTuitionPayment && !$otherPaymentStatus) {
                 $authorizedStudents[] = [
                     'student' => $student,
                 ];
