@@ -61,7 +61,7 @@
                                     <td>{{ $entry['student']->department->name }}</td>
                                     <td>{{ $entry['student']->programme->award }}</td>
 
-
+a
 
                                 </tr>
                             @empty

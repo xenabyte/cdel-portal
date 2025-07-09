@@ -155,7 +155,7 @@
                           <td>
                             <img
                               src="{{ !empty($entry['student']->image) ? asset($entry['student']->image) : asset('assets/images/users/user-dummy-img.jpg') }}"
-                              alt="Passport">
+                              alt="Passport" width="50">
                           </td>
                           <td>{{ $entry['student']->matric_number ?? 'N/A' }}</td>
                           <td>
