@@ -17,7 +17,7 @@
         </div>
     </div>
     <!-- end page title -->
-
+    <a class="btn btn-secondary my-2" href="{{route('courseDetail', [$courseId, $programmeCategory])}}"><i class="mdi mdi-keyboard-backspace me-2"></i> Go back</a>
     <div class="row">
         <div class="col-lg-12">
             <div class="card">
@@ -29,7 +29,7 @@
                     <h4 class="col-lg-9">Eligible Students to take {{$course->code}} Exam based on (≥ 75% Attendance + Full Payment)</h4>
                     <div class="col-lg-3">
                         <a href="{{ route('staff.export-authorized-students', ['courseId' => $courseId, 'programmeCategory' => $programmeCategory->category, 'academicSession' => str_replace('/', '-', $academicSession)]) }}"
-                            class="btn btn-sm btn-outline-danger">Export PDF</a>
+                            class="btn btn-sm btn-outline-danger" target="_blank">Export PDF</a>
                     </div>
                     <!-- Bordered Tables -->
                     <table class="table table-bordered table-hover mt-2">
@@ -76,5 +76,10 @@
         </div>
         <!-- end col -->
     </div>
+    @if(Session::has('pdf_download_path'))
+    <script>
+        window.open("{{ Session::get('pdf_download_path') }}", "_blank");
+    </script>
+@endif
 
 @endsection

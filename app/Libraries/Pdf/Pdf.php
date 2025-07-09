@@ -634,6 +634,7 @@ class Pdf
         $fileName = sprintf('%s - %s - %s - eligible_students.pdf', $course->name, $programmeCategory->category, $academicSession);
         $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $fileName))).'.pdf';
 
+        $filePath = $dir.'/'.$slug;
         $pdf = PDFDocument::loadView('pdf.authorizedStudents', [
             'students' => $students,
             'course' => $course,
@@ -645,10 +646,13 @@ class Pdf
         $pdf->setPaper('a4', 'portrait');
         $pdf->setOptions($options);
 
-        // $pdf->save($dir . '/' . $slug);
+        $pdf->save($filePath);
         // return response()->download($dir . '/' . $slug);
+// download
+        return $pdf->stream($slug);
 
-         return $pdf->download($slug);
+        // return $filePath;
+        
     }
 
 
