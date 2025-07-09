@@ -154,7 +154,7 @@
                           <td class="col-sno">{{ $loop->iteration }}</td>
                           <td>
                             <img
-                              src="{{ !empty($entry['student']->image) ? $entry['student']->image : asset('assets/images/users/user-dummy-img.jpg') }}"
+                              src="{{ !empty($entry['student']->image) ? asset($entry['student']->image) : asset('assets/images/users/user-dummy-img.jpg') }}"
                               alt="Passport">
                           </td>
                           <td>{{ $entry['student']->matric_number ?? 'N/A' }}</td>

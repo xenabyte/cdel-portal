@@ -50,7 +50,7 @@
                             @forelse($students as $entry)
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
-                                    <td><img src="{{!empty($entry['student']->image) ? $entry['student']->image : asset('assets/images/users/user-dummy-img.jpg')}}"
+                                    <td><img src="{{!empty($entry['student']->image) ? asset($entry['student']->image) : asset('assets/images/users/user-dummy-img.jpg')}}"
                                             alt="Passport" width="50"></td>
                                     <td>{{ $entry['student']->matric_number ?? 'N/A' }}</td>
                                     <td>{{ $entry['student']->applicant->lastname }}
