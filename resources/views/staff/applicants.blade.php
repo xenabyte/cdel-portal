@@ -3,8 +3,6 @@
     $programmeCategoryModel = new \App\Models\ProgrammeCategory;
     $applicationSession = $programmeCategory->academicSessionSetting->application_session;
 
-    $programmeCategory = new \App\Models\ProgrammeCategory;
-
 
     $staff = Auth::guard('staff')->user();
     $staffId = $staff->id;
