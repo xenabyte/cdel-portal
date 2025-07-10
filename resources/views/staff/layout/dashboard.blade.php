@@ -739,7 +739,7 @@
                             @endif
 
 
-                            @if($staffHODRole || $staffAcademicPlannerRole)
+                            @if($staffHODRole || $staffAcademicPlannerRole || $staffBursaryRole)
                             <li class="nav-item">
                                 <a class="nav-link menu-link" href="#deptSettings" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="deptSettings">
                                     <i class="mdi mdi-cards-variant"></i> <span  data-key="t-hot">Dept. Management</span>
@@ -754,7 +754,7 @@
                             </li> 
                             @endif
 
-                            @if($staffLevelAdviserRole || $staffHODRole || $staffDeanRole || $staffSubDeanRole || $staffAcademicPlannerRole || $isFacultyOfficer)
+                            @if($staffBursaryRole || $staffLevelAdviserRole || $staffHODRole || $staffDeanRole || $staffSubDeanRole || $staffAcademicPlannerRole || $isFacultyOfficer)
                             <li class="nav-item">
                                 <a class="nav-link menu-link" href="#courseSettings" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="courseSettings">
                                     <i class="mdi mdi-card"></i> <span  data-key="t-hot">Prog. Management </span><span class="badge badge-pill bg-danger" data-key="t-hot">{{ $staffAcademicPlannerRole ? $pageGlobalData->adviserProgrammesCount : $pageGlobalData->totalPendingRegistrations }} </span>
