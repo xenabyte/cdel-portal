@@ -102,7 +102,6 @@ class CourseRegistration extends Model
                   ->where('academic_session', $this->academic_session);
         })
         ->where('student_id', $this->student_id)
-        ->where('status', 1) // Assuming 1 means present
         ->count();        
 
         // Calculate the attendance percentage
