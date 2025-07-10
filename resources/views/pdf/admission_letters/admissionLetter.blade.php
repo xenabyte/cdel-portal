@@ -141,42 +141,46 @@
                 <tbody>
                     <tr>
                         <td>10 bed spaces</td>
-                        <td>N65,000 (Girls only)</td>
-                        <td>N80,000 (Boys only)</td>
+                        <td>N65,000 (Female only)</td>
+                        <td>N80,000 (Male only)</td>
                     </tr>
                     <tr>
                         <td>8 bed spaces</td>
-                        <td>N90,000 (Boys and Girls)</td>
-                        <td>N100,000 (Boys only)</td>
+                        <td>N90,000 (Male and Female)</td>
+                        <td>N100,000 (Male only)</td>
                     </tr>
                     <tr>
                         <td>6 bed spaces</td>
-                        <td>N150,000 (Boys and Girls)</td>
-                        <td>N150,000 (Boys and Girls)</td>
+                        <td>N150,000 (Male and Female)</td>
+                        <td>N150,000 (Male and Female)</td>
                     </tr>
                     <tr>
-                        <td>4 bed spaces</td>
-                        <td>N200,000 (Girls only) TnB</td>
-                        <td>N240,000 (Boys and Girls) TnB</td>
+                        <td>4 bed spaces (Regular)</td>
+                        <td>Not Available</td>
+                        <td>N200,000 (Male and Female)</td>
                     </tr>
                     <tr>
-                        <td>3 bed spaces</td>
-                        <td>N250,000 (Girls only) TnB</td>
-                        <td>N270,000 (Boys and Girls) TnB</td>
+                        <td>4 bed spaces (En-suite)</td>
+                        <td>N200,000 (Female only)</td>
+                        <td>N240,000 (Male and Female)</td>
+                    </tr>
+                    <tr>
+                        <td>3 bed spaces (En-suite)</td>
+                        <td>N250,000 (Female only)</td>
+                        <td>N270,000 (Male and Female)</td>
                     </tr>
                     <tr>
                         <td>2 bed spaces</td>
-                        <td>N150,000 (Boys only)</td>
-                        <td>Not available</td>
+                        <td>N150,000 (Male only)</td>
+                        <td>N400,000 (Male and Female, En-suite)</td>
                     </tr>
                     <tr>
                         <td>1 bed space</td>
-                        <td>N250,000 (Boys only)</td>
-                        <td>Not available</td>
+                        <td>N250,000 (Male only)</td>
+                        <td>Not Available</td>
                     </tr>
                 </tbody>
             </table>
-            
             <p>At Thomas Adewumi University, we guarantee you an internationally recognized degree by delivering a world-class education that prepares you for life-long excellence. You can contact the following if you have any questions about your next steps by reaching out to the the <strong> Admission Office:</strong> 09053929899 or <a href="mailto:admissions@tau.edu.ng">admissions@tau.edu.ng</a>.  Accept our congratulations and we look forward to welcoming you to our beautiful campus!</p>
         </div>
         
