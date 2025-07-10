@@ -77,8 +77,13 @@ class AcademicController extends Controller
 
     public function departmentForCourses(){
         $staff = Auth::guard('staff')->user();
-        $staffId = $staff->id;
 
+        $staffBursaryRole = false;
+        foreach ($staff->staffRoles as $staffRole) {
+            if(strtolower($staffRole->role->role) == 'bursary'){
+                $staffBursaryRole = true;
+            }
+        }
         $academicPlanningUnits = Unit::UNIT_ACADEMIC_PLANNING;
 
         $isUnitHead = Unit::where('name', $academicPlanningUnits)
@@ -88,10 +93,10 @@ class AcademicController extends Controller
 
         $department = Department::with('courses')->where('hod_id', $staff->id)->orderBy('id', 'DESC')->get();
 
-        if($isUnitHead){
+        if($isUnitHead || $staffBursaryRole){
             $department = Department::with('courses')->orderBy('id', 'DESC')->get();
         }
-        // ->orWhere('faculty_id', 0)
+        
         return view('staff.departmentForCourses', [
             'departments' => $department
         ]);
