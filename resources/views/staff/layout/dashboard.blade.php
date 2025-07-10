@@ -739,7 +739,7 @@
                             @endif
 
 
-                            @if($staffHODRole || $staffAcademicPlannerRole || $staffBursaryRole)
+                            @if($staffHODRole || $staffAcademicPlannerRole)
                             <li class="nav-item">
                                 <a class="nav-link menu-link" href="#deptSettings" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="deptSettings">
                                     <i class="mdi mdi-cards-variant"></i> <span  data-key="t-hot">Dept. Management</span>
@@ -752,6 +752,14 @@
                                     </ul>
                                 </div>
                             </li> 
+                            @endif
+
+                            @if($staffBursaryRole)
+                                <li class="nav-item">
+                                    <a class="nav-link menu-link" href="{{ url('/staff/departmentForCourses') }}">
+                                        <i class="mdi mdi-book-open-variant"></i> <span>All Courses</span>
+                                    </a>
+                                </li>
                             @endif
 
                             @if($staffBursaryRole || $staffLevelAdviserRole || $staffHODRole || $staffDeanRole || $staffSubDeanRole || $staffAcademicPlannerRole || $isFacultyOfficer)
