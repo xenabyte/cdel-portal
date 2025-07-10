@@ -50,7 +50,7 @@
                     </div>
                     <div class="col-lg-4">
                         <button type="button" class="btn btn-primary waves-effect waves-light" data-bs-toggle="modal" data-bs-target="#showAuthorizedStudentList">
-                            <a href="{{ route('admin.authorizedStudents', ['courseId' => $course->id, 'programmeCategory' => $programmeCategory->category, 'academicSession' => str_replace('/', '-', $academicSession)]) }}"
+                            <a href="{{ route('staff.authorizedStudents', ['courseId' => $course->id, 'programmeCategory' => $programmeCategory->category, 'academicSession' => str_replace('/', '-', $academicSession)]) }}"
                                 class="btn btn-primary waves-effect waves-light">
                                 <i class="mdi mdi-account-group-outline"></i> Exam Attendance
                             </a>

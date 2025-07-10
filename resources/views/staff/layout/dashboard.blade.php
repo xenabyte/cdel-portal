@@ -754,13 +754,13 @@
                             </li> 
                             @endif
 
-                            @if($staffBursaryRole)
+                            {{-- @if($staffBursaryRole)
                                 <li class="nav-item">
                                     <a class="nav-link menu-link" href="{{ url('/staff/departmentForCourses') }}">
                                         <i class="mdi mdi-book-open-variant"></i> <span>All Courses</span>
                                     </a>
                                 </li>
-                            @endif
+                            @endif --}}
 
                             @if($staffBursaryRole || $staffLevelAdviserRole || $staffHODRole || $staffDeanRole || $staffSubDeanRole || $staffAcademicPlannerRole || $isFacultyOfficer)
                             <li class="nav-item">
@@ -769,7 +769,7 @@
                                 </a>
                                 <div class="collapse menu-dropdown" id="courseSettings">
                                     <ul class="nav nav-sm flex-column">
-                                        @if($staffLevelAdviserRole || $staffHODRole)
+                                        @if($staffLevelAdviserRole || $staffHODRole || $staffAcademicPlannerRole)
 
                                         <li class="nav-item">
                                             <a href="#adviserProgrammes" class="nav-link" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="adviserProgrammes" data-key="t-adviserProgrammes"> Course Reg MGT <span class="badge badge-pill bg-danger" data-key="t-hot">{{  $staffAcademicPlannerRole ? $pageGlobalData->adviserProgrammesCount : $pageGlobalData->totalPendingRegistrations }} </span>
