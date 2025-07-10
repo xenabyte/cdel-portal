@@ -59,16 +59,18 @@ class StudentController extends Controller
         $studentId = $student->id;
         $levelId = $student->level_id;
         $academicSession = $student->programmeCategory->academicSessionSetting->academic_session;
+        $applicationSession = $student->programmeCategory->academicSessionSetting->application_session;
+
 
         $acceptancePayment = Payment::where('type', Payment::PAYMENT_TYPE_ACCEPTANCE)
-        ->where('academic_session', $academicSession)
+        ->where('academic_session', $applicationSession)
         ->where('programme_id', $student->programme_id)
         ->where('programme_category_id', $student->programme_category_id)
-            ->first();
+        ->first();
 
         if(!$acceptancePayment){
             $acceptancePayment = Payment::where('type', Payment::PAYMENT_TYPE_ACCEPTANCE)
-            ->where('academic_session', $academicSession)
+            ->where('academic_session', $applicationSession)
             ->where('programme_category_id', $student->programme_category_id)
             ->first();
         }
