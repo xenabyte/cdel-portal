@@ -41,8 +41,8 @@
                                 <th>Full Name (Surname first)</th>
                                 <th>Sex</th>
                                 <th>Level</th>
-                                <th>Faculty</th>
-                                <th>Department</th>
+                                {{-- <th>Faculty</th>
+                                <th>Department</th> --}}
                                 <th>Programme</th>
                             </tr>
                         </thead>
@@ -57,12 +57,9 @@
                                         {{ $entry['student']->applicant->othernames }}</td>
                                     <td>{{ $entry['student']->applicant->gender }}</td>
                                     <td>{{ $entry['student']->academicLevel->level }}</td>
-                                    <td>{{ $entry['student']->faculty->name }}</td>
-                                    <td>{{ $entry['student']->department->name }}</td>
+                                    {{-- <td>{{ $entry['student']->faculty->name }}</td>
+                                    <td>{{ $entry['student']->department->name }}</td> --}}
                                     <td>{{ $entry['student']->programme->award }}</td>
-
-a
-
                                 </tr>
                             @empty
                                 <tr>
