@@ -136,7 +136,7 @@
                             <p class=""><strong>Programme:</strong> {{ $student->programme->name }}
                                 <br/><strong>Academic Session:</strong> {{ $student->academic_session }}
                                 <br/><strong>Level:</strong> {{ $student->academicLevel->level }} Level
-                                <br/><strong>Semester:</strong> {{ $programmeCategory->examSetting->semester == 1?'First' : 'Second' }} Semester
+                                <br/><strong>Semester:</strong> {{ $programmeCategory->examSetting->semester == 1?'Harmattan' : 'Rain' }} Semester
                             </p>
 
 
@@ -165,6 +165,7 @@
                                         <th scope="col">Course Code</th>
                                         <th scope="col">Course Title</th>
                                         <th scope="col">Course Unit</th>
+                                        <th scope="col">Attendance(%)</th>
                                         <th scope="col">Status</th>
                                     </tr>
                                 
@@ -176,6 +177,7 @@
                                         <td>{{ ucwords(strtolower($courseReg->course->name)) }}</td>
                                         <td>{{ $courseReg->course_credit_unit }}</td>
                                         <td>{{ $courseReg->course_status }}</td>
+                                        <td>{{ $courseReg->attendancePercentage() }}</td>
                                     </tr>
                                     @endforeach
                                 </tbody>
