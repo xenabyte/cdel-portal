@@ -165,8 +165,8 @@
                                         <th scope="col">Course Code</th>
                                         <th scope="col">Course Title</th>
                                         <th scope="col">Course Unit</th>
-                                        <th scope="col">Attendance(%)</th>
                                         <th scope="col">Status</th>
+                                        <th scope="col">Attendance(%)</th>
                                     </tr>
                                 
                                 
