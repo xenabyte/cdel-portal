@@ -604,6 +604,7 @@ class AcademicController extends Controller
             ->where('academic_session', $academicSession)
             ->where('total', null)
             ->where('semester', $semester)
+            ->where('status', 'approved')
             ->get();
 
         return view('student.examDocket', [
@@ -635,7 +636,7 @@ class AcademicController extends Controller
             ->where('academic_session', $academicSession)
             ->where('total', null)
             ->where('semester', $semester)
-            // ->where('status', 'approved')
+            ->where('status', 'approved')
             ->get()
             ->filter(function ($reg) {
                 return $reg->attendancePercentage() >= 75;

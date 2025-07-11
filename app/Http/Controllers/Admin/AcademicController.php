@@ -1086,7 +1086,7 @@ class AcademicController extends Controller
     public function setExamSetting(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'exam_docket_status' => 'required',
+            'exam_docket_status' => 'nullable',
             'academic_session' => 'nullable',
             'result_processing_status' => 'nullable',
             'test_processing_status' => 'nullable',
@@ -1115,23 +1115,23 @@ class AcademicController extends Controller
 
         $examSetting->programme_category_id = $request->programme_category_id;
 
-        if ($request->exam_docket_status != $examSetting->exam_docket_status) {
+        if (!empty($request->exam_docket_status) && $request->exam_docket_status != $examSetting->exam_docket_status) {
             $examSetting->exam_docket_status = $request->exam_docket_status;
         }
 
-        if ($request->academic_session != $examSetting->academic_session) {
+        if (!empty($request->academic_session) && $request->academic_session != $examSetting->academic_session) {
             $examSetting->academic_session = $request->academic_session;
         }
 
-        if ($request->semester != $examSetting->semester) {
+        if (!empty($request->semester) && $request->semester != $examSetting->semester) {
             $examSetting->semester = $request->semester;
         }
 
-        if ($request->result_processing_status != $examSetting->result_processing_status) {
+        if (!empty($request->result_processing_status) && $request->result_processing_status != $examSetting->result_processing_status) {
             $examSetting->result_processing_status = $request->result_processing_status;
         }
 
-        if ($request->test_processing_status != $examSetting->test_processing_status) {
+        if (!empty($request->test_processing_status) && $request->test_processing_status != $examSetting->test_processing_status) {
             $examSetting->test_processing_status = $request->test_processing_status;
         }
 
