@@ -583,7 +583,7 @@ class AcademicController extends Controller
         $tuitionPassStatus = ($semester == 1) ? $passTuitionPayment : $fullTuitionPayment;
 
         if(!$tuitionPassStatus){
-            return view('student.schoolFee', [
+            return view('student.transactions', [
                 'payment' => $checkStudentPayment->schoolPayment,
                 'passTuition' => $passTuitionPayment,
                 'fullTuitionPayment' => $fullTuitionPayment,
