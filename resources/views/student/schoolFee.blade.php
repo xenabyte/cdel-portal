@@ -145,7 +145,7 @@ $studentPendingTransaction = $studentPendingTransactions->first();
                     <div class="row justify-content-center">
                         <div class="col-lg-9">
                             <h4 class="mt-4 fw-semibold">School Fee</h4>
-                            @if($academicSession != $admissionSession && $student->is_active = 1)
+                            @if($academicSession != $admissionSession && $student->is_active != 1)
                             <p class="text-muted mt-3">Please note: Payment not available yet, stay tuned.</p>
                             @else
                             <p class="text-muted mt-3">Please note: Access to the dashboard requires prior payment of school fees for the {{ $academicSession  }} session.</p>
