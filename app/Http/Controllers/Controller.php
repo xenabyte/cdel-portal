@@ -1445,14 +1445,19 @@ class Controller extends BaseController
             $academicSession = str_replace('-', '/', $academicSession);
         }
 
-         $registrations = CourseRegistration::with('course')
+        $registrations = CourseRegistration::with(['course', 'student'])
             ->where('course_id', $courseId)
             ->where('academic_session', $academicSession)
             ->where('programme_category_id', $programmeCategoryId)
             ->get()
-            ->filter(function ($reg) {
-                return $reg->attendancePercentage() >= 75;
+            ->reject(function ($courseReg) {
+                $student = $courseReg->student;
+                return !is_null($student->cgpa) && round($courseReg->attendancePercentage()) <= 74;
             });
+
+            // ->filter(function ($reg) {
+            //     return $reg->attendancePercentage() >= 74;
+            // });
 
         $course = Course::find($courseId);
 
