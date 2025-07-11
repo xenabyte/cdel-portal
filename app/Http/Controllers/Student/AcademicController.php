@@ -640,7 +640,7 @@ class AcademicController extends Controller
             ->where('status', 'approved')
             ->get()
             ->filter(function ($reg) {
-                return $reg->attendancePercentage() >= 75;
+                return $reg->attendancePercentage() >= 74;
             });
 
 
