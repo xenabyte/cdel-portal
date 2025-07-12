@@ -250,8 +250,8 @@ class Pdf
         ->whereNull('total')
         ->where('semester', $semester)
         ->where('status', 'approved')
-        ->get()
-        ->reject(fn($courseReg) => !is_null($student->cgpa) && round($courseReg->attendancePercentage()) <= 74);
+        ->get();
+        // ->reject(fn($courseReg) => !is_null($student->cgpa) && round($courseReg->attendancePercentage()) <= 74);
         // ->filter(function ($reg) {
         //         return $reg->attendancePercentage() >= 75;
         //     });

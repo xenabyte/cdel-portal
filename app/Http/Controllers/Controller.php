@@ -1449,11 +1449,11 @@ class Controller extends BaseController
             ->where('course_id', $courseId)
             ->where('academic_session', $academicSession)
             ->where('programme_category_id', $programmeCategoryId)
-            ->get()
-            ->reject(function ($courseReg) {
-                $student = $courseReg->student;
-                return !is_null($student->cgpa) && round($courseReg->attendancePercentage()) <= 74;
-            });
+            ->get();
+            // ->reject(function ($courseReg) {
+            //     $student = $courseReg->student;
+            //     return !is_null($student->cgpa) && round($courseReg->attendancePercentage()) <= 74;
+            // });
 
             // ->filter(function ($reg) {
             //     return $reg->attendancePercentage() >= 74;

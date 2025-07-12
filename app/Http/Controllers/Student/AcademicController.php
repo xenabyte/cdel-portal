@@ -638,10 +638,10 @@ class AcademicController extends Controller
             ->where('total', null)
             ->where('semester', $semester)
             ->where('status', 'approved')
-            ->get()
-            ->filter(function ($reg) {
-                return $reg->attendancePercentage() >= 74;
-            });
+            ->get();
+            // ->filter(function ($reg) {
+            //     return $reg->attendancePercentage() >= 74;
+            // });
 
 
         if ($courseRegs->isEmpty()) {
