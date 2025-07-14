@@ -174,8 +174,6 @@ class AdmissionController extends Controller
             return redirect()->back();
         }
 
-        dd($);
-
         $applicantId = $applicant->id;
         $status = $request->status;
 

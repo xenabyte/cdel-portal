@@ -22,6 +22,9 @@ use App\Models\GradeScale;
 
 use App\Libraries\Bandwidth\Bandwidth;
 use App\Libraries\Google\Google;
+use App\Libraries\Pdf\Pdf;
+
+use App\Mail\AdmissionMail;
 
 use App\Http\Controllers\PaymentController;
 
@@ -469,6 +472,42 @@ class CronController extends Controller
                 
             }
         }
+    }
+
+    public function updateNewStudentAdmissionLetter(){
+
+        $students = Student::with('applicant')
+            ->where('is_active', '')
+            ->whereYear('created_at', 2025)
+            ->whereMonth('created_at', 7)
+            ->get();
+
+        $pdf = new Pdf();
+
+        foreach ($students as $student) {
+            $applicant = $student->applicant;
+
+            if (!$applicant) {
+                continue; // Skip if applicant record is missing
+            }
+
+            $admissionLetter = $pdf->generateAdmissionLetter($applicant->slug);
+
+            if (!empty($admissionLetter)) {
+                $student->admission_letter = $admissionLetter;
+                $student->save();
+
+                if (env('SEND_MAIL')) {
+                    Mail::to($student->email)->send(new AdmissionMail($student));
+                }
+            }
+        }
+
+        
+        return response()->json([
+            'message' => 'Admission letters regenerated successfully',
+            'students' => count($students)
+        ]);
     }
 
 }
