@@ -85,17 +85,17 @@
             <p><strong>{{ $student_name }}</strong></p>
             <p>Dear Asamu,</p>
 
-            <p class="congratulations"><strong>OFFER OF PROVISIONAL ADMISSION INTO THE POSTGRADUATE PROGRAMME</strong></p>
+            <p class="congratulations" style="text-transform: uppercase"><strong>OFFER OF PROVISIONAL ADMISSION INTO THE  {{ $programmeCategory->category }} PROGRAMME</strong></p>
 
             <p>
-                I am pleased to inform you that you have been provisionally admitted into the postgraduate programme of {{ env('SCHOOL_NAME') }} for the {{ $programmeCategory->academicSessionSetting->academic_session }} Academic Session.
+                I am pleased to inform you that you have been provisionally admitted into the  {{ $programmeCategory->category }} programme of {{ env('SCHOOL_NAME') }} for the {{ $programmeCategory->academicSessionSetting->academic_session }} Academic Session.
             </p>
 
             <p><strong>Programme Details:</strong></p>
             <ul>
-                <li><strong>Faculty:</strong>{{ $faculty_name }}</li>
-                <li><strong>Department:</strong>{{ $department_name }}</li>
-                <li><strong>Degree Offered:</strong> {{ $programmeCategory->code }}in {{ $programme_name }}</li>
+                <li><strong>Faculty:</strong> {{ $faculty_name }}</li>
+                <li><strong>Department:</strong> {{ $department_name }}</li>
+                <li><strong>Degree Offered:</strong> {{ $programme_name }}</li>
                 <li><strong>Mode of Study:</strong> Full-time</li>
                 <li><strong>Duration of Programme:</strong> {{ $years }} year{{ $years == 1 ? '' : 's' }}@if($months > 0), {{ $months }} month{{ $months == 1 ? '' : 's' }}@endif</li>
             </ul>
@@ -120,7 +120,7 @@
             </p>
 
             <p>
-                For further inquiries or clarification, please contact the Secretary, School of Postgraduate Studies via: <a href="mailto:admissions@tau.edu.ng">admissions@tau.edu.ng</a>
+                For further inquiries or clarification, please contact the Secretary, School of Postgraduate Studies via: <a href="mailto:spgs@tau.edu.ng">spgs@tau.edu.ng</a>
             </p>
 
             <p>Yours faithfully,</p>
@@ -132,4 +132,4 @@
         </div>
     </div>
 </body>
-</html>a
+</html>
