@@ -583,6 +583,7 @@ class AcademicController extends Controller
         $tuitionPassStatus = ($semester == 1) ? $passTuitionPayment : $fullTuitionPayment;
 
         if(!$tuitionPassStatus){
+            alert()->error('Oops!', 'You have some pending payments, kindly clear them to proceed')->persistent('Close');
             return view('student.transactions', [
                 'payment' => $checkStudentPayment->schoolPayment,
                 'passTuition' => $passTuitionPayment,

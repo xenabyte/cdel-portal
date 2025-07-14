@@ -1426,11 +1426,6 @@ class Controller extends BaseController
     }
 
 
-
-
-
-
-
     public function getAuthorizedStudents($courseId, $programmeCategoryStr, $academicSession = null)
     {
         $programmeCategory = ProgrammeCategory::with('academicSessionSetting')
@@ -1450,6 +1445,7 @@ class Controller extends BaseController
             ->where('academic_session', $academicSession)
             ->where('programme_category_id', $programmeCategoryId)
             ->get();
+            
             // ->reject(function ($courseReg) {
             //     $student = $courseReg->student;
             //     return !is_null($student->cgpa) && round($courseReg->attendancePercentage()) <= 74;
@@ -1481,7 +1477,7 @@ class Controller extends BaseController
         }
 
         return [
-            'students' => $authorizedStudents,
+            'students' => collect($authorizedStudents)->sortBy(fn($s) => $s['student']->programme_id)->values()->all(),
             'course' => $course,
             'academicSession' => $academicSession,
             'programmeCategory' => $programmeCategory
