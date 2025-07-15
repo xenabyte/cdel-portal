@@ -561,7 +561,6 @@ class AcademicController extends Controller
 
         $transactions = Transaction::where('student_id', $studentId)->where('payment_id', '!=', 0)->orderBy('status', 'ASC')->get();
 
-
         $passTuitionPayment = $checkStudentPayment->passTuitionPayment;
         $fullTuitionPayment = $checkStudentPayment->fullTuitionPayment;
         $passEightyTuition = $checkStudentPayment->passEightyTuition;

@@ -82,8 +82,7 @@
         
         <div class="content">
             <p class="date"><strong>Date:</strong> {{ date('F j, Y', strtotime($created_at)) }}</p>
-            <p><strong>{{ $student_name }}</strong></p>
-            <p>Dear Asamu,</p>
+            <p>Dear, <strong>{{ $student_name }}</strong></p>
 
             <p class="congratulations" style="text-transform: uppercase"><strong>OFFER OF PROVISIONAL ADMISSION INTO THE  {{ $programmeCategory->category }} PROGRAMME</strong></p>
 

@@ -106,10 +106,11 @@ class Payment extends Model
             case 'Inter Transfer Application Fee':
             case 'Intra Transfer Application Fee':
             case 'Acceptance Fee':
-            case 'School Fee':
-            case 'DE School Fee':
             case 'Re-admission Fee':
             case 'Programme Change Fee':
+                return 'Other Fee';
+            case 'School Fee':
+            case 'DE School Fee':
                 return 'Tuition Fee';
             default:
             return 'Other Fee';
