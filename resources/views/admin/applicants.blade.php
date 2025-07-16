@@ -61,7 +61,7 @@
                             <td>{{ $applicant->application_number }}</td>
                             <td>{{ $applicant->lastname .' '. $applicant->othernames }}</td>
                             <td>{{ \Carbon\Carbon::parse($applicant->dob)->age }} years</td>
-                            <td>{{ date('F j, Y \a\t g:i A', strtotime($applicant->dob)) }} </td>
+                            <td>{{ date('F j, Y', strtotime($applicant->dob)) }} </td>
                             <td>{{ $applicant->email }} </td>
                             <td>{{ $applicant->passcode }} </td>
                             <td>{{ $applicant->phone_number }} </td>
