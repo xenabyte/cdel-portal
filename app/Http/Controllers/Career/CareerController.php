@@ -74,9 +74,23 @@ class CareerController extends Controller
         }
 
         if ($request->hasFile('cv_path')) {
-            $imageUrl = 'uploads/career/cv/'.$slug.'.'.$request->file('cv_path')->getClientOriginalExtension();
-            $image = $request->file('cv_path')->move('uploads/career/cv/', $imageUrl);
-            $profile->cv_path = $imageUrl;
+            $file = $request->file('cv_path');
+
+            $allowedMimeTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+            $allowedExtensions = ['pdf', 'doc', 'docx'];
+
+            $extension = $file->getClientOriginalExtension();
+            $mime = $file->getMimeType();
+
+            if (!in_array($extension, $allowedExtensions) || !in_array($mime, $allowedMimeTypes)) {
+                alert()->error('Invalid file', 'Only PDF or Word documents are allowed')->persistent('Close');
+                return redirect()->back();
+            }
+
+            $filename = $slug . '.' . $extension;
+            $file->move(public_path('uploads/career/cv/'), $filename);
+            $profile->cv_path = 'uploads/career/cv/' . $filename;
+
             session()->put('previous_section', 'CV');
         }
 

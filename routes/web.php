@@ -666,8 +666,8 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'staff'],
 
     Route::post('/getCourses', [App\Http\Controllers\Staff\StaffController::class, 'getCourses'])->name('getCourses')->middleware(['auth:staff']);
     Route::post('/assignCourse', [App\Http\Controllers\Staff\StaffController::class, 'assignCourse'])->name('assignCourse')->middleware(['auth:staff']);
-    Route::get('/courseDetail/{id}/{programmeCategory}/{academicSession}', [App\Http\Controllers\Staff\StaffController::class, 'courseDetail'])->name('courseDetail')->middleware(['auth:staff']);
-    Route::get('/courseDetail/{id}/{programmeCategory}', [App\Http\Controllers\Staff\StaffController::class, 'courseDetail'])->name('courseDetail')->middleware(['auth:staff']);
+    Route::get('/courseDetail/{id}/{programmeCategory}/{academicSession}', [App\Http\Controllers\Staff\StaffController::class, 'courseDetail'])->name('courseDetail');
+    Route::get('/courseDetail/{id}/{programmeCategory}', [App\Http\Controllers\Staff\StaffController::class, 'courseDetail'])->name('courseDetail');
 
     Route::post('/sendMessage', [App\Http\Controllers\Staff\StaffController::class, 'sendMessage'])->name('sendMessage')->middleware(['auth:staff']);
     Route::post('/unsetStaff', [App\Http\Controllers\Staff\StaffController::class, 'unsetStaff'])->name('unsetStaff')->middleware(['auth:staff']);
@@ -865,12 +865,12 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'staff'],
     Route::get('/studentFinalClearance', [App\Http\Controllers\Staff\StudentController::class, 'studentFinalClearance'])->name('studentFinalClearance')->middleware(['auth:staff']);
     Route::post('/manageFinalYearStudentClearance', [App\Http\Controllers\Staff\StudentController::class, 'manageFinalYearStudentClearance'])->name('manageFinalYearStudentClearance')->middleware(['auth:staff']);
 
-    Route::post('/createLecture', [App\Http\Controllers\Staff\StaffController::class, 'createLecture'])->name('createLecture')->middleware(['auth:staff']);
-    Route::post('/updateLecture', [App\Http\Controllers\Staff\StaffController::class, 'updateLecture'])->name('updateLecture')->middleware(['auth:staff']);
-    Route::post('/deleteLecture', [App\Http\Controllers\Staff\StaffController::class, 'deleteLecture'])->name('deleteLecture')->middleware(['auth:staff']);
-    Route::post('/staffUploadAttendance', [App\Http\Controllers\Staff\StaffController::class, 'staffUploadAttendance'])->name('staffUploadAttendance')->middleware(['auth:staff']);
-    Route::post('/markStudentAttendance', [App\Http\Controllers\Staff\StaffController::class, 'markStudentAttendance'])->name('markStudentAttendance')->middleware(['auth:staff']);
-    Route::post('/deleteStudentAttendance', [App\Http\Controllers\Staff\StaffController::class, 'deleteStudentAttendance'])->name('deleteStudentAttendance')->middleware(['auth:staff']);
+    Route::post('/createLecture', [App\Http\Controllers\Staff\StaffController::class, 'createLecture'])->name('createLecture');
+    Route::post('/updateLecture', [App\Http\Controllers\Staff\StaffController::class, 'updateLecture'])->name('updateLecture');
+    Route::post('/deleteLecture', [App\Http\Controllers\Staff\StaffController::class, 'deleteLecture'])->name('deleteLecture');
+    Route::post('/staffUploadAttendance', [App\Http\Controllers\Staff\StaffController::class, 'staffUploadAttendance'])->name('staffUploadAttendance');
+    Route::post('/markStudentAttendance', [App\Http\Controllers\Staff\StaffController::class, 'markStudentAttendance'])->name('markStudentAttendance');
+    Route::post('/deleteStudentAttendance', [App\Http\Controllers\Staff\StaffController::class, 'deleteStudentAttendance'])->name('deleteStudentAttendance');
 
     Route::post('/postJobVacancy', [App\Http\Controllers\Staff\CareerController::class, 'postJobVacancy'])->name('postJobVacancy')->middleware(['auth:staff']);
     Route::get('/viewJobVacancy/{slug}', [App\Http\Controllers\Staff\CareerController::class, 'viewJobVacancy'])->name('viewJobVacancy')->middleware(['auth:staff']);
