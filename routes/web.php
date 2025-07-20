@@ -38,7 +38,7 @@ Route::post('/updateNotificationStatus', [App\Http\Controllers\HomeController::c
 Route::get('/verifyPayment', [App\Http\Controllers\PaymentController::class, 'verifyPayment'])->name('verifyPayment');
 Route::get('/raveVerifyPayment', [App\Http\Controllers\PaymentController::class, 'raveVerifyPayment'])->name('raveVerifyPayment');
 Route::get('/upperlinkVerifyPayment', [App\Http\Controllers\PaymentController::class, 'upperlinkVerifyPayment'])->name('upperlinkVerifyPayment');
-Route::get('/monnifyVerifyPayment', [App\Http\Controllers\Student\StudentController::class, 'monnifyVerifyPayment'])->name('monnifyVerifyPayment');
+Route::get('/monnifyVerifyPayment', [App\Http\Controllers\Student\PaymentController::class, 'monnifyVerifyPayment'])->name('monnifyVerifyPayment');
 
 
 Route::post('/paystackWebhook', [App\Http\Controllers\PaymentController::class, 'paystackWebhook']);
@@ -81,8 +81,8 @@ Route::get('google/auth', [App\Http\Controllers\GoogleController::class, 'redire
 Route::get('google/callback', [App\Http\Controllers\GoogleController::class, 'handleGoogleCallback'])->name('google.callback');
 Route::get('student/hallOfFame', [App\Http\Controllers\HomeController::class, 'hallOfFame']);
 
-Route::get('/addBandwidth', [App\Http\Controllers\HomeController::class, 'addBandwidth'])->name('addBandwidth');
-Route::post('/bandwidthTopUp', [App\Http\Controllers\HomeController::class, 'bandwidthTopUp'])->name('bandwidthTopUp');
+// Route::get('/addBandwidth', [App\Http\Controllers\HomeController::class, 'addBandwidth'])->name('addBandwidth');
+// Route::post('/bandwidthTopUp', [App\Http\Controllers\HomeController::class, 'bandwidthTopUp'])->name('bandwidthTopUp');
 
 
 Route::group(['prefix' => 's'], function () {

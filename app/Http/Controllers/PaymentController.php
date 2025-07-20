@@ -59,8 +59,7 @@ class PaymentController extends Controller
     }
 
     //verify payment with card
-    public function verifyPayment()
-    {
+    public function verifyPayment(){
         Log::info("**********************Paystack Verifying Payment**********************");
         try{
             $paymentDetails = Paystack::getPaymentData();
@@ -597,6 +596,61 @@ class PaymentController extends Controller
 
             }
         }
+    }
+
+    public function monnifyVerifyPayment(Request $request){
+        $student = Auth::guard('student')->user();
+        $studentId = $student->id;
+        $levelId = $student->level_id;
+
+        $academicSession = $student->programmeCategory->academicSessionSetting->academic_session;
+        $plans = Plan::all();
+
+        $transactions = Transaction::where('student_id', $studentId)->where('payment_id', '!=', 0)->orderBy('status', 'ASC')->get();
+
+        $paymentCheck = $this->checkSchoolFees($student, $academicSession, $levelId);
+        $bandwidthPayment = Payment::where("type", "Bandwidth Fee")->where("academic_session", $academicSession)->first();
+
+        if(!$paymentCheck->passTuitionPayment){
+            return view('student.schoolFee', [
+                'payment' => $paymentCheck->schoolPayment,
+                'passTuition' => $paymentCheck->passTuitionPayment,
+                'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
+                'passEightyTuition' => $paymentCheck->passEightyTuition,
+                'studentPendingTransactions' => $paymentCheck->studentPendingTransactions
+            ]);
+        }
+
+        if(empty($student->image)){
+            return view('student.updateImage', [
+                'payment' => $paymentCheck->schoolPayment,
+                'passTuition' => $paymentCheck->passTuitionPayment,
+                'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
+                'passEightyTuition' => $paymentCheck->passEightyTuition,
+                'studentPendingTransactions' => $paymentCheck->studentPendingTransactions
+            ]);
+        }
+
+        if(empty($student->bandwidth_username)){
+            return view('student.bandwidth', [
+                'payment' => $paymentCheck->schoolPayment,
+                'passTuition' => $paymentCheck->passTuitionPayment,
+                'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
+                'passEightyTuition' => $paymentCheck->passEightyTuition,
+                'studentPendingTransactions' => $paymentCheck->studentPendingTransactions
+            ]);
+        }
+    
+        alert()->success('Success', 'Transaction Successful')->persistent('Close');    
+        return view('student.transactions', [
+            'transactions' => $transactions,
+            'payment' => $paymentCheck->schoolPayment,
+            'passTuition' => $paymentCheck->passTuitionPayment,
+            'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
+            'passEightyTuition' => $paymentCheck->passEightyTuition,
+            'studentPendingTransactions' => $paymentCheck->studentPendingTransactions,
+            'schoolPaymentTransaction' => $paymentCheck->schoolPaymentTransaction
+        ]);
     }
 
     // private function generateMatricAndEmail($student){
