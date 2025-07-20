@@ -18,10 +18,10 @@
                         <form action="{{ url('/bandwidthTopUp') }}" method="post" enctype="multipart/form-data">
                             @csrf
 
-                            <div class="mb-3">
+                            {{-- <div class="mb-3">
                                 <label for="file" class="form-label">Usernames File</label>
                                 <input type="file" class="form-control" name='file' id="file">
-                            </div>
+                            </div> --}}
         
                             <div class="row mt-3 g-3">
         
