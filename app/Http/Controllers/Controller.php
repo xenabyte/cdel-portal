@@ -616,7 +616,7 @@ class Controller extends BaseController
         return $startAcademicYear . '/' . $endAcademicYear;
     }
 
-    public function checkSchoolFees($student, $academicSession, $levelId)
+    public function checkSchoolFees($student, $academicSession=null, $levelId=null)
     {
         $studentId = $student->id;
         $applicantId = $student->user_id;
@@ -624,6 +624,14 @@ class Controller extends BaseController
         $applicant = User::find($applicantId);
         $applicationType = $applicant->application_type;
         $programmeCategoryId = $student->programme_category_id;
+
+        if (empty($academicSession)) {
+            $academicSession = $student->academic_session;
+        }
+
+        if (empty($levelId)) {
+            $levelId = $student->level_id;
+        }
 
         $academicSessionSetting = AcademicSessionSetting::where('programme_category_id', $programmeCategoryId)->first();
 
