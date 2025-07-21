@@ -858,7 +858,7 @@ class AcademicController extends Controller
         //     ]);
         // }
 
-        $programmeChangePayment = Payment::with('structure')->where("type", Payment::PAYMENT_TYPE_INTRA_TRANSFER_APPLICATION)->where("academic_session", $academicSession)->first();
+        $programmeChangePayment = Payment::with('structures')->where("type", Payment::PAYMENT_TYPE_INTRA_TRANSFER_APPLICATION)->where("academic_session", $academicSession)->first();
         $programmeChangeRequests = ProgrammeChangeRequest::where('student_id', $studentId)->get();
 
         return view('student.programmeChangeRequests', [

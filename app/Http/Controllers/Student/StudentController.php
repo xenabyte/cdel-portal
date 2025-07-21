@@ -82,7 +82,7 @@ class StudentController extends Controller
         $totalExpenditure = Transaction::where('student_id', $studentId)->where('status', 1)->where('payment_method', 'Wallet')->sum('amount_payed');
         $totalDeposit = Transaction::where('student_id', $studentId)->where('status', 1)->where('payment_id', 0)->sum('amount_payed');
 
-        $paymentCheck = $this->checkSchoolFees($student, $academicSession, $levelId);
+        $paymentCheck = $this->checkSchoolFees($student, $admissionSession, $levelId);
 
         if(!$acceptanceTransaction && $student->is_active == 0){
             return view('student.acceptanceFee', [
