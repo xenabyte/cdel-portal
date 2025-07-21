@@ -60,7 +60,7 @@ class StudyCenterController extends Controller
         $student = Student::withTrashed()->with('applicant', 'applicant.utmes', 'programme', 'transactions')->where('slug', $slug)->first();
         $academicLevels = AcademicLevel::orderBy('id', 'desc')->get();
         $sessions = Session::orderBy('id', 'desc')->get();
-        $student->schoolFeeDetails = $this->checkSchoolFees($student, $student->academic_session, $student->level_id);
+        $student->schoolFeeDetails = $this->checkSchoolFees($student);
 
         return view('center.studentProfile', [
             'student' => $student,

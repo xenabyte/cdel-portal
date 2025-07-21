@@ -1368,7 +1368,7 @@ class AcademicController extends Controller
         $promotionOffset = 1;
         foreach ($students as $student) {
 
-            $checkStudentPayment = $this->checkSchoolFees($student, $student->academic_session, $student->level_id);
+            $checkStudentPayment = $this->checkSchoolFees($student);
             if($checkStudentPayment->status != 'success'){
                 alert()->error('Oops!', 'Something went wrong with School fees')->persistent('Close');
                 return redirect()->back();

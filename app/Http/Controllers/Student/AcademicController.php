@@ -49,7 +49,7 @@ class AcademicController extends Controller
         $levelId = $student->level_id;
         $academicSession = $student->programmeCategory->academicSessionSetting->academic_session;
 
-        $paymentCheck = $this->checkSchoolFees($student, $student->academic_session, $levelId);
+        $paymentCheck = $this->checkSchoolFees($student);
         // if(!$paymentCheck->passTuitionPayment){
         //     return view('student.schoolFee', [
         //         'payment' => $paymentCheck->schoolPayment,
@@ -191,7 +191,7 @@ class AcademicController extends Controller
 
         $courseRegMgt = CourseRegistrationSetting::first();
 
-        $paymentCheck = $this->checkSchoolFees($student, $academicSession, $levelId);
+         $paymentCheck = $this->checkSchoolFees($student);
 
         return view('student.courseRegistration', [
             'courseRegMgt' => $courseRegMgt,
@@ -525,7 +525,7 @@ class AcademicController extends Controller
         $addOrRemoveTxId = $addOrRemoveTxPay->id;
         $addOrRemoveTxs = Transaction::where('student_id', $studentId)->where('payment_id', $addOrRemoveTxId)->where('status', 1)->orderBy('id', 'DESC')->get();
 
-        $paymentCheck = $this->checkSchoolFees($student, $academicSession, $levelId);
+         $paymentCheck = $this->checkSchoolFees($student);
         // if(!$paymentCheck->passTuitionPayment){
         //     return view('student.schoolFee', [
         //         'payment' => $paymentCheck->schoolPayment,
@@ -553,7 +553,7 @@ class AcademicController extends Controller
         $semester  = $student->programmeCategory->examSetting->semester;
         $levelId = $student->level_id;
 
-        $checkStudentPayment = $this->checkSchoolFees($student, $academicSession, $levelId);
+        $checkStudentPayment = $this->checkSchoolFees($student);
         if($checkStudentPayment->status != 'success'){
             alert()->error('Oops!', 'Something went wrong with School fees')->persistent('Close');
             return redirect()->back();
@@ -715,7 +715,7 @@ class AcademicController extends Controller
             'student_id' => $studentId
         ])->get();
 
-        $paymentCheck = $this->checkSchoolFees($student, $student->academic_session, $levelId);
+        $paymentCheck = $this->checkSchoolFees($student);
         // if(!$paymentCheck->passTuitionPayment){
         //     return view('student.schoolFee', [
         //         'payment' => $paymentCheck->schoolPayment,
@@ -742,7 +742,7 @@ class AcademicController extends Controller
         $sessions = Session::orderBy('id', 'DESC')->get();
         $academicLevels = AcademicLevel::get();
 
-        $paymentCheck = $this->checkSchoolFees($student, $student->academic_session, $levelId);
+        $paymentCheck = $this->checkSchoolFees($student);
         // if(!$paymentCheck->passTuitionPayment){
         //     return view('student.schoolFee', [
         //         'payment' => $paymentCheck->schoolPayment,
@@ -799,7 +799,7 @@ class AcademicController extends Controller
         $sessionId = Session::getSessionId($academicSession);
 
         if($sessionId > 3) {
-            $checkStudentPayment = $this->checkSchoolFees($student, $academicSession, $levelId);
+            $checkStudentPayment = $this->checkSchoolFees($student);
             if($checkStudentPayment->status != 'success'){
                 alert()->error('Oops!', 'Something went wrong with School fees')->persistent('Close');
                 return redirect()->back();
@@ -831,7 +831,7 @@ class AcademicController extends Controller
         $levelId = $student->level_id;
         $academicSession = $student->programmeCategory->academicSessionSetting->academic_session;
 
-        $paymentCheck = $this->checkSchoolFees($student, $academicSession, $levelId);
+         $paymentCheck = $this->checkSchoolFees($student);
 
 
         return view('student.transcripts', [
@@ -847,7 +847,7 @@ class AcademicController extends Controller
         $levelId = $student->level_id;
         $academicSession = $student->programmeCategory->academicSessionSetting->academic_session;
 
-        $paymentCheck = $this->checkSchoolFees($student, $academicSession, $levelId);
+        $paymentCheck = $this->checkSchoolFees($student);
         // if(!$paymentCheck->passTuitionPayment){
         //     return view('student.schoolFee', [
         //         'payment' => $paymentCheck->schoolPayment,
@@ -965,7 +965,7 @@ class AcademicController extends Controller
         $levelId = $student->level_id;
         $academicSession = $student->programmeCategory->academicSessionSetting->academic_session;
 
-        $paymentCheck = $this->checkSchoolFees($student, $academicSession, $levelId);
+         $paymentCheck = $this->checkSchoolFees($student);
 
         // if(!$paymentCheck->passTuitionPayment){
         //     return view('student.schoolFee', [

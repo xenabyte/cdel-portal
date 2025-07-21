@@ -620,7 +620,7 @@ class Controller extends BaseController
     {
         $studentId = $student->id;
         $applicantId = $student->user_id;
-        log::info("student name: " . $student->applicant->lastname.' '.$student->applicant->othernames);
+        // log::info("student name: " . $student->applicant->lastname.' '.$student->applicant->othernames);
         $applicant = User::find($applicantId);
         $applicationType = $applicant->application_type;
         $programmeCategoryId = $student->programme_category_id;

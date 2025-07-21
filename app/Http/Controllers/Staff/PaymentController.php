@@ -323,7 +323,7 @@ class PaymentController extends Controller
             $programmeCategoryId = $student->programme_category_id;
             
             if ($type == Payment::PAYMENT_TYPE_SCHOOL || $type == Payment::PAYMENT_TYPE_SCHOOL_DE) {
-                $paymentCheck = $this->checkSchoolFees($student, $session, $levelId);
+                $paymentCheck = $this->checkSchoolFees($student);
                 if($paymentCheck->status != 'success'){
                     return response()->json(['status' => 'School fee not setup for the section and programme']);
                 }
@@ -878,7 +878,7 @@ class PaymentController extends Controller
 
         // Attach fee status to each student
         foreach ($students as $student) {
-            $student->schoolFeeDetails = $this->checkSchoolFees($student, $academicSession, $levelId);
+            $student->schoolFeeDetails = $this->checkSchoolFees($student);
         }
 
         $faculties = Faculty::get();

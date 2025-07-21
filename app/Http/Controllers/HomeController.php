@@ -87,7 +87,7 @@ class HomeController extends Controller
         $levelId = $student->level_id;
         $transactions = Transaction::where('student_id', $studentId)->orderBy('id', 'DESC')->get();
 
-        $checkStudentPayment = $this->checkSchoolFees($student, $academicSession, $levelId);
+        $checkStudentPayment = $this->checkSchoolFees($student);
         if($checkStudentPayment->status != 'success'){
             alert()->error('Oops!', 'Something went wrong with School fees')->persistent('Close');
             return redirect()->back();

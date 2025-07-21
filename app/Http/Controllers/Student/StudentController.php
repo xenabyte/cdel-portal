@@ -82,7 +82,7 @@ class StudentController extends Controller
         $totalExpenditure = Transaction::where('student_id', $studentId)->where('status', 1)->where('payment_method', 'Wallet')->sum('amount_payed');
         $totalDeposit = Transaction::where('student_id', $studentId)->where('status', 1)->where('payment_id', 0)->sum('amount_payed');
 
-        $paymentCheck = $this->checkSchoolFees($student, $student->academic_session, $levelId);
+        $paymentCheck = $this->checkSchoolFees($student);
 
         if(!$acceptanceTransaction && $student->is_active == 0){
             return view('student.acceptanceFee', [
@@ -145,7 +145,7 @@ class StudentController extends Controller
         $levelId = $student->level_id;
         $academicSession = $student->programmeCategory->academicSessionSetting->academic_session;
 
-        $paymentCheck = $this->checkSchoolFees($student, $student->academic_session, $levelId);
+        $paymentCheck = $this->checkSchoolFees($student);
 
         return view('student.profile', [
             'payment' => $paymentCheck->schoolPayment,
@@ -639,7 +639,7 @@ class StudentController extends Controller
 
         $transactions = Transaction::where('student_id', $studentId)->where('payment_id', '!=', 0)->orderBy('status', 'ASC')->get();
 
-        $paymentCheck = $this->checkSchoolFees($student, $academicSession, $levelId);
+        $paymentCheck = $this->checkSchoolFees($student);
     
         return view('student.transactions', [
             'transactions' => $transactions,
@@ -668,7 +668,7 @@ class StudentController extends Controller
         ->get();
 
 
-        $paymentCheck = $this->checkSchoolFees($student, $student->academic_session, $levelId);
+        $paymentCheck = $this->checkSchoolFees($student);
 
 
         return view('student.walletTransactions', [
@@ -687,7 +687,7 @@ class StudentController extends Controller
         $academicSession = $student->programmeCategory->academicSessionSetting->academic_session;
 
         $mentorId  = $student->mentor_id;
-        $paymentCheck = $this->checkSchoolFees($student, $student->academic_session, $levelId);
+        $paymentCheck = $this->checkSchoolFees($student);
 
         $mentor = Staff::with('faculty', 'acad_department')->where('id', $mentorId)->first();
 
@@ -705,7 +705,7 @@ class StudentController extends Controller
         $levelId = $student->level_id;
         $academicSession = $student->programmeCategory->academicSessionSetting->academic_session;
 
-        $paymentCheck = $this->checkSchoolFees($student, $student->academic_session, $levelId);
+        $paymentCheck = $this->checkSchoolFees($student);
 
         return view('student.exits', [
             'passTuition' => $paymentCheck->passTuitionPayment,
@@ -1044,7 +1044,7 @@ class StudentController extends Controller
 
         $transactions = Transaction::where('student_id', $studentId)->where('payment_id', '!=', 0)->orderBy('status', 'ASC')->get();
 
-        $paymentCheck = $this->checkSchoolFees($student, $student->academic_session, $levelId);
+        $paymentCheck = $this->checkSchoolFees($student);
         $bandwidthPayment = Payment::where("type", "Bandwidth Fee")->where("academic_session", $academicSession)->first();
         
         return view('student.purchaseBandwidth', [
@@ -1214,7 +1214,7 @@ class StudentController extends Controller
             $applicants = Applicant::with('student')->where('referrer', $referalCode)->where('academic_session', $applicationSession)->get();
         }
 
-        $paymentCheck = $this->checkSchoolFees($student, $student->academic_session, $levelId);
+        $paymentCheck = $this->checkSchoolFees($student);
 
         return view('student.reffs', [
             'applicants' => $applicants,
@@ -1234,7 +1234,7 @@ class StudentController extends Controller
 
         $applicants = Applicant::with('programme', 'olevels', 'guardian', 'student')->where('academic_session', $request->session)->get();
         
-        $paymentCheck = $this->checkSchoolFees($student, $student->academic_session, $levelId);
+        $paymentCheck = $this->checkSchoolFees($student);
 
         if(!$paymentCheck->passTuitionPayment){
             return view('student.schoolFee', [
@@ -1281,7 +1281,7 @@ class StudentController extends Controller
         $levelId = $student->level_id;
         $academicSession = $student->programmeCategory->academicSessionSetting->academic_session;
 
-        $paymentCheck = $this->checkSchoolFees($student, $student->academic_session, $levelId);
+        $paymentCheck = $this->checkSchoolFees($student);
 
         $student = Student::with('applicant', 'applicant.utmes', 'programme')->where('slug', $slug)->first();
 
@@ -1303,7 +1303,7 @@ class StudentController extends Controller
 
         $academicSession = $student->programmeCategory->academicSessionSetting->academic_session;
 
-        $paymentCheck = $this->checkSchoolFees($student, $student->academic_session, $levelId);
+        $paymentCheck = $this->checkSchoolFees($student);
 
         $applicant = Applicant::with('programme', 'olevels', 'guardian')->where('slug', $slug)->first();
         
@@ -1324,7 +1324,7 @@ class StudentController extends Controller
 
         $academicSession = $student->programmeCategory->academicSessionSetting->academic_session;
 
-        $paymentCheck = $this->checkSchoolFees($student, $student->academic_session, $levelId);
+        $paymentCheck = $this->checkSchoolFees($student);
 
         $hostelPayment = Payment::where("type", "Accomondation Fee")->where("academic_session", $academicSession)->first();
         $hostelPaymentTx = Transaction::where('student_id', $studentId)->where('payment_id', $hostelPayment->id)->where('status', 1)->first();
@@ -1380,7 +1380,7 @@ class StudentController extends Controller
         $levelId = $student->level_id;
         $academicSession = $student->programmeCategory->academicSessionSetting->academic_session;
 
-        $paymentCheck = $this->checkSchoolFees($student, $student->academic_session, $levelId);
+        $paymentCheck = $this->checkSchoolFees($student);
 
         if(empty($student->image)){
             return view('student.updateImage', [

@@ -5,6 +5,7 @@
     $student = Auth::guard('student')->user();
     $applicant = $student->applicant;
     $gender = $applicant->gender;
+    $programmeCategory = $student->programmeCategory;
 @endphp
 <div class="row">
     <div class="col-12">
@@ -69,7 +70,7 @@
     </div>
     <!-- end col -->
 </div>
-@elseif(!empty($pageGlobalData->setting) && strtolower($pageGlobalData->sessionSetting->accomondation_booking_status) != 'start')
+@elseif(!empty($programmeCategory->academicSessionSetting) && strtolower($programmeCategory->academicSessionSetting->accomondation_booking_status) != 'start')
 <div class="row justify-content-center">
     <div class="col-lg-6">
         <div class="card">

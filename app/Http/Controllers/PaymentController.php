@@ -608,7 +608,7 @@ class PaymentController extends Controller
 
         $transactions = Transaction::where('student_id', $studentId)->where('payment_id', '!=', 0)->orderBy('status', 'ASC')->get();
 
-        $paymentCheck = $this->checkSchoolFees($student, $academicSession, $levelId);
+        $paymentCheck = $this->checkSchoolFees($student);
         $bandwidthPayment = Payment::where("type", "Bandwidth Fee")->where("academic_session", $academicSession)->first();
 
         if(!$paymentCheck->passTuitionPayment){
