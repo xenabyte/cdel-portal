@@ -616,7 +616,7 @@ class Controller extends BaseController
         return $startAcademicYear . '/' . $endAcademicYear;
     }
 
-    public function checkSchoolFees($student, $academicSession=null, $levelId=null)
+    public function checkSchoolFees($student, $academicSession = null, $levelId = null)
     {
         $studentId = $student->id;
         $applicantId = $student->user_id;
@@ -777,7 +777,7 @@ class Controller extends BaseController
             $name = $student->applicant->lastname.' '.$student->applicant->othernames;
             $nameParts = explode(' ', $student->applicant->othernames);
             $firstName = $nameParts[0];
-            $studentEmail = strtolower(str_replace(' ', '', $student->applicant->lastname.'.'.$firstName.'@st.tau.edu.ng'));
+            $studentEmail = strtolower(str_replace(' ', '', $student->applicant->lastname . '.' . $firstName . '.' . $student->id . '@st.tau.edu.ng'));
 
 
             $newMatric = empty($programme->matric_last_number) ? ($programme->students->count() + 20) + 1 : $programme->matric_last_number + 1;

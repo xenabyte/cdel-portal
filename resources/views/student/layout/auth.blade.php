@@ -67,7 +67,7 @@
 </head>
 
 <body>
-
+     @include('sweetalert::alert')
     <!-- auth-page wrapper -->
     <div class="auth-page-wrapper  py-5 d-flex justify-content-center align-items-center min-vh-100">
         <!-- auth-page content -->

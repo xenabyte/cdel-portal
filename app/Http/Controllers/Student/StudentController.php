@@ -421,6 +421,35 @@ class StudentController extends Controller
             ]);
         }
 
+        $meta = [
+            "student_id" => $studentId,
+            "payment_id" => $paymentId,
+            "payment_gateway" => $paymentGateway,
+            "reference" => $reference,
+            "academic_session" => $student->academic_session,
+            "redirect_path" => $redirectLocation,
+            "payment_Type" => $paymentType,
+            "amount" => $amount
+        ];
+        
+        if (!empty($bandwidthPlan)) {
+            $meta['plan_id'] = $bandwidthPlan->id;
+        }
+        
+        if (!empty($suspensionId)) {
+            $meta['suspension_id'] = $suspensionId;
+        }
+
+        if (
+            in_array($student->programme_category_id, [
+                ProgrammeCategory::getProgrammeCategory(ProgrammeCategory::PGD),
+                ProgrammeCategory::getProgrammeCategory(ProgrammeCategory::MASTER),
+                ProgrammeCategory::getProgrammeCategory(ProgrammeCategory::DOCTORATE)
+            ])
+        ) {
+            $paymentType = "PG Tuition fee";
+        }
+
         if(strtolower($paymentGateway) == 'paystack') {
             Log::info("Paystack Amount ****************: ". round($this->getPaystackAmount($amount)));
 
@@ -536,34 +565,6 @@ class StudentController extends Controller
         if(strtolower($paymentGateway) == 'upperlink') {
             Log::info("Upperlink Amount ****************: ". round($this->getUpperlinkAmount($amount)));
 
-            $meta = [
-                "student_id" => $studentId,
-                "payment_id" => $paymentId,
-                "payment_gateway" => $paymentGateway,
-                "reference" => $reference,
-                "academic_session" => $student->academic_session,
-                "redirect_path" => $redirectLocation,
-                "payment_Type" => $paymentType,
-            ];
-            
-            if (!empty($bandwidthPlan)) {
-                $meta['plan_id'] = $bandwidthPlan->id;
-            }
-            
-            if (!empty($suspensionId)) {
-                $meta['suspension_id'] = $suspensionId;
-            }
-
-            if (
-                in_array($student->programme_category_id, [
-                    ProgrammeCategory::getProgrammeCategory(ProgrammeCategory::PGD),
-                    ProgrammeCategory::getProgrammeCategory(ProgrammeCategory::MASTER),
-                    ProgrammeCategory::getProgrammeCategory(ProgrammeCategory::DOCTORATE)
-                ])
-            ) {
-                $paymentType = "PG Tuition fee";
-            }
-
             $data = array(
                 "amount" => round($this->getUpperlinkAmount($amount)/100),
                 "phone" => $student->applicant->phone_number,
@@ -611,15 +612,18 @@ class StudentController extends Controller
                 'customerEmail' => $student->email,
                 'customerName' => $student->applicant->lastname. ' '.$student->applicant->othernames,
                 'expiryDate' => $invoiceExpire,
-                'paymentMethods' => ["ACCOUNT_TRANSFER"],
-                "redirectUrl"=> env("MONNIFY_REDIRECT_URL"),
+                'paymentMethods' => ["CARD","ACCOUNT_TRANSFER","USSD","PHONE_NUMBER"],
+                'redirectUrl'=> env("MONNIFY_REDIRECT_URL"),
+                'meta' => json_encode($meta)
             );
 
             $monnify = new Monnify();
             $createInvoice = $monnify->initiateInvoice($monnifyPaymentdata);
             $checkoutUrl = $createInvoice->responseBody->checkoutUrl;
+            $paymentGatewayRef = $createInvoice->responseBody->transactionReference;
 
             $transaction->checkout_url = $checkoutUrl;
+            $transaction->payment_gateway_ref = $paymentGatewayRef;
             $transaction->save();
 
             return redirect($checkoutUrl);

@@ -28,6 +28,7 @@ use App\Libraries\Google\Google;
 use App\Libraries\Pdf\Pdf;
 use App\Libraries\Paygate\Paygate;
 use App\Libraries\Bandwidth\Bandwidth;
+use App\Libraries\Monnify\Monnify;
 
 
 use App\Mail\ApplicationMail;
@@ -599,58 +600,168 @@ class PaymentController extends Controller
     }
 
     public function monnifyVerifyPayment(Request $request){
-        $student = Auth::guard('student')->user();
-        $studentId = $student->id;
-        $levelId = $student->level_id;
+        $ref = $request->query('paymentReference');
 
-        $academicSession = $student->programmeCategory->academicSessionSetting->academic_session;
-        $plans = Plan::all();
+        $programmeCategories = ProgrammeCategory::with('academicSessionSetting')->get();
+        $redirectPath = $redirectPath ?? '/';
 
-        $transactions = Transaction::where('student_id', $studentId)->where('payment_id', '!=', 0)->orderBy('status', 'ASC')->get();
-
-        $paymentCheck = $this->checkSchoolFees($student);
-        $bandwidthPayment = Payment::where("type", "Bandwidth Fee")->where("academic_session", $academicSession)->first();
-
-        if(!$paymentCheck->passTuitionPayment){
-            return view('student.schoolFee', [
-                'payment' => $paymentCheck->schoolPayment,
-                'passTuition' => $paymentCheck->passTuitionPayment,
-                'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
-                'passEightyTuition' => $paymentCheck->passEightyTuition,
-                'studentPendingTransactions' => $paymentCheck->studentPendingTransactions
-            ]);
+        if (empty($ref)) {
+            alert()->error('Error', 'Missing payment reference');
+            return redirect($redirectPath);
         }
 
-        if(empty($student->image)){
-            return view('student.updateImage', [
-                'payment' => $paymentCheck->schoolPayment,
-                'passTuition' => $paymentCheck->passTuitionPayment,
-                'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
-                'passEightyTuition' => $paymentCheck->passEightyTuition,
-                'studentPendingTransactions' => $paymentCheck->studentPendingTransactions
-            ]);
+        $transaction = Transaction::where('reference', $ref)->first();
+
+        if (!$transaction) {
+            alert()->error('Error', 'Transaction not found');
+            return redirect($redirectPath);
         }
 
-        if(empty($student->bandwidth_username)){
-            return view('student.bandwidth', [
-                'payment' => $paymentCheck->schoolPayment,
-                'passTuition' => $paymentCheck->passTuitionPayment,
-                'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
-                'passEightyTuition' => $paymentCheck->passEightyTuition,
-                'studentPendingTransactions' => $paymentCheck->studentPendingTransactions
-            ]);
+        $paymentGatewayRef = $transaction->payment_gateway_ref;
+
+        $monnify = new Monnify();
+        $verifyInvoice = $monnify->verifyInvoice($paymentGatewayRef);
+
+        if (!$verifyInvoice || !$verifyInvoice->requestSuccessful) {
+            alert()->error('Error', 'Unable to verify payment');
+           return redirect($redirectPath);
         }
-    
-        alert()->success('Success', 'Transaction Successful')->persistent('Close');    
-        return view('student.transactions', [
-            'transactions' => $transactions,
-            'payment' => $paymentCheck->schoolPayment,
-            'passTuition' => $paymentCheck->passTuitionPayment,
-            'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
-            'passEightyTuition' => $paymentCheck->passEightyTuition,
-            'studentPendingTransactions' => $paymentCheck->studentPendingTransactions,
-            'schoolPaymentTransaction' => $paymentCheck->schoolPaymentTransaction
-        ]);
+
+        $paymentStatus = $verifyInvoice->responseBody->paymentStatus ?? null;
+
+        if (empty($verifyInvoice->responseBody->metaData)) {
+             alert()->error('Error', 'Payment Information is missing, contact administrator');
+           return redirect($redirectPath);
+        }
+
+        $data = $verifyInvoice->responseBody->metaData;
+        dd
+        $paymentData = json_decode($data, true);
+
+        $paymentId = $paymentData->payment_id;
+        $studentId = $paymentData->student_id;
+        $redirectPath = $paymentData->redirect_path;
+
+        $paymentType = Payment::PAYMENT_TYPE_WALLET_DEPOSIT;
+        if ($paymentId > 0) {
+            $payment = Payment::where('id', $paymentId)->first();
+            $paymentType = $payment->type;
+        }
+
+        
+        $student = Student::with('applicant', 'programme')->where('id', $studentId)->first();
+        $amount = $paymentData->amount * 100;
+        $session = $paymentData['academic_session'];
+
+        if($this->processMonnifyPayment($verifyInvoice)){
+            if($student && !empty($studentId)){
+                $pdf = new Pdf();
+                $invoice = $pdf->generateTransactionInvoice($session, $studentId, $paymentId, 'single');
+                        
+                $data = new \stdClass();
+                $data->lastname = $student->applicant->lastname;
+                $data->othernames = $student->applicant->othernames;
+                $data->amount = $amount;
+                $data->invoice = $invoice;
+                if(env('SEND_MAIL')){
+                    Mail::to($student->email)->send(new TransactionMail($data));
+                }
+
+                if ($paymentType == Payment::PAYMENT_TYPE_SUMMER_COURSE_REGISTRATION) {
+                    $transaction = Transaction::where('reference', $ref)->first();
+                    $creditStudent = $this->creditStudentSummerCourseReg($transaction);
+
+                    alert()->success('Good Job', 'Payment successful')->persistent('Close');
+                    if (is_string($creditStudent)) {
+                        alert()->error('Oops', $creditStudent)->persistent('Close');
+                    }
+
+                    if (!$creditStudent) {
+                        Log::info("Unable to credit student summer course reg: $amount - $student - {$transaction->additional_data}");
+                    }
+
+                    return redirect($redirectPath);
+                }
+
+                if ($paymentType == Payment::PAYMENT_TYPE_WALLET_DEPOSIT) {
+                    $creditStudent = $this->creditStudentWallet($studentId, $amount);
+
+                    alert()->success('Good Job', 'Payment successful')->persistent('Close');
+                    if (is_string($creditStudent)) {
+                        alert()->error('Oops', $creditStudent)->persistent('Close');
+                    }
+
+                    if (!$creditStudent) {
+                        Log::info("Unable to credit student wallet: $amount - $student");
+                    }
+
+                    return redirect($redirectPath);
+                }
+                 
+                if ($paymentType == Payment::PAYMENT_TYPE_BANDWIDTH) {
+                    $transaction = Transaction::where('reference', $txRef)->first();
+                    $creditStudent = $this->creditBandwidth($transaction, $amount);
+
+                    alert()->success('Good Job', 'Payment successful')->persistent('Close');
+                    if (is_string($creditStudent)) {
+                        alert()->error('Oops', $creditStudent)->persistent('Close');
+                    }
+
+                    if (!$creditStudent) {
+                        Log::info("Unable to credit student bandwidth: $amount - $student");
+                    }
+
+                    return redirect($redirectPath);
+                }
+
+                if ($paymentType == Payment::PAYMENT_TYPE_ACCOMONDATION) {
+                    $transaction = Transaction::where('reference', $txRef)->first();
+                    $creditStudent = $this->creditAccommodation($transaction);
+
+                    alert()->success('Good Job', 'Payment successful')->persistent('Close');
+                    if (is_string($creditStudent)) {
+                        alert()->error('Oops', $creditStudent)->persistent('Close');
+                    }
+
+                    return redirect($redirectPath);
+                }
+
+                alert()->success('Good Job', 'Payment successful')->persistent('Close');
+                return redirect($redirectPath);
+            }
+
+            if ( $paymentType == Payment::PAYMENT_TYPE_GENERAL_APPLICATION || $paymentType == Payment::PAYMENT_TYPE_INTER_TRANSFER_APPLICATION) {
+                $this->createApplicant($paymentData);
+                alert()->success('Good Job', 'Payment successful')->persistent('Close');
+
+                return view($redirectPath, [
+                    'programmes' => $this->programmes,
+                    'payment' => $payment,
+                    'programmeCategories' => $programmeCategories
+                ]);
+            }
+
+            if ($paymentType == Payment::PAYMENT_TYPE_SCHOOL || $paymentType == Payment::PAYMENT_TYPE_SCHOOL_DE) {
+                $this->generateMatricAndEmail($student);
+
+                alert()->success('Good Job', 'Payment successful')->persistent('Close');
+                return redirect($redirectPath);
+            }
+
+        }else{
+            if ($paymentType == Payment::PAYMENT_TYPE_GENERAL_APPLICATION || $paymentType == Payment::PAYMENT_TYPE_INTER_TRANSFER_APPLICATION) {
+                alert()->info('oops!!!', 'Something happened, contact administrator')->persistent('Close');
+                return view($redirectPath, [
+                    'programmes' => $this->programmes,
+                    'payment' => $payment,
+                    'programmeCategories' => $programmeCategories
+                ]);
+            } else {
+                alert()->info('oops!!!', 'Something happened, contact administrator')->persistent('Close');
+                return redirect($redirectPath);
+            }
+        }
+
     }
 
     // private function generateMatricAndEmail($student){
@@ -774,6 +885,10 @@ class PaymentController extends Controller
     }
 
 
+    /**
+     * Retrieve all successful transactions from rave
+     * @return void
+     */
     public function getAllRave(){
         $data = [
             'page' => 1,

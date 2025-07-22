@@ -816,6 +816,7 @@ class ResultController extends Controller
         if(!$existingRegistration){
             $courseReg = CourseRegistration::create([
                 'student_id' => $student->id,
+                'programme_category_id' => $student->programme_category_id,
                 'course_id' => $programmeCourse->course_id,
                 'course_credit_unit' => $programmeCourse->credit_unit,
                 'course_code' => $courseCode,

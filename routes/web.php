@@ -2,11 +2,6 @@
 
 use App\Http\Controllers\Admin\StaffProgramAssignmentController;
 
-header('Access-Control-Allow-Methods: GET, POST, PATCH, PUT, DELETE, OPTIONS');
-header('Access-Control-Allow-Headers: Origin, Content-Type, X-Auth-Token, Authorization, Accept,charset,boundary,Content-Length');
-header('Access-Control-Allow-Origin: *');
-
-
 use App\Http\Middleware\GlobalDataMiddleware;
 use App\Http\Middleware\StudentAccess;
 use Illuminate\Support\Facades\Route;
@@ -38,7 +33,7 @@ Route::post('/updateNotificationStatus', [App\Http\Controllers\HomeController::c
 Route::get('/verifyPayment', [App\Http\Controllers\PaymentController::class, 'verifyPayment'])->name('verifyPayment');
 Route::get('/raveVerifyPayment', [App\Http\Controllers\PaymentController::class, 'raveVerifyPayment'])->name('raveVerifyPayment');
 Route::get('/upperlinkVerifyPayment', [App\Http\Controllers\PaymentController::class, 'upperlinkVerifyPayment'])->name('upperlinkVerifyPayment');
-Route::get('/monnifyVerifyPayment', [App\Http\Controllers\Student\PaymentController::class, 'monnifyVerifyPayment'])->name('monnifyVerifyPayment');
+Route::get('/monnifyVerifyPayment', [App\Http\Controllers\PaymentController::class, 'monnifyVerifyPayment'])->name('monnifyVerifyPayment');
 
 
 Route::post('/paystackWebhook', [App\Http\Controllers\PaymentController::class, 'paystackWebhook']);

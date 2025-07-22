@@ -19,6 +19,7 @@ class Transaction extends Model
         'amount_payed',
         'reference',
         'payment_method',
+        'payment_gateway_ref',
         'status',
         'session',
         'narration',
