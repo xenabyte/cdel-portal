@@ -635,7 +635,8 @@ class PaymentController extends Controller
         }
 
         $data = $verifyInvoice->responseBody->metaData;
-        dd
+        dd($data);
+
         $paymentData = json_decode($data, true);
 
         $paymentId = $paymentData->payment_id;
