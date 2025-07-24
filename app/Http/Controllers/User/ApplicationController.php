@@ -31,6 +31,7 @@ use App\Mail\BankDetailsMail;
 
 use App\Libraries\Paygate\Paygate;
 use App\Libraries\AdvanceStudy\AdvanceStudy;
+use App\Libraries\Monnify\Monnify;
 
 
 
@@ -394,10 +395,6 @@ class ApplicationController extends Controller
         }
 
         $paymentGateway = $request->paymentGateway;
-        if((strtolower($paymentGateway) != 'upperlink') && (strtolower($paymentGateway) != 'paystack') &&  strtolower($paymentGateway) != 'rave' && strtolower($paymentGateway) != 'banktransfer') {
-            alert()->error('Oops', 'Gateway not available')->persistent('Close');
-            return redirect()->back();
-        }
         
         $accessCode = $this->generateAccessCode();
         $amount = $payment->structures->sum('amount');
@@ -576,6 +573,44 @@ class ApplicationController extends Controller
             $paymentUrl = $paymentData['data']['checkOutUrl'];
 
             return redirect($paymentUrl);
+        }
+
+        if(strtolower($paymentGateway) ==  "monnify"){
+            $now = Carbon::now();
+            $future = $now->addHours(48);
+            $invoiceExpire = $future->format('Y-m-d H:i:s');
+            $monnifyAmount = $this->getMonnifyAmount($amount);
+
+            $monnifyPaymentdata = array(
+                'amount' => ceil($monnifyAmount/100),
+                'invoiceReference' => $reference,
+                'description' =>  $payment->type,
+                'currencyCode' => "NGN",
+                'contractCode' => env('MONNIFY_CONTRACT_CODE'),
+                'customerEmail' =>strtolower($request->email),
+                'customerName' => ucwords(strtolower($request->lastname)). ' '.ucwords(strtolower($request->othernames)),
+                'expiryDate' => $invoiceExpire,
+                'paymentMethods' => ["CARD","ACCOUNT_TRANSFER","USSD","PHONE_NUMBER"],
+                'redirectUrl'=> env("MONNIFY_REDIRECT_URL"),
+                'metaData' => $metaData
+            );
+
+            $monnify = new Monnify();
+            $createInvoice = $monnify->initiateInvoice($monnifyPaymentdata);
+            $checkoutUrl = $createInvoice->responseBody->checkoutUrl;
+            $paymentGatewayRef = $createInvoice->responseBody->transactionReference;
+
+            $transaction = Transaction::create([
+                'payment_id' =>  $payment->id,
+                'amount_payed' => $amount,
+                'payment_method' => $paymentGateway,
+                'reference' => $reference,
+                'session' => $applicationSession,
+                'payment_gateway_ref' => $paymentGatewayRef
+            ]);
+
+
+            return redirect($checkoutUrl);
         }
     }
 

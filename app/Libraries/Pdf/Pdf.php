@@ -23,7 +23,7 @@ use PDF as PDFDocument;
 
 class Pdf
 {
-    public function generateAdmissionLetter($slug)
+    public function generateAdmissionLetter($studentId)
     {
         $options = [
             'isRemoteEnabled' => true,
@@ -31,7 +31,9 @@ class Pdf
             'no_modify' => true,
         ];
 
-        $student = Student::with('programme', 'faculty', 'department', 'applicant')->where('slug', $slug)->first();
+        $student = Student::with('programme', 'faculty', 'department', 'applicant')->where('id', $studentId)->first();
+        $slug = $student->slug;
+        
         $setting = Setting::first();
         $applicationType = $student->applicant->application_type;
         $programmeCategoryId = $student->programme_category_id;

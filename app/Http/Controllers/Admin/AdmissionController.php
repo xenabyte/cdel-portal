@@ -191,13 +191,19 @@ class AdmissionController extends Controller
             $nameParts = explode(' ', $applicant->othernames);
             $firstName = $nameParts[0];
 
-            $student = Student::where('email', $applicant->email)->first();
+            $studentFromPrevSession = Student::where('email', $applicant->email)->where('academic_session', '!=', $admissionSession)->first();
+            if ($studentFromPrevSession) {
+                $studentFromPrevSession->email = $email.time();
+                $studentFromPrevSession->slug = $studentFromPrevSession->slug.time();
+                $studentFromPrevSession->update();
+            }
 
-            if ($student) {
+            $student = Student::where('email', $email)->where('academic_session', $admissionSession)->first();
+            if($student){
                 $studentId = $student->id;
-            } else {
+            }else{
                 $studentId = Student::create([
-                    'slug' => $applicant->slug,
+                    'slug' => $applicant->slug.'_'.time(),
                     'email' => $applicant->email,
                     'password' => bcrypt($accessCode),
                     'passcode' => $accessCode,
@@ -216,7 +222,7 @@ class AdmissionController extends Controller
 
             //create an email with tau letter heading 
             $pdf = new Pdf();
-            $admissionLetter = $pdf->generateAdmissionLetter($applicant->slug);
+            $admissionLetter = $pdf->generateAdmissionLetter($studentId);
 
             $student = Student::with('programme', 'applicant')->where('id', $studentId)->first();
             $student->admission_letter = $admissionLetter;

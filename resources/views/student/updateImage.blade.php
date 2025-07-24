@@ -53,7 +53,7 @@
 <!--end row-->
 
 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-md">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
         <div class="modal-content">
             <div class="modal-header p-3">
                 <h5 class="modal-title text-uppercase fw-bold" id="exampleModalLabel">Upload Image</h5>

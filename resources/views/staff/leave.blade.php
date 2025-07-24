@@ -220,7 +220,7 @@ $assistingstaffName = $assistingStaff->title.' '.$assistingStaff->lastname.' '.$
 
 <div id="assistingStaffMgt" class="modal fade" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" style="display: none;">
     <!-- Fullscreen Modals -->
-    <div class="modal-dialog modal-md">
+    <div class="modal-dialog modal-xl">
         <div class="modal-content border-0 overflow-hidden">
             <div class="modal-header p-3">
                 <h4 class="card-title mb-0">Manage Leave as Assisting Staff</h4>
@@ -255,7 +255,7 @@ $assistingstaffName = $assistingStaff->title.' '.$assistingStaff->lastname.' '.$
 
 <div id="hodMgt" class="modal fade" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" style="display: none;">
     <!-- Fullscreen Modals -->
-    <div class="modal-dialog modal-md">
+    <div class="modal-dialog modal-xl">
         <div class="modal-content border-0 overflow-hidden">
             <div class="modal-header p-3">
                 <h4 class="card-title mb-0">Manage Leave as HOD/HOU</h4>
@@ -295,7 +295,7 @@ $assistingstaffName = $assistingStaff->title.' '.$assistingStaff->lastname.' '.$
 
 <div id="deanMgt" class="modal fade" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" style="display: none;">
     <!-- Fullscreen Modals -->
-    <div class="modal-dialog modal-md">
+    <div class="modal-dialog modal-xl">
         <div class="modal-content border-0 overflow-hidden">
             <div class="modal-header p-3">
                 <h4 class="card-title mb-0">Manage Leave as DEAN</h4>
@@ -334,7 +334,7 @@ $assistingstaffName = $assistingStaff->title.' '.$assistingStaff->lastname.' '.$
 
 <div id="hrMgt" class="modal fade" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" style="display: none;">
     <!-- Fullscreen Modals -->
-    <div class="modal-dialog modal-md">
+    <div class="modal-dialog modal-xl">
         <div class="modal-content border-0 overflow-hidden">
             <div class="modal-header p-3">
                 <h4 class="card-title mb-0">Manage Leave as HR</h4>
@@ -373,7 +373,7 @@ $assistingstaffName = $assistingStaff->title.' '.$assistingStaff->lastname.' '.$
 
 <div id="registrarMgt" class="modal fade" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" style="display: none;">
     <!-- Fullscreen Modals -->
-    <div class="modal-dialog modal-md">
+    <div class="modal-dialog modal-xl">
         <div class="modal-content border-0 overflow-hidden">
             <div class="modal-header p-3">
                 <h4 class="card-title mb-0">Manage Leave as Registrar</h4>
@@ -412,7 +412,7 @@ $assistingstaffName = $assistingStaff->title.' '.$assistingStaff->lastname.' '.$
 
 <div id="vcMgt" class="modal fade" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" style="display: none;">
     <!-- Fullscreen Modals -->
-    <div class="modal-dialog modal-md">
+    <div class="modal-dialog modal-xl">
         <div class="modal-content border-0 overflow-hidden">
             <div class="modal-header p-3">
                 <h4 class="card-title mb-0">Manage Leave as DEAN</h4>

@@ -60,7 +60,7 @@ $studentPendingTransaction = $studentPendingTransactions->first();
 <!--end row-->
 
 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-md">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
         <div class="modal-content">
             <div class="modal-header p-3">
                 <h5 class="modal-title text-uppercase fw-bold" id="exampleModalLabel">Pending Payment</h5>
@@ -91,8 +91,8 @@ $studentPendingTransaction = $studentPendingTransactions->first();
                                     @if(env('FLUTTERWAVE_STATUS'))<option value="Rave">Flutterwave</option>@endif
                                     @if(env('MONNIFY_STATUS'))<option value="Monnify">Monnify</option>@endif
                                     @if(env('PAYSTACK_STATUS'))<option value="Paystack">Paystack</option>@endif
-                                    @if(env('BANK_TRANSFER_STATUS'))<option value="BankTransfer">Transfer</option>@endif
                                     @if(env('WALLET_STATUS'))<option value="Wallet">Wallet</option>@endif
+                                    {{-- @if(env('BANK_TRANSFER_STATUS'))<option value="BankTransfer">Transfer</option>@endif --}}
                                 </select>
                             </div>
         
@@ -145,16 +145,16 @@ $studentPendingTransaction = $studentPendingTransactions->first();
                     <div class="row justify-content-center">
                         <div class="col-lg-9">
                             <h4 class="mt-4 fw-semibold">School Fee</h4>
-                            @if($academicSession != $admissionSession && $student->is_active != 1)
+                            {{-- @if($academicSession != $admissionSession && $student->is_active != 1)
                             <p class="text-muted mt-3">Please note: Payment not available yet, stay tuned.</p>
-                            @else
-                            <p class="text-muted mt-3">Please note: Access to the dashboard requires prior payment of school fees for the {{ $academicSession  }} session.</p>
+                            @else --}}
+                            <p class="text-muted mt-3">Please note: Access to the dashboard requires prior payment of school fees for the {{ $student->academic_session  }} session.</p>
                             <div class="mt-4">
                                 <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
                                     Click here to pay
                                 </button>
                             </div>
-                            @endif
+                            {{-- @endif --}}
                         </div>
                     </div>
 
@@ -173,7 +173,7 @@ $studentPendingTransaction = $studentPendingTransactions->first();
 <!--end row-->
 
 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-md">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
         <div class="modal-content">
             <div class="modal-header p-3">
                 <h5 class="modal-title text-uppercase fw-bold" id="exampleModalLabel">School Fee</h5>
@@ -218,10 +218,10 @@ $studentPendingTransaction = $studentPendingTransactions->first();
                                     <option value= "" selected>Select Payment Gateway</option>
                                     @if(env('UPPERLINK_STATUS'))<option value="Upperlink">Upperlink</option>@endif
                                     @if(env('FLUTTERWAVE_STATUS'))<option value="Rave">Flutterwave</option>@endif
-                                    {{-- @if(env('MONNIFY_STATUS'))<option value="Monnify">Monnify</option>@endif
+                                    @if(env('MONNIFY_STATUS'))<option value="Monnify">Monnify</option>@endif
                                     @if(env('PAYSTACK_STATUS'))<option value="Paystack">Paystack</option>@endif
-                                    @if(env('BANK_TRANSFER_STATUS'))<option value="BankTransfer">Transfer</option>@endif
-                                    @if(env('WALLET_STATUS'))<option value="Wallet">Wallet</option>@endif --}}
+                                    @if(env('WALLET_STATUS'))<option value="Wallet">Wallet</option>@endif
+                                    {{-- @if(env('BANK_TRANSFER_STATUS'))<option value="BankTransfer">Transfer</option>@endif --}}
                                 </select>
                             </div>
         

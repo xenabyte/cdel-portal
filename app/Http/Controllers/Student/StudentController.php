@@ -84,17 +84,7 @@ class StudentController extends Controller
 
         $paymentCheck = $this->checkSchoolFees($student);
 
-        if(!$acceptanceTransaction && $student->is_active == 0){
-            return view('student.acceptanceFee', [
-                'payment' => $acceptancePayment,
-                'passTuition' => $paymentCheck->passTuitionPayment,
-                'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
-                'passEightyTuition' => $paymentCheck->passEightyTuition,
-                'studentPendingTransactions' => $paymentCheck->studentPendingTransactions
-            ]);
-        }
-        
-        // if ((($levelId == 1 && strtolower($applicationType) == 'utme') || 
+         // if ((($levelId == 1 && strtolower($applicationType) == 'utme') || 
         //     ($levelId == 2 && strtolower($applicationType) != 'utme')) && 
         //     ($student->clearance_status != 1)) {
         //     return view('student.clearance', [
@@ -106,7 +96,18 @@ class StudentController extends Controller
         //     ]);
         // }
 
-        if(!$student->is_active && !$paymentCheck->passTuitionPayment){
+        if(!$acceptanceTransaction && $student->is_active == 0){
+            return view('student.acceptanceFee', [
+                'payment' => $acceptancePayment,
+                'passTuition' => $paymentCheck->passTuitionPayment,
+                'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
+                'passEightyTuition' => $paymentCheck->passEightyTuition,
+                'studentPendingTransactions' => $paymentCheck->studentPendingTransactions
+            ]);
+        }
+        
+
+        if(!$paymentCheck->passTuitionPayment){
             return view('student.schoolFee', [
                 'payment' => $paymentCheck->schoolPayment,
                 'passTuition' => $paymentCheck->passTuitionPayment,
@@ -116,15 +117,15 @@ class StudentController extends Controller
             ]);
         }
 
-        if(empty($student->image)){
-            return view('student.updateImage', [
-                'payment' => $paymentCheck->schoolPayment,
-                'passTuition' => $paymentCheck->passTuitionPayment,
-                'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
-                'passEightyTuition' => $paymentCheck->passEightyTuition,
-                'studentPendingTransactions' => $paymentCheck->studentPendingTransactions
-            ]);
-        }
+        // if($student->is_active  && empty($student->image)){
+        //     return view('student.updateImage', [
+        //         'payment' => $paymentCheck->schoolPayment,
+        //         'passTuition' => $paymentCheck->passTuitionPayment,
+        //         'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
+        //         'passEightyTuition' => $paymentCheck->passEightyTuition,
+        //         'studentPendingTransactions' => $paymentCheck->studentPendingTransactions
+        //     ]);
+        // }
 
         // $google = new Google();
         // $google->addMemberToGroup($student->email, env('GOOGLE_STUDENT_GROUP'));
@@ -614,7 +615,7 @@ class StudentController extends Controller
                 'expiryDate' => $invoiceExpire,
                 'paymentMethods' => ["CARD","ACCOUNT_TRANSFER","USSD","PHONE_NUMBER"],
                 'redirectUrl'=> env("MONNIFY_REDIRECT_URL"),
-                'meta' => json_encode($meta)
+                'metaData' => $meta
             );
 
             $monnify = new Monnify();

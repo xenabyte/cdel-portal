@@ -53,7 +53,7 @@
 <!--end row-->
 
 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-md">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
         <div class="modal-content">
             <div class="modal-header p-3">
                 <h5 class="modal-title text-uppercase fw-bold" id="exampleModalLabel">Acceptance Fee</h5>
@@ -75,9 +75,9 @@
                                     <option value= "" selected>Select Payment Gateway</option>
                                     @if(env('UPPERLINK_STATUS'))<option value="Upperlink">Upperlink</option>@endif
                                     @if(env('FLUTTERWAVE_STATUS'))<option value="Rave">Flutterwave</option>@endif
-                                    {{-- @if(env('MONNIFY_STATUS'))<option value="Monnify">Monnify</option>@endif
+                                    @if(env('MONNIFY_STATUS'))<option value="Monnify">Monnify</option>@endif
                                     @if(env('PAYSTACK_STATUS'))<option value="Paystack">Paystack</option>@endif
-                                    @if(env('BANK_TRANSFER_STATUS'))<option value="BankTransfer">Transfer</option>@endif --}}
+                                    {{-- @if(env('BANK_TRANSFER_STATUS'))<option value="BankTransfer">Transfer</option>@endif --}}
                                 </select>
                             </div>
 

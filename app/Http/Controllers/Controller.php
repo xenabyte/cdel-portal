@@ -289,6 +289,67 @@ class Controller extends BaseController
 
     }
 
+    public function processMonnifyPayment($paymentDetails)
+    {
+        log::info("Processing monnify payment:" . json_encode($paymentDetails));
+
+        $paymentData = $paymentDetails->responseBody->metaData;
+
+        //get active editions
+        $applicationId = !empty($paymentData->application_id) ? $paymentData->application_id : null;
+        $studentId     = !empty($paymentData->student_id) ? $paymentData->student_id : null;
+        $planId        = !empty($paymentData->plan_id) ? $paymentData->plan_id : null;
+        $suspensionId  = !empty($paymentData->suspension_id) ? $paymentData->suspension_id : null;
+        $session       = $paymentData->academic_session;
+        $paymentId     = $paymentData->payment_id;
+        $paymentGateway = $paymentData->payment_gateway;
+        $amount        = $paymentData->amount;
+        $paymentGatewayRef = $paymentDetails->responseBody->transactionReference;
+        $reference     = $paymentDetails->responseBody->paymentReference;
+
+        $redirectUrl = env('MONNIFY_REDIRECT_URL').'?paymentReference='.$reference;
+
+
+        if ($existTx = Transaction::where('reference', $reference)->where('status', null)->first()) {
+            $existTx->reference = $reference;
+            $existTx->payment_gateway_ref = $paymentGatewayRef;
+            $existTx->status = 1;
+            $existTx->payment_method = $paymentGateway;
+            $existTx->redirect_url = $redirectUrl;
+            $existTx->save();
+
+            if (!empty($suspensionId)) {
+                StudentSuspension::where('id', $suspensionId)->update(['transaction_id' => $existTx->id]);
+            }
+
+            return true;
+        }
+
+        if (Transaction::where('reference', $reference)->where('status', 1)->first()) {
+            return true;
+        }
+
+        $transaction = Transaction::create([
+            'user_id' => !empty($applicationId) ? $applicationId : null,
+            'student_id' => !empty($studentId) ? $studentId : null,
+            'payment_id' => $paymentId,
+            'amount_payed' => $amount,
+            'payment_method' => $paymentGateway,
+            'reference' => $reference,
+            'session' => $session,
+            'redirect_url' => $redirectUrl,
+            'plan_id' => !empty($planId) ? $planId : null,
+            'status' => 1
+        ]);
+
+        if (!empty($suspensionId)) {
+            StudentSuspension::where('id', $suspensionId)->update(['transaction_id' => $transaction->id]);
+        }
+
+        return true;
+
+    }
+
     public function generateAccessCode()
     {
         $applicationAccessCode = "";
@@ -863,7 +924,7 @@ class Controller extends BaseController
         if (empty($transaction->is_used)) {
             $creditStudent = $bandwidth->addToDataBalance($bandwidthUsername, $bandwidthAmount);
             if ($creditStudent && isset($creditStudent['status']) && $creditStudent['status'] === 'success') {
-                Log::info("********************** credit student bandwidth**********************: ". $bandwidthAmount .' - '.$student);
+                Log::info("********************** credit student bandwidth **********************: ". $bandwidthAmount .' - '.$student);
                 $transaction->status = 1;
                 $transaction->is_used = 1;
                 $transaction->update();
@@ -882,18 +943,27 @@ class Controller extends BaseController
         return strcmp($a['session'], $b['session']);
     }
 
-    public function creditStudentWallet($studentId, $amount)
+    public function creditStudentWallet($transaction)
     {
-        $student = Student::find($studentId);
+        $student = Student::find($transaction->student_id);
+        $amount = $transaction->amount_payed;
 
-        $studentBalance = $student->amount_balance;
-        $studentNewBalance = $studentBalance + $amount;
-        $student->amount_balance = $studentNewBalance;
 
-        Log::info("********************** credit student wallet**********************: ". $amount .' - '.$student);
-        if ($student->update()) {
-            return true;
+        Log::info("********************** credit student wallet **********************: ". $amount .' - '.$student);
+        if (empty($transaction->is_used)) {
+            $studentBalance = $student->amount_balance;
+            $studentNewBalance = $studentBalance + $amount;
+            $student->amount_balance = $studentNewBalance;
+
+            if ($student->update()) {
+                $transaction->status = 1;
+                $transaction->is_used = 1;
+                $transaction->update();
+
+                return true;
+            }
         }
+
         return false;
     }
 
@@ -1061,26 +1131,26 @@ class Controller extends BaseController
         return $classifiedCourses;
     }
 
-    public function createApplicant($applicantData)
-    {
-        $slug = isset($applicantData['data']['metadata']['slug']) ? $applicantData['data']['metadata']['slug'] : (isset($applicantData['data']['meta']['slug']) ? $applicantData['data']['meta']['slug'] : null);
-        $email = isset($applicantData['data']['metadata']['email']) ? $applicantData['data']['metadata']['email'] : (isset($applicantData['data']['meta']['email']) ? $applicantData['data']['meta']['email'] : null);
-        $lastname = isset($applicantData['data']['metadata']['lastname']) ? $applicantData['data']['metadata']['lastname'] : (isset($applicantData['data']['meta']['lastname']) ? $applicantData['data']['meta']['lastname'] : null);
-        $phoneNumber = isset($applicantData['data']['metadata']['phone_number']) ? $applicantData['data']['metadata']['phone_number'] : (isset($applicantData['data']['meta']['phone_number']) ? $applicantData['data']['meta']['phone_number'] : null);
-        $otherNames = isset($applicantData['data']['metadata']['othernames']) ? $applicantData['data']['metadata']['othernames'] : (isset($applicantData['data']['meta']['othernames']) ? $applicantData['data']['meta']['othernames'] : null);
-        $password = isset($applicantData['data']['metadata']['password']) ? $applicantData['data']['metadata']['password'] : (isset($applicantData['data']['meta']['password']) ? $applicantData['data']['meta']['password'] : null);
-        $applicationSession = isset($applicantData['data']['metadata']['academic_session']) ? $applicantData['data']['metadata']['academic_session'] : (isset($applicantData['data']['meta']['academic_session']) ? $applicantData['data']['meta']['academic_session'] : null);
-        $partnerId = isset($applicantData['data']['metadata']['partner_id']) ? $applicantData['data']['metadata']['partner_id'] : (isset($applicantData['data']['meta']['partner_id']) ? $applicantData['data']['meta']['partner_id'] : null);
-        $referralCode = isset($applicantData['data']['metadata']['referrer']) ? $applicantData['data']['metadata']['referrer'] : (isset($applicantData['data']['meta']['referrer']) ? $applicantData['data']['meta']['referrer'] : null);
-        $applicationType = isset($applicantData['data']['metadata']['application_type']) ? $applicantData['data']['metadata']['application_type'] : (isset($applicantData['data']['meta']['application_type']) ? $applicantData['data']['meta']['application_type'] : null);
-        $txRef = isset($applicantData['data']['reference']) ? $applicantData['data']['reference'] : (isset($applicantData['data']['meta']['reference']) ? $applicantData['data']['meta']['reference'] : null);
-        $programmeCategoryId = isset($applicantData['data']['metadata']['programme_category_id']) ? $applicantData['data']['metadata']['programme_category_id'] : (isset($applicantData['data']['meta']['programme_category_id']) ? $applicantData['data']['meta']['programme_category_id'] : null);
-        $applicant = null;
+    public function createApplicant($applicantData, $paymentGateway){
+        $metadata = $this->extractMetadata($applicantData, $paymentGateway);
 
+        // Defaults from metadata
+        $slug = $metadata->slug ?? null;
+        $email = $metadata->email ?? null;
+        $lastname = $metadata->lastname ?? null;
+        $phoneNumber = $metadata->phone_number ?? null;
+        $otherNames = $metadata->othernames ?? null;
+        $password = $metadata->password ?? null;
+        $applicationSession = $metadata->academic_session ?? null;
+        $partnerId = $metadata->partner_id ?? null;
+        $referralCode = $metadata->referrer ?? null;
+        $applicationType = $metadata->application_type ?? null;
+        $programmeCategoryId = $metadata->programme_category_id ?? null;
+        $txRef = $metadata->reference ?? null;
 
-        if (isset($applicantData['test_applicant_id'])) {
+        // Override if test applicant
+        if (strtolower($paymentGateway) == 'upperlink' && isset($applicantData['test_applicant_id'])) {
             $testApplicant = TestApplicant::find($applicantData['test_applicant_id']);
-
             $slug = $testApplicant->slug;
             $email = $testApplicant->email;
             $lastname = $testApplicant->lastname;
@@ -1095,8 +1165,7 @@ class Controller extends BaseController
             $programmeCategoryId = $testApplicant->programme_category_id;
         }
 
-
-        $newApplicant = ([
+        $newApplicant = [
             'slug' => $slug,
             'email' => strtolower($email),
             'lastname' => ucwords($lastname),
@@ -1105,40 +1174,63 @@ class Controller extends BaseController
             'password' => Hash::make($password),
             'passcode' => $password,
             'academic_session' => $applicationSession,
-            'partner_id' => !empty($partnerId) ? $partnerId : null,
+            'partner_id' => $partnerId ?? null,
             'referrer' => $referralCode,
             'application_type' => $applicationType,
             'programme_category_id' => $programmeCategoryId
-        ]);
+        ];
 
-        $programmeCategory = ProgrammeCategory::with('academicSessionSetting', 'examSetting')->where('id', $programmeCategoryId)->first();
+        $programmeCategory = ProgrammeCategory::with('academicSessionSetting', 'examSetting')
+            ->where('id', $programmeCategoryId)
+            ->first();
 
         if (!$checkApplicant = User::where('email', strtolower($email))->where('academic_session', $applicationSession)->first()) {
-            Log::info("********************** Creating Applicant **********************: ".' - '.$lastname.' - '.$otherNames);
+            Log::info("Creating Applicant: {$lastname} {$otherNames}");
             $applicant = User::create($newApplicant);
-            $applicationNumber = env('SCHOOL_CODE').'/'.$programmeCategory->code.'/'.substr($applicationSession, 0, 4).sprintf("%03d", ($applicant->id + env('APPLICATION_STARTING_NUMBER')));
+            $applicationNumber = env('SCHOOL_CODE') . '/' . $programmeCategory->code . '/' . substr($applicationSession, 0, 4) . sprintf("%03d", ($applicant->id + env('APPLICATION_STARTING_NUMBER')));
             $applicant->application_number = $applicationNumber;
             $applicant->save();
-            Log::info("********************** Applicant Created **********************: ".' - '.$lastname.' - '.$otherNames .' - '.$applicationNumber);
+            Log::info("Applicant Created: {$lastname} {$otherNames} - {$applicationNumber}");
 
-            if (!empty($txRef)) {
-                if ($existTx = Transaction::where('reference', $txRef)->where('status', 1)->first()) {
-                    $existTx->user_id = $applicant->id;
-                    $existTx->save();
-                }
+            if (!empty($txRef) && $existTx = Transaction::where('reference', $txRef)->where('status', 1)->first()) {
+                $existTx->user_id = $applicant->id;
+                $existTx->save();
+            }
+        } else {
+            $applicant = $checkApplicant;
+            $tx = Transaction::where('reference', $txRef)->where('status', 1)->first();
+            if ($tx) {
+                $tx->user_id = $checkApplicant->id;
+                $tx->save();
             }
         }
 
-        if (empty($applicant)) {
-            $applicant = User::find($checkApplicant->id);
-            $tx = Transaction::where('reference', $txRef)->where('status', 1)->first();
-            $tx->user_id = $checkApplicant->id;
-            $tx->save();
-        }
         if (env('SEND_MAIL')) {
             Mail::to($applicant->email)->send(new ApplicationMail($applicant));
         }
+
         return true;
+    }
+
+    public  function extractMetadata($data, $paymentGateway){
+        // Default: empty object
+        $meta = (object) [];
+
+        // Flutterwave or Upperlink 
+        if (strtolower($paymentGateway) == 'rave' || strtolower($paymentGateway) == 'upperlink') {
+            $meta = (object) $data['data']['metadata'];
+        }
+
+        // Paystack
+        if (strtolower($paymentGateway) == 'paystack'){
+            $meta = (object) $data['data']['meta'];
+        }
+        // Monnify
+        if (strtolower($paymentGateway) == 'monnify'){
+           $meta = $data->metaData;
+        }
+
+        return $meta;
     }
 
     public function sendGuardianOnboardingMail($student)

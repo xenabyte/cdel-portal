@@ -238,7 +238,7 @@ $staff = Auth::guard('staff')->user();
                                     </div>
                                     <div id="unAssignRole{{$singleStaffRole->id}}" class="modal fade" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" style="display: none;">
                                         <!-- Fullscreen Modals -->
-                                        <div class="modal-dialog modal-md">
+                                        <div class="modal-dialog modal-xl">
                                             <div class="modal-content border-0 overflow-hidden">
                                                 <div class="modal-header p-3">
                                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -277,7 +277,7 @@ $staff = Auth::guard('staff')->user();
 @if(!empty($staffAccessLevel))
 <div id="assignRole" class="modal fade" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" style="display: none;">
     <!-- Fullscreen Modals -->
-    <div class="modal-dialog modal-md modal-dialog-centered">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
         <div class="modal-content border-0 overflow-hidden">
             <div class="modal-header p-3">
                 <h4 class="card-title mb-0">Add Staff Role</h4>
@@ -315,7 +315,7 @@ $staff = Auth::guard('staff')->user();
     @if(!empty($staffAccessLevel) && $staffAccessLevel < 2 && ($singleStaff->id != $singleStaff->faculty->dean_id))    
         <div id="assignDeanToFaculty" class="modal fade" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" style="display: none;">
             <!-- Fullscreen Modals -->
-            <div class="modal-dialog modal-md modal-dialog-centered">
+            <div class="modal-dialog modal-xl modal-dialog-centered">
                 <div class="modal-content border-0 overflow-hidden">
                     <div class="modal-header p-3">
                         <h4 class="card-title mb-0">Assign Dean To Faculty</h4>
@@ -350,7 +350,7 @@ $staff = Auth::guard('staff')->user();
     @if(!empty($staffAccessLevel) && $staffAccessLevel < 3 && ($singleStaff->id != $singleStaff->faculty->sub_dean_id)) 
         <div id="assignSubDeanToFaculty" class="modal fade" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" style="display: none;">
             <!-- Fullscreen Modals -->
-            <div class="modal-dialog modal-md modal-dialog-centered">
+            <div class="modal-dialog modal-xl modal-dialog-centered">
                 <div class="modal-content border-0 overflow-hidden">
                     <div class="modal-header p-3">
                         <h4 class="card-title mb-0">Assign Sub Dean To Faculty</h4>
@@ -385,7 +385,7 @@ $staff = Auth::guard('staff')->user();
     @if(!empty($staffAccessLevel) && $staffAccessLevel < 4 && ($singleStaff->id != $singleStaff->department->hod_id)) 
         <div id="assignHodToDepartment" class="modal fade" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" style="display: none;">
             <!-- Fullscreen Modals -->
-            <div class="modal-dialog modal-md modal-dialog-centered">
+            <div class="modal-dialog modal-xl modal-dialog-centered">
                 <div class="modal-content border-0 overflow-hidden">
                     <div class="modal-header p-3">
                         <h4 class="card-title mb-0">Assign Dean To Faculty</h4>

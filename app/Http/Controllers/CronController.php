@@ -455,6 +455,7 @@ class CronController extends Controller
     public function checkApplicationRegistration($transactionID){
         $transaction = Transaction::find($transactionID);
         if($transaction && $transaction->status == 1){
+            $paymentGateway = $transaction->payment_gateway;
 
             $upperLinkPayGate = new PayGate();
             $paymentDetails =$upperLinkPayGate->verifyTransaction($transaction->reference);
@@ -468,7 +469,7 @@ class CronController extends Controller
 
             if($paymentType == Payment::PAYMENT_TYPE_GENERAL_APPLICATION || $paymentType == Payment::PAYMENT_TYPE_INTER_TRANSFER_APPLICATION){
                 $applicantData = $paymentDetails;
-                return $this->createApplicant($applicantData);
+                return $this->createApplicant($applicantData, $paymentGateway);
                 
             }
         }

@@ -211,10 +211,10 @@ $academicSession = $student->programmeCategory->academicSessionSetting->academic
                                                                                     <select class="form-select" aria-label="paymentGateway" name="paymentGateway" required onchange="handlePaymentMethodChange(event)">
                                                                                         <option value= "" selected>Select Payment Gateway</option>
                                                                                         @if(env('UPPERLINK_STATUS'))<option value="Upperlink">Upperlink</option>@endif
-                                                                                        {{-- @if(env('FLUTTERWAVE_STATUS'))<option value="Rave">Flutterwave</option>@endif
+                                                                                        @if(env('FLUTTERWAVE_STATUS'))<option value="Rave">Flutterwave</option>@endif
                                                                                         @if(env('MONNIFY_STATUS'))<option value="Monnify">Monnify</option>@endif
                                                                                         @if(env('PAYSTACK_STATUS'))<option value="Paystack">Paystack</option>@endif
-                                                                                        @if(env('BANK_TRANSFER_STATUS'))<option value="BankTransfer">Transfer</option>@endif --}}
+                                                                                        {{-- @if(env('BANK_TRANSFER_STATUS'))<option value="BankTransfer">Transfer</option>@endif --}}
                                                                                     </select>
                                                                                 </div>
                                     
@@ -707,10 +707,10 @@ $academicSession = $student->programmeCategory->academicSessionSetting->academic
                         <select class="form-select" aria-label="paymentGateway" name="paymentGateway" required onchange="handlePaymentMethodChange(event)">
                             <option value= "" selected>Select Payment Gateway</option>
                             @if(env('UPPERLINK_STATUS'))<option value="Upperlink">Upperlink</option>@endif
-                            {{-- @if(env('FLUTTERWAVE_STATUS'))<option value="Rave">Flutterwave</option>@endif
+                            @if(env('FLUTTERWAVE_STATUS'))<option value="Rave">Flutterwave</option>@endif
                             @if(env('MONNIFY_STATUS'))<option value="Monnify">Monnify</option>@endif
                             @if(env('PAYSTACK_STATUS'))<option value="Paystack">Paystack</option>@endif
-                            @if(env('BANK_TRANSFER_STATUS'))<option value="BankTransfer">Transfer</option>@endif --}}
+                            {{-- @if(env('BANK_TRANSFER_STATUS'))<option value="BankTransfer">Transfer</option>@endif --}}
                         </select>
                     </div>
 
@@ -774,10 +774,10 @@ $academicSession = $student->programmeCategory->academicSessionSetting->academic
                         <select class="form-select" aria-label="paymentGateway" name="paymentGateway" required onchange="handlePaymentMainMethodChange(event)">
                             <option value= "" selected>Select Payment Gateway</option>
                             @if(env('UPPERLINK_STATUS'))<option value="Upperlink">Upperlink</option>@endif
-                            {{-- @if(env('FLUTTERWAVE_STATUS'))<option value="Rave">Flutterwave</option>@endif
+                            @if(env('FLUTTERWAVE_STATUS'))<option value="Rave">Flutterwave</option>@endif
                             @if(env('MONNIFY_STATUS'))<option value="Monnify">Monnify</option>@endif
                             @if(env('PAYSTACK_STATUS'))<option value="Paystack">Paystack</option>@endif
-                            @if(env('BANK_TRANSFER_STATUS'))<option value="BankTransfer">Transfer</option>@endif --}}
+                            {{-- @if(env('BANK_TRANSFER_STATUS'))<option value="BankTransfer">Transfer</option>@endif --}}
                         </select>
                     </div>
 
@@ -873,10 +873,10 @@ $academicSession = $student->programmeCategory->academicSessionSetting->academic
                             <select class="form-select" aria-label="paymentGateway" name="paymentGateway" required onchange="handlePaymentMethodChange(event)">
                                 <option value= "" selected>Select Payment Gateway</option>
                                 @if(env('UPPERLINK_STATUS'))<option value="Upperlink">Upperlink</option>@endif
-                                {{-- @if(env('FLUTTERWAVE_STATUS'))<option value="Rave">Flutterwave</option>@endif
+                                @if(env('FLUTTERWAVE_STATUS'))<option value="Rave">Flutterwave</option>@endif
                                 @if(env('MONNIFY_STATUS'))<option value="Monnify">Monnify</option>@endif
                                 @if(env('PAYSTACK_STATUS'))<option value="Paystack">Paystack</option>@endif
-                                @if(env('BANK_TRANSFER_STATUS'))<option value="BankTransfer">Transfer</option>@endif --}}
+                                {{-- @if(env('BANK_TRANSFER_STATUS'))<option value="BankTransfer">Transfer</option>@endif --}}
                             </select>
                             <label for="paymentGateway" class="form-label">Select Payment Gateway<span class="text-danger">*</span></label>
                         </div>

@@ -68,6 +68,7 @@ class PaymentController extends Controller
             $studentId = $paymentDetails['data']['metadata']['student_id'];
             $redirectPath = $paymentDetails['data']['metadata']['redirect_path'];
             $txRef = $paymentDetails['data']['metadata']['reference'];
+            $paymentGateway = $paymentDetails['data']['metadata']['payment_gateway'];
 
             $programmeCategories = ProgrammeCategory::with('academicSessionSetting')->get();
 
@@ -99,18 +100,12 @@ class PaymentController extends Controller
                         }
 
                         if($paymentType == Payment::PAYMENT_TYPE_WALLET_DEPOSIT){
-                            $creditStudent = $this->creditStudentWallet($studentId, $amount);
+                            $transaction = Transaction::where('reference', $txRef)->first();
+                            $creditStudent = $this->creditStudentWallet($transaction);
                             if(!$creditStudent){
                                 Log::info("**********************Unable to credit student**********************: ". $amount .' - '.$student);
                             }
                         }
-
-                        if($paymentType == Payment::PAYMENT_TYPE_WALLET_DEPOSIT){
-                            $creditStudent = $this->creditStudentWallet($studentId, $amount);
-                            if(!$creditStudent){
-                                Log::info("**********************Unable to credit student wallet**********************: ". $amount .' - '.$student);
-                            }
-                        }  
                         
                         if($paymentType == Payment::PAYMENT_TYPE_BANDWIDTH){
                             $transaction = Transaction::where('reference', $txRef)->first();
@@ -141,7 +136,7 @@ class PaymentController extends Controller
                     alert()->success('Good Job', 'Payment successful')->persistent('Close');
                     if($paymentType == Payment::PAYMENT_TYPE_GENERAL_APPLICATION || $paymentType == Payment::PAYMENT_TYPE_INTER_TRANSFER_APPLICATION){
                         $applicantData = $paymentDetails;
-                        $this->createApplicant($applicantData);
+                        $this->createApplicant($applicantData, $paymentGateway);
                         return view($redirectPath, [ 
                             'programmes' => $this->programmes,
                             'payment' => $payment
@@ -199,6 +194,7 @@ class PaymentController extends Controller
             $studentId = !empty($paymentDetails['data']['meta']['student_id'])?$paymentDetails['data']['meta']['student_id']:null;
             $redirectPath = $paymentDetails['data']['meta']['redirect_path'];
             $txRef = $paymentDetails['data']['meta']['reference'];
+            $paymentGateway = $paymentDetails['data']['meta']['payment_gateway'];
 
 
             $paymentType = Payment::PAYMENT_TYPE_WALLET_DEPOSIT;
@@ -227,7 +223,8 @@ class PaymentController extends Controller
                             Mail::to($student->email)->send(new TransactionMail($data));
                         }
                         if($paymentType == Payment::PAYMENT_TYPE_WALLET_DEPOSIT){
-                            $creditStudent = $this->creditStudentWallet($studentId, $amount);
+                            $transaction = Transaction::where('reference', $txRef)->first();
+                            $creditStudent = $this->creditStudentWallet($transaction);
                             if(!$creditStudent){
                                 Log::info("**********************Unable to credit student wallet**********************: ". $amount .' - '.$student);
                             }
@@ -246,7 +243,7 @@ class PaymentController extends Controller
                     }
                     if($paymentType == Payment::PAYMENT_TYPE_GENERAL_APPLICATION || $paymentType == Payment::PAYMENT_TYPE_INTER_TRANSFER_APPLICATION){
                         $applicantData = $paymentDetails;
-                        $this->createApplicant($applicantData);
+                        $this->createApplicant($applicantData, $paymentGateway);
                         return view($redirectPath, [
                             'programmes' => $this->programmes,
                             'payment' => $payment,
@@ -329,6 +326,7 @@ class PaymentController extends Controller
             $studentId = $paymentData['student_id'] ?? null;
             $redirectPath = $paymentData['redirect_path'];
             $txRef = $paymentData['reference'];
+            $paymentGateway = $paymentData['payment_gateway'];
 
             $paymentType = Payment::PAYMENT_TYPE_WALLET_DEPOSIT;
             if ($paymentId > 0) {
@@ -355,7 +353,6 @@ class PaymentController extends Controller
                     ];
                 }
 
-                // Normal UI flow with alert and redirect
                 if ($student && !empty($studentId)) {
                     $pdf = new Pdf();
                     $invoice = $pdf->generateTransactionInvoice($session, $studentId, $paymentId, 'single');
@@ -387,7 +384,8 @@ class PaymentController extends Controller
                     }
 
                     if ($paymentType == Payment::PAYMENT_TYPE_WALLET_DEPOSIT) {
-                        $creditStudent = $this->creditStudentWallet($studentId, $amount);
+                        $transaction = Transaction::where('reference', $txRef)->first();
+                        $creditStudent = $this->creditStudentWallet($transaction);
 
                         alert()->success('Good Job', 'Payment successful')->persistent('Close');
                         if (is_string($creditStudent)) {
@@ -434,7 +432,7 @@ class PaymentController extends Controller
                     $paymentType == Payment::PAYMENT_TYPE_GENERAL_APPLICATION ||
                     $paymentType == Payment::PAYMENT_TYPE_INTER_TRANSFER_APPLICATION
                 ) {
-                    $this->createApplicant($paymentData);
+                    $this->createApplicant($paymentData, $paymentGateway);
                     alert()->success('Good Job', 'Payment successful')->persistent('Close');
 
                     return view($redirectPath, [
@@ -534,6 +532,7 @@ class PaymentController extends Controller
                 $paymentId = $paymentDetails['data']['meta']['payment_id'];
                 $studentId = !empty($paymentDetails['data']['meta']['student_id'])?$paymentDetails['data']['meta']['student_id']:null;
                 $redirectPath = $paymentDetails['data']['meta']['redirect_path'];
+                $paymentGateway = $paymentDetails['data']['meta']['payment_gateway'];
 
                 $paymentType = Payment::PAYMENT_TYPE_WALLET_DEPOSIT;
                 if($paymentId > 0){
@@ -544,6 +543,7 @@ class PaymentController extends Controller
                 $student = Student::with('applicant', 'programme')->where('id', $studentId)->first();
                 $amount = $paymentDetails['data']['meta']['amount'];
                 $session = $paymentDetails['data']['meta']['academic_session'];
+                $txRef = $paymentDetails['data']['meta']['reference'];
                 
                 if($paymentDetails['status'] == 'success'){
                     if($this->processRavePayment($paymentDetails)){
@@ -562,7 +562,8 @@ class PaymentController extends Controller
                             }
 
                             if($paymentType == Payment::PAYMENT_TYPE_WALLET_DEPOSIT){
-                                $creditStudent = $this->creditStudentWallet($studentId, $amount);
+                                $transaction = Transaction::where('reference', $txRef)->first();
+                                $creditStudent = $this->creditStudentWallet($transaction);
                                 if(!$creditStudent){
                                     Log::info("**********************Unable to credit student**********************: ". $amount .' - '.$student);
                                 }
@@ -571,7 +572,7 @@ class PaymentController extends Controller
 
                         if($paymentType == Payment::PAYMENT_TYPE_GENERAL_APPLICATION || $paymentType == Payment::PAYMENT_TYPE_INTER_TRANSFER_APPLICATION){
                             $applicantData = $paymentDetails;
-                            $this->createApplicant($applicantData);
+                            $this->createApplicant($applicantData, $paymentGateway);
                             return true;
                         }elseif($paymentType == Payment::PAYMENT_TYPE_SCHOOL || $paymentType == Payment::PAYMENT_TYPE_SCHOOL_DE){
                             $this->generateMatricAndEmail($student);
@@ -621,44 +622,44 @@ class PaymentController extends Controller
 
         $monnify = new Monnify();
         $verifyInvoice = $monnify->verifyInvoice($paymentGatewayRef);
-
         if (!$verifyInvoice || !$verifyInvoice->requestSuccessful) {
             alert()->error('Error', 'Unable to verify payment');
            return redirect($redirectPath);
         }
 
         $paymentStatus = $verifyInvoice->responseBody->paymentStatus ?? null;
+        if ($paymentStatus !== 'PAID') {
+            alert()->error('Error', 'Paymant Failed');
+           return redirect($redirectPath);
+        }
 
         if (empty($verifyInvoice->responseBody->metaData)) {
              alert()->error('Error', 'Payment Information is missing, contact administrator');
            return redirect($redirectPath);
         }
 
-        $data = $verifyInvoice->responseBody->metaData;
-        dd($data);
-
-        $paymentData = json_decode($data, true);
+        $paymentData = $verifyInvoice->responseBody->metaData;
 
         $paymentId = $paymentData->payment_id;
         $studentId = $paymentData->student_id;
         $redirectPath = $paymentData->redirect_path;
+        $paymentGateway = $paymentData->payment_gateway;
 
         $paymentType = Payment::PAYMENT_TYPE_WALLET_DEPOSIT;
         if ($paymentId > 0) {
             $payment = Payment::where('id', $paymentId)->first();
             $paymentType = $payment->type;
         }
-
         
         $student = Student::with('applicant', 'programme')->where('id', $studentId)->first();
-        $amount = $paymentData->amount * 100;
-        $session = $paymentData['academic_session'];
+        $amount = $paymentData->amount;
+        $session = $paymentData->academic_session;
 
         if($this->processMonnifyPayment($verifyInvoice)){
             if($student && !empty($studentId)){
                 $pdf = new Pdf();
                 $invoice = $pdf->generateTransactionInvoice($session, $studentId, $paymentId, 'single');
-                        
+
                 $data = new \stdClass();
                 $data->lastname = $student->applicant->lastname;
                 $data->othernames = $student->applicant->othernames;
@@ -685,7 +686,8 @@ class PaymentController extends Controller
                 }
 
                 if ($paymentType == Payment::PAYMENT_TYPE_WALLET_DEPOSIT) {
-                    $creditStudent = $this->creditStudentWallet($studentId, $amount);
+                    $transaction = Transaction::where('reference', $ref)->first();
+                    $creditStudent = $this->creditStudentWallet($transaction);
 
                     alert()->success('Good Job', 'Payment successful')->persistent('Close');
                     if (is_string($creditStudent)) {
@@ -700,7 +702,7 @@ class PaymentController extends Controller
                 }
                  
                 if ($paymentType == Payment::PAYMENT_TYPE_BANDWIDTH) {
-                    $transaction = Transaction::where('reference', $txRef)->first();
+                    $transaction = Transaction::where('reference', $ref)->first();
                     $creditStudent = $this->creditBandwidth($transaction, $amount);
 
                     alert()->success('Good Job', 'Payment successful')->persistent('Close');
@@ -716,7 +718,7 @@ class PaymentController extends Controller
                 }
 
                 if ($paymentType == Payment::PAYMENT_TYPE_ACCOMONDATION) {
-                    $transaction = Transaction::where('reference', $txRef)->first();
+                    $transaction = Transaction::where('reference', $ref)->first();
                     $creditStudent = $this->creditAccommodation($transaction);
 
                     alert()->success('Good Job', 'Payment successful')->persistent('Close');
@@ -727,12 +729,20 @@ class PaymentController extends Controller
                     return redirect($redirectPath);
                 }
 
+                if ($paymentType == Payment::PAYMENT_TYPE_SCHOOL || $paymentType == Payment::PAYMENT_TYPE_SCHOOL_DE) {
+                    $this->generateMatricAndEmail($student);
+
+                    alert()->success('Good Job', 'Payment successful')->persistent('Close');
+                    return redirect($redirectPath);
+                }
+
                 alert()->success('Good Job', 'Payment successful')->persistent('Close');
                 return redirect($redirectPath);
             }
 
             if ( $paymentType == Payment::PAYMENT_TYPE_GENERAL_APPLICATION || $paymentType == Payment::PAYMENT_TYPE_INTER_TRANSFER_APPLICATION) {
-                $this->createApplicant($paymentData);
+                $applicantData = $verifyInvoice->responseBody;
+                $this->createApplicant($applicantData, $paymentGateway);
                 alert()->success('Good Job', 'Payment successful')->persistent('Close');
 
                 return view($redirectPath, [
@@ -740,13 +750,6 @@ class PaymentController extends Controller
                     'payment' => $payment,
                     'programmeCategories' => $programmeCategories
                 ]);
-            }
-
-            if ($paymentType == Payment::PAYMENT_TYPE_SCHOOL || $paymentType == Payment::PAYMENT_TYPE_SCHOOL_DE) {
-                $this->generateMatricAndEmail($student);
-
-                alert()->success('Good Job', 'Payment successful')->persistent('Close');
-                return redirect($redirectPath);
             }
 
         }else{

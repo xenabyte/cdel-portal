@@ -98,8 +98,8 @@
                                                     @if(env('FLUTTERWAVE_STATUS'))<option value="Rave">Flutterwave</option>@endif
                                                     @if(env('MONNIFY_STATUS'))<option value="Monnify">Monnify</option>@endif
                                                     @if(env('PAYSTACK_STATUS'))<option value="Paystack">Paystack</option>@endif
-                                                    @if(env('BANK_TRANSFER_STATUS'))<option value="BankTransfer">Transfer</option>@endif
                                                     @if(env('WALLET_STATUS'))<option value="Wallet">Wallet</option>@endif
+                                                    {{-- @if(env('BANK_TRANSFER_STATUS'))<option value="BankTransfer">Transfer</option>@endif --}}
                                                 </select>
                                             </div>
 
@@ -147,7 +147,7 @@
 </div>
 
 <div id="addTransaction" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
-    <div class="modal-dialog modal-md modal-dialog-centered">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
         <div class="modal-content border-0 overflow-hidden">
             <div class="modal-header p-3">
                 <h4 class="card-title mb-0">Make 'a' Payment</h4>
@@ -171,11 +171,11 @@
                         <select class="form-select" aria-label="paymentGateway" name="paymentGateway" required onchange="handlePaymentMethodChange(event)">
                             <option value= "" selected>Select Payment Gateway</option>
                             @if(env('UPPERLINK_STATUS'))<option value="Upperlink">Upperlink</option>@endif
-                            {{-- @if(env('FLUTTERWAVE_STATUS'))<option value="Rave">Flutterwave</option>@endif
+                            @if(env('FLUTTERWAVE_STATUS'))<option value="Rave">Flutterwave</option>@endif
                             @if(env('MONNIFY_STATUS'))<option value="Monnify">Monnify</option>@endif
                             @if(env('PAYSTACK_STATUS'))<option value="Paystack">Paystack</option>@endif
-                            @if(env('BANK_TRANSFER_STATUS'))<option value="BankTransfer">Transfer</option>@endif
-                            @if(env('WALLET_STATUS'))<option value="Wallet">Wallet</option>@endif --}}
+                            @if(env('WALLET_STATUS'))<option value="Wallet">Wallet</option>@endif
+                            {{-- @if(env('BANK_TRANSFER_STATUS'))<option value="BankTransfer">Transfer</option>@endif --}}
                         </select>
                     </div>
 

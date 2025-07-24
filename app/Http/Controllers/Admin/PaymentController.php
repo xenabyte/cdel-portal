@@ -1110,8 +1110,7 @@ class PaymentController extends Controller
             'session' => $academicSession,
             'status' => 1
         ]);
-
-        if($this->creditStudentWallet($studentId, $amount)){
+        if($this->creditStudentWallet($transaction)){
             $pdf = new Pdf();
             $invoice = $pdf->generateTransactionInvoice($academicSession, $studentId, $paymentId, 'single');
                     

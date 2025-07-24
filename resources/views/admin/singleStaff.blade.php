@@ -269,7 +269,7 @@ return strtolower($staffRole->role->role) === 'hod';
                                     <div id="unAssignRole{{$singleStaffRole->id}}" class="modal fade" tabindex="-1"
                                         aria-hidden="true" data-bs-backdrop="static" style="display: none;">
                                         <!-- Fullscreen Modals -->
-                                        <div class="modal-dialog modal-md">
+                                        <div class="modal-dialog modal-xl">
                                             <div class="modal-content border-0 overflow-hidden">
                                                 <div class="modal-header p-3">
                                                     <button type="button" class="btn-close" data-bs-dismiss="modal"
@@ -354,7 +354,7 @@ return strtolower($staffRole->role->role) === 'hod';
                                     <!-- Modal for unassigning -->
                                     <div id="unAssignProgram{{ $assignment->id }}" class="modal fade" tabindex="-1"
                                         aria-hidden="true" data-bs-backdrop="static">
-                                        <div class="modal-dialog modal-md">
+                                        <div class="modal-dialog modal-xl">
                                             <div class="modal-content border-0 overflow-hidden">
                                                 <div class="modal-header p-3">
                                                     <button type="button" class="btn-close" data-bs-dismiss="modal"
@@ -417,7 +417,7 @@ return strtolower($staffRole->role->role) === 'hod';
 <div id="assignRole" class="modal fade" tabindex="-1" aria-hidden="true" data-bs-backdrop="static"
     style="display: none;">
     <!-- Fullscreen Modals -->
-    <div class="modal-dialog modal-md">
+    <div class="modal-dialog modal-xl">
         <div class="modal-content border-0 overflow-hidden">
             <div class="modal-header p-3">
                 <h4 class="card-title mb-0">Add Staff Role</h4>
@@ -453,7 +453,7 @@ return strtolower($staffRole->role->role) === 'hod';
 <div id="assignDeanToFaculty" class="modal fade" tabindex="-1" aria-hidden="true" data-bs-backdrop="static"
     style="display: none;">
     <!-- Fullscreen Modals -->
-    <div class="modal-dialog modal-md">
+    <div class="modal-dialog modal-xl">
         <div class="modal-content border-0 overflow-hidden">
             <div class="modal-header p-3">
                 <h4 class="card-title mb-0">Assign Dean To Faculty</h4>
@@ -488,7 +488,7 @@ return strtolower($staffRole->role->role) === 'hod';
 <div id="assignSubDeanToFaculty" class="modal fade" tabindex="-1" aria-hidden="true" data-bs-backdrop="static"
     style="display: none;">
     <!-- Fullscreen Modals -->
-    <div class="modal-dialog modal-md">
+    <div class="modal-dialog modal-xl">
         <div class="modal-content border-0 overflow-hidden">
             <div class="modal-header p-3">
                 <h4 class="card-title mb-0">Assign Dean To Faculty</h4>
@@ -523,7 +523,7 @@ return strtolower($staffRole->role->role) === 'hod';
 <div id="assignHodToDepartment" class="modal fade" tabindex="-1" aria-hidden="true" data-bs-backdrop="static"
     style="display: none;">
     <!-- Fullscreen Modals -->
-    <div class="modal-dialog modal-md">
+    <div class="modal-dialog modal-xl">
         <div class="modal-content border-0 overflow-hidden">
             <div class="modal-header p-3">
                 <h4 class="card-title mb-0">Assign HOD To Department</h4>

@@ -182,11 +182,19 @@ class AdmissionController extends Controller
             $student = Student::where('email', $applicant->email)->first();
  
             //create student records
-            if ($student) {
+            $studentFromPrevSession = Student::where('email', $applicant->email)->where('academic_session', '!=', $admissionSession)->first();
+            if ($studentFromPrevSession) {
+                $studentFromPrevSession->email = $email.time();
+                $studentFromPrevSession->slug = $studentFromPrevSession->slug.time();
+                $studentFromPrevSession->update();
+            }
+            
+            $student = Student::where('email', $email)->where('academic_session', $admissionSession)->first();
+            if($student){
                 $studentId = $student->id;
-            } else {
+            }else{
                 $studentId = Student::create([
-                    'slug' => $applicant->slug,
+                    'slug' => $applicant->slug.'_'.time(),
                     'email' => $applicant->email,
                     'password' => bcrypt($accessCode),
                     'passcode' => $accessCode,
@@ -198,13 +206,14 @@ class AdmissionController extends Controller
                     'programme_id' => $programme->id,
                     'entry_year' => $entryYear,
                     'batch' => $request->batch,
-                    'programme_category_id' => $applicant->programmeCategory->id
+                    'programme_category_id' => $applicant->programmeCategory->id,
                 ])->id;
             }
 
+
             //create an email with tau letter heading 
             $pdf = new Pdf();
-            $admissionLetter = $pdf->generateAdmissionLetter($applicant->slug);
+            $admissionLetter = $pdf->generateAdmissionLetter($studentId);
 
             $student = Student::with('programme', 'applicant')->where('id', $studentId)->first();
             $student->admission_letter = $admissionLetter;
