@@ -53,7 +53,7 @@
 
 <body>
 
-    @include('sweetalert::alert')
+    @include('sweetalert::alert', ['cdn' => "https://cdn.jsdelivr.net/npm/sweetalert2@9/dist/sweetalert2.all.min.js"])
     
     <div class="auth-page-wrapper pt-5">
         <!-- auth page bg -->

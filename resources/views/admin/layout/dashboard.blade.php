@@ -74,7 +74,7 @@
 </head>
 
 <body>
-    @include('sweetalert::alert')
+    @include('sweetalert::alert', ['cdn' => "https://cdn.jsdelivr.net/npm/sweetalert2@9/dist/sweetalert2.all.min.js"])
     <!-- Begin page -->
     <div id="loading-overlay" class="loading-overlay">
         <i class="fa fa-spinner fa-spin"></i>

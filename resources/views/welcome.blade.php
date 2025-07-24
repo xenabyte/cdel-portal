@@ -45,7 +45,7 @@
     </head>
 
     <body data-bs-spy="scroll" data-bs-target="#navbar-example">
-        @include('sweetalert::alert')
+        @include('sweetalert::alert', ['cdn' => "https://cdn.jsdelivr.net/npm/sweetalert2@9/dist/sweetalert2.all.min.js"])
         <!-- Begin page -->
         <div class="layout-wrapper landing">
             <nav class="navbar navbar-expand-lg bg-primary navbar-landing fixed-top job-navbar" id="navbar">
