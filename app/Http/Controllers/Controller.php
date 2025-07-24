@@ -1216,9 +1216,14 @@ class Controller extends BaseController
         // Default: empty object
         $meta = (object) [];
 
-        // Flutterwave or Upperlink 
-        if (strtolower($paymentGateway) == 'rave' || strtolower($paymentGateway) == 'upperlink') {
-            $meta = (object) $data['data']['metadata'];
+        // Flutterwave 
+        if (strtolower($paymentGateway) == 'rave'){ 
+            $meta = $data['data']['metadata'];
+        }
+
+        // Upperlink
+        if (strtolower($paymentGateway) == 'upperlink') {
+            $meta = $data;
         }
 
         // Paystack
