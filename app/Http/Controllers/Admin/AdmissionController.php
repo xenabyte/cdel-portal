@@ -347,7 +347,7 @@ class AdmissionController extends Controller
         $pdf = new Pdf();
         $admissionLetter = $pdf->generateAdmissionLetter($student->id);
 
-        if(!empty($admissionLetter))
+        if($admissionLetter){
             $student->admission_letter = $admissionLetter;
             $student->save();
     
