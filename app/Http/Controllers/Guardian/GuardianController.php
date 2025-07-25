@@ -134,6 +134,18 @@ class GuardianController extends Controller
             }
         }
 
+         if(!empty($payment) && strtolower($payment->type) == strtolower(Payment::PAYMENT_TYPE_INTRA_TRANSFER_APPLICATION)) {
+
+            $pendingRequest = ProgrammeChangeRequest::where('student_id', $studentId)
+            ->where('status', '!=', 'completed')
+            ->first();
+
+            if ($pendingRequest) {
+                alert()->error('Oops', 'You already have a pending request.')->persistent('Close');
+                return redirect()->back();
+            }
+        }
+
         $paymentGateway = $request->paymentGateway;
 
         if(!$transaction){
@@ -148,6 +160,35 @@ class GuardianController extends Controller
                 "plan_id" => !empty($bandwidthPlan)?$bandwidthPlan->id:null,
                 'additional_data' => !empty($hostelMeta)?$hostelMeta:null
             ]);
+        }
+
+        $meta = [
+            "student_id" => $studentId,
+            "payment_id" => $paymentId,
+            "payment_gateway" => $paymentGateway,
+            "reference" => $reference,
+            "academic_session" => $student->academic_session,
+            "redirect_path" => $redirectLocation,
+            "payment_Type" => $paymentType,
+            "amount" => $amount
+        ];
+        
+        if (!empty($bandwidthPlan)) {
+            $meta['plan_id'] = $bandwidthPlan->id;
+        }
+        
+        if (!empty($suspensionId)) {
+            $meta['suspension_id'] = $suspensionId;
+        }
+
+        if (
+            in_array($student->programme_category_id, [
+                ProgrammeCategory::getProgrammeCategory(ProgrammeCategory::PGD),
+                ProgrammeCategory::getProgrammeCategory(ProgrammeCategory::MASTER),
+                ProgrammeCategory::getProgrammeCategory(ProgrammeCategory::DOCTORATE)
+            ])
+        ) {
+            $paymentType = "PG Tuition fee";
         }
        
 
@@ -250,7 +291,7 @@ class GuardianController extends Controller
                 "firstName" => $student->applicant->othernames,
                 "lastName" => $student->applicant->lastname,
                 "redirectUrl" => env("UPPERLINK_REDIRECT_URL"),
-                "accountCode" => BankAccount::getBankAccountCode($paymentType),
+                "accountCode" => BankAccount::getBankAccountCode($paymentType)->upperlinkAccountCode,
                 "meta" => json_encode($meta),
             );
 
@@ -275,23 +316,34 @@ class GuardianController extends Controller
             $monnifyAmount = $this->getMonnifyAmount($amount);
 
             $monnifyPaymentdata = array(
-                'amount' => ceil($monnifyAmount/100),
+                'amount' => ceil($monnifyAmount / 100),
                 'invoiceReference' => $transaction->reference,
-                'description' =>  $transaction->narration,
+                'description' => $transaction->narration,
                 'currencyCode' => "NGN",
                 'contractCode' => env('MONNIFY_CONTRACT_CODE'),
                 'customerEmail' => $student->email,
-                'customerName' => $student->applicant->lastname. ' '.$student->applicant->othernames,
+                'customerName' => $student->applicant->lastname . ' ' . $student->applicant->othernames,
                 'expiryDate' => $invoiceExpire,
-                'paymentMethods' => ["ACCOUNT_TRANSFER"],
-                "redirectUrl"=> env("MONNIFY_REDIRECT_URL"),
+                'paymentMethods' => ["CARD", "ACCOUNT_TRANSFER", "USSD", "PHONE_NUMBER"],
+                'redirectUrl' => env("MONNIFY_REDIRECT_URL"),
+                'metaData' => $meta,
+                'incomeSplitConfig' => [
+                    [
+                        'subAccountCode' => BankAccount::getBankAccountCode($paymentType)->monnifyAccountCode,
+                        'feePercentage' => 100,
+                        'splitAmount' => 100,
+                        'feeBearer' => true,
+                    ]
+                ]
             );
 
             $monnify = new Monnify();
             $createInvoice = $monnify->initiateInvoice($monnifyPaymentdata);
             $checkoutUrl = $createInvoice->responseBody->checkoutUrl;
+            $paymentGatewayRef = $createInvoice->responseBody->transactionReference;
 
             $transaction->checkout_url = $checkoutUrl;
+            $transaction->payment_gateway_ref = $paymentGatewayRef;
             $transaction->save();
 
             return redirect($checkoutUrl);

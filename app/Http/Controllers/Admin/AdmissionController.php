@@ -342,11 +342,12 @@ class AdmissionController extends Controller
             return redirect()->back();
         }
 
-        $pdf = new Pdf();
-        $admissionLetter = $pdf->generateAdmissionLetter($applicant->slug);
+        $student = Student::with('programme', 'applicant')->where('user_id', $applicant->id)->first();
 
-        if(!empty($admissionLetter)){
-            $student = Student::with('programme', 'applicant')->where('user_id', $applicant->id)->first();
+        $pdf = new Pdf();
+        $admissionLetter = $pdf->generateAdmissionLetter($student->id);
+
+        if(!empty($admissionLetter))
             $student->admission_letter = $admissionLetter;
             $student->save();
     

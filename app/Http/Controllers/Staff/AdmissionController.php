@@ -188,7 +188,7 @@ class AdmissionController extends Controller
                 $studentFromPrevSession->slug = $studentFromPrevSession->slug.time();
                 $studentFromPrevSession->update();
             }
-            
+
             $student = Student::where('email', $email)->where('academic_session', $admissionSession)->first();
             if($student){
                 $studentId = $student->id;
@@ -349,11 +349,12 @@ class AdmissionController extends Controller
             return redirect()->back();
         }
 
+        $student = Student::with('programme', 'applicant')->where('user_id', $applicant->id)->first();
+
         $pdf = new Pdf();
-        $admissionLetter = $pdf->generateAdmissionLetter($applicant->slug);
+        $admissionLetter = $pdf->generateAdmissionLetter($student->id);
 
         if($admissionLetter){
-            $student = Student::with('programme', 'applicant')->where('user_id', $applicant->id)->first();
             $student->admission_letter = $admissionLetter;
             $student->save();
     

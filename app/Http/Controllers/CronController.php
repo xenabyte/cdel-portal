@@ -492,7 +492,7 @@ class CronController extends Controller
                 continue; // Skip if applicant record is missing
             }
 
-            $admissionLetter = $pdf->generateAdmissionLetter($applicant->slug);
+            $admissionLetter = $pdf->generateAdmissionLetter($student->id);
 
             if (!empty($admissionLetter)) {
                 $student->admission_letter = $admissionLetter;

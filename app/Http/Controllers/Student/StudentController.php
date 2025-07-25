@@ -298,12 +298,10 @@ class StudentController extends Controller
             $redirectLocation = 'student/purchaseBandwidth';
         }
 
-        if(strtolower($paymentType) == strtolower(Payment::PAYMENT_TYPE_ACCOMONDATION)) {
+        if(strtolower($paymentType) == "accomondation") {
             $validator = Validator::make($request->all(), [
                 'campus' => 'required',
-                'hostel_id' => 'required',
                 'type_id' => 'required',
-                'room_id' => 'required',
             ]);
         
             if($validator->fails()) {
@@ -312,9 +310,7 @@ class StudentController extends Controller
             }
         
             $campus = $request->campus;
-            $hostelId = $request->hostel_id;
             $typeId = $request->type_id;
-            $roomId = $request->room_id;
         
             $roomType = RoomType::find($typeId);
             $amount = $roomType->amount;
@@ -323,62 +319,6 @@ class StudentController extends Controller
                 alert()->error('Error', 'Selected room type not found.')->persistent('Close');
                 return redirect()->back();
             }
-
-            $room = Room::with('allocations', 'type', 'hostel')->find($roomId);
-        
-            if(!$room) {
-                alert()->error('Error', 'Selected room not found.')->persistent('Close');
-                return redirect()->back();
-            }
-        
-            $totalBedSpaces = RoomBedSpace::where('room_id', $roomId)->count();
-        
-            $occupiedSpaces = Allocation::where('room_id', $roomId)
-                                         ->whereNull('release_date')
-                                         ->count();
-        
-            if($occupiedSpaces >= $totalBedSpaces) {
-                alert()->error('Error', 'No available bed spaces in the selected room.')->persistent('Close');
-                return redirect()->back();
-            }
-
-            $hostelData = array(
-                "room_id" => $roomId,
-                "hostel_id" => $hostelId,
-                "campus" => $campus,
-                "type_id" => $typeId,
-            );
-
-            $hostelMeta = json_encode($hostelData);
-
-
-            $hostelPaymentId = $request->hostel_payment_id;
-            if(!empty($hostelPaymentId)){
-                $hostelPaymentTx = Transaction::where('student_id', $studentId)->where('id', $hostelPaymentId)->where('status', 1)->first();
-                if(!$hostelPaymentTx){
-                    alert()->error('Error', 'Accomondation payment not found, contact Bursary')->persistent('Close');
-                    return redirect()->back();
-                }
-
-                $hostelPaymentAmount = $hostelPaymentTx->amount_payed;
-                if($amount != $hostelPaymentAmount){
-                    alert()->error('Error', 'Invalid accomondation payment, amount paid dosent match hostel type picked')->persistent('Close');
-                    return redirect()->back();
-                }
-
-                $hostelPaymentTx->additional_data = $hostelMeta;
-                $hostelPaymentTx->save();
-
-                $hostelPaymentTx->refresh();
-                $creditStudent = $this->creditAccommodation($hostelPaymentTx);
-                if (is_string($creditStudent)) {
-                    alert()->error('Oops', $creditStudent)->persistent('Close');
-                }
-
-                alert()->success('Room allocated successfully', '')->persistent('Close');
-                return redirect()->back();
-            }
-        
         }
 
         if(!empty($payment) && strtolower($payment->type) == strtolower(Payment::PAYMENT_TYPE_INTRA_TRANSFER_APPLICATION)) {
@@ -580,7 +520,7 @@ class StudentController extends Controller
                 "firstName" => $student->applicant->othernames,
                 "lastName" => $student->applicant->lastname,
                 "redirectUrl" => env("UPPERLINK_REDIRECT_URL"),
-                "accountCode" => BankAccount::getBankAccountCode($paymentType),
+                "accountCode" => BankAccount::getBankAccountCode($paymentType)->upperlinkAccountCode,
                 "meta" => json_encode($meta),
             );
 
@@ -615,7 +555,15 @@ class StudentController extends Controller
                 'expiryDate' => $invoiceExpire,
                 'paymentMethods' => ["CARD","ACCOUNT_TRANSFER","USSD","PHONE_NUMBER"],
                 'redirectUrl'=> env("MONNIFY_REDIRECT_URL"),
-                'metaData' => $meta
+                'metaData' => $meta,
+                'incomeSplitConfig' => [
+                    [
+                        'subAccountCode' => BankAccount::getBankAccountCode($paymentType)->monnifyAccountCode,
+                        'feePercentage' => 100,
+                        'splitAmount' => 100,
+                        'feeBearer' => true,
+                    ]
+                ]
             );
 
             $monnify = new Monnify();
@@ -1436,6 +1384,91 @@ class StudentController extends Controller
 
     }
 
+
+    // auto allocation of rooms for makePayment function 
+    // if(strtolower($paymentType) == strtolower(Payment::PAYMENT_TYPE_ACCOMONDATION)) {
+
+            // $validator = Validator::make($request->all(), [
+            //     'campus' => 'required',
+            //     'hostel_id' => 'required',
+            //     'type_id' => 'required',
+            //     'room_id' => 'required',
+            // ]);
+        
+            // if($validator->fails()) {
+            //     alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            //     return redirect()->back();
+            // }
+        
+            // $campus = $request->campus;
+            // $hostelId = $request->hostel_id;
+            // $typeId = $request->type_id;
+            // $roomId = $request->room_id;
+        
+            // $roomType = RoomType::find($typeId);
+            // $amount = $roomType->amount;
+
+            // if(!$roomType) {
+            //     alert()->error('Error', 'Selected room type not found.')->persistent('Close');
+            //     return redirect()->back();
+            // }
+
+            // $room = Room::with('allocations', 'type', 'hostel')->find($roomId);
+        
+            // if(!$room) {
+            //     alert()->error('Error', 'Selected room not found.')->persistent('Close');
+            //     return redirect()->back();
+            // }
+        
+            // $totalBedSpaces = RoomBedSpace::where('room_id', $roomId)->count();
+        
+            // $occupiedSpaces = Allocation::where('room_id', $roomId)
+            //                              ->whereNull('release_date')
+            //                              ->count();
+        
+            // if($occupiedSpaces >= $totalBedSpaces) {
+            //     alert()->error('Error', 'No available bed spaces in the selected room.')->persistent('Close');
+            //     return redirect()->back();
+            // }
+
+            // $hostelData = array(
+            //     "room_id" => $roomId,
+            //     "hostel_id" => $hostelId,
+            //     "campus" => $campus,
+            //     "type_id" => $typeId,
+            // );
+
+            // $hostelMeta = json_encode($hostelData);
+
+
+            // $hostelPaymentId = $request->hostel_payment_id;
+            // if(!empty($hostelPaymentId)){
+            //     $hostelPaymentTx = Transaction::where('student_id', $studentId)->where('id', $hostelPaymentId)->where('status', 1)->first();
+            //     if(!$hostelPaymentTx){
+            //         alert()->error('Error', 'Accomondation payment not found, contact Bursary')->persistent('Close');
+            //         return redirect()->back();
+            //     }
+
+            //     $hostelPaymentAmount = $hostelPaymentTx->amount_payed;
+            //     if($amount != $hostelPaymentAmount){
+            //         alert()->error('Error', 'Invalid accomondation payment, amount paid dosent match hostel type picked')->persistent('Close');
+            //         return redirect()->back();
+            //     }
+
+            //     $hostelPaymentTx->additional_data = $hostelMeta;
+            //     $hostelPaymentTx->save();
+
+            //     $hostelPaymentTx->refresh();
+            //     $creditStudent = $this->creditAccommodation($hostelPaymentTx);
+            //     if (is_string($creditStudent)) {
+            //         alert()->error('Oops', $creditStudent)->persistent('Close');
+            //     }
+
+            //     alert()->success('Room allocated successfully', '')->persistent('Close');
+            //     return redirect()->back();
+            // }
+        
+        // }
     
     
 }

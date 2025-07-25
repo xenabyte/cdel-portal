@@ -42,6 +42,7 @@
                                         <th scope="col">Account Name</th>
                                         <th scope="col">Account Number</th>
                                         <th scope="col">UpperLink Account Code</th>
+                                        <th scope="col">Monnify Account Code</th>
                                         <th scope="col"></th>
                                     </tr>
                                 </thead>
@@ -53,7 +54,8 @@
                                         <td>{{ $bankAccount->account_purpose }} </td>
                                         <td>{{ $bankAccount->account_name }} </td>
                                         <td>{{ $bankAccount->account_number }} </td>
-                                        <td>{{ $bankAccount->account_code }} </td>
+                                        <td>{{ $bankAccount->upperlink_account_code }} </td>
+                                        <td>{{ $bankAccount->monnify_account_code }} </td>
                                         <td>
                                             <div class="hstack gap-3 fs-15">
                                                 <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#edit{{$bankAccount->id}}" class="link-primary"><i class="ri-edit-circle-fill"></i></a>
@@ -146,8 +148,13 @@
                                                                     </div>
                                                                     
                                                                     <div class="mb-3">
-                                                                        <label for="account_code" class="form-label">Account Code</label>
-                                                                        <input type="text" class="form-control" name="account_code" id="account_code" value="{{ $bankAccount->account_code }}">
+                                                                        <label for="uaccount_code" class="form-label">Upperlink Account Code</label>
+                                                                        <input type="text" class="form-control" name="upperlink_account_code" id="uaccount_code" value="{{ $bankAccount->upperlink_account_code }}">
+                                                                    </div>
+
+                                                                    <div class="mb-3">
+                                                                        <label for="maccount_code" class="form-label">Monnify Account Code</label>
+                                                                        <input type="text" class="form-control" name="monnify_account_code" id="maccount_code" value="{{ $bankAccount->monnify_account_code }}">
                                                                     </div>
 
                                                                     <hr>
@@ -238,8 +245,13 @@
                     </div>
                     
                     <div class="mb-3">
-                        <label for="account_code" class="form-label">Account Code</label>
-                        <input type="text" class="form-control" name="account_code" id="account_code">
+                        <label for="uaccount_code" class="form-label">Upperlink Account Code</label>
+                        <input type="text" class="form-control" name="upperlink_account_code" id="uaccount_code">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="maccount_code" class="form-label">Monnify Account Code</label>
+                        <input type="text" class="form-control" name="monnify_account_code" id="maccount_code">
                     </div>
 
                     <hr>

@@ -1147,7 +1147,8 @@ class PaymentController extends Controller
             'account_number' => 'required|string',
             'account_name' => 'required|string',
             'account_purpose' => 'required|string',
-            'account_code' => 'required|string',
+            'monnify_account_code' => 'nullable|string',
+            'upperlink_account_code' => 'nullable|string'
         ]);
 
         if($validator->fails()) {
@@ -1160,7 +1161,8 @@ class PaymentController extends Controller
             'account_number' => $request->account_number,
             'account_name' => $request->account_name,
             'account_purpose' => $request->account_purpose,
-            'account_code' => $request->account_code
+            'monnify_account_code' => $request->monnify_account_code,
+            'upperlink_account_code' => $request->upperlink_account_code
         ]);
 
         if(BankAccount::create($bankAccount)){
@@ -1189,7 +1191,8 @@ class PaymentController extends Controller
             'account_number' => $request->account_number,
             'account_name' => $request->account_name,
             'account_purpose' => $request->account_purpose,
-            'account_code' => $request->account_code
+            'monnify_account_code' => $request->monnify_account_code,
+            'upperlink_account_code' => $request->upperlink_account_code
         ]);
 
         if ($bankAccount->update($bankAccountData)) {

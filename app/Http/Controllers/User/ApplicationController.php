@@ -549,7 +549,7 @@ class ApplicationController extends Controller
                 "firstName" => ucwords(strtolower($request->othernames)),
                 "lastName" => ucwords(strtolower($request->lastname)),
                 "redirectUrl" => env("UPPERLINK_REDIRECT_URL"),
-                "accountCode" => BankAccount::getBankAccountCode($paymentType),
+                "accountCode" => BankAccount::getBankAccountCode($paymentType)->upperlinkAccountCode,
                 "meta" => json_encode($metaData),
             );
 
@@ -592,7 +592,15 @@ class ApplicationController extends Controller
                 'expiryDate' => $invoiceExpire,
                 'paymentMethods' => ["CARD","ACCOUNT_TRANSFER","USSD","PHONE_NUMBER"],
                 'redirectUrl'=> env("MONNIFY_REDIRECT_URL"),
-                'metaData' => $metaData
+                'metaData' => $metaData,
+                'incomeSplitConfig' => [
+                    [
+                        'subAccountCode' => BankAccount::getBankAccountCode($paymentType)->monnifyAccountCode,
+                        'feePercentage' => 100,
+                        'splitAmount' => 100,
+                        'feeBearer' => true,
+                    ]
+                ]
             );
 
             $monnify = new Monnify();
