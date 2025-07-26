@@ -594,14 +594,14 @@ class ApplicationController extends Controller
                 'paymentMethods' => ["CARD","ACCOUNT_TRANSFER","USSD","PHONE_NUMBER"],
                 'redirectUrl'=> env("MONNIFY_REDIRECT_URL"),
                 'metaData' => $metaData,
-                // 'incomeSplitConfig' => [
-                //     [
-                //         'subAccountCode' => BankAccount::getBankAccountCode($paymentType)->monnifyAccountCode,
-                //         'feePercentage' => 100,
-                //         'splitAmount' => 100,
-                //         'feeBearer' => true,
-                //     ]
-                // ]
+                'incomeSplitConfig' => [
+                    [
+                        'subAccountCode' => BankAccount::getBankAccountCode($paymentType)->monnifyAccountCode,
+                        'feePercentage' => 100,
+                        'splitAmount' => 100,
+                        'feeBearer' => true,
+                    ]
+                ]
             );
 
             $monnify = new Monnify();
