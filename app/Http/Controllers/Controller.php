@@ -158,7 +158,7 @@ class Controller extends BaseController
         return true;
     }
 
-    public function processRavePayment($paymentDetails)
+    public function processFlutterwavePayment($paymentDetails)
     {
 
         log::info("Processing flutterwave payment:" . json_encode($paymentDetails));
@@ -292,8 +292,7 @@ class Controller extends BaseController
     public function processMonnifyPayment($paymentDetails)
     {
         log::info("Processing monnify payment:" . json_encode($paymentDetails));
-
-        $paymentData = $paymentDetails->responseBody->metaData;
+        $paymentData = $paymentDetails->metaData;
 
         //get active editions
         $applicationId = !empty($paymentData->application_id) ? $paymentData->application_id : null;
@@ -304,8 +303,8 @@ class Controller extends BaseController
         $paymentId     = $paymentData->payment_id;
         $paymentGateway = $paymentData->payment_gateway;
         $amount        = $paymentData->amount;
-        $paymentGatewayRef = $paymentDetails->responseBody->transactionReference;
-        $reference     = $paymentDetails->responseBody->paymentReference;
+        $paymentGatewayRef = $paymentDetails->transactionReference;
+        $reference     = $paymentDetails->paymentReference;
 
         $redirectUrl = env('MONNIFY_REDIRECT_URL').'?paymentReference='.$reference;
 
@@ -1149,8 +1148,8 @@ class Controller extends BaseController
         $txRef = $metadata->reference ?? null;
 
         // Override if test applicant
-        if (strtolower($paymentGateway) == 'upperlink' && isset($applicantData['test_applicant_id'])) {
-            $testApplicant = TestApplicant::find($applicantData['test_applicant_id']);
+        if (strtolower($paymentGateway) == 'upperlink' && isset($metadata->test_applicant_id)) {
+            $testApplicant = TestApplicant::find($metadata->test_applicant_id);
             $slug = $testApplicant->slug;
             $email = $testApplicant->email;
             $lastname = $testApplicant->lastname;
@@ -1163,7 +1162,11 @@ class Controller extends BaseController
             $applicationType = $testApplicant->application_type;
             $txRef = $testApplicant->reference;
             $programmeCategoryId = $testApplicant->programme_category_id;
+
+
         }
+
+
 
         $newApplicant = [
             'slug' => $slug,
@@ -1183,6 +1186,7 @@ class Controller extends BaseController
         $programmeCategory = ProgrammeCategory::with('academicSessionSetting', 'examSetting')
             ->where('id', $programmeCategoryId)
             ->first();
+
 
         if (!$checkApplicant = User::where('email', strtolower($email))->where('academic_session', $applicationSession)->first()) {
             Log::info("Creating Applicant: {$lastname} {$otherNames}");
@@ -1223,7 +1227,7 @@ class Controller extends BaseController
 
         // Upperlink
         if (strtolower($paymentGateway) == 'upperlink') {
-            $meta = $data;
+            $meta = (object) json_decode($data->meta);
         }
 
         // Paystack

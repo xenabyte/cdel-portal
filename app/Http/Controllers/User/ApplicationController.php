@@ -441,7 +441,7 @@ class ApplicationController extends Controller
             'payment_gateway' => $paymentGateway,
             'reference' => $reference,
             'academic_session' => $applicationSession,
-            'redirect_path' => 'user.auth.login',
+            'redirect_path' => 'applicant/login',
             'payment_Type' => $paymentType,
             'programme_category_id' => $request->programme_category_id,
         ];
@@ -531,7 +531,7 @@ class ApplicationController extends Controller
                 'reference' => $reference,
                 "payment_gateway" => $paymentGateway,
                 'academic_session' => $applicationSession,
-                'redirect_path' => 'user.auth.login',
+                'redirect_path' => 'applicant/login',
                 'payment_Type' => $paymentType,
             ];
 
@@ -558,7 +558,8 @@ class ApplicationController extends Controller
             if($paymentData['code'] != "200"){
                 Log::info($paymentData);
                 $message = 'Payment Gateway not available, try again.';
-                alert()->info('Opps!', $message)->persistent('Close');
+
+                alert()->error('Payment Error', 'Unable to initiate upperlink payment')->persistent('Close');
                 return redirect()->back();
             }
 
@@ -593,20 +594,36 @@ class ApplicationController extends Controller
                 'paymentMethods' => ["CARD","ACCOUNT_TRANSFER","USSD","PHONE_NUMBER"],
                 'redirectUrl'=> env("MONNIFY_REDIRECT_URL"),
                 'metaData' => $metaData,
-                'incomeSplitConfig' => [
-                    [
-                        'subAccountCode' => BankAccount::getBankAccountCode($paymentType)->monnifyAccountCode,
-                        'feePercentage' => 100,
-                        'splitAmount' => 100,
-                        'feeBearer' => true,
-                    ]
-                ]
+                // 'incomeSplitConfig' => [
+                //     [
+                //         'subAccountCode' => BankAccount::getBankAccountCode($paymentType)->monnifyAccountCode,
+                //         'feePercentage' => 100,
+                //         'splitAmount' => 100,
+                //         'feeBearer' => true,
+                //     ]
+                // ]
             );
 
             $monnify = new Monnify();
             $createInvoice = $monnify->initiateInvoice($monnifyPaymentdata);
-            $checkoutUrl = $createInvoice->responseBody->checkoutUrl;
-            $paymentGatewayRef = $createInvoice->responseBody->transactionReference;
+
+            if (!$createInvoice->requestSuccessful) {
+                Log::error('Monnify Invoice Creation Failed', [
+                    'response' => $createInvoice,
+                    'data_sent' => $monnifyPaymentdata
+                ]);
+
+                alert()->error('Payment Error', $createInvoice->responseMessage . ' Unable to initiate Monnify payment')->persistent('Close');
+                return redirect()->back();
+            }
+
+            $checkoutUrl = $createInvoice->responseBody->checkoutUrl ?? null;
+            $paymentGatewayRef = $createInvoice->responseBody->transactionReference ?? null;
+
+            if (!$checkoutUrl || !$paymentGatewayRef) {
+                alert()->error('Payment Error', 'Missing checkout details from Monnify')->persistent('Close');
+                return redirect()->back();
+            }
 
             $transaction = Transaction::create([
                 'payment_id' =>  $payment->id,

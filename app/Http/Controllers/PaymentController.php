@@ -62,752 +62,378 @@ class PaymentController extends Controller
     //verify payment with card
     public function verifyPayment(){
         Log::info("**********************Paystack Verifying Payment**********************");
-        try{
-            $paymentDetails = Paystack::getPaymentData();
-            $paymentId = $paymentDetails['data']['metadata']['payment_id'];
-            $studentId = $paymentDetails['data']['metadata']['student_id'];
-            $redirectPath = $paymentDetails['data']['metadata']['redirect_path'];
-            $txRef = $paymentDetails['data']['metadata']['reference'];
-            $paymentGateway = $paymentDetails['data']['metadata']['payment_gateway'];
 
-            $programmeCategories = ProgrammeCategory::with('academicSessionSetting')->get();
-
-
-            $paymentType = Payment::PAYMENT_TYPE_WALLET_DEPOSIT;
-            if($paymentId > 0){
-                $payment = Payment::where('id', $paymentId)->first();
-                $paymentType = $payment->type;
-            }
-
-            $student = Student::with('applicant', 'programme')->where('id', $studentId)->first();
-            $session = $paymentDetails['data']['metadata']['academic_session'];
-            $amount = $paymentDetails['data']['metadata']['amount'];
-
-
-            if($paymentDetails['status'] == true){
-                if($this->processPaystackPayment($paymentDetails)){
-                    if($student && !empty($studentId)){
-                        $pdf = new Pdf();
-                        $invoice = $pdf->generateTransactionInvoice($session, $studentId, $paymentId, 'single');
-                                
-                        $data = new \stdClass();
-                        $data->lastname = $student->applicant->lastname;
-                        $data->othernames = $student->applicant->othernames;
-                        $data->amount = $amount;
-                        $data->invoice = $invoice;
-                        if(env('SEND_MAIL')){
-                            Mail::to($student->email)->send(new TransactionMail($data));
-                        }
-
-                        if($paymentType == Payment::PAYMENT_TYPE_WALLET_DEPOSIT){
-                            $transaction = Transaction::where('reference', $txRef)->first();
-                            $creditStudent = $this->creditStudentWallet($transaction);
-                            if(!$creditStudent){
-                                Log::info("**********************Unable to credit student**********************: ". $amount .' - '.$student);
-                            }
-                        }
-                        
-                        if($paymentType == Payment::PAYMENT_TYPE_BANDWIDTH){
-                            $transaction = Transaction::where('reference', $txRef)->first();
-                            $creditStudent = $this->creditBandwidth($transaction, $amount);
-
-                            if(!$creditStudent){
-                                Log::info("**********************Unable to credit student bandwidth**********************: ". $amount .' - '.$student);
-                            }
-                        }
-
-                        if($paymentType == Payment::PAYMENT_TYPE_ACCOMONDATION){
-                            $transaction = Transaction::where('reference', $txRef)->first();
-                            $creditStudent = $this->creditAccommodation($transaction);
-                            if (is_string($creditStudent)) {
-                                alert()->error('Oops', $creditStudent)->persistent('Close');
-                            }
-                        }
-
-                        if($paymentType == Payment::PAYMENT_TYPE_INTRA_TRANSFER_APPLICATION){
-                            $transaction = Transaction::where('reference', $txRef)->first();
-                            $changeProgramme = $this->initChangeProgramme($transaction);
-                            if (is_string($changeProgramme)) {
-                                alert()->error('Oops', $changeProgramme)->persistent('Close');
-                            }
-                        }
-                    }
-
-                    alert()->success('Good Job', 'Payment successful')->persistent('Close');
-                    if($paymentType == Payment::PAYMENT_TYPE_GENERAL_APPLICATION || $paymentType == Payment::PAYMENT_TYPE_INTER_TRANSFER_APPLICATION){
-                        $applicantData = $paymentDetails;
-                        $this->createApplicant($applicantData, $paymentGateway);
-                        return view($redirectPath, [ 
-                            'programmes' => $this->programmes,
-                            'payment' => $payment
-                        ]);
-                    }elseif($paymentType == Payment::PAYMENT_TYPE_SCHOOL || $paymentType == Payment::PAYMENT_TYPE_SCHOOL_DE){
-                        $this->generateMatricAndEmail($student);
-                        return redirect($redirectPath);
-                    }else{
-                        return redirect($redirectPath);
-                    }
-                }else{
-                    alert()->info('oops!!!', 'Something happpened, contact administrator')->persistent('Close');
-                    if($paymentType == Payment::PAYMENT_TYPE_GENERAL_APPLICATION || $paymentType == Payment::PAYMENT_TYPE_INTER_TRANSFER_APPLICATION){
-                        return view($redirectPath, [
-                            'programmes' => $this->programmes,
-                            'payment' => $payment
-                        ]);
-                    }else{
-                        return redirect($redirectPath);
-                    }
-                }
-
-            }
-
-            alert()->error('Error', 'Payment not successful')->persistent('Close');
-            if($paymentType == Payment::PAYMENT_TYPE_GENERAL_APPLICATION || $paymentType == Payment::PAYMENT_TYPE_INTER_TRANSFER_APPLICATION){
-                return view($redirectPath, [
-                    'programmes' => $this->programmes,
-                    'payment' => $payment
-                ]);
-            }else{
-                return redirect($redirectPath);
-            }
-            
-
-        }catch(\Exception $e) {
-            Log::error($e);
-        }
-    }
-
-    public function raveVerifyPayment(){
-        Log::info("**********************Flutterwave Verifying Payment**********************");
-
-        try{
-            $status = request()->status;
-
-            $transactionID = Flutterwave::getTransactionIDFromCallback();
-            $paymentDetails = Flutterwave::verifyTransaction($transactionID);
-            // dd($paymentDetails);
-
-            $programmeCategories = ProgrammeCategory::with('academicSessionSetting')->get();
-
-
-            $paymentId = $paymentDetails['data']['meta']['payment_id'];
-            $studentId = !empty($paymentDetails['data']['meta']['student_id'])?$paymentDetails['data']['meta']['student_id']:null;
-            $redirectPath = $paymentDetails['data']['meta']['redirect_path'];
-            $txRef = $paymentDetails['data']['meta']['reference'];
-            $paymentGateway = $paymentDetails['data']['meta']['payment_gateway'];
-
-
-            $paymentType = Payment::PAYMENT_TYPE_WALLET_DEPOSIT;
-            if($paymentId > 0){
-                $payment = Payment::where('id', $paymentId)->first();
-                $paymentType = $payment->type;
-            }
-
-            $student = Student::with('applicant', 'programme')->where('id', $studentId)->first();
-            $amount = $paymentDetails['data']['meta']['amount'];
-            $session = $paymentDetails['data']['meta']['academic_session'];
-            
-            if($paymentDetails['status'] == 'success'){
-                if($this->processRavePayment($paymentDetails)){
-                    alert()->success('Good Job', 'Payment successful')->persistent('Close');
-                    if($student && !empty($studentId)){
-                        $pdf = new Pdf();
-                        $invoice = $pdf->generateTransactionInvoice($session, $studentId, $paymentId, 'single');
-                                
-                        $data = new \stdClass();
-                        $data->lastname = $student->applicant->lastname;
-                        $data->othernames = $student->applicant->othernames;
-                        $data->amount = $amount;
-                        $data->invoice = $invoice;
-                        if(env('SEND_MAIL')){
-                            Mail::to($student->email)->send(new TransactionMail($data));
-                        }
-                        if($paymentType == Payment::PAYMENT_TYPE_WALLET_DEPOSIT){
-                            $transaction = Transaction::where('reference', $txRef)->first();
-                            $creditStudent = $this->creditStudentWallet($transaction);
-                            if(!$creditStudent){
-                                Log::info("**********************Unable to credit student wallet**********************: ". $amount .' - '.$student);
-                            }
-                        }  
-                        
-                        if($paymentType == Payment::PAYMENT_TYPE_BANDWIDTH){
-                            $transaction = Transaction::where('reference', $txRef)->first();
-                            $creditStudent = $this->creditBandwidth($transaction, $amount);
-
-                            if(!$creditStudent){
-                                Log::info("**********************Unable to credit student bandwidth**********************: ". $amount .' - '.$student);
-                            }
-                        }
-
-                        
-                    }
-                    if($paymentType == Payment::PAYMENT_TYPE_GENERAL_APPLICATION || $paymentType == Payment::PAYMENT_TYPE_INTER_TRANSFER_APPLICATION){
-                        $applicantData = $paymentDetails;
-                        $this->createApplicant($applicantData, $paymentGateway);
-                        return view($redirectPath, [
-                            'programmes' => $this->programmes,
-                            'payment' => $payment,
-                            'programmeCategories' => $programmeCategories
-                        ]);
-                    }elseif($paymentType == Payment::PAYMENT_TYPE_SCHOOL || $paymentType == Payment::PAYMENT_TYPE_SCHOOL_DE){
-                        $this->generateMatricAndEmail($student);
-                        return redirect($redirectPath);
-                    }else{
-                        return redirect($redirectPath);
-                    }
-                }else{
-                    alert()->info('oops!!!', 'Something happpened, contact administrator')->persistent('Close');
-                    if($paymentType == Payment::PAYMENT_TYPE_GENERAL_APPLICATION || $paymentType == Payment::PAYMENT_TYPE_INTER_TRANSFER_APPLICATION){
-                        return view($redirectPath, [
-                            'programmes' => $this->programmes,
-                            'payment' => $payment,
-                            'programmeCategories' => $programmeCategories
-                        ]);
-                    }else{
-                        return redirect($redirectPath);
-                    }
-                }
-
-            }
-
-            alert()->error('Error', 'Payment not successful')->persistent('Close');
-            if($paymentType == Payment::PAYMENT_TYPE_GENERAL_APPLICATION || $paymentType == Payment::PAYMENT_TYPE_INTER_TRANSFER_APPLICATION){
-                return view($redirectPath, [
-                    'programmes' => $this->programmes,
-                    'payment' => $payment
-                ]);
-            }else{
-                return redirect($redirectPath);
-            }
-            
-
-        }catch(\Exception $e) {
-            Log::error($e);
-        }
-    }
-
-    public function upperlinkVerifyPayment($paymentReference = null, $redirectPath = null, $returnAsJson = false){
-        Log::info("**********************Upperlink Verifying Payment**********************");
-        
-        $ref = null;
-
-        if (isset($_GET['reference'])) {
-            $ref = $_GET['reference'];
-        }
-
-        if (!empty($paymentReference)) {
-            $ref = $paymentReference;
-        }
-
-        $programmeCategories = ProgrammeCategory::with('academicSessionSetting')->get();
-        $redirectPath = $redirectPath ?? '/';
-
-        if (empty($ref)) {
-            if ($returnAsJson) {
-                return [
-                    'status' => 'error',
-                    'message' => 'Payment reference is missing'
-                ];
-            } else {
-                alert()->info('oops!!!', 'Something happened, contact administrator')->persistent('Close');
-                return redirect('student/transactions');
-            }
-        }
-
-        $upperLinkPayGate = new PayGate;
-        $paymentDetails = $upperLinkPayGate->verifyTransaction($ref);
-
-        if (isset($paymentDetails['transactionStatus']) && $paymentDetails['transactionStatus'] == '00') {
-
-            $data = $paymentDetails['meta'];
-            $paymentData = json_decode($data, true);
-
-            $paymentId = $paymentData['payment_id'];
-            $studentId = $paymentData['student_id'] ?? null;
-            $redirectPath = $paymentData['redirect_path'];
-            $txRef = $paymentData['reference'];
-            $paymentGateway = $paymentData['payment_gateway'];
-
-            $paymentType = Payment::PAYMENT_TYPE_WALLET_DEPOSIT;
-            if ($paymentId > 0) {
-                $payment = Payment::where('id', $paymentId)->first();
-                $paymentType = $payment->type;
-            }
-
-            $student = Student::with('applicant', 'programme')->where('id', $studentId)->first();
-            $amount = $paymentDetails['amount'] * 100;
-            $session = $paymentData['academic_session'];
-
-            if ($this->processUpperLinkPayment($paymentDetails)) {
-
-                if ($returnAsJson) {
-                    return [
-                        'status' => 'success',
-                        'message' => 'Payment processed successfully',
-                        'data' => [
-                            'reference' => $ref,
-                            'payment_id' => $paymentId,
-                            'student_id' => $studentId,
-                            'payment_type' => $paymentType
-                        ]
-                    ];
-                }
-
-                if ($student && !empty($studentId)) {
-                    $pdf = new Pdf();
-                    $invoice = $pdf->generateTransactionInvoice($session, $studentId, $paymentId, 'single');
-
-                    $data = new \stdClass();
-                    $data->lastname = $student->applicant->lastname;
-                    $data->othernames = $student->applicant->othernames;
-                    $data->amount = $amount;
-                    $data->invoice = $invoice;
-
-                    if (env('SEND_MAIL')) {
-                        Mail::to($student->email)->send(new TransactionMail($data));
-                    }
-
-                    if ($paymentType == Payment::PAYMENT_TYPE_SUMMER_COURSE_REGISTRATION) {
-                        $transaction = Transaction::where('reference', $txRef)->first();
-                        $creditStudent = $this->creditStudentSummerCourseReg($transaction);
-
-                        alert()->success('Good Job', 'Payment successful')->persistent('Close');
-                        if (is_string($creditStudent)) {
-                            alert()->error('Oops', $creditStudent)->persistent('Close');
-                        }
-
-                        if (!$creditStudent) {
-                            Log::info("Unable to credit student summer course reg: $amount - $student - {$transaction->additional_data}");
-                        }
-
-                        return redirect($redirectPath);
-                    }
-
-                    if ($paymentType == Payment::PAYMENT_TYPE_WALLET_DEPOSIT) {
-                        $transaction = Transaction::where('reference', $txRef)->first();
-                        $creditStudent = $this->creditStudentWallet($transaction);
-
-                        alert()->success('Good Job', 'Payment successful')->persistent('Close');
-                        if (is_string($creditStudent)) {
-                            alert()->error('Oops', $creditStudent)->persistent('Close');
-                        }
-
-                        if (!$creditStudent) {
-                            Log::info("Unable to credit student wallet: $amount - $student");
-                        }
-
-                        return redirect($redirectPath);
-                    }
-
-                    if ($paymentType == Payment::PAYMENT_TYPE_BANDWIDTH) {
-                        $transaction = Transaction::where('reference', $txRef)->first();
-                        $creditStudent = $this->creditBandwidth($transaction, $amount);
-
-                        alert()->success('Good Job', 'Payment successful')->persistent('Close');
-                        if (is_string($creditStudent)) {
-                            alert()->error('Oops', $creditStudent)->persistent('Close');
-                        }
-
-                        if (!$creditStudent) {
-                            Log::info("Unable to credit student bandwidth: $amount - $student");
-                        }
-
-                        return redirect($redirectPath);
-                    }
-
-                    if ($paymentType == Payment::PAYMENT_TYPE_ACCOMONDATION) {
-                        $transaction = Transaction::where('reference', $txRef)->first();
-                        $creditStudent = $this->creditAccommodation($transaction);
-
-                        alert()->success('Good Job', 'Payment successful')->persistent('Close');
-                        if (is_string($creditStudent)) {
-                            alert()->error('Oops', $creditStudent)->persistent('Close');
-                        }
-
-                        return redirect($redirectPath);
-                    }
-                }
-
-                if (
-                    $paymentType == Payment::PAYMENT_TYPE_GENERAL_APPLICATION ||
-                    $paymentType == Payment::PAYMENT_TYPE_INTER_TRANSFER_APPLICATION
-                ) {
-                    $this->createApplicant($paymentData, $paymentGateway);
-                    alert()->success('Good Job', 'Payment successful')->persistent('Close');
-
-                    return view($redirectPath, [
-                        'programmes' => $this->programmes,
-                        'payment' => $payment,
-                        'programmeCategories' => $programmeCategories
-                    ]);
-                }
-
-                if (
-                    $paymentType == Payment::PAYMENT_TYPE_SCHOOL ||
-                    $paymentType == Payment::PAYMENT_TYPE_SCHOOL_DE
-                ) {
-                    $this->generateMatricAndEmail($student);
-
-                    alert()->success('Good Job', 'Payment successful')->persistent('Close');
-                    return redirect($redirectPath);
-                }
-
-                return redirect($redirectPath);
-            } else {
-                if ($returnAsJson) {
-                    return [
-                        'status' => 'error',
-                        'message' => 'Payment verification failed during processing.'
-                    ];
-                }
-
-                if (
-                    $paymentType == Payment::PAYMENT_TYPE_GENERAL_APPLICATION ||
-                    $paymentType == Payment::PAYMENT_TYPE_INTER_TRANSFER_APPLICATION
-                ) {
-                    alert()->info('oops!!!', 'Something happened, contact administrator')->persistent('Close');
-                    return view($redirectPath, [
-                        'programmes' => $this->programmes,
-                        'payment' => $payment,
-                        'programmeCategories' => $programmeCategories
-                    ]);
-                } else {
-                    alert()->info('oops!!!', 'Something happened, contact administrator')->persistent('Close');
-                    return redirect($redirectPath);
-                }
-            }
-        }
-
-        Log::channel('payment')->warning("[UPPERLINK] Payment verification failed or returned non-success status", [
-            'reference' => $ref,
-            'response' => $paymentDetails,
-            'timestamp' => now(),
-            'context' => $returnAsJson ? 'cron/API' : 'web/browser',
-            'cron_status' => optional(Transaction::where('reference', $ref)->first())->cron_status
-        ]);
-
-        if ($returnAsJson) {
-            return [
-                'status' => 'error',
-                'message' => 'Payment not successful or invalid transaction status.'
-            ];
-        }
-
-        alert()->error('Error', 'Payment not successful')->persistent('Close');
-        return redirect($redirectPath);
-    }
-
-    public function paystackWebhook (Request $request) {   
         try {
-            $webhookData = $request->all();
-            log::info(json_encode($webhookData));
-            $event = $webhookData['event'];
-            sleep(300);
-            return false;
-            if($event == "charge.success"){
-                return $this->verifyPayment($webhookData);
+            $paymentDetails = Paystack::getPaymentData();
+            $reference = $paymentDetails['data']['metadata']['reference'] ?? null;
+
+            if (!$reference) {
+                return $this->genericVerificationResponse(
+                    'Missing payment reference',
+                    false,
+                    false,
+                    '/'
+                );
             }
-          
-        }
-        catch (ValidationException $e) {
-          Log::info(json_encode($e));
+
+            return $this->handleGenericPaymentVerification('paystack', $reference, '/');
+        } catch (\Exception $e) {
+            Log::error($e);
+
+            return $this->genericVerificationResponse(
+                'An error occurred while verifying payment',
+                false,
+                false,
+                '/'
+            );
         }
     }
 
-    /**
-     * Receives Flutterwave webhook
-     * @return void
-     */
     public function raveWebhook(Request $request){
         Log::info("**********************Flutterwave Webhook**********************");
+
+        // Verify the webhook came from Flutterwave
         $verified = Flutterwave::verifyWebhook();
+        Log::info(json_encode($verified));
 
-        log::info(json_encode($verified));
+        // Proceed only if it's a successful charge
+        if (
+            $verified &&
+            $request->event === 'charge.completed' &&
+            isset($request->data['status']) &&
+            $request->data['status'] === 'successful'
+        ) {
+            $reference = $request->data['tx_ref'] ?? $request->data['reference'] ?? null;
 
-        if ($verified && $request->event == 'charge.completed' && $request->data->status == 'successful') {
-            $verificationData = Flutterwave::verifyPayment($request->data['id']);
-            $paymentDetails = Flutterwave::verifyTransaction($request->data['id']);
-            if ($verificationData['status'] === 'success') {
-            // process for successful charge
-                $paymentId = $paymentDetails['data']['meta']['payment_id'];
-                $studentId = !empty($paymentDetails['data']['meta']['student_id'])?$paymentDetails['data']['meta']['student_id']:null;
-                $redirectPath = $paymentDetails['data']['meta']['redirect_path'];
-                $paymentGateway = $paymentDetails['data']['meta']['payment_gateway'];
-
-                $paymentType = Payment::PAYMENT_TYPE_WALLET_DEPOSIT;
-                if($paymentId > 0){
-                    $payment = Payment::where('id', $paymentId)->first();
-                    $paymentType = $payment->type;
-                }
-
-                $student = Student::with('applicant', 'programme')->where('id', $studentId)->first();
-                $amount = $paymentDetails['data']['meta']['amount'];
-                $session = $paymentDetails['data']['meta']['academic_session'];
-                $txRef = $paymentDetails['data']['meta']['reference'];
-                
-                if($paymentDetails['status'] == 'success'){
-                    if($this->processRavePayment($paymentDetails)){
-
-                        if($student && !empty($studentId)){
-                            $pdf = new Pdf();
-                            $invoice = $pdf->generateTransactionInvoice($session, $studentId, $paymentId, 'single');
-                                    
-                            $data = new \stdClass();
-                            $data->lastname = $student->applicant->lastname;
-                            $data->othernames = $student->applicant->othernames;
-                            $data->amount = $amount;
-                            $data->invoice = $invoice;
-                            if(env('SEND_MAIL')){
-                                Mail::to($student->email)->send(new TransactionMail($data));
-                            }
-
-                            if($paymentType == Payment::PAYMENT_TYPE_WALLET_DEPOSIT){
-                                $transaction = Transaction::where('reference', $txRef)->first();
-                                $creditStudent = $this->creditStudentWallet($transaction);
-                                if(!$creditStudent){
-                                    Log::info("**********************Unable to credit student**********************: ". $amount .' - '.$student);
-                                }
-                            }     
-                        }
-
-                        if($paymentType == Payment::PAYMENT_TYPE_GENERAL_APPLICATION || $paymentType == Payment::PAYMENT_TYPE_INTER_TRANSFER_APPLICATION){
-                            $applicantData = $paymentDetails;
-                            $this->createApplicant($applicantData, $paymentGateway);
-                            return true;
-                        }elseif($paymentType == Payment::PAYMENT_TYPE_SCHOOL || $paymentType == Payment::PAYMENT_TYPE_SCHOOL_DE){
-                            $this->generateMatricAndEmail($student);
-                            return true;
-                        }else{
-                            return true;
-                        }
-                    }else{
-                        if($paymentType == Payment::PAYMENT_TYPE_GENERAL_APPLICATION || $paymentType == Payment::PAYMENT_TYPE_INTER_TRANSFER_APPLICATION){
-                            return false;
-                        }else{
-                            return false;
-                        }
-                    }
-
-                }
-
-                if($paymentType == Payment::PAYMENT_TYPE_GENERAL_APPLICATION || $paymentType == Payment::PAYMENT_TYPE_INTER_TRANSFER_APPLICATION){
-                    return false;
-                }else{
-                    return false;
-                }
-
+            if ($reference) {
+                return $this->handleGenericPaymentVerification('flutterwave', $reference, '/', true);
             }
+
+            Log::warning('[FLUTTERWAVE] Webhook received without valid reference', ['data' => $request->all()]);
         }
+
+        return response()->json(['status' => 'ignored'], 200);
+    }
+
+    public function paystackWebhook(Request $request){
+        try {
+            $webhookData = $request->all();
+            Log::info('Paystack Webhook Received: ' . json_encode($webhookData));
+
+            if (!isset($webhookData['event']) || $webhookData['event'] !== 'charge.success') {
+                return response()->json(['status' => 'ignored'], 200);
+            }
+
+            $reference = $webhookData['data']['reference'] ?? null;
+
+            if (!$reference) {
+                Log::warning('Paystack webhook missing reference.');
+                return response()->json(['status' => 'invalid reference'], 400);
+            }
+
+            // Optional: Remove or reduce delay in production
+            // sleep(300); // Delay only for dev/debugging
+
+            return $this->handleGenericPaymentVerification('paystack', $reference, '/', true);
+        } catch (\Throwable $e) {
+            Log::error('Paystack Webhook Error: ' . $e->getMessage());
+            return response()->json(['status' => 'error'], 500);
+        }
+    }
+
+
+    public function monnifyWebhook(Request $request){
+        $data = $request->all(); // gets the raw payload as associative array
+        $rawEventJson = $data[0] ?? null;
+
+        if (!$rawEventJson) {
+            Log::warning('Empty webhook payload.');
+            return response()->json(['status' => 'ignored'], 400);
+        }
+
+        $eventData = json_decode($rawEventJson, true); // decode the actual JSON string
+
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            Log::error('Invalid JSON in webhook payload.');
+            return response()->json(['status' => 'error'], 400);
+        }
+
+        // Now you can access paymentReference and others
+        $paymentReference = $eventData['eventData']['paymentReference'] ?? null;
+
+        if (!$paymentReference) {
+            Log::error('Missing paymentReference in eventData.');
+            return response()->json(['status' => 'error'], 400);
+        }
+
+        return $this->handleGenericPaymentVerification('monnify', $paymentReference, '/', true);
+    }
+
+    public function upperlinkVerifyPayment(Request $request, $paymentReference = null, $redirectPath = '/', $returnAsJson = false){
+        $ref = $paymentReference ?? $request->query('paymentReference') ?? ($_GET['reference'] ?? null);
+        return $this->handleGenericPaymentVerification('upperlink', $ref, $redirectPath, $returnAsJson);
     }
 
     public function monnifyVerifyPayment(Request $request){
         $ref = $request->query('paymentReference');
-
-        $programmeCategories = ProgrammeCategory::with('academicSessionSetting')->get();
-        $redirectPath = $redirectPath ?? '/';
-
-        if (empty($ref)) {
-            alert()->error('Error', 'Missing payment reference');
-            return redirect($redirectPath);
-        }
-
-        $transaction = Transaction::where('reference', $ref)->first();
-
-        if (!$transaction) {
-            alert()->error('Error', 'Transaction not found');
-            return redirect($redirectPath);
-        }
-
-        $paymentGatewayRef = $transaction->payment_gateway_ref;
-
-        $monnify = new Monnify();
-        $verifyInvoice = $monnify->verifyInvoice($paymentGatewayRef);
-        if (!$verifyInvoice || !$verifyInvoice->requestSuccessful) {
-            alert()->error('Error', 'Unable to verify payment');
-           return redirect($redirectPath);
-        }
-
-        $paymentStatus = $verifyInvoice->responseBody->paymentStatus ?? null;
-        if ($paymentStatus !== 'PAID') {
-            alert()->error('Error', 'Paymant Failed');
-           return redirect($redirectPath);
-        }
-
-        if (empty($verifyInvoice->responseBody->metaData)) {
-             alert()->error('Error', 'Payment Information is missing, contact administrator');
-           return redirect($redirectPath);
-        }
-
-        $paymentData = $verifyInvoice->responseBody->metaData;
-
-        $paymentId = $paymentData->payment_id;
-        $studentId = $paymentData->student_id;
-        $redirectPath = $paymentData->redirect_path;
-        $paymentGateway = $paymentData->payment_gateway;
-
-        $paymentType = Payment::PAYMENT_TYPE_WALLET_DEPOSIT;
-        if ($paymentId > 0) {
-            $payment = Payment::where('id', $paymentId)->first();
-            $paymentType = $payment->type;
-        }
-        
-        $student = Student::with('applicant', 'programme')->where('id', $studentId)->first();
-        $amount = $paymentData->amount;
-        $session = $paymentData->academic_session;
-
-        if($this->processMonnifyPayment($verifyInvoice)){
-            if($student && !empty($studentId)){
-                $pdf = new Pdf();
-                $invoice = $pdf->generateTransactionInvoice($session, $studentId, $paymentId, 'single');
-
-                $data = new \stdClass();
-                $data->lastname = $student->applicant->lastname;
-                $data->othernames = $student->applicant->othernames;
-                $data->amount = $amount;
-                $data->invoice = $invoice;
-                if(env('SEND_MAIL')){
-                    Mail::to($student->email)->send(new TransactionMail($data));
-                }
-
-                if ($paymentType == Payment::PAYMENT_TYPE_SUMMER_COURSE_REGISTRATION) {
-                    $transaction = Transaction::where('reference', $ref)->first();
-                    $creditStudent = $this->creditStudentSummerCourseReg($transaction);
-
-                    alert()->success('Good Job', 'Payment successful')->persistent('Close');
-                    if (is_string($creditStudent)) {
-                        alert()->error('Oops', $creditStudent)->persistent('Close');
-                    }
-
-                    if (!$creditStudent) {
-                        Log::info("Unable to credit student summer course reg: $amount - $student - {$transaction->additional_data}");
-                    }
-
-                    return redirect($redirectPath);
-                }
-
-                if ($paymentType == Payment::PAYMENT_TYPE_WALLET_DEPOSIT) {
-                    $transaction = Transaction::where('reference', $ref)->first();
-                    $creditStudent = $this->creditStudentWallet($transaction);
-
-                    alert()->success('Good Job', 'Payment successful')->persistent('Close');
-                    if (is_string($creditStudent)) {
-                        alert()->error('Oops', $creditStudent)->persistent('Close');
-                    }
-
-                    if (!$creditStudent) {
-                        Log::info("Unable to credit student wallet: $amount - $student");
-                    }
-
-                    return redirect($redirectPath);
-                }
-                 
-                if ($paymentType == Payment::PAYMENT_TYPE_BANDWIDTH) {
-                    $transaction = Transaction::where('reference', $ref)->first();
-                    $creditStudent = $this->creditBandwidth($transaction, $amount);
-
-                    alert()->success('Good Job', 'Payment successful')->persistent('Close');
-                    if (is_string($creditStudent)) {
-                        alert()->error('Oops', $creditStudent)->persistent('Close');
-                    }
-
-                    if (!$creditStudent) {
-                        Log::info("Unable to credit student bandwidth: $amount - $student");
-                    }
-
-                    return redirect($redirectPath);
-                }
-
-                if ($paymentType == Payment::PAYMENT_TYPE_ACCOMONDATION) {
-                    $transaction = Transaction::where('reference', $ref)->first();
-                    $creditStudent = $this->creditAccommodation($transaction);
-
-                    alert()->success('Good Job', 'Payment successful')->persistent('Close');
-                    if (is_string($creditStudent)) {
-                        alert()->error('Oops', $creditStudent)->persistent('Close');
-                    }
-
-                    return redirect($redirectPath);
-                }
-
-                if ($paymentType == Payment::PAYMENT_TYPE_SCHOOL || $paymentType == Payment::PAYMENT_TYPE_SCHOOL_DE) {
-                    $this->generateMatricAndEmail($student);
-
-                    alert()->success('Good Job', 'Payment successful')->persistent('Close');
-                    return redirect($redirectPath);
-                }
-
-                alert()->success('Good Job', 'Payment successful')->persistent('Close');
-                return redirect($redirectPath);
-            }
-
-            if ( $paymentType == Payment::PAYMENT_TYPE_GENERAL_APPLICATION || $paymentType == Payment::PAYMENT_TYPE_INTER_TRANSFER_APPLICATION) {
-                $applicantData = $verifyInvoice->responseBody;
-                $this->createApplicant($applicantData, $paymentGateway);
-                alert()->success('Good Job', 'Payment successful')->persistent('Close');
-
-                return view($redirectPath, [
-                    'programmes' => $this->programmes,
-                    'payment' => $payment,
-                    'programmeCategories' => $programmeCategories
-                ]);
-            }
-
-        }else{
-            if ($paymentType == Payment::PAYMENT_TYPE_GENERAL_APPLICATION || $paymentType == Payment::PAYMENT_TYPE_INTER_TRANSFER_APPLICATION) {
-                alert()->info('oops!!!', 'Something happened, contact administrator')->persistent('Close');
-                return view($redirectPath, [
-                    'programmes' => $this->programmes,
-                    'payment' => $payment,
-                    'programmeCategories' => $programmeCategories
-                ]);
-            } else {
-                alert()->info('oops!!!', 'Something happened, contact administrator')->persistent('Close');
-                return redirect($redirectPath);
-            }
-        }
-
+        return $this->handleGenericPaymentVerification('monnify', $ref, '/');
     }
 
-    // private function generateMatricAndEmail($student){
-    //     if(!$student->is_active && empty($student->matric_number)){
-    //         $sessionSetting = SessionSetting::first();
-    //         $admissionSession = $sessionSetting->admission_session;
+    public function upperlinkWebhook(Request $request){
+        $ref = $request->input('reference');
+        return $this->handleGenericPaymentVerification('upperlink', $ref, '/', true);
+    }
 
-    //         $programme = Programme::with('students', 'department', 'department.faculty')->where('id', $student->programme_id)->first();
-    //         $codeNumber = $programme->code_number;
-    //         $deptCode = $programme->department->code;
-    //         $facultyCode = $programme->department->faculty->code;
-    //         $programmeCode = $programme->code;
-    //         $code = $deptCode.$programmeCode;
+    private function handleGenericPaymentVerification($gateway, $reference, $redirectPath = '/', $returnAsJson = false){
 
-    //         $accessCode = $student->applicant->passcode;
-    //         $studentPreviousEmail = $student->email;
+        Log::info("********** Verifying Payment via $gateway **********", ['reference' => $reference]);
 
-    //         $name = $student->applicant->lastname.' '.$student->applicant->othernames;
-    //         $nameParts = explode(' ', $student->applicant->othernames);
-    //         $firstName = $nameParts[0];
-    //         $studentEmail = strtolower($student->applicant->lastname.'.'.$firstName.'@st.tau.edu.ng');
+        $programmeCategories = ProgrammeCategory::with('academicSessionSetting')->get();
 
-    //         $newMatric = empty($programme->matric_last_number)? ($programme->students->count() + 20) + 1 : $programme->matric_last_number + 1;
-    //         $matricNumber = substr($admissionSession, 2, 2).'/'.$facultyCode.$code.sprintf("%03d", $newMatric);
+        if (empty($reference)) {
+            return $this->genericVerificationResponse(
+                'Payment reference is missing',
+                $returnAsJson,
+                false,
+                $redirectPath
+            );
+        }
 
-    //         $google = new Google();
-    //         $createStudentEmail = $google->createUser($studentEmail, $student->applicant->othernames, $student->applicant->lastname, $accessCode);
+        // Step 1: Verify transaction from the gateway
+        $paymentDetails = null;
+        $paymentStatus = null;
+        $paymentData = [];
 
-    //         $student->email = $studentEmail;
-    //         $student->matric_number = $matricNumber;
-    //         $student->is_active = true;
-    //         $student->save();
+        if ($gateway === 'monnify') {
+            $transaction = Transaction::where('reference', $reference)->first();
 
-    //         $programme->matric_last_number = $newMatric;
-    //         $programme->save();
+            if (!$transaction) {
+                alert()->error('Error', 'Transaction not found');
+                return redirect($redirectPath);
+            }
+            $paymentGatewayRef = $transaction->payment_gateway_ref;
 
-            
-    //         Mail::to($studentPreviousEmail)->send(new StudentActivated($student));
+            $monnify = new Monnify();
+            $verifyInvoice = $monnify->verifyInvoice($paymentGatewayRef);
 
-    //         return true;
-    //     }
-    // }
+            if (!$verifyInvoice || !$verifyInvoice->requestSuccessful) {
+                return $this->genericVerificationResponse(
+                    $verifyInvoice->responseMessage ?? 'Unable to verify Monnify payment',
+                    $returnAsJson,
+                    false,
+                    $redirectPath
+                );
+            }
+
+            $paymentStatus = $verifyInvoice->responseBody->paymentStatus ?? null;
+            $paymentData = (array) ($verifyInvoice->responseBody->metaData ?? []);
+            $paymentDetails = $verifyInvoice->responseBody;
+        }
+
+        if ($gateway === 'upperlink') {
+            $paygate = new PayGate();
+            $response = $paygate->verifyTransaction($reference);
+
+            if (!isset($response['transactionStatus']) || $response['transactionStatus'] !== '00') {
+                return $this->genericVerificationResponse(
+                    'Upperlink transaction verification failed',
+                    $returnAsJson,
+                    false,
+                    $redirectPath
+                );
+            }
+
+            $paymentStatus = 'PAID';
+            $paymentData = json_decode($response['meta'] ?? '{}', true);
+            $paymentDetails = (object) $response;
+        }
+
+        if ($paymentStatus !== 'PAID') {
+            return $this->genericVerificationResponse(
+                'Payment not successful',
+                $returnAsJson,
+                false,
+                $redirectPath
+            );
+        }
+
+        // Step 2: Process metadata and student/payment details
+        $paymentId = $paymentData['payment_id'] ?? null;
+        $studentId = $paymentData['student_id'] ?? null;
+        $redirectPath = $paymentData['redirect_path'] ?? '/';
+        $paymentGateway = $paymentData['payment_gateway'] ?? $gateway;
+        $session = $paymentData['academic_session'] ?? null;
+        $amount = $gateway === 'monnify' ? ($paymentData['amount'] ?? 0) : (($paymentDetails->amount ?? 0) * 100);
+        $txRef = $paymentData['reference'] ?? $reference;
+
+        $paymentType = Payment::PAYMENT_TYPE_WALLET_DEPOSIT;
+        $payment = null;
+        if ($paymentId) {
+            $payment = Payment::find($paymentId);
+            $paymentType = $payment->type ?? $paymentType;
+        }
+
+        $student = Student::with('applicant', 'programme')->find($studentId);
+
+        // Step 3: Process and credit the payment
+        switch ($gateway) {
+            case 'monnify':
+                $processed = $this->processMonnifyPayment($paymentDetails);
+                break;
+
+            case 'upperlink':
+                $processed = $this->processUpperLinkPayment((array) $paymentDetails);
+                break;
+
+            case 'flutterwave':
+                $processed = $this->processFlutterwavePayment((array) $paymentDetails);
+                break;
+
+            case 'paystack':
+                $processed = $this->processPaystackPayment((array) $paymentDetails);
+                break;
+
+            default:
+                $processed = false; // or throw an exception
+                break;
+        }
+
+        if (!$processed) {
+            return $this->genericVerificationResponse(
+                'Payment verification failed during processing.',
+                $returnAsJson,
+                false,
+                $redirectPath,
+                $paymentType,
+                $student,
+                $programmeCategories,
+                $payment
+            );
+        }
+
+        // Step 4: Post-payment handling
+        return $this->handlePostPaymentProcessing([
+            'txRef' => $txRef,
+            'paymentId' => $paymentId,
+            'studentId' => $studentId,
+            'paymentType' => $paymentType,
+            'amount' => $amount,
+            'session' => $session,
+            'student' => $student,
+            'paymentGateway' => $paymentGateway,
+            'redirectPath' => $redirectPath,
+            'returnAsJson' => $returnAsJson,
+            'programmeCategories' => $programmeCategories,
+            'payment' => $payment,
+            'applicantData' => $paymentDetails,
+            'generateInvoice' => true,
+            'sendEmail' => env('SEND_MAIL'),
+        ]);
+    }
+
+    protected function handlePostPaymentProcessing(array $data){
+        $txRef = $data['txRef'] ?? null;
+        $paymentType = $data['paymentType'] ?? null;
+        $paymentId = $data['paymentId'] ?? null;
+        $studentId = $data['studentId'] ?? null;
+        $amount = $data['amount'] ?? null;
+        $session = $data['session'] ?? null;
+        $redirectPath = $data['redirectPath'] ?? '/';
+        $returnAsJson = $data['returnAsJson'] ?? false;
+        $generateInvoice = $data['generateInvoice'] ?? true;
+        $sendEmail = $data['sendEmail'] ?? true;
+        $paymentGateway = $data['paymentGateway'] ?? null;
+
+        $student = $data['student'] ?? null;
+        $payment = $data['payment'] ?? null;
+        $applicantData = $data['applicantData'] ?? null;
+        $programmeCategories = $data['programmeCategories'] ?? [];
+
+        $transaction = Transaction::where('reference', $txRef)->first();
+        $creditResult = true;
+
+        switch ($paymentType) {
+            case Payment::PAYMENT_TYPE_WALLET_DEPOSIT:
+                $creditResult = $this->creditStudentWallet($transaction);
+                break;
+
+            case Payment::PAYMENT_TYPE_ACCOMONDATION:
+                $creditResult = $this->creditAccommodation($transaction);
+                break;
+
+            case Payment::PAYMENT_TYPE_SUMMER_COURSE_REGISTRATION:
+                $creditResult = $this->creditStudentSummerCourseReg($transaction);
+                break;
+
+            case Payment::PAYMENT_TYPE_BANDWIDTH:
+                $creditResult = $this->creditBandwidth($transaction, $amount);
+                break;
+
+            case Payment::PAYMENT_TYPE_SCHOOL:
+            case Payment::PAYMENT_TYPE_SCHOOL_DE:
+                $this->generateMatricAndEmail($student);
+                break;
+
+            case Payment::PAYMENT_TYPE_GENERAL_APPLICATION:
+            case Payment::PAYMENT_TYPE_INTER_TRANSFER_APPLICATION:
+                $this->createApplicant($applicantData, $paymentGateway);
+                break;
+        }
+
+        if (is_string($creditResult)) {
+            return $this->genericVerificationResponse($creditResult, $returnAsJson, false, $redirectPath, $paymentType, $student, $programmeCategories, $payment);
+        } elseif (!$creditResult) {
+            Log::info("Unable to credit: $paymentType | Amount: $amount | Ref: $txRef");
+        }
+
+        if ($sendEmail && $student && isset($student->email)) {
+            $pdf = new Pdf();
+            $invoice = $pdf->generateTransactionInvoice($session, $studentId, $paymentId, 'single');
+
+            $mailData = new \stdClass();
+            $mailData->lastname = $student->applicant->lastname ?? '';
+            $mailData->othernames = $student->applicant->othernames ?? '';
+            $mailData->amount = $amount;
+            $mailData->invoice = $invoice;
+
+            if (env('SEND_MAIL')) {
+                Mail::to($student->email)->send(new TransactionMail($mailData));
+            }
+        }
+
+        return $this->genericVerificationResponse('Payment successful', $returnAsJson, true, $redirectPath, $paymentType, $student, $programmeCategories, $payment);
+    }
+
+    private function genericVerificationResponse($message, $asJson, $success, $redirectPath, $paymentType = null,  $programmeCategories = [], $payment = null){
+        if ($asJson) {
+            return [
+                'status' => $success ? 'success' : 'error',
+                'message' => $message
+            ];
+        }
+
+        if ($success) {
+            alert()->success('Good Job', $message)->persistent('Close');
+        } else {
+            alert()->error('Oops', $message)->persistent('Close');
+        }
+
+        // For application-based payments, return view
+        if (
+            !$success &&
+            in_array($paymentType, [Payment::PAYMENT_TYPE_GENERAL_APPLICATION, Payment::PAYMENT_TYPE_INTER_TRANSFER_APPLICATION])
+        ) {
+            return view($redirectPath, [
+                'programmes' => $this->programmes,
+                'payment' => $payment,
+                'programmeCategories' => $programmeCategories
+            ]);
+        }
+
+        return redirect($redirectPath);
+    }
+
+    
     public function callback (Request $request) {  
 
 
@@ -825,46 +451,6 @@ class PaymentController extends Controller
     }
 
 
-    public function monnifyWebhook(Request $request){
-        try {
-            // Process webhook data
-            $responseData = json_decode(json_encode($request->eventData));
-
-            // Extract payment information
-            $paymentReference = $responseData->paymentReference;
-            $paymentStatus = $responseData->paymentStatus;
-            $amountPaid = $responseData->amountPaid;
-
-            Log::info('*****************Monnify Webhook ****************');
-            Log::info('paymentReference: ' . $paymentReference);
-
-            if ($paymentStatus == "PAID") {
-                if (!$transaction = Transaction::where('reference', $paymentReference)->where('status', 0)->first()) {
-                    return $this->dataResponse('Transaction not found', null, 'error');
-                }
-
-                $monnifyAmount = $this->getMonnifyAmount($transaction->amount_payed);
-                if ($paymentReference == $transaction->reference) {
-                    $newAmount = $amountPaid * 100;
-                    $amountDiff = round(($newAmount - $monnifyAmount) / 100);
-
-                    if ($amountDiff >= 0) {
-                        // Credit bandwidth and update transaction status if the payment is valid
-                        $result = $this->creditBandwidth($transaction, $amountPaid);
-                        if($result){
-                            return $this->dataResponse('Account Credited', $result);
-                        }
-                        return $this->dataResponse('Account not credited', null, 'error');
-                    }
-                    Log::info('Difference in amount: ' . $amountDiff);
-                    return $this->dataResponse('Difference in amount: ' . $amountDiff, null, 'error');
-                }
-                return $this->dataResponse('invalid Transaction', null, 'error');
-            }
-        } catch (ValidationException $e) {
-            return $this->dataResponse($this->getMissingParams($e), null, 'error');
-        }
-    }
 
      
     public function requeryUpperlinkPayment(Request $request){

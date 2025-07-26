@@ -55,13 +55,11 @@ class Monnify
     /**
      * Initiate Invoice with Bearer Token
      */
-    public function initiateInvoice(array $paymentData)
-    {
+    public function initiateInvoice(array $paymentData){
         $token = $this->getAccessToken();
         if (!$token) {
             return ['error' => true, 'message' => 'Unable to authorize request.'];
-        }
-
+        }    
         try {
             $response = Http::withoutVerifying()
                 ->withToken($token)
