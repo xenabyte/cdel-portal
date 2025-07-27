@@ -142,25 +142,13 @@ class PaymentController extends Controller
     }
 
 
-    public function monnifyWebhook(Request $request){
-        $data = $request->all();
+    public function monnifyWebhook(Request $request)
+    {
+        $eventData = $request->all();
 
-        Log::info("Monnify Webhook Received: " . json_encode($data));
+        Log::info("Monnify Webhook Received: " . json_encode($eventData));
 
-        $rawEventJson = $data[0];
-
-        // if (!$rawEventJson) {
-        //     Log::warning('Empty or invalid Monnify webhook payload.', $data);
-        //     return response()->json(['status' => 'ignored'], 400);
-        // }
-
-        $eventData = json_decode($rawEventJson, true);
-
-        if (json_last_error() !== JSON_ERROR_NONE) {
-            Log::error('Invalid JSON inside webhook payload: ' . json_last_error_msg());
-            return response()->json(['status' => 'error'], 400);
-        }
-
+        // Check for expected keys
         $paymentReference = $eventData['eventData']['paymentReference'] ?? null;
 
         if (!$paymentReference) {
