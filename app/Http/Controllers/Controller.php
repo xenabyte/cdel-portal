@@ -430,13 +430,19 @@ class Controller extends BaseController
 
     public function getMonnifyAmount($amount)
     {
-        $monnifyAmount =  (((1.5 / 100) * $amount) + 5000);
+        $baseFee = (1.5 / 100) * $amount;
 
-        if (($monnifyAmount) > 200000) {
-            $paymentAmount = $amount + 200000 + 5000;
-        } else {
-            $paymentAmount = $amount + $monnifyAmount + 5000;
+        $vat = (7.5 / 100) * $baseFee;
+
+        $totalCharge = $baseFee + $vat;
+
+        if ($totalCharge > 200000) {
+            $totalCharge = 200000;
         }
+
+        $convenienceFee = 10000;
+
+        $paymentAmount = $amount + $totalCharge + $convenienceFee;
 
         return $paymentAmount;
     }

@@ -82,8 +82,8 @@ class CronController extends Controller
 
     public function requeryUpperLinkPendingTransactions(){
         $transactions = Transaction::whereNull('status')
-            ->where('payment_method',  'Upperlink')
-            ->where(function($query){
+            ->where('payment_method', 'Upperlink')
+            ->where(function ($query) {
                 $query->whereNull('cron_status')
                     ->orWhere('cron_status', '<', 3);
             })
@@ -91,7 +91,7 @@ class CronController extends Controller
             ->take(50)
             ->get();
 
-        if ($transactions->isEmpty()){
+        if ($transactions->isEmpty()) {
             return $this->dataResponse('No pending transactions found that can be processed.', null);
         }
 
@@ -99,22 +99,20 @@ class CronController extends Controller
         $paidCount = 0;
         $updatedCount = 0;
 
-        foreach ($transactions as $transaction){
+        foreach ($transactions as $transaction) {
             $paymentReference = $transaction->reference;
 
-            // Use the updated upperlinkVerifyPayment with JSON return
-            $response = $paymentController->upperlinkVerifyPayment($paymentReference, null, true);
+            $request = new Request(['paymentReference' => $paymentReference]);
 
-            // Refresh transaction from DB
+            $response = $paymentController->upperlinkVerifyPayment($request, $paymentReference, '/', true);
+
             $transaction = Transaction::find($transaction->id);
 
-            if (!empty($transaction->status)){
-                // Payment confirmed
+            if (!empty($transaction->status)) {
                 $transaction->cron_status = 3;
                 $transaction->save();
                 $paidCount++;
             } else {
-                // Payment still not confirmed; increment cron_status safely
                 $transaction->cron_status = is_null($transaction->cron_status) ? 1 : $transaction->cron_status + 1;
                 $transaction->save();
                 $updatedCount++;
