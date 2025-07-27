@@ -598,7 +598,7 @@ class ApplicationController extends Controller
                     [
                         'subAccountCode' => BankAccount::getBankAccountCode($paymentType)->monnifyAccountCode,
                         'feePercentage' => 100,
-                        'splitAmount' => 100,
+                        'splitAmount' => null,
                         'feeBearer' => true,
                     ]
                 ]
