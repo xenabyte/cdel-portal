@@ -1415,9 +1415,16 @@ class Controller extends BaseController
         // Generate the summer course registration PDF
         $pdf = new Pdf();
         $summerCourseReg = $pdf->generateSummerCourseRegistration($studentId, $courseReg->academic_session); // Assume this returns a file path or name
+        $existingData = ["65770", "65772"];
 
-        // Store file name/path in `additional_file` field
-        $transaction->additional_data = json_encode(['summerCourseReg' => $summerCourseReg]);
+        // Restructure the data
+        $additionalData = [
+            'courseRegIds' => $existingData,
+            'summerCourseRegFile' => $summerCourseReg
+        ];
+
+        // Save to model
+        $transaction->additional_data = json_encode($additionalData);
         $transaction->is_used = 1;
         $transaction->save();
 
