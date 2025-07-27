@@ -604,7 +604,7 @@ class ApplicationController extends Controller
                 ]
             );
 
-            dd($monnifyPaymentdata);
+            // dd($monnifyPaymentdata);
 
             $monnify = new Monnify();
             $createInvoice = $monnify->initiateInvoice($monnifyPaymentdata);
