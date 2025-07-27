@@ -143,28 +143,30 @@ class PaymentController extends Controller
 
 
     public function monnifyWebhook(Request $request){
-        $data = $request->all(); // gets the raw payload as associative array
+        $data = $request->all();
+
         $rawEventJson = $data[0] ?? null;
 
         if (!$rawEventJson) {
-            Log::warning('Empty webhook payload.');
+            Log::warning('Empty or invalid Monnify webhook payload.', $data);
             return response()->json(['status' => 'ignored'], 400);
         }
 
-        $eventData = json_decode($rawEventJson, true); // decode the actual JSON string
+        $eventData = json_decode($rawEventJson, true);
 
         if (json_last_error() !== JSON_ERROR_NONE) {
-            Log::error('Invalid JSON in webhook payload.');
+            Log::error('Invalid JSON inside webhook payload: ' . json_last_error_msg());
             return response()->json(['status' => 'error'], 400);
         }
 
-        // Now you can access paymentReference and others
         $paymentReference = $eventData['eventData']['paymentReference'] ?? null;
 
         if (!$paymentReference) {
-            Log::error('Missing paymentReference in eventData.');
+            Log::error('Missing paymentReference in Monnify webhook.', $eventData);
             return response()->json(['status' => 'error'], 400);
         }
+
+        Log::info("Monnify Webhook Received for Reference: {$paymentReference}");
 
         return $this->handleGenericPaymentVerification('monnify', $paymentReference, '/', true);
     }
