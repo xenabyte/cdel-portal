@@ -432,7 +432,8 @@ class Controller extends BaseController
     {
         $baseFee = (1.5 / 100) * $amount;
 
-        $vat = (7.5 / 100) * $baseFee;
+        // $vat = (7.5 / 100) * $baseFee;
+        $vat = 0;
 
         $totalCharge = $baseFee + $vat;
 
@@ -440,7 +441,7 @@ class Controller extends BaseController
             $totalCharge = 200000;
         }
 
-        $convenienceFee = 10000;
+        $convenienceFee = 20000;
 
         $paymentAmount = $amount + $totalCharge + $convenienceFee;
 
