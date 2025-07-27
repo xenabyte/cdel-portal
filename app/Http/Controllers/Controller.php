@@ -428,20 +428,19 @@ class Controller extends BaseController
         return $paymentAmount;
     }
 
-    public function getMonnifyAmount($amount)
-    {
+    public function getMonnifyAmount($amount){
         $baseFee = (1.5 / 100) * $amount;
-
         // $vat = (7.5 / 100) * $baseFee;
-        $vat = 0;
-
+        $vat = 0; // VAT is not currently applied
         $totalCharge = $baseFee + $vat;
 
+        // Cap the total charge at ₦200,000
         if ($totalCharge > 200000) {
             $totalCharge = 200000;
         }
 
-        $convenienceFee = 20000;
+        // Determine convenience fee based on amount
+        $convenienceFee = $amount > 200000 ? 200000 : ($amount > 2000 ? 20000 : 10000);
 
         $paymentAmount = $amount + $totalCharge + $convenienceFee;
 
