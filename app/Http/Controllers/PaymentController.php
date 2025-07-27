@@ -144,11 +144,10 @@ class PaymentController extends Controller
 
     public function monnifyWebhook(Request $request)
     {
+        sleep(30);
+
         $eventData = $request->all();
-
         Log::info("Monnify Webhook Received: " . json_encode($eventData));
-
-        // Check for expected keys
         $paymentReference = $eventData['eventData']['paymentReference'] ?? null;
 
         if (!$paymentReference) {
