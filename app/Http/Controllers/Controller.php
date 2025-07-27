@@ -438,7 +438,7 @@ class Controller extends BaseController
             $totalCharge = 200000;
         }
 
-        $convenienceFee = $totalCharge == 200000 ? 20000 : 10000;
+        $convenienceFee = $totalCharge == 200000 ? 20000 : 15000;
 
         $paymentAmount = $amount + $totalCharge + $convenienceFee;
 
