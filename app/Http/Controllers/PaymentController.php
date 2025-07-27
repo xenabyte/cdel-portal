@@ -145,14 +145,12 @@ class PaymentController extends Controller
     public function monnifyWebhook(Request $request){
         $data = $request->all();
 
-        // $rawEventJson = $data[0] ?? null;
+        $rawEventJson = $data[0];
 
-        $rawEventJson = $data;
-
-        if (!$rawEventJson) {
-            Log::warning('Empty or invalid Monnify webhook payload.', $data);
-            return response()->json(['status' => 'ignored'], 400);
-        }
+        // if (!$rawEventJson) {
+        //     Log::warning('Empty or invalid Monnify webhook payload.', $data);
+        //     return response()->json(['status' => 'ignored'], 400);
+        // }
 
         $eventData = json_decode($rawEventJson, true);
 
