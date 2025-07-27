@@ -145,6 +145,8 @@ class PaymentController extends Controller
     public function monnifyWebhook(Request $request){
         $data = $request->all();
 
+        Log::info("Monnify Webhook Received: " . json_encode($data));
+
         $rawEventJson = $data[0];
 
         // if (!$rawEventJson) {
