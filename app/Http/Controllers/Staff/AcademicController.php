@@ -24,6 +24,7 @@ use App\Models\Student;
 use App\Models\StudentSuspension;
 use App\Models\ProgrammeChangeRequest;
 use App\Models\Staff;
+use App\Models\SummerCourseRegistration;
 
 use SweetAlert;
 use Mail;
