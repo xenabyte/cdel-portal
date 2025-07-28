@@ -233,6 +233,8 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'admin'],
     Route::post('/updateApplicant', [App\Http\Controllers\Admin\AdmissionController::class, 'updateApplicant'])->name('updateApplicant')->middleware(['auth:admin']);
 
 
+    
+    Route::get('/getSummerCourseReg', [App\Http\Controllers\Admin\AcademicController::class, 'getSummerCourseReg'])->name('getSummerCourseReg')->middleware(['auth:admin']);
     Route::post('/manageCourseReg', [App\Http\Controllers\Admin\AcademicController::class, 'manageCourseReg'])->name('manageCourseReg')->middleware(['auth:admin']);
     Route::get('/courseRegMgt', [App\Http\Controllers\Admin\AcademicController::class, 'courseRegMgt'])->name('courseRegMgt')->middleware(['auth:admin']);
     Route::post('/setCourseRegStatus', [App\Http\Controllers\Admin\AcademicController::class, 'setCourseRegStatus'])->name('setCourseRegStatus')->middleware(['auth:admin']);
@@ -718,8 +720,6 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'staff'],
     Route::get('/authorized-students/{courseId}/{programmeCategory}/{academicSession?}', [App\Http\Controllers\Staff\StaffController::class, 'authorizedStudents'])->name('staff.authorizedStudents');
     Route::get('/export-authorized-students/{courseId}/{programmeCategory}/{academicSession}', [App\Http\Controllers\Staff\StaffController::class, 'exportAuthorizedStudents'])->name('staff.export-authorized-students');
 
-
-
     Route::get('/adviserProgrammes/{programmeCategory}', [App\Http\Controllers\Staff\ProgrammeController::class, 'adviserProgrammes'])->name('adviserProgrammes')->middleware(['auth:staff']);
     Route::get('/studentCourseReg/{programmeCategory}', [App\Http\Controllers\Staff\ProgrammeController::class, 'studentCourseReg'])->name('studentCourseReg')->middleware(['auth:staff']);
     Route::get('/levelCourseReg/{programmeCategory}/{id}', [App\Http\Controllers\Staff\ProgrammeController::class, 'levelCourseReg'])->name('levelCourseReg')->middleware(['auth:staff']);
@@ -737,7 +737,6 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'staff'],
     Route::get('/getStudentResultSummary', [App\Http\Controllers\Staff\ResultController::class, 'getStudentResultSummary'])->name('getStudentResultSummary')->middleware(['auth:staff']);
     Route::post('/generateStudentResultSummary', [App\Http\Controllers\Staff\ResultController::class, 'generateStudentResultSummary'])->name('generateStudentResultSummary')->middleware(['auth:staff']);
     Route::post('/generateResultBroadSheet', [App\Http\Controllers\Staff\ResultController::class, 'generateResultBroadSheet'])->name('generateResultBroadSheet')->middleware(['auth:staff']);
-
 
     Route::post('/generateResult', [App\Http\Controllers\Staff\ResultController::class, 'generateResult'])->name('generateResult')->middleware(['auth:staff']);
     Route::post('/uploadStudentImage', [App\Http\Controllers\Staff\StaffController::class, 'uploadStudentImage'])->name('uploadStudentImage')->middleware(['auth:staff']);
@@ -833,6 +832,8 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'staff'],
 
     Route::post('/requestCourseApproval', [App\Http\Controllers\Staff\AcademicController::class, 'requestCourseApproval'])->name('requestCourseApproval')->middleware(['auth:staff']);
     Route::post('/courseApproval', [App\Http\Controllers\Staff\AcademicController::class, 'courseApproval'])->name('courseApproval')->middleware(['auth:staff']);
+    Route::get('/getSummerCourseReg', [App\Http\Controllers\Staff\AcademicController::class, 'getSummerCourseReg'])->name('getSummerCourseReg')->middleware(['auth:staff']);
+
 
     Route::post('/manageClearanceApplication', [App\Http\Controllers\Staff\StudentController::class, 'manageClearanceApplication'])->name('manageClearanceApplication')->middleware(['auth:staff']);
 

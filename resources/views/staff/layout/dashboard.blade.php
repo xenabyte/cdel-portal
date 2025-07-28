@@ -799,6 +799,11 @@
                                             <a href="{{ url('/staff/departmentForCourses') }}" class="nav-link">All Courses</a>
                                         </li>
                                         @endif
+                                        @if($staffAcademicPlannerRole)
+                                            <li class="nav-item">
+                                                <a href="{{ url('/staff/getSummerCourseReg') }}" class="nav-link">Summer Course Registration</a>
+                                            </li>
+                                        @endif
 
                                         @if($isFacultyOfficer)
                                         <li class="nav-item">

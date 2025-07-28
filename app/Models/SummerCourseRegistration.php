@@ -27,5 +27,13 @@ class SummerCourseRegistration extends Model
     {
         return $this->belongsTo(CourseRegistration::class, 'course_registration_id');
     }
+
+    public function course(){
+        return $this->belongsTo(Course::class);
+    }
+
+    public function student(){
+        return $this->belongsTo(Student::class);
+    }
     
 }

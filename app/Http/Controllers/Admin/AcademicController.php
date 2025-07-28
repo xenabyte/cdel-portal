@@ -40,6 +40,7 @@ use App\Models\Staff;
 use App\Models\StudentSuspension;
 use App\Models\Center;
 use App\Models\ProgrammeChangeRequest;
+use App\Models\SummerCourseRegistration;
 
 use App\Mail\NotificationMail;
 use App\Libraries\Pdf\Pdf;
@@ -1630,6 +1631,58 @@ class AcademicController extends Controller
             'programmes' => $programmes,
             'academicLevels' => $academicLevels,
             'programmeCategory' => $programmeCategory
+        ]);
+    }
+
+    public function getSummerCourseReg(Request $request){
+        
+        $programmeCategory = ProgrammeCategory::with(['academicSessionSetting', 'examSetting'])
+            ->where('category', ProgrammeCategory::UNDERGRADUATE)
+            ->first();
+
+        if (!$programmeCategory || !$programmeCategory->academicSessionSetting) {
+            alert()->error('Oops!', 'Session setting for this programme category is not properly configured.')->persistent('Close');
+            return redirect()->back();
+        }
+
+        $academicSession = $programmeCategory->academicSessionSetting->academic_session;
+        $programmeCategoryId = $programmeCategory->id;
+
+        $registrations = SummerCourseRegistration::with([
+            'student.applicant',
+            'student.academicLevel',
+            'student.programme',
+            'course'
+        ])
+            ->where('programme_category_id', $programmeCategoryId)
+            ->where('academic_session', $academicSession)
+            ->get()
+            ->groupBy('student_id');
+
+        $data = $registrations->map(function ($courses, $studentId) {
+            $student = $courses->first()->student;
+
+            return [
+                'student_id' => $student->id,
+                'name' => optional($student->applicant)->lastname . ' ' . optional($student->applicant)->othernames,
+                'matric_number' => $student->matric_number,
+                'email' => $student->email,
+                'phone_number' => optional($student->applicant)->phone_number,
+                'level' => optional($student->academicLevel)->level,
+                'programme' => optional($student->programme)->name,
+                'courses' => $courses->unique('course_id')->map(function ($reg) {
+                    return [
+                        'course_code' => optional($reg->course)->code,
+                        'course_name' => optional($reg->course)->name,
+                    ];
+                })->values()
+            ];
+        })->values();
+
+        return view('admin.summerCourseRegistrations', [
+            'students' => $data,
+            'programmeCategory' => $programmeCategory,
+            'academicSession' => $academicSession
         ]);
     }
 

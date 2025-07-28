@@ -668,6 +668,11 @@
                                     <li class="nav-item">
                                         <a href="{{ url('/admin/getCourseResult') }}" class="nav-link">Course Per Semester</a>
                                     </li>
+                                    
+                                    <li class="nav-item">
+                                        <a href="{{ url('/admin/getSummerCourseReg') }}" class="nav-link">Summer Course Registration</a>
+                                    </li>
+                                    
                                     @if(env('POPULATE_DATA'))
                                     <li class="nav-item">
                                         <a href="{{ url('/admin/populateCourse') }}" class="nav-link">Populate Course</a>

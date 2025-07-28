@@ -369,16 +369,7 @@ class CommitteeController extends Controller
             $fileUrl = 'uploads/meetings/'.$slug.time().'-agenda.'.$request->file('agenda')->getClientOriginalExtension();
             $image = $request->file('agenda')->move('uploads/meetings', $fileUrl);
             $meeting->agenda = $fileUrl;
-        }
 
-        if(!empty($request->minute) && $request->minute!= $meeting->minute){
-            if (file_exists($meeting->minute)) {
-                unlink($meeting->minute);
-            }
-
-            $minuteUrl = 'uploads/meetings/'.$slug.time().'-minute.'.$request->file('minute')->getClientOriginalExtension();
-            $image = $request->file('minute')->move('uploads/meetings', $minuteUrl);
-            $meeting->minute = $minuteUrl;
 
             $committeeMembers = CommitteeMember::where('committee_id', $request->committee_id)->pluck('staff_id');
 
@@ -388,7 +379,7 @@ class CommitteeController extends Controller
                     $memberEmail = $member->email;
                     $senderName = env('SCHOOL_NAME');
                     $receiverName = $member->lastname .' ' . $member->othernames;
-                    $message = 'Meeting Minute"' . $request->title . '" has been uploaded for ' . $meeting->title;
+                    $message = 'The agenda for the meeting titled "' . $meeting->title . '" has been uploaded/updated. Please log in to your dashboard and navigate to the "Committee" tab to review it.';                   
                     $mail = new NotificationMail($senderName, $message, $receiverName);
 
                     Notification::create([
@@ -400,12 +391,43 @@ class CommitteeController extends Controller
             }
         }
 
-        if(!empty($request->excerpt) && $request->excerpt!= $meeting->excerpt){
+        if (!empty($request->minute) && $request->minute != $meeting->minute) {
+            if (file_exists($meeting->minute)) {
+                unlink($meeting->minute);
+            }
+
+            $minuteUrl = 'uploads/meetings/' . $slug . time() . '-minute.' . $request->file('minute')->getClientOriginalExtension();
+            $image = $request->file('minute')->move('uploads/meetings', $minuteUrl);
+            $meeting->minute = $minuteUrl;
+
+            $committeeMembers = CommitteeMember::where('committee_id', $request->committee_id)->pluck('staff_id');
+
+            foreach ($committeeMembers as $memberId) {
+                $member = Staff::find($memberId);
+                if ($member) {
+                    $memberEmail = $member->email;
+                    $senderName = env('SCHOOL_NAME');
+                    $receiverName = $member->lastname . ' ' . $member->othernames;
+
+                    $message = 'The minutes for the meeting titled "' . $meeting->title . '" have been uploaded/updated. Please log in to your dashboard and navigate to the "Committee" tab to review them.';
+
+                    $mail = new NotificationMail($senderName, $message, $receiverName);
+
+                    Notification::create([
+                        'staff_id' => $memberId,
+                        'description' => $message,
+                        'status' => 0
+                    ]);
+                }
+            }
+        }
+
+        if (!empty($request->excerpt) && $request->excerpt != $meeting->excerpt) {
             if (file_exists($meeting->excerpt)) {
                 unlink($meeting->excerpt);
             }
 
-            $excerptUrl = 'uploads/meetings/'.$slug.time().'.'.$request->file('excerpt')->getClientOriginalExtension();
+            $excerptUrl = 'uploads/meetings/' . $slug . time() . '.' . $request->file('excerpt')->getClientOriginalExtension();
             $image = $request->file('excerpt')->move('uploads/meetings', $excerptUrl);
             $meeting->excerpt = $excerptUrl;
 
@@ -413,11 +435,13 @@ class CommitteeController extends Controller
 
             foreach ($committeeMembers as $memberId) {
                 $member = Staff::find($memberId);
-                if($member){
+                if ($member) {
                     $memberEmail = $member->email;
                     $senderName = env('SCHOOL_NAME');
-                    $receiverName = $member->lastname .' ' . $member->othernames;
-                    $message = 'Meeting Except"' . $request->title . '" has been uploaded for ' . $meeting->title;
+                    $receiverName = $member->lastname . ' ' . $member->othernames;
+
+                    $message = 'An excerpt for the meeting titled "' . $meeting->title . '" has been uploaded/updated. Please log in to your dashboard and navigate to the "Committee" tab to review it.';
+
                     $mail = new NotificationMail($senderName, $message, $receiverName);
 
                     Notification::create([
