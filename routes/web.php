@@ -580,6 +580,10 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'student'
         Route::post('/applicantWithSession', [App\Http\Controllers\Student\StudentController::class, 'applicantWithSession'])->name('applicantWithSession');
         Route::get('/student/{slug}', [App\Http\Controllers\Student\StudentController::class, 'student'])->name('student');
 
+        Route::get('/resumptionClearance', [App\Http\Controllers\Student\ClearanceController::class, 'resumptionClearance'])->name('student.resumptionClearance');
+        Route::post('/getStudentResumptionClearance', [App\Http\Controllers\Student\ClearanceController::class, 'getStudentResumptionClearance'])->name('student.getStudentResumptionClearance');
+        Route::post('/generateResumptionClearance', [App\Http\Controllers\Student\ClearanceController::class, 'generateResumptionClearance'])->name('student.generateResumptionClearance');
+
         Route::post('/submitClearanceApplication', [App\Http\Controllers\Student\ClearanceController::class, 'submitClearanceApplication'])->name('submitClearanceApplication');
         Route::post('/saveBioData', [App\Http\Controllers\Student\ClearanceController::class, 'saveBioData']);
         Route::post('/guardianBioData', [App\Http\Controllers\Student\ClearanceController::class, 'guardianBioData']);

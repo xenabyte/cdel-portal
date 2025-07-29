@@ -53,7 +53,7 @@ $qrcode = 'https://quickchart.io/chart?chs=300x300&cht=qr&chl='.env('APP_URL').'
     <table>
         <tr>
             <td style="border: none; width: 50%;">
-                <img src="{{ env('SCHOOL_LOGO') }}" width="70%">
+                <img src="{{ env('SCHOOL_LOGO') }}" width="50%>
             </td>
             <td style="border: none; text-align: right; width: 50%;">
                 <img src="{{ asset($info->image) }}" width="40%" style="border: 1px solid black;">

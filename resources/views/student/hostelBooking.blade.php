@@ -164,14 +164,14 @@
                                                 </div>
                             
                             
-                                                <div class="col-lg-12">
+                                                {{-- <div class="col-lg-12">
                                                     <div class="form-floating">
                                                         <select class="form-select selectRoom" id="room" name="room_id" aria-label="room" required>
                                                             <option value="" selected>--Select--</option>
                                                         </select>
                                                         <label for="roomType">Rooms</label>
                                                     </div>
-                                                </div>
+                                                </div> --}}
                                                 
                                                 @if(empty($hostelPaymentTx))
                                                 <div class="col-lg-12">

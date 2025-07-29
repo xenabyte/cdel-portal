@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Student;
 
+use App\Models\ProgrammeCategory;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -27,6 +28,7 @@ use App\Models\Notification;
 use App\Models\Unit;
 use App\Models\Role;
 use App\Models\FinalClearance;
+use App\Models\Allocation;
 
 use App\Mail\ApplicationMail;
 use App\Mail\BankDetailsMail;
@@ -839,6 +841,61 @@ class ClearanceController extends Controller
         $clearance->save();
 
         return redirect(asset($file));        
+    }
+
+    public function resumptionClearance(){
+        $programmeCategory = ProgrammeCategory::with('academicSessionSetting', 'examSetting')->where('category', ProgrammeCategory::UNDERGRADUATE)->first();
+
+        return view('student.resumptionClearance', [
+            'programmeCategory' => $programmeCategory
+        ]);
+    }
+
+    public function getStudentResumptionClearance(Request $request){
+
+        $validator = Validator::make($request->all(), [
+            'semester' => 'required',
+        ]);
+
+        if($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+
+        $student = Auth::guard('student')->user();
+        $paymentCheck = $this->checkSchoolFees($student);
+        $allocatedRoom = Allocation::where('student_id', $student->id)->where('academic_session', $student->academicSession)->first();
+
+        
+        $student->paymentCheck = $paymentCheck;
+
+        return view('student.resumptionClearance', [
+            'studentData' => $student,
+            'semester' => $request->semester,
+            'allocatedRoom' => $allocatedRoom,
+        ]);
+    }
+
+    public function generateResumptionClearance(Request $request) {
+        $validator = Validator::make($request->all(), [
+            'semester' => 'required',
+        ]);
+
+        if($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+
+        $student = Auth::guard('student')->user();
+        $paymentCheck = $this->checkSchoolFees($student);
+        $allocatedRoom = Allocation::where('student_id', $student->id)->where('academic_session', $student->academicSession)->first();
+
+        $student->paymentCheck = $paymentCheck;
+        $student->roomAllocation = $allocatedRoom;
+
+        $resumptionClearance = Pdf::generateResumptionClearance($student, $request->semester);
+
+        return $resumptionClearance;
     }
 
 }

@@ -772,12 +772,15 @@ class Controller extends BaseController
         $studentId = $student->id;
         $academicSession = $student->academic_session;
 
-        $studentPendingTransactions = Transaction::with('paymentType')
-            ->where('student_id', $studentId)
-            ->where('session', $academicSession)
-            ->where('payment_method', 'Manual/BankTransfer')
-            ->whereNull('status')
-            ->get();
+       $studentPendingTransactions = Transaction::with('paymentType')
+        ->where('student_id', $studentId)
+        ->where('session', $academicSession)
+        ->where('payment_method', 'Manual/BankTransfer')
+        ->where(function ($query) {
+            $query->whereNull('status')
+                ->orWhere('status', '!=', 1);
+        })
+        ->get();
 
         return $studentPendingTransactions->isNotEmpty();
     }

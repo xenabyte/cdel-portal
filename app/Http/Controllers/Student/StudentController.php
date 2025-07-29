@@ -556,14 +556,14 @@ class StudentController extends Controller
                 'paymentMethods' => ["CARD","ACCOUNT_TRANSFER","USSD","PHONE_NUMBER"],
                 'redirectUrl'=> env("MONNIFY_REDIRECT_URL"),
                 'metaData' => $meta,
-                'incomeSplitConfig' => [
-                    [
-                        'subAccountCode' => BankAccount::getBankAccountCode($paymentType)->monnifyAccountCode,
-                        'feePercentage' => 100,
-                        'splitPercentage' => 100,
-                        'feeBearer' => true,
-                    ]
-                ]
+                // 'incomeSplitConfig' => [
+                //     [
+                //         'subAccountCode' => BankAccount::getBankAccountCode($paymentType)->monnifyAccountCode,
+                //         'feePercentage' => 100,
+                //         'splitPercentage' => 100,
+                //         'feeBearer' => true,
+                //     ]
+                // ]
             );
 
             $monnify = new Monnify();
@@ -1284,15 +1284,15 @@ class StudentController extends Controller
 
         $allocatedRoom = Allocation::where('student_id', $studentId)->where('academic_session', $academicSession)->first();
 
-        // if(!$paymentCheck->passTuitionPayment){
-        //     return view('student.schoolFee', [
-        //         'payment' => $paymentCheck->schoolPayment,
-        //         'passTuition' => $paymentCheck->passTuitionPayment,
-        //         'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
-        //         'passEightyTuition' => $paymentCheck->passEightyTuition,
-        //         'studentPendingTransactions' => $paymentCheck->studentPendingTransactions
-        //     ]);
-        // }
+        if(!$paymentCheck->passTuitionPayment){
+            return view('student.schoolFee', [
+                'payment' => $paymentCheck->schoolPayment,
+                'passTuition' => $paymentCheck->passTuitionPayment,
+                'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
+                'passEightyTuition' => $paymentCheck->passEightyTuition,
+                'studentPendingTransactions' => $paymentCheck->studentPendingTransactions
+            ]);
+        }
 
         // if(empty($student->image)){
         //     return view('student.updateImage', [

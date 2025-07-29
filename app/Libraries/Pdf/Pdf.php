@@ -652,5 +652,43 @@ class Pdf
         return $pdf->stream($slug);        
     }
 
+    public static  function generateResumptionClearance($student, $semester)
+    {
+        $options = [
+            'isRemoteEnabled' => true,
+            'encryption' => '128',
+            'no_modify' => true,
+            'isHtml5ParserEnabled' => true,
+            'isPhpEnabled' => true,
+            'pdf' => true,
+        ];
+
+        $dir = public_path('uploads/files/resumptionClearances');
+        if (!file_exists($dir)) {
+            mkdir($dir, 0755, true);
+        }
+
+        $semesterText = $semester == 1 ? 'Harmattan Semester Resumption' : 
+                     ($semester == 2 ? 'Rain Semester Resumption' : 
+                     ($semester == 3 ? 'Mid Academic(New Year) Resumption' : ''));
+
+        $fileName = sprintf('%s - %s - %s - resumption_clearance', $student->slug, $semesterText, $student->academicSession);
+        $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $fileName))).'.pdf';
+
+        $filePath = $dir.'/'.$slug;
+        $pdf = PDFDocument::loadView('pdf.resumptionClearance', [
+            'student' => $student,
+            'semester' => $semester,
+            'semesterText' => $semesterText,
+            'pdf' => true,
+        ]);
+
+        $pdf->setPaper('a4', 'portrait');
+        $pdf->setOptions($options);
+
+        $pdf->save($filePath);
+        return $pdf->stream($slug);
+    }
+
 
 }

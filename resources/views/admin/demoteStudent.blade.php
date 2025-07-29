@@ -83,7 +83,7 @@
                             <strong>Wifi Username:</strong> {{ $student->bandwidth_username }}<br>
                             <strong>Email:</strong> {{ $student->email }}<br>
                             <strong>Phone Number:</strong> {{ $student->applicant->phone_number }}<br>
-                            <strong>Address:</strong> {{ $student->applicant->address }}<br>
+                            <strong>Address:</strong> {!! preg_replace('/<\/?p[^>]*>/', '', $student->applicant->address) !!}<br>
                             @if(env('WALLET_STATUS'))<a class="dropdown-item" href="#"><i class="mdi mdi-wallet text-muted fs-16 align-middle me-1"></i> <span class="align-middle">Balance : <b>₦{{ number_format($student->amount_balance/100, 2) }}</b></span></a>@endif
                         </p>
                         <p class="text-muted border-top border-top-dashed pt-2">

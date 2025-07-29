@@ -414,6 +414,20 @@
     
                             @if($student->programme_category_id == ProgrammeCategory::getProgrammeCategory(ProgrammeCategory::UNDERGRADUATE))
                             <li class="nav-item">
+                                <a class="nav-link menu-link" href="#resumptionClearance" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="resumptionClearance">
+                                    <i class="mdi mdi-format-list-checks"></i> <span data-key="t-resumptionClearance">Resumption Clearance</span>
+                                </a>
+                                <div class="collapse menu-dropdown" id="resumptionClearance">
+                                    
+                                    <ul class="nav nav-sm flex-column">
+                                        <li class="nav-item">
+                                            <a href="{{ url('/student/resumptionClearance') }}" class="nav-link">Resumption Clearance</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+
+                            <li class="nav-item">
                                 <a class="nav-link menu-link" href="#eMatric" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="eMatric">
                                     <i class="mdi mdi-nut"></i> <span data-key="t-eMatric">E-Matriculation</span>
                                 </a>

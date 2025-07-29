@@ -71,7 +71,7 @@
         <tbody>
             <tr>
                 <td style="width: 50%; border: none;">
-                    <img src="{{env('SCHOOL_LOGO')}}" width="70%" style="float: left;">
+                    <img src="{{env('SCHOOL_LOGO')}}" width="50% style="float: left;">
                 </td>
                 <td style="width: 50%; border: none;">
                     <img src="{{ asset($info->image) }}" width="40%" style="float: right; border: 1px solid black;">
