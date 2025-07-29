@@ -672,7 +672,7 @@
                                     <li class="nav-item">
                                         <a href="{{ url('/admin/getSummerCourseReg') }}" class="nav-link">Summer Course Registration</a>
                                     </li>
-                                    
+
                                     @if(env('POPULATE_DATA'))
                                     <li class="nav-item">
                                         <a href="{{ url('/admin/populateCourse') }}" class="nav-link">Populate Course</a>
@@ -1008,6 +1008,9 @@
                                     </li>
                                     <li class="nav-item">
                                         <a href="{{('/admin/transactions')}}" class="nav-link"> Transactions </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="{{ url('/admin/resumptionClearance') }}" class="nav-link">Resumption Clearance</a>
                                     </li>
                                     <li class="nav-item">
                                         <a href="{{('/admin/transactionReport')}}" class="nav-link"> Transaction Report </a>

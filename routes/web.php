@@ -450,6 +450,12 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'admin'],
     Route::get('/alumni', [App\Http\Controllers\Admin\StudentController::class, 'alumni'])->name('alumni')->middleware(['auth:admin']);
     Route::post('/manageFinalYearStudentClearance', [App\Http\Controllers\Admin\StudentController::class, 'manageFinalYearStudentClearance'])->name('manageFinalYearStudentClearance')->middleware(['auth:admin']);
 
+
+    Route::get('/resumptionClearance', [App\Http\Controllers\Admin\ClearanceController::class, 'resumptionClearance'])->name('admin.resumptionClearance')->middleware(['auth:admin']);
+    Route::post('/getStudentResumptionClearance', [App\Http\Controllers\Admin\ClearanceController::class, 'getStudentResumptionClearance'])->name('admin.getStudentResumptionClearance')->middleware(['auth:admin']);
+    Route::post('/generateResumptionClearance', [App\Http\Controllers\Admin\ClearanceController::class, 'generateResumptionClearance'])->name('admin.generateResumptionClearance')->middleware(['auth:admin']);
+
+
     Route::post('/createLecture', [App\Http\Controllers\Admin\ProgrammeController::class, 'createLecture'])->name('createLecture')->middleware(['auth:admin']);
     Route::post('/updateLecture', [App\Http\Controllers\Admin\ProgrammeController::class, 'updateLecture'])->name('updateLecture')->middleware(['auth:admin']);
     Route::post('/deleteLecture', [App\Http\Controllers\Admin\ProgrammeController::class, 'deleteLecture'])->name('deleteLecture')->middleware(['auth:admin']);
@@ -864,6 +870,11 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'staff'],
 
     Route::get('/studentFinalClearance', [App\Http\Controllers\Staff\StudentController::class, 'studentFinalClearance'])->name('studentFinalClearance')->middleware(['auth:staff']);
     Route::post('/manageFinalYearStudentClearance', [App\Http\Controllers\Staff\StudentController::class, 'manageFinalYearStudentClearance'])->name('manageFinalYearStudentClearance')->middleware(['auth:staff']);
+
+    Route::get('/resumptionClearance', [App\Http\Controllers\Staff\ClearanceController::class, 'resumptionClearance'])->name('admin.resumptionClearance')->middleware(['auth:staff']);
+    Route::post('/getStudentResumptionClearance', [App\Http\Controllers\Staff\ClearanceController::class, 'getStudentResumptionClearance'])->name('admin.getStudentResumptionClearance')->middleware(['auth:staff']);
+    Route::post('/generateResumptionClearance', [App\Http\Controllers\Staff\ClearanceController::class, 'generateResumptionClearance'])->name('admin.generateResumptionClearance')->middleware(['auth:staff']);
+
 
     Route::post('/createLecture', [App\Http\Controllers\Staff\StaffController::class, 'createLecture'])->name('createLecture');
     Route::post('/updateLecture', [App\Http\Controllers\Staff\StaffController::class, 'updateLecture'])->name('updateLecture');
