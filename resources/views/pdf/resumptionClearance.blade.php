@@ -1,3 +1,17 @@
+@php
+    $pageWidth = 794;
+    $pageHeight = 1123;
+
+    // Watermark spacing
+    $xSpacing = 395;
+    $ySpacing = 20;
+
+    $cols = intval($pageWidth / $xSpacing);
+    $rows = intval($pageHeight / $ySpacing);
+
+    $text = strtoupper(env('SCHOOL_NAME').' - ' . $student->applicant->lastname . ' ' . $student->applicant->othernames . ' - ' . $student->academic_session);
+@endphp
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -22,10 +36,55 @@
         th {
             background-color: #f2f2f2;
         }
+        .watermark {
+            position: fixed;
+            top: 35%;
+            left: 25%;
+            width: 50%;
+            opacity: 0.04;
+            z-index: -1;
+        }
+        .watermark-text {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: -1;
+            user-select: none;
+            opacity: 0.15;
+            font-size: 10px;
+            color: #ccc;
+            white-space: nowrap;
+        }
+        .watermark-text div {
+            position: absolute;
+            width: 400px;
+            transform: rotate(-45deg);
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
     </style>
 </head>
 <body>
-<div class="container">
+
+<div class="">
+    <img src="{{ env('SCHOOL_LOGO') }}" class="watermark">
+    <div class="watermark-text">
+        @for ($row = 0; $row < $rows; $row++)
+            @for ($col = 0; $col < $cols; $col++)
+                <div style="top: {{ $row * $ySpacing }}px; left: {{ $col * $xSpacing }}px;">
+                    {{ $text }}
+                </div>
+            @endfor
+        @endfor
+    </div>
+    <!-- Important Note -->
+    <p style="color: red; font-weight: bold; text-align: center; font-size: 16px; margin-top: 10px;">
+        NOTE: Please come with <u>3 printed copies</u> of this clearance document at resumption.
+    </p>
+
     <div class="row">
         <div class="col-6">
             <img src="{{ env('SCHOOL_LOGO') }}" width="50%">

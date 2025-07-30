@@ -102,7 +102,7 @@
 </head>
 <body>
     <img src="{{ env('SCHOOL_LOGO') }}" class="watermark">
-    <div class="container">
+    <div class="">
         <div class="header">
             <img src="{{ env('SCHOOL_LOGO') }}" alt="School Logo">
             <p><strong>Office of the Registrar</strong></p>
