@@ -846,6 +846,7 @@ class ClearanceController extends Controller
     public function resumptionClearance(){
         $programmeCategory = ProgrammeCategory::with('academicSessionSetting', 'examSetting')->where('category', ProgrammeCategory::UNDERGRADUATE)->first();
 
+
         return view('student.resumptionClearance', [
             'programmeCategory' => $programmeCategory
         ]);
