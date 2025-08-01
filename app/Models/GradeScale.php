@@ -24,11 +24,21 @@ class GradeScale extends Model
      * @param  float  $score
      * @return string|null
      */
-    public static function computeGrade($score)
+   public static function computeGrade($score)
     {
+        // Check for Absent condition
+        if (is_null($score) || strtoupper($score) === 'ABS' || $score == -1) {
+            return (object) [
+                'grade' => 'ABS',
+                'point' => 0,
+                'from_score' => null,
+                'to_score' => null,
+            ];
+        }
+
         $gradeScale = self::where('from_score', '<=', $score)
-                          ->where('to_score', '>=', $score)
-                          ->first();
+                        ->where('to_score', '>=', $score)
+                        ->first();
 
         if ($gradeScale) {
             return $gradeScale;

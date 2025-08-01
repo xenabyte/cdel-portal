@@ -50,7 +50,14 @@ class Student extends Authenticatable implements JWTSubject
         'standing',
         'cgpa',
         'onboard_status',
+
         'linkedIn',
+        'tiktok',
+        'whatsapp',
+        'instagram',
+        'hobbies',
+        'facebook',
+
         'dashboard_mode',
         'bandwidth_username',
         'onesignal_id ',

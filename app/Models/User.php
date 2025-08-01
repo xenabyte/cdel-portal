@@ -38,7 +38,6 @@ class User extends Authenticatable
         'gender',
         'address',
         'sitting_no',
-        'lga',
         'olevel_1',
         'olevel_2',
         'schools_attended',
@@ -55,6 +54,9 @@ class User extends Authenticatable
         'de_school_attended',
         'referrer',
         'programme_category_id',
+        
+        'family_position',
+        'number_of_siblings',
 
         'olevel_certificate',
         'field_of_interest',

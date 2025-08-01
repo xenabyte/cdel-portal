@@ -334,17 +334,14 @@
                     </div>
                     <ul class="navbar-nav" id="navbar-nav">
                         @if(env('WALLET_STATUS'))
-                        <hr class="text-light">
+                        <br><br>
                         <li class="nav-item">
                             <a class="nav-link menu-link" href="#"><i class="mdi mdi-wallet fs-16 align-middle me-1"></i> <span class="align-middle">Balance: <b>₦{{ number_format($student->amount_balance/100, 2) }}</b></span></a>
                         </li>
-                        <hr class="text-light">
                         @endif
-                        <hr class="text-light">
                         <li class="nav-item">
                             <a class="nav-link menu-link" href="#"><i class="mdi mdi-web-box fs-16 align-middle me-1"></i> <span class="align-middle">Wifi Username: <b>{{ $student->bandwidth_username }}</b></span></a>
                         </li>
-                        <hr class="text-light">
 
                         <li class="menu-title"><span data-key="t-menu">Menu</span></li>
 
@@ -354,64 +351,24 @@
                             </a>
                         </li>
 
-                        <li class="nav-item border-top border-top-dashed">
-                            <a class="nav-link menu-link" href="#election" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="election">
-                                <i class="mdi mdi-vote"></i> <span data-key="t-election">E-Voting</span>
+                        <li class="nav-item">
+                            <a class="nav-link menu-link" href="#profile" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="profile">
+                                <i class="mdi mdi-cog-outline"></i> <span data-key="t-profile">Profile</span>
                             </a>
-                            <div class="collapse menu-dropdown" id="election">
+                            <div class="collapse menu-dropdown" id="profile">
+                                
                                 <ul class="nav nav-sm flex-column">
                                     <li class="nav-item">
-                                        <a href="{{ url('/student/elections') }}" class="nav-link">E-Voting</a>
+                                        <a href="{{ url('/student/profile') }}" class="nav-link">Overview</a>
                                     </li>
                                 </ul>
                             </div>
-                        </li> <!-- end Bursary Menu -->
-
-                        @if($student->programme_category_id == ProgrammeCategory::getProgrammeCategory(ProgrammeCategory::UNDERGRADUATE))
-                        <li class="nav-item border-top border-top-dashed">
-                            <a class="nav-link menu-link" href="{{ url('/student/hostelBooking') }}">
-                                <i class="mdi mdi-warehouse"></i> <span>Hostel Booking</span>
-                            </a>
                         </li>
-                        @endif
+
                         
                         {{-- @if(!empty($student->image) && !empty($student->linkedIn) && !empty($student->bandwidth_username))
                             @if($passTuition) --}}
-                            <li class="nav-item border-top border-top-dashed">
-                                <a class="nav-link menu-link" href="{{ url('student/reffs') }}">
-                                    <i class="mdi mdi-account-network-outline"></i> <span data-key="t-transaction">Referred Student(s)</span>
-                                </a>
-                            </li>
-
-                            <li class="nav-item">
-                                <a class="nav-link menu-link" href="{{ url('student/mentor') }}">
-                                    <i class="mdi mdi-account-child-circle"></i> <span data-key="t-transaction">Mentor</span>
-                                </a>
-                            </li>
-
-                            <li class="nav-item">
-                                <a class="nav-link menu-link" href="{{ url('student/programmeChangeRequests') }}">
-                                    <i class="mdi mdi-account-child-circle"></i> <span data-key="t-transaction">Intra Transfer Application</span>
-                                </a>
-                            </li>
-
-                            <li class="nav-item">
-                                <a class="nav-link menu-link" href="#workStudy" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="workStudy">
-                                    <i class="mdi mdi-account-tie"></i> <span data-key="t-workStudy">Work Study</span>
-                                </a>
-                                <div class="collapse menu-dropdown" id="workStudy">
-                                    <ul class="nav nav-sm flex-column">
-                                        <li class="nav-item">
-                                            <a href="{{ url('/student/vacancies') }}" class="nav-link">Vacancies</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a href="{{ url('/student/applications') }}" class="nav-link">Applications</a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </li>
-    
-    
+                    
                             @if($student->programme_category_id == ProgrammeCategory::getProgrammeCategory(ProgrammeCategory::UNDERGRADUATE))
                             <li class="nav-item">
                                 <a class="nav-link menu-link" href="#resumptionClearance" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="resumptionClearance">
@@ -445,37 +402,6 @@
                             </li>
                             @endif
 
-                            <li class="nav-item">
-                                <a class="nav-link menu-link" href="#bandwidth" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="transaction">
-                                    <i class="mdi mdi-web-plus"></i> <span data-key="t-transaction">Internet Data</span>
-                                </a>
-                                <div class="collapse menu-dropdown" id="bandwidth">
-                                    <ul class="nav nav-sm flex-column">
-                                        <li class="nav-item">
-                                            <a href="{{ url('/student/purchaseBandwidth') }}" class="nav-link">Purchase Internet Data</a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </li>
-
-                            <li class="nav-item">
-                                <a class="nav-link menu-link" href="#transaction" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="transaction">
-                                    <i class="mdi mdi-bank-transfer"></i> <span data-key="t-transaction">Transactions</span>
-                                </a>
-                                <div class="collapse menu-dropdown" id="transaction">
-                                    <ul class="nav nav-sm flex-column">
-                                        <li class="nav-item">
-                                            <a href="{{ url('/student/transactions') }}" class="nav-link">School Transactions</a>
-                                        </li>
-                                        @if(env('WALLET_STATUS'))
-                                        <li class="nav-item">
-                                            <a href="{{ url('/student/walletTransactions') }}" class="nav-link">Wallet Transactions</a>
-                                        </li>
-                                        @endif
-                                    </ul>
-                                </div>
-                            </li> 
-
                             @if(!$student->is_passed_out)
                             <li class="nav-item">
                                 <a class="nav-link menu-link" href="#courseManagement" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="courseManagement">
@@ -502,6 +428,45 @@
                                 </div>
                             </li> 
                             @endif
+
+                            <li class="nav-item">
+                                <a class="nav-link menu-link" href="#transaction" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="transaction">
+                                    <i class="mdi mdi-bank-transfer"></i> <span data-key="t-transaction">Transactions</span>
+                                </a>
+                                <div class="collapse menu-dropdown" id="transaction">
+                                    <ul class="nav nav-sm flex-column">
+                                        <li class="nav-item">
+                                            <a href="{{ url('/student/transactions') }}" class="nav-link">School Transactions</a>
+                                        </li>
+                                        @if(env('WALLET_STATUS'))
+                                        <li class="nav-item">
+                                            <a href="{{ url('/student/walletTransactions') }}" class="nav-link">Wallet Transactions</a>
+                                        </li>
+                                        @endif
+                                    </ul>
+                                </div>
+                            </li> 
+
+
+                            <li class="nav-item">
+                                <a class="nav-link menu-link" href="#bandwidth" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="transaction">
+                                    <i class="mdi mdi-web-plus"></i> <span data-key="t-transaction">Internet Data</span>
+                                </a>
+                                <div class="collapse menu-dropdown" id="bandwidth">
+                                    <ul class="nav nav-sm flex-column">
+                                        <li class="nav-item">
+                                            <a href="{{ url('/student/purchaseBandwidth') }}" class="nav-link">Purchase Internet Data</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+
+
+                            <li class="nav-item">
+                                <a class="nav-link menu-link" href="{{ url('student/programmeChangeRequests') }}">
+                                    <i class="mdi mdi-account-child-circle"></i> <span data-key="t-transaction">Intra Transfer Application</span>
+                                </a>
+                            </li>
 
                             @if(!$student->is_passed_out)
                             <li class="nav-item">
@@ -537,10 +502,47 @@
                                 </div>
                             </li>
 
+                             @if($student->programme_category_id == ProgrammeCategory::getProgrammeCategory(ProgrammeCategory::UNDERGRADUATE))
+                            <li class="nav-item">
+                                <a class="nav-link menu-link" href="{{ url('/student/hostelBooking') }}">
+                                    <i class="mdi mdi-warehouse"></i> <span>Hostel Booking</span>
+                                </a>
+                            </li>
+                            @endif
+
                             <li class="nav-item">
                                 <a class="nav-link menu-link" href="{{ url('student/exits') }}">
                                     <i class="mdi mdi-arrow-top-right-bold-box"></i> <span data-key="t-exit">Exit(s) Applications</span>
                                 </a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link menu-link" href="{{ url('student/reffs') }}">
+                                    <i class="mdi mdi-account-network-outline"></i> <span data-key="t-transaction">Referred Student(s)</span>
+                                </a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link menu-link" href="{{ url('student/mentor') }}">
+                                    <i class="mdi mdi-account-child-circle"></i> <span data-key="t-transaction">Mentor</span>
+                                </a>
+                            </li>
+
+
+                            <li class="nav-item">
+                                <a class="nav-link menu-link" href="#workStudy" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="workStudy">
+                                    <i class="mdi mdi-account-tie"></i> <span data-key="t-workStudy">Work Study</span>
+                                </a>
+                                <div class="collapse menu-dropdown" id="workStudy">
+                                    <ul class="nav nav-sm flex-column">
+                                        <li class="nav-item">
+                                            <a href="{{ url('/student/vacancies') }}" class="nav-link">Vacancies</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a href="{{ url('/student/applications') }}" class="nav-link">Applications</a>
+                                        </li>
+                                    </ul>
+                                </div>
                             </li>
 
                             <li class="nav-item">
@@ -550,9 +552,16 @@
                             </li>
 
                             <li class="nav-item">
-                                <a class="nav-link menu-link" href="{{ url('student/profile') }}">
-                                    <i class="mdi mdi-cog-outline"></i> <span data-key="t-cog">Settings</span>
+                                <a class="nav-link menu-link" href="#election" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="election">
+                                    <i class="mdi mdi-vote"></i> <span data-key="t-election">E-Voting</span>
                                 </a>
+                                <div class="collapse menu-dropdown" id="election">
+                                    <ul class="nav nav-sm flex-column">
+                                        <li class="nav-item">
+                                            <a href="{{ url('/student/elections') }}" class="nav-link">E-Voting</a>
+                                        </li>
+                                    </ul>
+                                </div>
                             </li>
                             
                             {{-- @endif

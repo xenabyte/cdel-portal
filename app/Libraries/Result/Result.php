@@ -25,8 +25,7 @@ use Log;
 
 class Result
 {
-    public static function processResult(UploadedFile $file, $courseId, $type, $programmeCategoryId, $academicSession, $isSummer = false)
-    {
+    public static function processResult(UploadedFile $file, $courseId, $type, $programmeCategoryId, $academicSession, $isSummer = false){
         $csv = Reader::createFromPath($file->getPathname());
         $csv->setHeaderOffset(0);
         $records = $csv->getRecords();
@@ -48,28 +47,24 @@ class Result
             }
 
             if ($type == 'both') {
-                $testScore = isset($row['Test Score']) ? self::formatScore($row['Test Score']) : 0;
-                $examScore = isset($row['Exam Score']) ? self::formatScore($row['Exam Score']) : 0;
+                $testScore = isset($row['Test Score']) ? self::formatScore($row['Test Score']) : null;
+                $examScore = isset($row['Exam Score']) ? self::formatScore($row['Exam Score']) : null;
             }
 
-            
             $student = Student::with('applicant')->where('matric_number', $matricNumber)->first();
             if (!$student) {
-                Log::info("Student {$matricNumber} not registered for this course.");
+                Log::info("Student {$matricNumber} not found.");
                 continue;
             }
 
-            $studentId = $student->id;
             $course = Course::find($courseId);
             if (!$course || $course->code !== $courseCodeMain) {
-                Log::info("Uploaded result does not match course: {$courseCodeMain}");
+                Log::info("Course code mismatch for {$matricNumber}: expected {$course->code}, got {$courseCodeMain}");
                 continue;
             }
-            $courseCode = $course->code;
 
-           // Filter course registration with summer flag if needed
             $query = CourseRegistration::where([
-                'student_id' => $studentId,
+                'student_id' => $student->id,
                 'course_id' => $courseId,
                 'academic_session' => $academicSession,
                 'programme_category_id' => $programmeCategoryId
@@ -77,19 +72,19 @@ class Result
 
             if (!$isSummer) {
                 $query->whereNull('result_approval_id');
-            } 
+            }
 
             $studentRegistration = $query->first();
-
             if (!$studentRegistration) {
                 Log::info("{$student->applicant->lastname} {$student->applicant->othernames} not registered for {$course->code} @ {$academicSession}");
                 continue;
             }
 
-            // Initialize scores with existing ones
-            $existingTestScore = $studentRegistration->ca_score ?? 0;
-            $existingExamScore = $studentRegistration->exam_score ?? 0;
+            // Format existing DB scores
+            $existingTestScore = self::formatScore($studentRegistration->ca_score);
+            $existingExamScore = self::formatScore($studentRegistration->exam_score);
 
+            // Assign new scores based on upload type
             if ($type == 'test') {
                 $studentRegistration->ca_score = $testScore;
                 $examScore = $existingExamScore;
@@ -101,28 +96,43 @@ class Result
                 $studentRegistration->exam_score = $examScore;
             }
 
-            $totalScore = $testScore + $examScore;
-            if ($totalScore > 100) {
-                Log::warning("Total score for {$matricNumber} exceeds 100: {$totalScore}");
-                continue;
+            // Compute total score with ABS handling
+            $totalScore = null;
+
+            if (is_numeric($testScore) && is_numeric($examScore)) {
+                $totalScore = floatval($testScore) + floatval($examScore);
+            } elseif (!is_numeric($testScore) && is_numeric($examScore)) {
+                $totalScore = floatval($examScore);
+            } elseif (is_numeric($testScore) && !is_numeric($examScore)) {
+                $totalScore = floatval($testScore);
+            } else {
+                $totalScore = 'ABS';
             }
 
-            // Compute Grade
-            if ($totalScore > 0) {
+            if ($totalScore !== 'ABS') {
+                if ($totalScore > 100) {
+                    Log::warning("Total score for {$matricNumber} exceeds 100: {$totalScore}");
+                    continue;
+                }
+
                 $grading = GradeScale::computeGrade($totalScore);
                 $grade = $grading->grade;
                 $points = $grading->point;
-            
-                $requiredPassMark = self::getRequiredPassMark($student, $courseCode);
-            
+
+                $requiredPassMark = self::getRequiredPassMark($student, $course->code);
                 if ($totalScore < $requiredPassMark) {
                     $grade = 'F';
                     $points = 0;
                 }
-            
+
                 $studentRegistration->total = $totalScore;
                 $studentRegistration->grade = $grade;
                 $studentRegistration->points = $studentRegistration->course_credit_unit * $points;
+            } else {
+                $studentRegistration->total = 'ABS';
+                $grading = GradeScale::computeGrade('ABS');
+                $studentRegistration->grade = $grading->grade;
+                $studentRegistration->points = 0;
             }
 
             $studentRegistration->save();
@@ -134,9 +144,14 @@ class Result
     /**
      * Helper function to format scores.
      */
-    private static function formatScore($score)
-    {
-        return number_format(floatval($score), 2);
+    private static function formatScore($score){
+        $score = trim(strtoupper((string)$score));
+
+        if (in_array($score, ['ABS', '-', 'N/A', 'NA', 'NULL', ''])) {
+            return 'ABS';
+        }
+
+        return is_numeric($score) ? number_format(floatval($score), 2, '.', '') : 'ABS';
     }
 
     public static function calculateCGPA($studentId){

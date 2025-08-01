@@ -183,7 +183,7 @@ class AdmissionController extends Controller
             $programmeId = $request->programme_id;
             $programme = Programme::with('department', 'department.faculty')->where('id', $programmeId)->first();
             $parts = explode("/", $admissionSession);
-            $entryYear = $parts[1];
+            $entryYear = $parts[0];
 
             $accessCode = $applicant->passcode;
             $email = $applicant->email;

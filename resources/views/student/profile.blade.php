@@ -1,10 +1,398 @@
 @extends('student.layout.dashboard')
 @php
+    use \App\Models\ProgrammeCategory;
+
+
+
     $student = Auth::guard('student')->user();
     $applicant = $student->applicant;
+    $nok = $applicant->nok;
+    $guardian = $applicant->guardian;
     $name = $applicant->lastname.' '.$applicant->othernames;
 @endphp
 @section('content')
+<!-- Toast Container -->
+<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 1055">
+    <div id="requiredFieldsToast" class="toast align-items-center text-white bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body">
+                Please fill all required fields before proceeding to the next step.
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
+</div>
+@if(empty($student->signature) && ($student->programme_category_id == ProgrammeCategory::getProgrammeCategory(ProgrammeCategory::UNDERGRADUATE)))
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <div class="card">
+            <div class="card-header align-items-center d-flex">
+                <h4 class="mb-sm-0">Upload signature</h4>
+                <div class="flex-shrink-0">
+                </div>
+            </div><!-- end card header -->
+
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-8 offset-md-2 ">
+                        <div>
+                            <p>
+                                Please complete the form below to update your profile and upload your digital signature. 
+                                A clear and properly formatted signature is required for various official university documents and processes. 
+                            </p>
+                        </div>
+                        
+                        <form class="text-start" action="{{ url('student/profile/saveBioData') }}" method="POST" enctype="multipart/form-data">
+                            @csrf
+
+                            <div class="alert alert-info">
+                                <h5 class="alert-heading text-black">Steps to Upload a Signature Without Background</h5>
+                                <ol>
+                                    <li><strong>Sign on a White Paper</strong> – Use a clean white sheet and sign with a black or dark-colored pen.</li>
+                                    <li><strong>Take a Picture</strong> – Use your phone camera to snap a clear and well-lit photo of your signature. Ensure there are no shadows or extra marks.</li>
+                                    <li><strong>Remove Background</strong> –  
+                                        <ul>
+                                            <li>Visit <a href="https://www.remove.bg" target="_blank">remove.bg</a>.</li>
+                                            <li>Upload the signature image.</li>
+                                            <li>The website will automatically remove the background.</li>
+                                        </ul>
+                                    </li>
+                                    <li><strong>Download the Transparent Image</strong> – Click the download button to save the processed image with a transparent background.</li>
+                                    <li><strong>Upload the Signature</strong> – Use the downloaded transparent signature file below (e.g., documents, forms, or digital signing).</li>
+                                </ol>
+                                <p>This method ensures a clean and professional-looking signature without any unwanted background. 🚀</p>
+                            </div>
+
+                            <input type="hidden" name="student_id" value="{{ $student->id }}">
+
+                            <div class="col-lg-12">
+                                <div class="form-floating">
+                                    <input type="file" class="form-control" id="signature" name="signature">
+                                    <label for="signature"></label>
+                                </div>
+                            </div>
+                            <br>
+                            <button type="submit" id="submit-button" class="btn btn-block btn-fill btn-primary"> Submit</button>
+                        </form>
+                    </div>
+                </div>
+
+            </div>
+        </div><!-- end card -->
+    </div>
+    <!-- end col -->
+</div>
+<!-- end row -->
+@elseif(empty($student->facebook) && empty($guardian->father_name && empty($applicant->family_position)))
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <div class="card">
+            <div class="card-header align-items-center d-flex">
+                <h4 class="mb-sm-0">Update Biodata</h4>
+                <div class="flex-shrink-0">
+                </div>
+            </div><!-- end card header -->
+
+            <div class="card-body">
+                <form action="{{ url('student/profile/saveBioData') }}" method="POST" class="form-steps" autocomplete="on">
+                    @csrf
+                    <!-- Header Logo -->
+                    <div class="text-center bg-primary mb-4 pt-3 pb-4 mb-1 d-flex justify-content-center">
+                        <img src="{{ !empty($pageGlobalData->setting) ? asset($pageGlobalData->setting->logo) : null }}" class="card-logo" alt="logo dark" height="100">
+                    </div>
+
+                    <!-- Step Navigation -->
+                    <div style="display: none" class="step-arrow-nav mb-4">
+                        <ul class="nav nav-pills custom-nav nav-justified" role="tablist">
+                            <li class="nav-item">
+                                <button class="nav-link active" id="tab-personal-tab" data-bs-toggle="pill" data-bs-target="#tab-personal" type="button" role="tab" aria-selected="true">Personal Info</button>
+                            </li>
+                            <li class="nav-item">
+                                <button class="nav-link" id="tab-parent-tab" data-bs-toggle="pill" data-bs-target="#tab-parent" type="button" role="tab" aria-selected="false">Parent Info</button>
+                            </li>
+                            <li class="nav-item">
+                                <button class="nav-link" id="tab-academic-tab" data-bs-toggle="pill" data-bs-target="#tab-academic" type="button" role="tab" aria-selected="false">Academic Info</button>
+                            </li>
+                            <li class="nav-item">
+                                <button class="nav-link" id="tab-finish-tab" data-bs-toggle="pill" data-bs-target="#tab-finish" type="button" role="tab" aria-selected="false">Finish</button>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Tab Content -->
+                    <div class="tab-content">
+
+                        <!-- Step 1: Personal Info -->
+                        <div class="tab-pane fade show active" id="tab-personal" role="tabpanel">
+                            <div class="alert alert-warning" role="alert">
+                                <strong>Note:</strong> All fields in this section are required. Please fill them out before proceeding.
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label" for="email">Email</label>
+                                <input type="email" class="form-control" id="email" name="email" value="{{$student->email}}" readonly disabled>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-6 mb-3">
+                                    <label class="form-label" for="lastname">Lastname</label>
+                                    <input type="lastname" class="form-control" id="lastname" name="lastname"  value="{{$student->applicant->lastname}}" required>
+                                </div>
+                                <div class="col-lg-6 mb-3">
+                                    <label class="form-label" for="othernames">Othernames</label>
+                                    <input type="text" class="form-control" id="othernames" name="othernames" value="{{$student->applicant->othernames}}" required>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-6 mb-3">
+                                    <label class="form-label" for="dob">Date of Birth </label>
+                                   <input type="date" class="form-control" id="dob" name="dob" value="{{ \Carbon\Carbon::parse($student->applicant->dob)->format('Y-m-d') }}" required>
+                                </div>
+
+                                <div class="col-lg-6">
+                                    <div class="mb-3">
+                                        <label for="gender" class="form-label">Gender</label>
+                                        <select class="form-control" name="gender" id="gender" required>
+                                            <option @if($applicant->gender == '') selected  @endif value="" selected>Select Gender</option>
+                                            <option @if($applicant->gender == 'Male') selected  @endif value="Male">Male</option>
+                                            <option @if($applicant->gender == 'Female') selected  @endif value="Female">Female</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-6 mb-3">
+                                    <label class="form-label" for="phone_number">Phone Number</label>
+                                    <input type="text" class="form-control" id="phone_number" name="phone_number" value="{{$student->applicant->phone_number}}" required>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="mb-3">
+                                        <label for="marital_status" class="form-label">Marital Status</label>
+                                        <select class="form-control" name="marital_status" id="marital_status" required>
+                                            <option @if($applicant->marital_status == '') selected  @endif value="" selected>Select Marital Status</option>
+                                            <option @if($applicant->marital_status == 'Single') selected  @endif value="Single">Single</option>
+                                            <option @if($applicant->marital_status == 'Married') selected  @endif value="Married">Married</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-6 mb-3">
+                                    <label class="form-label" for="nationality">Nationality</label>
+                                    <input type="text" class="form-control" id="nationality" name="nationality" value="{{$student->applicant->nationality}}" required>
+                                </div>
+                                <div class="col-lg-6 mb-3">
+                                    <label class="form-label" for="state">State of Origin</label>
+                                    <input type="text" class="form-control" id="state" name="state" value="{{$student->applicant->state}}" required>
+                                </div>
+                                <div class="col-lg-6 mb-3">
+                                    <label class="form-label" for="lga">Local Government Area</label>
+                                    <input type="text" class="form-control" id="lga" name="lga" value="{{$student->applicant->lga}}" required>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="mb-3">
+                                        <label for="religion" class="form-label">Religion</label>
+                                        <select class="form-control" name="religion" id="religion" required>
+                                            <option value="" @if($applicant->religion == '') selected  @endif >Select Religion</option>
+                                            <option @if($applicant->religion == 'Christianity') selected  @endif value="Christianity">Christianity</option>
+                                            <option @if($applicant->religion == 'Islamic') selected  @endif value="Islamic">Islamic</option>
+                                            <option @if($applicant->religion == 'Others') selected  @endif value="Others">Others</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-6 mb-3">
+                                    <label class="form-label" for="family_position">Position in the Family (1st, 2nd, or 3rd)</label>
+                                    <input type="text" class="form-control" id="family_position" name="family_position" value="{{$student->applicant->family_position}}" required>
+                                </div>
+                                <div class="col-lg-6 mb-3">
+                                    <label class="form-label" for="number_of_siblings">Number of Siblings</label>
+                                    <input type="text" class="form-control" id="number_of_siblings" name="number_of_siblings" value="{{$student->applicant->number_of_siblings}}" required>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-6 mb-3">
+                                    <label class="form-label" for="facebook">Facebook Username</label>
+                                    <input type="text" class="form-control" id="facebook" name="facebook" value="{{$student->facebook}}" required>
+                                </div>
+                                <div class="col-lg-6 mb-3">
+                                    <label class="form-label" for="linkedIn">Linkedin Username</label>
+                                    <input type="text" class="form-control" id="linkedIn" name="linkedIn" value="{{$student->linkedIn}}" required>
+                                </div>
+                                <div class="col-lg-6 mb-3">
+                                    <label class="form-label" for="tiktok">Tiktok Username</label>
+                                    <input type="text" class="form-control" id="tiktok" name="tiktok" value="{{$student->tiktok}}" required>
+                                </div>
+                                <div class="col-lg-6 mb-3">
+                                    <label class="form-label" for="instagram">Instagram Username</label>
+                                    <input type="text" class="form-control" id="instagram" name="instagram" value="{{$student->instagram}}" required>
+                                </div>
+                                <div class="col-lg-6 mb-3">
+                                    <label class="form-label" for="whatsapp">Whatsapp Phone number</label>
+                                    <input type="text" class="form-control" id="whatsapp" name="whatsapp" value="{{$student->whatsapp}}" required>
+                                </div>
+                                <div class="col-lg-6 mb-3">
+                                    <label class="form-label" for="twitter">X(Twitter) Username</label>
+                                    <input type="text" class="form-control" id="twitter" name="twitter" value="{{$student->twitter}}" required>
+                                </div>
+                            </div>
+                            <div class="col-lg-12">
+                                <label for="hobbies">Hobbies</label>
+                                <textarea class="ckeditor" id="hobbies" name="hobbies" >{!! $student->hobbies !!}</textarea>
+                            </div><!--end col-->
+                           
+                            <div class="d-flex justify-content-end mt-4">
+                                <button type="button" class="btn btn-success nexttab" data-nexttab="tab-parent-tab">Next</button>
+                            </div>
+                        </div>
+
+                        <!-- Step 2: Parent Info -->
+                        <div class="tab-pane fade" id="tab-parent" role="tabpanel">
+                            <div class="alert alert-warning" role="alert">
+                                 <strong>Note:</strong> All fields in this section are required. Please fill them out before proceeding.
+                            </div>
+
+                            <div class="row">
+                                <!-- Father's Information -->
+                                <div class="col-lg-6 mb-3">
+                                    <label class="form-label" for="father-name">Father’s Name</label>
+                                    <input type="text" class="form-control" id="father-name" name="father_name" value="{{$guardian->father_name}}" placeholder="Enter father's name">
+                                </div>
+                                <div class="col-lg-6 mb-3">
+                                    <label class="form-label" for="father-occupation">Father’s Occupation</label>
+                                    <input type="text" class="form-control" id="father-occupation" name="father_occupation" value="{{$guardian->father_occupation}}" placeholder="Enter father's occupation">
+                                </div>
+                                <div class="col-lg-6 mb-3">
+                                    <label class="form-label" for="father-phone">Father’s Phone Number</label>
+                                    <input type="text" class="form-control" id="father-phone" name="father_phone" value="{{$guardian->father_phone}}" placeholder="Enter father's phone number">
+                                </div>
+                                <div class="col-lg-6 mb-3">
+                                    <label class="form-label" for="father-email">Father’s Email</label>
+                                    <input type="email" class="form-control" id="father-email" name="father_email" value="{{$guardian->father_email}}" placeholder="Enter father's email">
+                                </div>
+
+                                <!-- Mother's Information -->
+                                <div class="col-lg-6 mb-3">
+                                    <label class="form-label" for="mother-name">Mother’s Name</label>
+                                    <input type="text" class="form-control" id="mother-name" name="mother_name" value="{{$guardian->mother_name}}" placeholder="Enter mother's name">
+                                </div>
+                                <div class="col-lg-6 mb-3">
+                                    <label class="form-label" for="mother-occupation">Mother’s Occupation</label>
+                                    <input type="text" class="form-control" id="mother-occupation" name="mother_occupation" value="{{$guardian->mother_occupation}}" placeholder="Enter mother's occupation">
+                                </div>
+                                <div class="col-lg-6 mb-3">
+                                    <label class="form-label" for="mother-phone">Mother’s Phone Number</label>
+                                    <input type="text" class="form-control" id="mother-phone" name="mother_phone" value="{{$guardian->mother_phone}}" placeholder="Enter mother's phone number">
+                                </div>
+                                <div class="col-lg-6 mb-3">
+                                    <label class="form-label" for="mother-email">Mother’s Email</label>
+                                    <input type="email" class="form-control" id="mother-email" name="mother_email" value="{{$guardian->mother_email}}" placeholder="Enter mother's email">
+                                </div>
+
+                                <!-- Parent Residential Address -->
+                                <div class="col-lg-12 mb-3">
+                                    <label for="parent_address">Parent’s Residential Address</label>
+                                    <textarea class="ckeditor" id="parent_address" name="parent_address" ></textarea>
+                                </div><!--end col-->
+
+                                <!-- Guardian Info (if applicable) -->
+                                <div class="col-lg-6 mb-3">
+                                    <label class="form-label" for="guardian-name">Guardian’s Name</label>
+                                    <input type="text" class="form-control" id="guardian-name" name="name" value="{{$guardian->name}}" placeholder="Enter guardian's name">
+                                </div>
+                                <div class="col-lg-6 mb-3">
+                                    <label class="form-label" for="guardian-phone">Guardian’s Phone Number</label>
+                                    <input type="text" class="form-control" id="guardian-phone" name="phone_number" value="{{$guardian->phone_number}}" placeholder="Enter guardian's phone number">
+                                </div>
+                                <div class="col-lg-12 mb-3">
+                                    <label class="form-label" for="guardian-email">Guardian’s Email</label>
+                                    <input type="email" class="form-control" id="guardian-email" name="email" value="{{$guardian->email}}" placeholder="Enter guardian's email">
+                                </div>
+                                <div class="col-lg-12 mb-3">
+                                    <label for="address">Guardian Residential Address</label>
+                                    <textarea class="ckeditor" id="parent_address" name="address" >{!! $guardian->address !!}</textarea>
+                                </div><!--end col-->
+
+                            </div>
+
+                            <div class="d-flex justify-content-between mt-4">
+                                <button type="button" class="btn btn-light previestab" data-previous="tab-personal-tab">Back</button>
+                                <button type="button" class="btn btn-success nexttab" data-nexttab="tab-academic-tab">Next</button>
+                            </div>
+                        </div>
+
+                        <!-- Step 3: Academic Info -->
+                        <div class="tab-pane fade" id="tab-academic" role="tabpanel">
+                            <div class="alert alert-warning" role="alert">
+                                <strong>Note:</strong> All fields in this section are required. Please fill them out before proceeding.
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-12 mb-3">
+                                    <label class="form-label" for="matric_number">Matriculation Number</label>
+                                    <input type="text" class="form-control" id="matric_number" name="matric_number" value="{{$student->matric_number}}" readonly disabled>
+                                </div>
+
+                                <div class="col-lg-6 mb-3">
+                                    <label class="form-label" for="entry_year">Admission Year</label>
+                                    <input type="text" class="form-control" id="entry_year" name="entry_year" value="{{$student->entry_year}}" readonly disabled>
+                                </div>
+
+                                <div class="col-lg-6 mb-3">
+                                    <label class="form-label" for="faculty">Faculty</label>
+                                    <input type="text" class="form-control" id="faculty" name="faculty" value="{{$student->faculty->name}}" readonly disabled>
+                                </div>
+
+                                <div class="col-lg-6 mb-3">
+                                    <label class="form-label" for="department">Department</label>
+                                    <input type="text" class="form-control" id="department" name="department" value="{{$student->department->name}}" readonly disabled>
+                                </div>
+
+                                <div class="col-lg-6 mb-3">
+                                    <label class="form-label" for="programme">Course of Study</label>
+                                    <input type="text" class="form-control" id="programme" name="programme" value="{{$student->programme->name}}" readonly disabled>
+                                </div>
+
+                                <div class="col-lg-6 mb-3">
+                                    <label class="form-label" for="level">Level</label>
+                                    <input type="text" class="form-control" id="level" name="level" value="{{$student->academicLevel->level}}" readonly disabled>
+                                </div>
+
+                                <div class="col-lg-6 mb-3">
+                                    <label class="form-label" for="application_type">Mode of Admission</label>
+                                    <input type="text" class="form-control" id="application_type" name="application_type" value="{{$applicant->application_type}}" readonly disabled>
+                                </div>
+                            </div>
+
+                            <div class="d-flex justify-content-between mt-4">
+                                <button type="button" class="btn btn-light previestab" data-previous="tab-parent-tab">Back</button>
+                                <button type="button" class="btn btn-success nexttab" data-nexttab="tab-finish-tab">Next</button>
+                            </div>
+                        </div>
+
+                        <!-- Step 4: Finish -->
+                        <div class="tab-pane fade" id="tab-finish" role="tabpanel">
+                            <div class="text-center">
+                                <div class="avatar-md mt-5 mb-4 mx-auto">
+                                    <div class="avatar-title bg-light text-success display-4 rounded-circle">
+                                        <i class="ri-checkbox-circle-fill"></i>
+                                    </div>
+                                </div>
+                                <h5>Well Done!</h5>
+                                <p class="text-muted">You have successfully signed up.</p>
+                                <button type="submit" class="btn btn-primary">Submit</button>
+                            </div>
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+            
+        </div><!-- end card -->
+    </div>
+    <!-- end col -->
+</div>
+@else
 
 <div class="position-relative mx-n4 mt-n4">
     <div class="profile-wid-bg profile-setting-img">
@@ -550,4 +938,55 @@
     <!--end col-->
 </div>
 <!--end row-->
+@endif
+<script>
+// document.addEventListener("DOMContentLoaded", function () {
+//     const nextButtons = document.querySelectorAll(".nexttab");
+
+//     nextButtons.forEach(button => {
+//         button.addEventListener("click", function (e) {
+//             const currentTab = button.closest(".tab-pane");
+//             const requiredFields = currentTab.querySelectorAll("input[required], select[required], textarea]");
+
+//             let allValid = true;
+
+//             requiredFields.forEach(field => {
+//                 if (field.value.trim() === "") {
+//                     field.classList.add("is-invalid");
+//                     allValid = false;
+//                 } else {
+//                     field.classList.remove("is-invalid");
+//                 }
+//             });
+
+//             if (!allValid) {
+//                 e.preventDefault();
+
+//                 // Show toast message
+//                 const toastEl = document.getElementById("requiredFieldsToast");
+//                 if (toastEl) {
+//                     const toast = new bootstrap.Toast(toastEl);
+//                     toast.show();
+//                 }
+//             }
+//         });
+//     });
+
+//     // Optional: remove is-invalid class as user corrects the input
+//     const allRequiredFields = document.querySelectorAll("input[required], select[required], textarea");
+//     allRequiredFields.forEach(field => {
+//         field.addEventListener("input", () => {
+//             if (field.value.trim() !== "") {
+//                 field.classList.remove("is-invalid");
+//             }
+//         });
+
+//         field.addEventListener("change", () => {
+//             if (field.value.trim() !== "") {
+//                 field.classList.remove("is-invalid");
+//             }
+//         });
+//     });
+// });
+</script>
 @endsection

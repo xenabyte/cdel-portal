@@ -360,6 +360,10 @@ class PaymentController extends Controller
                 $creditResult = $this->creditBandwidth($transaction, $amount);
                 break;
 
+            case Payment::PAYMENT_TYPE_INTRA_TRANSFER_APPLICATION:
+                $creditResult = $this->initChangeProgramme($transaction, $studentId);
+                break;
+
             case Payment::PAYMENT_TYPE_SCHOOL:
             case Payment::PAYMENT_TYPE_SCHOOL_DE:
                 $this->generateMatricAndEmail($student);

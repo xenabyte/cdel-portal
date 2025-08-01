@@ -61,7 +61,7 @@ $admissionSession = $student->programme->programmeCategory->academicSessionSetti
         </div><!-- end card header -->
     </div>
 </div>
-@if(empty($student->linkedIn) && ($student->programme_category == ProgrammeCategory::getProgrammeCategory(ProgrammeCategory::UNDERGRADUATE)))
+{{-- @if(empty($student->linkedIn) && ($student->programme_category == ProgrammeCategory::getProgrammeCategory(ProgrammeCategory::UNDERGRADUATE)))
 <div class="row">
     <div class="col-md-8 offset-md-2">
         <div class="card">
@@ -119,8 +119,8 @@ $admissionSession = $student->programme->programmeCategory->academicSessionSetti
     </div>
     <!-- end col -->
 </div>
-<!-- end row -->
-@else
+<!-- end row --> --}}
+{{-- @else --}}
 <div class="row">
     <div class="col-xxl-4">
         <div class="card">
@@ -743,7 +743,7 @@ $admissionSession = $student->programme->programmeCategory->academicSessionSetti
       }, 1e3);
     }
 </script>
-@endif
+{{-- @endif --}}
 
 
 

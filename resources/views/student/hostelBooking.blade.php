@@ -70,8 +70,11 @@
     </div>
     <!-- end col -->
 </div>
-@elseif(!empty($programmeCategory->academicSessionSetting) && strtolower($programmeCategory->academicSessionSetting->accomondation_booking_status) != 'start')
-<div class="row justify-content-center">
+@elseif(
+    !empty($programmeCategory->academicSessionSetting) &&
+    strtolower($programmeCategory->academicSessionSetting->accommodation_booking_status) != 'start' &&
+    $student->academic_session != $programmeCategory->academicSessionSetting->admission_session
+)<div class="row justify-content-center">
     <div class="col-lg-6">
         <div class="card">
             <div class="card-body">

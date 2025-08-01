@@ -22,7 +22,17 @@ class Guardian extends Authenticatable
         'password',
         'phone_number',
         'address',
-        'passcode'
+        'passcode',
+        
+        'father_name',
+        'father_occupation',
+        'father_phone',
+        'father_email',
+        'mother_name',
+        'mother_occupation',
+        'mother_phone',
+        'mother_email',
+        'parent_residential_address',
     ];
 
     /**

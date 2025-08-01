@@ -23,6 +23,7 @@ use App\Models\StudentCourseRegistration;
 use App\Models\Programme;
 use App\Models\BankAccount;
 use App\Models\ProgrammeChangeRequest;
+use App\Models\Guardian;
 
 use App\Libraries\Pdf\Pdf;
 use App\Libraries\Bandwidth\Bandwidth;
@@ -127,8 +128,8 @@ class StudentController extends Controller
         //     ]);
         // }
 
-        // $google = new Google();
-        // $google->addMemberToGroup($student->email, env('GOOGLE_STUDENT_GROUP'));
+        $google = new Google();
+        $google->addMemberToGroup($student->email, env('GOOGLE_STUDENT_GROUP'));
       
         return view('student.home', [
             'payment' => $paymentCheck->schoolPayment,
@@ -174,6 +175,7 @@ class StudentController extends Controller
 
         $student = Auth::guard('student')->user();
         $applicant = Applicant::find($student->user_id);
+        $guardian = Guardian::find($applicant->guardian_id);
 
         
         if(!empty($request->dob) && $request->dob != $applicant->dob){
@@ -204,6 +206,74 @@ class StudentController extends Controller
             $applicant->lga = $request->lga;
         }
 
+        if(!empty($request->family_position) && $request->family_position != $applicant->family_position){
+            $applicant->family_position = $request->family_position;
+        }
+
+        if(!empty($request->facebook) && $request->facebook != $applicant->facebook){
+            $student->facebook = $request->facebook;
+        }
+
+        if(!empty($request->linkedIn) && $request->linkedIn != $applicant->linkedIn){
+            $applicant->linkedIn = $request->linkedIn;
+        }
+
+        if(!empty($request->tiktok) && $request->tiktok != $applicant->tiktok){
+            $applicant->tiktok = $request->tiktok;
+        }
+
+        if(!empty($request->instagram) && $request->instagram != $applicant->instagram){
+            $applicant->instagram = $request->instagram;
+        }
+
+        if(!empty($request->whatsapp) && $request->whatsapp != $applicant->whatsapp){
+            $applicant->whatsapp = $request->whatsapp;
+        }
+
+        if(!empty($request->twitter) && $request->twitter != $applicant->twitter){
+            $applicant->twitter = $request->twitter;
+        }
+
+        if(!empty($request->hobbies) && $request->hobbies != $applicant->hobbies){
+            $applicant->hobbies = $request->hobbies;
+        }
+
+        if(!empty($request->father_name) && $request->father_name != $applicant->father_name){
+            $guardian->father_name = $request->father_name;
+        }
+
+        if(!empty($request->father_occupation) && $request->father_occupation != $applicant->father_occupation){
+            $guardian->father_occupation = $request->father_occupation;
+        }
+
+        if(!empty($request->father_phone) && $request->father_phone != $applicant->father_phone){
+            $guardian->father_phone = $request->father_phone;
+        }
+        
+        if(!empty($request->father_email) && $request->father_email != $applicant->father_email){
+            $guardian->father_email = $request->father_email;
+        }
+
+        if(!empty($request->mother_name) && $request->mother_name != $applicant->mother_name){
+            $guardian->mother_name = $request->mother_name;
+        }
+
+        if(!empty($request->mother_occupation) && $request->mother_occupation != $applicant->mother_occupation){
+            $guardian->mother_occupation = $request->mother_occupation;
+        }
+
+        if(!empty($request->mother_phone) && $request->mother_phone != $applicant->mother_phone){
+            $guardian->mother_phone = $request->mother_phone;
+        }
+
+        if(!empty($request->mother_email) && $request->mother_email != $applicant->mother_email){
+            $guardian->mother_email = $request->mother_email;
+        }
+
+        if(!empty($request->parent_residential_address) && $request->parent_residential_address != $applicant->parent_residential_address){
+            $guardian->parent_residential_address = $request->parent_residential_address;
+        }
+
         if(!empty($request->signature) && $request->signature != $applicant->signature){
             $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $student->slug.'-signature')));
 
@@ -214,7 +284,7 @@ class StudentController extends Controller
             $student->save();
         }
 
-        if($applicant->save()){
+        if($applicant->save() && $guardian->save() && $student->save()) {
             alert()->success('Changes Saved', 'Bio data saved successfully')->persistent('Close');
             return redirect()->back();
         }
@@ -547,7 +617,7 @@ class StudentController extends Controller
             $monnifyPaymentdata = array(
                 'amount' => ceil($monnifyAmount/100),
                 'invoiceReference' => $transaction->reference,
-                'description' =>  $transaction->narration,
+                'description' =>  $payment->title,
                 'currencyCode' => "NGN",
                 'contractCode' => env('MONNIFY_CONTRACT_CODE'),
                 'customerEmail' => $student->email,

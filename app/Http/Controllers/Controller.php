@@ -1363,19 +1363,25 @@ class Controller extends BaseController
         }
     }
 
-    public function initChangeProgramme(Transaction $transaction, $studentId)
+    public function initChangeProgramme(Transaction $transaction)
     {
         $existing = ProgrammeChangeRequest::where('transaction_id', $transaction->id)->first();
+
+        if($existing){
+            return true;
+        }
 
         if (!$existing) {
             ProgrammeChangeRequest::create([
                 'transaction_id' => $transaction->id,
-                'student_id' => $studentId,
-                'slug' => md5($studentId . time()),
+                'student_id' => $transaction->student_id,
+                'slug' => md5($transaction->student_id . time()),
             ]);
 
             return true;
         }
+        
+        return false;
     }
 
     public function creditStudentSummerCourseReg(Transaction $transaction)
