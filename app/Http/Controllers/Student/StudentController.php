@@ -335,10 +335,10 @@ class StudentController extends Controller
         $studentId = $student->id;
         $academicSession = $student->programmeCategory->academicSessionSetting->academic_session;
         $paymentId = $request->payment_id;
-        $redirectLocation = 'student/home';
+        $redirectLocation = url()->previous();
         $amount = $request->amount * 100;
         $transaction = Transaction::find($request->transaction_id);
-        $paymentType = 'Other Fee';
+        $paymentType = $paymentId == 0 ? Payment::PAYMENT_TYPE_WALLET_DEPOSIT : 'Other Fee';
         $suspensionId = $request->suspension_id;
         $summerCourses = null;
         $reference = $this->generatePaymentReference("General Fee");
@@ -461,13 +461,13 @@ class StudentController extends Controller
             $paymentType = "PG Tuition fee";
         }
 
+        if($transaction){
+            $transaction->reference = $reference;
+            $transaction->save();
+        }
+
         if(strtolower($paymentGateway) == 'paystack') {
             Log::info("Paystack Amount ****************: ". round($this->getPaystackAmount($amount)));
-
-            if($transaction){
-                $transaction->reference = $reference;
-                $transaction->save();
-            }
 
             $data = array(
                 "amount" => round($this->getPaystackAmount($amount)),
@@ -617,7 +617,7 @@ class StudentController extends Controller
             $monnifyPaymentdata = array(
                 'amount' => ceil($monnifyAmount/100),
                 'invoiceReference' => $transaction->reference,
-                'description' =>  $payment->title,
+                'description' =>  !empty($payment) ? $payment->title : $paymentType,
                 'currencyCode' => "NGN",
                 'contractCode' => env('MONNIFY_CONTRACT_CODE'),
                 'customerEmail' => $student->email,

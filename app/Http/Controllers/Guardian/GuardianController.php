@@ -17,6 +17,7 @@ use App\Models\ResultApprovalStatus;
 use App\Models\Transaction;
 use App\Models\BankAccount;
 use App\Models\RoomType;
+use App\Models\ProgrammeCategory;
 
 use Paystack;
 use KingFlamez\Rave\Facades\Rave as Flutterwave;
@@ -87,29 +88,32 @@ class GuardianController extends Controller
         $transaction = Transaction::find($request->transaction_id);
 
         $paymentId = $request->payment_id;
-        $amount = $request->amount*100;
-        $redirectLocation = 'guardian/home';
-        $paymentType = 'Tuition';
-        
+        $redirectLocation = url()->previous();
+        $amount = $request->amount * 100;
+        $transaction = Transaction::find($request->transaction_id);
+        $paymentType = $paymentId == 0 ? Payment::PAYMENT_TYPE_WALLET_DEPOSIT : 'Other Fee';
+        $suspensionId = $request->suspension_id;
+        $summerCourses = null;
+        $reference = $this->generatePaymentReference($paymentType);
+
         if($paymentId > 0){
             if(!$payment = Payment::with('structures')->where('id', $paymentId)->first()){
                 alert()->error('Oops', 'Invalid Payment Initialization, contact ICT')->persistent('Close');
                 return redirect()->back();
             }
-            $redirectLocation = 'guardian/transactions';
+            $redirectLocation = 'student/transactions';
             $amount = $request->amount;
+
+            if($request->has('amountGeneral')){
+                $amount = $request->amountGeneral*100;
+            }
+
+            $reference = $this->generatePaymentReference($payment->type);
 
             $paymentClass = new Payment();
             $paymentType = $paymentClass->classifyPaymentType($payment->type);
         }
-        
-        $reference = $this->generateAccessCode();
 
-        $bandwidthPlan = !empty($request->plan_id)?Plan::find($request->plan_id):null;
-        if(!empty($bandwidthPlan)){
-            $amount = $bandwidthPlan->amount;
-            $reference = $this->generateRandomString(25);
-        }
 
         if(strtolower($paymentType) == "accomondation") {
             $validator = Validator::make($request->all(), [
@@ -134,22 +138,13 @@ class GuardianController extends Controller
             }
         }
 
-         if(!empty($payment) && strtolower($payment->type) == strtolower(Payment::PAYMENT_TYPE_INTRA_TRANSFER_APPLICATION)) {
-
-            $pendingRequest = ProgrammeChangeRequest::where('student_id', $studentId)
-            ->where('status', '!=', 'completed')
-            ->first();
-
-            if ($pendingRequest) {
-                alert()->error('Oops', 'You already have a pending request.')->persistent('Close');
-                return redirect()->back();
-            }
-        }
-
         $paymentGateway = $request->paymentGateway;
 
-        if(!$transaction){
-            //Create new transaction
+        // Determine which additional data to use
+        $additionalData = !empty($hostelMeta) ? $hostelMeta : (!empty($summerCourses) ? $summerCourses : null);
+
+        if (!$transaction) {
+            // Create new transaction
             $transaction = Transaction::create([
                 'student_id' => $studentId,
                 'payment_id' => $paymentId,
@@ -157,8 +152,8 @@ class GuardianController extends Controller
                 'payment_method' => $paymentGateway,
                 'reference' => $reference,
                 'session' => $student->academic_session,
-                "plan_id" => !empty($bandwidthPlan)?$bandwidthPlan->id:null,
-                'additional_data' => !empty($hostelMeta)?$hostelMeta:null
+                'plan_id' => !empty($bandwidthPlan) ? $bandwidthPlan->id : null,
+                'additional_data' => $additionalData
             ]);
         }
 
@@ -190,7 +185,11 @@ class GuardianController extends Controller
         ) {
             $paymentType = "PG Tuition fee";
         }
-       
+
+        if($transaction){
+            $transaction->reference = $reference;
+            $transaction->save();
+        }
 
         if(strtolower($paymentGateway) == 'paystack') {
             Log::info("Paystack Amount ****************: ". round($this->getPaystackAmount($amount)));
@@ -210,6 +209,9 @@ class GuardianController extends Controller
                     "academic_session" => $student->academic_session,
                     "redirect_path" => $redirectLocation,
                     "payment_Type" => $paymentType,
+                    "suspension_id" => $suspensionId,
+                    "plan_id" => !empty($bandwidthPlan)?$bandwidthPlan->id:null,
+                    "additionalData" => $additionalData
                 ),
             );
 
@@ -220,6 +222,10 @@ class GuardianController extends Controller
             Log::info("Flutterwave Amount ****************: ". round($this->getRaveAmount($amount)));
 
             $reference = Flutterwave::generateReference();
+            if($transaction){
+                $transaction->reference = $reference;
+                $transaction->save();
+            }
 
             $data = array(
                 "payment_options" => "card,banktransfer",
@@ -244,6 +250,9 @@ class GuardianController extends Controller
                     "academic_session" => $student->academic_session,
                     "redirect_path" => $redirectLocation,
                     "payment_Type" => $paymentType,
+                    "suspension_id" => $suspensionId,
+                    "plan_id" => !empty($bandwidthPlan)?$bandwidthPlan->id:null,
+                    "additionalData" => $additionalData,
                 ),
                 "customizations" => array(
                     "title" => env('SCHOOL_NAME'),
@@ -260,22 +269,10 @@ class GuardianController extends Controller
             }
 
             return redirect($payment['data']['link']);
-        } 
-        
+        }
+
         if(strtolower($paymentGateway) == 'upperlink') {
             Log::info("Upperlink Amount ****************: ". round($this->getUpperlinkAmount($amount)));
-
-            $meta = array(
-                "student_id" => $studentId,
-                "payment_id" => $paymentId,
-                "payment_gateway" => $paymentGateway,
-                "reference" => $reference,
-                "academic_session" => $student->academic_session,
-                "redirect_path" => $redirectLocation,
-                "payment_Type" => $paymentType,
-                "plan_id" => !empty($bandwidthPlan)?$bandwidthPlan->id:null,
-            );
-
 
             $data = array(
                 "amount" => round($this->getUpperlinkAmount($amount)/100),
@@ -315,26 +312,27 @@ class GuardianController extends Controller
             $invoiceExpire = $future->format('Y-m-d H:i:s');
             $monnifyAmount = $this->getMonnifyAmount($amount);
 
+
             $monnifyPaymentdata = array(
-                'amount' => ceil($monnifyAmount / 100),
+                'amount' => ceil($monnifyAmount/100),
                 'invoiceReference' => $transaction->reference,
-                'description' => $transaction->narration,
+                'description' =>  !empty($payment) ? $payment->title : $paymentType,
                 'currencyCode' => "NGN",
                 'contractCode' => env('MONNIFY_CONTRACT_CODE'),
                 'customerEmail' => $student->email,
-                'customerName' => $student->applicant->lastname . ' ' . $student->applicant->othernames,
+                'customerName' => $student->applicant->lastname. ' '.$student->applicant->othernames,
                 'expiryDate' => $invoiceExpire,
-                'paymentMethods' => ["CARD", "ACCOUNT_TRANSFER", "USSD", "PHONE_NUMBER"],
-                'redirectUrl' => env("MONNIFY_REDIRECT_URL"),
+                'paymentMethods' => ["CARD","ACCOUNT_TRANSFER","USSD","PHONE_NUMBER"],
+                'redirectUrl'=> env("MONNIFY_REDIRECT_URL"),
                 'metaData' => $meta,
-                'incomeSplitConfig' => [
-                    [
-                        'subAccountCode' => BankAccount::getBankAccountCode($paymentType)->monnifyAccountCode,
-                        'feePercentage' => 100,
-                        'splitPercentage' => 100,
-                        'feeBearer' => true,
-                    ]
-                ]
+                // 'incomeSplitConfig' => [
+                //     [
+                //         'subAccountCode' => BankAccount::getBankAccountCode($paymentType)->monnifyAccountCode,
+                //         'feePercentage' => 100,
+                //         'splitPercentage' => 100,
+                //         'feeBearer' => true,
+                //     ]
+                // ]
             );
 
             $monnify = new Monnify();
@@ -348,7 +346,6 @@ class GuardianController extends Controller
 
             return redirect($checkoutUrl);
         }
-
 
         $message = 'Invalid Payment Gateway';
         alert()->info('Opps!', $message)->persistent('Close');

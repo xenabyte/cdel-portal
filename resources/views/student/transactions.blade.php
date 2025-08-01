@@ -97,7 +97,7 @@
                                                     <input type="hidden" name="transaction_id" value="{{ $transaction->id }}">
                                                     <input type="hidden" name="payment_id" value="{{ !empty($transaction->paymentType)? $transaction->paymentType->id : 0 }}">
                                                     <input type="hidden" name="reference" value="{{ $transaction->reference }}">
-                                                    <input type="hidden" name="amount" value="{{ $transaction->amount_payed }}">
+                                                    <input type="hidden" name="amount" value="{{ $transaction->amount_payed/100 }}">
                                                     
                                                     <div class="mb-3">
                                                         <label for="paymentGateway" class="form-label">Select Payment Gateway<span class="text-danger">*</span></label>

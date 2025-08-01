@@ -243,7 +243,7 @@
                             </div><!--end col-->
                            
                             <div class="d-flex justify-content-end mt-4">
-                                <button type="button" class="btn btn-success nexttab" data-nexttab="tab-parent-tab">Next</button>
+                                <button type="button" class="btn btn-success nexttab" data-nexttab="tab-parent-tab" disabled>Next</button>
                             </div>
                         </div>
 
@@ -318,7 +318,7 @@
 
                             <div class="d-flex justify-content-between mt-4">
                                 <button type="button" class="btn btn-light previestab" data-previous="tab-personal-tab">Back</button>
-                                <button type="button" class="btn btn-success nexttab" data-nexttab="tab-academic-tab">Next</button>
+                                <button type="button" class="btn btn-success nexttab" data-nexttab="tab-academic-tab disabled">Next</button>
                             </div>
                         </div>
 
@@ -366,7 +366,7 @@
 
                             <div class="d-flex justify-content-between mt-4">
                                 <button type="button" class="btn btn-light previestab" data-previous="tab-parent-tab">Back</button>
-                                <button type="button" class="btn btn-success nexttab" data-nexttab="tab-finish-tab">Next</button>
+                                <button type="button" class="btn btn-success nexttab" data-nexttab="tab-finish-tab" disabled>Next</button>
                             </div>
                         </div>
 
@@ -940,53 +940,61 @@
 <!--end row-->
 @endif
 <script>
-// document.addEventListener("DOMContentLoaded", function () {
-//     const nextButtons = document.querySelectorAll(".nexttab");
+document.addEventListener('DOMContentLoaded', function () {
+    const formSteps = document.querySelectorAll('.form-steps');
 
-//     nextButtons.forEach(button => {
-//         button.addEventListener("click", function (e) {
-//             const currentTab = button.closest(".tab-pane");
-//             const requiredFields = currentTab.querySelectorAll("input[required], select[required], textarea]");
+    formSteps.forEach(function (form) {
+        const checkFieldsAndToggleNextButton = function (tabPane) {
+            const requiredInputs = tabPane.querySelectorAll('[required]');
+            const nextButton = tabPane.querySelector('.nexttab');
 
-//             let allValid = true;
+            if (!nextButton) {
+                return; // No next button in this tab
+            }
 
-//             requiredFields.forEach(field => {
-//                 if (field.value.trim() === "") {
-//                     field.classList.add("is-invalid");
-//                     allValid = false;
-//                 } else {
-//                     field.classList.remove("is-invalid");
-//                 }
-//             });
+            let allFieldsFilled = true;
 
-//             if (!allValid) {
-//                 e.preventDefault();
+            requiredInputs.forEach(function (input) {
+                if (input.value.trim() === '') {
+                    allFieldsFilled = false;
+                }
+            });
 
-//                 // Show toast message
-//                 const toastEl = document.getElementById("requiredFieldsToast");
-//                 if (toastEl) {
-//                     const toast = new bootstrap.Toast(toastEl);
-//                     toast.show();
-//                 }
-//             }
-//         });
-//     });
+            // Toggle the disabled state of the next button
+            if (allFieldsFilled) {
+                nextButton.removeAttribute('disabled');
+            } else {
+                nextButton.setAttribute('disabled', 'disabled');
+            }
+        };
 
-//     // Optional: remove is-invalid class as user corrects the input
-//     const allRequiredFields = document.querySelectorAll("input[required], select[required], textarea");
-//     allRequiredFields.forEach(field => {
-//         field.addEventListener("input", () => {
-//             if (field.value.trim() !== "") {
-//                 field.classList.remove("is-invalid");
-//             }
-//         });
+        // Initialize on page load for the first tab
+        const activeTabPane = form.querySelector('.tab-pane.show.active');
+        if (activeTabPane) {
+            checkFieldsAndToggleNextButton(activeTabPane);
+        }
 
-//         field.addEventListener("change", () => {
-//             if (field.value.trim() !== "") {
-//                 field.classList.remove("is-invalid");
-//             }
-//         });
-//     });
-// });
+        // Add event listeners to each tab to handle input changes
+        const tabPanes = form.querySelectorAll('.tab-pane');
+        tabPanes.forEach(function (tabPane) {
+            tabPane.addEventListener('input', function () {
+                checkFieldsAndToggleNextButton(tabPane);
+            });
+            tabPane.addEventListener('change', function () {
+                checkFieldsAndToggleNextButton(tabPane);
+            });
+        });
+
+        // Handle tab switching
+        const tabLinks = form.querySelectorAll('button[data-bs-toggle="pill"]');
+        tabLinks.forEach(function(link) {
+            link.addEventListener('shown.bs.tab', function (event) {
+                const newActiveTabPane = document.getElementById(event.target.dataset.bsTarget.substring(1));
+                checkFieldsAndToggleNextButton(newActiveTabPane);
+            });
+        });
+
+    });
+});
 </script>
 @endsection
