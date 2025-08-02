@@ -309,7 +309,6 @@ class GuardianController extends Controller
             return redirect($paymentUrl);
         }
 
-        dd($paymentType);
         if(strtolower($paymentGateway) ==  "monnify"){
             $now = Carbon::now();
             $future = $now->addHours(48);
