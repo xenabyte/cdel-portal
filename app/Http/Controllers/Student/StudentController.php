@@ -128,8 +128,8 @@ class StudentController extends Controller
         //     ]);
         // }
 
-        $google = new Google();
-        $google->addMemberToGroup($student->email, env('GOOGLE_STUDENT_GROUP'));
+        // $google = new Google();
+        // $google->addMemberToGroup($student->email, env('GOOGLE_STUDENT_GROUP'));
       
         return view('student.home', [
             'payment' => $paymentCheck->schoolPayment,

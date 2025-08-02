@@ -941,59 +941,58 @@
 @endif
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-    const formSteps = document.querySelectorAll('.form-steps');
 
-    formSteps.forEach(function (form) {
-        const checkFieldsAndToggleNextButton = function (tabPane) {
-            const requiredInputs = tabPane.querySelectorAll('[required]');
-            const nextButton = tabPane.querySelector('.nexttab');
+    const requiredFieldsToast = document.getElementById('requiredFieldsToast');
+    const toast = new bootstrap.Toast(requiredFieldsToast);
 
-            if (!nextButton) {
-                return; // No next button in this tab
-            }
+    // This function validates all required fields within a given tab pane.
+    const isTabValid = (tabPane) => {
+        const requiredInputs = tabPane.querySelectorAll('[required]');
+        let allFieldsFilled = true;
 
-            let allFieldsFilled = true;
-
-            requiredInputs.forEach(function (input) {
-                if (input.value.trim() === '') {
+        requiredInputs.forEach(input => {
+            // Check for various input types, including textareas like CKEditor
+            if (input.tagName.toLowerCase() === 'textarea') {
+                const editorId = input.id;
+                // Handle CKEditor specifically
+                if (window.CKEDITOR && window.CKEDITOR.instances[editorId]) {
+                    if (window.CKEDITOR.instances[editorId].getData().trim() === '') {
+                        allFieldsFilled = false;
+                    }
+                } else if (input.value.trim() === '') {
                     allFieldsFilled = false;
                 }
-            });
-
-            // Toggle the disabled state of the next button
-            if (allFieldsFilled) {
-                nextButton.removeAttribute('disabled');
-            } else {
-                nextButton.setAttribute('disabled', 'disabled');
+            } else if (input.value.trim() === '') {
+                allFieldsFilled = false;
             }
-        };
-
-        // Initialize on page load for the first tab
-        const activeTabPane = form.querySelector('.tab-pane.show.active');
-        if (activeTabPane) {
-            checkFieldsAndToggleNextButton(activeTabPane);
-        }
-
-        // Add event listeners to each tab to handle input changes
-        const tabPanes = form.querySelectorAll('.tab-pane');
-        tabPanes.forEach(function (tabPane) {
-            tabPane.addEventListener('input', function () {
-                checkFieldsAndToggleNextButton(tabPane);
-            });
-            tabPane.addEventListener('change', function () {
-                checkFieldsAndToggleNextButton(tabPane);
-            });
         });
+        return allFieldsFilled;
+    };
 
-        // Handle tab switching
-        const tabLinks = form.querySelectorAll('button[data-bs-toggle="pill"]');
-        tabLinks.forEach(function(link) {
-            link.addEventListener('shown.bs.tab', function (event) {
-                const newActiveTabPane = document.getElementById(event.target.dataset.bsTarget.substring(1));
-                checkFieldsAndToggleNextButton(newActiveTabPane);
-            });
+    // Handle clicks on the 'Next' buttons
+    const nextButtons = document.querySelectorAll('.nexttab');
+    nextButtons.forEach(button => {
+        button.addEventListener('click', function (event) {
+            const currentTabPane = button.closest('.tab-pane');
+            if (!isTabValid(currentTabPane)) {
+                event.preventDefault(); // Stop the tab from switching
+                toast.show(); // Show toast message
+            }
         });
+    });
 
+    // Handle clicks on the tab navigation links
+    const tabLinks = document.querySelectorAll('button[data-bs-toggle="pill"]');
+    tabLinks.forEach(link => {
+        link.addEventListener('click', function (event) {
+            const currentTabId = document.querySelector('.nav-link.active').getAttribute('data-bs-target');
+            const currentTabPane = document.querySelector(currentTabId);
+            
+            if (currentTabPane && !isTabValid(currentTabPane)) {
+                event.preventDefault(); // Prevent tab switching if current tab is invalid
+                toast.show(); // Show toast message
+            }
+        });
     });
 });
 </script>
