@@ -13,6 +13,7 @@ $studentAdvisoryData = (object) $student->getAcademicAdvisory();
 $applicationSession = $student->programmeCategory->academicSessionSetting->application_session;
 $admissionSession = $student->programmeCategory->academicSessionSetting->admission_session;
 $academicSession = $student->programmeCategory->academicSessionSetting->academic_session;
+$accomondationBookingStatus = $student->programmeCategory->academicSessionSetting->accomondation_booking_status;
 
 @endphp
 @section('content')
@@ -82,7 +83,7 @@ $academicSession = $student->programmeCategory->academicSessionSetting->academic
                         <div class="col-md-auto">
                             <div class="hstack gap-1 flex-wrap">
                                 <div class="flex-shrink-0">
-                                    @if(empty($currentHostelAllocation))
+                                    @if(empty($currentHostelAllocation) && strtolower($accomondationBookingStatus) == 'start')
                                     <button type="button" class="btn btn-warning mb-2" data-bs-toggle="modal" data-bs-target="#payAccomondation">Pay Accomondation Fee</button>
                                     @endif
                                     <br>
