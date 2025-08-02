@@ -96,6 +96,9 @@ class GuardianController extends Controller
         $summerCourses = null;
         $reference = $this->generatePaymentReference($paymentType);
 
+        $paymentClass = new Payment();
+
+
         if($paymentId > 0){
             if(!$payment = Payment::with('structures')->where('id', $paymentId)->first()){
                 alert()->error('Oops', 'Invalid Payment Initialization, contact ICT')->persistent('Close');
@@ -109,9 +112,7 @@ class GuardianController extends Controller
             }
 
             $reference = $this->generatePaymentReference($payment->type);
-
-            $paymentClass = new Payment();
-            $paymentType = $paymentClass->classifyPaymentType($payment->type);
+            $paymentType = $payment->type;
         }
 
 
@@ -139,6 +140,8 @@ class GuardianController extends Controller
         }
 
         $paymentGateway = $request->paymentGateway;
+        $paymentType = $paymentClass->classifyPaymentType($paymentType);
+
 
         // Determine which additional data to use
         $additionalData = !empty($hostelMeta) ? $hostelMeta : (!empty($summerCourses) ? $summerCourses : null);
@@ -306,6 +309,7 @@ class GuardianController extends Controller
             return redirect($paymentUrl);
         }
 
+        dd($paymentType);
         if(strtolower($paymentGateway) ==  "monnify"){
             $now = Carbon::now();
             $future = $now->addHours(48);

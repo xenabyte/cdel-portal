@@ -343,6 +343,8 @@ class StudentController extends Controller
         $summerCourses = null;
         $reference = $this->generatePaymentReference("General Fee");
 
+        $paymentClass = new Payment();
+
         if($paymentId > 0){
             if(!$payment = Payment::with('structures')->where('id', $paymentId)->first()){
                 alert()->error('Oops', 'Invalid Payment Initialization, contact ICT')->persistent('Close');
@@ -356,9 +358,7 @@ class StudentController extends Controller
             }
 
             $reference = $this->generatePaymentReference($payment->type);
-
-            $paymentClass = new Payment();
-            $paymentType = $paymentClass->classifyPaymentType($payment->type);
+            $paymentType = $payment->type;
         }
 
 
@@ -414,6 +414,8 @@ class StudentController extends Controller
         }
 
         $paymentGateway = $request->paymentGateway;
+        $paymentType = $paymentClass->classifyPaymentType($paymentType);
+
 
         // Determine which additional data to use
         $additionalData = !empty($hostelMeta) ? $hostelMeta : (!empty($summerCourses) ? $summerCourses : null);

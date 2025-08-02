@@ -23,7 +23,7 @@ class Guardian extends Authenticatable
         'phone_number',
         'address',
         'passcode',
-        
+
         'father_name',
         'father_occupation',
         'father_phone',
@@ -32,7 +32,7 @@ class Guardian extends Authenticatable
         'mother_occupation',
         'mother_phone',
         'mother_email',
-        'parent_residential_address',
+        ' ',
     ];
 
     /**
