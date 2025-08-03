@@ -19,7 +19,7 @@
                             <h4 class="mt-4 fw-semibold">Course Registration for {{ $academicSession }} Academic Session - Summer Semester</h4>
                             <p class="text-muted mt-3"></p>
                             <div class="mt-4">
-                                <strong>Summer Course Registration has not started yet.</strong> Please check back later for updates.
+                                <strong>Summer Course Registration has not started yet or closed.</strong> Please check back later for updates.
                             </div>
                         </div>
                     </div>
