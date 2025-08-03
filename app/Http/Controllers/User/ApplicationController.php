@@ -1301,31 +1301,16 @@ class ApplicationController extends Controller
         return $totalFields > 0 ? round(($filledCount / $totalFields) * 100) : 0;
     }
 
-    private function calculateUndergraduateProgress($applicant)    {
+    private function calculateUndergraduateProgress($applicant)
+    {
         $score = 0;
-        $total = 5;
+        $total = 4;
 
         if (filled($applicant->lastname)) $score++;
         if (filled($applicant->programme)) $score++;
         if (filled($applicant->guardian)) $score++;
-        
-        $hasSufficientOlevels = count($applicant->olevels) > 4;
-        $hasAR_Grade = false;
-        foreach ($applicant->olevels as $olevel) {
-            if ($olevel->grade === 'A/R') {
-                $hasAR_Grade = true;
-                break;
-            }
-        }
-        
-        if ($hasSufficientOlevels && !$hasAR_Grade && $applicant->sitting_no != 0) {
-            $score++;
-        }
-
-        // This condition is now dependent on the previous olevel check
-        if ($hasSufficientOlevels && !$hasAR_Grade) {
-            if (filled($applicant->olevel_1)) $score++;
-        }
+        if (count($applicant->olevels) > 4 && $applicant->sitting_no != 0) $score++;
+        // if (filled($applicant->olevel_1)) $score++;
 
         if ($applicant->application_type === 'UTME') {
             if ($applicant->utmes->count() > 3) $score++;
