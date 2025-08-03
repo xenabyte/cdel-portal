@@ -73,6 +73,10 @@ class AdmissionController extends Controller
         ->orderBy('status', 'DESC')
         ->get();
 
+        foreach($applicants as $applicant){
+            $applicant->completionPercentage = $this->calculateApplicationProgress($applicant);
+        }
+
         $programmes = Programme::get(); 
         $levels = AcademicLevel::get();
 
@@ -88,6 +92,10 @@ class AdmissionController extends Controller
         $applicants = Applicant::with('programme', 'olevels', 'guardian')->where('academic_session', $request->session)->orderBy('status', 'DESC')->get();
         $programmes = Programme::get(); 
         $levels = AcademicLevel::get();
+
+        foreach($applicants as $applicant){
+            $applicant->completionPercentage = $this->calculateApplicationProgress($applicant);
+        }
 
 
         return view('staff.applicants', [

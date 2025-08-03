@@ -58,6 +58,7 @@
                         <tr>
                             <th scope="col">Id</th>
                             <th scope="col">Application Number</th>
+                             <th scope="col">Completion Percentage</th>
                             <th scope="col">Name</th>
                             <th scope="col">Age</th>
                             <th scope="col">DOB</th>
@@ -78,6 +79,7 @@
                         <tr>
                             <th scope="row">{{ $loop->iteration }}</th>
                             <td>{{ $applicant->application_number }}</td>
+                             <td>{{ $applicant->completionPercentage }}%</td>
                             <td>{{ $applicant->lastname .' '. $applicant->othernames }}</td>
                             <td>{{ \Carbon\Carbon::parse($applicant->dob)->age }} years</td>
                             <td>{{ date('F j, Y', strtotime($applicant->dob)) }} </td>

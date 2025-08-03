@@ -1612,4 +1612,88 @@ class Controller extends BaseController
             'programmeCategory' => $programmeCategory
         ];
     }
+
+    public function calculateApplicationProgress($applicant)
+    {
+        $programmeCategoryId = $applicant->programme_category_id;
+        $spgsCategories = [
+            ProgrammeCategory::getProgrammeCategory(ProgrammeCategory::PGD),
+            ProgrammeCategory::getProgrammeCategory(ProgrammeCategory::MASTER),
+            ProgrammeCategory::getProgrammeCategory(ProgrammeCategory::DOCTORATE),
+        ];
+
+        $programmeCategoryType = in_array($programmeCategoryId, $spgsCategories) ? 'spgs' : 'undergraduate';
+
+        if ($programmeCategoryType === 'spgs') {
+            return $this->calculateSpgsProgress($applicant);
+        }
+
+        return $this->calculateUndergraduateProgress($applicant);
+    }
+
+    public function calculateSpgsProgress($applicant)
+    {
+        // Required form fields
+        $formFields = ['lastname', 'programme', 'field_of_interest', 'previous_institutions', 'work_experience'];
+
+        // Check if next of kin is required and add it conditionally
+        if (filled($applicant->nok)) {
+            $formFields[] = 'nok'; // We'll count it only if it exists
+        }
+
+        // Document requirements by programme category
+        $docRequirements = [
+            ProgrammeCategory::getProgrammeCategory(ProgrammeCategory::PGD) => [
+                'olevel_certificate', 'degree_certificate', 'nysc_certificate'
+            ],
+
+             ProgrammeCategory::getProgrammeCategory(ProgrammeCategory::MASTER) => [
+                'olevel_certificate', 'degree_certificate', 'nysc_certificate'
+            ],
+
+            ProgrammeCategory::getProgrammeCategory(ProgrammeCategory::DOCTORATE) => [
+                'olevel_certificate', 'degree_certificate', 'nysc_certificate', 'masters_certificate', 'research_proposal'
+            ]
+        ];
+
+        $docs = $docRequirements[$applicant->programme_category_id] ?? [];
+
+        // Combine form fields and required documents
+        $allFields = array_merge($formFields, $docs);
+        $totalFields = count($allFields);
+
+        // Count how many of them are filled
+        $filledCount = collect($allFields)->filter(fn($field) => filled($applicant->$field))->count();
+
+        // Return percentage progress
+        return $totalFields > 0 ? round(($filledCount / $totalFields) * 100) : 0;
+    }
+
+    public function calculateUndergraduateProgress($applicant)
+    {
+        $score = 0;
+        $total = 4;
+
+        if (filled($applicant->lastname)) $score++;
+        if (filled($applicant->programme)) $score++;
+        if (filled($applicant->guardian)) $score++;
+        if (count($applicant->olevels) > 4 && $applicant->sitting_no != 0) $score++;
+        // if (filled($applicant->olevel_1)) $score++;
+
+        if ($applicant->application_type === 'UTME') {
+            if ($applicant->utmes->count() > 3) $score++;
+            if (filled($applicant->utme)) $score++;
+            $total += 2;
+        } elseif (!empty($applicant->application_type)) {
+            if (filled($applicant->de_result)) $score++;
+            $total += 1;
+        }
+
+        if (filled($applicant->nok)) {
+            $score++;
+            $total += 1;
+        }
+
+        return round(($score / $total) * 100);
+    }
 }
