@@ -983,6 +983,7 @@ class AcademicController extends Controller
             ->where('academic_session', $academicSession)
             ->where('grade', 'F')
             ->where('level_id', $levelId)
+            ->where('result_approval_id', 1)
             ->get();
 
         $existingSummerRegistration = SummerCourseRegistration::where('student_id', $studentId)->where('academic_session', $academicSession)->get();
