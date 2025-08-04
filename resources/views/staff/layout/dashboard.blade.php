@@ -8,128 +8,131 @@
 
 
     $staff = Auth::guard('staff')->user();
-    $staffId = $staff->id;
 
-    $staffDeanRole = false;
-    $staffSubDeanRole = false;
-    $staffHODRole = false;
-    $staffVCRole = false;
-    $staffRegistrarRole = false;
-    $staffHRRole = false;
-    $staffLevelAdviserRole = false;
-    $staffExamOfficerRole = false;
-    $staffPublicRelationRole = false;
-    $staffStudentCareRole = false;
-    $staffBursaryRole = false;
-    $staffAdmissionOfficerRole = false;
-    $staffAcademicPlannerRole = false;
+    if(!empty($staff)){
+        $staffId = $staff->id;
 
-    $committeeIds = $staff->committeeMembers->pluck('committee_id');
-    $staffProgrammeCategoryRoleIds = $staff->programmeAssignments->pluck('programme_category_id');
+         $staffDeanRole = false;
+        $staffSubDeanRole = false;
+        $staffHODRole = false;
+        $staffVCRole = false;
+        $staffRegistrarRole = false;
+        $staffHRRole = false;
+        $staffLevelAdviserRole = false;
+        $staffExamOfficerRole = false;
+        $staffPublicRelationRole = false;
+        $staffStudentCareRole = false;
+        $staffBursaryRole = false;
+        $staffAdmissionOfficerRole = false;
+        $staffAcademicPlannerRole = false;
 
-    $isSPGS = false;
-    $isStaffProgrammeRole = $staffProgrammeCategoryRoleIds->isNotEmpty();
-    if($isStaffProgrammeRole){
-        // Get the IDs of the SPGS programme categories
-        $pgdId = $programmeCategory::getProgrammeCategory($programmeCategory::PGD);
-        $masterId = $programmeCategory::getProgrammeCategory($programmeCategory::MASTER);
-        $doctorateId = $programmeCategory::getProgrammeCategory($programmeCategory::DOCTORATE);
+        $committeeIds = $staff->committeeMembers->pluck('committee_id');
+        $staffProgrammeCategoryRoleIds = $staff->programmeAssignments->pluck('programme_category_id');
 
-        // Check if any of these IDs exist in the staff's assigned programme categories
-        $isSPGS = $staffProgrammeCategoryRoleIds->contains(function ($id) use ($pgdId, $masterId, $doctorateId) {
-            return in_array($id, [$pgdId, $masterId, $doctorateId]);
-        });
-    }
+        $isSPGS = false;
+        $isStaffProgrammeRole = $staffProgrammeCategoryRoleIds->isNotEmpty();
+        if($isStaffProgrammeRole){
+            // Get the IDs of the SPGS programme categories
+            $pgdId = $programmeCategory::getProgrammeCategory($programmeCategory::PGD);
+            $masterId = $programmeCategory::getProgrammeCategory($programmeCategory::MASTER);
+            $doctorateId = $programmeCategory::getProgrammeCategory($programmeCategory::DOCTORATE);
 
-    $notifications = $staff->notifications()->orderBy('created_at', 'desc')->get();    
-    
-    foreach ($staff->staffRoles as $staffRole) {
-        if (strtolower($staffRole->role->role) == 'dean') {
-            $staffDeanRole = true;
-        }
-        if (strtolower($staffRole->role->role) == 'sub-dean') {
-            $staffSubDeanRole = true;
-        }
-        if (strtolower($staffRole->role->role) == 'hod') {
-            $staffHODRole = true;
-        }
-        if (strtolower($staffRole->role->role) == 'vice chancellor') {
-            $staffVCRole = true;
-        }
-        if (strtolower($staffRole->role->role) == 'registrar') {
-            $staffRegistrarRole = true;
-        }
-        if (strtolower($staffRole->role->role) == 'human resource') {
-            $staffHRRole = true;
-        }
-        if (strtolower($staffRole->role->role) == 'level adviser') {
-            $staffLevelAdviserRole = true;
-        }
-        if (strtolower($staffRole->role->role) == 'exam officer') {
-            $staffExamOfficerRole = true;
-        }
-        if (strtolower($staffRole->role->role) == 'public relation') {
-            $staffPublicRelationRole = true;
-        }
-        if (strtolower($staffRole->role->role) == 'student care') {
-            $staffStudentCareRole = true;
-        }
-        if(strtolower($staffRole->role->role) == 'bursary'){
-            $staffBursaryRole = true;
-        }
-        if(strtolower($staffRole->role->role) == 'admission'){
-            $staffAdmissionOfficerRole = true;
-        }
-        if(strtolower($staffRole->role->role) == 'academic planning'){
-            $staffAcademicPlannerRole = true;
-        }   
-    }
-
-
-    $unitNames = ['UNIT_REGISTRY', 'UNIT_BURSARY', 'UNIT_STUDENT_CARE', 'UNIT_LIBRARY', 'UNIT_WORK_STUDY'];
-
-    $units = [];
-    foreach ($unitNames as $unitName) {
-        $units[] = constant("App\Models\Unit::$unitName");
-    }
-
-    $isUnitHead = Unit::whereIn('name', $units)
-                    ->where('unit_head_id', $staff->id)
-                    ->exists();
-
-    // Get the Work Study unit constant
-    $workStudyUnit = constant("App\Models\Unit::UNIT_WORK_STUDY");
-
-    $isWorkStudyUnitHeadOrMember = Unit::where('name', $workStudyUnit)
-    ->where(function ($query) use ($staff, $workStudyUnit) {
-        $query->where('unit_head_id', $staff->id) 
-            ->orWhere(function ($query) use ($staff, $workStudyUnit) {
-                $query->where('id', $staff->unit_id);
+            // Check if any of these IDs exist in the staff's assigned programme categories
+            $isSPGS = $staffProgrammeCategoryRoleIds->contains(function ($id) use ($pgdId, $masterId, $doctorateId) {
+                return in_array($id, [$pgdId, $masterId, $doctorateId]);
             });
-    })
-    ->exists();
+        }
 
-    $pendingStudentClearanceCount = \App\Models\FinalClearance::where('status', null)->count();
+        $notifications = $staff->notifications()->orderBy('created_at', 'desc')->get();    
+        
+        foreach ($staff->staffRoles as $staffRole) {
+            if (strtolower($staffRole->role->role) == 'dean') {
+                $staffDeanRole = true;
+            }
+            if (strtolower($staffRole->role->role) == 'sub-dean') {
+                $staffSubDeanRole = true;
+            }
+            if (strtolower($staffRole->role->role) == 'hod') {
+                $staffHODRole = true;
+            }
+            if (strtolower($staffRole->role->role) == 'vice chancellor') {
+                $staffVCRole = true;
+            }
+            if (strtolower($staffRole->role->role) == 'registrar') {
+                $staffRegistrarRole = true;
+            }
+            if (strtolower($staffRole->role->role) == 'human resource') {
+                $staffHRRole = true;
+            }
+            if (strtolower($staffRole->role->role) == 'level adviser') {
+                $staffLevelAdviserRole = true;
+            }
+            if (strtolower($staffRole->role->role) == 'exam officer') {
+                $staffExamOfficerRole = true;
+            }
+            if (strtolower($staffRole->role->role) == 'public relation') {
+                $staffPublicRelationRole = true;
+            }
+            if (strtolower($staffRole->role->role) == 'student care') {
+                $staffStudentCareRole = true;
+            }
+            if(strtolower($staffRole->role->role) == 'bursary'){
+                $staffBursaryRole = true;
+            }
+            if(strtolower($staffRole->role->role) == 'admission'){
+                $staffAdmissionOfficerRole = true;
+            }
+            if(strtolower($staffRole->role->role) == 'academic planning'){
+                $staffAcademicPlannerRole = true;
+            }   
+        }
 
-    $pendingStudentProgrammeChangeCount = \App\Models\ProgrammeChangeRequest::where('status', 'pending')
-    ->where(function ($query) use ($staffId) {
-        $query->where('old_programme_hod_id', $staffId)
-              ->orWhere('old_programme_dean_id', $staffId)
-              ->orWhere('new_programme_hod_id', $staffId)
-              ->orWhere('new_programme_dean_id', $staffId)
-              ->orWhere('dap_id', $staffId)
-              ->orWhere('registrar_id', $staffId);
-    })
-    ->count();
 
-    $isFacultyOfficer = Faculty::where('faculty_officer_id', $staff->id)->exists();
+        $unitNames = ['UNIT_REGISTRY', 'UNIT_BURSARY', 'UNIT_STUDENT_CARE', 'UNIT_LIBRARY', 'UNIT_WORK_STUDY'];
+
+        $units = [];
+        foreach ($unitNames as $unitName) {
+            $units[] = constant("App\Models\Unit::$unitName");
+        }
+
+        $isUnitHead = Unit::whereIn('name', $units)
+                        ->where('unit_head_id', $staff->id)
+                        ->exists();
+
+        // Get the Work Study unit constant
+        $workStudyUnit = constant("App\Models\Unit::UNIT_WORK_STUDY");
+
+        $isWorkStudyUnitHeadOrMember = Unit::where('name', $workStudyUnit)
+        ->where(function ($query) use ($staff, $workStudyUnit) {
+            $query->where('unit_head_id', $staff->id) 
+                ->orWhere(function ($query) use ($staff, $workStudyUnit) {
+                    $query->where('id', $staff->unit_id);
+                });
+        })
+        ->exists();
+
+        $pendingStudentClearanceCount = \App\Models\FinalClearance::where('status', null)->count();
+
+        $pendingStudentProgrammeChangeCount = \App\Models\ProgrammeChangeRequest::where('status', 'pending')
+        ->where(function ($query) use ($staffId) {
+            $query->where('old_programme_hod_id', $staffId)
+                ->orWhere('old_programme_dean_id', $staffId)
+                ->orWhere('new_programme_hod_id', $staffId)
+                ->orWhere('new_programme_dean_id', $staffId)
+                ->orWhere('dap_id', $staffId)
+                ->orWhere('registrar_id', $staffId);
+        })
+        ->count();
+
+        $isFacultyOfficer = Faculty::where('faculty_officer_id', $staff->id)->exists();
+    }
 
 @endphp
 
 <head>
 
     <meta charset="utf-8" />
-    <title>{{ env('APP_NAME') }} || Staff Dashboard || {{ $isWorkStudyUnitHeadOrMember }}</title>
+    <title>{{ env('APP_NAME') }} || Staff Dashboard</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta content="{{ env('APP_NAME') }} Dashboard" name="description" />
@@ -250,6 +253,7 @@
 
                     </div>
 
+                    @if(!empty($staff))
                     <div class="d-flex align-items-center">
 
                         <div class="ms-1 header-item d-none d-sm-flex">
@@ -335,6 +339,7 @@
                             </div>
                         </div>
                     </div>
+                    @endif
                 </div>
             </div>
         </header>
@@ -372,6 +377,7 @@
 
                     <div id="two-column-menu">
                     </div>
+                    @if(!empty($staff))
                     <ul class="navbar-nav" id="navbar-nav">
                         <li class="menu-title"><span data-key="t-menu">Menu</span></li>
                         <li class="nav-item">
@@ -1005,6 +1011,7 @@
                             </a>
                         </li> <!-- end Logout Menu -->
                     </ul>
+                    @endif
                 </div>
                 <!-- Sidebar -->
             </div>
@@ -1158,6 +1165,7 @@
         // Display the greeting
         greetingElement.innerHTML = greeting;
     </script>
+    @if(!empty($staff))
     <script>
         function handleFacultyChange(event) {
             const selectedFaculty = event.target.value;
@@ -1260,6 +1268,7 @@
             });
         }
     </script>
+    @endif
     <script>
         document.getElementById('copyButton').addEventListener('click', function() {
             // Select the link text

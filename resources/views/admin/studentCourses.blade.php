@@ -6,7 +6,7 @@
 <div class="row">
     <div class="col-12">
         <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-            <h4 class="mb-sm-0">{{ $programmeCategory->category }} Programme Student Course(s) for {{ $academicSession }} academic session</h4>
+            <h4 class="mb-sm-0">{{ $programmeCategory->category }} Programme Student Course(s)</h4>
 
             <div class="page-title-right">
                 <ol class="breadcrumb m-0">
@@ -106,11 +106,18 @@
 @endif
 
 @if(!empty($courses))
+@php
+    $semesterName = $semester == 1 ? 'Harmattan' : ($semester == 2 ? 'Rain' : 'Summer');
+    $pageTitle = "{$semesterName} Semester Course(s) for {$academiclevel->level} Level, {$programmeCategory->category} Programme for {$programme->name}";
+@endphp
 <div class="row">
     <div class="col-lg-12">
         <div class="card">
             <div class="card-header align-items-center d-flex">
                 <h4 class="card-title mb-0 flex-grow-1">{{ $semester == 1 ? 'Harmattan' : ($semester == 2 ? 'Rain' : 'Summer') }} Semester Course(s) for {{ $academiclevel->level }} Level, {{ $programmeCategory->category }} Programme for  {{ $programme->name }}  for {{ $academic_session }} Academic Session</h4>
+                <div class="flex-shrink-0">
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#bulkUpload">Bulk Upload</button>
+                </div>
             </div><!-- end card header -->
         </div>
     </div>
@@ -227,15 +234,16 @@
         <div class="card">
             <div class="card-body table-responsive">
                 <!-- Bordered Tables -->
-                <table class="table table-striped table-bordered table-nowrap">
+                <table id="buttons-datatables" class="table table-striped table-bordered table-nowrap">
                     <thead>
                         <tr>
                             <th scope="col">ID</th>
                             <th scope="col">Staff Details</th>
+                            <th scope="col">Course ID</th>
                             <th scope="col">Course Code</th>
                             <th scope="col">Course Title</th>
                             <th scope="col">Course Unit</th>
-                            <th scope="col">Status</th>
+                            <th scope="col">Course Status</th>
                             <th scope="col">Level</th>
                             <th scope="col"></th>
                         </tr>
@@ -252,6 +260,7 @@
                         <tr>
                             <td scope="row">{{ $loop->iteration }}</td>
                             <td>{{ $staff ?? 'N/A' }}</td>
+                            <td>{{ $course->course->id }}</td>
                             <td>{{ $course->course->code }}</td>
                             <td>{{ ucwords(strtolower($course->course->name)) }}</td>
                             <td>{{ $course->credit_unit }}</td>
@@ -295,7 +304,7 @@
                                     <div class="modal-dialog modal-dialog-centered">
                                         <div class="modal-content">
                                             <div class="modal-header p-3">
-                                                <h4 class="card-title mb-0">Edit Level</h4>
+                                                <h4 class="card-title mb-0">Edit Course</h4>
                                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                             </div>
                                             <div class="modal-body">
@@ -339,6 +348,46 @@
     <!-- end col -->
 </div>
 <!-- end row -->
+<!-- Bulk Course Upload Modal -->
+<div id="bulkUpload" class="modal fade" tabindex="-1" aria-labelledby="bulkUploadLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title" id="bulkUploadLabel">Bulk Course Upload</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <hr>
+            </div>
+
+            <div class="modal-body">
+                <form action="{{ url('/admin/uploadStudentCourseToBeRegistered') }}" method="POST" enctype="multipart/form-data">
+                    @csrf
+
+                    <input type="hidden" name="level_id" value="{{ $academiclevel->id }}">
+                    <input type="hidden" name="programme_id" value="{{ $programme->id }}">
+                    <input type="hidden" name="semester" value="{{ $semester }}">
+                    <input type="hidden" name="academic_session" value="{{ $academic_session }}">
+                    <input type="hidden" name="programme_category_id" value="{{ $programme_category_id }}">
+
+                    <div class="mb-3">
+                        <label for="file" class="form-label">Upload Course File <span class="text-danger">*</span></label>
+                        <input type="file" class="form-control" id="file" name="file" accept=".csv, .xlsx, .xls" required>
+                        <div class="form-text">Accepted formats: .csv</div>
+                    </div>
+
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary">Upload File</button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+
+
 {{-- 
 <!-- Fetch Form -->
 <form id="courseDetailForm{{ $loop->iteration }}" action="{{ url('/admin/courseDetail/'.$course->course->id) }}" method="get">

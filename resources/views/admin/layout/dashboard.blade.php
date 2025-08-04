@@ -13,8 +13,7 @@
 <head>
 
     <meta charset="utf-8" />
-    <title>Admin Dashboard | {{ env('APP_NAME') }} </title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ !empty($pageTitle) ? $pageTitle : 'Admin Dashboard | ' . env('APP_NAME') }}</title>    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta content="{{ env('APP_NAME') }} Dashboard" name="description" />
     <meta content="Oladipo Damilare(KoderiaNG)" name="author" />
     <!-- App favicon -->

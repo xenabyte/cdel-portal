@@ -43,6 +43,9 @@ use App\Libraries\Result\Result;
 use App\Libraries\Attendance\Attendance;
 use App\Libraries\Pdf\Pdf;
 
+use League\Csv\Reader;
+
+
 use SweetAlert;
 use Mail;
 use Alert;
@@ -427,6 +430,108 @@ class ProgrammeController extends Controller
 
         alert()->error('Oops', 'Invalid course ')->persistent('Close');
         return view('admin.studentCourses', $defaultData);
+    }
+
+
+    public function uploadStudentCourseToBeRegistered(Request $request){
+        $programmeCategoryId = $request->programme_category_id;
+
+        $programmeCategory = ProgrammeCategory::with('academicSessionSetting', 'examSetting')->where('id', $programmeCategoryId)->first();
+        $academicSession = $request->academic_session;
+
+        if (!$academicSession) {
+            alert()->error('Oops!', 'Session setting for programme category not found.')->persistent('Close');
+            return redirect()->back();
+        }
+
+
+        $programmeCategories = ProgrammeCategory::get();
+        $courses = CoursePerProgrammePerAcademicSession::with('course')
+            ->where('programme_id', $request->programme_id)
+            ->where('level_id', $request->level_id)
+            ->where('academic_session', $request->academic_session)
+            ->where('semester', $request->semester)
+            ->where('programme_category_id', $request->programme_category_id)
+            ->get();
+
+        $defaultData = [
+            'courses' => $courses,
+            'academiclevel' => AcademicLevel::find($request->level_id),
+            'programme' => Programme::find($request->programme_id),
+            'semester' => $request->semester,
+            'allCourses' => Course::all(),
+            'academicLevels' => AcademicLevel::get(),
+            'programmeCategories' => $programmeCategories,
+            'academic_session' => $request->academic_session,
+            'programme_category_id' => $request->programme_category_id,
+            'programmeCategory' => ProgrammeCategory::find($request->programme_category_id)
+        ];
+
+        $validator = Validator::make($request->all(), [
+            'level_id' => 'required',
+            'programme_id' => 'required',
+            'semester' => 'required',
+            'programme_category_id' => 'required',
+            'file' => 'required'
+        ]);
+
+        if($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return view('admin.studentCourses',$defaultData);
+        }
+
+        $file = $request->file('file');
+        $fileExtension = $file->getClientOriginalExtension();
+
+        if (strtolower($fileExtension) !== 'csv') {
+            alert()->error('Invalid file format, only CSV is allowed', '')->persistent('Close');
+            return redirect()->back();
+        }
+
+        $csv = Reader::createFromPath($file->getPathname());
+        $csv->setHeaderOffset(0);
+        $records = $csv->getRecords();
+
+        foreach ($records as $row) {
+            $courseId = trim($row['Course ID']);
+            $creditUnit = trim($row['Course Unit']);
+            $courseStatus = trim($row['Course Status']);
+
+            if(!$course = Course::find($courseId)){
+                alert()->error('Oops', 'Invalid course ')->persistent('Close');
+                return view('admin.studentCourses',$defaultData);
+            }
+
+            $exist = CoursePerProgrammePerAcademicSession::where([
+                'course_id' => $course->id,
+                'level_id' => $request->level_id,
+                'programme_id' => $request->programme_id,
+                'semester' => $request->semester,
+                'credit_unit' => $creditUnit,
+                'academic_session' => $academicSession,
+                'programme_category_id' => $request->programme_category_id,
+            ])->first();
+
+            if($exist){
+                Log::info('Course already added');
+                continue;
+            }
+
+            $newCourses = [
+                'course_id' => $course->id,
+                'level_id' => $request->level_id,
+                'programme_id' => $request->programme_id,
+                'semester' => $request->semester,
+                'credit_unit' => $creditUnit,
+                'academic_session' => $academicSession,
+                'programme_category_id' => $request->programme_category_id,
+                'status' => $courseStatus,
+            ];
+
+            $coursePerProgrammePerAcademicSession = CoursePerProgrammePerAcademicSession::create($newCourses);
+        }
+
+        return view('admin.studentCourses',$defaultData);
     }
 
     public function deleteCourseForStudent(Request $request){
@@ -1720,5 +1825,122 @@ class ProgrammeController extends Controller
 
         alert()->success('Success', 'Programme Requirement Deleted Successfully')->persistent('Close');
         return redirect()->back();
+    }
+
+
+    public static function processResult(UploadedFile $file, $courseId, $type, $programmeCategoryId, $academicSession, $isSummer = false){
+        $csv = Reader::createFromPath($file->getPathname());
+        $csv->setHeaderOffset(0);
+        $records = $csv->getRecords();
+        $type = strtolower($type);
+
+        foreach ($records as $row) {
+            $matricNumber = trim($row['Matric Number']);
+            $courseCodeMain = trim($row['Course Code']);
+
+            $testScore = null;
+            $examScore = null;
+
+            if ($type == 'test' && isset($row['Test Score'])) {
+                $testScore = self::formatScore($row['Test Score']);
+            }
+
+            if ($type == 'exam' && isset($row['Exam Score'])) {
+                $examScore = self::formatScore($row['Exam Score']);
+            }
+
+            if ($type == 'both') {
+                $testScore = isset($row['Test Score']) ? self::formatScore($row['Test Score']) : null;
+                $examScore = isset($row['Exam Score']) ? self::formatScore($row['Exam Score']) : null;
+            }
+
+            $student = Student::with('applicant')->where('matric_number', $matricNumber)->first();
+            if (!$student) {
+                Log::info("Student {$matricNumber} not found.");
+                continue;
+            }
+
+            $course = Course::find($courseId);
+            if (!$course || $course->code !== $courseCodeMain) {
+                Log::info("Course code mismatch for {$matricNumber}: expected {$course->code}, got {$courseCodeMain}");
+                continue;
+            }
+
+            $query = CourseRegistration::where([
+                'student_id' => $student->id,
+                'course_id' => $courseId,
+                'academic_session' => $academicSession,
+                'programme_category_id' => $programmeCategoryId
+            ]);
+
+            if (!$isSummer) {
+                $query->whereNull('result_approval_id');
+            }
+
+            $studentRegistration = $query->first();
+            if (!$studentRegistration) {
+                Log::info("{$student->applicant->lastname} {$student->applicant->othernames} not registered for {$course->code} @ {$academicSession}");
+                continue;
+            }
+
+            // Format existing DB scores
+            $existingTestScore = self::formatScore($studentRegistration->ca_score);
+            $existingExamScore = self::formatScore($studentRegistration->exam_score);
+
+            // Assign new scores based on upload type
+            if ($type == 'test') {
+                $studentRegistration->ca_score = $testScore;
+                $examScore = $existingExamScore;
+            } elseif ($type == 'exam') {
+                $studentRegistration->exam_score = $examScore;
+                $testScore = $existingTestScore;
+            } elseif ($type == 'both') {
+                $studentRegistration->ca_score = $testScore;
+                $studentRegistration->exam_score = $examScore;
+            }
+
+            // Compute total score with ABS handling
+            $totalScore = null;
+
+            if (is_numeric($testScore) && is_numeric($examScore)) {
+                $totalScore = floatval($testScore) + floatval($examScore);
+            } elseif (!is_numeric($testScore) && is_numeric($examScore)) {
+                $totalScore = floatval($examScore);
+            } elseif (is_numeric($testScore) && !is_numeric($examScore)) {
+                $totalScore = floatval($testScore);
+            } else {
+                $totalScore = 'ABS';
+            }
+
+            if ($totalScore !== 'ABS') {
+                if ($totalScore > 100) {
+                    Log::warning("Total score for {$matricNumber} exceeds 100: {$totalScore}");
+                    continue;
+                }
+
+                $grading = GradeScale::computeGrade($totalScore);
+                $grade = $grading->grade;
+                $points = $grading->point;
+
+                $requiredPassMark = self::getRequiredPassMark($student, $course->code);
+                if ($totalScore < $requiredPassMark) {
+                    $grade = 'F';
+                    $points = 0;
+                }
+
+                $studentRegistration->total = $totalScore;
+                $studentRegistration->grade = $grade;
+                $studentRegistration->points = $studentRegistration->course_credit_unit * $points;
+            } else {
+                $studentRegistration->total = 'ABS';
+                $grading = GradeScale::computeGrade('ABS');
+                $studentRegistration->grade = $grading->grade;
+                $studentRegistration->points = 0;
+            }
+
+            $studentRegistration->save();
+        }
+
+        return 'success';
     }
 }

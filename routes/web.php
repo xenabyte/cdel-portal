@@ -357,6 +357,7 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'admin'],
     Route::post('/addCourseForStudent', [App\Http\Controllers\Admin\ProgrammeController::class, 'addCourseForStudent'])->name('addCourseForStudent')->middleware(['auth:admin']);
     Route::post('/deleteCourseForStudent', [App\Http\Controllers\Admin\ProgrammeController::class, 'deleteCourseForStudent'])->name('deleteCourseForStudent')->middleware(['auth:admin']);
     Route::post('/updateCourseForStudent', [App\Http\Controllers\Admin\ProgrammeController::class, 'updateCourseForStudent'])->name('updateCourseForStudent')->middleware(['auth:admin']);
+    Route::post('/uploadStudentCourseToBeRegistered', [App\Http\Controllers\Admin\ProgrammeController::class, 'uploadStudentCourseToBeRegistered'])->name('uploadStudentCourseToBeRegistered')->middleware(['auth:admin']);
 
     Route::post('/changeStudentProgramme', [App\Http\Controllers\Admin\ProgrammeController::class, 'changeStudentProgramme'])->name('changeStudentProgramme')->middleware(['auth:admin']);
     Route::get('/changeProgramme', [App\Http\Controllers\Admin\ProgrammeController::class, 'changeProgramme'])->name('changeProgramme')->middleware(['auth:admin']);
@@ -392,7 +393,7 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'admin'],
 
     Route::post('/enableStudent', [App\Http\Controllers\Admin\AcademicController::class, 'enableStudent'])->name('enableStudent')->middleware(['auth:admin']);
     Route::post('/expelStudent', [App\Http\Controllers\Admin\AcademicController::class, 'expelStudent'])->name('expelStudent')->middleware(['auth:admin']);
-    Route::get('/deletedStudents', [App\Http\Controllers\Admin\AcademicController::class, 'deletedStudents'])->name('expelStudent')->middleware(['auth:admin']);
+    Route::get('/deletedStudents', [App\Http\Controllers\Admin\AcademicController::class, 'deletedStudents'])->name('deletedStudents')->middleware(['auth:admin']);
 
     Route::get('/expelledStudents', [App\Http\Controllers\Admin\AcademicController::class, 'expelledStudents'])->name('expelledStudents')->middleware(['auth:admin']);
     Route::get('/suspendedStudents', [App\Http\Controllers\Admin\AcademicController::class, 'suspendedStudents'])->name('suspendedStudents')->middleware(['auth:admin']);
@@ -905,6 +906,8 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'staff'],
 
     Route::get('/expelledStudents', [App\Http\Controllers\Staff\AcademicController::class, 'expelledStudents'])->name('expelledStudents')->middleware(['auth:staff']);
     Route::get('/suspendedStudents', [App\Http\Controllers\Staff\AcademicController::class, 'suspendedStudents'])->name('suspendedStudents')->middleware(['auth:staff']);
+    Route::get('/deletedStudents', [App\Http\Controllers\Staff\AcademicController::class, 'deletedStudents'])->name('deletedStudents')->middleware(['auth:staff']);
+
 
     Route::get('/viewWithdrawal/{slug}', [App\Http\Controllers\Staff\AcademicController::class, 'viewSuspension'])->name('staff.viewWithdrawal')->middleware(['auth:staff']);
     Route::post('/manageWithdrawal', [App\Http\Controllers\Staff\AcademicController::class, 'manageWithdrawal'])->name('staff.manageWithdrawal')->middleware(['auth:staff']);

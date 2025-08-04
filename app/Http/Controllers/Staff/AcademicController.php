@@ -302,6 +302,15 @@ class AcademicController extends Controller
         ]);
     }
 
+     public function deletedStudents(){
+
+        $deletedStudents =  Student::onlyTrashed()->with('faculty', 'department', 'programme')->get();
+
+        return view('staff.deletedStudents', [
+            'deletedStudents' => $deletedStudents
+        ]);
+    }
+
     public function programmeChangeRequests(Request $request){
         $staff = Auth::guard('staff')->user();
         $staffId = $staff->id;

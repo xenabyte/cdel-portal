@@ -540,7 +540,6 @@ class StaffController extends Controller
     public function courseDetail(Request $request, $id, $programmeCategory, $academicSession = null)
     {
         $staff = Auth::guard('staff')->user();
-        $staffId = $staff->id;
 
         if (!empty($academicSession)) {
             $academicSession = str_replace('-', '/', $academicSession);
