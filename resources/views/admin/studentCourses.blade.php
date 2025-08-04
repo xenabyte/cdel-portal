@@ -27,7 +27,7 @@
                 <div class="text-center">
                     <div class="row justify-content-center">
                         <div class="col-lg-9">
-                            <h4 class="mt-4 fw-semibold">Fetch {{ $programmeCategory->category }} Programme Student Course(s) for {{ $academicSession }}</h4>
+                            <h4 class="mt-4 fw-semibold">Fetch {{ $programmeCategory->category }} Programme Student Course(s)</h4>
                             <p class="text-muted mt-3"></p>
                             <div class="mt-4">
                                 <form action="{{ url('/admin/getStudentCourses') }}" method="POST">
