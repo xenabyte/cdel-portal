@@ -210,32 +210,36 @@ class StudentController extends Controller
             $applicant->family_position = $request->family_position;
         }
 
+        if(!empty($request->number_of_siblings) && $request->number_of_siblings != $applicant->number_of_siblings){
+            $applicant->number_of_siblings = $request->number_of_siblings;
+        }
+
         if(!empty($request->facebook) && $request->facebook != $applicant->facebook){
             $student->facebook = $request->facebook;
         }
 
         if(!empty($request->linkedIn) && $request->linkedIn != $applicant->linkedIn){
-            $applicant->linkedIn = $request->linkedIn;
+            $student->linkedIn = $request->linkedIn;
         }
 
         if(!empty($request->tiktok) && $request->tiktok != $applicant->tiktok){
-            $applicant->tiktok = $request->tiktok;
+            $student->tiktok = $request->tiktok;
         }
 
         if(!empty($request->instagram) && $request->instagram != $applicant->instagram){
-            $applicant->instagram = $request->instagram;
+            $student->instagram = $request->instagram;
         }
 
         if(!empty($request->whatsapp) && $request->whatsapp != $applicant->whatsapp){
-            $applicant->whatsapp = $request->whatsapp;
+            $student->whatsapp = $request->whatsapp;
         }
 
         if(!empty($request->twitter) && $request->twitter != $applicant->twitter){
-            $applicant->twitter = $request->twitter;
+            $student->twitter = $request->twitter;
         }
 
         if(!empty($request->hobbies) && $request->hobbies != $applicant->hobbies){
-            $applicant->hobbies = $request->hobbies;
+            $student->hobbies = $request->hobbies;
         }
 
         if(!empty($request->father_name) && $request->father_name != $applicant->father_name){

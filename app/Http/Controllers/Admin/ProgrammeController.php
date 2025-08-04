@@ -54,8 +54,6 @@ use Carbon\Carbon;
 
 class ProgrammeController extends Controller
 {
-    //
-
     public function programmeCategory(){
 
         $programmeCategories = ProgrammeCategory::with('academicSessionSetting')->get();

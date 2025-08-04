@@ -2,13 +2,34 @@
 @php
     use \App\Models\ProgrammeCategory;
 
-
-
     $student = Auth::guard('student')->user();
     $applicant = $student->applicant;
     $nok = $applicant->nok;
     $guardian = $applicant->guardian;
     $name = $applicant->lastname.' '.$applicant->othernames;
+
+      $allPersonalFieldsFilled = 
+        empty($student->email) ||
+        empty($applicant->lastname) ||
+        empty($applicant->othernames) ||
+        empty($applicant->dob) ||
+        empty($applicant->gender) ||
+        empty($applicant->phone_number) ||
+        empty($applicant->marital_status) ||
+        empty($applicant->nationality) ||
+        empty($applicant->state) ||
+        empty($applicant->lga) ||
+        empty($applicant->religion) ||
+        empty($applicant->family_position) ||
+        empty($applicant->number_of_siblings) ||
+        empty($student->facebook) ||
+        empty($student->linkedIn) ||
+        empty($student->tiktok) ||
+        empty($student->instagram) ||
+        empty($student->whatsapp) ||
+        empty($student->twitter) ||
+        empty($student->hobbies);
+
 @endphp
 @section('content')
 <!-- Toast Container -->
@@ -83,7 +104,7 @@
     <!-- end col -->
 </div>
 <!-- end row -->
-@elseif(empty($student->facebook) && empty($guardian->father_name && empty($applicant->family_position)))
+@elseif(empty($student->facebook) || empty($guardian->father_name || empty($applicant->family_position)))
 <div class="row">
     <div class="col-md-8 offset-md-2">
         <div class="card">
@@ -243,7 +264,12 @@
                             </div><!--end col-->
                            
                             <div class="d-flex justify-content-end mt-4">
-                                <button type="button" class="btn btn-success nexttab" data-nexttab="tab-parent-tab" disabled>Next</button>
+                                @if ($allPersonalFieldsFilled)
+                                    <button type="submit" class="btn btn-success">Submit</button>
+                                @else
+                                    <button type="submit" class="btn btn-success mx-2">Submit</button>  
+                                    <button type="button" class="btn btn-success mx-2 nexttab" data-nexttab="tab-parent-tab">Next</button>
+                                @endif
                             </div>
                         </div>
 
@@ -257,68 +283,68 @@
                                 <!-- Father's Information -->
                                 <div class="col-lg-6 mb-3">
                                     <label class="form-label" for="father-name">Father’s Name</label>
-                                    <input type="text" class="form-control" id="father-name" name="father_name" value="{{$guardian->father_name}}" placeholder="Enter father's name">
+                                    <input type="text" class="form-control" id="father-name" name="father_name" value="{{$guardian->father_name}}" placeholder="Enter father's name" required>
                                 </div>
                                 <div class="col-lg-6 mb-3">
                                     <label class="form-label" for="father-occupation">Father’s Occupation</label>
-                                    <input type="text" class="form-control" id="father-occupation" name="father_occupation" value="{{$guardian->father_occupation}}" placeholder="Enter father's occupation">
+                                    <input type="text" class="form-control" id="father-occupation" name="father_occupation" value="{{$guardian->father_occupation}}" placeholder="Enter father's occupation" required>
                                 </div>
                                 <div class="col-lg-6 mb-3">
                                     <label class="form-label" for="father-phone">Father’s Phone Number</label>
-                                    <input type="text" class="form-control" id="father-phone" name="father_phone" value="{{$guardian->father_phone}}" placeholder="Enter father's phone number">
+                                    <input type="text" class="form-control" id="father-phone" name="father_phone" value="{{$guardian->father_phone}}" placeholder="Enter father's phone number" required>
                                 </div>
                                 <div class="col-lg-6 mb-3">
                                     <label class="form-label" for="father-email">Father’s Email</label>
-                                    <input type="email" class="form-control" id="father-email" name="father_email" value="{{$guardian->father_email}}" placeholder="Enter father's email">
+                                    <input type="email" class="form-control" id="father-email" name="father_email" value="{{$guardian->father_email}}" placeholder="Enter father's email" required>
                                 </div>
 
                                 <!-- Mother's Information -->
                                 <div class="col-lg-6 mb-3">
                                     <label class="form-label" for="mother-name">Mother’s Name</label>
-                                    <input type="text" class="form-control" id="mother-name" name="mother_name" value="{{$guardian->mother_name}}" placeholder="Enter mother's name">
+                                    <input type="text" class="form-control" id="mother-name" name="mother_name" value="{{$guardian->mother_name}}" placeholder="Enter mother's name" required>
                                 </div>
                                 <div class="col-lg-6 mb-3">
                                     <label class="form-label" for="mother-occupation">Mother’s Occupation</label>
-                                    <input type="text" class="form-control" id="mother-occupation" name="mother_occupation" value="{{$guardian->mother_occupation}}" placeholder="Enter mother's occupation">
+                                    <input type="text" class="form-control" id="mother-occupation" name="mother_occupation" value="{{$guardian->mother_occupation}}" placeholder="Enter mother's occupation" required>
                                 </div>
                                 <div class="col-lg-6 mb-3">
                                     <label class="form-label" for="mother-phone">Mother’s Phone Number</label>
-                                    <input type="text" class="form-control" id="mother-phone" name="mother_phone" value="{{$guardian->mother_phone}}" placeholder="Enter mother's phone number">
+                                    <input type="text" class="form-control" id="mother-phone" name="mother_phone" value="{{$guardian->mother_phone}}" placeholder="Enter mother's phone number" required>
                                 </div>
                                 <div class="col-lg-6 mb-3">
                                     <label class="form-label" for="mother-email">Mother’s Email</label>
-                                    <input type="email" class="form-control" id="mother-email" name="mother_email" value="{{$guardian->mother_email}}" placeholder="Enter mother's email">
+                                    <input type="email" class="form-control" id="mother-email" name="mother_email" value="{{$guardian->mother_email}}" placeholder="Enter mother's email" required>
                                 </div>
 
                                 <!-- Parent Residential Address -->
                                 <div class="col-lg-12 mb-3">
                                     <label for="parent_address">Parent’s Residential Address</label>
-                                    <textarea class="ckeditor" id="parent_address" name="parent_address" ></textarea>
+                                    <textarea class="ckeditor" id="parent_residential_address" name="parent_residential_address" required>{!! $guardian->parent_residential_address !!}</textarea>
                                 </div><!--end col-->
 
                                 <!-- Guardian Info (if applicable) -->
                                 <div class="col-lg-6 mb-3">
                                     <label class="form-label" for="guardian-name">Guardian’s Name</label>
-                                    <input type="text" class="form-control" id="guardian-name" name="name" value="{{$guardian->name}}" placeholder="Enter guardian's name">
+                                    <input type="text" class="form-control" id="guardian-name" name="name" value="{{$guardian->name}}" placeholder="Enter guardian's name" required>
                                 </div>
                                 <div class="col-lg-6 mb-3">
                                     <label class="form-label" for="guardian-phone">Guardian’s Phone Number</label>
-                                    <input type="text" class="form-control" id="guardian-phone" name="phone_number" value="{{$guardian->phone_number}}" placeholder="Enter guardian's phone number">
+                                    <input type="text" class="form-control" id="guardian-phone" name="phone_number" value="{{$guardian->phone_number}}" placeholder="Enter guardian's phone number" required>
                                 </div>
                                 <div class="col-lg-12 mb-3">
                                     <label class="form-label" for="guardian-email">Guardian’s Email</label>
-                                    <input type="email" class="form-control" id="guardian-email" name="email" value="{{$guardian->email}}" placeholder="Enter guardian's email">
+                                    <input type="email" class="form-control" id="guardian-email" name="email" value="{{$guardian->email}}" placeholder="Enter guardian's email" required>
                                 </div>
                                 <div class="col-lg-12 mb-3">
                                     <label for="address">Guardian Residential Address</label>
-                                    <textarea class="ckeditor" id="parent_address" name="address" >{!! $guardian->address !!}</textarea>
+                                    <textarea class="ckeditor" id="parent_address" name="address" required>{!! $guardian->address !!}</textarea>
                                 </div><!--end col-->
 
                             </div>
 
                             <div class="d-flex justify-content-between mt-4">
                                 <button type="button" class="btn btn-light previestab" data-previous="tab-personal-tab">Back</button>
-                                <button type="button" class="btn btn-success nexttab" data-nexttab="tab-academic-tab disabled">Next</button>
+                                <button type="submit" class="btn btn-success nexttab" data-nexttab="tab-academic-tab">Submit</button>
                             </div>
                         </div>
 
@@ -364,9 +390,9 @@
                                 </div>
                             </div>
 
-                            <div class="d-flex justify-content-between mt-4">
-                                <button type="button" class="btn btn-light previestab" data-previous="tab-parent-tab">Back</button>
-                                <button type="button" class="btn btn-success nexttab" data-nexttab="tab-finish-tab" disabled>Next</button>
+                            <div class="d-flex justify-content-end mt-4">
+                                <button type="submit" id="submitBtn" class="btn btn-success d-none">Submit</button>
+                                <button type="button" id="nextBtn" class="btn btn-success nexttab" data-nexttab="tab-parent-tab">Next</button>
                             </div>
                         </div>
 
@@ -939,61 +965,5 @@
 </div>
 <!--end row-->
 @endif
-<script>
-document.addEventListener('DOMContentLoaded', function () {
 
-    const requiredFieldsToast = document.getElementById('requiredFieldsToast');
-    const toast = new bootstrap.Toast(requiredFieldsToast);
-
-    // This function validates all required fields within a given tab pane.
-    const isTabValid = (tabPane) => {
-        const requiredInputs = tabPane.querySelectorAll('[required]');
-        let allFieldsFilled = true;
-
-        requiredInputs.forEach(input => {
-            // Check for various input types, including textareas like CKEditor
-            if (input.tagName.toLowerCase() === 'textarea') {
-                const editorId = input.id;
-                // Handle CKEditor specifically
-                if (window.CKEDITOR && window.CKEDITOR.instances[editorId]) {
-                    if (window.CKEDITOR.instances[editorId].getData().trim() === '') {
-                        allFieldsFilled = false;
-                    }
-                } else if (input.value.trim() === '') {
-                    allFieldsFilled = false;
-                }
-            } else if (input.value.trim() === '') {
-                allFieldsFilled = false;
-            }
-        });
-        return allFieldsFilled;
-    };
-
-    // Handle clicks on the 'Next' buttons
-    const nextButtons = document.querySelectorAll('.nexttab');
-    nextButtons.forEach(button => {
-        button.addEventListener('click', function (event) {
-            const currentTabPane = button.closest('.tab-pane');
-            if (!isTabValid(currentTabPane)) {
-                event.preventDefault(); // Stop the tab from switching
-                toast.show(); // Show toast message
-            }
-        });
-    });
-
-    // Handle clicks on the tab navigation links
-    const tabLinks = document.querySelectorAll('button[data-bs-toggle="pill"]');
-    tabLinks.forEach(link => {
-        link.addEventListener('click', function (event) {
-            const currentTabId = document.querySelector('.nav-link.active').getAttribute('data-bs-target');
-            const currentTabPane = document.querySelector(currentTabId);
-            
-            if (currentTabPane && !isTabValid(currentTabPane)) {
-                event.preventDefault(); // Prevent tab switching if current tab is invalid
-                toast.show(); // Show toast message
-            }
-        });
-    });
-});
-</script>
 @endsection

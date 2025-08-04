@@ -638,6 +638,8 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'student'
 
 
         Route::get('/summerCourseReg', [App\Http\Controllers\Student\AcademicController::class, 'summerCourseReg'])->name('student.summerCourseReg')->middleware(['auth:student']);
+        Route::get('/printSummerCourseReg', [App\Http\Controllers\Student\AcademicController::class, 'printSummerCourseReg'])->name('student.printSummerCourseReg')->middleware(['auth:student']);
+
 
         Route::get('/elections', [App\Http\Controllers\Student\ElectionController::class, 'elections'])->name('student.elections')->middleware(['auth:student']);
         Route::get('/election/{slug}', [App\Http\Controllers\Student\ElectionController::class, 'election'])->name('student.election')->middleware(['auth:student']);

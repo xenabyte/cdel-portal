@@ -980,9 +980,10 @@ class AcademicController extends Controller
         $summerCourseRegPayment = Payment::where('type', Payment::PAYMENT_TYPE_SUMMER_COURSE_REGISTRATION)->where('academic_session', $academicSession)->first();
 
         $failedCourseRegs = CourseRegistration::where('student_id', $studentId)
-            ->where('academic_session', $academicSession)
+            // ->where('academic_session', $academicSession)
+            ->where('re_reg', NULL)
             ->where('grade', 'F')
-            ->where('level_id', $levelId)
+            // ->where('level_id', $levelId)
             ->where('result_approval_id', 1)
             ->get();
 
@@ -997,6 +998,19 @@ class AcademicController extends Controller
             'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
             'passEightyTuition' => $paymentCheck->passEightyTuition,
         ]);
+    }
+
+
+    public function printSummerCourseReg(Request $request){
+        $student = Auth::guard('student')->user();
+        $studentId = $student->id;
+        $academicSession = $student->academic_session;
+
+        $pdf = new Pdf();
+        $pdfContent = $pdf->generateSummerCourseRegistration($studentId, $academicSession);
+
+        
+        return response()->file($pdfContent);
     }
 
     //obsolete code
