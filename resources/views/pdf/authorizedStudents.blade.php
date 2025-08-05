@@ -135,44 +135,46 @@
             <div class="table-responsive">
                 <table class="table table-bordered table-striped">
                     <thead>
-                    <tr>
-                      <th class="col-sno">S/No</th>
-                      <th>Passport</th>
-                      <th>Matric No</th>
-                      <th>Full Name</th>
-                      <th>Sex</th>
-                      <th>Level</th>
-                      {{-- <th>Faculty</th>
-                      <th>Department</th> --}}
-                      <th>Programme</th>
-                      <th>Sign In</th>
-                      <th>Sign Out</th>
-                    </tr>
+                        <tr>
+                            <th class="col-sno">S/No</th>
+                            <th>Passport</th>
+                            <th>Matric No</th>
+                            <th>Full Name</th>
+                            <th>Sex</th>
+                            <th>Level</th>
+                            {{-- <th>Faculty</th>
+                            <th>Department</th> --}}
+                            <th>Programme</th>
+                            <th>Booklet Number</th>
+                            <th>Sign In</th>
+                            <th>Sign Out</th>
+                        </tr>
                     </thead>
                     <tbody>
                         @foreach($students as $entry)
-                        <tr>
-                          <td class="col-sno">{{ $loop->iteration }}</td>
-                          <td>
-                            <img
-                              src="{{ !empty($entry['student']->image) ? asset($entry['student']->image) : asset('assets/images/users/user-dummy-img.jpg') }}"
-                              alt="Passport" width="50">
-                          </td>
-                          <td>{{ $entry['student']->matric_number ?? 'N/A' }}</td>
-                          <td>
-                            {{ optional($entry['student']->applicant)->lastname }}
-                            {{ optional($entry['student']->applicant)->othernames }}
-                          </td>
-                          <td>{{ optional($entry['student']->applicant)->gender ?? '' }}</td>
+                            <tr>
+                                <td class="col-sno">{{ $loop->iteration }}</td>
+                                <td>
+                                    <img
+                                    src="{{ !empty($entry['student']->image) ? asset($entry['student']->image) : asset('assets/images/users/user-dummy-img.jpg') }}"
+                                    alt="Passport" width="50">
+                                </td>
+                                <td>{{ $entry['student']->matric_number ?? 'N/A' }}</td>
+                                <td>
+                                    {{ optional($entry['student']->applicant)->lastname }}
+                                    {{ optional($entry['student']->applicant)->othernames }}
+                                </td>
+                                <td>{{ optional($entry['student']->applicant)->gender ?? '' }}</td>
 
-                          <td>{{ optional($entry['student']->academicLevel)->level ?? '' }}</td>
-                          {{-- <td>{{ optional($entry['student']->faculty)->name ?? '' }}</td>
-                          <td>{{ optional($entry['student']->department)->name ?? '' }}</td> --}}
-                          <td>{{ optional($entry['student']->programme)->award ?? '' }}</td>
+                                <td>{{ optional($entry['student']->academicLevel)->level ?? '' }}</td>
+                                {{-- <td>{{ optional($entry['student']->faculty)->name ?? '' }}</td>
+                                <td>{{ optional($entry['student']->department)->name ?? '' }}</td> --}}
+                                <td>{{ optional($entry['student']->programme)->award ?? '' }}</td>
 
-                          <td></td>
-                          <td></td>
-                        </tr>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
                         @endforeach
                     </tbody>
                 </table>

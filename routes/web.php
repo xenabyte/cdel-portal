@@ -549,6 +549,8 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'student'
 
         Route::get('/profile', [App\Http\Controllers\Student\StudentController::class, 'profile'])->name('student.profile');
         Route::post('/profile/saveBioData', [App\Http\Controllers\Student\StudentController::class, 'saveBioData'])->name('student.saveBioData');
+        Route::get('/profile/downloadBioData', [App\Http\Controllers\Student\StudentController::class, 'downloadBioData'])->name('student.downloadBioData');
+
         Route::post('/updatePassword', [App\Http\Controllers\Student\StudentController::class, 'updatePassword'])->name('student.updatePassword');
         Route::post('/uploadImage', [App\Http\Controllers\Student\StudentController::class, 'uploadImage'])->name('student.uploadImage');
 

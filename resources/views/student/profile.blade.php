@@ -104,7 +104,7 @@
     <!-- end col -->
 </div>
 <!-- end row -->
-@elseif(empty($student->facebook) || empty($guardian->father_name || empty($applicant->family_position)))
+@elseif(empty($student->facebook) || empty($guardian->father_name || empty($applicant->family_position) && ($student->programme_category_id == ProgrammeCategory::getProgrammeCategory(ProgrammeCategory::UNDERGRADUATE))))
 <div class="row">
     <div class="col-md-8 offset-md-2">
         <div class="card">
@@ -344,7 +344,7 @@
 
                             <div class="d-flex justify-content-between mt-4">
                                 <button type="button" class="btn btn-light previestab" data-previous="tab-personal-tab">Back</button>
-                                <button type="submit" class="btn btn-success nexttab" data-nexttab="tab-academic-tab">Submit</button>
+                                <button type="button" class="btn btn-success nexttab" data-nexttab="tab-academic-tab">Next</button>
                             </div>
                         </div>
 
@@ -391,8 +391,7 @@
                             </div>
 
                             <div class="d-flex justify-content-end mt-4">
-                                <button type="submit" id="submitBtn" class="btn btn-success d-none">Submit</button>
-                                <button type="button" id="nextBtn" class="btn btn-success nexttab" data-nexttab="tab-parent-tab">Next</button>
+                                <button type="submit" id="submitBtn" class="btn btn-success">Submit</button>
                             </div>
                         </div>
 
@@ -433,77 +432,79 @@
 
 <div class="row">
     <div class="col-xxl-4">
-        <div class="card mt-n5">
+        <div class="card mt-n5 shadow-lg border-0">
             <div class="card-body p-4">
-                <div class="text-center">
-                    <div class="profile-user position-relative d-inline-block mx-auto  mb-4">
-                        <img src="{{empty($student->image)?asset('assets/images/users/user-dummy-img.jpg'):asset($student->image)}}" class="rounded-circle avatar-xl img-thumbnail user-profile-image  shadow" alt="user-profile-image"> 
+                <div class="text-center mb-4">
+                    <div class="profile-user d-inline-block position-relative mx-auto mb-3">
+                        <img src="{{ empty($student->image) ? asset('assets/images/users/user-dummy-img.jpg') : asset($student->image) }}"
+                            class="rounded-circle avatar-xl img-thumbnail user-profile-image shadow" alt="user-profile-image">
                     </div>
-                    <h5 class="fs-16 mb-1">{{ $name }}</h5>
-                    <p class="text-muted mb-0">Programme: {{ $student->programme->name }}</p>
-                    <p class="text-muted mb-0 text-bold">Matric Number: {{  $student->matric_number }}</p>
-                    <p class="text-muted mb-0 text-bold">Level: {{ $student->academicLevel->level }} Level</p>
+                    <h4 class="mb-1">{{ $name }}</h4>
+                    <p class="text-muted mb-0"><strong>Programme:</strong> {{ $student->programme->name }}</p>
+                    <p class="text-muted mb-0"><strong>Matric Number:</strong> {{ $student->matric_number }}</p>
+                    <p class="text-muted mb-3"><strong>Level:</strong> {{ $student->academicLevel->level }} Level</p>
 
+                    <a href="{{ url('student/profile/downloadBioData') }}" target="blank" class="btn btn-outline-primary btn-sm mb-3">
+                        <i class="bi bi-download"></i> Download Biodata (PDF)
+                    </a>
+                </div>
+
+                <hr class="my-4">
+
+                {{-- Signature Section --}}
+                <div class="mb-4">
+                    <h5 class="text-center mb-3">Signature</h5>
                     @if(empty($student->signature))
-                    <hr>
-                    <form class="text-start" action="{{ url('student/profile/saveBioData') }}" method="POST" enctype="multipart/form-data">
-                        @csrf
+                        <form action="{{ url('student/profile/saveBioData') }}" method="POST" enctype="multipart/form-data">
+                            @csrf
+                            <input type="hidden" name="student_id" value="{{ $student->id }}">
 
-                        <div class="alert alert-info">
-                            <h5 class="alert-heading text-black">Steps to Upload a Signature Without Background</h5>
-                            <ol>
-                                <li><strong>Sign on a White Paper</strong> – Use a clean white sheet and sign with a black or dark-colored pen.</li>
-                                <li><strong>Take a Picture</strong> – Use your phone camera to snap a clear and well-lit photo of your signature. Ensure there are no shadows or extra marks.</li>
-                                <li><strong>Remove Background</strong> –  
-                                    <ul>
-                                        <li>Visit <a href="https://www.remove.bg" target="_blank">remove.bg</a>.</li>
-                                        <li>Upload the signature image.</li>
-                                        <li>The website will automatically remove the background.</li>
-                                    </ul>
-                                </li>
-                                <li><strong>Download the Transparent Image</strong> – Click the download button to save the processed image with a transparent background.</li>
-                                <li><strong>Upload the Signature</strong> – Use the downloaded transparent signature file below (e.g., documents, forms, or digital signing).</li>
-                            </ol>
-                            <p>This method ensures a clean and professional-looking signature without any unwanted background. 🚀</p>
-                        </div>
-
-                        <input type="hidden" name="student_id" value="{{ $student->id }}">
-
-                        <div class="col-lg-12">
-                            <div class="form-floating">
-                                <input type="file" class="form-control" id="signature" name="signature">
-                                <label for="signature"></label>
+                            <div class="alert alert-info small">
+                                <strong>How to upload a transparent signature:</strong>
+                                <ol class="mb-0">
+                                    <li>Sign on white paper with a dark pen.</li>
+                                    <li>Take a clear photo with no shadows.</li>
+                                    <li>Visit <a href="https://www.remove.bg" target="_blank">remove.bg</a> to remove background.</li>
+                                    <li>Download and upload the transparent PNG.</li>
+                                </ol>
                             </div>
-                        </div>
-                        <br>
-                        <button type="submit" id="submit-button" class="btn btn-block btn-fill btn-primary"> Submit</button>
-                    </form>
-                    @else
-                    <hr>
-                    <img src="{{asset($student->signature)}}" class="avatar-xl img-thumbnail shadow" alt="user-profile-image"> 
-                    @endif
 
-                    <hr>
-                    <form class="text-start" action="{{ url('student/setMode') }}" method="POST">
+                            <div class="form-floating mb-3">
+                                <input type="file" class="form-control" id="signature" name="signature" required>
+                                <label for="signature">Upload Signature</label>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary w-100">Upload Signature</button>
+                        </form>
+                    @else
+                        <div class="text-center">
+                            <img src="{{ asset($student->signature) }}" class="img-thumbnail shadow-sm" style="max-width: 200px;" alt="signature">
+                        </div>
+                    @endif
+                </div>
+
+                <hr class="my-4">
+
+                {{-- Theme Mode Section --}}
+                <div class="mb-3">
+                    <form action="{{ url('student/setMode') }}" method="POST">
                         @csrf
                         <input type="hidden" name="student_id" value="{{ $student->id }}">
 
                         <div class="mb-3">
-                            <label for="choices-publish-status-input" class="form-label">Set Dashboard Theme</label>
-                            <select class="form-select" name="dashboard_mode" id="choices-publish-status-input" data-choices data-choices-search-false required>
+                            <label for="dashboard_mode" class="form-label">Choose Dashboard Theme</label>
+                            <select class="form-select" name="dashboard_mode" id="dashboard_mode" required>
                                 <option value="" selected>Choose...</option>
                                 <option value="dark">Dark</option>
                                 <option value="light">Light</option>
                             </select>
                         </div>
 
-                        <br>
-                        <button type="submit" id="submit-button" class="btn btn-block btn-fill btn-primary"> Submit</button>
+                        <button type="submit" class="btn btn-outline-dark w-100">Set Theme</button>
                     </form>
                 </div>
             </div>
         </div>
-        <!--end card-->
     
     </div>
     <!--end col-->

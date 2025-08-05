@@ -297,6 +297,15 @@ class StudentController extends Controller
         return redirect()->back();
     }
 
+    public function downloadBioData () {
+        $student = Auth::guard('student')->user();
+
+        $pdf = new Pdf();
+        $studentBioData = Pdf::generateStudentBioData($student);
+
+        return $studentBioData;
+    }
+
     public function updatePassword (Request $request) {
 
         $validator = Validator::make($request->all(), [

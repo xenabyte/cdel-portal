@@ -690,5 +690,37 @@ class Pdf
         return $pdf->stream($slug);
     }
 
+    public static function generateStudentBioData($student)
+    {
+        $options = [
+            'isRemoteEnabled' => true,
+            'encryption' => '128',
+            'no_modify' => true,
+            'isHtml5ParserEnabled' => true,
+            'isPhpEnabled' => true,
+            'pdf' => true,
+        ];
+
+        $dir = public_path('uploads/files/biodata');
+        if (!file_exists($dir)) {
+            mkdir($dir, 0755, true);
+        }
+
+         $fileName = sprintf('%s - %s - %s - biodata', $student->slug, $student->academicSession, time());
+        $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $fileName))).'.pdf';
+
+        $filePath = $dir.'/'.$slug;
+        $pdf = PDFDocument::loadView('pdf.biodata', [
+            'student' => $student,
+            'pdf' => true,
+        ]);
+
+        $pdf->setPaper('a4', 'portrait');
+        $pdf->setOptions($options);
+
+        $pdf->save($filePath);
+        return $pdf->stream($slug);
+
+    }
 
 }
