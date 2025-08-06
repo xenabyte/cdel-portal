@@ -79,7 +79,7 @@ class AcademicController extends Controller
         $student = Auth::guard('student')->user();
         $studentId = $student->id;
         $levelId = $student->level_id;
-        $academicSession = $student->programmeCategory->academicSessionSetting->academic_session;
+        $academicSession = $student->academic_session;
 
         $isUTME = $student->applicant->application_type == 'UTME'? true :false;
         $minLevel = $isUTME ? 1 : 2;

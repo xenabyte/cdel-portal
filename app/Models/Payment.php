@@ -18,6 +18,7 @@ class Payment extends Model
     const PAYMENT_TYPE_GENERAL = 'General Fee';
     const PAYMENT_TYPE_OTHER = 'Other Fee';
     const PAYMENT_MODIFY_COURSE_REG = 'Course Reg';
+     const PAYMENT_LATE_RESUMPTION = 'Late Resumption Fee';
     const PAYMENT_LATE_COURSE_REG = 'Late Course Reg';
     const PAYMENT_TYPE_WALLET_DEPOSIT = 'Wallet Deposit';
     const PAYMENT_TYPE_BANDWIDTH = 'Bandwidth Fee';
@@ -95,6 +96,7 @@ class Payment extends Model
         switch ($paymentType) {
             case 'Other Fee':
             case 'Wallet Deposit':
+            case 'Late Resumption Fee':
                 return 'Other Fee';
             case 'Course Reg':
             case 'Late Course Reg':
