@@ -1360,7 +1360,7 @@ class StudentController extends Controller
         $studentId = $student->id;
         $levelId = $student->level_id;
 
-        $academicSession = $student->programmeCategory->academicSessionSetting->academic_session;
+        $academicSession = $student->academic_session;
 
         $paymentCheck = $this->checkSchoolFees($student);
 
