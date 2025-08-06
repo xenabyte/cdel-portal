@@ -16,7 +16,7 @@ use App\Models\Staff;
 use App\Models\User as Applicant;
 use App\Models\Student;
 use App\Models\StudentExit;
-use App\Models\Programme;
+use App\Models\StudentMovement;
 use App\Models\AcademicLevel;
 use App\Models\Notification;
 

@@ -89,16 +89,26 @@ class HostelController extends Controller
 
         $roomType = RoomType::findOrFail($request->room_type_id);
 
-        $roomTypeData = array_filter([
-            'name' => $request->name,
-            'capacity' => $request->capacity,
-            'campus' => $request->campus,
-            'gender' => $request->gender,
-        ]);
+        if (!is_null($request->name)) {
+            $roomTypeData['name'] = $request->name;
+        }
 
-        if ($request->has('amount') && $request->amount*100 != $roomType->amount) {
+        if (!is_null($request->capacity)) {
+            $roomTypeData['capacity'] = $request->capacity;
+        }
+
+        if (!is_null($request->campus)) {
+            $roomTypeData['campus'] = $request->campus;
+        }
+
+        if ($request->has('gender')) {
+            $roomTypeData['gender'] = $request->gender;
+        }
+
+        if ($request->has('amount') && $request->amount * 100 != $roomType->amount) {
             $roomTypeData['amount'] = $request->amount * 100;
         }
+
 
         if ($roomType->update($roomTypeData)) {
             alert()->success('Changes saved successfully', '')->persistent('Close');
