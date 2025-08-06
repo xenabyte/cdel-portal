@@ -53,7 +53,7 @@ class Pdf
             ->first();
         }
 
-
+        $type = Payment::PAYMENT_TYPE_SCHOOL;
         if ($programmeCategoryId == ProgrammeCategory::getProgrammeCategory(ProgrammeCategory::UNDERGRADUATE)) {
             if ($applicationType != 'UTME' && ($student->level_id == 2 || $student->level_id == 3)) {
                 $type = Payment::PAYMENT_TYPE_SCHOOL_DE;
@@ -68,7 +68,7 @@ class Pdf
             ->where('programme_category_id', $programmeCategoryId)
             ->first();
 
-            
+
         if (!$schoolPayment) {
             log::error($student->programme->name .' school fee is not available');
             return false;
