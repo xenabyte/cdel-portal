@@ -826,7 +826,7 @@ $accomondationBookingStatus = $student->programmeCategory->academicSessionSettin
             </div>
 
             <div class="modal-body border-top border-top-dashed">
-                @if(!empty($student->accomondationDetails->accommondationPaymentTransactions) && $student->accomondationDetails->accommondationPaymentTransactions->count() > 0)
+                @if(!empty($student->accomondationDetails->ACCOMMODATIONPaymentTransactions) && $student->accomondationDetails->ACCOMMODATIONPaymentTransactions->count() > 0)
                 <div class="mt-2">
                     <lord-icon src="https://cdn.lordicon.com/gsqxdxog.json" trigger="hover" style="width:150px;height:150px">
                     </lord-icon>
@@ -843,7 +843,7 @@ $accomondationBookingStatus = $student->programmeCategory->academicSessionSettin
                 <form action="{{ url('/guardian/makePayment') }}" method="post" enctype="multipart/form-data">
                     @csrf
                     <input type="hidden" name='student_id' value="{{ $student->id }}">
-                    <input type="hidden" name="payment_id" value="{{ $student->accomondationDetails->accommondationPayment->id }}">
+                    <input type="hidden" name="payment_id" value="{{ $student->accomondationDetails->ACCOMMODATIONPayment->id }}">
                     <input type="hidden" id="studentGender" class="gender" name="gender" value="{{ $student->applicant->gender }}">
 
                     <div class="col-lg-12 mb-3">

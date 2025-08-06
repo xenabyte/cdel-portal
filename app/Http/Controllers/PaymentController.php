@@ -348,7 +348,7 @@ class PaymentController extends Controller
                 $creditResult = $this->creditStudentWallet($transaction);
                 break;
 
-            case Payment::PAYMENT_TYPE_ACCOMONDATION:
+            case Payment::PAYMENT_TYPE_ACCOMMODATION:
                 $creditResult = $this->creditAccommodation($transaction);
                 break;
 

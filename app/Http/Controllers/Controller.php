@@ -794,28 +794,28 @@ class Controller extends BaseController
         $academicSession = $academicSessionSetting->academic_session;
 
 
-        $type = Payment::PAYMENT_TYPE_ACCOMONDATION;
+        $type = Payment::PAYMENT_TYPE_ACCOMMODATION;
 
-        $accommondationPayment = Payment::with('structures')
+        $ACCOMMODATIONPayment = Payment::with('structures')
             ->where('type', $type)
             ->where('programme_category_id', $student->programme_category_id)
             ->where('academic_session', $academicSession)
             ->first();
 
-        if (!$accommondationPayment) {
+        if (!$ACCOMMODATIONPayment) {
             $data = new \stdClass();
             $data->status = 'record_not_found';
 
             return $data;
         }
 
-        $accommondationPaymentTransactions = Transaction::where('student_id', $studentId)->where('payment_id', $accommondationPayment->id)->where('session', $academicSession)->where('status', 1)->get();
+        $ACCOMMODATIONPaymentTransactions = Transaction::where('student_id', $studentId)->where('payment_id', $ACCOMMODATIONPayment->id)->where('session', $academicSession)->where('status', 1)->get();
 
 
         $data = new \stdClass();
         $data->status = 'success';
-        $data->accommondationPayment = $accommondationPayment;
-        $data->accommondationPaymentTransactions = $accommondationPaymentTransactions;
+        $data->ACCOMMODATIONPayment = $ACCOMMODATIONPayment;
+        $data->ACCOMMODATIONPaymentTransactions = $ACCOMMODATIONPaymentTransactions;
 
         return $data;
 
@@ -1047,7 +1047,7 @@ class Controller extends BaseController
         }
 
 
-        if ($paymentType == Payment::PAYMENT_TYPE_ACCOMONDATION) {
+        if ($paymentType == Payment::PAYMENT_TYPE_ACCOMMODATION) {
             $transaction = Transaction::where('reference', $transactionData->reference)->first();
             $creditStudent = $this->creditAccommodation($transaction);
             if (is_string($creditStudent)) {

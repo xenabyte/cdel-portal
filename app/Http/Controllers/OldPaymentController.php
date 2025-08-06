@@ -116,7 +116,7 @@ class PaymentController extends Controller
                             }
                         }
 
-                        if($paymentType == Payment::PAYMENT_TYPE_ACCOMONDATION){
+                        if($paymentType == Payment::PAYMENT_TYPE_ACCOMMODATION){
                             $transaction = Transaction::where('reference', $txRef)->first();
                             $creditStudent = $this->creditAccommodation($transaction);
                             if (is_string($creditStudent)) {
@@ -415,7 +415,7 @@ class PaymentController extends Controller
                         return redirect($redirectPath);
                     }
 
-                    if ($paymentType == Payment::PAYMENT_TYPE_ACCOMONDATION) {
+                    if ($paymentType == Payment::PAYMENT_TYPE_ACCOMMODATION) {
                         $transaction = Transaction::where('reference', $txRef)->first();
                         $creditStudent = $this->creditAccommodation($transaction);
 
@@ -780,7 +780,7 @@ class PaymentController extends Controller
                 $creditResult = $this->creditStudentWallet($transaction);
                 break;
 
-            case Payment::PAYMENT_TYPE_ACCOMONDATION:
+            case Payment::PAYMENT_TYPE_ACCOMMODATION:
                 $creditResult = $this->creditAccommodation($transaction);
                 break;
 
@@ -975,7 +975,7 @@ class PaymentController extends Controller
     //                 return redirect($redirectPath);
     //             }
 
-    //             if ($paymentType == Payment::PAYMENT_TYPE_ACCOMONDATION) {
+    //             if ($paymentType == Payment::PAYMENT_TYPE_ACCOMMODATION) {
     //                 $transaction = Transaction::where('reference', $ref)->first();
     //                 $creditStudent = $this->creditAccommodation($transaction);
 

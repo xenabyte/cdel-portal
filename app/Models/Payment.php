@@ -22,7 +22,7 @@ class Payment extends Model
     const PAYMENT_LATE_COURSE_REG = 'Late Course Reg';
     const PAYMENT_TYPE_WALLET_DEPOSIT = 'Wallet Deposit';
     const PAYMENT_TYPE_BANDWIDTH = 'Bandwidth Fee';
-    const PAYMENT_TYPE_ACCOMONDATION = 'Accomondation Fee';
+    const PAYMENT_TYPE_ACCOMMODATION = 'Accommodation Fee';
     const PAYMENT_TYPE_INTRA_TRANSFER_APPLICATION = 'Intra Transfer Application Fee';
     const PAYMENT_TYPE_READMISSION_FEE = 'Re-admission Fee';
     const PAYMENT_TYPE_SUMMER_COURSE_REGISTRATION = 'Summer Course Reg';

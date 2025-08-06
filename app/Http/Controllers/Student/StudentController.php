@@ -1364,11 +1364,7 @@ class StudentController extends Controller
 
         $paymentCheck = $this->checkSchoolFees($student);
 
-        $hostelPayment = Payment::where("type", "Accomondation Fee")->where("academic_session", $academicSession)->first();
-        $hostelPaymentTx = Transaction::where('student_id', $studentId)->where('payment_id', $hostelPayment->id)->where('status', 1)->first();
-
-        $allocatedRoom = Allocation::where('student_id', $studentId)->where('academic_session', $academicSession)->first();
-
+    
         if(!$paymentCheck->passTuitionPayment){
             return view('student.schoolFee', [
                 'payment' => $paymentCheck->schoolPayment,
@@ -1398,6 +1394,13 @@ class StudentController extends Controller
         //         'studentPendingTransactions' => $paymentCheck->studentPendingTransactions
         //     ]);
         // }
+
+
+        $hostelPayment = Payment::where("type", Payment::PAYMENT_TYPE_ACCOMMODATION)->where("academic_session", $academicSession)->first();
+        $hostelPaymentTx = Transaction::where('student_id', $studentId)->where('payment_id', $hostelPayment->id)->where('status', 1)->first();
+
+        $allocatedRoom = Allocation::where('student_id', $studentId)->where('academic_session', $academicSession)->first();
+
         
         return view('student.hostelBooking', [
             'allocatedRoom' => $allocatedRoom,
@@ -1471,7 +1474,7 @@ class StudentController extends Controller
 
 
     // auto allocation of rooms for makePayment function 
-    // if(strtolower($paymentType) == strtolower(Payment::PAYMENT_TYPE_ACCOMONDATION)) {
+    // if(strtolower($paymentType) == strtolower(Payment::PAYMENT_TYPE_ACCOMMODATION)) {
 
             // $validator = Validator::make($request->all(), [
             //     'campus' => 'required',

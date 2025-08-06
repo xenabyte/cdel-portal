@@ -455,7 +455,7 @@ class HostelController extends Controller
 
         $paymentId = $transaction->payment_id;
         $payment = Payment::with('structures')->where('id', $paymentId)->first();
-        if(strtolower($payment->type) != strtolower(Payment::PAYMENT_TYPE_ACCOMONDATION)){
+        if(strtolower($payment->type) != strtolower(Payment::PAYMENT_TYPE_ACCOMMODATION)){
             alert()->error('Error', 'Transaction from reference supplied is not for accomondation purposes.')->persistent('Close');
             return redirect()->back();
         }
