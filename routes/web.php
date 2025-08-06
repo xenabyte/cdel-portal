@@ -368,6 +368,11 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'admin'],
     Route::post('manageExitApplication', [App\Http\Controllers\Admin\StudentCareController::class, 'manageExitApplication'])->name('manageExitApplication')->middleware(['auth:admin']);
     Route::post('bulkManageExitApplications', [App\Http\Controllers\Admin\StudentCareController::class, 'bulkManageExitApplications'])->name('bulkManageExitApplications')->middleware(['auth:admin']);
 
+    Route::get('/studentMovements', [App\Http\Controllers\Admin\StudentCareController::class, 'studentMovements'])->name('studentMovements')->middleware(['auth:admin']);
+    Route::post('getStudentMovement', [App\Http\Controllers\Admin\StudentCareController::class, 'getStudentMovement'])->name('getStudentMovement')->middleware(['auth:admin']);
+    Route::post('createMovement', [App\Http\Controllers\Admin\StudentCareController::class, 'createMovement'])->name('createMovement')->middleware(['auth:admin']);
+
+    
 
     Route::get('/studentResult', [App\Http\Controllers\Admin\ResultController::class, 'studentResult'])->name('studentResult')->middleware(['auth:admin']);
     Route::post('/result/getStudent', [App\Http\Controllers\Admin\ResultController::class, 'getStudent'])->name('getStudent')->middleware(['auth:admin']);
@@ -640,7 +645,7 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'student'
 
 
         Route::get('/summerCourseReg', [App\Http\Controllers\Student\AcademicController::class, 'summerCourseReg'])->name('student.summerCourseReg')->middleware(['auth:student']);
-        Route::get('/printSummerCourseReg', [App\Http\Controllers\Student\AcademicController::class, 'printSummerCourseReg'])->name('student.printSummerCourseReg')->middleware(['auth:student']);
+        Route::post('/printSummerCourseReg', [App\Http\Controllers\Student\AcademicController::class, 'printSummerCourseReg'])->name('student.printSummerCourseReg')->middleware(['auth:student']);
 
 
         Route::get('/elections', [App\Http\Controllers\Student\ElectionController::class, 'elections'])->name('student.elections')->middleware(['auth:student']);
@@ -814,6 +819,11 @@ Route::group(['middleware' => GlobalDataMiddleware::class, 'prefix' => 'staff'],
     Route::post('getExitApplication', [App\Http\Controllers\Staff\StudentCareController::class, 'getExitApplication'])->name('getExitApplication')->middleware(['auth:staff']);
     Route::post('manageExitApplication', [App\Http\Controllers\Staff\StudentCareController::class, 'manageExitApplication'])->name('manageExitApplication')->middleware(['auth:staff']);
     Route::post('bulkManageExitApplications', [App\Http\Controllers\Staff\StudentCareController::class, 'bulkManageExitApplications'])->name('bulkManageExitApplications')->middleware(['auth:staff']);
+
+    Route::get('/studentMovements', [App\Http\Controllers\Staff\StudentCareController::class, 'studentMovements'])->name('studentMovements')->middleware(['auth:staff']);
+    Route::post('getStudentMovement', [App\Http\Controllers\Staff\StudentCareController::class, 'getStudentMovement'])->name('getStudentMovement')->middleware(['auth:staff']);
+    Route::post('createMovement', [App\Http\Controllers\Staff\StudentCareController::class, 'createMovement'])->name('createMovement')->middleware(['auth:staff']);
+
 
     Route::get('/committees', [App\Http\Controllers\Staff\CommitteeController::class, 'committees'])->name('committees')->middleware(['auth:staff']);
     Route::post('/addCommittee', [App\Http\Controllers\Staff\CommitteeController::class, 'addCommittee'])->name('addCommittee')->middleware(['auth:staff']);

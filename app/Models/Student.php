@@ -326,6 +326,11 @@ class Student extends Authenticatable implements JWTSubject
         return $this->hasMany(ProgrammeChangeRequest::class, 'student_id', 'id');
     }
 
+    public function movements()
+    {
+        return $this->hasMany(StudentMovement::class);
+    }
+
 
     /**
      * Determine if a student can be promoted to the next level.

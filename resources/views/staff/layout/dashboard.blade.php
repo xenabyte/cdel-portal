@@ -928,6 +928,9 @@
                                         <li class="nav-item">
                                             <a href="{{ url('/staff/verifyStudentExits') }}" class="nav-link">Verify Student Exit</a>
                                         </li>
+                                        <li class="nav-item">
+                                            <a href="{{ url('/staff/studentMovements') }}" class="nav-link">Student Movements</a>
+                                        </li>
                                         @endif
                                         @if($staffStudentCareRole || $staffRegistrarRole)
                                         <li class="nav-item">
@@ -991,6 +994,11 @@
                                         <li class="nav-item">
                                             <a href="{{('/staff/transactions')}}" class="nav-link"> Transactions </a>
                                         </li>
+
+                                        <li class="nav-item">
+                                            <a href="{{ url('/staff/resumptionClearance') }}" class="nav-link">Resumption Clearance</a>
+                                        </li>
+
                                         <li class="nav-item">
                                             <a href="{{('/staff/transactionReport')}}" class="nav-link"> Transaction Report </a>
                                         </li>

@@ -846,6 +846,9 @@
                                         <a href="{{ url('/admin/verifyStudentExits') }}" class="nav-link">Verify Student Exit</a>
                                     </li>
                                     <li class="nav-item">
+                                        <a href="{{ url('/staff/studentMovements') }}" class="nav-link">Student Movements</a>
+                                    </li>
+                                    <li class="nav-item">
                                         <a href="#studentHostelMgt" class="nav-link" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="studentHostelMgt" data-key="t-studentHostelMgt"> Student Hostel Mgt
                                         </a>
                                         <div class="collapse menu-dropdown" id="studentHostelMgt">

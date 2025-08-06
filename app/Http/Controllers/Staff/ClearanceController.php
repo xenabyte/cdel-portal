@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Validator;
 use App\Libraries\Pdf\Pdf;
 
 use App\Models\Allocation;
+use App\Models\Student;
 
 class ClearanceController extends Controller
 {

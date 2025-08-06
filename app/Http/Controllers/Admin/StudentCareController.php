@@ -307,4 +307,63 @@ class StudentCareController extends Controller
             'student' => $student
         ]);
     }
+
+    public function studentMovements(){
+        $programmeCategory = ProgrammeCategory::with('academicSessionSetting', 'examSetting')->where('category', ProgrammeCategory::UNDERGRADUATE)->first();
+        $students = Student::where('programme_category_id', $programmeCategory->id)->where('is_active', true)->where('is_passed_out', false)->where('is_rusticated', false)->get();
+
+        return view('admin.studentMovements', [
+            'programmeCategory' => $programmeCategory,
+            'students' => $students
+        ]);
+    }
+
+    public function getStudentMovement(Request $request){
+
+        $validator = Validator::make($request->all(), [
+            'student_id' => 'required',
+        ]);
+
+        if($validator->fails()) {
+            alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
+            return redirect()->back();
+        }
+
+        $student = Student::find($request->student_id);
+        if(!$student) {
+            alert()->error('Error', 'Invalid Student')->persistent('Close');
+            return redirect()->back();
+        }
+
+        $exitApplications = StudentExit::where('student_id', $student->id)->orderBy('id', 'DESC')->get(); 
+
+        return view('admin.studentMovements', [
+            'student' => $student,
+            'exitApplications' => $exitApplications
+        ]);
+    }
+
+    public function createMovement(Request $request){
+
+        $request->validate([
+            'student_id' => 'required|exists:students,id',
+            'movement_type' => 'required|in:entry,exit',
+            'movement_time' => 'required|date',
+            'reason' => 'nullable|string|max:255',
+            'approved_by' => 'nullable|string|max:255',
+        ]);
+
+        StudentMovement::create($request->all());
+
+        $student = Student::find($request->student_id);
+        $exitApplications = StudentExit::where('student_id', $student->id)->orderBy('id', 'DESC')->get(); 
+
+
+        alert()->success('Success', 'Movement recorded successfully')->persistent('Close');
+
+       return view('admin.studentMovements', [
+            'student' => $student,
+            'exitApplications' => $exitApplications
+        ]);
+    }
 }
