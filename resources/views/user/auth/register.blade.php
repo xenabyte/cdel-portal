@@ -243,7 +243,6 @@
                                 @if(env('FLUTTERWAVE_STATUS'))<option value="Rave">Flutterwave</option>@endif
                                 @if(env('MONNIFY_STATUS'))<option value="Monnify">Monnify</option>@endif
                                 @if(env('PAYSTACK_STATUS'))<option value="Paystack">Paystack</option>@endif
-                                @if(env('WALLET_STATUS'))<option value="Wallet">Wallet</option>@endif
                                 {{-- @if(env('BANK_TRANSFER_STATUS'))<option value="BankTransfer">Transfer</option>@endif --}}
 
                             </select>

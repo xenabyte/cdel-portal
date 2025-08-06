@@ -359,7 +359,7 @@
                                 
                                 <ul class="nav nav-sm flex-column">
                                     <li class="nav-item">
-                                        <a href="{{ url('/student/profile') }}" class="nav-link">Overview</a>
+                                        <a href="{{ url('/student/profile') }}" class="nav-link">Bio-Data</a>
                                     </li>
                                 </ul>
                             </div>

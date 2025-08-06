@@ -125,95 +125,132 @@ $admissionSession = $student->programme->programmeCategory->academicSessionSetti
     <div class="col-xxl-4">
         <div class="card">
             <div class="card-body p-4">
-                <div>
-                    <div class="flex-shrink-0 avatar-md mx-auto">
-                        <div class="avatar-title bg-light rounded">
-                            <img src="{{empty($student->image)?asset('assets/images/users/user-dummy-img.jpg'):asset($student->image)}}" alt="" height="50" />
+                <!-- Avatar & Name -->
+                <div class="text-center mb-4">
+                    <div class="avatar-md mx-auto mb-3">
+                        <img class="rounded-circle img-thumbnail" src="{{ empty($student->image) ? asset('assets/images/users/user-dummy-img.jpg') : asset($student->image) }}" alt="Student Image" height="80">
+                    </div>
+                    <h5 class="fw-bold mb-1">{{ $name }}
+                        <span class="badge
+                            @if($student->academic_status == 'Good Standing') bg-success
+                            @elseif($student->academic_status == 'Suspended' || $student->academic_status == 'Probation') bg-warning
+                            @elseif($student->academic_status == 'Expelled') bg-danger
+                            @else bg-secondary
+                            @endif">
+                            {{ $student->academic_status }}
+                        </span>
+                    </h5>
+                    <p class="text-muted small">{{ $student->programme->name }}</p>
+                </div>
+
+                <!-- Contact Details -->
+                <div class="mb-4 text-center">
+                    <h6 class="text-uppercase text-primary fw-bold">Contact Information</h6>
+                    <p class="text-muted mb-1"><strong>Matric Number:</strong> {{ $student->matric_number }}</p>
+                    <p class="text-muted mb-1"><strong>Wi-Fi Username:</strong> {{ $student->bandwidth_username }}</p>
+                    <p class="text-muted mb-1"><strong>Email:</strong> {{ $student->email }}</p>
+                    <p class="text-muted mb-1"><strong>Phone:</strong> {{ $student->applicant->phone_number }}</p>
+                    <p class="text-muted mb-0"><strong>Address:</strong> {!! preg_replace('/<\/?p[^>]*>/', '', $student->applicant->address) !!}</p>
+                </div>
+
+                <!-- Academic Info -->
+                <div class="mb-4 border-top pt-3 text-center">
+                    <h6 class="text-uppercase text-primary fw-bold">Academic Information</h6>
+                    <p class="text-muted mb-1"><strong>Programme Category:</strong> {{ $student->programmeCategory->category }}</p>
+                    <p class="text-muted mb-1"><strong>Department:</strong> {{ $student->department->name }}</p>
+                    <p class="text-muted mb-1"><strong>Faculty:</strong> {{ $student->faculty->name }}</p>
+                    <p class="text-muted mb-1"><strong>JAMB Reg No:</strong> {{ $student->applicant->jamb_reg_no }}</p>
+                    <p class="text-muted mb-1"><strong>Level:</strong> {{ $student->level_id * 100 }} Level</p>
+                    <p class="text-muted mb-1"><strong>Session:</strong> {{ $student->academic_session }}</p>
+
+                    @if($student->level_id >= $student->programme->duration && !$student->is_passed_out)
+                        <p class="text-warning mb-1"><strong>Graduating Set</strong></p>
+                    @endif
+                    <p class="text-muted"><strong>Support Code:</strong> <span class="text-danger">{{ $student->applicant->id }}-ST{{ sprintf('%03d', $student->id) }}</span></p>
+                </div>
+
+                <!-- Resumption Checklist -->
+                <div class="mb-4 text-center border-top pt-3">
+                    <h6 class="text-uppercase text-primary fw-bold">🎓 Resumption Checklist (Fresh Students)</h6>
+                    <ul class="list-group list-group-flush mb-2">
+                        <li class="list-group-item px-0 border-0">
+                            <strong>1.</strong> 
+                            <a href="{{ url('student/profile') }}" class="text-decoration-underline text-dark fw-bold">Complete and Print Your Biodata Form</a>
+                        </li>
+                        <li class="list-group-item px-0 border-0">
+                            <strong>2.</strong> 
+                            <a href="{{ url('student/resumptionClearance') }}" class="text-decoration-underline text-dark fw-bold">Print Resumption Clearance Form</a>
+                        </li>
+                    </ul>
+                    <div class="text-danger small fw-semibold">
+                        ⚠️ Please note: These documents are mandatory for all fresh students at the point of resumption. 
+                        You will be required to present them to gain access to university facilities, participate in lectures, 
+                        and complete your onboarding process. Ensure all forms are printed, signed, and ready before arriving on campus.
+                    </div>
+                </div>
+
+                <!-- Academic Performance & Advisory -->
+                <div class="mb-4 border-top pt-3 text-center">
+                    <h6 class="text-uppercase text-primary fw-bold">📊 Academic Performance</h6>
+                    <p class="text-muted mb-1"><strong>CGPA:</strong> {{ $student->cgpa }}</p>
+                    <p class="text-muted mb-1"><strong>Class:</strong> {{ $student->degree_class }}</p>
+
+                    @if($failedCourses->count() > 0)
+                        <p class="text-danger mb-1"><strong>Failed Courses:</strong> 
+                            {{ $failedCourses->pluck('course_code')->join(', ') }}
+                        </p>
+                    @endif
+
+                    <p class="text-muted mb-1"><strong>Promotion Eligibility:</strong> 
+                        {{ is_null($student->cgpa) || $student->cgpa == 0 ? 'You are a fresh student; promotion eligibility will be determined after your first semester.' : ($studentAdvisoryData->promotion_eligible ? 'You are eligible to promote.' : 'You are not eligible to promote.') }}
+                    </p>
+
+                    <p class="text-muted mb-1"><strong>Promotion Message:</strong> {{ $studentAdvisoryData->promotion_message }}</p>
+                    <p class="text-muted mb-1"><strong>GPA Trend:</strong> {{ $studentAdvisoryData->trajectory_analysis['cgpa_trend'] }}</p>
+                    <p class="text-muted mb-1"><strong>Risk Level:</strong> {{ $studentAdvisoryData->trajectory_analysis['academic_risk'] }}</p>
+                    <p class="text-muted mb-1"><strong>Strengths:</strong> {{ collect($studentAdvisoryData->trajectory_analysis['strengths'])->join(', ') }}</p>
+                    <p class="text-muted mb-1"><strong>Weaknesses:</strong> {{ collect($studentAdvisoryData->trajectory_analysis['weaknesses'])->join(', ') }}</p>
+                    <p class="text-muted"><strong>Tips:</strong> {{ collect($studentAdvisoryData->trajectory_analysis['tips'])->join('. ') }}</p>
+                </div>
+
+                <!-- Graduation Section -->
+                @if($student->level_id >= $student->programme->duration && $student->is_passed_out)
+                    <div class="alert alert-success shadow-sm d-flex align-items-start">
+                        <i class="ri-checkbox-circle-line fs-4 me-3"></i>
+                        <div>
+                            <h6 class="fw-bold mb-1">Congratulations!</h6>
+                            <p class="mb-0">You’ve completed your programme and are prepared for graduation.</p>
                         </div>
                     </div>
-                    <div class="mt-4 text-center">
-                        <h5 class="mb-1">{{$name}}
-                            <span class="badge 
-                                @if($student->academic_status == 'Good Standing') bg-success
-                                @elseif($student->academic_status == 'Suspended' || $student->academic_status == 'Probation') bg-warning
-                                @elseif($student->academic_status == 'Expelled') bg-danger
-                                @else bg-secondary
-                                @endif">
-                                {{ $student->academic_status }}
-                            </span>
-                        </h5>
-                        <p class="text-muted">{{ $student->programme->name }} <br>
-                            <strong>Matric Number:</strong> {{ $student->matric_number }}<br>
-                            <strong>Wifi Username:</strong> {{ $student->bandwidth_username }}<br>
-                            <strong>Email:</strong> {{ $student->email }}<br>
-                            <strong>Phone Number:</strong> {{ $student->applicant->phone_number }}<br>
-                            <strong>Address:</strong> {!! preg_replace('/<\/?p[^>]*>/', '', $student->applicant->address) !!}<br>
-                        </p>
-                        <p class="text-muted border-top border-top-dashed pt-2">
-                            <strong>Programme Category:</strong> {{ $student->programmeCategory->category }} Programme<br>
-                            <strong>Department:</strong> {{ $student->department->name }}<br>
-                            <strong>Faculty:</strong> {{ $student->faculty->name }}<br>
-                            <strong>Jamb Reg. Number:</strong> {{ $student->applicant->jamb_reg_no }} <br>
-                            <strong>Academic Level:</strong> <span class="text-primary">{{ $student->level_id * 100 }} Level</span><br>
-                            <strong>Academic session:</strong> {{ $student->academic_session }}</span>
-                            <br>
-                            @if($student->level_id >= $student->programme->duration && !$student->is_passed_out)
-                            <span class="text-warning"><strong>Graduating Set</strong></span> <br>
-                            @endif
-                            <strong>Support Code:</strong> <span class="text-danger">{{ $student->applicant->id }}-ST{{ sprintf("%03d", $student->id) }}</span> 
-                        </p>
-                        <p class="text-muted border-top border-top-dashed pt-2">
-                            <strong>CGPA:</strong> {{ $student->cgpa }} <br>
-                            <strong>Class:</strong> {{ $student->degree_class }}<br>
-                        </p>
-                        <p class="text-muted border-top border-top-dashed pt-2 text-start">
-                            @if($failedCourses->count() > 0)<strong class="text-danger">Failed Courses:</strong> <span class="text-danger">@foreach($failedCourses as $failedCourse) {{ $failedCourse->course_code.',' }} @endforeach</span> @endif <br>
-                            <strong>Promotion Eligibility:</strong> {{ is_null($student->cgpa) || $student->cgpa == 0 ? 'You are a fresh student; promotion eligibility will be determined after your first semester.' : ($studentAdvisoryData->promotion_eligible ? 'You are eligible to promote.' : 'You are not eligible to promote.') }} <br>
-                            <strong>Promotion Message:</strong> {{ $studentAdvisoryData->promotion_message }}<br>
-                            <strong>GPA Trend:</strong> {{ $studentAdvisoryData->trajectory_analysis['cgpa_trend'] }}<br>
-                            <strong>CGPA Trajectory Analysis:</strong> {{ $studentAdvisoryData->trajectory_analysis['academic_risk'] }}<br>
-                            <strong>Course Strength:</strong> @foreach($studentAdvisoryData->trajectory_analysis['strengths'] as $strength) {{ $strength.', ' }} @endforeach<br>
-                            <strong>Course Weakness:</strong> @foreach($studentAdvisoryData->trajectory_analysis['weaknesses'] as $weakness) {{ $weakness.', ' }} @endforeach<br>
-                            <strong>Tips:</strong> @foreach($studentAdvisoryData->trajectory_analysis['tips'] as $tips) {{ $tips }} @endforeach<br>
-                        </p>
 
-                        @if($student->level_id >= $student->programme->duration && $student->is_passed_out)
-                            <div class="alert alert-success alert-dismissible alert-additional shadow fade show mb-0" role="alert">
-                                <div class="alert-body">
-                                    <div class="d-flex">
-                                        <div class="flex-shrink-0 me-3">
-                                            <i class="ri-alert-line fs-16 align-middle"></i>
-                                        </div>
-                                        <div class="flex-grow-1">
-                                            <h5 class="alert-heading">Congratulations!!!</h5>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="alert-content">
-                                    <p class="mb-0">You are have come to the end of your programme and been prepared for graduation</p>
-                                </div>
-                            </div>
-
-                            <hr>
-                            @if(empty($student->finalClearance))
-                            <button type="button" class="btn btn-primary btn-label right ms-auto nexttab" data-nexttab="pills-bill-address-tab" data-bs-toggle="modal" data-bs-target="#startClearance"><i class="ri-arrow-right-line label-icon align-middle fs-16 ms-2"></i> Start Final Clearance Process</button>
-                            @else
-                            <button type="button" class="btn btn-info btn-label right ms-auto nexttab" data-nexttab="pills-bill-address-tab" data-bs-toggle="modal" data-bs-target="#clearanceStatus"><i class="ri-arrow-right-line label-icon align-middle fs-16 ms-2"></i>Check Clearance Status</button>
-                            @endif
-
+                    <div class="mt-3">
+                        @if(empty($student->finalClearance))
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#startClearance">
+                                Start Final Clearance Process <i class="ri-arrow-right-line ms-2"></i>
+                            </button>
+                        @else
+                            <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#clearanceStatus">
+                                Check Clearance Status <i class="ri-search-eye-line ms-2"></i>
+                            </button>
                         @endif
                     </div>
+                @endif
 
-                    <div class="table-responsive border-top border-top-dashed pt-4">
-                        <table class="table mb-0 table-borderless">
-                            <tbody>
-                                <tr>
-                                    <th><span class="fw-medium">Link:</span></th>
-                                    <td><a href="{{env('ADMISSION_URL').'?ref='.$student->referral_code}}" target="_blank" id="myLink">{{env('ADMISSION_URL').'?ref='.$student->referral_code}}</a>  <button class="btn btn-sm btn-info" id="copyButton"><i class="ri-file-copy-fill"></i></button></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
+                <!-- Referral Link -->
+                <div class="table-responsive border-top border-top-dashed pt-4 mt-4 text-center">
+                    <table class="table table-borderless mb-0">
+                        <tbody>
+                            <tr>
+                                <th><span class="fw-medium">Referral Link:</span></th>
+                                <td>
+                                    <a href="{{ env('ADMISSION_URL') . '?ref=' . $student->referral_code }}" target="_blank" id="myLink">
+                                        {{ env('ADMISSION_URL') . '?ref=' . $student->referral_code }}
+                                    </a>
+                                    <button class="btn btn-sm btn-info" id="copyButton"><i class="ri-file-copy-fill"></i></button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
 
