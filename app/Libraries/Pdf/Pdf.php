@@ -54,19 +54,21 @@ class Pdf
         }
 
 
-        $type = Payment::PAYMENT_TYPE_SCHOOL;
-        if ($applicationType != 'UTME' && ($student->level_id == 2) && ($student->programmeCategoryId == ProgrammeCategory::getProgrammeCategory(ProgrammeCategory::UNDERGRADUATE))) {
-            $type = Payment::PAYMENT_TYPE_SCHOOL_DE;
+        if ($programmeCategoryId == ProgrammeCategory::getProgrammeCategory(ProgrammeCategory::UNDERGRADUATE)) {
+            if ($applicationType != 'UTME' && ($student->level_id == 2 || $student->level_id == 3)) {
+                $type = Payment::PAYMENT_TYPE_SCHOOL_DE;
+            }
         }
 
         $schoolPayment = Payment::with('structures')
             ->where('type', $type)
             ->where('programme_id', $student->programme_id)
-            ->where('programme_category_id', $programmeCategoryId)
             ->where('level_id', $student->level_id)
-            ->where('academic_session', $student->academic_session)
+            ->where('academic_session', $academicSession)
+            ->where('programme_category_id', $programmeCategoryId)
             ->first();
 
+            
         if (!$schoolPayment) {
             log::error($student->programme->name .' school fee is not available');
             return false;
