@@ -381,7 +381,7 @@ class StudentController extends Controller
             $redirectLocation = 'student/purchaseBandwidth';
         }
 
-        if(strtolower($paymentType) == "accomondation") {
+        if(strtolower($paymentType) == strtolower(Payment::PAYMENT_TYPE_ACCOMMODATION)) {
             $validator = Validator::make($request->all(), [
                 'campus' => 'required',
                 'type_id' => 'required',
