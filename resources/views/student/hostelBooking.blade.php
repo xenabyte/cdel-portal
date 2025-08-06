@@ -72,7 +72,7 @@
     </div>
     <!-- end col -->
 </div>
-@elseif((strtolower($accomondationBookingStatus) != 'start'))
+@elseif((strtolower($accomondationBookingStatus) != 'start') && $student->academic_session != $academicSession)
 <div class="row justify-content-center">
     <div class="col-lg-6">
         <div class="card">
