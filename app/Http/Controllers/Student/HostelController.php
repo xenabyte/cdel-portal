@@ -71,15 +71,17 @@ class HostelController extends Controller
         $applicantGender = !empty($student)? $student->applicant->gender : $gender;
         $hostelIds = Hostel::where('campus', $campus)->pluck('id');
 
-        $uniqueTypeIds = Room::whereIn('hostel_id', $hostelIds)
-        ->whereHas('bedSpaces', function($query) {
+        // $uniqueTypeIds = Room::whereIn('hostel_id', $hostelIds)
+        // ->whereHas('bedSpaces', function($query) {
             // $query->whereDoesntHave('currentAllocation');
-        })
-        ->pluck('type_id')
-        ->unique();
+        // })
+        // ->pluck('type_id')
+        // ->unique();
 
-        $roomTypes = RoomType::whereIn('id', $uniqueTypeIds)->orderByRaw('CAST(capacity AS UNSIGNED) DESC')
-        ->get();
+        // $roomTypes = RoomType::whereIn('id', $uniqueTypeIds)->orderByRaw('CAST(capacity AS UNSIGNED) DESC')
+        // ->get();
+
+        $roomTypes = RoomType::where('gender', $gender)->where('campus', $campus)->get();
 
         return $roomTypes;
     }
