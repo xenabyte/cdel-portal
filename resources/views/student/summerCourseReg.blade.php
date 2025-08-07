@@ -49,7 +49,7 @@
             padding: 10px 0;
         }
     </style>
-    @if($existingSummerRegistration->count() > 0)
+    @if($existingSummerRegistration->count() > 0 && $failedCourseRegs->count() < 1)
     <div class="row justify-content-center">
         <div class="col-lg-6">
             <div class="card">
