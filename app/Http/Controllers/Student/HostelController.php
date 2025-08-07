@@ -81,7 +81,13 @@ class HostelController extends Controller
         // $roomTypes = RoomType::whereIn('id', $uniqueTypeIds)->orderByRaw('CAST(capacity AS UNSIGNED) DESC')
         // ->get();
 
-        $roomTypes = RoomType::where('gender', $gender)->where('campus', $campus)->get();
+       $roomTypes = RoomType::where('campus', $campus)
+            ->where(function ($query) use ($gender) {
+                if (!empty($gender)) {
+                    $query->whereNull('gender')->orWhere('gender', $gender);
+                }
+            })
+            ->get();
 
         return $roomTypes;
     }
