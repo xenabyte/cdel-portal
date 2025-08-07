@@ -35,6 +35,7 @@
     <!-- custom Css-->
     <link href="{{asset('assets/css/custom.min.css')}}" rel="stylesheet" type="text/css" />
     <script src="{{ env('CKEDITOR_CDN') }}"></script>
+    <script src=" https://cdn.ckeditor.com/4.16.0/standard/ckeditor.js"></script>
     <script>
         // Select all textarea elements and initialize CKEditor on each
         document.querySelectorAll('ckeditor').forEach((textarea) => {

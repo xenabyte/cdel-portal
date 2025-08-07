@@ -639,9 +639,17 @@ class Student extends Authenticatable implements JWTSubject
             ->whereNotNull('grade')
             ->with('course')
             ->get()
+            ->filter(function ($reg) {
+                return is_numeric($reg->total);
+            })
+            ->map(function ($reg) {
+                $reg->total = (float) $reg->total;
+                return $reg;
+            })
             ->groupBy(function ($reg) {
                 return explode(' ', $reg->course->code)[0];
             });
+
 
         foreach ($courseResults as $prefix => $regs) {
             $average = $regs->avg('total');
