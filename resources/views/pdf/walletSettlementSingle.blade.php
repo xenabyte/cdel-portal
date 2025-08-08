@@ -124,7 +124,7 @@
                 <td style="border: 1px solid #ddd; padding: 8px;">{{ $transaction['matric_number'] ?? 'N/A' }}</td>
                 <td style="border: 1px solid #ddd; padding: 8px;">{{ $transaction['reference'] }}</td>
                 <td style="border: 1px solid #ddd; padding: 8px; text-align: right;">NGN {{ number_format($transaction['amount'] / 100, 2) }}</td>
-                <td style="border: 1px solid #ddd; padding: 8px; text-align: right;">{{ $transaction['updated_at'] ?? 'N/A' }}</td>
+                <td style="border: 1px solid #ddd; padding: 8px; text-align: right;">{{ $transaction['payment_date'] ?? 'N/A' }}</td>
             </tr>
         @endforeach
         <tr>
