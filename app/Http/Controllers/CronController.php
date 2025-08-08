@@ -27,6 +27,7 @@ use App\Libraries\Pdf\Pdf;
 use App\Mail\AdmissionMail;
 
 use App\Http\Controllers\PaymentController;
+use App\Mail\WalletSettlementMail;
 
 
 use Mail;
@@ -507,6 +508,75 @@ class CronController extends Controller
             'message' => 'Admission letters regenerated successfully',
             'students' => count($students)
         ]);
+    }
+
+
+
+    public function sendWalletSettlementReport()
+    {
+       $transactionsGrouped = Transaction::where('payment_method', 'wallet')
+       ->where('status', 1)
+        ->whereDate('updated_at', now()->subDay()->toDateString())  // Only previous day's transactions
+        ->with(['paymentType', 'student', 'student.applicant'])
+        ->get()
+        ->groupBy('payment_id');
+
+        $attachments = [];
+
+        $pdf = new Pdf();
+        $yesterday = now()->subDay()->format('d M Y');
+
+        foreach ($transactionsGrouped as $paymentId => $transactions) {
+            $paymentDetails = $transactions->first()->paymentType;
+            $totalAmount = $transactions->sum('amount_payed');
+
+            $groupData = [
+                'payment_id'    => $paymentId,
+                'payment_title' => $paymentDetails->title,
+                'payment_date'  => $yesterday,   // Always use previous day here
+                'total_amount'  => $totalAmount,
+                'transactions'  => $transactions->map(function ($t) {
+                    return [
+                        'student_name' => $t->student->applicant->lastname.' '. $t->student->applicant->othernames ?? 'N/A',
+                        'matric_number' => $t->student->matric_number ?? 'N/A',
+                        'reference'    => $t->reference ?? '',
+                        'amount'       => $t->amount_payed,
+                        'payment_date' => $t->updated_at->format('d M Y'),
+                    ];
+                }),
+            ];
+
+           $filePath = $pdf->generateWalletSettlementPdf($groupData);
+
+            // Add attachment as array with file and options
+            $attachments[] = [
+                'file' => public_path($filePath),
+                'options' => [
+                    'as' => basename($filePath),
+                    'mime' => 'application/pdf',
+                ],
+            ];
+        }
+
+        $date = now()->subDay()->toFormattedDateString();  // yesterday's date
+        $count = count($attachments);
+
+
+        if($count > 0){
+            Mail::to(['dict@tau.edu.ng', 'bursary@tau.edu.ng'])->send(new WalletSettlementMail($attachments, $date, $count));
+
+            foreach ($attachments as $attachment) {
+                if (file_exists($attachment['file'])) {
+                    unlink($attachment['file']);
+                }
+            }
+        
+            return response()->json(['message' => 'report sent.']);
+
+        }
+
+        return response()->json(['message' => 'No report to send.']);
+
     }
 
 }

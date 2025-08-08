@@ -422,6 +422,7 @@ class ResultController extends Controller
                 $query->where('level_id', $request->level_id)
                     ->where('academic_session', $request->session);
             })
+            ->orderBy('matric_number', 'asc')
             ->get();
 
         // Classify courses

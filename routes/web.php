@@ -60,6 +60,9 @@ Route::get('/getSemesterGPA', [App\Http\Controllers\CronController::class, 'getS
 Route::get('/updateStudentGrade', [App\Http\Controllers\CronController::class, 'updateStudentGrade']);
 Route::get('/checkSummerCourseRegistration/{transactionId}', [App\Http\Controllers\CronController::class, 'checkSummerCourseRegistration']);
 Route::get('/checkApplicationRegistration/{transactionId}', [App\Http\Controllers\CronController::class, 'checkApplicationRegistration']);
+Route::get('/sendWalletSettlementReport', [App\Http\Controllers\CronController::class, 'sendWalletSettlementReport']);
+
+
 
 
 Route::get('/updateNewStudentAdmissionLetter', [App\Http\Controllers\CronController::class, 'updateNewStudentAdmissionLetter']);

@@ -725,4 +725,28 @@ class Pdf
 
     }
 
+    public function generateWalletSettlementPdf($groupData)
+    {
+        $options = [
+            'isRemoteEnabled' => true,
+            'encryption' => '128',
+            'no_modify' => true,
+        ];
+
+        $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', 'wallet-settlement-' . $groupData['payment_id'].time())));
+
+        $dir = public_path('uploads/reports/wallet_settlements');
+        if (!file_exists($dir)) {
+            mkdir($dir, 0755, true);
+        }
+
+        $fileDirectory = 'uploads/reports/wallet_settlements/' . $slug . '.pdf';
+
+        PDFDocument::loadView('pdf.walletSettlementSingle', ['group' => $groupData])
+            ->setOptions($options)
+            ->save($fileDirectory);
+
+        return $fileDirectory;
+    }
+
 }
