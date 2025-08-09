@@ -220,7 +220,7 @@
         <tr>
             <td style="width: 50%; border: 1px solid #000; padding: 10px;">
                 <strong>Signature:</strong><br>
-                {{-- <img src="{{ asset($student->signature) }}" alt="Signature" style="max-height: 40px;"> --}}
+                <img src="{{ asset($student->signature) }}" alt="Signature" style="max-height: 40px;">
             </td>
             <td style="width: 50%; border: 1px solid #000; padding: 10px;">
                 <strong>Date:</strong>
