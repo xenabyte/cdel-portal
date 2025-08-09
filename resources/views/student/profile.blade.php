@@ -268,7 +268,7 @@
                                     <button type="submit" class="btn btn-success">Submit</button>
                                 @else
                                     <button type="submit" class="btn btn-success mx-2">Submit</button>  
-                                    <button type="button" class="btn btn-success mx-2 nexttab" data-nexttab="tab-parent-tab">Next</button>
+                                    <button type="button" class="btn btn-primary mx-2 nexttab" data-nexttab="tab-parent-tab">Next</button>
                                 @endif
                             </div>
                         </div>
@@ -283,68 +283,68 @@
                                 <!-- Father's Information -->
                                 <div class="col-lg-6 mb-3">
                                     <label class="form-label" for="father-name">Father’s Name</label>
-                                    <input type="text" class="form-control" id="father-name" name="father_name" value="{{$guardian->father_name}}" placeholder="Enter father's name" required>
+                                    <input type="text" class="form-control" id="father-name" name="father_name" value="{{$guardian->father_name}}" placeholder="Enter father's name">
                                 </div>
                                 <div class="col-lg-6 mb-3">
                                     <label class="form-label" for="father-occupation">Father’s Occupation</label>
-                                    <input type="text" class="form-control" id="father-occupation" name="father_occupation" value="{{$guardian->father_occupation}}" placeholder="Enter father's occupation" required>
+                                    <input type="text" class="form-control" id="father-occupation" name="father_occupation" value="{{$guardian->father_occupation}}" placeholder="Enter father's occupation">
                                 </div>
                                 <div class="col-lg-6 mb-3">
                                     <label class="form-label" for="father-phone">Father’s Phone Number</label>
-                                    <input type="text" class="form-control" id="father-phone" name="father_phone" value="{{$guardian->father_phone}}" placeholder="Enter father's phone number" required>
+                                    <input type="text" class="form-control" id="father-phone" name="father_phone" value="{{$guardian->father_phone}}" placeholder="Enter father's phone number">
                                 </div>
                                 <div class="col-lg-6 mb-3">
                                     <label class="form-label" for="father-email">Father’s Email</label>
-                                    <input type="email" class="form-control" id="father-email" name="father_email" value="{{$guardian->father_email}}" placeholder="Enter father's email" required>
+                                    <input type="email" class="form-control" id="father-email" name="father_email" value="{{$guardian->father_email}}" placeholder="Enter father's email">
                                 </div>
 
                                 <!-- Mother's Information -->
                                 <div class="col-lg-6 mb-3">
                                     <label class="form-label" for="mother-name">Mother’s Name</label>
-                                    <input type="text" class="form-control" id="mother-name" name="mother_name" value="{{$guardian->mother_name}}" placeholder="Enter mother's name" required>
+                                    <input type="text" class="form-control" id="mother-name" name="mother_name" value="{{$guardian->mother_name}}" placeholder="Enter mother's name">
                                 </div>
                                 <div class="col-lg-6 mb-3">
                                     <label class="form-label" for="mother-occupation">Mother’s Occupation</label>
-                                    <input type="text" class="form-control" id="mother-occupation" name="mother_occupation" value="{{$guardian->mother_occupation}}" placeholder="Enter mother's occupation" required>
+                                    <input type="text" class="form-control" id="mother-occupation" name="mother_occupation" value="{{$guardian->mother_occupation}}" placeholder="Enter mother's occupation">
                                 </div>
                                 <div class="col-lg-6 mb-3">
                                     <label class="form-label" for="mother-phone">Mother’s Phone Number</label>
-                                    <input type="text" class="form-control" id="mother-phone" name="mother_phone" value="{{$guardian->mother_phone}}" placeholder="Enter mother's phone number" required>
+                                    <input type="text" class="form-control" id="mother-phone" name="mother_phone" value="{{$guardian->mother_phone}}" placeholder="Enter mother's phone number">
                                 </div>
                                 <div class="col-lg-6 mb-3">
                                     <label class="form-label" for="mother-email">Mother’s Email</label>
-                                    <input type="email" class="form-control" id="mother-email" name="mother_email" value="{{$guardian->mother_email}}" placeholder="Enter mother's email" required>
+                                    <input type="email" class="form-control" id="mother-email" name="mother_email" value="{{$guardian->mother_email}}" placeholder="Enter mother's email">
                                 </div>
 
                                 <!-- Parent Residential Address -->
                                 <div class="col-lg-12 mb-3">
                                     <label for="parent_address">Parent’s Residential Address</label>
-                                    <textarea class="ckeditor" id="parent_residential_address" name="parent_residential_address" required>{!! $guardian->parent_residential_address !!}</textarea>
+                                    <textarea class="ckeditor" id="parent_residential_address" name="parent_residential_address">{!! $guardian->parent_residential_address !!}</textarea>
                                 </div><!--end col-->
 
                                 <!-- Guardian Info (if applicable) -->
                                 <div class="col-lg-6 mb-3">
                                     <label class="form-label" for="guardian-name">Guardian’s Name</label>
-                                    <input type="text" class="form-control" id="guardian-name" name="name" value="{{$guardian->name}}" placeholder="Enter guardian's name" required>
+                                    <input type="text" class="form-control" id="guardian-name" name="guardian_name" value="{{$guardian->name}}" placeholder="Enter guardian's name">
                                 </div>
                                 <div class="col-lg-6 mb-3">
                                     <label class="form-label" for="guardian-phone">Guardian’s Phone Number</label>
-                                    <input type="text" class="form-control" id="guardian-phone" name="phone_number" value="{{$guardian->phone_number}}" placeholder="Enter guardian's phone number" required>
+                                    <input type="text" class="form-control" id="guardian-phone" name="guardian_phone_number" value="{{$guardian->phone_number}}" placeholder="Enter guardian's phone number">
                                 </div>
                                 <div class="col-lg-12 mb-3">
                                     <label class="form-label" for="guardian-email">Guardian’s Email</label>
-                                    <input type="email" class="form-control" id="guardian-email" name="email" value="{{$guardian->email}}" placeholder="Enter guardian's email" required>
+                                    <input type="email" class="form-control" id="guardian-email" name="guardian_email" value="{{$guardian->email}}" placeholder="Enter guardian's email">
                                 </div>
                                 <div class="col-lg-12 mb-3">
-                                    <label for="address">Guardian Residential Address</label>
-                                    <textarea class="ckeditor" id="parent_address" name="address" required>{!! $guardian->address !!}</textarea>
+                                    <label for="guardian_address">Guardian Residential Address</label>
+                                    <textarea class="ckeditor" id="guardian_address" name="guardian_address">{!! $guardian->address !!}</textarea>
                                 </div><!--end col-->
 
                             </div>
 
                             <div class="d-flex justify-content-between mt-4">
                                 <button type="button" class="btn btn-light previestab" data-previous="tab-personal-tab">Back</button>
-                                <button type="button" class="btn btn-success nexttab" data-nexttab="tab-academic-tab">Next</button>
+                                <button type="button" class="btn btn-primary nexttab" data-nexttab="tab-academic-tab">Next</button>
                             </div>
                         </div>
 
@@ -417,6 +417,34 @@
     </div>
     <!-- end col -->
 </div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const academicTab = document.getElementById("tab-academic");
+    const form = academicTab.closest("form");
+
+    // Target only the submit button inside Academic tab
+    const academicSubmit = academicTab.querySelector('button[type="submit"]');
+
+    if (academicSubmit) {
+        academicSubmit.addEventListener("click", function () {
+            // Remove any existing stage field to avoid duplicates
+            const existingStage = form.querySelector('input[name="stage"]');
+            if (existingStage) existingStage.remove();
+
+            // Add stage hidden input before submitting
+            const stageInput = document.createElement("input");
+            stageInput.type = "hidden";
+            stageInput.name = "stage";
+            stageInput.value = "2"; // Stage value for Academic tab
+            form.appendChild(stageInput);
+
+            // Log confirmation in console
+            console.log(`Hidden input appended: name=${stageInput.name}, value=${stageInput.value}`);
+        });
+    }
+});
+</script>
 @else
 
 <div class="position-relative mx-n4 mt-n4">

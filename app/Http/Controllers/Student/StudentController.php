@@ -168,9 +168,29 @@ class StudentController extends Controller
             'lga' => 'nullable',
         ]);
 
-        if($validator->fails()) {
+        // Add conditional rules if stage = 2
+        $validator->sometimes([
+            'father_name',
+            'father_occupation',
+            'father_phone',
+            'father_email',
+            'mother_name',
+            'mother_occupation',
+            'mother_phone',
+            'mother_email',
+            'parent_residential_address',
+            'guardian_name',
+            'guardian_phone_number',
+            'guardian_email',
+            'guardian_address',
+        ], 'required', function ($input) {
+            return $input->stage == 2;
+        });
+
+        // Check if validation fails
+        if ($validator->fails()) {
             alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
-            return redirect()->back();
+            return redirect()->back()->withInput();
         }
 
         $student = Auth::guard('student')->user();
@@ -214,68 +234,84 @@ class StudentController extends Controller
             $applicant->number_of_siblings = $request->number_of_siblings;
         }
 
-        if(!empty($request->facebook) && $request->facebook != $applicant->facebook){
+        if(!empty($request->facebook) && $request->facebook != $student->facebook){
             $student->facebook = $request->facebook;
         }
 
-        if(!empty($request->linkedIn) && $request->linkedIn != $applicant->linkedIn){
+        if(!empty($request->linkedIn) && $request->linkedIn != $student->linkedIn){
             $student->linkedIn = $request->linkedIn;
         }
 
-        if(!empty($request->tiktok) && $request->tiktok != $applicant->tiktok){
+        if(!empty($request->tiktok) && $request->tiktok != $student->tiktok){
             $student->tiktok = $request->tiktok;
         }
 
-        if(!empty($request->instagram) && $request->instagram != $applicant->instagram){
+        if(!empty($request->instagram) && $request->instagram != $student->instagram){
             $student->instagram = $request->instagram;
         }
 
-        if(!empty($request->whatsapp) && $request->whatsapp != $applicant->whatsapp){
+        if(!empty($request->whatsapp) && $request->whatsapp != $student->whatsapp){
             $student->whatsapp = $request->whatsapp;
         }
 
-        if(!empty($request->twitter) && $request->twitter != $applicant->twitter){
+        if(!empty($request->twitter) && $request->twitter != $student->twitter){
             $student->twitter = $request->twitter;
         }
 
-        if(!empty($request->hobbies) && $request->hobbies != $applicant->hobbies){
+        if(!empty($request->hobbies) && $request->hobbies != $student->hobbies){
             $student->hobbies = $request->hobbies;
         }
 
-        if(!empty($request->father_name) && $request->father_name != $applicant->father_name){
+        if(!empty($request->father_name) && $request->father_name != $guardian->father_name){
             $guardian->father_name = $request->father_name;
         }
 
-        if(!empty($request->father_occupation) && $request->father_occupation != $applicant->father_occupation){
+        if(!empty($request->father_occupation) && $request->father_occupation != $guardian->father_occupation){
             $guardian->father_occupation = $request->father_occupation;
         }
 
-        if(!empty($request->father_phone) && $request->father_phone != $applicant->father_phone){
+        if(!empty($request->father_phone) && $request->father_phone != $guardian->father_phone){
             $guardian->father_phone = $request->father_phone;
         }
         
-        if(!empty($request->father_email) && $request->father_email != $applicant->father_email){
+        if(!empty($request->father_email) && $request->father_email != $guardian->father_email){
             $guardian->father_email = $request->father_email;
         }
 
-        if(!empty($request->mother_name) && $request->mother_name != $applicant->mother_name){
+        if(!empty($request->mother_name) && $request->mother_name != $guardian->mother_name){
             $guardian->mother_name = $request->mother_name;
         }
 
-        if(!empty($request->mother_occupation) && $request->mother_occupation != $applicant->mother_occupation){
+        if(!empty($request->mother_occupation) && $request->mother_occupation != $guardian->mother_occupation){
             $guardian->mother_occupation = $request->mother_occupation;
         }
 
-        if(!empty($request->mother_phone) && $request->mother_phone != $applicant->mother_phone){
+        if(!empty($request->mother_phone) && $request->mother_phone != $guardian->mother_phone){
             $guardian->mother_phone = $request->mother_phone;
         }
 
-        if(!empty($request->mother_email) && $request->mother_email != $applicant->mother_email){
+        if(!empty($request->mother_email) && $request->mother_email != $guardian->mother_email){
             $guardian->mother_email = $request->mother_email;
         }
 
-        if(!empty($request->parent_residential_address) && $request->parent_residential_address != $applicant->parent_residential_address){
+        if(!empty($request->parent_residential_address) && $request->parent_residential_address != $guardian->parent_residential_address){
             $guardian->parent_residential_address = $request->parent_residential_address;
+        }
+
+        if(!empty($request->guardian_name) && $request->guardian_name != $guardian->name){
+            $guardian->name = $request->guardian_name;
+        }
+
+        if(!empty($request->guardian_phone_number) && $request->guardian_phone_number != $guardian->phone_number){
+            $guardian->phone_number = $request->guardian_phone_number;
+        }
+
+        if(!empty($request->guardian_email) && $request->guardian_email != $guardian->email){
+            $guardian->email = $request->guardian_email;
+        }
+
+        if(!empty($request->guardian_address) && $request->guardian_address != $guardian->address){
+            $guardian->address = $request->guardian_address;
         }
 
         if(!empty($request->signature) && $request->signature != $applicant->signature){
