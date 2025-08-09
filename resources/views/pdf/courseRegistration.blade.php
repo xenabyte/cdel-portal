@@ -79,7 +79,7 @@
             </tr>
         </tbody>
     </table>
-    <div class="row" style="margin-top: 20%;">
+    <div class="row" style="margin-top: 10px;">
         <div class="text-center">
             <h1>Course Registration Form</h1>
             <br>

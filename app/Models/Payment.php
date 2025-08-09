@@ -19,7 +19,7 @@ class Payment extends Model
     const PAYMENT_TYPE_OTHER = 'Other Fee';
     const PAYMENT_MODIFY_COURSE_REG = 'Course Reg';
      const PAYMENT_LATE_RESUMPTION = 'Late Resumption Fee';
-    const PAYMENT_LATE_COURSE_REG = 'Late Course Reg';
+    const PAYMENT_LATE_COURSE_REG = 'Late Course Reg Fee';
     const PAYMENT_TYPE_WALLET_DEPOSIT = 'Wallet Deposit';
     const PAYMENT_TYPE_BANDWIDTH = 'Bandwidth Fee';
     const PAYMENT_TYPE_ACCOMMODATION = 'Accommodation Fee';

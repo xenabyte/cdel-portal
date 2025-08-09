@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers\Student;
 
+use App\Models\ProgrammeCategory;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
 use App\Http\Requests;
 use Illuminate\Support\Facades\Validator;
 
@@ -87,27 +89,46 @@ class AcademicController extends Controller
         $paymentCheck = $this->checkSchoolFees($student, $student->academic_session, $levelId);
         $checkNewStudentStatus = $this->checkNewStudentStatus($student);
 
-        // if(!$paymentCheck->passTuitionPayment){
-        //     return view('student.schoolFee', [
-        //         'payment' => $paymentCheck->schoolPayment,
-        //         'passTuition' => $paymentCheck->passTuitionPayment,
-        //         'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
-        //         'passEightyTuition' => $paymentCheck->passEightyTuition,
-        //         'studentPendingTransactions' => $paymentCheck->studentPendingTransactions
-        //     ]);
-        // }
+        if(!$paymentCheck->passTuitionPayment){
+            return view('student.schoolFee', [
+                'payment' => $paymentCheck->schoolPayment,
+                'passTuition' => $paymentCheck->passTuitionPayment,
+                'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
+                'passEightyTuition' => $paymentCheck->passEightyTuition,
+                'studentPendingTransactions' => $paymentCheck->studentPendingTransactions
+            ]);
+        }
 
-        $coursePerProgrammePerAcademicSession = CoursePerProgrammePerAcademicSession::where('programme_id', $student->programme_id)
+        // Retrieve all courses the student has already registered for the current session.
+        // This includes carry-overs and any other courses not from the current academic session's approved list.
+        $registeredCourses = CourseRegistration::where([
+            'student_id' => $studentId,
+            'academic_session' => $academicSession,
+            'programme_category_id' => $student->programme_category_id
+        ])->get();
+
+        // Get the IDs of all the courses that are already registered.
+        $registeredCourseIds = $registeredCourses->pluck('course_id');
+
+        // Retrieve all courses from the current academic session's approved list.
+        $allApprovedCourses = CoursePerProgrammePerAcademicSession::where('programme_id', $student->programme_id)
             ->where('level_id', $student->level_id)
             ->where('programme_category_id', $student->programme_category_id)
             ->where('academic_session', $academicSession)
             ->where('dap_approval_status', 'approved')
             ->get();
 
-        $existingRegistration = CourseRegistration::where([
-            'student_id' => $studentId,
-            'academic_session' => $academicSession
-        ])->get();
+        // Filter the approved courses to find those that are NOT already registered.
+        $availableCourses = $allApprovedCourses->whereNotIn('course_id', $registeredCourseIds);
+
+        // Now, split both the registered courses and the available courses by semester.
+        // This ensures you have two distinct lists for each semester.
+
+        $registeredHarmattanCourses = $registeredCourses->where('semester', 1);
+        $registeredRainCourses = $registeredCourses->where('semester', 2);
+
+        $availableHarmattanCourses = $availableCourses->where('semester', 1);
+        $availableRainCourses = $availableCourses->where('semester', 2);
 
         $unregisteredRequiredCoursesIds = [];
 
@@ -136,16 +157,23 @@ class AcademicController extends Controller
 
         $unregisteredRequiredCoursesIds = array_unique($unregisteredRequiredCoursesIds);
 
-        
-        $checkLateReg = $this->checkLateRegistration();        
-        $lateRegTxPay = Payment::with('structures')->where('type', Payment::PAYMENT_LATE_COURSE_REG)->where('academic_session', $academicSession)->first();
-        $lateRegTxPayId = $lateRegTxPay->id;
-        
-        $lateRegTx = Transaction::where([
-            'student_id' =>  $studentId,
-            'payment_id' => $lateRegTxPayId,
-            'status' => 1
-        ])->first();
+        $lateRegTx = null;
+        $lateRegTxPay = null;
+        if($student->programme_category_id == ProgrammeCategory::getProgrammeCategory(ProgrammeCategory::UNDERGRADUATE)){
+            $checkLateReg = $this->checkLateRegistration($student);        
+            $lateRegTxPay = Payment::with('structures')
+                            ->where('type', Payment::PAYMENT_LATE_COURSE_REG)
+                            ->where('programme_category_id', $student->programme_category_id)
+                            ->where('academic_session', $academicSession)->first();
+
+            $lateRegTxPayId = $lateRegTxPay->id;
+            
+            $lateRegTx = Transaction::where([
+                'student_id' =>  $studentId,
+                'payment_id' => $lateRegTxPayId,
+                'status' => 1
+            ])->first();
+        }
 
         $addOrRemoveTxPay = Payment::with('structures')->where('type', Payment::PAYMENT_MODIFY_COURSE_REG)->where('academic_session', $academicSession)->first();
         $addOrRemoveTxId = $addOrRemoveTxPay->id;
@@ -195,8 +223,8 @@ class AcademicController extends Controller
 
         return view('student.courseRegistration', [
             'courseRegMgt' => $courseRegMgt,
-            'courses' => $coursePerProgrammePerAcademicSession,
-            'existingRegistration' => $existingRegistration,
+            'courses' => $allApprovedCourses,
+            'existingRegistrations' => $registeredCourses,
             'carryOverCourses' => $carryOverCourses,
             'unregisteredRequiredCourses' => $unregisteredRequiredCourses,
             'addOrRemoveTxs' => $addOrRemoveTxs,
@@ -204,6 +232,10 @@ class AcademicController extends Controller
             'lateRegTx' => $lateRegTx,
             'lateRegTxPay' => $lateRegTxPay,
             'checkNewStudentStatus' => $checkNewStudentStatus,
+            'registeredHarmattanCourses' => $registeredHarmattanCourses,
+            'availableHarmattanCourses' => $availableHarmattanCourses,
+            'registeredRainCourses' => $registeredRainCourses,
+            'availableRainCourses' => $availableRainCourses,
             'passTuition' => $paymentCheck->passTuitionPayment,
             'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
             'passEightyTuition' => $paymentCheck->passEightyTuition
@@ -238,15 +270,15 @@ class AcademicController extends Controller
         }
 
        $paymentCheck = $this->checkSchoolFees($student, $student->academic_session, $levelId);
-        // if(!$paymentCheck->passTuitionPayment){
-        //     return view('student.schoolFee', [
-        //         'payment' => $paymentCheck->schoolPayment,
-        //         'passTuition' => $paymentCheck->passTuitionPayment,
-        //         'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
-        //         'passEightyTuition' => $paymentCheck->passEightyTuition,
-        //         'studentPendingTransactions' => $paymentCheck->studentPendingTransactions
-        //     ]);
-        // }
+        if(!$paymentCheck->passTuitionPayment){
+            return view('student.schoolFee', [
+                'payment' => $paymentCheck->schoolPayment,
+                'passTuition' => $paymentCheck->passTuitionPayment,
+                'fullTuitionPayment' => $paymentCheck->fullTuitionPayment,
+                'passEightyTuition' => $paymentCheck->passEightyTuition,
+                'studentPendingTransactions' => $paymentCheck->studentPendingTransactions
+            ]);
+        }
 
         // Collect semester information from selected courses
         $semesters = [
@@ -400,6 +432,172 @@ class AcademicController extends Controller
         } catch (\Exception $e) {
             Log::info($e);
             alert()->error('Oops!', 'Something went wrong')->persistent('Close');
+            return redirect()->back();
+        }
+    }
+
+    public function updateCourses(Request $request)
+    {
+        // Assuming the authenticated user is the student
+        $student = Auth::guard('student')->user();
+        $studentId = $student->id;
+        $txId = $request->tx_id;
+        $academicSession = $student->academic_session;
+
+        // The maximum unit value should ideally be retrieved from a database or config
+        $maxUnit = !empty($student->credit_load) ? $student->credit_load : 24;
+
+        // Get the arrays of courses to add and remove from the request
+        $coursesToRemove = $request->input('removed_courses', []);
+        $coursesToAdd = $request->input('selected_courses', []);
+
+        if (empty($coursesToAdd) && empty($coursesToRemove)) {
+            alert()->info('No changes made', 'Please select courses to add or remove.')->persistent('Close');
+            return redirect()->back();
+        }
+
+        DB::beginTransaction();
+
+        try {
+            // --- 1. Backend Validation for Unit Limit and DSA/Semester count ---
+
+            $firstSemesterFinalTotal = 0;
+            $secondSemesterFinalTotal = 0;
+            $dsaCoursesCount = 0;
+
+            // Get the IDs and details of courses the student will keep
+            $existingCoursesToKeep = CourseRegistration::where('student_id', $studentId)
+                ->where('academic_session', $academicSession)
+                ->whereNotIn('id', $coursesToRemove)
+                ->get();
+
+            // Get the details of the new courses to be added
+            $newCourses = CoursePerProgrammePerAcademicSession::whereIn('id', $coursesToAdd)
+                ->with('course')
+                ->get();
+            
+            // // Validate and calculate totals for existing courses
+            // foreach ($existingCoursesToKeep as $course) {
+            //     if ($course->semester === 1) {
+            //         $firstSemesterFinalTotal += $course->course_credit_unit;
+            //     } else {
+            //         $secondSemesterFinalTotal += $course->course_credit_unit;
+            //     }
+            //     if (preg_match('/^DSA\s?\d{3}$/', $course->course->code)) {
+            //         $dsaCoursesCount++;
+            //     }
+            // }
+            
+            // // Validate and calculate totals for new courses
+            // foreach ($newCourses as $course) {
+            //     if ($course->semester === 1) {
+            //         $firstSemesterFinalTotal += $course->credit_unit;
+            //     } else {
+            //         $secondSemesterFinalTotal += $course->credit_unit;
+            //     }
+            //     if (preg_match('/^DSA\s?\d{3}$/', $course->course->code)) {
+            //         $dsaCoursesCount++;
+            //     }
+            // }
+
+            // // Check if the final total for either semester exceeds the max limit
+            // if ($firstSemesterFinalTotal > $maxUnit || $secondSemesterFinalTotal > $maxUnit) {
+            //     DB::rollBack();
+            //     alert()->error('Error', 'The total units for a semester cannot exceed ' . $maxUnit . '.');
+            //     return redirect()->back();
+            // }
+
+            // // Check if more than one DSA course is selected
+            // if ($dsaCoursesCount > 1) {
+            //     DB::rollBack();
+            //     alert()->error('Error', 'You can only select 1 DSA course in a session.');
+            //     return redirect()->back();
+            // }
+            
+            // --- 2. Process Database Operations ---
+
+            // Remove selected courses
+            if (!empty($coursesToRemove)) {
+                CourseRegistration::where('student_id', $studentId)
+                    ->whereIn('id', $coursesToRemove)
+                    ->delete();
+            }
+
+            // Add selected courses
+            if (!empty($coursesToAdd)) {
+                foreach ($newCourses as $newCourse) {
+                    // Check if the course is already registered to prevent duplicates
+                    $isAlreadyRegistered = CourseRegistration::where('student_id', $studentId)
+                        ->where('course_id', $newCourse->course_id)
+                        ->exists();
+
+                    if (!$isAlreadyRegistered) {
+                        // Check for carry-over logic from the original function
+                        $checkCarryOver = CourseRegistration::where([
+                            'student_id' => $student->id,
+                            'course_id' => $newCourse->course_id,
+                            'grade' => 'F',
+                        ])->first();
+
+                        if (!empty($checkCarryOver)) {
+                            $checkCarryOver->re_reg = true;
+                            $checkCarryOver->save();
+                        }
+                        
+                        CourseRegistration::create([
+                            'student_id' => $studentId,
+                            'academic_session' => $academicSession,
+                            'programme_category_id' => $student->programme_category_id,
+                            'course_id' => $newCourse->course->id, // Correctly use course->id
+                            'course_credit_unit' => $newCourse->credit_unit,
+                            'course_code' => $newCourse->course->code, // Add course code
+                            'semester' => $newCourse->semester,
+                            'level_id' => $student->level_id,
+                            'programme_course_id' => $newCourse->id,
+                            'course_status' => $newCourse->status,
+                            'status' => 'pending',
+                        ]);
+                    }
+                }
+            }
+
+            // Delete old student registration record
+            if (!empty($txId)) {
+                StudentCourseRegistration::where([
+                    'student_id' => $studentId,
+                    'academic_session' => $academicSession,
+                ])->forceDelete();
+
+                Transaction::where([
+                    'student_id' =>  $studentId,
+                    'id' => $txId,
+                    'is_used' => null,
+                    'status' => 1
+                ])->update(['is_used' => 1]);
+            }
+
+            // Generate new course registration PDF
+            $pdf = new Pdf();
+            $courseReg = $pdf->generateCourseRegistration($studentId, $academicSession);
+
+            // Create new student registration record
+            $studentRegistration = StudentCourseRegistration::create([
+                'student_id' => $studentId,
+                'academic_session' => $academicSession,
+                'file' => $courseReg,
+                'level_id' => $student->level_id,
+                'programme_category_id' => $student->programme_category_id,
+            ]);
+
+            DB::commit();
+
+            alert()->success('Changes Saved', 'Course registration updated successfully.')->persistent('Close');
+            return redirect()->back();
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::info($e);
+            alert()->error('Oops!', 'Something went wrong while updating courses: ' . $e->getMessage())->persistent('Close');
             return redirect()->back();
         }
     }

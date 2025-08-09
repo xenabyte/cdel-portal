@@ -1466,14 +1466,26 @@ class Controller extends BaseController
         return $roomWithVacancy;
     }
 
-    public static function checkLateRegistration()
+    public static function checkLateRegistration($student)
     {
-        $resumptionDate = env('RESUMPTION_DATE');
+        $data = new \stdClass();
+        $data->isLate = false;
+        $data->daysPast = 0;
+        $data->weeksPast = 0;
+
+        $levelAdviser = $student->programme->academicAdvisers->where('level_id', $student->level_id)->where('academic_session', $student->academic_session)->first();
+
+        if(!$levelAdviser){
+            return $data;
+        }
+
+        if($levelAdviser && $levelAdviser->course_registration == 'stop'){
+            return $data;
+        }
+
+        $startDate = $levelAdviser->updated_at;
         $gracePeriod = env('LATE_REGISTRATION_GRACE_PERIOD');
-
-        $resumptionDate = Carbon::parse($resumptionDate);
-
-        $lateRegStartDate = $resumptionDate->addWeeks($gracePeriod);
+        $lateRegStartDate = $startDate->addWeeks($gracePeriod);
 
         $now = Carbon::now();
 
@@ -1490,10 +1502,7 @@ class Controller extends BaseController
             return $data;
         }
 
-        $data = new \stdClass();
-        $data->isLate = false;
-        $data->daysPast = 0;
-        $data->weeksPast = 0;
+        
 
         return $data;
     }

@@ -37,7 +37,7 @@
         </div>
     </div>
 </div>
-@if($existingRegistration->count() > 0 && !$addOrRemoveTxs->count() > 0)
+@if($existingRegistrations->count() > 0 && !$addOrRemoveTxs->count() > 0)
 <div class="row justify-content-center">
     <div class="col-lg-6">
         <div class="card">
@@ -74,7 +74,7 @@
     <!--end col-->
 </div>
 @else
-    @if($checkLateReg->isLate && !$checkNewStudentStatus && empty($lateRegTx))
+    @if($checkLateReg->isLate && !$checkNewStudentStatus && empty($lateRegTx) && !$addOrRemoveTxs->count() > 0)
         <div class="row justify-content-center">
             <div class="col-lg-6">
                 <div class="card">
@@ -156,9 +156,9 @@
             </div>
             <!--end col-->
         </div>
-        @endif
-        @if($levelAdviser && ($levelAdviser->course_registration == 'stop' && !in_array($student->matric_number, $allowedMatrics)))
-        <div class="row justify-content-center">
+        @elseif($levelAdviser && ($levelAdviser->course_registration == 'stop'))
+            {{-- && !in_array($student->matric_number, $allowedMatrics) --}}
+            <div class="row justify-content-center">
                 <div class="col-lg-6">
                     <div class="card">
                         <div class="card-body">
@@ -185,7 +185,7 @@
                 </div>
                 <!--end col-->
             </div>
-        @else
+        @elseif($levelAdviser && ($levelAdviser->course_registration == 'start') && !$addOrRemoveTxs->count() > 0)
             <div class="row">   
                 <div class="col-lg-12">
                     <div class="card">
@@ -390,6 +390,285 @@
                                 } else {
                                     $(this).prop("disabled", false);
                                 }
+                            }
+                        });
+                    }
+                });
+            </script>
+        @else
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header align-items-center">
+                            <h4 class="card-title mb-0 flex-grow-1">Add or Removal of Courses, {{ $academicSession }} academic session</h4>
+                            <br/>
+                            <p class=""><strong>Programme:</strong> {{ $student->programme->name }}
+                            <br/><strong>Academic Session:</strong> {{ $student->academic_session }}
+                            <br/><strong>Level:</strong> {{ $student->academicLevel->level }} Level</p>
+                            <br/>
+                            <h3 class="text-danger">Ensure that you make use of a PC to make the changes.</h3>
+                        </div><!-- end card header -->
+                    </div>
+                </div>
+            </div>
+
+            <form method="post" action="{{ url('/student/updateCourses') }}" class="mb-3">
+                @csrf
+                <input type="hidden" value="{{ $addOrRemoveTxs->count() > 0 ? $addOrRemoveTxs->first()->id : null }}" name="tx_id">
+                
+                <!-- Harmattan Semester Section -->
+                <div class="row d-flex align-items-stretch">
+                    <!-- Registered Courses (Harmattan) -->
+                    <div class="col-md-6">
+                        <div class="card h-100">
+                            <div class="card-header">
+                                <h4 class="card-title">Registered Courses (Harmattan)</h4>
+                            </div>
+                            <div class="card-body table-responsive">
+                                <table class="table table-borderless table-nowrap registered-courses-table" data-semester="1">
+                                    <thead>
+                                        <tr>
+                                            <th>Course Code</th>
+                                            <th>Course Title</th>
+                                            <th>Unit</th>
+                                            <th>Status</th>
+                                            <th>Remove</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="registered-first-semester">
+                                        @foreach($registeredHarmattanCourses as $registeredHarmattanCourse)
+                                            <tr>
+                                                <td>{{ $registeredHarmattanCourse->course->code }}</td>
+                                                <td>{{ ucwords(strtolower($registeredHarmattanCourse->course->name)) }}</td>
+                                                <td>{{ $registeredHarmattanCourse->course_credit_unit }}</td>
+                                                <td>{{ $registeredHarmattanCourse->course_status }}</td>
+                                                <td>
+                                                    <input type="checkbox" name="removed_courses[]" value="{{ $registeredHarmattanCourse->id }}">
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                    <tfoot>
+                                        <tr class="first-semester-total">
+                                            <td colspan="2">**Current Unit Total:**</td>
+                                            <td class="total-units">0</td>
+                                            <td colspan="2"></td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Available Courses to Register (Harmattan) -->
+                    <div class="col-md-6">
+                        <div class="card h-100">
+                            <div class="card-header">
+                                <h4 class="card-title">Courses to Register (Harmattan)</h4>
+                            </div>
+                            <div class="card-body table-responsive">
+                                <table class="table table-borderless table-nowrap available-courses-table" data-semester="1">
+                                    <thead>
+                                        <tr>
+                                            <th>Course Code</th>
+                                            <th>Course Title</th>
+                                            <th>Unit</th>
+                                            <th>Status</th>
+                                            <th>Select</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="available-first-semester">
+                                        @foreach($unregisteredRequiredCourses->where('semester', 1) as $unregisteredCourse)
+                                            <tr>
+                                                <td>{{ $unregisteredCourse->course->code }}</td>
+                                                <td>{{ ucwords(strtolower($unregisteredCourse->course->name)) }}</td>
+                                                <td>{{ $unregisteredCourse->credit_unit }}</td>
+                                                <td>{{ $unregisteredCourse->status }}</td>
+                                                <td>
+                                                    <input type="checkbox" name="selected_courses[]" value="{{ $unregisteredCourse->id }}">
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                        @foreach($availableHarmattanCourses as $availableHarmattanCourse)
+                                            <tr>
+                                                <td>{{ $availableHarmattanCourse->course->code }}</td>
+                                                <td>{{ ucwords(strtolower($availableHarmattanCourse->course->name)) }}</td>
+                                                <td>{{ $availableHarmattanCourse->credit_unit }}</td>
+                                                <td>{{ $availableHarmattanCourse->status }}</td>
+                                                <td>
+                                                    <input type="checkbox" name="selected_courses[]" value="{{ $availableHarmattanCourse->id }}">
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <hr>
+                
+                <!-- Rain Semester Section -->
+                <div class="row mt-4 d-flex align-items-stretch">
+                    <!-- Registered Courses (Rain) -->
+                    <div class="col-md-6">
+                        <div class="card h-100">
+                            <div class="card-header">
+                                <h4 class="card-title">Registered Courses (Rain)</h4>
+                            </div>
+                            <div class="card-body table-responsive">
+                                <table class="table table-borderless table-nowrap registered-courses-table" data-semester="2">
+                                    <thead>
+                                        <tr>
+                                            <th>Course Code</th>
+                                            <th>Course Title</th>
+                                            <th>Unit</th>
+                                            <th>Status</th>
+                                            <th>Remove</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="registered-second-semester">
+                                        @foreach($registeredRainCourses as $registeredRainCourse)
+                                            <tr>
+                                                <td>{{ $registeredRainCourse->course->code }}</td>
+                                                <td>{{ ucwords(strtolower($registeredRainCourse->course->name)) }}</td>
+                                                <td>{{ $registeredRainCourse->course_credit_unit }}</td>
+                                                <td>{{ $registeredRainCourse->course_status }}</td>
+                                                <td>
+                                                    <input type="checkbox" name="removed_courses[]" value="{{ $registeredRainCourse->id }}">
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                    <tfoot>
+                                        <tr class="second-semester-total">
+                                            <td colspan="2">**Current Unit Total:**</td>
+                                            <td class="total-units">0</td>
+                                            <td colspan="2"></td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Available Courses to Register (Rain) -->
+                    <div class="col-md-6">
+                        <div class="card h-100">
+                            <div class="card-header">
+                                <h4 class="card-title">Courses to Register (Rain)</h4>
+                            </div>
+                            <div class="card-body table-responsive">
+                                <table class="table table-borderless table-nowrap available-courses-table" data-semester="2">
+                                    <thead>
+                                        <tr>
+                                            <th>Course Code</th>
+                                            <th>Course Title</th>
+                                            <th>Unit</th>
+                                            <th>Status</th>
+                                            <th>Select</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="available-second-semester">
+                                        @foreach($unregisteredRequiredCourses->where('semester', 2) as $unregisteredCourse2)
+                                            <tr>
+                                                <td>{{ $unregisteredCourse2->course->code }}</td>
+                                                <td>{{ ucwords(strtolower($unregisteredCourse2->course->name)) }}</td>
+                                                <td>{{ $unregisteredCourse2->credit_unit }}</td>
+                                                <td>{{ $unregisteredCourse2->status }}</td>
+                                                <td>
+                                                    <input type="checkbox" name="selected_courses[]" value="{{ $unregisteredCourse2->id }}">
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                        @foreach($availableRainCourses as $availableRainCourse)
+                                            <tr>
+                                                <td>{{ $availableRainCourse->course->code }}</td>
+                                                <td>{{ ucwords(strtolower($availableRainCourse->course->name)) }}</td>
+                                                <td>{{ $availableRainCourse->credit_unit }}</td>
+                                                <td>{{ $availableRainCourse->status }}</td>
+                                                <td>
+                                                    <input type="checkbox" name="selected_courses[]" value="{{ $availableRainCourse->id }}">
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="d-grid gap-2">
+                    <button type="submit" class="btn btn-primary mt-3">Update All Courses</button>
+                </div>
+            </form>
+
+            <script>
+                $(document).ready(function() {
+                    const maxUnit = <?php echo $maxUnit; ?>;
+
+                    calculateTotals();
+
+                    $("input[name='selected_courses[]'], input[name='removed_courses[]']").change(function() {
+                        calculateTotals();
+                    });
+
+                    function calculateTotals() {
+                        let firstSemesterTotal = 0;
+                        let secondSemesterTotal = 0;
+
+                        // 1. Calculate the initial total from all currently registered courses
+                        $(".registered-first-semester tr").each(function() {
+                            const creditUnit = parseFloat($(this).find("td:eq(2)").text());
+                            firstSemesterTotal += creditUnit;
+                        });
+
+                        $(".registered-second-semester tr").each(function() {
+                            const creditUnit = parseFloat($(this).find("td:eq(2)").text());
+                            secondSemesterTotal += creditUnit;
+                        });
+
+                        // 2. Adjust totals based on courses marked for removal
+                        $("input[name='removed_courses[]']:checked").each(function() {
+                            const creditUnit = parseFloat($(this).closest("tr").find("td:eq(2)").text());
+                            const semesterTable = $(this).closest("table");
+                            if (semesterTable.data("semester") === 1) {
+                                firstSemesterTotal -= creditUnit;
+                            } else if (semesterTable.data("semester") === 2) {
+                                secondSemesterTotal -= creditUnit;
+                            }
+                        });
+
+                        // 3. Adjust totals based on courses marked for addition
+                        $("input[name='selected_courses[]']:checked").each(function() {
+                            const creditUnit = parseFloat($(this).closest("tr").find("td:eq(2)").text());
+                            const semesterTable = $(this).closest("table");
+                            if (semesterTable.data("semester") === 1) {
+                                firstSemesterTotal += creditUnit;
+                            } else if (semesterTable.data("semester") === 2) {
+                                secondSemesterTotal += creditUnit;
+                            }
+                        });
+
+                        $(".first-semester-total .total-units").text(firstSemesterTotal);
+                        $(".second-semester-total .total-units").text(secondSemesterTotal);
+
+                        $("input[name='selected_courses[]']").each(function() {
+                            const creditUnit = parseFloat($(this).closest("tr").find("td:eq(2)").text());
+                            const semesterTable = $(this).closest("table");
+                            const semester = semesterTable.data("semester");
+                            const currentTotal = semester === 1 ? firstSemesterTotal : secondSemesterTotal;
+
+                            if (!$(this).prop("checked")) {
+                                if (currentTotal + creditUnit > maxUnit) {
+                                    $(this).prop("disabled", true);
+                                } else {
+                                    $(this).prop("disabled", false);
+                                }
+                            } else {
+                                $(this).prop("disabled", false);
                             }
                         });
                     }
