@@ -258,47 +258,49 @@ class HostelController extends Controller
 
 
     public function addRoom(Request $request){
+
         $validator = Validator::make($request->all(), [
-            'number' => 'required',
+            'number' => 'required|string',
             'type_id' => 'required|exists:room_types,id',
             'hostel_id' => 'required|exists:hostels,id',
         ]);
-    
+
         if ($validator->fails()) {
             alert()->error('Error', $validator->messages()->all()[0])->persistent('Close');
             return redirect()->back();
         }
-    
+
+        $hostel = Hostel::findOrFail($request->hostel_id);
         $roomType = RoomType::findOrFail($request->type_id);
-    
-        $roomExists = Room::where('number', $request->number)
-                          ->where('hostel_id', $request->hostel_id)
-                          ->exists();
-    
-        if ($roomExists) {
-            alert()->error('Error', 'Room with the same number already exists in this hostel')->persistent('Close');
-            return redirect()->back();
-        }
-    
         $roomCapacity = $roomType->capacity;
-    
-        $room = [
-            'number' => $request->number,
-            'type_id' => $request->type_id,
-            'hostel_id' => $request->hostel_id,
-        ];
-    
-        if ($createRoom = Room::create($room)) {
+
+        // Convert comma-separated values into array
+        $roomNumbers = array_filter(array_map('trim', explode(',', $request->number)));
+
+        foreach ($roomNumbers as $roomNumber) {
+            $exists = Room::where('number', $roomNumber)
+                        ->where('hostel_id', $request->hostel_id)
+                        ->exists();
+            if ($exists) {
+                continue; // skip duplicates
+            }
+
+            $createRoom = Room::create([
+                'number' => $roomNumber,
+                'type_id' => $request->type_id,
+                'hostel_id' => $request->hostel_id,
+            ]);
+
             for ($i = 1; $i <= $roomCapacity; $i++) {
                 RoomBedSpace::create([
                     'room_id' => $createRoom->id,
                     'space' => $i,
                 ]);
             }
-    
-            alert()->success('Room added successfully', '')->persistent('Close');
-            return redirect()->back();
         }
+
+        alert()->success('Rooms added successfully', '')->persistent('Close');
+        return redirect()->back();
     }
     
 

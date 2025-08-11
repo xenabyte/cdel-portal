@@ -113,8 +113,8 @@
                     <input type="hidden" name='hostel_id' value="{{ $hostel->id }}">
 
                     <div class="mb-3">
-                        <label for="number" class="form-label">Room Name/Number</label>
-                        <input type="text" class="form-control" name="number" id="number">
+                        <label for="number" class="form-label">Room Name/Number (comma separated)</label>
+                        <input type="text" class="form-control" name="number" id="number" placeholder="E.g. Room 101, Room 102, Room 103">
                     </div>
 
                     <div class="mb-3">

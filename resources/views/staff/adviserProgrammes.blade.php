@@ -85,8 +85,8 @@
                                 @if(!$staffAcademicPlannerRole)
                                     @if($adviserProgramme->course_approval_status == 'approved')
                                     <a href="#" data-bs-toggle="modal" data-bs-target="#viewCourses{{ $adviserProgramme->id }}" class="btn btn-primary">Courses</a>
-                                    <a href="{{ url('/staff/levelCourseReg/'.$programmeCategory->category.'/'.$adviserProgramme->id) }}" class="btn btn-info">Course Registrations</a>
-                                    <a href="{{ url('/staff/levelStudents/'.$programmeCategory->category.'/'.$adviserProgramme->id) }}" class="btn btn-dark">All Students</a>
+                                    <a href="{{ url('/staff/levelCourseReg/'.$programmeCategory->category.'/'.$adviserProgramme->id) }}?academic_session={{$academicSession}}" class="btn btn-info">Course Registrations</a>
+                                    <a href="{{ url('/staff/levelStudents/'.$programmeCategory->category.'/'.$adviserProgramme->id) }}?academic_session={{$academicSession}}" class="btn btn-dark">All Students</a>
                                     @endif
                                     @if($staffLevelAdviserRole)
                                         @if($adviserProgramme->course_approval_status != 'approved')
@@ -112,6 +112,38 @@
     </div>
     <!-- end col -->
 </div>
+
+<div id="otherSessions" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 overflow-hidden">
+            <div class="modal-header p-3">
+                <h4 class="card-title mb-0">Other Sessions</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body">
+                <form action="{{ url('/staff/adviserProgrammes/'.$programmeCategory->category) }}" method="GET" enctype="multipart/form-data">                    
+                    <div class="col-lg-12">
+                        <div class="form-floating">
+                            <select class="form-select" id="academic_session" name="academic_session" aria-label="academic_session">
+                                <option value="" selected>--Select--</option>
+                                @foreach($sessions as $acadSession)
+                                    <option value="{{ $acadSession->year }}">{{ $acadSession->year }}</option>
+                                @endforeach
+                            </select>
+                            <label for="level">Academic Session</label>
+                        </div>
+                    </div>
+
+                    <hr>
+                    <div class="text-end">
+                        <button type="submit" id="submit-button" class="btn btn-primary">Fetch</button>
+                    </div>
+                </form>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
 
 @foreach($adviserProgrammes as $adviserProgramme)
 <div id="submitCourses{{ $adviserProgramme->id }}" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">

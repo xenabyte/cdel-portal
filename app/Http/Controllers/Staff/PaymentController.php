@@ -39,12 +39,24 @@ class PaymentController extends Controller
         $this->middleware(['auth:staff']);
     }
 
-    public function payments(Request $request, $programmeCategory) {
+    public function payments(Request $request, $programmeCategory){
+        $programmeCategory = ProgrammeCategory::with('academicSessionSetting', 'examSetting')
+            ->where('category', $programmeCategory)
+            ->first();
 
-        $programmeCategory = ProgrammeCategory::with('academicSessionSetting', 'examSetting')->where('category', $programmeCategory)->first();
         $programmeCategoryId = $programmeCategory->id;
 
-        $academicSession = $programmeCategory->academicSessionSetting->academic_session ?? null;
+        if ($request->filled('academic_session')) {
+            $academicSession = urldecode(trim($request->academic_session));
+
+            $academicSession = preg_replace('/\s+/', '', $academicSession); // remove spaces
+        } else {
+            $academicSession = $programmeCategory->academicSessionSetting->academic_session ?? null;
+            if ($academicSession) {
+                $academicSession = preg_replace('/\s+/', '', trim($academicSession));
+            }
+        }
+
         if (!$academicSession) {
             alert()->error('Oops!', 'Session setting for programme category not found.')->persistent('Close');
             return redirect()->back();
@@ -52,7 +64,11 @@ class PaymentController extends Controller
 
         $paymentTypes = PaymentType::get();
 
-        $payments = Payment::with(['structures', 'programme'])->where('academic_session', $academicSession)->where('programme_category_id', $programmeCategoryId)->get();
+        $payments = Payment::with(['structures', 'programme'])
+            ->whereRaw("REPLACE(REPLACE(academic_session, ' ', ''), '-', '/') LIKE ?", ["%{$academicSession}%"])
+            ->where('programme_category_id', $programmeCategoryId)
+            ->get();
+
         $programmes = Programme::where('category_id', $programmeCategoryId)->get();
         $levels = Level::get();
         $sessions = Session::orderBy('id', 'DESC')->get();

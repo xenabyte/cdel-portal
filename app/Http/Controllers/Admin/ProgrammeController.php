@@ -1516,69 +1516,102 @@ class ProgrammeController extends Controller
     }
 
     public function adviserProgrammes(Request $request, $programmeCategory){
-    
-        $programmeCategory = ProgrammeCategory::with('academicSessionSetting', 'examSetting')->where('category', $programmeCategory)->first();
+
+        $programmeCategory = ProgrammeCategory::with('academicSessionSetting', 'examSetting')
+            ->where('category', $programmeCategory)
+            ->first();
+
         $programmeCategoryId = $programmeCategory->id;
-        $academicSession = $programmeCategory->academicSessionSetting->academic_session ?? null;
-        
+
+        if ($request->filled('academic_session')) {
+            $academicSession = urldecode(trim($request->academic_session));
+            $academicSession = preg_replace('/\s+/', '', $academicSession); // remove spaces
+        } else {
+            $academicSession = $programmeCategory->academicSessionSetting->academic_session ?? null;
+            if ($academicSession) {
+                $academicSession = preg_replace('/\s+/', '', trim($academicSession));
+            }
+        }
+
         if (!$academicSession) {
             alert()->error('Oops!', 'Session setting for programme category not found.')->persistent('Close');
             return redirect()->back();
         }
 
-        $adviserProgrammesQuery = LevelAdviser::with('programme', 'level')->where('programme_category_id', $programmeCategoryId)->where('academic_session', $academicSession);
-        $adviserProgrammes = $adviserProgrammesQuery->get();
+        $adviserProgrammesQuery = LevelAdviser::with('programme', 'level')
+            ->where('programme_category_id', $programmeCategoryId)
+            ->whereRaw("REPLACE(REPLACE(academic_session, ' ', ''), '-', '/') = ?", [$academicSession]);
 
+        $adviserProgrammes = $adviserProgrammesQuery->get();
 
         foreach ($adviserProgrammes as $adviserProgramme) {
             $levelId = $adviserProgramme->level_id;
             $programmeId = $adviserProgramme->programme_id;
-        
+
             $studentIds = Student::where('level_id', $levelId)
                 ->where('programme_id', $programmeId)
                 ->where('programme_category_id', $programmeCategoryId)
                 ->pluck('id')
                 ->toArray();
-        
+
             $studentRegistrationsCount = StudentCourseRegistration::with('student', 'student.applicant')
                 ->whereIn('student_id', $studentIds)
                 ->where('level_id', $levelId)
                 ->where('programme_category_id', $programmeCategoryId)
-                ->where('academic_session', $academicSession)
+                ->whereRaw("REPLACE(REPLACE(academic_session, ' ', ''), '-', '/') = ?", [$academicSession])
                 ->where(function ($query) {
-                    $query->where('level_adviser_status', null)
-                          ->orWhere('hod_status', null);
+                    $query->whereNull('level_adviser_status')
+                        ->orWhereNull('hod_status');
                 })
                 ->count();
 
             $coursesForReg = CoursePerProgrammePerAcademicSession::where('programme_id', $programmeId)
-                ->where('academic_session', $academicSession)
+                ->whereRaw("REPLACE(REPLACE(academic_session, ' ', ''), '-', '/') = ?", [$academicSession])
                 ->where('programme_category_id', $programmeCategoryId)
                 ->where('level_id', $levelId)
                 ->get();
-        
-            // Add studentRegistrationsCount to the object
+
             $adviserProgramme->studentRegistrationsCount = $studentRegistrationsCount;
             $adviserProgramme->coursesForReg = $coursesForReg;
         }
 
+        $sessions = Session::orderBy('id', 'DESC')->get();
+        $programmes = Programme::where('category_id', $programmeCategoryId)->get();
+
         return view('admin.adviserProgrammes', [
             'adviserProgrammes' => $adviserProgrammes,
             'programmeCategory' => $programmeCategory,
-            'academicSession' => $academicSession
+            'academicSession' => $academicSession,
+            'sessions' => $sessions,
+            'programmes' => $programmes,
+            'levels' => AcademicLevel::all(),
+            'staffs' => Staff::all()
         ]);
     }
 
-    Public function levelCourseReg(Request $request, $programmeCategory, $id){
+    public function levelCourseReg(Request $request, $programmeCategory, $id){
 
-        if(!$adviserProgramme = LevelAdviser::with('programme', 'level')->where('id', $id)->first()){
+        if (!$adviserProgramme = LevelAdviser::with('programme', 'level')->where('id', $id)->first()) {
             alert()->error('Oops!', 'Record not found')->persistent('Close');
             return redirect()->back();
         }
 
-        $programmeCategory = ProgrammeCategory::with('academicSessionSetting', 'examSetting')->where('category', $programmeCategory)->first();
+        $programmeCategory = ProgrammeCategory::with('academicSessionSetting', 'examSetting')
+            ->where('category', $programmeCategory)
+            ->first();
         $programmeCategoryId = $programmeCategory->id;
-        $academicSession = $programmeCategory->academicSessionSetting->academic_session ?? null;
+
+        // Handle academic session from request or default
+        if ($request->filled('academic_session')) {
+            $academicSession = urldecode(trim($request->academic_session));
+            $academicSession = preg_replace('/\s+/', '', $academicSession); // remove spaces
+        } else {
+            $academicSession = $programmeCategory->academicSessionSetting->academic_session ?? null;
+            if ($academicSession) {
+                $academicSession = preg_replace('/\s+/', '', trim($academicSession));
+            }
+        }
+
         if (!$academicSession) {
             alert()->error('Oops!', 'Session setting for programme category not found.')->persistent('Close');
             return redirect()->back();
@@ -1588,17 +1621,17 @@ class ProgrammeController extends Controller
         $programmeId = $adviserProgramme->programme_id;
 
         $studentIds = Student::where('level_id', $levelId)
-        ->where('programme_category_id', $programmeCategoryId)
-        ->where('programme_id', $programmeId)
-        ->pluck('id')
-        ->toArray();
-    
+            ->where('programme_category_id', $programmeCategoryId)
+            ->where('programme_id', $programmeId)
+            ->pluck('id')
+            ->toArray();
+
         $studentRegistrations = StudentCourseRegistration::with('student', 'student.applicant')
-        ->whereIn('student_id', $studentIds)
-        ->where('programme_category_id', $programmeCategoryId)
-        ->where('level_id', $levelId)
-        ->where('academic_session', $academicSession)
-        ->get();
+            ->whereIn('student_id', $studentIds)
+            ->where('programme_category_id', $programmeCategoryId)
+            ->where('level_id', $levelId)
+            ->whereRaw("REPLACE(REPLACE(academic_session, ' ', ''), '-', '/') = ?", [$academicSession])
+            ->get();
 
         return view('admin.levelCourseReg', [
             'studentRegistrations' => $studentRegistrations
@@ -1616,9 +1649,21 @@ class ProgrammeController extends Controller
             return redirect()->back();
         }
 
-        $programmeCategory = ProgrammeCategory::with('academicSessionSetting', 'examSetting')->where('category', $programmeCategory)->first();
+        $programmeCategory = ProgrammeCategory::with('academicSessionSetting', 'examSetting')
+            ->where('category', $programmeCategory)
+            ->first();
         $programmeCategoryId = $programmeCategory->id;
-        $academicSession = $programmeCategory->academicSessionSetting->academic_session ?? null;
+
+        // Handle academic session from request or default
+        if ($request->filled('academic_session')) {
+            $academicSession = urldecode(trim($request->academic_session));
+            $academicSession = preg_replace('/\s+/', '', $academicSession); // remove spaces
+        } else {
+            $academicSession = $programmeCategory->academicSessionSetting->academic_session ?? null;
+            if ($academicSession) {
+                $academicSession = preg_replace('/\s+/', '', trim($academicSession));
+            }
+        }
 
         if (!$academicSession) {
             alert()->error('Oops!', 'Session setting for programme category not found.')->persistent('Close');
@@ -1643,6 +1688,7 @@ class ProgrammeController extends Controller
                 'level_id' => $levelId,
                 'programme_id' => $programmeId,
                 'programme_category_id' => $programmeCategoryId,
+                'academic_session' => $academicSession,
                 'is_active' => true,
                 'is_passed_out' => false,
                 'is_rusticated' => false
@@ -1651,10 +1697,10 @@ class ProgrammeController extends Controller
 
         foreach ($students as $student) {
             $hasRegistered = $student->courseRegistrationDocument()
-                ->where('academic_session', $academicSession)
+                ->whereRaw("REPLACE(REPLACE(academic_session, ' ', ''), '-', '/') = ?", [$academicSession])
                 ->exists();
 
-            $student->courseRegistrationStatus = $hasRegistered ? true : false;
+            $student->courseRegistrationStatus = $hasRegistered;
         }
 
         return view('admin.levelStudents', [

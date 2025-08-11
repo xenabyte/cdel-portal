@@ -856,6 +856,14 @@ class Controller extends BaseController
                 $matricNumber = 'TP/'.substr($admissionSession, 2, 2).'/'.$facultyCode.$code.sprintf("%03d", $newMatric);
             }
 
+            if ($programmeCategoryId == ProgrammeCategory::getProgrammeCategory(ProgrammeCategory::MASTER)) {
+                $matricNumber = 'M/'.substr($admissionSession, 2, 2).'/'.$facultyCode.$code.sprintf("%03d", $newMatric);
+            }
+
+            if ($programmeCategoryId == ProgrammeCategory::getProgrammeCategory(ProgrammeCategory::DOCTORATE)) {
+                $matricNumber = 'PHD/'.substr($admissionSession, 2, 2).'/'.$facultyCode.$code.sprintf("%03d", $newMatric);
+            }
+
             $google = new Google();
             $createStudentEmail = $google->createUser($studentEmail, $student->applicant->othernames, $student->applicant->lastname, $accessCode, env('GOOGLE_STUDENT_GROUP'));
             //log::info($createStudentEmail);

@@ -25,6 +25,10 @@
         <div class="card">
             <div class="card-header align-items-center">
                 <h4 class="card-title mb-0 flex-grow-1">{{ $programmeCategory->category }} Programme Level Advisers and Student Course Reg for {{ $academicSession }} Academic Session</h4>
+                <div class="flex-shrink-0 text-end">
+                    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#otherSessions">Other sessions</button>
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal"  data-bs-target="#addAdviser" class="btn btn-success">Assign Level Adviser</button>
+                </div>
             </div><!-- end card header -->
 
             <div class="card-body table-responsive">
@@ -63,8 +67,8 @@
                             </td>
                             <td>
                                 <a href="#" data-bs-toggle="modal" data-bs-target="#viewCourses{{ $adviserProgramme->id }}" class="btn btn-primary">Courses</a>
-                                <a href="{{ url('/admin/levelCourseReg/'.$programmeCategory->category.'/'.$adviserProgramme->id) }}" class="btn btn-info">Course Registrations</a>
-                                <a href="{{ url('/admin/levelStudents/'.$programmeCategory->category.'/'.$adviserProgramme->id) }}" class="btn btn-dark">All Students</a>
+                                <a href="{{ url('/admin/levelCourseReg/'.$programmeCategory->category.'/'.$adviserProgramme->id) }}?academic_session={{$academicSession}}" class="btn btn-info">Course Registrations</a>
+                                <a href="{{ url('/admin/levelStudents/'.$programmeCategory->category.'/'.$adviserProgramme->id) }}?academic_session={{$academicSession}}" class="btn btn-dark">All Students</a>
                                 @if(!empty($adviserProgramme->course_approval_status) && strtolower($adviserProgramme->course_registration) != 'approved')
                                 <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#manage{{ $adviserProgramme->id }}">Manage Approval</button>  
                                 @endif                                 
@@ -108,6 +112,106 @@
     </div>
     <!-- end col -->
 </div>
+
+<div id="otherSessions" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 overflow-hidden">
+            <div class="modal-header p-3">
+                <h4 class="card-title mb-0">Other Sessions</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body">
+                <form action="{{ url('/admin/adviserProgrammes/'.$programmeCategory->category) }}" method="GET" enctype="multipart/form-data">                    
+                    <div class="col-lg-12">
+                        <div class="form-floating">
+                            <select class="form-select" id="academic_session" name="academic_session" aria-label="academic_session">
+                                <option value="" selected>--Select--</option>
+                                @foreach($sessions as $acadSession)
+                                    <option value="{{ $acadSession->year }}">{{ $acadSession->year }}</option>
+                                @endforeach
+                            </select>
+                            <label for="level">Academic Session</label>
+                        </div>
+                    </div>
+
+                    <hr>
+                    <div class="text-end">
+                        <button type="submit" id="submit-button" class="btn btn-primary">Fetch</button>
+                    </div>
+                </form>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<div id="addAdviser" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content border-0 overflow-hidden">
+            <div class="modal-header p-3">
+                <h4 class="card-title mb-0">Add Level Advisers</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body border-top border-top-dashed">
+
+                <form action="{{ url('/admin/addAdviser') }}" method="post" enctype="multipart/form-data">
+                    @csrf
+                    
+                    <input type="hidden" name="programme_category_id" value="{{ $programmeCategory->id }}">
+                    <input type="hidden" name="academic_session" value="{{ $academicSession }}">
+
+                    <div class="mb-3">
+                        <label for="category" class="form-label">Select Programme</label>
+                        <select class="form-select" aria-label="category" name="programme_id">
+                            <option selected value= "">Select Programme </option>
+                            @foreach($programmes as $programme)
+                            <option value="{{ $programme->id }}">{{ $programme->name }} - {{ $programme->programmeCategory->category }} Programme</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="level" class="form-label">Select Level</label>
+                        <select class="form-select" aria-label="level" name="level_id">
+                            <option selected value= "">Select Level </option>
+                            @foreach($levels as $acadlevel)
+                            <option value="{{ $acadlevel->id }}">{{ $acadlevel->level }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <select id="staffSelect" class="form-select selectWithSearch" aria-label="staff_id" name="staff_id">
+                        <option selected value="">Select Staff</option>
+                        @foreach($staffs as $staff)
+                            <option value="{{ $staff->id }}">{{ ucwords(strtolower($staff->title.' '.$staff->lastname.' '.$staff->othernames)) }}</option>
+                        @endforeach
+                    </select>
+
+                    <div class="text-end border-top border-top-dashed p-3 p-3">
+                        <button type="submit" id="submit-button" class="btn btn-primary">Add Adviser</button>
+                    </div>
+                </form>
+
+                <script>
+                    document.addEventListener('DOMContentLoaded', function () {
+                        var addAdviserModal = document.getElementById('addAdviser');
+                        if (addAdviserModal) {
+                            addAdviserModal.addEventListener('shown.bs.modal', function () {
+                                // Initialize your selectWithSearch library here
+                                // If you are using Select2, the code would look like this:
+                                $('#staffSelect').select2({
+                                    dropdownParent: $('#addAdviser')
+                                });
+                            });
+                        }
+                    });
+                </script>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
 
 @foreach($adviserProgrammes as $adviserProgramme)
 <div id="manage{{ $adviserProgramme->id }}" class="modal fade" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" style="display: none;">

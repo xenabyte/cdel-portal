@@ -419,11 +419,7 @@
             </div>
 
             <div class="modal-body">
-                <form action="{{ url('/staff/billsForSessions') }}" method="post" enctype="multipart/form-data">
-                    @csrf
-
-                    <input type="hidden" name="programme_category_id" value="{{$programmeCategory->id}}">
-
+               <form action="{{ url('/staff/payments/'.$programmeCategory->category) }}" method="GET" enctype="multipart/form-data">
                     <div class="col-lg-12">
                         <div class="form-floating">
                             <select class="form-select" id="academic_session" name="academic_session" aria-label="academic_session">
