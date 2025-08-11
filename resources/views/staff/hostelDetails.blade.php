@@ -1,5 +1,10 @@
 @extends('staff.layout.dashboard')
-
+@php
+    $programmeCategoryModel = new \App\Models\ProgrammeCategory;
+    
+    $programmeCategory = $programmeCategoryModel->find($programmeCategoryModel::getProgrammeCategory('Undergraduate'));
+    $academicSession = $programmeCategory->academicSessionSetting->admission_session;
+@endphp
 @section('content')
 
 
@@ -160,7 +165,7 @@
                                 <td>{{ $room->type->name . ' - ' . $room->type->capacity }} Bedspaces</td>
                                 <td>
                                     <ol>
-                                    @foreach($room->allocations->where('academic_session', $pageGlobalData->sessionSetting->academic_session) as $allocation)
+                                    @foreach($room->allocations->where('academic_session', $academicSession) as $allocation)
                                             <li>{{ $allocation->student->applicant->lastname.' '. $allocation->student->applicant->othernames }} 
                                             <br>Programme: {{ $allocation->student->programme->name }} 
                                             <br>Level: {{ $allocation->student->level_id * 100 }} Level
@@ -170,7 +175,7 @@
                                 </td>
                                 <td><span class="badge badge-pill {{ $room->is_reserved?'bg-warning':'bg-success' }}" data-key="t-hot">{{ $room->is_reserved?'Reserved':'Open' }} </span></td>
                                 <td>
-                                    {{ intval($room->type->capacity) - $room->allocations->where('academic_session', $pageGlobalData->sessionSetting->academic_session)->count() }}
+                                    {{ intval($room->type->capacity) - $room->allocations->where('academic_session', $academicSession)->count() }}
                                 </td>
                                 <td>
                                     <div class="hstack gap-3 fs-15">
