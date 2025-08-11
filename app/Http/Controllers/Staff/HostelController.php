@@ -383,8 +383,8 @@ class HostelController extends Controller
 
     public function allocations (Request $request){
 
-        $globalData = $request->input('global_data');
-        $academicSession = $globalData->sessionSetting['academic_session'];
+        $programmeCategory = ProgrammeCategory::find(ProgrammeCategory::getProgrammeCategory(ProgrammeCategory::UNDERGRADUATE));
+        $academicSession = $programmeCategory->academicSessionSetting->admission_session;
 
         $totalBedSpaces = RoomBedSpace::get()->count();
 

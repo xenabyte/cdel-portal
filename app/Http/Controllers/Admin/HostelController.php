@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Models\ProgrammeCategory;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -387,8 +388,8 @@ class HostelController extends Controller
 
     public function allocations (Request $request){
 
-        $globalData = $request->input('global_data');
-        $academicSession = $globalData->sessionSetting['academic_session'];
+        $programmeCategory = ProgrammeCategory::find(ProgrammeCategory::getProgrammeCategory(ProgrammeCategory::UNDERGRADUATE));
+        $academicSession = $programmeCategory->academicSessionSetting->admission_session;
 
         $allocations = Allocation::with(['student', 'room', 'room.hostel', 'room.type'])->where('academic_session', $academicSession)->get();
         
