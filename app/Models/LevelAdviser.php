@@ -66,6 +66,7 @@ class LevelAdviser extends Model
         return Student::where('programme_category_id', $this->programme_category_id)
             ->where('level_id', $this->level_id)
             ->where('programme_id', $this->programme_id)
+            ->where('academic_session', $this->academic_session)
             ->where('is_active', true)
             ->where('is_passed_out', false)
             ->where('is_rusticated', 'false')
