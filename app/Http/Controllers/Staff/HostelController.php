@@ -20,6 +20,7 @@ use App\Models\Room;
 use App\Models\Allocation;
 use App\Models\Transaction;
 use App\Models\Payment;
+use App\Models\ProgrammeCategory;
 
 use SweetAlert;
 use Mail;
