@@ -14,8 +14,11 @@ $suspension = StudentSuspension::where('student_id', $student->id)->whereNull('e
 $studentAdvisoryData = (object) $student->getAcademicAdvisory();
 
 
-$academicSession = $student->programme->programmeCategory->academicSessionSetting->academic_session;
+// $academicSession = $student->programme->programmeCategory->academicSessionSetting->academic_session;
 $admissionSession = $student->programme->programmeCategory->academicSessionSetting->admission_session;
+
+
+$academicSession = $student->academic_session;
 
 @endphp
 @section('content')
