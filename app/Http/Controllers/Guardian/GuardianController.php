@@ -319,7 +319,7 @@ class GuardianController extends Controller
             $monnifyPaymentdata = array(
                 'amount' => ceil($monnifyAmount/100),
                 'invoiceReference' => $transaction->reference,
-                'description' =>  !empty($payment) ? $payment->title : $paymentType,
+                'description' =>  !empty($payment) ? $payment->title : "Wallet Deposit",
                 'currencyCode' => "NGN",
                 'contractCode' => env('MONNIFY_CONTRACT_CODE'),
                 'customerEmail' => $student->email,
