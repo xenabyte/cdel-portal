@@ -4,6 +4,7 @@
 /public/auth_images
 /public/hot
 /public/storage
+/public/google/tau-core-1970c12dcf83.json
 /storage/*.key
 /vendor
 .env
