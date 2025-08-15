@@ -64,9 +64,6 @@
                                 <a class="nav-link   fs-14 active" href="#hero">Home</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-light fs-14" href="{{ url('student/hallOfFame') }}">Hall of Fame</a>
-                            </li>
-                            <li class="nav-item">
                                 <a class="nav-link text-light fs-14" data-bs-toggle="modal" data-bs-target="#exampleModal">Check Bandwidth Balance</a>
                             </li>
                         </ul>
@@ -74,7 +71,6 @@
                         <div class="">
                             <a href="{{url('/applicant/register')}}" class="btn btn-soft-light"><i class="ri-user-3-line align-bottom me-1 text-light"></i> Applicant Portal</a>
                             <a href="{{url('/student')}}" class="btn btn-soft-light"><i class="ri-user-3-line align-bottom me-1 text-light"></i> Student Portal</a>
-                            <a href="{{url('/guardian')}}" class="btn btn-soft-light"><i class="ri-user-3-line align-bottom me-1 text-light"></i> Guardian Portal</a>
                         </div>
                     </div>
 

@@ -77,7 +77,6 @@ Route::get('/getDepartments/{id}', [App\Http\Controllers\HomeController::class, 
 
 Route::get('google/auth', [App\Http\Controllers\GoogleController::class, 'redirectToGoogle'])->name('google.auth');
 Route::get('google/callback', [App\Http\Controllers\GoogleController::class, 'handleGoogleCallback'])->name('google.callback');
-Route::get('student/hallOfFame', [App\Http\Controllers\HomeController::class, 'hallOfFame']);
 
 // Route::get('/addBandwidth', [App\Http\Controllers\HomeController::class, 'addBandwidth'])->name('addBandwidth');
 // Route::post('/bandwidthTopUp', [App\Http\Controllers\HomeController::class, 'bandwidthTopUp'])->name('bandwidthTopUp');

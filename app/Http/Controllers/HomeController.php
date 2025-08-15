@@ -242,21 +242,7 @@ class HomeController extends Controller
             'units' => $units
         ]);
     }
-
-    public function hallOfFame(Request $request)
-    {
-        $students = Student::where('is_active', true)
-            ->where('is_passed_out', false)
-            ->where('is_rusticated', false)
-            ->where('cgpa', '>', 4.49)
-            ->orderBy('level_id', 'ASC')
-            ->get();
-
-        return view('hallOfFame', [
-            'students' => $students,
-        ]);
-    }
-
+    
     public function checkDataBalance(Request $request){
         $validator = Validator::make($request->all(), [
             'bandwidth_password' => 'required',
